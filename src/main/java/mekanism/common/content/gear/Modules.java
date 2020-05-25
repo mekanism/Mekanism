@@ -1,6 +1,5 @@
 package mekanism.common.content.gear;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
@@ -37,6 +37,7 @@ import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -55,58 +56,69 @@ public class Modules {
     // Meka-Tool
     public static final ModuleData<ModuleExcavationEscalationUnit> EXCAVATION_ESCALATION_UNIT = register("excavation_escalation_unit",
           MekanismLang.MODULE_EXCAVATION_ESCALATION_UNIT, MekanismLang.DESCRIPTION_EXCAVATION_ESCALATION_UNIT, ModuleExcavationEscalationUnit::new, 4)
-          .setHandlesModeChange().setRendersHUD();
+          .rarity(Rarity.UNCOMMON).setHandlesModeChange().setRendersHUD();
     public static final ModuleData<ModuleAttackAmplificationUnit> ATTACK_AMPLIFICATION_UNIT = register("attack_amplification_unit",
-          MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, ModuleAttackAmplificationUnit::new, 4);
-    public static final ModuleData<ModuleSilkTouchUnit> SILK_TOUCH_UNIT = register("silk_touch_unit",
-          MekanismLang.MODULE_SILK_TOUCH_UNIT, MekanismLang.DESCRIPTION_SILK_TOUCH_UNIT, ModuleSilkTouchUnit::new);
-    public static final ModuleData<ModuleVeinMiningUnit> VEIN_MINING_UNIT = register("vein_mining_unit",
-          MekanismLang.MODULE_VEIN_MINING_UNIT, MekanismLang.DESCRIPTION_VEIN_MINING_UNIT, ModuleVeinMiningUnit::new, 4);
+          MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, ModuleAttackAmplificationUnit::new, 4)
+          .rarity(Rarity.UNCOMMON);
     public static final ModuleData<ModuleFarmingUnit> FARMING_UNIT = register("farming_unit",
           MekanismLang.MODULE_FARMING_UNIT, MekanismLang.DESCRIPTION_FARMING_UNIT, ModuleFarmingUnit::new, 4)
-          .setExclusive();
+          .rarity(Rarity.UNCOMMON).setExclusive();
+    public static final ModuleData<ModuleSilkTouchUnit> SILK_TOUCH_UNIT = register("silk_touch_unit",
+          MekanismLang.MODULE_SILK_TOUCH_UNIT, MekanismLang.DESCRIPTION_SILK_TOUCH_UNIT, ModuleSilkTouchUnit::new)
+          .rarity(Rarity.RARE);
+    public static final ModuleData<ModuleVeinMiningUnit> VEIN_MINING_UNIT = register("vein_mining_unit",
+          MekanismLang.MODULE_VEIN_MINING_UNIT, MekanismLang.DESCRIPTION_VEIN_MINING_UNIT, ModuleVeinMiningUnit::new, 4)
+          .rarity(Rarity.RARE);
     public static final ModuleData<ModuleTeleportationUnit> TELEPORTATION_UNIT = register("teleportation_unit",
           MekanismLang.MODULE_TELEPORTATION_UNIT, MekanismLang.DESCRIPTION_TELEPORTATION_UNIT, ModuleTeleportationUnit::new)
-          .setExclusive();
+          .rarity(Rarity.EPIC).setExclusive();
 
     // Helmet
     public static final ModuleData<ModuleElectrolyticBreathingUnit> ELECTROLYTIC_BREATHING_UNIT = register("electrolytic_breathing_unit",
-          MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, ModuleElectrolyticBreathingUnit::new, 4);
-    public static final ModuleData<ModuleInhalationPurificationUnit> INHALATION_PURIFICATION_UNIT = register("inhalation_purification_unit",
-          MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, ModuleInhalationPurificationUnit::new);
+          MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, ModuleElectrolyticBreathingUnit::new, 4)
+          .rarity(Rarity.UNCOMMON);
     public static final ModuleData<ModuleRadiationShieldingUnit> RADIATION_SHIELDING_UNIT = register("radiation_shielding_unit",
-          MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, ModuleRadiationShieldingUnit::new);
+          MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, ModuleRadiationShieldingUnit::new)
+          .rarity(Rarity.UNCOMMON);
+    public static final ModuleData<ModuleInhalationPurificationUnit> INHALATION_PURIFICATION_UNIT = register("inhalation_purification_unit",
+          MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, ModuleInhalationPurificationUnit::new)
+          .rarity(Rarity.RARE);
     public static final ModuleData<ModuleVisionEnhancementUnit> VISION_ENHANCEMENT_UNIT = register("vision_enhancement_unit",
           MekanismLang.MODULE_VISION_ENHANCEMENT_UNIT, MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, ModuleVisionEnhancementUnit::new, 4)
-          .setHandlesModeChange().setRendersHUD().setDisabledByDefault();
+          .rarity(Rarity.RARE).setHandlesModeChange().setRendersHUD().setDisabledByDefault();
     public static final ModuleData<ModuleSolarRechargingUnit> SOLAR_RECHARGING_UNIT = register("solar_recharging_unit",
-          MekanismLang.MODULE_SOLAR_RECHARGING_UNIT, MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, ModuleSolarRechargingUnit::new, 8);
+          MekanismLang.MODULE_SOLAR_RECHARGING_UNIT, MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, ModuleSolarRechargingUnit::new, 8)
+          .rarity(Rarity.RARE);
     public static final ModuleData<ModuleNutritionalInjectionUnit> NUTRITIONAL_INJECTION_UNIT = register("nutritional_injection_unit",
           MekanismLang.MODULE_NUTRITIONAL_INJECTION_UNIT, MekanismLang.DESCRIPTION_NUTRITIONAL_INJECTION_UNIT, ModuleNutritionalInjectionUnit::new)
-          .setRendersHUD();
+          .rarity(Rarity.RARE).setRendersHUD();
 
     // Chestplate
-    public static final ModuleData<ModuleJetpackUnit> JETPACK_UNIT = register("jetpack_unit",
-          MekanismLang.MODULE_JETPACK_UNIT, MekanismLang.DESCRIPTION_JETPACK_UNIT, ModuleJetpackUnit::new)
-          .setHandlesModeChange().setRendersHUD().setExclusive();
-    public static final ModuleData<ModuleGravitationalModulatingUnit> GRAVITATIONAL_MODULATING_UNIT = register("gravitational_modulating_unit",
-          MekanismLang.MODULE_GRAVITATIONAL_MODULATING_UNIT, MekanismLang.DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT, ModuleGravitationalModulatingUnit::new)
-          .setHandlesModeChange().setRendersHUD().setExclusive();
-    public static final ModuleData<ModuleChargeDistributionUnit> CHARGE_DISTRIBUTION_UNIT = register("charge_distribution_unit",
-          MekanismLang.MODULE_CHARGE_DISTRIBUTION_UNIT, MekanismLang.DESCRIPTION_CHARGE_DISTRIBUTION_UNIT, ModuleChargeDistributionUnit::new);
     public static final ModuleData<ModuleDosimeterUnit> DOSIMETER_UNIT = register("dosimeter_unit",
           MekanismLang.MODULE_DOSIMETER_UNIT, MekanismLang.DESCRIPTION_DOSIMETER_UNIT, ModuleDosimeterUnit::new)
-          .setRendersHUD();
+          .rarity(Rarity.UNCOMMON).setRendersHUD();
+    public static final ModuleData<ModuleJetpackUnit> JETPACK_UNIT = register("jetpack_unit",
+          MekanismLang.MODULE_JETPACK_UNIT, MekanismLang.DESCRIPTION_JETPACK_UNIT, ModuleJetpackUnit::new)
+          .rarity(Rarity.RARE).setHandlesModeChange().setRendersHUD().setExclusive();
+    public static final ModuleData<ModuleChargeDistributionUnit> CHARGE_DISTRIBUTION_UNIT = register("charge_distribution_unit",
+          MekanismLang.MODULE_CHARGE_DISTRIBUTION_UNIT, MekanismLang.DESCRIPTION_CHARGE_DISTRIBUTION_UNIT, ModuleChargeDistributionUnit::new)
+          .rarity(Rarity.RARE);
+    public static final ModuleData<ModuleGravitationalModulatingUnit> GRAVITATIONAL_MODULATING_UNIT = register("gravitational_modulating_unit",
+          MekanismLang.MODULE_GRAVITATIONAL_MODULATING_UNIT, MekanismLang.DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT, ModuleGravitationalModulatingUnit::new)
+          .rarity(Rarity.EPIC).setHandlesModeChange().setRendersHUD().setExclusive();
 
     // Pants
     public static final ModuleData<ModuleLocomotiveBoostingUnit> LOCOMOTIVE_BOOSTING_UNIT = register("locomotive_boosting_unit",
-          MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, ModuleLocomotiveBoostingUnit::new, 4);
+          MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, ModuleLocomotiveBoostingUnit::new, 4)
+          .rarity(Rarity.RARE);
 
     // Boots
     public static final ModuleData<ModuleHydraulicPropulsionUnit> HYDRAULIC_PROPULSION_UNIT = register("hydraulic_propulsion_unit",
-          MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, ModuleHydraulicPropulsionUnit::new, 4);
+          MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, ModuleHydraulicPropulsionUnit::new, 4)
+          .rarity(Rarity.RARE);
     public static final ModuleData<ModuleMagneticAttractionUnit> MAGNETIC_ATTRACTION_UNIT = register("magnetic_attraction_unit",
-          MekanismLang.MODULE_MAGNETIC_ATTRACTION_UNIT, MekanismLang.DESCRIPTION_MAGNETIC_ATTRACTION_UNIT, ModuleMagneticAttractionUnit::new, 4);
+          MekanismLang.MODULE_MAGNETIC_ATTRACTION_UNIT, MekanismLang.DESCRIPTION_MAGNETIC_ATTRACTION_UNIT, ModuleMagneticAttractionUnit::new, 4)
+          .rarity(Rarity.RARE);
 
     public static void setSupported(Item containerItem, ModuleData<?>... types) {
         for (ModuleData<?> module : types) {
@@ -192,6 +204,7 @@ public class Modules {
         private final Supplier<MODULE> supplier;
         private final int maxStackSize;
         private ItemStack stack;
+        private Rarity rarity = Rarity.COMMON;
 
         /** Exclusive modules only work one-at-a-time; when one is enabled, others will be automatically disabled. */
         private boolean exclusive;
@@ -210,6 +223,15 @@ public class Modules {
 
         public int getMaxStackSize() {
             return maxStackSize;
+        }
+
+        public Rarity getRarity() {
+            return rarity;
+        }
+
+        public ModuleData<MODULE> rarity(Rarity rarity) {
+            this.rarity = rarity;
+            return this;
         }
 
         public MODULE get(ItemStack container) {

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_farming_unit"
+  },
+  "pattern": [
+    "I#I",
+    "IAI",
+    "PPP"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:alloys/advanced"
+    },
+    "A": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "minecraft:iron_hoe"
+    },
+    "P": {
+      "item": "mekanism:hdpe_sheet"
+    }
+  }
+}

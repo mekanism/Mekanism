@@ -25,8 +25,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class SPSMultiblockData extends MultiblockData {
 
-    private static final long MAX_INPUT_GAS = 1_000_000;
-    private static final long MAX_OUTPUT_GAS = 1_000_000;
+    private static final long MAX_OUTPUT_GAS = 1_000;
 
     @ContainerSync
     public MultiblockGasTank<SPSMultiblockData> inputTank;
@@ -49,12 +48,16 @@ public class SPSMultiblockData extends MultiblockData {
     public SPSMultiblockData(TileEntitySPSCasing tile) {
         super(tile);
 
-        gasTanks.add(inputTank = MultiblockGasTank.create(this, tile, () -> MAX_INPUT_GAS,
+        gasTanks.add(inputTank = MultiblockGasTank.create(this, tile, this::getMaxInputGas,
             (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(), (stack, automationType) -> isFormed(),
             gas -> gas == MekanismGases.POLONIUM.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
         gasTanks.add(outputTank = MultiblockGasTank.create(this, tile, () -> MAX_OUTPUT_GAS,
             (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(),
             gas -> gas == MekanismGases.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
+    }
+
+    private long getMaxInputGas() {
+        return MekanismConfig.general.spsInputPerAntimatter.get() * 2;
     }
 
     @Override

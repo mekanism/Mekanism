@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_jetpack_unit"
+  },
+  "pattern": [
+    "I#I",
+    "IAI",
+    "PPP"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:alloys/elite"
+    },
+    "A": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "mekanism:jetpack"
+    },
+    "P": {
+      "tag": "forge:pellets/polonium"
+    }
+  }
+}

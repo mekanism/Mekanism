@@ -12,6 +12,7 @@ import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
+import mekanism.common.content.gear.Modules;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -104,6 +105,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         compatRecipeProviders.forEach(compatRecipeProvider -> compatRecipeProvider.registerRecipes(consumer));
         subRecipeProviders.forEach(subRecipeProvider -> subRecipeProvider.addRecipes(consumer));
         addMiscRecipes(consumer);
+        addGearModuleRecipes(consumer);
         addLateGameRecipes(consumer);
     }
 
@@ -911,15 +913,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.GLOWSTONE, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .build(consumer);
-        //Module Base
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_BASE, 2)
-              .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
-                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
-              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
-              .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
-              .build(consumer);
         //Base QIO Drive
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.BASE_QIO_DRIVE)
               .pattern(RecipePattern.createPattern(
@@ -1029,6 +1022,235 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
             .key(Pattern.CONSTANT, MekanismBlocks.QIO_DASHBOARD)
             .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
             .build(consumer);
+    }
+
+    private void addGearModuleRecipes(Consumer<IFinishedRecipe> consumer) {
+        //Module Base
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_BASE, 2)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+              ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
+              .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
+              .build(consumer);
+        //Jetpack Module
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.JETPACK_UNIT))
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismItems.JETPACK)
+              .key(Pattern.PREVIOUS, MekanismTags.Items.PELLETS_POLONIUM)
+              .build(consumer);
+        //Electrolytic Breathing Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.ELECTROLYTIC_BREATHING_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismItems.ELECTROLYTIC_CORE)
+              .key(Pattern.PREVIOUS, MekanismItems.HDPE_SHEET)
+              .build(consumer);
+        //Dosimeter Module
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.DOSIMETER_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismItems.DOSIMETER)
+              .key(Pattern.PREVIOUS, MekanismItems.HDPE_SHEET)
+              .build(consumer);
+        //Energy Module
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.ENERGY_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismBlocks.BASIC_INDUCTION_CELL)
+              .key(Pattern.PREVIOUS, MekanismItems.HDPE_SHEET)
+              .build(consumer);
+        //Radiation Shielding Module
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.RADIATION_SHIELDING_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD))
+              .key(Pattern.PREVIOUS, MekanismItems.HDPE_SHEET)
+              .build(consumer);
+        //Charge Distribution Module
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.CHARGE_DISTRIBUTION_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismBlocks.BASIC_INDUCTION_PROVIDER)
+              .key(Pattern.PREVIOUS, MekanismTags.Items.PELLETS_POLONIUM)
+              .build(consumer);
+        //Teleportation Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.TELEPORTATION_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ULTIMATE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismItems.TELEPORTATION_CORE)
+              .key(Pattern.PREVIOUS, MekanismTags.Items.PELLETS_ANTIMATTER)
+              .build(consumer);
+        //Nutritional Injection Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.NUTRITIONAL_INJECTION_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismItems.CANTEEN)
+              .key(Pattern.PREVIOUS, MekanismTags.Items.PELLETS_POLONIUM)
+              .build(consumer);
+        //Silk Touch Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.SILK_TOUCH_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.WOOD, Pattern.ALLOY, Pattern.WOOD),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismBlocks.REFINED_GLOWSTONE_BLOCK)
+              .key(Pattern.PREVIOUS, MekanismTags.Items.PELLETS_POLONIUM)
+              .key(Pattern.WOOD, Items.DIAMOND_PICKAXE)
+              .build(consumer);
+        //Excavation Escalation Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.EXCAVATION_ESCALATION_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, Items.IRON_PICKAXE)
+              .key(Pattern.PREVIOUS, MekanismItems.HDPE_SHEET)
+              .build(consumer);
+        //Attack Amplification Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.ATTACK_AMPLIFICATION_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, Items.IRON_SWORD)
+              .key(Pattern.PREVIOUS, MekanismItems.HDPE_SHEET)
+              .build(consumer);
+        //Farming Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.FARMING_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, Items.IRON_HOE)
+              .key(Pattern.PREVIOUS, MekanismItems.HDPE_SHEET)
+              .build(consumer);
+        //Vein Mining Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.VEIN_MINING_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of('x', Pattern.ALLOY, 's'),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, Items.DIAMOND_PICKAXE)
+              .key('x', Items.DIAMOND_AXE)
+              .key('s', Items.DIAMOND_SHOVEL)
+              .key(Pattern.PREVIOUS, MekanismTags.Items.PELLETS_POLONIUM)
+              .build(consumer);
+        //Vision Enhancement Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.VISION_ENHANCEMENT_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, Items.EMERALD)
+              .key(Pattern.PREVIOUS, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
+        //Inhalation Purification Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.INHALATION_PURIFICATION_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, 'o', Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismItems.HAZMAT_MASK)
+              .key(Pattern.PREVIOUS, MekanismItems.POLONIUM_PELLET)
+              .key('o', MekanismItems.SCUBA_MASK)
+              .build(consumer);
+        //Magnetic Attraction Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.MAGNETIC_ATTRACTION_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.CIRCUIT, Pattern.ALLOY, Pattern.CIRCUIT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, Blocks.IRON_BARS)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
+              .key(Pattern.PREVIOUS, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
+        //Locomotive Boosting Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.LOCOMOTIVE_BOOSTING_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, Items.DIAMOND_LEGGINGS)
+              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .key(Pattern.PREVIOUS, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
+        //Hydraulic Propulsion Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.HYDRAULIC_PROPULSION_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, Items.DIAMOND_BOOTS)
+              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .key(Pattern.PREVIOUS, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
+        //Gravitational Modulating Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.GRAVITATIONAL_MODULATING_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ULTIMATE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, Items.NETHER_STAR)
+              .key(Pattern.ENERGY, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER)
+              .key(Pattern.PREVIOUS, MekanismItems.ANTIMATTER_PELLET)
+              .build(consumer);
     }
 
     private void addLateGameRecipes(Consumer<IFinishedRecipe> consumer) {

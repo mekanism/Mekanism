@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_gravitational_modulating_unit"
+  },
+  "pattern": [
+    "I#I",
+    "EAE",
+    "PPP"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:alloys/ultimate"
+    },
+    "A": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "minecraft:nether_star"
+    },
+    "E": {
+      "item": "mekanism:ultimate_induction_provider"
+    },
+    "P": {
+      "item": "mekanism:pellet_antimatter"
+    }
+  }
+}

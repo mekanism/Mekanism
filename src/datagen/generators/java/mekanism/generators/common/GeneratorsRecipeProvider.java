@@ -12,15 +12,16 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.common.content.gear.Modules;
 import mekanism.common.recipe.BaseRecipeProvider;
+import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
+import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
-import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
-import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
@@ -64,6 +65,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         addElectrolyticSeparatorRecipes(consumer);
         addRotaryCondensentratorRecipes(consumer);
         addSolarNeutronActivatorRecipes(consumer);
+        addGearModuleRecipes(consumer);
     }
 
     private void addElectrolyticSeparatorRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -242,6 +244,20 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .build(consumer, MekanismGenerators.rl("fission_reactor/control_rod_assembly"));
+    }
+
+    private void addGearModuleRecipes(Consumer<IFinishedRecipe> consumer) {
+        //Solar Recharging Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.SOLAR_RECHARGING_UNIT))
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR)
+              .key(Pattern.PREVIOUS, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
     }
 
     private void addFusionReactorRecipes(Consumer<IFinishedRecipe> consumer) {

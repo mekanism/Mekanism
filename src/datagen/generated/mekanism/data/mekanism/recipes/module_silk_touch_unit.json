@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_silk_touch_unit"
+  },
+  "pattern": [
+    "I#I",
+    "WAW",
+    "PPP"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:alloys/elite"
+    },
+    "A": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "mekanism:block_refined_glowstone"
+    },
+    "P": {
+      "tag": "forge:pellets/polonium"
+    },
+    "W": {
+      "item": "minecraft:diamond_pickaxe"
+    }
+  }
+}

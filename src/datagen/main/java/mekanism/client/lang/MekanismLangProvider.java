@@ -1,7 +1,7 @@
 package mekanism.client.lang;
 
-import com.google.common.collect.Table.Cell;
 import java.util.Map;
+import com.google.common.collect.Table.Cell;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
@@ -1123,7 +1123,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, "Applies a miniature electromagnetic field around the breathing apparatus, preventing negative potion effects.");
         add(MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
         add(MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, "Brightens the surrounding environment, allowing the user to see through darkness. Install multiple for more effective nightvision.");
-        add(MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging.");
+        add(MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging. Requires Mekanism: Generators.");
         add(MekanismLang.DESCRIPTION_NUTRITIONAL_INJECTION_UNIT, "Automatically feeds the player Nutritional Paste when hungry.");
         add(MekanismLang.DESCRIPTION_JETPACK_UNIT, "Applies a hydrogen-fueled jetpack to the MekaSuit.");
         add(MekanismLang.DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT, "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");

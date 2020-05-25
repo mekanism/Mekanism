@@ -508,7 +508,7 @@
   "description.mekanism.seismic_vibrator": "A machine that uses seismic vibrations to provide information on differing layers of the world.",
   "description.mekanism.silk_touch_unit": "Allows all mined blocks to drop as themselves.",
   "description.mekanism.solar_neutron_activator": "A machine that directs the neutron radiation of the sun into its internal reservoir, allowing for the slow creation of various isotopes.",
-  "description.mekanism.solar_recharging_unit": "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging.",
+  "description.mekanism.solar_recharging_unit": "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging. Requires Mekanism: Generators.",
   "description.mekanism.sps_casing": "Reinforced casing capable of resisting intense chemical and thermal effects from phase-shifting reactions.",
   "description.mekanism.sps_port": "A port used for the transfer of energy and substances in the Supercritical Phase Shifter.",
   "description.mekanism.steel_casing": "A sturdy, steel-based casing used as a foundation for machinery.",

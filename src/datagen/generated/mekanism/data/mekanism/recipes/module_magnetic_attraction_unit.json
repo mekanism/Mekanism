@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_magnetic_attraction_unit"
+  },
+  "pattern": [
+    "I#I",
+    "CAC",
+    "PPP"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:alloys/elite"
+    },
+    "A": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "minecraft:iron_bars"
+    },
+    "C": {
+      "tag": "forge:circuits/elite"
+    },
+    "P": {
+      "item": "mekanism:pellet_polonium"
+    }
+  }
+}

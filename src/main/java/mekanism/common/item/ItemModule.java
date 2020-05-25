@@ -34,6 +34,11 @@ public class ItemModule extends Item implements IModuleItem {
     }
 
     @Override
+    public Rarity getRarity(ItemStack stack) {
+        return moduleData.getRarity();
+    }
+
+    @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {

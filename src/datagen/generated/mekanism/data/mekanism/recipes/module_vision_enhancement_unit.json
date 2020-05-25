@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_vision_enhancement_unit"
+  },
+  "pattern": [
+    "I#I",
+    "IAI",
+    "PPP"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:alloys/elite"
+    },
+    "A": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "minecraft:emerald"
+    },
+    "P": {
+      "item": "mekanism:pellet_polonium"
+    }
+  }
+}

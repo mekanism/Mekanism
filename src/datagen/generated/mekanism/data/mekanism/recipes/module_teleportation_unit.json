@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:module_teleportation_unit"
+  },
+  "pattern": [
+    "I#I",
+    "IAI",
+    "PPP"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:alloys/ultimate"
+    },
+    "A": {
+      "item": "mekanism:module_base"
+    },
+    "#": {
+      "item": "mekanism:teleportation_core"
+    },
+    "P": {
+      "tag": "forge:pellets/antimatter"
+    }
+  }
+}
