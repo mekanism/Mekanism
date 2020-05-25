@@ -51,7 +51,7 @@ public class Modules {
     // Shared
     public static final ModuleData<ModuleEnergyUnit> ENERGY_UNIT = register("energy_unit",
           MekanismLang.MODULE_ENERGY_UNIT, MekanismLang.DESCRIPTION_ENERGY_UNIT, ModuleEnergyUnit::new, 8)
-          .setNoDisable();
+          .rarity(Rarity.UNCOMMON).setNoDisable();
 
     // Meka-Tool
     public static final ModuleData<ModuleExcavationEscalationUnit> EXCAVATION_ESCALATION_UNIT = register("excavation_escalation_unit",

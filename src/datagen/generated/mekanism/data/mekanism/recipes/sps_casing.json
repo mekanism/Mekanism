@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:sps_casing"
+  },
+  "pattern": [
+    "PAP",
+    "A#A",
+    "PAP"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:pellets/plutonium"
+    },
+    "P": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "A": {
+      "tag": "forge:pellets/polonium"
+    }
+  }
+}

@@ -212,7 +212,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY),
                     TripleLine.of(FRAME_CHAR, Pattern.CIRCUIT, FRAME_CHAR),
                     TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY))
-              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
               .key(FRAME_CHAR, GeneratorsBlocks.FISSION_REACTOR_CASING)
               .build(consumer, MekanismGenerators.rl("fission_reactor/port"));
         //Logic Adapter
@@ -240,7 +240,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT),
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
-              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .build(consumer, MekanismGenerators.rl("fission_reactor/control_rod_assembly"));

@@ -979,49 +979,140 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
         //QIO Exporter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_EXPORTER)
-            .pattern(RecipePattern.createPattern(
-                TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT),
-                TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
-                TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
-            ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
-            .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
-            .key(Pattern.CONSTANT, Blocks.PISTON)
-            .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
-            .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
-            .build(consumer);
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT),
+                  TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                  TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+              .key(Pattern.CONSTANT, Blocks.PISTON)
+              .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .build(consumer);
         //QIO Importer
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_IMPORTER)
-            .pattern(RecipePattern.createPattern(
-                TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT),
-                TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
-                TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
-             ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
-            .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
-            .key(Pattern.CONSTANT, Blocks.STICKY_PISTON)
-            .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
-            .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
-            .build(consumer);
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT),
+                  TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                  TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+              .key(Pattern.CONSTANT, Blocks.STICKY_PISTON)
+              .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .build(consumer);
         //QIO Dashboard
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_DASHBOARD)
-            .pattern(RecipePattern.createPattern(
-                TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                TripleLine.of(Pattern.ALLOY, Pattern.GLASS, Pattern.ALLOY),
-                TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
-            ).key(Pattern.GLASS, Tags.Items.GLASS_PANES)
-            .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
-            .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
-            .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
-            .build(consumer);
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                  TripleLine.of(Pattern.ALLOY, Pattern.GLASS, Pattern.ALLOY),
+                  TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
+              ).key(Pattern.GLASS, Tags.Items.GLASS_PANES)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+              .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .build(consumer);
         //Portable QIO Dashboard
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.PORTABLE_QIO_DASHBOARD)
-            .pattern(RecipePattern.createPattern(
-                TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY),
-                TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
-                TripleLine.of(Pattern.ALLOY, TELEPORTATION_CORE_CHAR, Pattern.ALLOY))
-            ).key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
-            .key(Pattern.CONSTANT, MekanismBlocks.QIO_DASHBOARD)
-            .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
-            .build(consumer);
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY),
+                  TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                  TripleLine.of(Pattern.ALLOY, TELEPORTATION_CORE_CHAR, Pattern.ALLOY))
+              ).key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+              .key(Pattern.CONSTANT, MekanismBlocks.QIO_DASHBOARD)
+              .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .build(consumer);
+        //Meka-Tool
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKA_TOOL)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.CIRCUIT, 'o', Pattern.CIRCUIT),
+                  TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
+                  TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key('o', MekanismItems.CONFIGURATOR)
+              .key(Pattern.CONSTANT, MekanismItems.ATOMIC_DISASSEMBLER)
+              .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
+              .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
+              .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
+        //MekaSuit Helmet
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_HELMET)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
+                  TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
+                  TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.CONSTANT, Items.DIAMOND_HELMET)
+              .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
+              .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
+              .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
+        //MekaSuit Bodyarmor
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_BODYARMOR)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
+                  TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
+                  TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.CONSTANT, Items.DIAMOND_CHESTPLATE)
+              .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
+              .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
+              .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
+        //MekaSuit Pants
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_PANTS)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
+                  TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
+                  TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.CONSTANT, Items.DIAMOND_LEGGINGS)
+              .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
+              .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
+              .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
+        //MekaSuit Boots
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_BOOTS)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
+                  TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
+                  TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.CONSTANT, Items.DIAMOND_BOOTS)
+              .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
+              .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+              .build(consumer);
+        //SPS Casing
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SPS_CASING)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.PLASTIC, Pattern.ALLOY, Pattern.PLASTIC),
+                  TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                  TripleLine.of(Pattern.PLASTIC, Pattern.ALLOY, Pattern.PLASTIC))
+              ).key(Pattern.CONSTANT, MekanismTags.Items.PELLETS_PLUTONIUM)
+              .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+              .build(consumer);
+        //SPS Port
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SPS_PORT)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
+                  TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT),
+                  TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.CONSTANT, MekanismBlocks.SPS_CASING)
+              .build(consumer);
+        //Supercharged Coil
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SUPERCHARGED_COIL)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of('c', 'c', 'c'),
+                  TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
+                  TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.CONSTANT, MekanismBlocks.LASER)
+              .key('c', MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER))
+              .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
     }
 
     private void addGearModuleRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -1235,7 +1326,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                   TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
-              .key(Pattern.CONSTANT, Items.DIAMOND_BOOTS)
+              .key(Pattern.CONSTANT, MekanismItems.FREE_RUNNERS)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.PREVIOUS, MekanismItems.POLONIUM_PELLET)
               .build(consumer);

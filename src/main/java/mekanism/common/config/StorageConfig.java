@@ -62,7 +62,7 @@ public class StorageConfig extends BaseMekanismConfig {
               FloatingLong.createConst(40_000));
         electricPump = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "electricPump",
               FloatingLong.createConst(40_000));
-        chargePad = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "chargePad", FloatingLong.createConst(40_000));
+        chargePad = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "chargePad", FloatingLong.createConst(512_000));
         rotaryCondensentrator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "rotaryCondensentrator",
               FloatingLong.createConst(20_000));
         oxidationChamber = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "oxidationChamber",

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:mekasuit_helmet"
+  },
+  "pattern": [
+    "PCP",
+    "P#P",
+    "AEA"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "#": {
+      "item": "minecraft:diamond_helmet"
+    },
+    "E": {
+      "item": "mekanism:basic_induction_cell"
+    },
+    "P": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "A": {
+      "item": "mekanism:pellet_polonium"
+    }
+  }
+}
