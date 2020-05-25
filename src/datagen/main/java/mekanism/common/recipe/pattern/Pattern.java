@@ -1,4 +1,4 @@
-package mekanism.common.recipe;
+package mekanism.common.recipe.pattern;
 
 public class Pattern {
 

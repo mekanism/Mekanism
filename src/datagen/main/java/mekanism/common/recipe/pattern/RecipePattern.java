@@ -1,4 +1,4 @@
-package mekanism.common.recipe;
+package mekanism.common.recipe.pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
