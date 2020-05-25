@@ -132,7 +132,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (getTransmitter().hasTransmitterNetwork()) {
-            getTransmitter().getTransmitterNetwork().validateSaveShares(getTransmitter());
+            getTransmitter().getTransmitterNetwork().validateSaveShares();
         }
         if (saveShare.isEmpty()) {
             nbtTags.remove(NBTConstants.FLUID_STORED);

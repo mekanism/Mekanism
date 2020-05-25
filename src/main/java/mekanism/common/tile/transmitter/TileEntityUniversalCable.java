@@ -139,7 +139,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (getTransmitter().hasTransmitterNetwork()) {
-            getTransmitter().getTransmitterNetwork().validateSaveShares(getTransmitter());
+            getTransmitter().getTransmitterNetwork().validateSaveShares();
         }
         if (lastWrite.isZero()) {
             nbtTags.remove(NBTConstants.ENERGY_STORED);

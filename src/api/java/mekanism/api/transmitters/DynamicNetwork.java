@@ -309,12 +309,12 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public void onUpdate() {}
 
-    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {}
+    protected void updateSaveShares() {}
 
-    public final void validateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    public final void validateSaveShares() {
         if (world.getGameTime() != lastSaveShareWriteTime) {
             lastSaveShareWriteTime = world.getGameTime();
-            updateSaveShares(triggerTransmitter);
+            updateSaveShares();
         }
     }
 

@@ -131,7 +131,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (getTransmitter().hasTransmitterNetwork()) {
-            getTransmitter().getTransmitterNetwork().validateSaveShares(getTransmitter());
+            getTransmitter().getTransmitterNetwork().validateSaveShares();
         }
         if (saveShare.isEmpty()) {
             nbtTags.remove(NBTConstants.GAS_STORED);

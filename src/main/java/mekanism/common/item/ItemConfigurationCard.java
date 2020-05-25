@@ -74,8 +74,9 @@ public class ItemConfigurationCard extends Item {
                             CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).ifPresent(special -> special.setConfigurationData(data));
                             if (tile instanceof TileEntityMekanism) {
                                 TileEntityMekanism mekanismTile = (TileEntityMekanism) tile;
-                                MekanismUtils.notifyLoadedNeighborsOfTileChange(world, pos);
+                                mekanismTile.invalidateCachedCapabilities();
                                 mekanismTile.sendUpdatePacket();
+                                MekanismUtils.notifyLoadedNeighborsOfTileChange(world, pos);
                             }
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIG_CARD_SET.translateColored(EnumColor.DARK_GREEN, EnumColor.INDIGO, Translation.of(getDataType(stack)))));

@@ -59,7 +59,7 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         invalidateCachedCapabilities();
     }
 
-    protected void invalidateCachedCapabilities() {
+    public void invalidateCachedCapabilities() {
         capabilityCache.invalidateAll();
     }
 
