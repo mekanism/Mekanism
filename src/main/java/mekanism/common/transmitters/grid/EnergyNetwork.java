@@ -99,7 +99,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
 
     @Override
     public void absorbBuffer(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
-        FloatingLong energy = transmitter.getBuffer();
+        FloatingLong energy = transmitter.releaseShare();
         if (!energy.isZero()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(energy));
         }
@@ -130,7 +130,6 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
         if (!floatingLongCapacity.equals(sum)) {
             floatingLongCapacity = sum;
             capacity = floatingLongCapacity.longValue();
-            updateSaveShares = true;
         }
     }
 
@@ -254,7 +253,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
 
     @Override
     public void onContentsChanged() {
-        updateSaveShares = true;
+        markDirty();
     }
 
     public static class EnergyTransferEvent extends Event {

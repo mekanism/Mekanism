@@ -76,12 +76,17 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public Void getBuffer() {
+    public Void releaseShare() {
         return null;
     }
 
     @Override
     public void takeShare() {
+    }
+
+    @Override
+    public Void getShare() {
+        return null;
     }
 
     @Override

@@ -1,8 +1,5 @@
 package mekanism.common.transmitters.grid;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -11,6 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -119,7 +119,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
-        FluidStack fluid = transmitter.getBuffer();
+        FluidStack fluid = transmitter.releaseShare();
         if (fluid.isEmpty()) {
             return;
         }
@@ -162,6 +162,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         super.updateSaveShares();
         int size = transmittersSize();
         if (size > 0) {
+            System.out.println("SAVE SHARES " + fluidTank.getFluid().getAmount());
             FluidStack fluidType = fluidTank.getFluid();
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
@@ -291,11 +292,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public void onContentsChanged() {
-        updateSaveShares = true;
+        markDirty();
         FluidStack type = fluidTank.getFluid();
         if (!lastFluid.isFluidEqual(type)) {
             //If the fluid type does not match update it, and mark that we need an update
-            lastFluid = type.isEmpty() ? FluidStack.EMPTY : new FluidStack(type, 1);
+            if (!type.isEmpty()) {
+                lastFluid = new FluidStack(type, 1);
+            }
             needsUpdate = true;
         }
     }

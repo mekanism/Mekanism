@@ -79,7 +79,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      *
      * @apiNote Should only be {@code null}, if the buffer type supports null. So things like fluid's should use the empty variant.
      */
-    BUFFER getBuffer();
+    BUFFER releaseShare();
 
     /**
      * If the transmitter does not have a buffer this will try to fallback on the network's buffer.
@@ -88,7 +88,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      */
     @Nullable
     default BUFFER getBufferWithFallback() {
-        BUFFER buffer = getBuffer();
+        BUFFER buffer = releaseShare();
         //If we don't have a buffer try falling back to the network's buffer
         if (buffer == null && hasTransmitterNetwork()) {
             return getTransmitterNetwork().getBuffer();

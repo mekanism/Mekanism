@@ -230,7 +230,12 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     @Override
-    public Void getBuffer() {
+    public Void releaseShare() {
+        return null;
+    }
+
+    @Override
+    public Void getShare() {
         return null;
     }
 

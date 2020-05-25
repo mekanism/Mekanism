@@ -325,7 +325,11 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     public abstract long getCapacity();
 
-    public abstract BUFFER getBuffer();
+    public abstract BUFFER releaseShare();
+
+    public abstract BUFFER getShare();
+
+    public abstract void takeShare();
 
     /**
      * @return True if the buffer with fallback is null (or empty)
@@ -336,15 +340,13 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     @Nullable
     public BUFFER getBufferWithFallback() {
-        BUFFER buffer = getBuffer();
+        BUFFER buffer = getShare();
         //If we don't have a buffer try falling back to the network's buffer
         if (buffer == null && getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().getBuffer();
         }
         return buffer;
     }
-
-    public abstract void takeShare();
 
     @Nonnull
     @Override

@@ -1,8 +1,5 @@
 package mekanism.common.transmitters.grid;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -11,6 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
@@ -125,7 +125,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
-        GasStack gas = transmitter.getBuffer();
+        GasStack gas = transmitter.releaseShare();
         if (gas.isEmpty()) {
             return;
         }
@@ -282,11 +282,13 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public void onContentsChanged() {
-        updateSaveShares = true;
+        markDirty();
         Gas type = gasTank.getType();
-        if (!type.isEmptyType() && lastGas != type) {
+        if (lastGas != type) {
             //If the gas type does not match update it, and mark that we need an update
-            lastGas = type;
+            if (!type.isEmptyType()) {
+                lastGas = type;
+            }
             needsUpdate = true;
         }
     }

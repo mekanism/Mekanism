@@ -1,8 +1,5 @@
 package mekanism.api.transmitters;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;
@@ -10,10 +7,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.Range3D;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
@@ -31,12 +32,14 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
     protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
     protected Range3D packetRange = null;
+    protected Set<ChunkPos> chunks = new ObjectOpenHashSet<>();
     protected long capacity;
     protected boolean needsUpdate = false;
-    protected boolean updateSaveShares;
     @Nullable
     protected World world = null;
     private boolean forceScaleUpdate = false;
+    private long lastSaveShareWriteTime;
+    private long lastMarkDirtyTime;
 
     private final UUID uuid;
 
@@ -77,12 +80,12 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                     updateCapacity(transmitter);
                     absorbBuffer(transmitter);
                     transmitters.add(transmitter);
+                    chunks.add(new ChunkPos(transmitter.coord().getPos()));
                 }
             }
             transmittersToAdd.clear();
             if (addedValidTransmitters) {
                 clampBuffer();
-                updateSaveShares = true;
                 if (forceScaleUpdate) {
                     forceScaleUpdate = false;
                     forceScaleUpdate();
@@ -288,7 +291,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
         if (capacity != sum) {
             capacity = sum;
-            updateSaveShares = true;
         }
     }
 
@@ -305,17 +307,22 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         onUpdate();
     }
 
-    public void onUpdate() {
-        if (!isRemote()) {
-            if (updateSaveShares) {
-                //Update the save shares
-                updateSaveShares();
-            }
+    public void onUpdate() {}
+
+    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {}
+
+    public final void validateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+        if (world.getGameTime() != lastSaveShareWriteTime) {
+            lastSaveShareWriteTime = world.getGameTime();
+            updateSaveShares(triggerTransmitter);
         }
     }
 
-    protected void updateSaveShares() {
-        updateSaveShares = false;
+    public void markDirty() {
+        if (world != null && !world.isRemote && world.getGameTime() != lastMarkDirtyTime) {
+            lastMarkDirtyTime = world.getGameTime();
+            chunks.forEach(chunk -> world.markChunkDirty(chunk.asBlockPos(), null));
+        }
     }
 
     public boolean isCompatibleWith(NETWORK other) {

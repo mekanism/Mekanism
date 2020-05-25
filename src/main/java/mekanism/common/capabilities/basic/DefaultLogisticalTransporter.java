@@ -193,7 +193,7 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public Void getBuffer() {
+    public Void releaseShare() {
         return null;
     }
 

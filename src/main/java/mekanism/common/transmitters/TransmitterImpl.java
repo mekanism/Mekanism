@@ -115,8 +115,8 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
 
     @Nullable
     @Override
-    public BUFFER getBuffer() {
-        return getTileEntity().getBuffer();
+    public BUFFER releaseShare() {
+        return getTileEntity().releaseShare();
     }
 
     @Nullable
@@ -137,7 +137,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
 
     @Override
     public void setRequestsUpdate() {
-        containingTile.requestsUpdate();
+        getTileEntity().requestsUpdate();
     }
 
     public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> getTileEntity() {
