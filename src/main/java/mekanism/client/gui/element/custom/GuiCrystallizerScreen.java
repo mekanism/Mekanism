@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.GasSlurry;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
@@ -15,7 +14,6 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
-import mekanism.common.tags.MekanismTags;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
@@ -26,7 +24,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
 
     private final GuiInnerScreen innerScreen;
     private final int slotX;
-    private List<ItemStack> iterStacks = new ArrayList<>();
+    private final List<ItemStack> iterStacks = new ArrayList<>();
     private ItemStack renderStack = ItemStack.EMPTY;
     private int stackSwitch = 0;
     private int stackIndex = 0;
@@ -48,16 +46,17 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
         GasStack gasStack = oreInfo.getInputGas();
         if (!gasStack.isEmpty()) {
             drawString(TextComponentUtil.build(gasStack), 33, 15, screenTextColor());
-            if (gasStack.getType() instanceof GasSlurry && !renderStack.isEmpty()) {
+            //TODO - V10: Figure out how to handle slurries for recipes
+            /*if (gasStack.getType() instanceof Slurry && !renderStack.isEmpty()) {
                 drawString(MekanismLang.GENERIC_PARENTHESIS.translate(renderStack), 33, 24, screenTextColor());
-            } else {
+            } else {*/
                 GasToItemStackRecipe recipe = oreInfo.getRecipe();
                 if (recipe == null) {
                     drawString(MekanismLang.NO_RECIPE.translate(), 33, 24, screenTextColor());
                 } else {
                     drawString(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(gasStack)), 33, 24, screenTextColor());
                 }
-            }
+            //}
         }
     }
 
@@ -77,11 +76,12 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
         Gas inputGas = oreInfo.getInputGas().getType();
         if (prevGas != inputGas) {
             prevGas = inputGas;
-            if (!prevGas.isEmptyType() && prevGas instanceof GasSlurry && !prevGas.isIn(MekanismTags.Gases.DIRTY_SLURRY)) {
-                updateStackList(((GasSlurry) prevGas).getOreTag());
-            } else {
+            //TODO - V10: Figure out how to handle slurries for recipes
+            /*if (!prevGas.isEmptyType() && prevGas instanceof Slurry && !prevGas.isIn(MekanismTags.Slurries.DIRTY)) {
+                updateStackList(((Slurry) prevGas).getOreTag());
+            } else {*/
                 resetStacks();
-            }
+            //}
         }
 
         if (iterStacks.isEmpty()) {
@@ -109,10 +109,12 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
         stackIndex = -1;
     }
 
-    private void updateStackList(Tag<Item> oreTag) {
+    private void updateStackList(@Nullable Tag<Item> oreTag) {
         iterStacks.clear();
-        for (Item ore : oreTag.getAllElements()) {
-            iterStacks.add(new ItemStack(ore));
+        if (oreTag != null) {
+            for (Item ore : oreTag.getAllElements()) {
+                iterStacks.add(new ItemStack(ore));
+            }
         }
         stackSwitch = 0;
         stackIndex = -1;

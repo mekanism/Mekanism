@@ -2,7 +2,7 @@ package mekanism.common.tag;
 
 import com.google.common.collect.Table.Cell;
 import java.util.Map;
-import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemProcessedResource;
@@ -14,6 +14,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -285,14 +286,14 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {
-        Tag.Builder<Gas> dirtyTagBuilder = getGasBuilder(MekanismTags.Gases.DIRTY_SLURRY);
-        Tag.Builder<Gas> cleanTagBuilder = getGasBuilder(MekanismTags.Gases.CLEAN_SLURRY);
+        Tag.Builder<Slurry> dirtyTagBuilder = getSlurryBuilder(MekanismTags.Slurries.DIRTY);
+        Tag.Builder<Slurry> cleanTagBuilder = getSlurryBuilder(MekanismTags.Slurries.CLEAN);
         for (SlurryRegistryObject<?, ?> slurryRO : slurryRegistryObjects) {
             dirtyTagBuilder.add(slurryRO.getDirtySlurry());
             cleanTagBuilder.add(slurryRO.getCleanSlurry());
         }
         // add dynamic slurry tags
-        for (SlurryRegistryObject<?, ?> slurryRO : MekanismGases.PROCESSED_RESOURCE_SLURRIES.values()) {
+        for (SlurryRegistryObject<?, ?> slurryRO : MekanismSlurries.PROCESSED_RESOURCES.values()) {
             dirtyTagBuilder.add(slurryRO.getDirtySlurry());
             cleanTagBuilder.add(slurryRO.getCleanSlurry());
         }

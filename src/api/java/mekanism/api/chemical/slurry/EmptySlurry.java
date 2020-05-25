@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 public final class EmptySlurry extends Slurry {
 
     public EmptySlurry() {
-        super(SlurryBuilder.clean().hidden());//TODO: Decide if default should be clean or dirty
+        super(SlurryBuilder.clean().hidden());
         setRegistryName(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "empty_slurry"));
     }
 

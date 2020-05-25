@@ -2,7 +2,6 @@ package mekanism.common.tag;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
@@ -61,6 +60,8 @@ public abstract class BaseTagProvider implements IDataProvider {
         addTagType(TagType.FLUID);
         addTagType(TagType.GAS);
         addTagType(TagType.INFUSE_TYPE);
+        addTagType(TagType.PIGMENT);
+        addTagType(TagType.SLURRY);
     }
 
     @Nonnull
@@ -117,13 +118,6 @@ public abstract class BaseTagProvider implements IDataProvider {
             JsonPrimitive replace = tagAsJson.getAsJsonPrimitive(DataGenJsonConstants.REPLACE);
             if (replace.isBoolean() && !replace.getAsBoolean()) {
                 tagAsJson.remove(DataGenJsonConstants.REPLACE);
-            }
-        }
-        if (tagAsJson.has(DataGenJsonConstants.OPTIONAL)) {
-            //Strip out the forge added "optional" list from the tag json if it is empty, as the param itself is optional
-            JsonArray optionalTags = tagAsJson.getAsJsonArray(DataGenJsonConstants.OPTIONAL);
-            if (optionalTags.size() == 0) {
-                tagAsJson.remove(DataGenJsonConstants.OPTIONAL);
             }
         }
         return tagAsJson;

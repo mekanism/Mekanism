@@ -1,15 +1,14 @@
 package mekanism.common.recipe;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
 import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.FluidGasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.FluidToFluidRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToItemStackRecipeBuilder;
@@ -62,6 +61,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -1260,7 +1260,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         Tag<Item> shardTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
         Tag<Item> crystalTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
 
-        SlurryRegistryObject<?, ?> slurry = MekanismGases.PROCESSED_RESOURCE_SLURRIES.get(resource);
+        SlurryRegistryObject<?, ?> slurry = MekanismSlurries.PROCESSED_RESOURCES.get(resource);
 
         // Clump
         // from ore
@@ -1271,8 +1271,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "clump/from_shard"));
         // Crystal
         // from slurry
-        GasToItemStackRecipeBuilder.crystallizing(GasStackIngredient.from(slurry.getCleanSlurry(), 200), crystal.getItemStack())
-              .build(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));
+        //TODO - V10: Figure out how to handle slurries for recipes
+        /*GasToItemStackRecipeBuilder.crystallizing(SlurryStackIngredient.from(slurry.getCleanSlurry(), 200), crystal.getItemStack())
+              .build(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));*/
         // Dirty Dust
         // from clump
         ItemStackToItemStackRecipeBuilder.crushing(ItemStackIngredient.from(clumpTag), dirtyDust.getItemStack())
@@ -1321,11 +1322,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
         // Slurry
         // clean
-        FluidGasToGasRecipeBuilder.washing(FluidStackIngredient.from(FluidTags.WATER, 5), GasStackIngredient.from(slurry.getDirtySlurry(), 1), slurry.getCleanSlurry().getGasStack(1))
+        //TODO - V10: Figure out how to handle slurries for recipes
+        /*FluidGasToGasRecipeBuilder.washing(FluidStackIngredient.from(FluidTags.WATER, 5), SlurryStackIngredient.from(slurry.getDirtySlurry(), 1), slurry.getCleanSlurry().getSlurryStack(1))
               .build(consumer, Mekanism.rl(basePath + "slurry/clean"));
         // dirty
-        ItemStackGasToGasRecipeBuilder.dissolution(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1), slurry.getDirtySlurry().getGasStack(1_000))
-              .build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
+        ItemStackGasToGasRecipeBuilder.dissolution(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1), slurry.getDirtySlurry().getSlurryStack(1_000))
+              .build(consumer, Mekanism.rl(basePath + "slurry/dirty"));*/
     }
 
     private void addCoalOreProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {

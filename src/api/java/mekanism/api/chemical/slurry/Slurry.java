@@ -9,7 +9,9 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.providers.ISlurryProvider;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 
@@ -18,10 +20,14 @@ import net.minecraft.util.Util;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class Slurry extends Chemical<Slurry> implements ISlurryProvider {//TODO: Improve this to have some of the "magic" that the current GasSlurry has
+public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
+
+    @Nullable
+    private final Tag<Item> oreTag;
 
     public Slurry(SlurryBuilder builder) {
         super(builder, ChemicalTags.SLURRY);
+        this.oreTag = builder.getOreTag();
     }
 
     public static Slurry readFromNBT(@Nullable CompoundNBT nbtTags) {
@@ -56,5 +62,15 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {//TODO:
     @Override
     protected String getDefaultTranslationKey() {
         return Util.makeTranslationKey("slurry", getRegistryName());
+    }
+
+    /**
+     * Gets the item tag representing the ore for this slurry.
+     *
+     * @return The tag for the item the slurry goes with. May be null.
+     */
+    @Nullable
+    public Tag<Item> getOreTag() {
+        return oreTag;
     }
 }

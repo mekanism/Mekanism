@@ -1,5 +1,6 @@
 package mekanism.api.chemical.pigment;
 
+import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
@@ -19,6 +20,6 @@ public class PigmentBuilder extends ChemicalBuilder<Pigment, PigmentBuilder> {
     }
 
     public static PigmentBuilder builder(ResourceLocation texture) {
-        return new PigmentBuilder(texture);
+        return new PigmentBuilder(Objects.requireNonNull(texture));
     }
 }

@@ -24,8 +24,6 @@ public class DataGenJsonConstants {
     public static final String ATTENUATION_DISTANCE = "attenuation_distance";
     public static final String PRELOAD = "preload";
     public static final String TYPE = "type";
-    //Forge tag optional
-    public static final String OPTIONAL = "optional";
 
     //Model builder key constants:
     public static final String LOADER = "loader";

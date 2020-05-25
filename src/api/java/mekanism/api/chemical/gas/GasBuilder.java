@@ -1,5 +1,6 @@
 package mekanism.api.chemical.gas;
 
+import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
@@ -21,6 +22,6 @@ public class GasBuilder extends ChemicalBuilder<Gas, GasBuilder> {
     }
 
     public static GasBuilder builder(ResourceLocation texture) {
-        return new GasBuilder(texture);
+        return new GasBuilder(Objects.requireNonNull(texture));
     }
 }

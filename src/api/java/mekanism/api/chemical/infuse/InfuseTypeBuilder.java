@@ -1,5 +1,6 @@
 package mekanism.api.chemical.infuse;
 
+import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
@@ -19,6 +20,6 @@ public class InfuseTypeBuilder extends ChemicalBuilder<InfuseType, InfuseTypeBui
     }
 
     public static InfuseTypeBuilder builder(ResourceLocation texture) {
-        return new InfuseTypeBuilder(texture);
+        return new InfuseTypeBuilder(Objects.requireNonNull(texture));
     }
 }

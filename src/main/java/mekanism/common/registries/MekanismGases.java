@@ -1,10 +1,7 @@
 package mekanism.common.registries;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
-import mekanism.api.chemical.gas.GasSlurry;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
@@ -14,14 +11,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.GasDeferredRegister;
 import mekanism.common.registration.impl.GasRegistryObject;
-import mekanism.common.registration.impl.SlurryRegistryObject;
-import mekanism.common.resource.PrimaryResource;
 
 public class MekanismGases {
 
     public static final GasDeferredRegister GASES = new GasDeferredRegister(Mekanism.MODID);
-
-    public static final Map<PrimaryResource, SlurryRegistryObject<GasSlurry, GasSlurry>> PROCESSED_RESOURCE_SLURRIES = new LinkedHashMap<>();
 
     public static final GasRegistryObject<Gas> HYDROGEN = GASES.register(ChemicalConstants.HYDROGEN, new Fuel(() -> 1, MekanismConfig.general.FROM_H2));
     public static final GasRegistryObject<Gas> OXYGEN = GASES.register(ChemicalConstants.OXYGEN);
@@ -49,12 +42,6 @@ public class MekanismGases {
     public static final GasRegistryObject<Gas> POLONIUM = GASES.register("polonium", 0x1B9E7B, new Radiation(0.05));
     public static final GasRegistryObject<Gas> ANTIMATTER = GASES.register("antimatter", 0xA464B3);
     public static final GasRegistryObject<Gas> NUTRITIONAL_PASTE = GASES.register("nutritional_paste", 0XEB6CA3);
-
-    static {
-        for (PrimaryResource resource : PrimaryResource.values()) {
-            PROCESSED_RESOURCE_SLURRIES.put(resource, GASES.registerSlurry(resource));
-        }
-    }
 
     @SuppressWarnings("Convert2MethodRef")
     public static class Coolants {
