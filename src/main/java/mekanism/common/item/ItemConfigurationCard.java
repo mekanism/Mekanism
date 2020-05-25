@@ -12,7 +12,6 @@ import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -73,8 +72,10 @@ public class ItemConfigurationCard extends Item {
                         if (getNameFromTile(tile, side).equals(getDataType(stack))) {
                             setBaseData(data, tile);
                             CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).ifPresent(special -> special.setConfigurationData(data));
-                            if (tile instanceof TileEntityUpdateable) {
-                                ((TileEntityUpdateable) tile).sendUpdatePacket();
+                            if (tile instanceof TileEntityMekanism) {
+                                TileEntityMekanism mekanismTile = (TileEntityMekanism) tile;
+                                MekanismUtils.notifyLoadedNeighborsOfTileChange(world, pos);
+                                mekanismTile.sendUpdatePacket();
                             }
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIG_CARD_SET.translateColored(EnumColor.DARK_GREEN, EnumColor.INDIGO, Translation.of(getDataType(stack)))));
