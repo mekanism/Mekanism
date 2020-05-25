@@ -1,9 +1,9 @@
 package mekanism.client.lang;
 
-import java.util.Map;
 import com.google.common.collect.Table.Cell;
+import java.util.Map;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.GasSlurry;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -21,6 +21,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -369,10 +370,14 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addSlurries() {
         add(MekanismAPI.EMPTY_SLURRY, "Empty");
-
-        for (Map.Entry<PrimaryResource, SlurryRegistryObject<GasSlurry, GasSlurry>> entry : MekanismGases.PROCESSED_RESOURCE_SLURRIES.entrySet()) {
+        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> entry : MekanismSlurries.PROCESSED_RESOURCES.entrySet()) {
             addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getName()));
         }
+    }
+
+    private void addSlurry(SlurryRegistryObject<Slurry, Slurry> slurryRO, String name) {
+        add(slurryRO.getDirtySlurry(), name);
+        add(slurryRO.getCleanSlurry(), "Clean " + name);
     }
 
     private void addDamageSources() {
@@ -1150,10 +1155,5 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private String capitalize(String s) {
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
-    }
-
-    private void addSlurry(SlurryRegistryObject<GasSlurry, GasSlurry> slurryRO, String name) {
-        add(slurryRO.getDirtySlurry(), name);
-        add(slurryRO.getCleanSlurry(), "Clean " + name);
     }
 }

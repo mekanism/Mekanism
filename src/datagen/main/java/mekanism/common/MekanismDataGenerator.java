@@ -5,7 +5,7 @@ import mekanism.client.model.MekanismItemModelProvider;
 import mekanism.client.sound.MekanismSoundProvider;
 import mekanism.client.state.MekanismBlockStateProvider;
 import mekanism.common.loot.MekanismLootProvider;
-import mekanism.common.recipe.MekanismRecipeProvider;
+import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.tag.MekanismTagProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;

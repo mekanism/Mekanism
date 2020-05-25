@@ -11,7 +11,7 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.DataGenJsonConstants;
-import mekanism.common.recipe.RecipePattern;
+import mekanism.common.recipe.pattern.RecipePattern;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;

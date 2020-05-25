@@ -5,11 +5,12 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.recipe.BaseRecipeProvider;
-import mekanism.common.recipe.Pattern;
-import mekanism.common.recipe.RecipePattern;
-import mekanism.common.recipe.RecipePattern.DoubleLine;
-import mekanism.common.recipe.RecipePattern.TripleLine;
+import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
+import mekanism.common.recipe.pattern.Pattern;
+import mekanism.common.recipe.pattern.RecipePattern;
+import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
+import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -120,8 +121,8 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = name + "/nugget_from_";
-            addSmeltingBlastingRecipes(consumer, Ingredient.fromItems(helmet, chestplate, leggings, boots, sword, pickaxe, axe, shovel, hoe, paxel), nugget,
-                  0.1F, 200, MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromItems(helmet, chestplate, leggings, boots, sword, pickaxe, axe, shovel, hoe, paxel),
+                  nugget, 0.1F, 200, MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }
 
@@ -144,8 +145,8 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = nugget.getRegistryName().getPath() + "_from_";
-            addSmeltingBlastingRecipes(consumer, Ingredient.fromItems(paxel), nugget, 0.1F, 200, MekanismTools.rl(baseNuggetFrom + "blasting"),
-                  MekanismTools.rl(baseNuggetFrom + "smelting"));
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromItems(paxel), nugget, 0.1F, 200,
+                  MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }
 
