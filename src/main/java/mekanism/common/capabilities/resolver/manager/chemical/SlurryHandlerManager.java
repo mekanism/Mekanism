@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.resolver.manager;
+package mekanism.common.capabilities.resolver.manager.chemical;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -9,15 +9,14 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.proxy.ProxySlurryHandler;
+import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxySlurryHandler;
 
 /**
  * Helper class to make reading instead of having as messy generics
  */
-public class SlurryHandlerManager extends CapabilityHandlerManager<IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank>, ISlurryTank, ISlurryHandler,
-      ISidedSlurryHandler> {
+public class SlurryHandlerManager extends ChemicalHandlerManager<Slurry, SlurryStack, ISlurryTank, ISlurryHandler, ISidedSlurryHandler> {
 
     public SlurryHandlerManager(@Nullable IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> holder, @Nonnull ISidedSlurryHandler baseHandler) {
-        super(holder, baseHandler, Capabilities.SLURRY_HANDLER_CAPABILITY, ProxySlurryHandler::new, IChemicalTankHolder::getTanks);
+        super(holder, baseHandler, Capabilities.SLURRY_HANDLER_CAPABILITY, ProxySlurryHandler::new);
     }
 }

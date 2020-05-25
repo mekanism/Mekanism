@@ -2,18 +2,13 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandlerWrapper;
-import mekanism.api.chemical.gas.GasHandlerWrapper;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentHandlerWrapper;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryHandlerWrapper;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.common.MekanismLang;
@@ -99,23 +94,23 @@ public class ItemGaugeDropper extends Item {
                     }
                 }
             }
-            clearChemicalTanks(stack, GasStack.EMPTY, Capabilities.GAS_HANDLER_CAPABILITY, GasHandlerWrapper::new);
-            clearChemicalTanks(stack, InfusionStack.EMPTY, Capabilities.INFUSION_HANDLER_CAPABILITY, InfusionHandlerWrapper::new);
-            clearChemicalTanks(stack, PigmentStack.EMPTY, Capabilities.PIGMENT_HANDLER_CAPABILITY, PigmentHandlerWrapper::new);
-            clearChemicalTanks(stack, SlurryStack.EMPTY, Capabilities.SLURRY_HANDLER_CAPABILITY, SlurryHandlerWrapper::new);
+            clearChemicalTanks(stack, GasStack.EMPTY, Capabilities.GAS_HANDLER_CAPABILITY);
+            clearChemicalTanks(stack, InfusionStack.EMPTY, Capabilities.INFUSION_HANDLER_CAPABILITY);
+            clearChemicalTanks(stack, PigmentStack.EMPTY, Capabilities.PIGMENT_HANDLER_CAPABILITY);
+            clearChemicalTanks(stack, SlurryStack.EMPTY, Capabilities.SLURRY_HANDLER_CAPABILITY);
             ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         return new ActionResult<>(ActionResultType.PASS, stack);
     }
 
-    private static <HANDLER, CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void clearChemicalTanks(ItemStack stack, STACK empty,
-          Capability<HANDLER> capability, Function<HANDLER, IChemicalHandlerWrapper<CHEMICAL, STACK>> wrapperCreator) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
+    void clearChemicalTanks(ItemStack stack, STACK empty, Capability<HANDLER> capability) {
         Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
         if (cap.isPresent()) {
-            IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper = wrapperCreator.apply(cap.get());
-            for (int tank = 0; tank < wrapper.getTanks(); tank++) {
-                wrapper.setChemicalInTank(tank, empty);
+            HANDLER handler = cap.get();
+            for (int tank = 0; tank < handler.getTanks(); tank++) {
+                handler.setChemicalInTank(tank, empty);
             }
         }
     }

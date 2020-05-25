@@ -90,13 +90,13 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
+                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getChemicalTank(0, null);
                 if (gasTank != null) {
                     //Should always reach here
                     return gasTank.extract(amount, Action.EXECUTE, AutomationType.MANUAL);
                 }
             }
-            return gasHandlerItem.extractGas(amount, Action.EXECUTE);
+            return gasHandlerItem.extractChemical(amount, Action.EXECUTE);
         }
         return GasStack.EMPTY;
     }

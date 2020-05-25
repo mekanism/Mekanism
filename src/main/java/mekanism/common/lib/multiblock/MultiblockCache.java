@@ -206,16 +206,16 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
         GAS(NBTConstants.GAS_TANKS, (cache) -> cache.gasTanks.add(BasicGasTank.create(Long.MAX_VALUE, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi,
               BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, cache)),
-              (holder) -> ((IMekanismGasHandler) holder).getGasTanks(null)),
+              (holder) -> ((IMekanismGasHandler) holder).getChemicalTanks(null)),
 
         INFUSION(NBTConstants.INFUSION_TANKS, (cache) -> cache.infusionTanks.add(BasicInfusionTank.create(Long.MAX_VALUE, cache)),
-              (holder) -> ((IMekanismInfusionHandler) holder).getInfusionTanks(null)),
+              (holder) -> ((IMekanismInfusionHandler) holder).getChemicalTanks(null)),
 
         PIGMENT(NBTConstants.PIGMENT_TANKS, (cache) -> cache.pigmentTanks.add(BasicPigmentTank.create(Long.MAX_VALUE, cache)),
-              (holder) -> ((IMekanismPigmentHandler) holder).getPigmentTanks(null)),
+              (holder) -> ((IMekanismPigmentHandler) holder).getChemicalTanks(null)),
 
         SLURRY(NBTConstants.SLURRY_TANKS, (cache) -> cache.slurryTanks.add(BasicSlurryTank.create(Long.MAX_VALUE, cache)),
-              (holder) -> ((IMekanismSlurryHandler) holder).getSlurryTanks(null)),
+              (holder) -> ((IMekanismSlurryHandler) holder).getChemicalTanks(null)),
 
         ENERGY(NBTConstants.ENERGY_CONTAINERS, (cache) -> cache.energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, cache)),
               (holder) -> ((IMekanismStrictEnergyHandler) holder).getEnergyContainers(null)),

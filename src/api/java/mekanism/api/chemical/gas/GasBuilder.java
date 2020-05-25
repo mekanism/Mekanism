@@ -4,11 +4,9 @@ import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.ChemicalBuilder;
 import net.minecraft.util.ResourceLocation;
 
-@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class GasBuilder extends ChemicalBuilder<Gas, GasBuilder> {

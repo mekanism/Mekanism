@@ -108,12 +108,12 @@ public class ItemCanteen extends Item {
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
+                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getChemicalTank(0, null);
                 if (gasTank != null) {
                     return gasTank.extract(amount, Action.EXECUTE, AutomationType.MANUAL);
                 }
             }
-            return gasHandlerItem.extractGas(amount, Action.EXECUTE);
+            return gasHandlerItem.extractChemical(amount, Action.EXECUTE);
         }
         return GasStack.EMPTY;
     }
@@ -123,12 +123,12 @@ public class ItemCanteen extends Item {
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
+                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getChemicalTank(0, null);
                 if (gasTank != null) {
                     return gasTank.getStack();
                 }
             }
-            return gasHandlerItem.getGasInTank(0);
+            return gasHandlerItem.getChemicalInTank(0);
         }
         return GasStack.EMPTY;
     }

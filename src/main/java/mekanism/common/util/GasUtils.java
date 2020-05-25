@@ -56,8 +56,8 @@ public final class GasUtils {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
-            for (int tank = 0; tank < gasHandlerItem.getGasTankCount(); tank++) {
-                GasStack gasStack = gasHandlerItem.getGasInTank(tank);
+            for (int tank = 0; tank < gasHandlerItem.getTanks(); tank++) {
+                GasStack gasStack = gasHandlerItem.getChemicalInTank(tank);
                 if (!gasStack.isEmpty() && validityCheck.test(gasStack)) {
                     return true;
                 }
@@ -125,7 +125,7 @@ public final class GasUtils {
     }
 
     public static boolean canInsert(IGasHandler handler, @Nonnull GasStack unitStack) {
-        return handler.insertGas(unitStack, Action.SIMULATE).isEmpty();
+        return handler.insertChemical(unitStack, Action.SIMULATE).isEmpty();
     }
 
     public static List<ITextComponent> getAttributeTooltips(Gas gas) {

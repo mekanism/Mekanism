@@ -69,13 +69,13 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
+                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getChemicalTank(0, null);
                 if (gasTank != null) {
                     //Should always reach here
                     return gasTank.extract(amount, Action.EXECUTE, AutomationType.MANUAL);
                 }
             }
-            return gasHandlerItem.extractGas(amount, Action.EXECUTE);
+            return gasHandlerItem.extractChemical(amount, Action.EXECUTE);
         }
         return GasStack.EMPTY;
     }
@@ -124,9 +124,9 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem.getGasTankCount() > 0) {
+            if (gasHandlerItem.getTanks() > 0) {
                 //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                GasStack storedGas = gasHandlerItem.getGasInTank(0);
+                GasStack storedGas = gasHandlerItem.getChemicalInTank(0);
                 if (!storedGas.isEmpty()) {
                     list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, storedGas.getAmount()));
                     hasGas = true;

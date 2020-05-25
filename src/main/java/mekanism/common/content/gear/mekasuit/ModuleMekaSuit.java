@@ -63,7 +63,7 @@ public abstract class ModuleMekaSuit extends Module {
             ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             Optional<IGasHandler> capability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
             if (Modules.load(chestStack, Modules.JETPACK_UNIT) != null && capability.isPresent()) {
-                hydrogenUsed = maxRate * 2 - capability.get().insertGas(hydrogenStack, Action.EXECUTE).getAmount();
+                hydrogenUsed = maxRate * 2 - capability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
             }
             long oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
             long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);

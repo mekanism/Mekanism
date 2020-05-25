@@ -25,7 +25,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.proxy.ProxyGasHandler;
+import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyGasHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TubeTier;
@@ -72,17 +72,17 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
                         GasStack bufferWithFallback = getBufferWithFallback();
                         if (bufferWithFallback.isEmpty()) {
                             //If we don't have a gas stored try pulling as much as we are able to
-                            received = connectedAcceptor.extractGas(getAvailablePull(), Action.SIMULATE);
+                            received = connectedAcceptor.extractChemical(getAvailablePull(), Action.SIMULATE);
                         } else {
                             //Otherwise try draining the same type of gas we have stored requesting up to as much as we are able to pull
                             // We do this to better support multiple tanks in case the gas we have stored we could pull out of a block's
                             // second tank but just asking to drain a specific amount
-                            received = connectedAcceptor.extractGas(new GasStack(bufferWithFallback, getAvailablePull()), Action.SIMULATE);
+                            received = connectedAcceptor.extractChemical(new GasStack(bufferWithFallback, getAvailablePull()), Action.SIMULATE);
                         }
                         if (!received.isEmpty() && takeGas(received, Action.SIMULATE).isEmpty()) {
                             //If we received some gas and are able to insert it all
                             GasStack remainder = takeGas(received, Action.EXECUTE);
-                            connectedAcceptor.extractGas(new GasStack(received, received.getAmount() - remainder.getAmount()), Action.EXECUTE);
+                            connectedAcceptor.extractChemical(new GasStack(received, received.getAmount() - remainder.getAmount()), Action.EXECUTE);
                         }
                     }
                 }
@@ -100,8 +100,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Nonnull
     @Override
-    public GasStack insertGas(int tank, @Nonnull GasStack stack, @Nullable Direction side, @Nonnull Action action) {
-        IGasTank gasTank = getGasTank(tank, side);
+    public GasStack insertChemical(int tank, @Nonnull GasStack stack, @Nullable Direction side, @Nonnull Action action) {
+        IGasTank gasTank = getChemicalTank(tank, side);
         if (gasTank == null) {
             return stack;
         } else if (side == null) {
@@ -259,9 +259,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Nonnull
     @Override
-    public List<IGasTank> getGasTanks(@Nullable Direction side) {
+    public List<IGasTank> getChemicalTanks(@Nullable Direction side) {
         if (getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().getGasTanks(side);
+            return getTransmitter().getTransmitterNetwork().getChemicalTanks(side);
         }
         return tanks;
     }

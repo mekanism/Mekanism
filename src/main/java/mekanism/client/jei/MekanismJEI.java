@@ -2,25 +2,20 @@ package mekanism.client.jei;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils.ChemicalToStackCreator;
-import mekanism.api.chemical.IChemicalHandlerWrapper;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasHandlerWrapper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentHandlerWrapper;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryHandlerWrapper;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
@@ -110,10 +105,10 @@ public class MekanismJEI implements IModPlugin {
         if (!stack.hasTag()) {
             return ISubtypeInterpreter.NONE;
         }
-        String nbtRepresentation = addInterpretation("", getChemicalComponent(stack, Capabilities.GAS_HANDLER_CAPABILITY, GasHandlerWrapper::new));
-        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION_HANDLER_CAPABILITY, InfusionHandlerWrapper::new));
-        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT_HANDLER_CAPABILITY, PigmentHandlerWrapper::new));
-        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY_HANDLER_CAPABILITY, SlurryHandlerWrapper::new));
+        String nbtRepresentation = addInterpretation("", getChemicalComponent(stack, Capabilities.GAS_HANDLER_CAPABILITY));
+        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION_HANDLER_CAPABILITY));
+        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT_HANDLER_CAPABILITY));
+        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY_HANDLER_CAPABILITY));
         nbtRepresentation = addInterpretation(nbtRepresentation, getEnergyComponent(stack));
         return nbtRepresentation;
     };
@@ -125,11 +120,11 @@ public class MekanismJEI implements IModPlugin {
         return nbtRepresentation + ":" + component;
     }
 
-    private static <HANDLER, CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String getChemicalComponent(ItemStack stack,
-          Capability<HANDLER> capability, Function<HANDLER, IChemicalHandlerWrapper<CHEMICAL, STACK>> wrapperCreator) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
+    String getChemicalComponent(ItemStack stack, Capability<HANDLER> capability) {
         Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
         if (cap.isPresent()) {
-            IChemicalHandlerWrapper<CHEMICAL, STACK> handler = wrapperCreator.apply(cap.get());
+            HANDLER handler = cap.get();
             String component = "";
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 STACK chemical = handler.getChemicalInTank(tank);

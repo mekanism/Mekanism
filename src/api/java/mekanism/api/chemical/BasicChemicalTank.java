@@ -17,7 +17,8 @@ import net.minecraft.nbt.CompoundNBT;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IChemicalTank<CHEMICAL, STACK> {
+public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
+      HANDLER extends IMekanismChemicalHandler<CHEMICAL, STACK, TANK>> implements IChemicalTank<CHEMICAL, STACK>, IChemicalHandler<CHEMICAL, STACK> {
 
     private final Predicate<@NonNull CHEMICAL> validator;
     protected final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract;
@@ -29,14 +30,17 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(STACK)} should be used instead.
      */
     protected STACK stored;
+    @Nullable
+    private final HANDLER handler;
 
     protected BasicChemicalTank(long capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator) {
+          Predicate<@NonNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable HANDLER handler) {
         this.capacity = capacity;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
         this.attributeValidator = attributeValidator;
+        this.handler = handler;
         stored = getEmptyStack();
     }
 
@@ -244,6 +248,13 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     }
 
     @Override
+    public void onContentsChanged() {
+        if (handler != null) {
+            handler.onContentsChanged();
+        }
+    }
+
+    @Override
     public ChemicalAttributeValidator getAttributeValidator() {
         return attributeValidator != null ? attributeValidator : IChemicalTank.super.getAttributeValidator();
     }
@@ -260,5 +271,42 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
             nbt.put(NBTConstants.STORED, stored.write(new CompoundNBT()));
         }
         return nbt;
+    }
+
+    @Override
+    public int getTanks() {
+        return 1;
+    }
+
+    @Override
+    public STACK getChemicalInTank(int tank) {
+        return tank == 0 ? getStack() : getEmptyStack();
+    }
+
+    @Override
+    public void setChemicalInTank(int tank, STACK stack) {
+        if (tank == 0) {
+            setStack(stack);
+        }
+    }
+
+    @Override
+    public long getTankCapacity(int tank) {
+        return tank == 0 ? getCapacity() : 0;
+    }
+
+    @Override
+    public boolean isValid(int tank, STACK stack) {
+        return tank == 0 && isValid(stack);
+    }
+
+    @Override
+    public STACK insertChemical(int tank, STACK stack, Action action) {
+        return tank == 0 ? insert(stack, action, AutomationType.EXTERNAL) : stack;
+    }
+
+    @Override
+    public STACK extractChemical(int tank, long amount, Action action) {
+        return tank == 0 ? extract(amount, action, AutomationType.EXTERNAL) : getEmptyStack();
     }
 }

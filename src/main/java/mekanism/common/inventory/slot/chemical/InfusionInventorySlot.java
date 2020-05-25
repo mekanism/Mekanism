@@ -1,4 +1,4 @@
-package mekanism.common.inventory.slot;
+package mekanism.common.inventory.slot.chemical;
 
 import com.mojang.datafixers.util.Pair;
 import java.util.Objects;
@@ -11,15 +11,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.IChemicalHandlerWrapper;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -31,11 +31,11 @@ import net.minecraft.world.World;
 public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, InfusionStack> {
 
     @Nullable
-    public static IChemicalHandlerWrapper<InfuseType, InfusionStack> getCapabilityWrapper(ItemStack stack) {
+    public static IInfusionHandler getCapability(ItemStack stack) {
         if (!stack.isEmpty()) {
             Optional<IInfusionHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
             if (capability.isPresent()) {
-                return new InfusionHandlerWrapper(capability.get());
+                return capability.get();
             }
         }
         return null;
@@ -56,8 +56,8 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
         Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         Function<ItemStack, InfusionStack> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
-        return new InfusionInventorySlot(infusionTank, worldSupplier, getFillOrConvertExtractPredicate(infusionTank, InfusionInventorySlot::getCapabilityWrapper, potentialConversionSupplier),
-              getFillOrConvertInsertPredicate(infusionTank, InfusionInventorySlot::getCapabilityWrapper, potentialConversionSupplier), stack -> {
+        return new InfusionInventorySlot(infusionTank, worldSupplier, getFillOrConvertExtractPredicate(infusionTank, InfusionInventorySlot::getCapability, potentialConversionSupplier),
+              getFillOrConvertInsertPredicate(infusionTank, InfusionInventorySlot::getCapability, potentialConversionSupplier), stack -> {
             if (stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent()) {
                 //Note: we mark all infusion items as valid and have a more restrictive insert check so that we allow full tanks when they are done being filled
                 return true;
@@ -75,8 +75,8 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
 
     @Nullable
     @Override
-    protected IChemicalHandlerWrapper<InfuseType, InfusionStack> getCapabilityWrapper() {
-        return getCapabilityWrapper(current);
+    protected IChemicalHandler<InfuseType, InfusionStack> getCapability() {
+        return getCapability(current);
     }
 
     @Nullable

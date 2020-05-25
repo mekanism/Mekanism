@@ -1,4 +1,4 @@
-package mekanism.common.inventory.slot;
+package mekanism.common.inventory.slot.chemical;
 
 import com.mojang.datafixers.util.Pair;
 import java.util.Objects;
@@ -13,9 +13,8 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.IChemicalHandlerWrapper;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasHandlerWrapper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
@@ -23,6 +22,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.slot.ChemicalInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -34,11 +34,11 @@ import net.minecraft.world.World;
 public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
 
     @Nullable
-    public static IChemicalHandlerWrapper<Gas, GasStack> getCapabilityWrapper(ItemStack stack) {
+    public static IGasHandler getCapability(ItemStack stack) {
         if (!stack.isEmpty()) {
             Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
             if (capability.isPresent()) {
-                return new GasHandlerWrapper(capability.get());
+                return capability.get();
             }
         }
         return null;
@@ -66,8 +66,8 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
                 IGasHandler gasHandlerItem = capability.get();
                 boolean mode = modeSupplier.getAsBoolean();
                 boolean allEmpty = true;
-                for (int tank = 0; tank < gasHandlerItem.getGasTankCount(); tank++) {
-                    GasStack gasInTank = gasHandlerItem.getGasInTank(tank);
+                for (int tank = 0; tank < gasHandlerItem.getTanks(); tank++) {
+                    GasStack gasInTank = gasHandlerItem.getChemicalInTank(tank);
                     if (!gasInTank.isEmpty()) {
                         if (gasTank.insert(gasInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < gasInTank.getAmount()) {
                             //True if we are the input tank and the items contents are valid and can fill the tank with any of our contents
@@ -90,8 +90,8 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         Function<ItemStack, GasStack> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
-        return new GasInventorySlot(gasTank, worldSupplier, getFillOrConvertExtractPredicate(gasTank, GasInventorySlot::getCapabilityWrapper, potentialConversionSupplier),
-              getFillOrConvertInsertPredicate(gasTank, GasInventorySlot::getCapabilityWrapper, potentialConversionSupplier), stack -> {
+        return new GasInventorySlot(gasTank, worldSupplier, getFillOrConvertExtractPredicate(gasTank, GasInventorySlot::getCapability, potentialConversionSupplier),
+              getFillOrConvertInsertPredicate(gasTank, GasInventorySlot::getCapability, potentialConversionSupplier), stack -> {
             if (stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent()) {
                 //Note: we mark all gas items as valid and have a more restrictive insert check so that we allow full tanks when they are done being filled
                 return true;
@@ -107,8 +107,8 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
      */
     public static GasInventorySlot fill(IGasTank gasTank, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
-        return new GasInventorySlot(gasTank, getFillExtractPredicate(gasTank, GasInventorySlot::getCapabilityWrapper),
-              stack -> fillInsertCheck(gasTank, getCapabilityWrapper(stack)), stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), inventory, x, y);
+        return new GasInventorySlot(gasTank, getFillExtractPredicate(gasTank, GasInventorySlot::getCapability),
+              stack -> fillInsertCheck(gasTank, getCapability(stack)), stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), inventory, x, y);
     }
 
     /**
@@ -118,7 +118,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
      */
     public static GasInventorySlot drain(IGasTank gasTank, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
-        Predicate<@NonNull ItemStack> insertPredicate = getDrainInsertPredicate(gasTank, GasInventorySlot::getCapabilityWrapper);
+        Predicate<@NonNull ItemStack> insertPredicate = getDrainInsertPredicate(gasTank, GasInventorySlot::getCapability);
         return new GasInventorySlot(gasTank, insertPredicate.negate(), insertPredicate, stack -> stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent(), inventory, x, y);
     }
 
@@ -134,8 +134,8 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
 
     @Nullable
     @Override
-    protected IChemicalHandlerWrapper<Gas, GasStack> getCapabilityWrapper() {
-        return getCapabilityWrapper(current);
+    protected IChemicalHandler<Gas, GasStack> getCapability() {
+        return getCapability(current);
     }
 
     @Nullable

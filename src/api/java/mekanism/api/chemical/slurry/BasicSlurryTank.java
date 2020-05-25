@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.BasicChemicalTank;
@@ -17,15 +16,12 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BasicSlurryTank extends BasicChemicalTank<Slurry, SlurryStack> implements ISlurryHandler, ISlurryTank {
+public class BasicSlurryTank extends BasicChemicalTank<Slurry, SlurryStack, ISlurryTank, IMekanismSlurryHandler> implements ISlurryHandler, ISlurryTank {
 
     public static final Predicate<@NonNull Slurry> alwaysTrue = stack -> true;
     public static final BiPredicate<@NonNull Slurry, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
     public static final BiPredicate<@NonNull Slurry, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
     public static final BiPredicate<@NonNull Slurry, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
-
-    @Nullable
-    private final IMekanismSlurryHandler slurryHandler;
 
     public static BasicSlurryTank create(long capacity, @Nullable IMekanismSlurryHandler slurryHandler) {
         return create(capacity, alwaysTrue, slurryHandler);
@@ -87,15 +83,7 @@ public class BasicSlurryTank extends BasicChemicalTank<Slurry, SlurryStack> impl
 
     protected BasicSlurryTank(long capacity, BiPredicate<@NonNull Slurry, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Slurry, @NonNull AutomationType> canInsert,
           Predicate<@NonNull Slurry> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IMekanismSlurryHandler slurryHandler) {
-        super(capacity, canExtract, canInsert, validator, attributeValidator);
-        this.slurryHandler = slurryHandler;
-    }
-
-    @Override
-    public void onContentsChanged() {
-        if (slurryHandler != null) {
-            slurryHandler.onContentsChanged();
-        }
+        super(capacity, canExtract, canInsert, validator, attributeValidator, slurryHandler);
     }
 
     @Override
@@ -106,39 +94,7 @@ public class BasicSlurryTank extends BasicChemicalTank<Slurry, SlurryStack> impl
     }
 
     @Override
-    public int getSlurryTankCount() {
-        return 1;
-    }
-
-    @Override
-    public SlurryStack getSlurryInTank(int tank) {
-        return tank == 0 ? getStack() : getEmptyStack();
-    }
-
-    @Override
-    public void setSlurryInTank(int tank, SlurryStack stack) {
-        if (tank == 0) {
-            setStack(stack);
-        }
-    }
-
-    @Override
-    public long getSlurryTankCapacity(int tank) {
-        return tank == 0 ? getCapacity() : 0;
-    }
-
-    @Override
-    public boolean isSlurryValid(int tank, SlurryStack stack) {
-        return tank == 0 && isValid(stack);
-    }
-
-    @Override
-    public SlurryStack insertSlurry(int tank, SlurryStack stack, Action action) {
-        return tank == 0 ? insert(stack, action, AutomationType.EXTERNAL) : stack;
-    }
-
-    @Override
-    public SlurryStack extractSlurry(int tank, long amount, Action action) {
-        return tank == 0 ? extract(amount, action, AutomationType.EXTERNAL) : getEmptyStack();
+    public SlurryStack getEmptyStack() {
+        return SlurryStack.EMPTY;
     }
 }

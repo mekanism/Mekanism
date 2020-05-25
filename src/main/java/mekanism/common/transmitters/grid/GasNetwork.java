@@ -294,7 +294,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Nonnull
     @Override
-    public List<IGasTank> getGasTanks(@Nullable Direction side) {
+    public List<IGasTank> getChemicalTanks(@Nullable Direction side) {
         return gasTanks;
     }
 

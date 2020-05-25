@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.BasicChemicalTank;
@@ -17,15 +16,12 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionStack> implements IInfusionHandler, IInfusionTank {
+public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionStack, IInfusionTank, IMekanismInfusionHandler> implements IInfusionHandler, IInfusionTank {
 
     public static final Predicate<@NonNull InfuseType> alwaysTrue = stack -> true;
     public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
     public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
     public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
-
-    @Nullable
-    private final IMekanismInfusionHandler infusionHandler;
 
     public static BasicInfusionTank create(long capacity, @Nullable IMekanismInfusionHandler infusionHandler) {
         return create(capacity, alwaysTrue, infusionHandler);
@@ -87,15 +83,7 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
 
     protected BasicInfusionTank(long capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
           Predicate<@NonNull InfuseType> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IMekanismInfusionHandler infusionHandler) {
-        super(capacity, canExtract, canInsert, validator, attributeValidator);
-        this.infusionHandler = infusionHandler;
-    }
-
-    @Override
-    public void onContentsChanged() {
-        if (infusionHandler != null) {
-            infusionHandler.onContentsChanged();
-        }
+        super(capacity, canExtract, canInsert, validator, attributeValidator, infusionHandler);
     }
 
     @Override
@@ -106,39 +94,7 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
     }
 
     @Override
-    public int getInfusionTankCount() {
-        return 1;
-    }
-
-    @Override
-    public InfusionStack getInfusionInTank(int tank) {
-        return tank == 0 ? getStack() : getEmptyStack();
-    }
-
-    @Override
-    public void setInfusionInTank(int tank, InfusionStack stack) {
-        if (tank == 0) {
-            setStack(stack);
-        }
-    }
-
-    @Override
-    public long getInfusionTankCapacity(int tank) {
-        return tank == 0 ? getCapacity() : 0;
-    }
-
-    @Override
-    public boolean isInfusionValid(int tank, InfusionStack stack) {
-        return tank == 0 && isValid(stack);
-    }
-
-    @Override
-    public InfusionStack insertInfusion(int tank, InfusionStack stack, Action action) {
-        return tank == 0 ? insert(stack, action, AutomationType.EXTERNAL) : stack;
-    }
-
-    @Override
-    public InfusionStack extractInfusion(int tank, long amount, Action action) {
-        return tank == 0 ? extract(amount, action, AutomationType.EXTERNAL) : getEmptyStack();
+    public InfusionStack getEmptyStack() {
+        return InfusionStack.EMPTY;
     }
 }

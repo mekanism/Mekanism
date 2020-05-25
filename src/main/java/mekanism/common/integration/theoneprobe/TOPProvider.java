@@ -15,11 +15,7 @@ import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.api.TextStyleClass;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandlerWrapper;
-import mekanism.api.chemical.gas.GasHandlerWrapper;
-import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
-import mekanism.api.chemical.pigment.PigmentHandlerWrapper;
-import mekanism.api.chemical.slurry.SlurryHandlerWrapper;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -98,10 +94,10 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
                     }
                 }
                 //Chemicals
-                addInfo(tile, structure, Capabilities.GAS_HANDLER_CAPABILITY, GasHandlerWrapper::new, info, GasElement::new, MekanismLang.GAS);
-                addInfo(tile, structure, Capabilities.INFUSION_HANDLER_CAPABILITY, InfusionHandlerWrapper::new, info, InfuseTypeElement::new, MekanismLang.INFUSE_TYPE);
-                addInfo(tile, structure, Capabilities.PIGMENT_HANDLER_CAPABILITY, PigmentHandlerWrapper::new, info, PigmentElement::new, MekanismLang.PIGMENT);
-                addInfo(tile, structure, Capabilities.SLURRY_HANDLER_CAPABILITY, SlurryHandlerWrapper::new, info, SlurryElement::new, MekanismLang.SLURRY);
+                addInfo(tile, structure, Capabilities.GAS_HANDLER_CAPABILITY, info, GasElement::new, MekanismLang.GAS);
+                addInfo(tile, structure, Capabilities.INFUSION_HANDLER_CAPABILITY, info, InfuseTypeElement::new, MekanismLang.INFUSE_TYPE);
+                addInfo(tile, structure, Capabilities.PIGMENT_HANDLER_CAPABILITY, info, PigmentElement::new, MekanismLang.PIGMENT);
+                addInfo(tile, structure, Capabilities.SLURRY_HANDLER_CAPABILITY, info, SlurryElement::new, MekanismLang.SLURRY);
             }
         }
     }
@@ -133,26 +129,25 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         }
     }
 
-    private <HANDLER, CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addInfo(TileEntity tile, @Nullable MultiblockData structure,
-          Capability<HANDLER> capability, Function<HANDLER, IChemicalHandlerWrapper<CHEMICAL, STACK>> wrapperCreator, IProbeInfo info,
-          ElementCreator<CHEMICAL, STACK> elementCreator, ILangEntry langEntry) {
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(TileEntity tile,
+          @Nullable MultiblockData structure, Capability<HANDLER> capability, IProbeInfo info, ElementCreator<CHEMICAL, STACK> elementCreator, ILangEntry langEntry) {
         Optional<HANDLER> cap = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, capability, null));
+        HANDLER handler;
         if (cap.isPresent()) {
-            addInfo(wrapperCreator.apply(cap.get()), info, elementCreator, langEntry);
+            handler = cap.get();
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the chemicals in a multiblock when looking at things other than the ports
-            addInfo(wrapperCreator.apply((HANDLER) structure), info, elementCreator, langEntry);
+            //TODO: ChemicalHandlers - FIXME (it won't be directly implementing the handler anymore)
+            handler = (HANDLER) structure;
+        } else {
+            return;
         }
-    }
-
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addInfo(IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper,
-          IProbeInfo info, ElementCreator<CHEMICAL, STACK> elementCreator, ILangEntry langEntry) {
-        for (int i = 0; i < wrapper.getTanks(); i++) {
-            STACK chemicalInTank = wrapper.getChemicalInTank(i);
+        for (int i = 0; i < handler.getTanks(); i++) {
+            STACK chemicalInTank = handler.getChemicalInTank(i);
             if (!chemicalInTank.isEmpty()) {
                 info.text(TextStyleClass.NAME + langEntry.translate(chemicalInTank.getType()).getFormattedText());
             }
-            info.element(elementCreator.create(chemicalInTank, wrapper.getTankCapacity(i)));
+            info.element(elementCreator.create(chemicalInTank, handler.getTankCapacity(i)));
         }
     }
 

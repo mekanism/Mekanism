@@ -6,6 +6,7 @@ import mekanism.api.Action;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
@@ -128,33 +129,33 @@ public class PacketDropperUse {
         if (emptyStack == GasStack.EMPTY) {
             Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
             if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem instanceof IMekanismGasHandler) {
-                    itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
+                IGasHandler handler = capability.get();
+                if (handler instanceof IMekanismChemicalHandler) {
+                    itemChemicalTank = ((IMekanismChemicalHandler<CHEMICAL, STACK, ?>) handler).getChemicalTank(0, null);
                 }
             }
         } else if (emptyStack == InfusionStack.EMPTY) {
             Optional<IInfusionHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
             if (capability.isPresent()) {
-                IInfusionHandler infusionHandler = capability.get();
-                if (infusionHandler instanceof IMekanismInfusionHandler) {
-                    itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismInfusionHandler) infusionHandler).getInfusionTank(0, null);
+                IInfusionHandler handler = capability.get();
+                if (handler instanceof IMekanismChemicalHandler) {
+                    itemChemicalTank = ((IMekanismChemicalHandler<CHEMICAL, STACK, ?>) handler).getChemicalTank(0, null);
                 }
             }
         } else if (emptyStack == PigmentStack.EMPTY) {
             Optional<IPigmentHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY));
             if (capability.isPresent()) {
-                IPigmentHandler pigmentHandler = capability.get();
-                if (pigmentHandler instanceof IMekanismPigmentHandler) {
-                    itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismPigmentHandler) pigmentHandler).getPigmentTank(0, null);
+                IPigmentHandler handler = capability.get();
+                if (handler instanceof IMekanismChemicalHandler) {
+                    itemChemicalTank = ((IMekanismChemicalHandler<CHEMICAL, STACK, ?>) handler).getChemicalTank(0, null);
                 }
             }
         } else if (emptyStack == SlurryStack.EMPTY) {
             Optional<ISlurryHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY));
             if (capability.isPresent()) {
-                ISlurryHandler slurryHandler = capability.get();
-                if (slurryHandler instanceof IMekanismSlurryHandler) {
-                    itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismSlurryHandler) slurryHandler).getSlurryTank(0, null);
+                ISlurryHandler handler = capability.get();
+                if (handler instanceof IMekanismChemicalHandler) {
+                    itemChemicalTank = ((IMekanismChemicalHandler<CHEMICAL, STACK, ?>) handler).getChemicalTank(0, null);
                 }
             }
         }

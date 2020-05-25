@@ -15,7 +15,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandlerWrapper;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.common.recipe.upgrade.RecipeUpgradeData;
 import mekanism.common.tile.base.SubstanceType;
@@ -32,8 +32,9 @@ import net.minecraftforge.common.capabilities.Capability;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class ChemicalRecipeData<HANDLER, CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
-      implements RecipeUpgradeData<ChemicalRecipeData<HANDLER, CHEMICAL, STACK, TANK>> {
+public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
+      HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
+      implements RecipeUpgradeData<ChemicalRecipeData<CHEMICAL, STACK, TANK, HANDLER>> {
 
     protected final List<TANK> tanks;
 
@@ -52,22 +53,20 @@ public abstract class ChemicalRecipeData<HANDLER, CHEMICAL extends Chemical<CHEM
 
     @Nullable
     @Override
-    public ChemicalRecipeData<HANDLER, CHEMICAL, STACK, TANK> merge(ChemicalRecipeData<HANDLER, CHEMICAL, STACK, TANK> other) {
+    public ChemicalRecipeData<CHEMICAL, STACK, TANK, HANDLER> merge(ChemicalRecipeData<CHEMICAL, STACK, TANK, HANDLER> other) {
         List<TANK> allTanks = new ArrayList<>(tanks.size() + other.tanks.size());
         allTanks.addAll(tanks);
         allTanks.addAll(other.tanks);
         return create(allTanks);
     }
 
-    protected abstract ChemicalRecipeData<HANDLER, CHEMICAL, STACK, TANK> create(List<TANK> tanks);
+    protected abstract ChemicalRecipeData<CHEMICAL, STACK, TANK, HANDLER> create(List<TANK> tanks);
 
     protected abstract SubstanceType getSubstanceType();
 
     protected abstract TANK createTank();
 
     protected abstract TANK createTank(long capacity, Predicate<@NonNull CHEMICAL> validator);
-
-    protected abstract IChemicalHandlerWrapper<CHEMICAL, STACK> wrap(HANDLER handler);
 
     protected abstract HANDLER getOutputHandler(List<TANK> tanks);
 
@@ -97,23 +96,23 @@ public abstract class ChemicalRecipeData<HANDLER, CHEMICAL extends Chemical<CHEM
                 //Something went wrong
                 return false;
             }
+            //TODO: ChemicalHandlers - FIXME (it won't be directly implementing the handler anymore)
             handler = (HANDLER) tile;
         } else {
             return false;
         }
-        IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper = wrap(handler);
-        int tankCount = wrapper.getTanks();
+        int tankCount = handler.getTanks();
         if (tankCount == 0) {
             //We don't actually have any tanks in the output
             return true;
         }
         List<TANK> tanks = new ArrayList<>();
         for (int tank = 0; tank < tankCount; tank++) {
-            tanks.add(createTank(wrapper.getTankCapacity(tank), cloneValidator(handler, tank)));
+            tanks.add(createTank(handler.getTankCapacity(tank), cloneValidator(handler, tank)));
         }
         //TODO: Improve the logic used so that it tries to batch similar types of chemicals together first
         // and maybe make it try multiple slot combinations
-        IChemicalHandlerWrapper<CHEMICAL, STACK> outputHandler = wrap(getOutputHandler(tanks));
+        HANDLER outputHandler = getOutputHandler(tanks);
         boolean hasData = false;
         for (TANK tank : this.tanks) {
             if (!tank.isEmpty()) {

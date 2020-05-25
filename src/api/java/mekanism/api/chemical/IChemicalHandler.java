@@ -4,12 +4,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 
-/**
- * Helper interface for defining how to wrap handlers into a generic interface that can be used to reduce duplicate code needed between various chemical type handlers
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
+public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
+
+    /**
+     * Helper for default implementations to get the empty stack corresponding to the type of chemical this handler is for
+     *
+     * @return The empty stack.
+     */
+    STACK getEmptyStack();
 
     /**
      * Returns the number of chemical storage units ("tanks") available
@@ -22,8 +26,8 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      * Returns the {@link STACK} in a given tank.
      *
      * <p>
-     * <strong>IMPORTANT:</strong> This {@link STACK} <em>MUST NOT</em> be modified. This method is not for altering internal contents. Any implementers who are able to
-     * detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the stack returned here will be a copy.
+     * <strong>IMPORTANT:</strong> This {@link STACK} <em>MUST NOT</em> be modified. This method is not for altering internal contents. Any implementers who are
+     * able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely that the stack returned here will be a copy.
      * </p>
      *
      * <p>
@@ -32,7 +36,7 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      *
      * @param tank Tank to query.
      *
-     * @return {@link STACK} in a given tank. Empty instance if the tank is empty.
+     * @return {@link STACK} in a given tank. {@link #getEmptyStack()} if the tank is empty.
      */
     STACK getChemicalInTank(int tank);
 
@@ -47,11 +51,11 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
     void setChemicalInTank(int tank, STACK stack);
 
     /**
-     * Retrieves the maximum amount of gas that can be stored in a given tank.
+     * Retrieves the maximum amount of chemical that can be stored in a given tank.
      *
      * @param tank Tank to query.
      *
-     * @return The maximum gas amount held by the tank.
+     * @return The maximum chemical amount held by the tank.
      */
     long getTankCapacity(int tank);
 
@@ -61,9 +65,9 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      * and logic.
      * </p>
      * <ul>
-     * <li>isGasValid is false when insertion of the gas is never valid.</li>
-     * <li>When isGasValid is true, no assumptions can be made and insertion must be simulated case-by-case.</li>
-     * <li>The actual gas in the tank, its fullness, or any other state are <strong>not</strong> considered by isGasValid.</li>
+     * <li>isValid is false when insertion of the chemical type is never valid.</li>
+     * <li>When isValid is true, no assumptions can be made and insertion must be simulated case-by-case.</li>
+     * <li>The actual chemical in the tank, its fullness, or any other state are <strong>not</strong> considered by isValid.</li>
      * </ul>
      *
      * @param tank  Tank to query.
@@ -72,13 +76,13 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      * @return true if the tank can accept the {@link STACK}, not considering the current state of the tank. false if the tank can never support the given {@link STACK}
      * in any situation.
      */
-    boolean isChemicalValid(int tank, STACK stack);
+    boolean isValid(int tank, STACK stack);
 
     /**
      * <p>
      * Inserts a {@link STACK} into a given tank and return the remainder. The {@link STACK} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {{@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param tank   Tank to insert to.
@@ -107,8 +111,8 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
 
     /**
      * <p>
-     * Inserts a {@link STACK} into this handler, distribution is left <strong>entirely</strong> to the handler. The {@link STACK} <em>should not</em> be modified in this
-     * function!
+     * Inserts a {@link STACK} into this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}. The {@link STACK}
+     * <em>should not</em> be modified in this function!
      * </p>
      * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
@@ -118,11 +122,17 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      *
      * @return The remaining {@link STACK} that was not inserted (if the entire stack is accepted, then return an empty {@link STACK}). May be the same as the input
      * {@link STACK} if unchanged, otherwise a new {@link STACK}. The returned {@link STACK} can be safely modified after
+     *
+     * @implNote The default implementation of this method, attempts to insert into tanks that contain the same type of chemical as the supplied type, and if it will not
+     * all fit, falls back to inserting into any empty tanks.
+     * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the insertion.
      */
-    STACK insertChemical(STACK stack, Action action);
+    default STACK insertChemical(STACK stack, Action action) {
+        return ChemicalUtils.insert(stack, action, getEmptyStack(), this::getTanks, this::getChemicalInTank, this::insertChemical);
+    }
 
     /**
-     * Extracts a {@link STACK} from this handler, distribution is left <strong>entirely</strong> to the handler.
+     * Extracts a {@link STACK} from this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
      * </p>
@@ -132,11 +142,17 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      *
      * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the tank
      * should return a new or copied stack.
+     *
+     * @implNote The default implementation of this method, extracts across all tanks to try and reach the desired amount to extract. Once the first chemical that can be
+     * extracted is found, all future extractions will make sure to also make sure they are for the same type of chemical.
+     * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the extraction.
      */
-    STACK extractChemical(long amount, Action action);
+    default STACK extractChemical(long amount, Action action) {
+        return ChemicalUtils.extract(amount, action, getEmptyStack(), this::getTanks, this::getChemicalInTank, this::extractChemical);
+    }
 
     /**
-     * Extracts a {@link STACK} from this handler, distribution is left <strong>entirely</strong> to the handler.
+     * Extracts a {@link STACK} from this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
      * </p>
@@ -146,6 +162,11 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      *
      * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the tank
      * should return a new or copied stack.
+     *
+     * @implNote The default implementation of this method, extracts across all tanks that contents match the type of chemical passed into this method.
+     * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the extraction.
      */
-    STACK extractChemical(STACK stack, Action action);
+    default STACK extractChemical(STACK stack, Action action) {
+        return ChemicalUtils.extract(stack, action, getEmptyStack(), this::getTanks, this::getChemicalInTank, this::extractChemical);
+    }
 }
