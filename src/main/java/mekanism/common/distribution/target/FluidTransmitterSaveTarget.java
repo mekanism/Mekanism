@@ -48,8 +48,8 @@ public class FluidTransmitterSaveTarget extends Target<IGridTransmitter<IFluidHa
             TileEntity tile = ((TransmitterImpl<?, ?, ?>) transmitter).getTileEntity();
             if (tile instanceof TileEntityMechanicalPipe) {
                 TileEntityMechanicalPipe pipe = (TileEntityMechanicalPipe) tile;
-                if (currentStored.isEmpty() != pipe.lastWrite.isEmpty() || (!currentStored.isEmpty() && !currentStored.isFluidStackIdentical(pipe.lastWrite))) {
-                    pipe.lastWrite = currentStored;
+                if (currentStored.isEmpty() != pipe.saveShare.isEmpty() || (!currentStored.isEmpty() && !currentStored.isFluidStackIdentical(pipe.saveShare))) {
+                    pipe.saveShare = currentStored;
                     pipe.markDirty(false);
                 }
             }

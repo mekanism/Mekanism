@@ -266,7 +266,7 @@ public class TransmitterNetworkRegistry {
         public void addNetworkToIterated(Coord4D from) {
             N net = startPoint.getExternalNetwork(from);
             //Make sure that there is an external network and that it is compatible with this buffer
-            if (net != null && net.compatibleWithBuffer(startPoint.getBuffer())) {
+            if (net != null && net.compatibleWithBuffer(startPoint.releaseShare())) {
                 if (networksFound.isEmpty() || networksFound.iterator().next().isCompatibleWith(net)) {
                     networksFound.add(net);
                 }

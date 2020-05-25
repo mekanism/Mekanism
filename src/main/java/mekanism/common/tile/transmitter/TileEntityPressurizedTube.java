@@ -47,7 +47,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     public final TubeTier tier;
     @Nonnull
-    public GasStack lastWrite = GasStack.EMPTY;
+    public GasStack saveShare = GasStack.EMPTY;
     private final List<IGasTank> tanks;
     public BasicGasTank buffer;
 
@@ -119,21 +119,24 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains(NBTConstants.GAS_STORED, NBT.TAG_COMPOUND)) {
-            lastWrite = GasStack.readFromNBT(nbtTags.getCompound(NBTConstants.GAS_STORED));
+            saveShare = GasStack.readFromNBT(nbtTags.getCompound(NBTConstants.GAS_STORED));
         } else {
-            lastWrite = GasStack.EMPTY;
+            saveShare = GasStack.EMPTY;
         }
-        buffer.setStack(lastWrite);
+        buffer.setStack(saveShare);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (lastWrite.isEmpty()) {
+        if (getTransmitter().hasTransmitterNetwork()) {
+            getTransmitter().getTransmitterNetwork().validateSaveShares(getTransmitter());
+        }
+        if (saveShare.isEmpty()) {
             nbtTags.remove(NBTConstants.GAS_STORED);
         } else {
-            nbtTags.put(NBTConstants.GAS_STORED, lastWrite.write(new CompoundNBT()));
+            nbtTags.put(NBTConstants.GAS_STORED, saveShare.write(new CompoundNBT()));
         }
         return nbtTags;
     }
@@ -204,7 +207,14 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Nonnull
     @Override
-    public GasStack getBuffer() {
+    public GasStack releaseShare() {
+        GasStack ret = buffer.getStack();
+        buffer.setEmpty();
+        return ret;
+    }
+
+    @Override
+    public GasStack getShare() {
         return buffer.getStack();
     }
 
@@ -216,7 +226,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     @Override
     public GasStack getBufferWithFallback() {
-        GasStack buffer = getBuffer();
+        GasStack buffer = getShare();
         //If we don't have a buffer try falling back to the network's buffer
         if (buffer.isEmpty() && getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().getBuffer();
@@ -228,10 +238,10 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public void takeShare() {
         if (getTransmitter().hasTransmitterNetwork()) {
             GasNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
-            if (!transmitterNetwork.gasTank.isEmpty() && !lastWrite.isEmpty()) {
-                long amount = lastWrite.getAmount();
+            if (!transmitterNetwork.gasTank.isEmpty() && !saveShare.isEmpty()) {
+                long amount = saveShare.getAmount();
                 MekanismUtils.logMismatchedStackSize(transmitterNetwork.gasTank.shrinkStack(amount, Action.EXECUTE), amount);
-                buffer.setStack(lastWrite);
+                buffer.setStack(saveShare);
             }
         }
     }
@@ -290,7 +300,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nullable
     @Override
     protected PressurizedTubeUpgradeData getUpgradeData() {
-        return new PressurizedTubeUpgradeData(redstoneReactive, connectionTypes, getBuffer());
+        return new PressurizedTubeUpgradeData(redstoneReactive, connectionTypes, getShare());
     }
 
     @Override

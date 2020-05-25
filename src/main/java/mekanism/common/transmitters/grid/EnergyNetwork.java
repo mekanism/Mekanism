@@ -1,8 +1,5 @@
 package mekanism.common.transmitters.grid;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -11,6 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
@@ -99,7 +99,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
 
     @Override
     public void absorbBuffer(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
-        FloatingLong energy = transmitter.getBuffer();
+        FloatingLong energy = transmitter.releaseShare();
         if (!energy.isZero()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(energy));
         }
@@ -130,7 +130,6 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
         if (!floatingLongCapacity.equals(sum)) {
             floatingLongCapacity = sum;
             capacity = floatingLongCapacity.longValue();
-            updateSaveShares = true;
         }
     }
 
@@ -254,7 +253,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
 
     @Override
     public void onContentsChanged() {
-        updateSaveShares = true;
+        markDirty();
     }
 
     public static class EnergyTransferEvent extends Event {

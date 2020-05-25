@@ -48,7 +48,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public final PipeTier tier;
 
     @Nonnull
-    public FluidStack lastWrite = FluidStack.EMPTY;
+    public FluidStack saveShare = FluidStack.EMPTY;
     private final List<IExtendedFluidTank> tanks;
     public BasicFluidTank buffer;
 
@@ -120,21 +120,24 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains(NBTConstants.FLUID_STORED, NBT.TAG_COMPOUND)) {
-            lastWrite = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
+            saveShare = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
         } else {
-            lastWrite = FluidStack.EMPTY;
+            saveShare = FluidStack.EMPTY;
         }
-        buffer.setStack(lastWrite);
+        buffer.setStack(saveShare);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (lastWrite.isEmpty()) {
+        if (getTransmitter().hasTransmitterNetwork()) {
+            getTransmitter().getTransmitterNetwork().validateSaveShares(getTransmitter());
+        }
+        if (saveShare.isEmpty()) {
             nbtTags.remove(NBTConstants.FLUID_STORED);
         } else {
-            nbtTags.put(NBTConstants.FLUID_STORED, lastWrite.writeToNBT(new CompoundNBT()));
+            nbtTags.put(NBTConstants.FLUID_STORED, saveShare.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
     }
@@ -205,8 +208,10 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Nonnull
     @Override
-    public FluidStack getBuffer() {
-        return buffer.getFluid();
+    public FluidStack releaseShare() {
+        FluidStack ret = buffer.getFluid();
+        buffer.setEmpty();
+        return ret;
     }
 
     @Override
@@ -217,7 +222,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Nonnull
     @Override
     public FluidStack getBufferWithFallback() {
-        FluidStack buffer = getBuffer();
+        FluidStack buffer = getShare();
         //If we don't have a buffer try falling back to the network's buffer
         if (buffer.isEmpty() && getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().getBuffer();
@@ -226,13 +231,18 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
+    public FluidStack getShare() {
+        return buffer.getFluid();
+    }
+
+    @Override
     public void takeShare() {
         if (getTransmitter().hasTransmitterNetwork()) {
             FluidNetwork network = getTransmitter().getTransmitterNetwork();
-            if (!network.fluidTank.isEmpty() && !lastWrite.isEmpty()) {
-                int amount = lastWrite.getAmount();
+            if (!network.fluidTank.isEmpty() && !saveShare.isEmpty()) {
+                int amount = saveShare.getAmount();
                 MekanismUtils.logMismatchedStackSize(network.fluidTank.shrinkStack(amount, Action.EXECUTE), amount);
-                buffer.setStack(lastWrite);
+                buffer.setStack(saveShare);
             }
         }
     }
@@ -291,7 +301,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Nullable
     @Override
     protected MechanicalPipeUpgradeData getUpgradeData() {
-        return new MechanicalPipeUpgradeData(redstoneReactive, connectionTypes, getBuffer());
+        return new MechanicalPipeUpgradeData(redstoneReactive, connectionTypes, getShare());
     }
 
     @Override

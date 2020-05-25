@@ -138,6 +138,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
+        if (getTransmitter().hasTransmitterNetwork()) {
+            getTransmitter().getTransmitterNetwork().validateSaveShares(getTransmitter());
+        }
         if (lastWrite.isZero()) {
             nbtTags.remove(NBTConstants.ENERGY_STORED);
         } else {
@@ -177,7 +180,14 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
 
     @Nonnull
     @Override
-    public FloatingLong getBuffer() {
+    public FloatingLong releaseShare() {
+        FloatingLong energy = buffer.getEnergy();
+        buffer.setEmpty();
+        return energy;
+    }
+
+    @Override
+    public FloatingLong getShare() {
         return buffer.getEnergy();
     }
 
@@ -189,7 +199,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Nonnull
     @Override
     public FloatingLong getBufferWithFallback() {
-        FloatingLong buffer = getBuffer();
+        FloatingLong buffer = releaseShare();
         //If we don't have a buffer try falling back to the network's buffer
         if (buffer.isZero() && getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().getBuffer();
