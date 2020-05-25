@@ -142,6 +142,11 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, B
     }
 
     @Override
+    public BUFFER getShare() {
+        return null;
+    }
+
+    @Override
     public void setRequestsUpdate() {
     }
 

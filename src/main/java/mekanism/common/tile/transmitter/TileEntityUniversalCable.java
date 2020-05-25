@@ -199,7 +199,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Nonnull
     @Override
     public FloatingLong getBufferWithFallback() {
-        FloatingLong buffer = releaseShare();
+        FloatingLong buffer = getShare();
         //If we don't have a buffer try falling back to the network's buffer
         if (buffer.isZero() && getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().getBuffer();

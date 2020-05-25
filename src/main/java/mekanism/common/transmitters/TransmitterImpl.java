@@ -119,6 +119,11 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
         return getTileEntity().releaseShare();
     }
 
+    @Override
+    public BUFFER getShare() {
+        return getTileEntity().getShare();
+    }
+
     @Nullable
     @Override
     public BUFFER getBufferWithFallback() {

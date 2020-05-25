@@ -198,6 +198,11 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
+    public Void getShare() {
+        return null;
+    }
+
+    @Override
     public void setRequestsUpdate() {
     }
 

@@ -75,11 +75,18 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     void takeShare();
 
     /**
-     * @return The transmitter's buffer.
+     * @return Gets and releases the transmitter's buffer.
      *
      * @apiNote Should only be {@code null}, if the buffer type supports null. So things like fluid's should use the empty variant.
      */
     BUFFER releaseShare();
+
+    /**
+     * @return Gets the transmitter's buffer.
+     *
+     * @apiNote Should only be {@code null}, if the buffer type supports null. So things like fluid's should use the empty variant.
+     */
+    BUFFER getShare();
 
     /**
      * If the transmitter does not have a buffer this will try to fallback on the network's buffer.
@@ -88,7 +95,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      */
     @Nullable
     default BUFFER getBufferWithFallback() {
-        BUFFER buffer = releaseShare();
+        BUFFER buffer = getShare();
         //If we don't have a buffer try falling back to the network's buffer
         if (buffer == null && hasTransmitterNetwork()) {
             return getTransmitterNetwork().getBuffer();
