@@ -162,7 +162,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
-            System.out.println("SAVE SHARES " + fluidTank.getFluid().getAmount());
             FluidStack fluidType = fluidTank.getFluid();
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
