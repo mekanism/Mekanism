@@ -233,11 +233,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         this.blockProvider = blockProvider;
         setSupportedTypes(this.blockProvider.getBlock());
         presetVariables();
-        Runnable onContentsChanged = this::onContentsChanged;
-        capabilityHandlerManagers.add(gasHandlerManager = getInitialGasManager(onContentsChanged));
-        capabilityHandlerManagers.add(infusionHandlerManager = getInitialInfusionManager(onContentsChanged));
-        capabilityHandlerManagers.add(pigmentHandlerManager = getInitialPigmentManager(onContentsChanged));
-        capabilityHandlerManagers.add(slurryHandlerManager = getInitialSlurryManager(onContentsChanged));
+        capabilityHandlerManagers.add(gasHandlerManager = getInitialGasManager());
+        capabilityHandlerManagers.add(infusionHandlerManager = getInitialInfusionManager());
+        capabilityHandlerManagers.add(pigmentHandlerManager = getInitialPigmentManager());
+        capabilityHandlerManagers.add(slurryHandlerManager = getInitialSlurryManager());
         capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(), this));
         capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(), this));
         capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(), this));

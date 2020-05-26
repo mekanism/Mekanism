@@ -31,6 +31,10 @@ import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
+import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
+import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
+import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -43,8 +47,8 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class MultiblockCache<T extends MultiblockData> implements IMekanismInventory, IMekanismFluidHandler, IMekanismGasHandler, IMekanismStrictEnergyHandler,
-      IMekanismHeatHandler, IMekanismInfusionHandler, IMekanismPigmentHandler, IMekanismSlurryHandler {
+public class MultiblockCache<T extends MultiblockData> implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, IMekanismHeatHandler,
+      IGasTracker, IInfusionTracker, IPigmentTracker, ISlurryTracker {
 
     private final List<IInventorySlot> inventorySlots = new ArrayList<>();
     private final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();

@@ -9,21 +9,21 @@ import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.capabilities.chemical.dynamic.DynamicInfusionHandler;
+import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.chemical.InfusionHandlerManager;
 import net.minecraft.util.Direction;
 
 @MethodsReturnNonnullByDefault
-public interface IInfusionTile {
+public interface IInfusionTile extends IInfusionTracker {
 
-    @Nonnull
     InfusionHandlerManager getInfusionManager();
 
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
-    default InfusionHandlerManager getInitialInfusionManager(@Nonnull Runnable onContentsChanged) {
-        DynamicInfusionHandler infusionHandler = new DynamicInfusionHandler(this::getInfusionManager, onContentsChanged);
+    default InfusionHandlerManager getInitialInfusionManager() {
+        DynamicInfusionHandler infusionHandler = new DynamicInfusionHandler(this::getInfusionManager, this::onContentsChanged);
         return new InfusionHandlerManager(getInitialInfusionTanks(infusionHandler), infusionHandler);
     }
 
@@ -45,7 +45,7 @@ public interface IInfusionTile {
     /**
      * @apiNote This should not be overridden
      */
-    @Nonnull
+    @Override
     default List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
         return getInfusionManager().getContainers(side);
     }

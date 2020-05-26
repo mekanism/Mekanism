@@ -9,21 +9,21 @@ import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.chemical.dynamic.DynamicSlurryHandler;
+import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.chemical.SlurryHandlerManager;
 import net.minecraft.util.Direction;
 
 @MethodsReturnNonnullByDefault
-public interface ISlurryTile {
+public interface ISlurryTile extends ISlurryTracker {
 
-    @Nonnull
     SlurryHandlerManager getSlurryManager();
 
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
-    default SlurryHandlerManager getInitialSlurryManager(@Nonnull Runnable onContentsChanged) {
-        DynamicSlurryHandler slurryHandler = new DynamicSlurryHandler(this::getSlurryManager, onContentsChanged);
+    default SlurryHandlerManager getInitialSlurryManager() {
+        DynamicSlurryHandler slurryHandler = new DynamicSlurryHandler(this::getSlurryManager, this::onContentsChanged);
         return new SlurryHandlerManager(getInitialSlurryTanks(slurryHandler), slurryHandler);
     }
 
@@ -45,7 +45,7 @@ public interface ISlurryTile {
     /**
      * @apiNote This should not be overridden
      */
-    @Nonnull
+    @Override
     default List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
         return getSlurryManager().getContainers(side);
     }

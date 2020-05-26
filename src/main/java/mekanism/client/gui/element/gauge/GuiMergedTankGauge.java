@@ -3,20 +3,20 @@ package mekanism.client.gui.element.gauge;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
-import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
-import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
-import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.IJEIIngredientHelper;
 import mekanism.common.capabilities.MergedTank;
+import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
+import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
+import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
+import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IMekanismGasHandler & IMekanismInfusionHandler & IMekanismPigmentHandler & IMekanismSlurryHandler>
-      extends GuiGauge<Void> implements IJEIIngredientHelper {
+public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> extends GuiGauge<Void>
+      implements IJEIIngredientHelper {
 
     private final Supplier<MergedTank> mergedTankSupplier;
     private final Supplier<HANDLER> handlerSupplier;

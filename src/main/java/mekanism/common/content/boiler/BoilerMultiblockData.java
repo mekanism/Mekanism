@@ -1,14 +1,13 @@
 package mekanism.common.content.boiler;
 
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.Arrays;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -30,7 +29,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.World;
 
-public class BoilerMultiblockData extends MultiblockData implements IMekanismFluidHandler, IMekanismGasHandler, ITileHeatHandler {
+public class BoilerMultiblockData extends MultiblockData implements IMekanismFluidHandler, ITileHeatHandler {
 
     public static Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 

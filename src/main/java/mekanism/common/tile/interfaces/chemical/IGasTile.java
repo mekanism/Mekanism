@@ -9,20 +9,21 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.common.capabilities.chemical.dynamic.DynamicGasHandler;
+import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.chemical.GasHandlerManager;
 import net.minecraft.util.Direction;
 
 @MethodsReturnNonnullByDefault
-public interface IGasTile {
+public interface IGasTile extends IGasTracker {
 
     GasHandlerManager getGasManager();
 
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
-    default GasHandlerManager getInitialGasManager(@Nonnull Runnable onContentsChanged) {
-        DynamicGasHandler handler = new DynamicGasHandler(this::getGasManager, onContentsChanged);
+    default GasHandlerManager getInitialGasManager() {
+        DynamicGasHandler handler = new DynamicGasHandler(this::getGasManager, this::onContentsChanged);
         return new GasHandlerManager(getInitialGasTanks(handler), handler);
     }
 
@@ -44,6 +45,7 @@ public interface IGasTile {
     /**
      * @apiNote This should not be overridden
      */
+    @Override
     default List<IGasTank> getGasTanks(@Nullable Direction side) {
         return getGasManager().getContainers(side);
     }

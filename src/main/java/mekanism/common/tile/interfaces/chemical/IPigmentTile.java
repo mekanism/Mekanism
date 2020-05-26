@@ -9,21 +9,21 @@ import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.common.capabilities.chemical.dynamic.DynamicPigmentHandler;
+import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.chemical.PigmentHandlerManager;
 import net.minecraft.util.Direction;
 
 @MethodsReturnNonnullByDefault
-public interface IPigmentTile {
+public interface IPigmentTile extends IPigmentTracker {
 
-    @Nonnull
     PigmentHandlerManager getPigmentManager();
 
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
-    default PigmentHandlerManager getInitialPigmentManager(@Nonnull Runnable onContentsChanged) {
-        DynamicPigmentHandler pigmentHandler = new DynamicPigmentHandler(this::getPigmentManager, onContentsChanged);
+    default PigmentHandlerManager getInitialPigmentManager() {
+        DynamicPigmentHandler pigmentHandler = new DynamicPigmentHandler(this::getPigmentManager, this::onContentsChanged);
         return new PigmentHandlerManager(getInitialPigmentTanks(pigmentHandler), pigmentHandler);
     }
 
@@ -45,7 +45,7 @@ public interface IPigmentTile {
     /**
      * @apiNote This should not be overridden
      */
-    @Nonnull
+    @Override
     default List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
         return getPigmentManager().getContainers(side);
     }

@@ -1,5 +1,7 @@
 package mekanism.common.network;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.Action;
@@ -9,20 +11,20 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
+import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
+import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
+import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -76,31 +78,33 @@ public class PacketDropperUse {
         context.get().setPacketHandled(true);
     }
 
-    private static <HANDLER extends IMekanismFluidHandler & IMekanismGasHandler & IMekanismInfusionHandler & IMekanismPigmentHandler & IMekanismSlurryHandler>
-    void handleTankType(HANDLER handler, PacketDropperUse message, PlayerEntity player, ItemStack stack) {
+    private static <HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> void handleTankType(HANDLER handler,
+          PacketDropperUse message, PlayerEntity player, ItemStack stack) {
         if (message.tankType == TankType.FLUID_TANK) {
             IExtendedFluidTank fluidTank = handler.getFluidTank(message.tankId, null);
             if (fluidTank != null) {
                 handleFluidTank(player, stack, fluidTank, message.action);
             }
         } else {
-            IChemicalTank<?, ?> tank = null;
+            List<? extends IChemicalTank<?, ?>> tanks;
             switch (message.tankType) {
                 case GAS_TANK:
-                    tank = handler.getGasTank(message.tankId, null);
+                    tanks = handler.getGasTanks(null);
                     break;
                 case INFUSION_TANK:
-                    tank = handler.getInfusionTank(message.tankId, null);
+                    tanks = handler.getInfusionTanks(null);
                     break;
                 case PIGMENT_TANK:
-                    tank = handler.getPigmentTank(message.tankId, null);
+                    tanks = handler.getPigmentTanks(null);
                     break;
                 case SLURRY_TANK:
-                    tank = handler.getSlurryTank(message.tankId, null);
+                    tanks = handler.getSlurryTanks(null);
                     break;
+                default:
+                    tanks = Collections.emptyList();
             }
-            if (tank != null) {
-                handleChemicalTank(player, stack, tank, message.action);
+            if (message.tankId >= 0 && message.tankId < tanks.size()) {
+                handleChemicalTank(player, stack, tanks.get(message.tankId), message.action);
             }
         }
     }
