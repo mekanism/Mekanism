@@ -1,8 +1,10 @@
 package mekanism.common.lib.multiblock;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.ToIntFunction;
+import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.lib.math.voxel.BlockPosBuilder;
 import mekanism.common.lib.math.voxel.VoxelPlane;
@@ -21,13 +23,16 @@ public class Structure {
     private final Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
     private final Map<Axis, TreeMap<Integer, VoxelPlane>> planeMap = new Object2ObjectOpenHashMap<>();
 
+    private int minX, minY, minZ;
+    private int maxX, maxY, maxZ;
+
     private boolean valid;
 
     private long updateTimestamp;
     private boolean didUpdate;
 
     private MultiblockData multiblockData;
-    private final Map<MultiblockManager<?>, IMultiblock<?>> controllers = new Object2ObjectOpenHashMap<>();
+    private IMultiblock<?> controller;
 
     private Structure() {}
 
@@ -42,8 +47,7 @@ public class Structure {
             getAxisMap(axis).put(axis.getCoord(node.getTilePos()), new VoxelPlane(axis, node.getTilePos()));
         }
         if (node instanceof IMultiblock) {
-            IMultiblock<?> multiblockTile = (IMultiblock<?>) node;
-            controllers.put(multiblockTile.getManager(), multiblockTile);
+            controller = (IMultiblock<?>) node;
         }
     }
 
@@ -56,7 +60,11 @@ public class Structure {
     }
 
     public IMultiblock<?> getController() {
-        return controllers.size() == 1 ? controllers.values().iterator().next() : null;
+        return controller;
+    }
+
+    public MultiblockManager<?> getManager() {
+        return controller != null && valid ? controller.getManager() : null;
     }
 
     public IMultiblockBase getTile(BlockPos pos) {
@@ -87,15 +95,15 @@ public class Structure {
         return FormationResult.FAIL;
     }
 
-    public void add(IMultiblockBase node) {
-        if (!node.getStructure().isValid()) {
-            node.resetStructure();
-        }
-        Structure s = node.getStructure();
+    public void add(Structure s) {
         if (s != this) {
+            if (s.controller != null) {
+                controller = s.controller;
+            }
             s.nodes.forEach((key, value) -> {
                 nodes.put(key, value);
-                value.setStructure(this);
+                System.out.println("Setting " + getManager());
+                value.setStructure(getManager(), this);
             });
             for (Axis axis : s.planeMap.keySet()) {
                 Map<Integer, VoxelPlane> map = getAxisMap(axis);
@@ -108,8 +116,6 @@ public class Structure {
                     }
                 });
             }
-
-            controllers.putAll(s.controllers);
         }
     }
 
@@ -137,29 +143,90 @@ public class Structure {
         return nodes.size();
     }
 
-    private static <TILE extends TileEntity & IMultiblockBase> void validate(TILE node) {
-        node.resetStructure();
-        FormationProtocol.explore(node.getPos(), pos -> {
-            if (pos.equals(node.getPos()))
+    private static void validate(IMultiblockBase node) {
+        FormationProtocol.explore(node.getTilePos(), pos -> {
+            if (pos.equals(node.getTilePos()))
                 return true;
-            TileEntity tile = MekanismUtils.getTileEntity(node.getWorld(), pos);
+            TileEntity tile = MekanismUtils.getTileEntity(node.getTileWorld(), pos);
             if (tile instanceof IMultiblockBase) {
                 IMultiblockBase adj = (IMultiblockBase) tile;
-                if (adj.getStructure() != node.getStructure()) {
-                    if (!adj.getStructure().isValid() || node.getStructure().size() > adj.getStructure().size()) {
-                        node.getStructure().add(adj);
-                    } else {
-                        adj.getStructure().add(node);
+                if (isCompatible(node, adj)) {
+                    boolean didMerge = false;
+                    if (node instanceof IStructuralMultiblock && adj instanceof IStructuralMultiblock) {
+                        Set<MultiblockManager<?>> managers = Sets.newHashSet();
+                        managers.addAll(((IStructuralMultiblock) node).getStructureMap().keySet());
+                        managers.addAll(((IStructuralMultiblock) adj).getStructureMap().keySet());
+                        // if both are structural, they should merge all manager structures
+                        for (MultiblockManager<?> manager : managers) {
+                            didMerge = mergeIfNecessary(node, adj, manager);
+                        }
+                    } else if (node instanceof IStructuralMultiblock) {
+                        // validate from the perspective of the IMultiblock
+                        validate(adj);
+                        return false;
+                    } else if (adj instanceof IStructuralMultiblock) {
+                        didMerge = mergeIfNecessary(node, adj, getManager(node));
+                    } else { // both are regular IMultiblocks
+                        // we know the structures are compatible so managers must be the same for both
+                        didMerge = mergeIfNecessary(node, adj, getManager(node));
                     }
-                    return true;
+
+                    return didMerge;
                 }
             }
             return false;
         });
+    }
 
-        node.getStructure().updateTimestamp = node.getWorld().getGameTime();
-        node.getStructure().didUpdate = false;
-        node.getStructure().removeMultiblock(node.getWorld());
+    private static boolean mergeIfNecessary(IMultiblockBase node, IMultiblockBase adj, MultiblockManager<?> manager) {
+        // reset the structures if they're invalid
+        if (!node.getStructure(manager).isValid())
+            node.resetStructure(manager);
+        if (!adj.getStructure(manager).isValid())
+            adj.resetStructure(manager);
+        // only merge if the structures are different
+        if (!node.hasStructure(adj.getStructure(manager))) {
+            mergeStructures(node, adj, manager);
+            return true;
+        }
+        return false;
+    }
+
+    private static void mergeStructures(IMultiblockBase node, IMultiblockBase adj, MultiblockManager<?> manager) {
+        Structure nodeStructure = node.getStructure(manager);
+        Structure adjStructure = adj.getStructure(manager);
+        Structure changed = null;
+
+        // merge into the bigger structure for efficiency
+        if (nodeStructure.size() > adjStructure.size()) {
+            changed = nodeStructure;
+            changed.add(adjStructure);
+        } else {
+            changed = adjStructure;
+            changed.add(nodeStructure);
+        }
+        // update the changed structure
+        changed.updateTimestamp = node.getTileWorld().getGameTime();
+        changed.didUpdate = false;
+        changed.removeMultiblock(node.getTileWorld());
+    }
+
+    private static boolean isCompatible(IMultiblockBase node, IMultiblockBase other) {
+        MultiblockManager<?> manager = getManager(node), otherManager = getManager(other);
+        if (manager != null && otherManager != null) {
+            return manager == otherManager;
+        } else if (manager == null && otherManager == null) {
+            return true;
+        } else if (manager == null && node instanceof IStructuralMultiblock) {
+            return ((IStructuralMultiblock) node).canInterface(otherManager);
+        } else if (otherManager == null && other instanceof IStructuralMultiblock) {
+            return ((IStructuralMultiblock) other).canInterface(manager);
+        }
+        return false;
+    }
+
+    private static MultiblockManager<?> getManager(IMultiblockBase node) {
+        return node instanceof IMultiblock ? ((IMultiblock<?>) node).getManager() : null;
     }
 
     public enum Axis {

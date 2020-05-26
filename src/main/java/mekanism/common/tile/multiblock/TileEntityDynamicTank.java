@@ -19,7 +19,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockData> implements IFluidContainerManager, IValveHandler {
+public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockData> implements IFluidContainerManager, IValveHandler<TankMultiblockData> {
 
     public TileEntityDynamicTank() {
         this(MekanismBlocks.DYNAMIC_TANK);

@@ -10,7 +10,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public interface IValveHandler extends IMultiblockBase {
+public interface IValveHandler<T extends MultiblockData> extends IMultiblock<T> {
 
     default void writeValves(CompoundNBT updateTag) {
         ListNBT valves = new ListNBT();
@@ -40,7 +40,7 @@ public interface IValveHandler extends IMultiblockBase {
     }
 
     default void triggerValveTransfer() {
-        if (getMultiblockData().isFormed()) {
+        if (getMultiblock().isFormed()) {
             for (ValveData data : getValveData()) {
                 if (getTilePos().equals(data.location)) {
                     data.onTransfer();
@@ -51,7 +51,7 @@ public interface IValveHandler extends IMultiblockBase {
     }
 
     default Collection<ValveData> getValveData() {
-        return getMultiblockData().valves;
+        return getMultiblock().valves;
     }
 
     class ValveData {

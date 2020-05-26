@@ -16,7 +16,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> implements IValveHandler {
+public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> implements IValveHandler<FissionReactorMultiblockData> {
 
     private boolean handleSound;
     private boolean prevBurning;

@@ -14,7 +14,7 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 
-public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultiblockData> implements IValveHandler {
+public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultiblockData> implements IValveHandler<BoilerMultiblockData> {
 
     public TileEntityBoilerCasing() {
         this(MekanismBlocks.BOILER_CASING);

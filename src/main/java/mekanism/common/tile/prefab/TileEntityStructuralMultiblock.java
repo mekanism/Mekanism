@@ -1,13 +1,17 @@
 package mekanism.common.tile.prefab;
 
+import java.util.HashMap;
+import java.util.Map;
 import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,7 +22,8 @@ import net.minecraft.util.Hand;
 
 public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism implements IStructuralMultiblock, IConfigurable {
 
-    private Structure structure = Structure.INVALID;
+    private Map<MultiblockManager<?>, Structure> structures = new HashMap<>();
+    private final Structure invalidStructure = Structure.INVALID;
 
     private MultiblockData defaultMultiblock = new MultiblockData(this);
 
@@ -33,40 +38,61 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void setStructure(Structure structure) {
-        this.structure = structure;
+    public void setStructure(MultiblockManager<?> manager, Structure structure) {
+        structures.put(manager, structure);
     }
 
     @Override
-    public Structure getStructure() {
-        return structure;
+    public Structure getStructure(MultiblockManager<?> manager) {
+        return structures.getOrDefault(manager, invalidStructure);
+    }
+
+    @Override
+    public boolean hasStructure(Structure structure) {
+        return structures.get(structure.getManager()) == structure;
+    }
+
+    @Override
+    public Map<MultiblockManager<?>, Structure> getStructureMap() {
+        return structures;
     }
 
     @Override
     public void onUpdateServer() {
         super.onUpdateServer();
-        if (ticker >= 3)
-            structure.tick(this);
+        structures.entrySet().removeIf(entry -> !entry.getValue().isValid());
+        if (ticker >= 3 && structures.isEmpty())
+            invalidStructure.tick(this);
     }
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        IMultiblock<?> master = getStructure().getController();
-        if (master != null) {
-            return master.onActivate(player, hand, stack);
+        for (Structure s : structures.values()) {
+            System.out.println(s.hashCode() + " " + s.size() + " " + (s.getManager() != null ? s.getManager().getName() : null));
+        }
+        for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
+            IMultiblock<?> master = entry.getValue().getController();
+            if (master != null && getMultiblockData(entry.getKey()).isFormed()) {
+                // make sure this block is on the structure first
+                if (new VoxelCuboid(entry.getValue().getMultiblockData().minLocation, entry.getValue().getMultiblockData().maxLocation).isOnSide(getPos())) {
+                    return master.onActivate(player, hand, stack);
+                }
+            }
         }
         return ActionResultType.PASS;
     }
 
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        if (!getWorld().isRemote() && !getMultiblockData().isFormed()) {
-            IMultiblock<?> master = getStructure().getController();
-            if (master != null) {
-                FormationResult result = getStructure().runUpdate(this);
-                if (!result.isFormed() && result.getResultText() != null) {
-                    player.sendMessage(result.getResultText());
-                    return ActionResultType.SUCCESS;
+        if (!getWorld().isRemote()) {
+            for (Structure s : structures.values()) {
+                IMultiblock<?> master = s.getController();
+                if (master != null && !s.getMultiblockData().isFormed()) {
+                    FormationResult result = s.runUpdate(this);
+                    if (!result.isFormed() && result.getResultText() != null) {
+                        player.sendMessage(result.getResultText());
+                        return ActionResultType.SUCCESS;
+                    }
                 }
             }
         }
@@ -82,7 +108,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     public void remove() {
         super.remove();
         if (!world.isRemote()) {
-            structure.invalidate(world);
+            structures.values().forEach(s -> s.invalidate(world));
         }
     }
 
@@ -90,7 +116,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         if (!world.isRemote()) {
-            structure.invalidate(world);
+            structures.values().forEach(s -> s.invalidate(world));
         }
     }
 }

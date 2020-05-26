@@ -8,27 +8,29 @@ import net.minecraft.util.Hand;
 
 public interface IMultiblockBase extends ITileWrapper {
 
-    default MultiblockData getMultiblockData() {
-        MultiblockData data = getStructure().getMultiblockData();
+    default MultiblockData getMultiblockData(MultiblockManager<?> manager) {
+        MultiblockData data = getStructure(manager).getMultiblockData();
         if (data != null && data.isFormed()) {
             return data;
         }
         return getDefaultData();
     }
 
-    default void setMultiblockData(MultiblockData multiblockData) {
-        getStructure().setMultiblockData(multiblockData);
+    default void setMultiblockData(MultiblockManager<?> manager, MultiblockData multiblockData) {
+        getStructure(manager).setMultiblockData(multiblockData);
     }
 
     MultiblockData getDefaultData();
 
     ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack);
 
-    Structure getStructure();
+    Structure getStructure(MultiblockManager<?> manager);
 
-    void setStructure(Structure structure);
+    boolean hasStructure(Structure structure);
 
-    default void resetStructure() {
-        setStructure(new Structure(this));
+    void setStructure(MultiblockManager<?> manager, Structure structure);
+
+    default void resetStructure(MultiblockManager<?> manager) {
+        setStructure(manager, new Structure(this));
     }
 }
