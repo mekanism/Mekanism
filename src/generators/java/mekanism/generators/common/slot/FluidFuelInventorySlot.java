@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
@@ -28,7 +29,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 public class FluidFuelInventorySlot extends FluidInventorySlot {
 
     public static FluidFuelInventorySlot forFuel(IExtendedFluidTank fluidTank, ToIntFunction<@NonNull ItemStack> fuelValue,
-          Int2ObjectFunction<@NonNull FluidStack> fuelCreator, @Nullable IMekanismInventory inventory, int x, int y) {
+          Int2ObjectFunction<@NonNull FluidStack> fuelCreator, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(fuelCreator, "Fuel fluid stack creator cannot be null");
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
@@ -69,7 +70,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             }
             //Allow items that have a fuel conversion value greater than one
             return fuelValue.applyAsInt(stack) > 0;
-        }, inventory, x, y);
+        }, listener, x, y);
     }
 
     private final Int2ObjectFunction<@NonNull FluidStack> fuelCreator;
@@ -77,8 +78,8 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
 
     private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<@NonNull ItemStack> fuelValue, Int2ObjectFunction<@NonNull FluidStack> fuelCreator,
           Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator,
-          @Nullable IMekanismInventory inventory, int x, int y) {
-        super(fluidTank, canExtract, canInsert, validator, inventory, x, y);
+          @Nullable IContentsListener listener, int x, int y) {
+        super(fluidTank, canExtract, canInsert, validator, listener, x, y);
         this.fuelCreator = fuelCreator;
         this.fuelValue = fuelValue;
     }

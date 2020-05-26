@@ -8,12 +8,12 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.common.integration.energy.EnergyCompatUtils;
@@ -40,7 +40,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     /**
      * Fills the container from this item OR converts the given item to energy
      */
-    public static EnergyInventorySlot fillOrConvert(IEnergyContainer energyContainer, Supplier<World> worldSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static EnergyInventorySlot fillOrConvert(IEnergyContainer energyContainer, Supplier<World> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         Function<ItemStack, FloatingLong> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
@@ -59,16 +59,16 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             //Note: we mark all energy handler items as valid and have a more restrictive insert check so that we allow full containers when they are done being filled
             // We also allow energy conversion of items that can be converted
             return EnergyCompatUtils.hasStrictEnergyHandler(stack) || !getPotentialConversion(worldSupplier.get(), stack).isZero();
-        }, inventory, x, y);
+        }, listener, x, y);
     }
 
     /**
      * Fills the container from this item
      */
-    public static EnergyInventorySlot fill(IEnergyContainer energyContainer, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static EnergyInventorySlot fill(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         return new EnergyInventorySlot(energyContainer, stack -> !EnergyCompatUtils.hasStrictEnergyHandler(stack), EnergyInventorySlot::fillInsertCheck,
-              EnergyCompatUtils::hasStrictEnergyHandler, inventory, x, y);
+              EnergyCompatUtils::hasStrictEnergyHandler, listener, x, y);
     }
 
     /**
@@ -76,7 +76,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      *
      * Drains the container into this item.
      */
-    public static EnergyInventorySlot drain(IEnergyContainer energyContainer, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static EnergyInventorySlot drain(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         Predicate<@NonNull ItemStack> insertPredicate = stack -> {
             IStrictEnergyHandler itemHandler = EnergyCompatUtils.getStrictEnergyHandler(stack);
@@ -96,7 +96,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             //Otherwise if we can accept any energy that is currently stored in the container, then we allow inserting the item
             return itemHandler.insertEnergy(energyContainer.getEnergy(), Action.SIMULATE).smallerThan(energyContainer.getEnergy());
         };
-        return new EnergyInventorySlot(energyContainer, insertPredicate.negate(), insertPredicate, EnergyCompatUtils::hasStrictEnergyHandler, inventory, x, y);
+        return new EnergyInventorySlot(energyContainer, insertPredicate.negate(), insertPredicate, EnergyCompatUtils::hasStrictEnergyHandler, listener, x, y);
     }
 
     private static boolean fillInsertCheck(ItemStack stack) {
@@ -116,13 +116,13 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     private final IEnergyContainer energyContainer;
 
     private EnergyInventorySlot(IEnergyContainer energyContainer, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
-        this(energyContainer, () -> null, canExtract, canInsert, validator, inventory, x, y);
+          Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+        this(energyContainer, () -> null, canExtract, canInsert, validator, listener, x, y);
     }
 
     private EnergyInventorySlot(IEnergyContainer energyContainer, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
-          Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
-        super(canExtract, canInsert, validator, inventory, x, y);
+          Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+        super(canExtract, canInsert, validator, listener, x, y);
         this.energyContainer = energyContainer;
         this.worldSupplier = worldSupplier;
         setSlotType(ContainerSlotType.POWER);

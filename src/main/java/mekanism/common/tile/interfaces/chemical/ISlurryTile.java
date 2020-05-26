@@ -1,10 +1,8 @@
 package mekanism.common.tile.interfaces.chemical;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -23,15 +21,14 @@ public interface ISlurryTile extends ISlurryTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default SlurryHandlerManager getInitialSlurryManager() {
-        DynamicSlurryHandler slurryHandler = new DynamicSlurryHandler(this::getSlurryManager, this::extractSlurryCheck, this::insertSlurryCheck, this::onContentsChanged);
-        return new SlurryHandlerManager(getInitialSlurryTanks(slurryHandler), slurryHandler);
+        return new SlurryHandlerManager(getInitialSlurryTanks(), new DynamicSlurryHandler(this::getSlurryManager, this::extractSlurryCheck, this::insertSlurryCheck, this));
     }
 
     /**
      * @apiNote Do not call directly, only override implementation
      */
     @Nullable
-    default IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks(@Nonnull IMekanismSlurryHandler handler) {
+    default IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
         return null;
     }
 

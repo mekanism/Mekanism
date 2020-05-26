@@ -5,13 +5,14 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MergedTank;
 import mekanism.common.capabilities.MergedTank.CurrentType;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
 import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
@@ -27,7 +28,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
                stack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY).isPresent();
     }
 
-    public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
         Predicate<@NonNull ItemStack> fluidInsertPredicate = FluidInventorySlot.getInputPredicate(mergedTank.getFluidTank());
         Predicate<@NonNull ItemStack> gasInsertPredicate = GasInventorySlot.getDrainInsertPredicate(mergedTank.getGasTank(), GasInventorySlot::getCapability);
@@ -52,10 +53,10 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
         };
         //Extract predicate, always allow the player to manually extract or if the insert predicate no longer matches allow for it to be extracted
         return new HybridInventorySlot(mergedTank, (stack, automationType) -> automationType == AutomationType.MANUAL || !insertPredicate.test(stack, automationType),
-              insertPredicate, HybridInventorySlot::hasCapability, inventory, x, y);
+              insertPredicate, HybridInventorySlot::hasCapability, listener, x, y);
     }
 
-    public static HybridInventorySlot outputOrFill(MergedTank mergedTank, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static HybridInventorySlot outputOrFill(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
         Predicate<@NonNull ItemStack> gasExtractPredicate = GasInventorySlot.getFillExtractPredicate(mergedTank.getGasTank(), GasInventorySlot::getCapability);
         Predicate<@NonNull ItemStack> infusionExtractPredicate = InfusionInventorySlot.getFillExtractPredicate(mergedTank.getInfusionTank(), InfusionInventorySlot::getCapability);
@@ -103,7 +104,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
             }
             //otherwise only allow it if one of the chemical insert predicates matches
             return gasInsertPredicate.test(stack) || infusionInsertPredicate.test(stack) || pigmentInsertPredicate.test(stack) || slurryInsertPredicate.test(stack);
-        }, HybridInventorySlot::hasCapability, inventory, x, y);
+        }, HybridInventorySlot::hasCapability, listener, x, y);
     }
 
     private final MergedTank mergedTank;
@@ -113,9 +114,8 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     private boolean isFilling;
 
     private HybridInventorySlot(MergedTank mergedTank, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory,
-          int x, int y) {
-        super(canExtract, canInsert, validator, inventory, x, y);
+          BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+        super(canExtract, canInsert, validator, listener, x, y);
         this.mergedTank = mergedTank;
     }
 

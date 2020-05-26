@@ -3,6 +3,7 @@ package mekanism.api.fluid;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.nbt.CompoundNBT;
@@ -13,7 +14,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<CompoundNBT> {
+public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<CompoundNBT>, IContentsListener {
 
     /**
      * Overrides the stack in this {@link IExtendedFluidTank}.
@@ -101,11 +102,6 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
         }
         return ret;
     }
-
-    /**
-     * Called when the contents of this tank changes.
-     */
-    void onContentsChanged();
 
     /**
      * Convenience method for modifying the size of the stored stack.

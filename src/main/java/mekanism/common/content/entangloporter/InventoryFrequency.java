@@ -56,8 +56,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     private void presetVariables() {
         storedFluid = BasicFluidTank.create(MekanismConfig.general.entangloporterFluidBuffer.get(), this);
         fluidTanks = Collections.singletonList(storedFluid);
-        //Note: We just pass null as the handler as our onContentsChange does nothing so we have no need to create a fake handler just to pass it
-        storedGas = BasicGasTank.create(MekanismConfig.general.entangloporterGasBuffer.get(), null);
+        storedGas = BasicGasTank.create(MekanismConfig.general.entangloporterGasBuffer.get(), this);
         gasTanks = Collections.singletonList(storedGas);
         storedItem = EntangloporterInventorySlot.create(this);
         inventorySlots = Collections.singletonList(storedItem);

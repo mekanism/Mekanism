@@ -8,11 +8,11 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -33,9 +33,9 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     /**
      * Fills/Drains the tank depending on if this item has any contents in it
      */
-    public static FluidInventorySlot input(IExtendedFluidTank fluidTank, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static FluidInventorySlot input(IExtendedFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
-        return new FluidInventorySlot(fluidTank, alwaysFalse, getInputPredicate(fluidTank), stack -> FluidUtil.getFluidHandler(stack).isPresent(), inventory, x, y);
+        return new FluidInventorySlot(fluidTank, alwaysFalse, getInputPredicate(fluidTank), stack -> FluidUtil.getFluidHandler(stack).isPresent(), listener, x, y);
     }
 
     protected static Predicate<ItemStack> getInputPredicate(IExtendedFluidTank fluidTank) {
@@ -67,7 +67,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     /**
      * Fills/Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
      */
-    public static FluidInventorySlot rotary(IExtendedFluidTank fluidTank, BooleanSupplier modeSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static FluidInventorySlot rotary(IExtendedFluidTank fluidTank, BooleanSupplier modeSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> {
@@ -109,13 +109,13 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
                 return isNonFullFluidContainer(capability);
             }
             return false;
-        }, inventory, x, y);
+        }, listener, x, y);
     }
 
     /**
      * Fills the tank from this item
      */
-    public static FluidInventorySlot fill(IExtendedFluidTank fluidTank, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static FluidInventorySlot fill(IExtendedFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> {
             Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
@@ -136,7 +136,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             //Allow for any fluid containers, but we have a more restrictive canInsert so that we don't insert all items
             //TODO: Check the other ones to see if we need something like this for them
             return FluidUtil.getFluidHandler(stack).isPresent();
-        }, inventory, x, y);
+        }, listener, x, y);
     }
 
     /**
@@ -144,7 +144,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      *
      * Drains the tank into this item.
      */
-    public static FluidInventorySlot drain(IExtendedFluidTank fluidTank, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static FluidInventorySlot drain(IExtendedFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid handler cannot be null");
         //TODO: Stacked buckets are not accepted by this because FluidBucketWrapper#fill returns false if it is stacked
         // One potential fix would be to copy it to a size of 1
@@ -162,7 +162,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
                 }
             }
             return false;
-        }, stack -> isNonFullFluidContainer(FluidUtil.getFluidHandler(stack)), inventory, x, y);
+        }, stack -> isNonFullFluidContainer(FluidUtil.getFluidHandler(stack)), listener, x, y);
     }
 
     //TODO: Should we make this also have the fluid type have to match a desired type???
@@ -185,8 +185,8 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     private boolean isFilling;
 
     protected FluidInventorySlot(IExtendedFluidTank fluidTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
-        super(canExtract, canInsert, validator, inventory, x, y);
+          Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+        super(canExtract, canInsert, validator, listener, x, y);
         setSlotType(ContainerSlotType.EXTRA);
         this.fluidTank = fluidTank;
     }

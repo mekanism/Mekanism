@@ -10,9 +10,9 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.slurry.BasicSlurryTank;
-import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.inventory.AutomationType;
@@ -35,12 +35,12 @@ public class RateLimitSlurryHandler extends ItemStackMekanismSlurryHandler {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(isValid, "Slurry validity check cannot be null");
-        return new RateLimitSlurryHandler(handler -> new RateLimitSlurryTank(rate, capacity, canExtract, canInsert, isValid, handler));
+        return new RateLimitSlurryHandler(listener -> new RateLimitSlurryTank(rate, capacity, canExtract, canInsert, isValid, listener));
     }
 
     private final ISlurryTank tank;
 
-    private RateLimitSlurryHandler(Function<IMekanismSlurryHandler, ISlurryTank> tankProvider) {
+    private RateLimitSlurryHandler(Function<IContentsListener, ISlurryTank> tankProvider) {
         this.tank = tankProvider.apply(this);
     }
 
@@ -53,13 +53,13 @@ public class RateLimitSlurryHandler extends ItemStackMekanismSlurryHandler {
 
         private final long rate;
 
-        public RateLimitSlurryTank(long rate, LongSupplier capacity, IMekanismSlurryHandler slurryHandler) {
-            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, slurryHandler);
+        public RateLimitSlurryTank(long rate, LongSupplier capacity, IContentsListener listener) {
+            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, listener);
         }
 
         public RateLimitSlurryTank(long rate, LongSupplier capacity, BiPredicate<@NonNull Slurry, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull Slurry, @NonNull AutomationType> canInsert, Predicate<@NonNull Slurry> isValid, IMekanismSlurryHandler slurryHandler) {
-            super(capacity, canExtract, canInsert, isValid, slurryHandler);
+              BiPredicate<@NonNull Slurry, @NonNull AutomationType> canInsert, Predicate<@NonNull Slurry> isValid, IContentsListener listener) {
+            super(capacity, canExtract, canInsert, isValid, listener);
             this.rate = rate;
         }
 

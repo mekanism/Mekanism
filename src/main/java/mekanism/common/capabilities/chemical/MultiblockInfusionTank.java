@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
@@ -48,13 +49,13 @@ public class MultiblockInfusionTank<MULTIBLOCK extends MultiblockData> extends V
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockInfusionTank<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
           LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
+          Predicate<@NonNull InfuseType> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Tile cannot be null");
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Infuse type validity check cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new MultiblockInfusionTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, infusionHandler);
+        return new MultiblockInfusionTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, listener);
     }
 
     protected final MULTIBLOCK multiblock;
@@ -67,8 +68,8 @@ public class MultiblockInfusionTank<MULTIBLOCK extends MultiblockData> extends V
 
     protected MultiblockInfusionTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
           BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
-        super(capacity, canExtract, canInsert, validator, infusionHandler);
+          Predicate<@NonNull InfuseType> validator, @Nullable IContentsListener listener) {
+        super(capacity, canExtract, canInsert, validator, listener);
         this.multiblock = multiblock;
         this.tile = tile;
     }

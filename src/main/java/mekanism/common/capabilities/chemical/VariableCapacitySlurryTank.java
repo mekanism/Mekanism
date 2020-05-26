@@ -9,10 +9,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.slurry.BasicSlurryTank;
-import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.inventory.AutomationType;
 
@@ -22,25 +22,25 @@ import mekanism.api.inventory.AutomationType;
 public class VariableCapacitySlurryTank extends BasicSlurryTank {
 
     public static VariableCapacitySlurryTank create(LongSupplier capacity, BiPredicate<@NonNull Slurry, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull Slurry, @NonNull AutomationType> canInsert, Predicate<@NonNull Slurry> validator, @Nullable IMekanismSlurryHandler slurryHandler) {
+          BiPredicate<@NonNull Slurry, @NonNull AutomationType> canInsert, Predicate<@NonNull Slurry> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Slurry validity check cannot be null");
-        return new VariableCapacitySlurryTank(capacity, canExtract, canInsert, validator, slurryHandler);
+        return new VariableCapacitySlurryTank(capacity, canExtract, canInsert, validator, listener);
     }
 
-    public static VariableCapacitySlurryTank output(LongSupplier capacity, Predicate<@NonNull Slurry> validator, @Nullable IMekanismSlurryHandler slurryHandler) {
+    public static VariableCapacitySlurryTank output(LongSupplier capacity, Predicate<@NonNull Slurry> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Slurry validity check cannot be null");
-        return new VariableCapacitySlurryTank(capacity, alwaysTrueBi, internalOnly, validator, slurryHandler);
+        return new VariableCapacitySlurryTank(capacity, alwaysTrueBi, internalOnly, validator, listener);
     }
 
     private final LongSupplier capacity;
 
     protected VariableCapacitySlurryTank(LongSupplier capacity, BiPredicate<@NonNull Slurry, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull Slurry, @NonNull AutomationType> canInsert, Predicate<@NonNull Slurry> validator, @Nullable IMekanismSlurryHandler slurryHandler) {
-        super(capacity.getAsLong(), canExtract, canInsert, validator, slurryHandler);
+          BiPredicate<@NonNull Slurry, @NonNull AutomationType> canInsert, Predicate<@NonNull Slurry> validator, @Nullable IContentsListener listener) {
+        super(capacity.getAsLong(), canExtract, canInsert, validator, listener);
         this.capacity = capacity;
     }
 

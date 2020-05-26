@@ -7,9 +7,9 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -48,13 +48,13 @@ public class MultiblockPigmentTank<MULTIBLOCK extends MultiblockData> extends Va
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockPigmentTank<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
           LongSupplier capacity, BiPredicate<@NonNull Pigment, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Pigment, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull Pigment> validator, @Nullable IMekanismPigmentHandler pigmentHandler) {
+          Predicate<@NonNull Pigment> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Tile cannot be null");
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Pigment validity check cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new MultiblockPigmentTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, pigmentHandler);
+        return new MultiblockPigmentTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, listener);
     }
 
     protected final MULTIBLOCK multiblock;
@@ -67,8 +67,8 @@ public class MultiblockPigmentTank<MULTIBLOCK extends MultiblockData> extends Va
 
     protected MultiblockPigmentTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
           BiPredicate<@NonNull Pigment, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Pigment, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull Pigment> validator, @Nullable IMekanismPigmentHandler pigmentHandler) {
-        super(capacity, canExtract, canInsert, validator, pigmentHandler);
+          Predicate<@NonNull Pigment> validator, @Nullable IContentsListener listener) {
+        super(capacity, canExtract, canInsert, validator, listener);
         this.multiblock = multiblock;
         this.tile = tile;
     }

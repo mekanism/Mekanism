@@ -11,15 +11,11 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.pigment.BasicPigmentTank;
-import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.BasicSlurryTank;
-import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -210,16 +206,16 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
         GAS(NBTConstants.GAS_TANKS, (cache) -> cache.gasTanks.add(BasicGasTank.create(Long.MAX_VALUE, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi,
               BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, cache)),
-              (holder) -> ((IMekanismGasHandler) holder).getChemicalTanks(null)),
+              (holder) -> ((IGasTracker) holder).getGasTanks(null)),
 
         INFUSION(NBTConstants.INFUSION_TANKS, (cache) -> cache.infusionTanks.add(BasicInfusionTank.create(Long.MAX_VALUE, cache)),
-              (holder) -> ((IMekanismInfusionHandler) holder).getChemicalTanks(null)),
+              (holder) -> ((IInfusionTracker) holder).getInfusionTanks(null)),
 
         PIGMENT(NBTConstants.PIGMENT_TANKS, (cache) -> cache.pigmentTanks.add(BasicPigmentTank.create(Long.MAX_VALUE, cache)),
-              (holder) -> ((IMekanismPigmentHandler) holder).getChemicalTanks(null)),
+              (holder) -> ((IPigmentTracker) holder).getPigmentTanks(null)),
 
         SLURRY(NBTConstants.SLURRY_TANKS, (cache) -> cache.slurryTanks.add(BasicSlurryTank.create(Long.MAX_VALUE, cache)),
-              (holder) -> ((IMekanismSlurryHandler) holder).getChemicalTanks(null)),
+              (holder) -> ((ISlurryTracker) holder).getSlurryTanks(null)),
 
         ENERGY(NBTConstants.ENERGY_CONTAINERS, (cache) -> cache.energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, cache)),
               (holder) -> ((IMekanismStrictEnergyHandler) holder).getEnergyContainers(null)),

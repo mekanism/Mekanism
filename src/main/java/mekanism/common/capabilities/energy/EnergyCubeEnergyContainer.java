@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.IContentsListener;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
@@ -15,16 +15,16 @@ import mekanism.common.tier.EnergyCubeTier;
 @MethodsReturnNonnullByDefault
 public class EnergyCubeEnergyContainer extends BasicEnergyContainer {
 
-    public static EnergyCubeEnergyContainer create(EnergyCubeTier tier, @Nullable IMekanismStrictEnergyHandler energyHandler) {
+    public static EnergyCubeEnergyContainer create(EnergyCubeTier tier, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tier, "Energy cube tier cannot be null");
-        return new EnergyCubeEnergyContainer(tier, energyHandler);
+        return new EnergyCubeEnergyContainer(tier, listener);
     }
 
     private final boolean isCreative;
     private final FloatingLongSupplier rate;
 
-    private EnergyCubeEnergyContainer(EnergyCubeTier tier, @Nullable IMekanismStrictEnergyHandler energyHandler) {
-        super(tier.getMaxEnergy(), alwaysTrue, alwaysTrue, energyHandler);
+    private EnergyCubeEnergyContainer(EnergyCubeTier tier, @Nullable IContentsListener listener) {
+        super(tier.getMaxEnergy(), alwaysTrue, alwaysTrue, listener);
         isCreative = tier == EnergyCubeTier.CREATIVE;
         rate = tier::getOutput;
     }

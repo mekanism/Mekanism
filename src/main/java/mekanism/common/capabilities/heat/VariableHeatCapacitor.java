@@ -4,9 +4,9 @@ import java.util.function.DoubleSupplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.heat.IMekanismHeatHandler;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -16,13 +16,13 @@ public class VariableHeatCapacitor extends BasicHeatCapacitor {
     private final DoubleSupplier conductionCoefficientSupplier;
     private final DoubleSupplier insulationCoefficientSupplier;
 
-    public static VariableHeatCapacitor create(double heatCapacity, boolean absorbHeat, boolean emitHeat, @Nullable IMekanismHeatHandler heatHandler) {
-        return new VariableHeatCapacitor(heatCapacity, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION, heatHandler);
+    public static VariableHeatCapacitor create(double heatCapacity, boolean absorbHeat, boolean emitHeat, @Nullable IContentsListener listener) {
+        return new VariableHeatCapacitor(heatCapacity, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION, listener);
     }
 
     protected VariableHeatCapacitor(double heatCapacity, DoubleSupplier conductionCoefficient, DoubleSupplier insulationCoefficient,
-          @Nullable IMekanismHeatHandler heatHandler) {
-        super(heatCapacity, conductionCoefficient.getAsDouble(), insulationCoefficient.getAsDouble(), heatHandler);
+          @Nullable IContentsListener listener) {
+        super(heatCapacity, conductionCoefficient.getAsDouble(), insulationCoefficient.getAsDouble(), listener);
         this.conductionCoefficientSupplier = conductionCoefficient;
         this.insulationCoefficientSupplier = insulationCoefficient;
     }

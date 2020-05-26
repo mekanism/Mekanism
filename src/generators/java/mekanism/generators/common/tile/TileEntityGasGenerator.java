@@ -3,12 +3,12 @@ package mekanism.generators.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
@@ -51,9 +51,9 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(@Nonnull IMekanismGasHandler handler) {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(fuelTank = new FuelTank(handler), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
+        builder.addTank(fuelTank = new FuelTank(this), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }
 
@@ -151,8 +151,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     //Implementation of gas tank that on no longer being empty updates the output rate of this generator
     private class FuelTank extends BasicGasTank {
 
-        protected FuelTank(@Nullable IMekanismGasHandler gasHandler) {
-            super(MAX_GAS, notExternal, alwaysTrueBi, gas -> gas.has(Fuel.class), gasHandler);
+        protected FuelTank(@Nullable IContentsListener listener) {
+            super(MAX_GAS, notExternal, alwaysTrueBi, gas -> gas.has(Fuel.class), listener);
         }
 
         @Override

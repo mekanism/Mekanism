@@ -6,9 +6,9 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
@@ -21,15 +21,15 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     private static final Predicate<@NonNull ItemStack> validator = stack -> !(stack.getItem() instanceof ItemBlockBin);
 
-    public static BinInventorySlot create(@Nullable IMekanismInventory inventory, BinTier tier) {
+    public static BinInventorySlot create(@Nullable IContentsListener listener, BinTier tier) {
         Objects.requireNonNull(tier, "Bin tier cannot be null");
-        return new BinInventorySlot(inventory, tier);
+        return new BinInventorySlot(listener, tier);
     }
 
     private final boolean isCreative;
 
-    private BinInventorySlot(@Nullable IMekanismInventory inventory, BinTier tier) {
-        super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, validator, inventory, 0, 0);
+    private BinInventorySlot(@Nullable IContentsListener listener, BinTier tier) {
+        super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, validator, listener, 0, 0);
         isCreative = tier == BinTier.CREATIVE;
         obeyStackLimit = false;
     }

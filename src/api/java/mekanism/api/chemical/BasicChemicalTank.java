@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -17,8 +18,8 @@ import net.minecraft.nbt.CompoundNBT;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
-      HANDLER extends IMekanismChemicalHandler<CHEMICAL, STACK, TANK>> implements IChemicalTank<CHEMICAL, STACK>, IChemicalHandler<CHEMICAL, STACK> {
+public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IChemicalTank<CHEMICAL, STACK>,
+      IChemicalHandler<CHEMICAL, STACK> {
 
     private final Predicate<@NonNull CHEMICAL> validator;
     protected final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract;
@@ -31,17 +32,17 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      */
     protected STACK stored;
     @Nullable
-    private final HANDLER handler;
+    private final IContentsListener listener;
 
     protected BasicChemicalTank(long capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable HANDLER handler) {
+          Predicate<@NonNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         this.capacity = capacity;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
         this.attributeValidator = attributeValidator;
-        this.handler = handler;
-        stored = getEmptyStack();
+        this.listener = listener;
+        this.stored = getEmptyStack();
     }
 
     @Override
@@ -249,8 +250,8 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public void onContentsChanged() {
-        if (handler != null) {
-            handler.onContentsChanged();
+        if (listener != null) {
+            listener.onContentsChanged();
         }
     }
 

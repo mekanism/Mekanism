@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.chemical.dynamic;
 
+import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -10,7 +11,7 @@ import net.minecraftforge.common.util.NonNullSupplier;
 public class DynamicGasHandler extends DynamicChemicalHandler<Gas, GasStack, IGasTank> implements IMekanismGasHandler {
 
     public DynamicGasHandler(NonNullSupplier<ChemicalHandlerManager<Gas, GasStack, IGasTank, ?, ?>> handlerManager, InteractPredicate canExtract,
-          InteractPredicate canInsert, Runnable onContentsChanged) {
-        super(handlerManager, canExtract, canInsert, onContentsChanged);
+          InteractPredicate canInsert, IContentsListener listener) {
+        super(handlerManager, canExtract, canInsert, listener);
     }
 }

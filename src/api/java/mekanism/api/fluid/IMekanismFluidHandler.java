@@ -5,13 +5,14 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IMekanismFluidHandler extends ISidedFluidHandler {
+public interface IMekanismFluidHandler extends ISidedFluidHandler, IContentsListener {
 
     /**
      * Used to check if an instance of {@link IMekanismFluidHandler} actually has the ability to handle fluid.
@@ -38,11 +39,6 @@ public interface IMekanismFluidHandler extends ISidedFluidHandler {
      * this <em>MUST</em> return an empty list.
      */
     List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side);
-
-    /**
-     * Called when the contents of this fluid handler change.
-     */
-    void onContentsChanged();
 
     /**
      * Returns the {@link IExtendedFluidTank} that has the given index from the list of tanks on the given side.

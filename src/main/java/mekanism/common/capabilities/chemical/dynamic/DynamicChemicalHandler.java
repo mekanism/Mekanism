@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -20,18 +21,19 @@ import net.minecraftforge.common.util.NonNullSupplier;
 public abstract class DynamicChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
       implements IMekanismChemicalHandler<CHEMICAL, STACK, TANK> {
 
+    //TODO: instead make this be a supplier for the list of chemical tanks? That way things like the gauge droper can easier implement it
     private final NonNullSupplier<ChemicalHandlerManager<CHEMICAL, STACK, TANK, ?, ?>> handlerManager;
     private final InteractPredicate canExtract;
     private final InteractPredicate canInsert;
-    private final Runnable onContentsChanged;
+    private final IContentsListener listener;
 
     //TODO: Note that the supplier should basically just return a constant.
     protected DynamicChemicalHandler(NonNullSupplier<ChemicalHandlerManager<CHEMICAL, STACK, TANK, ?, ?>> handlerManager, InteractPredicate canExtract,
-          InteractPredicate canInsert, Runnable onContentsChanged) {
+          InteractPredicate canInsert, IContentsListener listener) {
         this.handlerManager = handlerManager;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
-        this.onContentsChanged = onContentsChanged;
+        this.listener = listener;
     }
 
     @Override
@@ -41,7 +43,7 @@ public abstract class DynamicChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>
 
     @Override
     public void onContentsChanged() {
-        onContentsChanged.run();
+        listener.onContentsChanged();
     }
 
     @Override

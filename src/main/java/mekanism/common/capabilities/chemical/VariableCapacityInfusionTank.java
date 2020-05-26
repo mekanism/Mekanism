@@ -9,10 +9,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
-import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.inventory.AutomationType;
 
@@ -22,25 +22,25 @@ import mekanism.api.inventory.AutomationType;
 public class VariableCapacityInfusionTank extends BasicInfusionTank {
 
     public static VariableCapacityInfusionTank create(LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
+          BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Infuse type validity check cannot be null");
-        return new VariableCapacityInfusionTank(capacity, canExtract, canInsert, validator, infusionHandler);
+        return new VariableCapacityInfusionTank(capacity, canExtract, canInsert, validator, listener);
     }
 
-    public static VariableCapacityInfusionTank output(LongSupplier capacity, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
+    public static VariableCapacityInfusionTank output(LongSupplier capacity, Predicate<@NonNull InfuseType> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Infuse type validity check cannot be null");
-        return new VariableCapacityInfusionTank(capacity, alwaysTrueBi, internalOnly, validator, infusionHandler);
+        return new VariableCapacityInfusionTank(capacity, alwaysTrueBi, internalOnly, validator, listener);
     }
 
     private final LongSupplier capacity;
 
     protected VariableCapacityInfusionTank(LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
-        super(capacity.getAsLong(), canExtract, canInsert, validator, infusionHandler);
+          BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> validator, @Nullable IContentsListener listener) {
+        super(capacity.getAsLong(), canExtract, canInsert, validator, listener);
         this.capacity = capacity;
     }
 

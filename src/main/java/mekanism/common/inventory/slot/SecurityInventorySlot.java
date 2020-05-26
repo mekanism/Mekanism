@@ -7,8 +7,8 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.lib.security.IOwnerItem;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.lib.security.ISecurityTile.SecurityMode;
@@ -21,21 +21,21 @@ public class SecurityInventorySlot extends BasicInventorySlot {
 
     private static final Predicate<@NonNull ItemStack> validator = stack -> stack.getItem() instanceof IOwnerItem;
 
-    public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(ownerSupplier, "Owner supplier cannot be null");
         return new SecurityInventorySlot(stack -> ((IOwnerItem) stack.getItem()).getOwnerUUID(stack) == null, stack -> {
             UUID ownerUUID = ((IOwnerItem) stack.getItem()).getOwnerUUID(stack);
             return ownerUUID != null && ownerUUID.equals(ownerSupplier.get());
-        }, inventory, x, y);
+        }, listener, x, y);
     }
 
-    public static SecurityInventorySlot lock(@Nullable IMekanismInventory inventory, int x, int y) {
+    public static SecurityInventorySlot lock(@Nullable IContentsListener listener, int x, int y) {
         return new SecurityInventorySlot(stack -> ((IOwnerItem) stack.getItem()).getOwnerUUID(stack) != null,
-              stack -> ((IOwnerItem) stack.getItem()).getOwnerUUID(stack) == null, inventory, x, y);
+              stack -> ((IOwnerItem) stack.getItem()).getOwnerUUID(stack) == null, listener, x, y);
     }
 
-    private SecurityInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nullable IMekanismInventory inventory, int x, int y) {
-        super(canExtract, canInsert, validator, inventory, x, y);
+    private SecurityInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
+        super(canExtract, canInsert, validator, listener, x, y);
     }
 
     public void unlock(UUID ownerUUID) {

@@ -10,9 +10,9 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.pigment.BasicPigmentTank;
-import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.inventory.AutomationType;
@@ -35,12 +35,12 @@ public class RateLimitPigmentHandler extends ItemStackMekanismPigmentHandler {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(isValid, "Pigment validity check cannot be null");
-        return new RateLimitPigmentHandler(handler -> new RateLimitPigmentTank(rate, capacity, canExtract, canInsert, isValid, handler));
+        return new RateLimitPigmentHandler(listener -> new RateLimitPigmentTank(rate, capacity, canExtract, canInsert, isValid, listener));
     }
 
     private final IPigmentTank tank;
 
-    private RateLimitPigmentHandler(Function<IMekanismPigmentHandler, IPigmentTank> tankProvider) {
+    private RateLimitPigmentHandler(Function<IContentsListener, IPigmentTank> tankProvider) {
         this.tank = tankProvider.apply(this);
     }
 
@@ -53,13 +53,13 @@ public class RateLimitPigmentHandler extends ItemStackMekanismPigmentHandler {
 
         private final long rate;
 
-        public RateLimitPigmentTank(long rate, LongSupplier capacity, IMekanismPigmentHandler pigmentHandler) {
-            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, pigmentHandler);
+        public RateLimitPigmentTank(long rate, LongSupplier capacity, IContentsListener listener) {
+            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, listener);
         }
 
         public RateLimitPigmentTank(long rate, LongSupplier capacity, BiPredicate<@NonNull Pigment, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull Pigment, @NonNull AutomationType> canInsert, Predicate<@NonNull Pigment> isValid, IMekanismPigmentHandler pigmentHandler) {
-            super(capacity, canExtract, canInsert, isValid, pigmentHandler);
+              BiPredicate<@NonNull Pigment, @NonNull AutomationType> canInsert, Predicate<@NonNull Pigment> isValid, IContentsListener listener) {
+            super(capacity, canExtract, canInsert, isValid, listener);
             this.rate = rate;
         }
 

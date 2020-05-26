@@ -1,11 +1,9 @@
 package mekanism.common.tile.interfaces.chemical;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.capabilities.chemical.dynamic.DynamicInfusionHandler;
@@ -23,15 +21,14 @@ public interface IInfusionTile extends IInfusionTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default InfusionHandlerManager getInitialInfusionManager() {
-        DynamicInfusionHandler infusionHandler = new DynamicInfusionHandler(this::getInfusionManager, this::extractInfusionCheck, this::insertInfusionCheck, this::onContentsChanged);
-        return new InfusionHandlerManager(getInitialInfusionTanks(infusionHandler), infusionHandler);
+        return new InfusionHandlerManager(getInitialInfusionTanks(), new DynamicInfusionHandler(this::getInfusionManager, this::extractInfusionCheck, this::insertInfusionCheck, this));
     }
 
     /**
      * @apiNote Do not call directly, only override implementation
      */
     @Nullable
-    default IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(@Nonnull IMekanismInfusionHandler handler) {
+    default IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
         return null;
     }
 

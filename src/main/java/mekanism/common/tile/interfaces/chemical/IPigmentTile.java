@@ -1,10 +1,8 @@
 package mekanism.common.tile.interfaces.chemical;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -23,15 +21,14 @@ public interface IPigmentTile extends IPigmentTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default PigmentHandlerManager getInitialPigmentManager() {
-        DynamicPigmentHandler pigmentHandler = new DynamicPigmentHandler(this::getPigmentManager, this::extractPigmentCheck, this::insertPigmentCheck, this::onContentsChanged);
-        return new PigmentHandlerManager(getInitialPigmentTanks(pigmentHandler), pigmentHandler);
+        return new PigmentHandlerManager(getInitialPigmentTanks(), new DynamicPigmentHandler(this::getPigmentManager, this::extractPigmentCheck, this::insertPigmentCheck, this));
     }
 
     /**
      * @apiNote Do not call directly, only override implementation
      */
     @Nullable
-    default IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(@Nonnull IMekanismPigmentHandler handler) {
+    default IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
         return null;
     }
 

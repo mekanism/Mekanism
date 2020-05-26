@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.chemical.dynamic;
 
+import mekanism.api.IContentsListener;
 import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
@@ -10,7 +11,7 @@ import net.minecraftforge.common.util.NonNullSupplier;
 public class DynamicSlurryHandler extends DynamicChemicalHandler<Slurry, SlurryStack, ISlurryTank> implements IMekanismSlurryHandler {
 
     public DynamicSlurryHandler(NonNullSupplier<ChemicalHandlerManager<Slurry, SlurryStack, ISlurryTank, ?, ?>> handlerManager, InteractPredicate canExtract,
-          InteractPredicate canInsert, Runnable onContentsChanged) {
-        super(handlerManager, canExtract, canInsert, onContentsChanged);
+          InteractPredicate canInsert, IContentsListener listener) {
+        super(handlerManager, canExtract, canInsert, listener);
     }
 }

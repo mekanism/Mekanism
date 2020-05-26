@@ -3,6 +3,7 @@ package mekanism.api.chemical;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.inventory.AutomationType;
@@ -11,7 +12,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends INBTSerializable<CompoundNBT> {
+public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends INBTSerializable<CompoundNBT>, IContentsListener {
 
     /**
      * Helper to get the empty stack for the {@link Chemical} type that this {@link IChemicalTank} stores.
@@ -158,11 +159,6 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * can never insert the {@link ChemicalStack} in any situation.
      */
     boolean isValid(STACK stack);
-
-    /**
-     * Called when the contents of this tank changes.
-     */
-    void onContentsChanged();
 
     /**
      * Convenience method for modifying the size of the stored stack.

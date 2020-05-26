@@ -5,13 +5,14 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.util.Direction;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public interface IMekanismChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
-      extends ISidedChemicalHandler<CHEMICAL, STACK> {
+      extends ISidedChemicalHandler<CHEMICAL, STACK>, IContentsListener {
 
     /**
      * Used to check if an instance of {@link IMekanismChemicalHandler} actually has the ability to handle chemicals.
@@ -38,11 +39,6 @@ public interface IMekanismChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, S
      * <em>MUST</em> return an empty list.
      */
     List<TANK> getChemicalTanks(@Nullable Direction side);
-
-    /**
-     * Called when the contents of this chemical handler change.
-     */
-    void onContentsChanged();
 
     /**
      * Returns the {@link TANK} that has the given index from the list of tanks on the given side.

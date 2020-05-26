@@ -4,11 +4,12 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import net.minecraft.util.Direction;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IMekanismHeatHandler extends ISidedHeatHandler {
+public interface IMekanismHeatHandler extends ISidedHeatHandler, IContentsListener {
 
     /**
      * Used to check if an instance of {@link IMekanismHeatHandler} actually has the ability to handle heat.
@@ -40,11 +41,6 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler {
      * false, this <em>MUST</em> return an empty list.
      */
     List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side);
-
-    /**
-     * Called when the temperature of this heat handler change.
-     */
-    void onContentsChanged();
 
     /**
      * Returns the {@link IHeatCapacitor} that has the given index from the list of capacitors on the given side.

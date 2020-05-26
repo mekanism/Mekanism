@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
@@ -48,13 +49,13 @@ public class MultiblockSlurryTank<MULTIBLOCK extends MultiblockData> extends Var
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockSlurryTank<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
           LongSupplier capacity, BiPredicate<@NonNull Slurry, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Slurry, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull Slurry> validator, @Nullable IMekanismSlurryHandler slurryHandler) {
+          Predicate<@NonNull Slurry> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Tile cannot be null");
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Slurry validity check cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new MultiblockSlurryTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, slurryHandler);
+        return new MultiblockSlurryTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, listener);
     }
 
     protected final MULTIBLOCK multiblock;
@@ -67,8 +68,8 @@ public class MultiblockSlurryTank<MULTIBLOCK extends MultiblockData> extends Var
 
     protected MultiblockSlurryTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
           BiPredicate<@NonNull Slurry, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Slurry, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull Slurry> validator, @Nullable IMekanismSlurryHandler slurryHandler) {
-        super(capacity, canExtract, canInsert, validator, slurryHandler);
+          Predicate<@NonNull Slurry> validator, @Nullable IContentsListener listener) {
+        super(capacity, canExtract, canInsert, validator, listener);
         this.multiblock = multiblock;
         this.tile = tile;
     }

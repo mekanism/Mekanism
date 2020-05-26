@@ -11,13 +11,13 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
 import mekanism.common.tier.GasTankTier;
@@ -47,12 +47,12 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(isValid, "Gas validity check cannot be null");
-        return new RateLimitGasHandler(handler -> new RateLimitGasTank(rate, capacity, canExtract, canInsert, isValid, attributeValidator, handler));
+        return new RateLimitGasHandler(listener -> new RateLimitGasTank(rate, capacity, canExtract, canInsert, isValid, attributeValidator, listener));
     }
 
     private final IGasTank tank;
 
-    private RateLimitGasHandler(Function<IMekanismGasHandler, IGasTank> tankProvider) {
+    private RateLimitGasHandler(Function<IContentsListener, IGasTank> tankProvider) {
         this.tank = tankProvider.apply(this);
     }
 
@@ -65,14 +65,14 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
         private final LongSupplier rate;
 
-        public RateLimitGasTank(LongSupplier rate, LongSupplier capacity, @Nullable ChemicalAttributeValidator attributeValidator, IMekanismGasHandler gasHandler) {
-            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, attributeValidator, gasHandler);
+        public RateLimitGasTank(LongSupplier rate, LongSupplier capacity, @Nullable ChemicalAttributeValidator attributeValidator, IContentsListener listener) {
+            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, attributeValidator, listener);
         }
 
         public RateLimitGasTank(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid,
-              @Nullable ChemicalAttributeValidator attributeValidator, IMekanismGasHandler gasHandler) {
-            super(capacity, canExtract, canInsert, isValid, attributeValidator, gasHandler);
+              @Nullable ChemicalAttributeValidator attributeValidator, IContentsListener listener) {
+            super(capacity, canExtract, canInsert, isValid, attributeValidator, listener);
             this.rate = rate;
         }
 
@@ -89,9 +89,9 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
         private final boolean isCreative;
 
-        private GasTankRateLimitGasTank(GasTankTier tier, IMekanismGasHandler gasHandler) {
+        private GasTankRateLimitGasTank(GasTankTier tier, IContentsListener listener) {
             super(tier::getOutput, tier::getStorage, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue,
-                  tier == GasTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, gasHandler);
+                  tier == GasTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
             isCreative = tier == GasTankTier.CREATIVE;
         }
 

@@ -10,10 +10,10 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.chemical.VariableCapacityInfusionTank;
@@ -35,12 +35,12 @@ public class RateLimitInfusionHandler extends ItemStackMekanismInfusionHandler {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(isValid, "Infuse type validity check cannot be null");
-        return new RateLimitInfusionHandler(handler -> new RateLimitInfusionTank(rate, capacity, canExtract, canInsert, isValid, handler));
+        return new RateLimitInfusionHandler(listener -> new RateLimitInfusionTank(rate, capacity, canExtract, canInsert, isValid, listener));
     }
 
     private final IInfusionTank tank;
 
-    private RateLimitInfusionHandler(Function<IMekanismInfusionHandler, IInfusionTank> tankProvider) {
+    private RateLimitInfusionHandler(Function<IContentsListener, IInfusionTank> tankProvider) {
         this.tank = tankProvider.apply(this);
     }
 
@@ -53,13 +53,13 @@ public class RateLimitInfusionHandler extends ItemStackMekanismInfusionHandler {
 
         private final long rate;
 
-        public RateLimitInfusionTank(long rate, LongSupplier capacity, IMekanismInfusionHandler infusionHandler) {
-            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, infusionHandler);
+        public RateLimitInfusionTank(long rate, LongSupplier capacity, IContentsListener listener) {
+            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, listener);
         }
 
         public RateLimitInfusionTank(long rate, LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> isValid, IMekanismInfusionHandler infusionHandler) {
-            super(capacity, canExtract, canInsert, isValid, infusionHandler);
+              BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> isValid, IContentsListener listener) {
+            super(capacity, canExtract, canInsert, isValid, listener);
             this.rate = rate;
         }
 

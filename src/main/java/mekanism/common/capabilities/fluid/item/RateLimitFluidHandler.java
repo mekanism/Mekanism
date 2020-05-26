@@ -11,9 +11,9 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -35,12 +35,12 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
 
     public static RateLimitFluidHandler create(FluidTankTier tier) {
         Objects.requireNonNull(tier, "Fluid tank tier cannot be null");
-        return new RateLimitFluidHandler(handler -> new FluidTankRateLimitFluidTank(tier, handler));
+        return new RateLimitFluidHandler(listener -> new FluidTankRateLimitFluidTank(tier, listener));
     }
 
-    private IExtendedFluidTank tank;
+    private final IExtendedFluidTank tank;
 
-    private RateLimitFluidHandler(Function<IMekanismFluidHandler, IExtendedFluidTank> tankProvider) {
+    private RateLimitFluidHandler(Function<IContentsListener, IExtendedFluidTank> tankProvider) {
         tank = tankProvider.apply(this);
     }
 
@@ -53,13 +53,13 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
 
         private final int rate;
 
-        public RateLimitFluidTank(int rate, IntSupplier capacity, IMekanismFluidHandler fluidHandler) {
-            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, fluidHandler);
+        public RateLimitFluidTank(int rate, IntSupplier capacity, IContentsListener listener) {
+            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, listener);
         }
 
         public RateLimitFluidTank(int rate, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> isValid, IMekanismFluidHandler fluidHandler) {
-            super(capacity, canExtract, canInsert, isValid, fluidHandler);
+              BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> isValid, IContentsListener listener) {
+            super(capacity, canExtract, canInsert, isValid, listener);
             this.rate = rate;
         }
 
@@ -75,8 +75,8 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
         private final IntSupplier rate;
         private final boolean isCreative;
 
-        private FluidTankRateLimitFluidTank(FluidTankTier tier, IMekanismFluidHandler fluidHandler) {
-            super(tier::getStorage, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, fluidHandler);
+        private FluidTankRateLimitFluidTank(FluidTankTier tier, IContentsListener listener) {
+            super(tier::getStorage, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, listener);
             isCreative = tier == FluidTankTier.CREATIVE;
             rate = tier::getOutput;
         }

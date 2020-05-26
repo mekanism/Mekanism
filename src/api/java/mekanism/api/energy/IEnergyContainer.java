@@ -3,6 +3,7 @@ package mekanism.api.energy;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
@@ -11,7 +12,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
+public interface IEnergyContainer extends INBTSerializable<CompoundNBT>, IContentsListener {
 
     /**
      * Returns the energy in this container.
@@ -120,11 +121,6 @@ public interface IEnergyContainer extends INBTSerializable<CompoundNBT> {
      * @return The maximum amount of energy allowed in this {@link IEnergyContainer}.
      */
     FloatingLong getMaxEnergy();
-
-    /**
-     * Called when the contents of this container changes.
-     */
-    void onContentsChanged();
 
     /**
      * Convenience method for checking if this container is empty.

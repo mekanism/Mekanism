@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
@@ -68,7 +67,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(@Nonnull IMekanismInfusionHandler handler) {
+    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
         ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusion(this::getDirection);
         builder.addTank(infusionTank = BasicInfusionTank.create(MAX_INFUSE, BasicInfusionTank.notExternal, (type, automationType) -> {
             if (!inputSlot.isEmpty()) {
@@ -77,7 +76,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
             }
             //Otherwise return true, as we already validated the type was valid
             return true;
-        }, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), handler));
+        }, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this));
         return builder.build();
     }
 
