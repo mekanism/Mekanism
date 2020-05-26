@@ -10,6 +10,7 @@ import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -75,11 +76,11 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(@Nonnull IMekanismGasHandler handler) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(inputTank = BasicGasTank.create(MAX_GAS, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi,
-              gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
-        builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this));
+              gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, handler));
+        builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, handler));
         return builder.build();
     }
 

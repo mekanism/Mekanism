@@ -9,6 +9,7 @@ import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -32,10 +33,10 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(@Nonnull IMekanismGasHandler handler) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
         builder.addTank(gasTank = BasicGasTank.create(MekanismConfig.general.radioactiveWasteBarrelMaxGas.get(), BasicGasTank.alwaysTrueBi,
-              BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.createStrict(GasAttributes.Radiation.class), this),
+              BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.createStrict(GasAttributes.Radiation.class), handler),
               RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }

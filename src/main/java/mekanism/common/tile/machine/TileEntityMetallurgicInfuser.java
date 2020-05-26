@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
@@ -23,9 +24,9 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -67,7 +68,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
+    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(@Nonnull IMekanismInfusionHandler handler) {
         ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusion(this::getDirection);
         builder.addTank(infusionTank = BasicInfusionTank.create(MAX_INFUSE, BasicInfusionTank.notExternal, (type, automationType) -> {
             if (!inputSlot.isEmpty()) {
@@ -76,7 +77,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
             }
             //Otherwise return true, as we already validated the type was valid
             return true;
-        }, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this));
+        }, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), handler));
         return builder.build();
     }
 

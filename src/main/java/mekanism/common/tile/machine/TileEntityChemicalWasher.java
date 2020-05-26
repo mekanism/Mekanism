@@ -11,6 +11,7 @@ import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -36,8 +37,8 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -86,10 +87,10 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidGasTo
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(@Nonnull IMekanismGasHandler handler) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
-        builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this));
+        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), handler));
+        builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, handler));
         return builder.build();
     }
 

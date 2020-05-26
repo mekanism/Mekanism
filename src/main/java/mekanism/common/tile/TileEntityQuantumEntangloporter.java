@@ -13,6 +13,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
@@ -136,7 +137,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(@Nonnull IMekanismGasHandler handler) {
         return new QuantumEntangloporterGasTankHolder(this);
     }
 

@@ -9,13 +9,14 @@ import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ChemicalInfuserCachedRecipe;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
@@ -105,11 +106,11 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(@Nonnull IMekanismGasHandler handler) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(leftTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, rightTank), this::isValidGas, this));
-        builder.addTank(rightTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, leftTank), this::isValidGas, this));
-        builder.addTank(centerTank = BasicGasTank.output(MAX_GAS, this));
+        builder.addTank(leftTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, rightTank), this::isValidGas, handler));
+        builder.addTank(rightTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, leftTank), this::isValidGas, handler));
+        builder.addTank(centerTank = BasicGasTank.output(MAX_GAS, handler));
         return builder.build();
     }
 

@@ -45,10 +45,6 @@ import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.dynamic.DynamicGasHandler;
-import mekanism.common.capabilities.chemical.dynamic.DynamicInfusionHandler;
-import mekanism.common.capabilities.chemical.dynamic.DynamicPigmentHandler;
-import mekanism.common.capabilities.chemical.dynamic.DynamicSlurryHandler;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
@@ -183,19 +179,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End variables ITileContainer
 
     //Variables for handling IGasTile
-    protected final GasHandlerManager gasHandlerManager;
+    private final GasHandlerManager gasHandlerManager;
     //End variables IGasTile
 
     //Variables for handling IInfusionTile
-    protected final InfusionHandlerManager infusionHandlerManager;
+    private final InfusionHandlerManager infusionHandlerManager;
     //End variables IInfusionTile
 
     //Variables for handling IPigmentTile
-    protected final PigmentHandlerManager pigmentHandlerManager;
+    private final PigmentHandlerManager pigmentHandlerManager;
     //End variables IPigmentTile
 
     //Variables for handling ISlurryTile
-    protected final SlurryHandlerManager slurryHandlerManager;
+    private final SlurryHandlerManager slurryHandlerManager;
     //End variables ISlurryTile
 
     //Variables for handling IMekanismFluidHandler
@@ -238,14 +234,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         setSupportedTypes(this.blockProvider.getBlock());
         presetVariables();
         Runnable onContentsChanged = this::onContentsChanged;
-        capabilityHandlerManagers.add(gasHandlerManager = new GasHandlerManager(getInitialGasTanks(),
-              new DynamicGasHandler(this::getGasManager, onContentsChanged)));
-        capabilityHandlerManagers.add(infusionHandlerManager = new InfusionHandlerManager(getInitialInfusionTanks(),
-              new DynamicInfusionHandler(this::getInfusionManager, onContentsChanged)));
-        capabilityHandlerManagers.add(pigmentHandlerManager = new PigmentHandlerManager(getInitialPigmentTanks(),
-              new DynamicPigmentHandler(this::getPigmentManager, onContentsChanged)));
-        capabilityHandlerManagers.add(slurryHandlerManager = new SlurryHandlerManager(getInitialSlurryTanks(),
-              new DynamicSlurryHandler(this::getSlurryManager, onContentsChanged)));
+        capabilityHandlerManagers.add(gasHandlerManager = getInitialGasManager(onContentsChanged));
+        capabilityHandlerManagers.add(infusionHandlerManager = getInitialInfusionManager(onContentsChanged));
+        capabilityHandlerManagers.add(pigmentHandlerManager = getInitialPigmentManager(onContentsChanged));
+        capabilityHandlerManagers.add(slurryHandlerManager = getInitialSlurryManager(onContentsChanged));
         capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(), this));
         capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(), this));
         capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(), this));

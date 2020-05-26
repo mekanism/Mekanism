@@ -37,7 +37,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //Compressing, injecting, purifying
-public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IMekanismGasHandler, IHasDumpButton {
+public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IHasDumpButton {
 
     private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
@@ -67,10 +67,10 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(@Nonnull IMekanismGasHandler handler) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(gasTank = BasicGasTank.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes,
-              gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
+              gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), handler));
         return builder.build();
     }
 
