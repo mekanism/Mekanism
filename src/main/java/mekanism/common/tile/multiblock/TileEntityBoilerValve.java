@@ -28,7 +28,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         return side -> getMultiblock().getGasTanks(side);
     }
 
