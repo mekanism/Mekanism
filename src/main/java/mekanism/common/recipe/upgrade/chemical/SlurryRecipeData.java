@@ -15,6 +15,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.SubstanceType;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -74,5 +75,10 @@ public class SlurryRecipeData extends ChemicalRecipeData<Slurry, SlurryStack, IS
     @Override
     protected Predicate<Slurry> cloneValidator(ISlurryHandler handler, int tank) {
         return type -> handler.isValid(tank, new SlurryStack(type, 1));
+    }
+
+    @Override
+    protected ISlurryHandler getHandlerFromTile(TileEntityMekanism tile) {
+        return tile.getSlurryManager().getInternal();
     }
 }

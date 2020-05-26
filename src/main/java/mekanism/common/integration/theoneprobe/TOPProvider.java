@@ -137,8 +137,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
             handler = cap.get();
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the chemicals in a multiblock when looking at things other than the ports
-            //TODO: ChemicalHandlers - FIXME (it won't be directly implementing the handler anymore)
-            handler = (HANDLER) structure;
+            handler = structure;
         } else {
             return;
         }

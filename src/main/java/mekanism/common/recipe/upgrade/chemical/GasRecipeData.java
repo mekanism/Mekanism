@@ -15,6 +15,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.SubstanceType;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -74,5 +75,10 @@ public class GasRecipeData extends ChemicalRecipeData<Gas, GasStack, IGasTank, I
     @Override
     protected Predicate<Gas> cloneValidator(IGasHandler handler, int tank) {
         return type -> handler.isValid(tank, new GasStack(type, 1));
+    }
+
+    @Override
+    protected IGasHandler getHandlerFromTile(TileEntityMekanism tile) {
+        return tile.getGasManager().getInternal();
     }
 }

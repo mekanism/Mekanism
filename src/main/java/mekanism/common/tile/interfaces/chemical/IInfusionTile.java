@@ -23,7 +23,7 @@ public interface IInfusionTile extends IInfusionTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default InfusionHandlerManager getInitialInfusionManager() {
-        DynamicInfusionHandler infusionHandler = new DynamicInfusionHandler(this::getInfusionManager, this::onContentsChanged);
+        DynamicInfusionHandler infusionHandler = new DynamicInfusionHandler(this::getInfusionManager, this::extractInfusionCheck, this::insertInfusionCheck, this::onContentsChanged);
         return new InfusionHandlerManager(getInitialInfusionTanks(infusionHandler), infusionHandler);
     }
 
@@ -48,5 +48,13 @@ public interface IInfusionTile extends IInfusionTracker {
     @Override
     default List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
         return getInfusionManager().getContainers(side);
+    }
+
+    default boolean extractInfusionCheck(int tank, @Nullable Direction side) {
+        return true;
+    }
+
+    default boolean insertInfusionCheck(int tank, @Nullable Direction side) {
+        return true;
     }
 }

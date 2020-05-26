@@ -15,6 +15,7 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.SubstanceType;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -74,5 +75,10 @@ public class InfusionRecipeData extends ChemicalRecipeData<InfuseType, InfusionS
     @Override
     protected Predicate<InfuseType> cloneValidator(IInfusionHandler handler, int tank) {
         return type -> handler.isValid(tank, new InfusionStack(type, 1));
+    }
+
+    @Override
+    protected IInfusionHandler getHandlerFromTile(TileEntityMekanism tile) {
+        return tile.getInfusionManager().getInternal();
     }
 }

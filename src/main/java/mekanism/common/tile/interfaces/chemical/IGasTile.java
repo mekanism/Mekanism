@@ -23,7 +23,7 @@ public interface IGasTile extends IGasTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default GasHandlerManager getInitialGasManager() {
-        DynamicGasHandler handler = new DynamicGasHandler(this::getGasManager, this::onContentsChanged);
+        DynamicGasHandler handler = new DynamicGasHandler(this::getGasManager, this::extractGasCheck, this::insertGasCheck, this::onContentsChanged);
         return new GasHandlerManager(getInitialGasTanks(handler), handler);
     }
 
@@ -48,5 +48,13 @@ public interface IGasTile extends IGasTracker {
     @Override
     default List<IGasTank> getGasTanks(@Nullable Direction side) {
         return getGasManager().getContainers(side);
+    }
+
+    default boolean extractGasCheck(int tank, @Nullable Direction side) {
+        return true;
+    }
+
+    default boolean insertGasCheck(int tank, @Nullable Direction side) {
+        return true;
     }
 }

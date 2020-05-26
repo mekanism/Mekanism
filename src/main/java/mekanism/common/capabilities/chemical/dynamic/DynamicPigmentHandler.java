@@ -9,7 +9,8 @@ import net.minecraftforge.common.util.NonNullSupplier;
 
 public class DynamicPigmentHandler extends DynamicChemicalHandler<Pigment, PigmentStack, IPigmentTank> implements IMekanismPigmentHandler {
 
-    public DynamicPigmentHandler(NonNullSupplier<ChemicalHandlerManager<Pigment, PigmentStack, IPigmentTank, ?, ?>> handlerManager, Runnable onContentsChanged) {
-        super(handlerManager, onContentsChanged);
+    public DynamicPigmentHandler(NonNullSupplier<ChemicalHandlerManager<Pigment, PigmentStack, IPigmentTank, ?, ?>> handlerManager, InteractPredicate canExtract,
+          InteractPredicate canInsert, Runnable onContentsChanged) {
+        super(handlerManager, canExtract, canInsert, onContentsChanged);
     }
 }

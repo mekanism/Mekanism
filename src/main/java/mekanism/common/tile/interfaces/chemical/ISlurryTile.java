@@ -23,7 +23,7 @@ public interface ISlurryTile extends ISlurryTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default SlurryHandlerManager getInitialSlurryManager() {
-        DynamicSlurryHandler slurryHandler = new DynamicSlurryHandler(this::getSlurryManager, this::onContentsChanged);
+        DynamicSlurryHandler slurryHandler = new DynamicSlurryHandler(this::getSlurryManager, this::extractSlurryCheck, this::insertSlurryCheck, this::onContentsChanged);
         return new SlurryHandlerManager(getInitialSlurryTanks(slurryHandler), slurryHandler);
     }
 
@@ -48,5 +48,13 @@ public interface ISlurryTile extends ISlurryTracker {
     @Override
     default List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
         return getSlurryManager().getContainers(side);
+    }
+
+    default boolean extractSlurryCheck(int tank, @Nullable Direction side) {
+        return true;
+    }
+
+    default boolean insertSlurryCheck(int tank, @Nullable Direction side) {
+        return true;
     }
 }

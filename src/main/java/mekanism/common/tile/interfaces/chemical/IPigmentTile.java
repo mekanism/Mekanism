@@ -23,7 +23,7 @@ public interface IPigmentTile extends IPigmentTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default PigmentHandlerManager getInitialPigmentManager() {
-        DynamicPigmentHandler pigmentHandler = new DynamicPigmentHandler(this::getPigmentManager, this::onContentsChanged);
+        DynamicPigmentHandler pigmentHandler = new DynamicPigmentHandler(this::getPigmentManager, this::extractPigmentCheck, this::insertPigmentCheck, this::onContentsChanged);
         return new PigmentHandlerManager(getInitialPigmentTanks(pigmentHandler), pigmentHandler);
     }
 
@@ -48,5 +48,13 @@ public interface IPigmentTile extends IPigmentTracker {
     @Override
     default List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
         return getPigmentManager().getContainers(side);
+    }
+
+    default boolean extractPigmentCheck(int tank, @Nullable Direction side) {
+        return true;
+    }
+
+    default boolean insertPigmentCheck(int tank, @Nullable Direction side) {
+        return true;
     }
 }

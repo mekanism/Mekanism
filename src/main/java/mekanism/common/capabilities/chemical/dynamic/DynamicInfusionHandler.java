@@ -9,7 +9,8 @@ import net.minecraftforge.common.util.NonNullSupplier;
 
 public class DynamicInfusionHandler extends DynamicChemicalHandler<InfuseType, InfusionStack, IInfusionTank> implements IMekanismInfusionHandler {
 
-    public DynamicInfusionHandler(NonNullSupplier<ChemicalHandlerManager<InfuseType, InfusionStack, IInfusionTank, ?, ?>> handlerManager, Runnable onContentsChanged) {
-        super(handlerManager, onContentsChanged);
+    public DynamicInfusionHandler(NonNullSupplier<ChemicalHandlerManager<InfuseType, InfusionStack, IInfusionTank, ?, ?>> handlerManager, InteractPredicate canExtract,
+          InteractPredicate canInsert, Runnable onContentsChanged) {
+        super(handlerManager, canExtract, canInsert, onContentsChanged);
     }
 }

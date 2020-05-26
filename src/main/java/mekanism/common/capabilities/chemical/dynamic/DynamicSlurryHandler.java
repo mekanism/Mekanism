@@ -9,7 +9,8 @@ import net.minecraftforge.common.util.NonNullSupplier;
 
 public class DynamicSlurryHandler extends DynamicChemicalHandler<Slurry, SlurryStack, ISlurryTank> implements IMekanismSlurryHandler {
 
-    public DynamicSlurryHandler(NonNullSupplier<ChemicalHandlerManager<Slurry, SlurryStack, ISlurryTank, ?, ?>> handlerManager, Runnable onContentsChanged) {
-        super(handlerManager, onContentsChanged);
+    public DynamicSlurryHandler(NonNullSupplier<ChemicalHandlerManager<Slurry, SlurryStack, ISlurryTank, ?, ?>> handlerManager, InteractPredicate canExtract,
+          InteractPredicate canInsert, Runnable onContentsChanged) {
+        super(handlerManager, canExtract, canInsert, onContentsChanged);
     }
 }

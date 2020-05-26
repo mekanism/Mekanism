@@ -74,6 +74,8 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
 
     protected abstract Predicate<@NonNull CHEMICAL> cloneValidator(HANDLER handler, int tank);
 
+    protected abstract HANDLER getHandlerFromTile(TileEntityMekanism tile);
+
     @Override
     public boolean applyToStack(ItemStack stack) {
         if (this.tanks.isEmpty()) {
@@ -96,8 +98,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
                 //Something went wrong
                 return false;
             }
-            //TODO: ChemicalHandlers - FIXME (it won't be directly implementing the handler anymore)
-            handler = (HANDLER) tile;
+            handler = getHandlerFromTile(tile);
         } else {
             return false;
         }

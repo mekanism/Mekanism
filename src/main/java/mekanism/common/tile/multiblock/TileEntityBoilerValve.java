@@ -92,26 +92,23 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         return ret;
     }
 
-    @Nonnull
     @Override
-    public GasStack insertGas(int tank, @Nonnull GasStack stack, @Nullable Direction side, @Nonnull Action action) {
-        //TODO: Do this better so there is no magic numbers
+    public boolean insertGasCheck(int tank, @Nullable Direction side) {
         if (getMode() != BoilerValveMode.INPUT) {
             //Don't allow inserting into the fuel tanks, if we are on output mode
-            return stack;
+            return false;
         }
-        return super.insertGas(tank, stack, side, action);
+        return super.insertGasCheck(tank, side);
     }
 
-    @Nonnull
     @Override
-    public GasStack extractGas(int tank, long amount, @Nullable Direction side, @Nonnull Action action) {
+    public boolean extractGasCheck(int tank, @Nullable Direction side) {
         //TODO: Do this better so there is no magic numbers
         BoilerValveMode mode = getMode();
         if (mode == BoilerValveMode.INPUT || (tank == 2 && mode == BoilerValveMode.OUTPUT_STEAM) || (tank == 0 && mode == BoilerValveMode.OUTPUT_COOLANT)) {
             // don't allow extraction from tanks based on mode
-            return GasStack.EMPTY;
+            return false;
         }
-        return super.extractGas(tank, amount, side, action);
+        return super.extractGasCheck(tank, side);
     }
 }

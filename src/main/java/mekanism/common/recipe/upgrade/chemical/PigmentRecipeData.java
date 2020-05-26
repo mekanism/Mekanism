@@ -15,6 +15,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.SubstanceType;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -74,5 +75,10 @@ public class PigmentRecipeData extends ChemicalRecipeData<Pigment, PigmentStack,
     @Override
     protected Predicate<Pigment> cloneValidator(IPigmentHandler handler, int tank) {
         return type -> handler.isValid(tank, new PigmentStack(type, 1));
+    }
+
+    @Override
+    protected IPigmentHandler getHandlerFromTile(TileEntityMekanism tile) {
+        return tile.getPigmentManager().getInternal();
     }
 }
