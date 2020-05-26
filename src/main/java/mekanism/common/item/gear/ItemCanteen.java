@@ -14,6 +14,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
@@ -38,11 +39,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemCanteen extends Item {
 
-    public static final float SATURATION = 0.8F;
-    public static final int MB_PER_FOOD = 50;
-
-    private static final long TRANSFER_RATE = 16;
-    private static final long MAX_GAS = 16_000;
+    private static final long TRANSFER_RATE = 128;
 
     public ItemCanteen(Properties properties) {
         super(properties.rarity(Rarity.UNCOMMON).maxStackSize(1).setNoRepair());
@@ -74,7 +71,7 @@ public class ItemCanteen extends Item {
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(GasUtils.getFilledVariant(new ItemStack(this), MAX_GAS, MekanismGases.NUTRITIONAL_PASTE));
+            items.add(GasUtils.getFilledVariant(new ItemStack(this), MekanismConfig.gear.canteenMaxStorage.get(), MekanismGases.NUTRITIONAL_PASTE));
         }
     }
 
@@ -82,9 +79,9 @@ public class ItemCanteen extends Item {
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
         if (entityLiving instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entityLiving;
-            long needed = Math.min(20 - player.getFoodStats().getFoodLevel(), getGas(stack).getAmount() / MB_PER_FOOD);
-            player.getFoodStats().addStats((int) needed, SATURATION);
-            useGas(stack, needed * MB_PER_FOOD);
+            long needed = Math.min(20 - player.getFoodStats().getFoodLevel(), getGas(stack).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
+            player.getFoodStats().addStats((int) needed, MekanismConfig.general.nutritionalPasteSaturation.get());
+            useGas(stack, needed * MekanismConfig.general.nutritionalPasteMBPerFood.get());
         }
         return stack;
     }
@@ -101,7 +98,7 @@ public class ItemCanteen extends Item {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> MAX_GAS,
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> MekanismConfig.gear.canteenMaxStorage.get(),
               (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.getGas()));
     }
 

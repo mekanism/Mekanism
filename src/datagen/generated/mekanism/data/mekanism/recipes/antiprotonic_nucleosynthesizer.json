@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:antiprotonic_nucleosynthesizer"
+  },
+  "pattern": [
+    "#C#",
+    "AXA",
+    "#C#"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "A": {
+      "tag": "forge:pellets/antimatter"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    },
+    "#": {
+      "item": "mekanism:alloy_atomic"
+    }
+  }
+}

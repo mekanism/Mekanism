@@ -212,10 +212,10 @@ public class StorageUtils {
             return 1;
         }
         double bestRatio = 0;
-        calculateRatio(stack, bestRatio, Capabilities.GAS_HANDLER_CAPABILITY, GasHandlerWrapper::new);
-        calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER_CAPABILITY, InfusionHandlerWrapper::new);
-        calculateRatio(stack, bestRatio, Capabilities.PIGMENT_HANDLER_CAPABILITY, PigmentHandlerWrapper::new);
-        calculateRatio(stack, bestRatio, Capabilities.SLURRY_HANDLER_CAPABILITY, SlurryHandlerWrapper::new);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.GAS_HANDLER_CAPABILITY, GasHandlerWrapper::new);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER_CAPABILITY, InfusionHandlerWrapper::new);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.PIGMENT_HANDLER_CAPABILITY, PigmentHandlerWrapper::new);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.SLURRY_HANDLER_CAPABILITY, SlurryHandlerWrapper::new);
         Optional<IFluidHandlerItem> fluidCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
         if (fluidCapability.isPresent()) {
             IFluidHandlerItem fluidHandlerItem = fluidCapability.get();

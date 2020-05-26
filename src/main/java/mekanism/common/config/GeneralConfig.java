@@ -7,6 +7,7 @@ import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedConfigValue;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedEnumValue;
+import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
@@ -30,6 +31,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     private static final String EVAPORATION_CATEGORY = "thermal_evaporation";
     private static final String SPS_CATEGORY = "sps";
     private static final String RADIATION_CATEGORY = "radiation";
+    private static final String NUTRITIONAL_PASTE_CATEGORY = "nutritional_paste";
 
     private final ForgeConfigSpec configSpec;
 
@@ -84,6 +86,9 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Security
     public final CachedBooleanValue allowProtection;
     public final CachedBooleanValue opsBypassRestrictions;
+    //Nutritional Paste
+    public final CachedFloatValue nutritionalPasteSaturation;
+    public final CachedIntValue nutritionalPasteMBPerFood;
     //Thermal Evaporation Tower
     public final CachedDoubleValue evaporationHeatDissipation;
     public final CachedDoubleValue evaporationTempMultiplier;
@@ -210,6 +215,13 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("allowProtection", true));
         opsBypassRestrictions = CachedBooleanValue.wrap(this, builder.comment("Ops can bypass the block security restrictions if enabled.")
               .define("opsBypassRestrictions", false));
+        builder.pop();
+
+        builder.comment("Nutritional PasteSettings").push(NUTRITIONAL_PASTE_CATEGORY);
+        nutritionalPasteSaturation = CachedFloatValue.wrap(this, builder.comment("Saturation level of Nutritional Paste when eaten.")
+              .define("saturation", 0.8));
+        nutritionalPasteMBPerFood = CachedIntValue.wrap(this, builder.comment("How much mB of Nutritional Paste equates to one 'half-food.'")
+              .define("mbPerFood", 50));
         builder.pop();
 
         builder.comment("Thermal Evaporation Plant Settings").push(EVAPORATION_CATEGORY);

@@ -23,6 +23,7 @@ public class GearConfig extends BaseMekanismConfig {
     private static final String PORTABLE_TELEPORTER_CATEGORY = "portable_teleporter";
     private static final String SCUBA_TANK_CATEGORY = "scuba_tank";
     private static final String SEISMIC_READER_CATEGORY = "seismic_reader";
+    private static final String CANTEEN_CATEGORY = "canteen";
     private static final String MEKATOOL_CATEGORY = "mekatool";
     private static final String MEKASUIT_CATEGORY = "mekasuit";
 
@@ -82,6 +83,8 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue seismicReaderMaxEnergy;
     public final CachedFloatingLongValue seismicReaderChargeRate;
     public final CachedFloatingLongValue seismicReaderEnergyUsage;
+    //Canteen
+    public final CachedIntValue canteenMaxStorage;
     //Meka-Tool
     public final CachedFloatingLongValue mekaToolEnergyUsageWeapon;
     public final CachedFloatingLongValue mekaToolEnergyUsageTeleport;
@@ -230,6 +233,11 @@ public class GearConfig extends BaseMekanismConfig {
               "chargeRate", FloatingLong.createConst(60));
         seismicReaderEnergyUsage = CachedFloatingLongValue.define(this, builder, "Energy usage in joules required to use the Seismic Reader.",
               "energyUsage", FloatingLong.createConst(250));
+        builder.pop();
+
+        builder.comment("Canteen Settings").push(CANTEEN_CATEGORY);
+        canteenMaxStorage = CachedIntValue.wrap(this, builder.comment("Maximum amount of Nutritional Paste storable by the Canteen.")
+              .define("maxStorage", 64_000));
         builder.pop();
 
         builder.comment("Meka-Tool Settings").push(MEKATOOL_CATEGORY);

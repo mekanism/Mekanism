@@ -1113,6 +1113,40 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key('c', MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER))
               .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
               .build(consumer);
+        //Nutritional Liquifier
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.NUTRITIONAL_LIQUIFIER)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.REDSTONE, Pattern.CIRCUIT, Pattern.REDSTONE),
+                  TripleLine.of(Pattern.CONSTANT, Pattern.STEEL_CASING, Pattern.CONSTANT),
+                  TripleLine.of(Pattern.REDSTONE, Pattern.CIRCUIT, Pattern.REDSTONE))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .key(Pattern.CONSTANT, Items.BOWL)
+              .build(consumer);
+        //Modification Station
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.MODIFICATION_STATION)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.PLASTIC, Pattern.WOOD, Pattern.PLASTIC),
+                  TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
+                  TripleLine.of(Pattern.PLASTIC, Pattern.ALLOY, Pattern.PLASTIC))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.WOOD, Tags.Items.CHESTS)
+              .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+              .build(consumer);
+        //Antiprotonic Nucleosynthesizer
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER)
+              .pattern(RecipePattern.createPattern(
+                  TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT),
+                  TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
+                  TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_ANTIMATTER)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.CONSTANT, MekanismItems.ATOMIC_ALLOY)
+              .build(consumer);
     }
 
     private void addGearModuleRecipes(Consumer<IFinishedRecipe> consumer) {

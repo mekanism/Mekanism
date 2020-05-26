@@ -1,11 +1,11 @@
 package mekanism.common.content.gear.mekasuit;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -28,7 +28,6 @@ import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.distribution.target.EnergySaveTarget;
 import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.item.gear.ItemCanteen;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.lib.radiation.capability.IRadiationEntity;
@@ -357,11 +356,11 @@ public abstract class ModuleMekaSuit extends Module {
             FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
             if (!player.isCreative() && player.canEat(false) && getContainerEnergy().greaterOrEqual(usage)) {
                 ItemMekaSuitArmor item = (ItemMekaSuitArmor) getContainer().getItem();
-                long toFeed = Math.min(1, item.getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / ItemCanteen.MB_PER_FOOD);
+                long toFeed = Math.min(1, item.getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
                 if (toFeed > 0) {
                     useEnergy(player, usage.multiply(toFeed));
-                    item.useGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get(), toFeed * ItemCanteen.MB_PER_FOOD);
-                    player.getFoodStats().addStats(1, ItemCanteen.SATURATION);
+                    item.useGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get(), toFeed * MekanismConfig.general.nutritionalPasteMBPerFood.get());
+                    player.getFoodStats().addStats(1, MekanismConfig.general.nutritionalPasteSaturation.get());
                 }
             }
         }

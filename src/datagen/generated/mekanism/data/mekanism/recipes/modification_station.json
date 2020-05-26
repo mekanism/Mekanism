@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:modification_station"
+  },
+  "pattern": [
+    "PWP",
+    "CXC",
+    "PAP"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "W": {
+      "tag": "forge:chests"
+    },
+    "P": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    },
+    "A": {
+      "tag": "forge:pellets/polonium"
+    }
+  }
+}
