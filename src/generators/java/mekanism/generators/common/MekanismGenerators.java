@@ -12,10 +12,13 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorCache;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
+import mekanism.generators.common.content.fission.FissionReactorValidator;
 import mekanism.generators.common.content.fusion.FusionReactorCache;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
+import mekanism.generators.common.content.fusion.FusionReactorValidator;
 import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
+import mekanism.generators.common.content.turbine.TurbineValidator;
 import mekanism.generators.common.network.GeneratorsPacketHandler;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsBuilders.FissionReactorBuilder;
@@ -51,9 +54,9 @@ public class MekanismGenerators implements IModule {
      */
     public static GeneratorsPacketHandler packetHandler = new GeneratorsPacketHandler();
 
-    public static MultiblockManager<TurbineMultiblockData> turbineManager = new MultiblockManager<>("industrialTurbine", TurbineCache::new);
-    public static MultiblockManager<FissionReactorMultiblockData> fissionReactorManager = new MultiblockManager<>("fissionReactor", FissionReactorCache::new);
-    public static MultiblockManager<FusionReactorMultiblockData> fusionReactorManager = new MultiblockManager<>("fusionReactor", FusionReactorCache::new);
+    public static MultiblockManager<TurbineMultiblockData> turbineManager = new MultiblockManager<>("industrialTurbine", TurbineCache::new, TurbineValidator::new);
+    public static MultiblockManager<FissionReactorMultiblockData> fissionReactorManager = new MultiblockManager<>("fissionReactor", FissionReactorCache::new, FissionReactorValidator::new);
+    public static MultiblockManager<FusionReactorMultiblockData> fusionReactorManager = new MultiblockManager<>("fusionReactor", FusionReactorCache::new, FusionReactorValidator::new);
 
     public MekanismGenerators() {
         Mekanism.modulesLoaded.add(instance = this);

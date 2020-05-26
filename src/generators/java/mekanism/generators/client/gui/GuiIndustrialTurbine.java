@@ -21,7 +21,7 @@ import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
+import mekanism.generators.common.content.turbine.TurbineValidator;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -39,7 +39,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         addButton(new GuiInnerScreen(this, 50, 18, 112, 50, () -> {
             List<ITextComponent> list = new ArrayList<>();
             if (tile.getMultiblock().isFormed()) {
-                FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES)
+                FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
                       .multiply(Math.min(tile.getMultiblock().blades, tile.getMultiblock().coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
                 double rate = tile.getMultiblock().lowerVolume * (tile.getMultiblock().clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
                 rate = Math.min(rate, tile.getMultiblock().vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
@@ -97,7 +97,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 producing = EnergyDisplay.ZERO;
             } else {
                 storing = EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy());
-                producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES)
+                producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
                       .multiply(tile.getMultiblock().clientFlow * Math.min(tile.getMultiblock().blades,
                             tile.getMultiblock().coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));
             }

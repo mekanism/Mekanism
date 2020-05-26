@@ -2,8 +2,8 @@ package mekanism.common.lib.multiblock;
 
 import java.util.Map;
 import java.util.TreeMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.function.ToIntFunction;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.lib.math.voxel.BlockPosBuilder;
 import mekanism.common.lib.math.voxel.VoxelPlane;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
@@ -78,10 +78,9 @@ public class Structure {
     }
 
     public <TILE extends TileEntity & IMultiblockBase> FormationResult runUpdate(TILE tile) {
-        if (getController() != null) {
-            IStructureValidator validator = getController().validateStructure();
-            if (validator.precheck() && multiblockData == null) {
-                return getController().getFormationProtocol().doUpdate(validator);
+        if (getController() != null && multiblockData == null) {
+            if (multiblockData == null) {
+                return getController().createFormationProtocol().doUpdate();
             }
         }
         removeMultiblock(tile.getWorld());

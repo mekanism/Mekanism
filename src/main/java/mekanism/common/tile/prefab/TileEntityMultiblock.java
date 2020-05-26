@@ -103,7 +103,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (ticker >= 1)
+        if (ticker >= 3)
             structure.tick(this);
         if (!getMultiblock().isFormed()) {
             playersUsing.forEach(PlayerEntity::closeScreen);
@@ -274,7 +274,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (!getMultiblock().isFormed() && nbtTags.hasUniqueId(NBTConstants.INVENTORY_ID)) {
             cachedID = nbtTags.getUniqueId(NBTConstants.INVENTORY_ID);
             if (nbtTags.contains(NBTConstants.CACHE)) {
-                cachedData = getManager().getNewCache();
+                cachedData = getManager().createCache();
                 cachedData.load(nbtTags.getCompound(NBTConstants.CACHE));
             }
         }

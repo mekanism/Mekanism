@@ -4,38 +4,38 @@ import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
+import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
-import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
+import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-public class TurbineUpdateProtocol extends FormationProtocol<TurbineMultiblockData> {
+public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblockData> {
 
-    public static final long GAS_PER_TANK = TankUpdateProtocol.FLUID_PER_TANK;
     public static final int MAX_BLADES = 28;
 
-    public TurbineUpdateProtocol(TileEntityTurbineCasing tile) {
-        super(tile);
+    public TurbineValidator() {
+        super(new VoxelCuboid(3, 3, 3), new VoxelCuboid(17, 18, 17));
     }
 
     @Override
-    protected CasingType getCasingType(BlockPos pos) {
-        Block block = pointer.getTileWorld().getBlockState(pos).getBlock();
+    protected CasingType getCasingType(BlockPos pos, BlockState state) {
+        Block block = state.getBlock();
         if (BlockTypeTile.is(block, GeneratorsBlockTypes.TURBINE_CASING)) {
             return CasingType.FRAME;
         } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.TURBINE_VALVE)) {
@@ -47,16 +47,16 @@ public class TurbineUpdateProtocol extends FormationProtocol<TurbineMultiblockDa
     }
 
     @Override
-    protected boolean isValidInnerNode(BlockPos pos) {
-        if (super.isValidInnerNode(pos)) {
+    protected boolean validateInner(BlockPos pos) {
+        if (super.validateInner(pos)) {
             return true;
         }
-        return BlockType.is(pointer.getTileWorld().getBlockState(pos).getBlock(), MekanismBlockTypes.PRESSURE_DISPERSER, GeneratorsBlockTypes.TURBINE_ROTOR,
+        return BlockType.is(world.getBlockState(pos).getBlock(), MekanismBlockTypes.PRESSURE_DISPERSER, GeneratorsBlockTypes.TURBINE_ROTOR,
               GeneratorsBlockTypes.ROTATIONAL_COMPLEX, GeneratorsBlockTypes.ELECTROMAGNETIC_COIL, GeneratorsBlockTypes.SATURATING_CONDENSER);
     }
 
     @Override
-    protected FormationResult validate(TurbineMultiblockData structure, Set<BlockPos> innerNodes) {
+    public FormationResult postcheck(TurbineMultiblockData structure, Set<BlockPos> innerNodes) {
         if (structure.length % 2 != 1 || structure.width % 2 != 1) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH);
         }
@@ -72,7 +72,7 @@ public class TurbineUpdateProtocol extends FormationProtocol<TurbineMultiblockDa
 
         //Scan for complex
         for (BlockPos pos : innerNodes) {
-            TileEntity tile = MekanismUtils.getTileEntity(pointer.getTileWorld(), pos);
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof TileEntityRotationalComplex) {
                 if (complex != null || pos.getX() != centerX || pos.getZ() != centerZ) {
                     return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_BAD_COMPLEX, pos);
@@ -108,7 +108,7 @@ public class TurbineUpdateProtocol extends FormationProtocol<TurbineMultiblockDa
         for (int x = complex.getX() - innerRadius; x <= complex.getX() + innerRadius; x++) {
             for (int z = complex.getZ() - innerRadius; z <= complex.getZ() + innerRadius; z++) {
                 if (x != centerX || z != centerZ) {
-                    TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, pointer.getTileWorld(), new BlockPos(x, complex.getY(), z));
+                    TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, world, new BlockPos(x, complex.getY(), z));
                     if (tile == null) {
                         return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_DISPERSER, new BlockPos(x, complex.getY(), z));
                     }
@@ -135,7 +135,7 @@ public class TurbineUpdateProtocol extends FormationProtocol<TurbineMultiblockDa
 
         // Starting from the complex, walk down and count the number of rotors/blades in the structure
         for (int y = complex.getY() - 1; y > structure.minLocation.getY(); y--) {
-            TileEntityTurbineRotor rotor = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, pointer.getTileWorld(), new BlockPos(centerX, y, centerZ));
+            TileEntityTurbineRotor rotor = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, new BlockPos(centerX, y, centerZ));
             if (rotor == null) {
                 // Not a contiguous set of rotors
                 FormationResult.fail(GeneratorsLang.TURBINE_INVALID_ROTORS_NOT_CONTIGUOUS);
@@ -155,8 +155,8 @@ public class TurbineUpdateProtocol extends FormationProtocol<TurbineMultiblockDa
         structure.blades = blades;
 
         BlockPos startCoord = complex.offset(Direction.UP);
-        if (MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getTileWorld(), startCoord) != null) {
-            structure.coils = FormationProtocol.explore(startCoord, coord -> MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, pointer.getTileWorld(), coord) != null);
+        if (MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, world, startCoord) != null) {
+            structure.coils = FormationProtocol.explore(startCoord, coord -> MekanismUtils.getTileEntity(TileEntityElectromagneticCoil.class, world, coord) != null);
         }
 
         if (coils.size() > structure.coils) {
@@ -164,7 +164,7 @@ public class TurbineUpdateProtocol extends FormationProtocol<TurbineMultiblockDa
         }
 
         for (BlockPos coord : structure.locations) {
-            if (MekanismUtils.getTileEntity(TileEntityTurbineVent.class, pointer.getTileWorld(), coord) != null) {
+            if (MekanismUtils.getTileEntity(TileEntityTurbineVent.class, world, coord) != null) {
                 if (coord.getY() < complex.getY()) {
                     return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_VENT_BELOW_COMPLEX, coord);
                 }
@@ -174,10 +174,5 @@ public class TurbineUpdateProtocol extends FormationProtocol<TurbineMultiblockDa
         structure.lowerVolume = structure.length * structure.width * turbineHeight;
         structure.complex = complex;
         return FormationResult.SUCCESS;
-    }
-
-    @Override
-    protected MultiblockManager<TurbineMultiblockData> getManager() {
-        return MekanismGenerators.turbineManager;
     }
 }

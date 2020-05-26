@@ -4,15 +4,13 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
-import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol;
-import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol.FormedAssembly;
+import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -76,11 +74,6 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     @Override
     public FissionReactorMultiblockData createMultiblock() {
         return new FissionReactorMultiblockData(this);
-    }
-
-    @Override
-    public FormationProtocol<FissionReactorMultiblockData> getFormationProtocol() {
-        return new FissionReactorUpdateProtocol(this);
     }
 
     @Override

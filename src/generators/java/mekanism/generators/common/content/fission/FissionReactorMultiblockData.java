@@ -24,7 +24,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol.FormedAssembly;
+import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.tags.FluidTags;

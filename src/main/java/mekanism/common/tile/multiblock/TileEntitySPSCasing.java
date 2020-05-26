@@ -8,10 +8,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.sps.SPSMultiblockData;
-import mekanism.common.content.sps.SPSStructureValidator;
-import mekanism.common.content.sps.SPSUpdateProtocol;
-import mekanism.common.lib.multiblock.FormationProtocol;
-import mekanism.common.lib.multiblock.IStructureValidator;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.particle.custom.SPSOrbitEffect;
 import mekanism.common.registries.MekanismBlocks;
@@ -57,11 +53,6 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
     }
 
     @Override
-    public FormationProtocol<SPSMultiblockData> getFormationProtocol() {
-        return new SPSUpdateProtocol(this);
-    }
-
-    @Override
     public MultiblockManager<SPSMultiblockData> getManager() {
         return Mekanism.spsManager;
     }
@@ -101,10 +92,5 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
                 getMultiblock().lastReceivedEnergy = FloatingLong.parseFloatingLong(tag.getString(NBTConstants.ENERGY_USAGE));
             }
         }
-    }
-
-    @Override
-    public IStructureValidator validateStructure() {
-        return new SPSStructureValidator(getStructure());
     }
 }

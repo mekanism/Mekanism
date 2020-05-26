@@ -5,15 +5,11 @@ import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
-import mekanism.common.lib.multiblock.FormationProtocol;
-import mekanism.common.lib.multiblock.IStructureValidator;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
-import mekanism.generators.common.content.fusion.FusionReactorStructureValidator;
-import mekanism.generators.common.content.fusion.FusionReactorUpdateProtocol;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -33,18 +29,8 @@ public class TileEntityFusionReactorBlock extends TileEntityMultiblock<FusionRea
     }
 
     @Override
-    public FormationProtocol<FusionReactorMultiblockData> getFormationProtocol() {
-        return new FusionReactorUpdateProtocol(this);
-    }
-
-    @Override
     public MultiblockManager<FusionReactorMultiblockData> getManager() {
         return MekanismGenerators.fusionReactorManager;
-    }
-
-    @Override
-    public IStructureValidator validateStructure() {
-        return new FusionReactorStructureValidator(getStructure());
     }
 
     @Override

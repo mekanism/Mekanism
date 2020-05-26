@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
-import mekanism.common.registries.MekanismPigments;
-import mekanism.common.registries.MekanismSlurries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.mojang.authlib.GameProfile;
@@ -28,13 +26,18 @@ import mekanism.common.command.builders.Builders.BoilerBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
+import mekanism.common.content.boiler.BoilerValidator;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
+import mekanism.common.content.evaporation.EvaporationValidator;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.matrix.MatrixMultiblockData;
+import mekanism.common.content.matrix.MatrixValidator;
 import mekanism.common.content.sps.SPSCache;
 import mekanism.common.content.sps.SPSMultiblockData;
+import mekanism.common.content.sps.SPSValidator;
 import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankMultiblockData;
+import mekanism.common.content.tank.TankValidator;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
@@ -56,8 +59,10 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.registries.MekanismPigments;
 import mekanism.common.registries.MekanismPlacements;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTagManager;
@@ -132,11 +137,11 @@ public class Mekanism {
     /**
      * MultiblockManagers for various structrures
      */
-    public static MultiblockManager<TankMultiblockData> tankManager = new MultiblockManager<>("dynamicTank", TankCache::new);
-    public static MultiblockManager<MatrixMultiblockData> matrixManager = new MultiblockManager<>("inductionMatrix", MultiblockCache::new);
-    public static MultiblockManager<BoilerMultiblockData> boilerManager = new MultiblockManager<>("thermoelectricBoiler", MultiblockCache::new);
-    public static MultiblockManager<EvaporationMultiblockData> evaporationManager = new MultiblockManager<>("evaporation", MultiblockCache::new);
-    public static MultiblockManager<SPSMultiblockData> spsManager = new MultiblockManager<>("sps", SPSCache::new);
+    public static MultiblockManager<TankMultiblockData> tankManager = new MultiblockManager<>("dynamicTank", TankCache::new, TankValidator::new);
+    public static MultiblockManager<MatrixMultiblockData> matrixManager = new MultiblockManager<>("inductionMatrix", MultiblockCache::new, MatrixValidator::new);
+    public static MultiblockManager<BoilerMultiblockData> boilerManager = new MultiblockManager<>("thermoelectricBoiler", MultiblockCache::new, BoilerValidator::new);
+    public static MultiblockManager<EvaporationMultiblockData> evaporationManager = new MultiblockManager<>("evaporation", MultiblockCache::new, EvaporationValidator::new);
+    public static MultiblockManager<SPSMultiblockData> spsManager = new MultiblockManager<>("sps", SPSCache::new, SPSValidator::new);
     /**
      * RadiationManager for handling radiation across all dimensions
      */

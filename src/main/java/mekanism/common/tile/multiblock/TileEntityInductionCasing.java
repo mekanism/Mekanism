@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixMultiblockData;
-import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.lib.multiblock.MultiblockManager;
@@ -28,11 +27,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
     @Override
     public MatrixMultiblockData createMultiblock() {
         return new MatrixMultiblockData(this);
-    }
-
-    @Override
-    public MatrixUpdateProtocol getFormationProtocol() {
-        return new MatrixUpdateProtocol(this);
     }
 
     @Override

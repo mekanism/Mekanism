@@ -1,10 +1,10 @@
 package mekanism.generators.common.content.turbine;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -17,6 +17,7 @@ import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
@@ -30,6 +31,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TurbineMultiblockData extends MultiblockData {
+
+    public static final long GAS_PER_TANK = TankMultiblockData.FLUID_PER_TANK;
 
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
@@ -87,7 +90,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
         FloatingLong energyNeeded = energyContainer.getNeeded();
         if (stored > 0 && !energyNeeded.isZero()) {
-            FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineUpdateProtocol.MAX_BLADES)
+            FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
                   .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
             if (energyMultiplier.isZero()) {
                 clientFlow = 0;
@@ -135,7 +138,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     public long getSteamCapacity() {
-        return lowerVolume * TurbineUpdateProtocol.GAS_PER_TANK;
+        return lowerVolume * GAS_PER_TANK;
     }
 
     public FloatingLong getEnergyCapacity() {

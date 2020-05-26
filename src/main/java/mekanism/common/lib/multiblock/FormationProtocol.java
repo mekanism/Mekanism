@@ -14,79 +14,65 @@ import mekanism.common.MekanismLang;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class FormationProtocol<T extends MultiblockData> {
+public class FormationProtocol<T extends MultiblockData> {
 
     public static final int MAX_SIZE = 18;
 
     /**
      * The original block the calculation is getting run from.
      */
-    public IMultiblock<T> pointer;
+    private IMultiblock<T> pointer;
+    private Structure structure;
+    private MultiblockManager<T> manager;
 
-    public FormationProtocol(IMultiblock<T> tile) {
+    Set<BlockPos> locations = new ObjectOpenHashSet<>();
+    Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
+    Set<ValveData> valves = new ObjectOpenHashSet<>();
+    Set<UUID> idsFound = new ObjectOpenHashSet<>();
+
+    public FormationProtocol(IMultiblock<T> tile, Structure structure) {
         pointer = tile;
+        this.structure = structure;
+        manager = tile.getManager();
     }
 
-    public StructureResult buildStructure(IStructureValidator validator) {
+    public StructureResult buildStructure(IStructureValidator<T> validator) {
         T structure = pointer.createMultiblock();
         if (!structure.setShape(validator.getShape())) {
             return fail(FormationResult.FAIL);
         }
 
-        ValidationContext ctx = new ValidationContext(validator);
-        FormationResult result = validator.validate(this, ctx);
+        FormationResult result = validator.validate(this);
         if (!result.isFormed()) {
             return fail(result);
         }
 
-        structure.locations = ctx.locations;
-        structure.valves = ctx.valves;
-        result = validate(structure, ctx.innerNodes);
-        return result.isFormed() ? form(structure, ctx.idsFound) : fail(result);
+        structure.locations = locations;
+        structure.valves = valves;
+        result = validator.postcheck(structure, innerNodes);
+        return result.isFormed() ? form(structure, idsFound) : fail(result);
     }
-
-    protected FormationResult validate(T structure, Set<BlockPos> innerNodes) {
-        return FormationResult.SUCCESS;
-    }
-
-    protected boolean isValidInnerNode(BlockPos pos) {
-        return pointer.getTileWorld().isAirBlock(pos);
-    }
-
-    /**
-     * If the TileEntity will function as a 'structural block' (casing or structural multiblock) for this structure. This will also mark the tile in this position as
-     * having just received a multiblock update if 'markUpdated' is true.
-     *
-     * @return Whether or not the tile is a viable node for a multiblock structure
-     */
-    protected boolean checkNode(TileEntity tile) {
-        if (tile instanceof IStructuralMultiblock && ((IStructuralMultiblock) tile).canInterface(getManager())) {
-            return true;
-        }
-        return getManager().isCompatible(tile);
-    }
-
-    protected abstract CasingType getCasingType(BlockPos pos);
-
-    protected abstract MultiblockManager<T> getManager();
 
     /**
      * Runs the protocol and updates all nodes that make a part of the multiblock.
      */
-    public FormationResult doUpdate(IStructureValidator validator) {
+    public FormationResult doUpdate() {
+        IStructureValidator<T> validator = manager.createValidator();
+        validator.init(pointer.getTileWorld(), manager, structure);
+        if (!validator.precheck()) {
+            return FormationResult.FAIL;
+        }
         StructureResult result = buildStructure(validator);
         T structureFound = result.structureFound;
 
         if (structureFound != null && structureFound.locations.contains(pointer.getTilePos())) {
             pointer.setMultiblockData(structureFound);
             structureFound.setFormedForce(true);
-            MultiblockCache<T> cache = getManager().getNewCache();
-            MultiblockManager<T> manager = getManager();
+            MultiblockCache<T> cache = manager.createCache();
             UUID idToUse = null;
             if (result.idsFound.isEmpty()) {
                 idToUse = manager.getUniqueInventoryID();
@@ -201,57 +187,6 @@ public abstract class FormationProtocol<T extends MultiblockData> {
         }
     }
 
-    public class ValidationContext {
-
-        Set<BlockPos> locations = new ObjectOpenHashSet<>();
-        Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
-        Set<ValveData> valves = new ObjectOpenHashSet<>();
-        Set<UUID> idsFound = new ObjectOpenHashSet<>();
-        IStructureValidator validator;
-
-        public ValidationContext(IStructureValidator validator) {
-            this.validator = validator;
-        }
-
-        public FormationResult validateFrame(BlockPos pos, boolean needsFrame) {
-            CasingType type = getCasingType(pos);
-            IMultiblockBase tile = pointer.getStructure().getTile(pos);
-            // terminate if we encounter a node that already failed this tick
-            if (!checkNode((TileEntity) tile) || (needsFrame && !type.isFrame())) {
-                //If it is not a valid node or if it is supposed to be a frame but is invalid
-                // then we are not valid over all
-                return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos);
-            } else {
-                if (tile instanceof IMultiblock) {
-                    @SuppressWarnings("unchecked")
-                    IMultiblock<T> multiblockTile = (IMultiblock<T>) tile;
-                    UUID uuid = multiblockTile.getCacheID();
-                    if (uuid != null && multiblockTile.getManager() == getManager() && multiblockTile.hasCache()) {
-                        getManager().updateCache(multiblockTile);
-                        idsFound.add(uuid);
-                    }
-                }
-                locations.add(pos);
-                if (type.isValve()) {
-                    ValveData data = new ValveData();
-                    data.location = pos;
-                    data.side = validator.getSide(data.location);
-                    valves.add(data);
-                }
-            }
-            return FormationResult.SUCCESS;
-        }
-
-        public FormationResult validateInner(BlockPos pos) {
-            if (!isValidInnerNode(pos)) {
-                return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos);
-            } else if (!pointer.getTileWorld().isAirBlock(pos)) {
-                innerNodes.add(pos);
-            }
-            return FormationResult.SUCCESS;
-        }
-    }
-
     public enum CasingType {
         FRAME,
         VALVE,
@@ -264,6 +199,23 @@ public abstract class FormationProtocol<T extends MultiblockData> {
 
         boolean isValve() {
             return this == VALVE;
+        }
+    }
+
+    public enum StructureRequirement {
+        IGNORED,
+        FRAME,
+        OTHER,
+        INNER;
+
+        public static final StructureRequirement[] REQUIREMENTS = values();
+
+        boolean needsFrame() {
+            return this == FRAME;
+        }
+
+        boolean isCasing() {
+            return this != INNER;
         }
     }
 }

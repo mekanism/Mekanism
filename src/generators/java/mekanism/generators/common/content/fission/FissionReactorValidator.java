@@ -9,31 +9,27 @@ import java.util.TreeSet;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.lib.multiblock.FormationProtocol;
-import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.multiblock.CuboidStructureValidator;
+import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
+import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.fission.TileEntityControlRodAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
-import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
-public class FissionReactorUpdateProtocol extends FormationProtocol<FissionReactorMultiblockData> {
-
-    public FissionReactorUpdateProtocol(TileEntityFissionReactorCasing tile) {
-        super(tile);
-    }
+public class FissionReactorValidator extends CuboidStructureValidator<FissionReactorMultiblockData> {
 
     @Override
-    protected CasingType getCasingType(BlockPos pos) {
-        Block block = pointer.getTileWorld().getBlockState(pos).getBlock();
+    protected CasingType getCasingType(BlockPos pos, BlockState state) {
+        Block block = state.getBlock();
         if (BlockTypeTile.is(block, GeneratorsBlockTypes.FISSION_REACTOR_CASING)) {
             return CasingType.FRAME;
         } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.FISSION_REACTOR_PORT)) {
@@ -45,21 +41,21 @@ public class FissionReactorUpdateProtocol extends FormationProtocol<FissionReact
     }
 
     @Override
-    protected boolean isValidInnerNode(BlockPos pos) {
-        if (super.isValidInnerNode(pos)) {
+    protected boolean validateInner(BlockPos pos) {
+        if (super.validateInner(pos)) {
             return true;
         }
-        return BlockType.is(pointer.getTileWorld().getBlockState(pos).getBlock(), GeneratorsBlockTypes.FISSION_FUEL_ASSEMBLY, GeneratorsBlockTypes.CONTROL_ROD_ASSEMBLY);
+        return BlockType.is(world.getBlockState(pos).getBlock(), GeneratorsBlockTypes.FISSION_FUEL_ASSEMBLY, GeneratorsBlockTypes.CONTROL_ROD_ASSEMBLY);
     }
 
     @Override
-    protected FormationResult validate(FissionReactorMultiblockData structure, Set<BlockPos> innerNodes) {
+    public FormationResult postcheck(FissionReactorMultiblockData structure, Set<BlockPos> innerNodes) {
         Map<AssemblyPos, FuelAssembly> map = new HashMap<>();
         Set<BlockPos> fuelAssemblyCoords = new HashSet<>();
         int assemblyCount = 0, surfaceArea = 0;
 
         for (BlockPos coord : innerNodes) {
-            TileEntity tile = MekanismUtils.getTileEntity(pointer.getTileWorld(), coord);
+            TileEntity tile = MekanismUtils.getTileEntity(world, coord);
             AssemblyPos pos = new AssemblyPos(coord.getX(), coord.getZ());
             FuelAssembly assembly = map.get(pos);
 
@@ -108,11 +104,6 @@ public class FissionReactorUpdateProtocol extends FormationProtocol<FissionReact
         structure.surfaceArea = surfaceArea;
 
         return FormationResult.SUCCESS;
-    }
-
-    @Override
-    protected MultiblockManager<FissionReactorMultiblockData> getManager() {
-        return MekanismGenerators.fissionReactorManager;
     }
 
     public static class FuelAssembly {

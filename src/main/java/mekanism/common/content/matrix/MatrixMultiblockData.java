@@ -6,12 +6,11 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
+import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
 import mekanism.common.tile.multiblock.TileEntityInductionProvider;
-import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class MatrixMultiblockData extends MultiblockData {
@@ -62,12 +61,12 @@ public class MatrixMultiblockData extends MultiblockData {
         return type != CacheSubstance.ENERGY;
     }
 
-    public void addCell(BlockPos pos, TileEntityInductionCell cell) {
-        energyContainer.addCell(pos, cell);
+    public void addCell(TileEntityInductionCell cell) {
+        energyContainer.addCell(cell.getPos(), cell);
     }
 
-    public void addProvider(BlockPos pos, TileEntityInductionProvider provider) {
-        energyContainer.addProvider(pos, provider);
+    public void addProvider(TileEntityInductionProvider provider) {
+        energyContainer.addProvider(provider.getPos(), provider);
     }
 
     @Nonnull

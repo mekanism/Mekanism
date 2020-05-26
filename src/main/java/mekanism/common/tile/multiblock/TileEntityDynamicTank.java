@@ -5,7 +5,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.tank.TankMultiblockData;
-import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
@@ -48,11 +47,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
     @Override
     public TankMultiblockData createMultiblock() {
         return new TankMultiblockData(this);
-    }
-
-    @Override
-    public TankUpdateProtocol getFormationProtocol() {
-        return new TankUpdateProtocol(this);
     }
 
     @Override

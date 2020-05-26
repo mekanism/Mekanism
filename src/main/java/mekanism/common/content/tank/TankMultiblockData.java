@@ -31,6 +31,8 @@ import net.minecraft.world.World;
 
 public class TankMultiblockData extends MultiblockData {
 
+    public static final int FLUID_PER_TANK = 64_000;
+
     @ContainerSync
     public final MergedTank mergedTank;
     @ContainerSync
@@ -111,7 +113,7 @@ public class TankMultiblockData extends MultiblockData {
     @Override
     public void setVolume(int volume) {
         super.setVolume(volume);
-        tankCapacity = getVolume() * TankUpdateProtocol.FLUID_PER_TANK;
+        tankCapacity = getVolume() * FLUID_PER_TANK;
     }
 
     @Override

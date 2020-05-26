@@ -3,30 +3,27 @@ package mekanism.common.content.boiler;
 import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
+import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
-import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
+import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityPressureDisperser;
-import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntitySuperheatingElement;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-public class BoilerUpdateProtocol extends FormationProtocol<BoilerMultiblockData> {
-
-    public BoilerUpdateProtocol(TileEntityBoilerCasing tile) {
-        super(tile);
-    }
+public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockData> {
 
     @Override
-    protected CasingType getCasingType(BlockPos pos) {
-        Block block = pointer.getTileWorld().getBlockState(pos).getBlock();
+    protected CasingType getCasingType(BlockPos pos, BlockState state) {
+        Block block = state.getBlock();
         if (BlockTypeTile.is(block, MekanismBlockTypes.BOILER_CASING)) {
             return CasingType.FRAME;
         } else if (BlockTypeTile.is(block, MekanismBlockTypes.BOILER_VALVE)) {
@@ -36,19 +33,19 @@ public class BoilerUpdateProtocol extends FormationProtocol<BoilerMultiblockData
     }
 
     @Override
-    protected boolean isValidInnerNode(BlockPos pos) {
-        if (super.isValidInnerNode(pos)) {
+    protected boolean validateInner(BlockPos pos) {
+        if (super.validateInner(pos)) {
             return true;
         }
-        return BlockType.is(pointer.getTileWorld().getBlockState(pos).getBlock(), MekanismBlockTypes.PRESSURE_DISPERSER, MekanismBlockTypes.SUPERHEATING_ELEMENT);
+        return BlockType.is(world.getBlockState(pos).getBlock(), MekanismBlockTypes.PRESSURE_DISPERSER, MekanismBlockTypes.SUPERHEATING_ELEMENT);
     }
 
     @Override
-    protected FormationResult validate(BoilerMultiblockData structure, Set<BlockPos> innerNodes) {
+    public FormationResult postcheck(BoilerMultiblockData structure, Set<BlockPos> innerNodes) {
         Set<BlockPos> dispersers = new ObjectOpenHashSet<>();
         Set<BlockPos> elements = new ObjectOpenHashSet<>();
         for (BlockPos pos : innerNodes) {
-            TileEntity tile = MekanismUtils.getTileEntity(pointer.getTileWorld(), pos);
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof TileEntityPressureDisperser) {
                 dispersers.add(pos);
             } else if (tile instanceof TileEntitySuperheatingElement) {
@@ -69,7 +66,7 @@ public class BoilerUpdateProtocol extends FormationProtocol<BoilerMultiblockData
         for (int x = 1; x < structure.length - 1; x++) {
             for (int z = 1; z < structure.width - 1; z++) {
                 BlockPos shifted = pos.add(x, 0, z);
-                TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, pointer.getTileWorld(), shifted);
+                TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, world, shifted);
                 if (tile == null) {
                     return FormationResult.fail(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, shifted);
                 }
@@ -84,8 +81,7 @@ public class BoilerUpdateProtocol extends FormationProtocol<BoilerMultiblockData
 
         if (!elements.isEmpty()) {
             structure.superheatingElements = FormationProtocol.explore(elements.iterator().next(), coord ->
-                  coord.getY() < initDisperser.getY() && MekanismUtils.getTileEntity(TileEntitySuperheatingElement.class, pointer.getTileWorld(), coord) != null
-            );
+                  coord.getY() < initDisperser.getY() && MekanismUtils.getTileEntity(TileEntitySuperheatingElement.class, world, coord) != null);
         }
 
         if (elements.size() > structure.superheatingElements) {
@@ -100,7 +96,7 @@ public class BoilerUpdateProtocol extends FormationProtocol<BoilerMultiblockData
             for (int y = structure.renderLocation.getY(); y < initDisperser.getY(); y++) {
                 for (int z = structure.renderLocation.getZ(); z < structure.renderLocation.getZ() + structure.width; z++) {
                     BlockPos airPos = new BlockPos(x, y, z);
-                    if (pointer.getTileWorld().isAirBlock(airPos) || checkNode(pointer.getTileWorld().getTileEntity(airPos))) {
+                    if (world.isAirBlock(airPos) || isFrameCompatible(world.getTileEntity(airPos))) {
                         initAir = airPos;
                         totalAir++;
                     }
@@ -116,7 +112,7 @@ public class BoilerUpdateProtocol extends FormationProtocol<BoilerMultiblockData
               coord.getY() >= renderLocation.getY() - 1 && coord.getY() < initDisperser.getY() &&
               coord.getX() >= renderLocation.getX() && coord.getX() < renderLocation.getX() + volLength &&
               coord.getZ() >= renderLocation.getZ() && coord.getZ() < renderLocation.getZ() + volWidth &&
-              (pointer.getTileWorld().isAirBlock(coord) || checkNode(pointer.getTileWorld().getTileEntity(coord)))));
+              (world.isAirBlock(coord) || isFrameCompatible(world.getTileEntity(coord)))));
 
         //Make sure all air blocks are connected
         if (totalAir > structure.getWaterVolume()) {
@@ -125,12 +121,7 @@ public class BoilerUpdateProtocol extends FormationProtocol<BoilerMultiblockData
 
         int steamHeight = (structure.renderLocation.getY() + structure.height - 2) - initDisperser.getY();
         structure.setSteamVolume(structure.width * structure.length * steamHeight);
-        structure.upperRenderLocation = new Coord4D(structure.renderLocation.getX(), initDisperser.getY() + 1, structure.renderLocation.getZ(), pointer.getTileWorld().getDimension().getType());
+        structure.upperRenderLocation = new Coord4D(structure.renderLocation.getX(), initDisperser.getY() + 1, structure.renderLocation.getZ(), world.getDimension().getType());
         return FormationResult.SUCCESS;
-    }
-
-    @Override
-    protected MultiblockManager<BoilerMultiblockData> getManager() {
-        return Mekanism.boilerManager;
     }
 }

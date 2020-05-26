@@ -12,7 +12,7 @@ import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.GasRenderData;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.common.GeneratorsProfilerConstants;
-import mekanism.generators.common.content.fission.FissionReactorUpdateProtocol.FormedAssembly;
+import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;

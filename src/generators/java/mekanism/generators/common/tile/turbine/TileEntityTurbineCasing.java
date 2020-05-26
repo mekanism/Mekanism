@@ -3,17 +3,12 @@ package mekanism.generators.common.tile.turbine;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.lib.math.voxel.VoxelCuboid;
-import mekanism.common.lib.multiblock.CuboidStructureValidator;
-import mekanism.common.lib.multiblock.FormationProtocol;
-import mekanism.common.lib.multiblock.IStructureValidator;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
-import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -39,11 +34,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
     @Override
     public TurbineMultiblockData createMultiblock() {
         return new TurbineMultiblockData(this);
-    }
-
-    @Override
-    public FormationProtocol<TurbineMultiblockData> getFormationProtocol() {
-        return new TurbineUpdateProtocol(this);
     }
 
     @Override
@@ -78,10 +68,5 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
             NBTUtils.setFloatIfPresent(tag, NBTConstants.ROTATION, value -> getMultiblock().clientRotation = value);
             TurbineMultiblockData.clientRotationMap.put(getMultiblock().inventoryID, getMultiblock().clientRotation);
         }
-    }
-
-    @Override
-    public IStructureValidator validateStructure() {
-        return new CuboidStructureValidator(getStructure(), new VoxelCuboid(3, 3, 3), new VoxelCuboid(17, 18, 17));
     }
 }

@@ -5,12 +5,8 @@ import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
-import mekanism.common.content.evaporation.EvaporationStructureValidator;
-import mekanism.common.content.evaporation.EvaporationUpdateProtocol;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
-import mekanism.common.lib.multiblock.FormationProtocol;
-import mekanism.common.lib.multiblock.IStructureValidator;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
@@ -73,17 +69,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<Evap
     }
 
     @Override
-    public FormationProtocol<EvaporationMultiblockData> getFormationProtocol() {
-        return new EvaporationUpdateProtocol(this);
-    }
-
-    @Override
     public MultiblockManager<EvaporationMultiblockData> getManager() {
         return Mekanism.evaporationManager;
-    }
-
-    @Override
-    public IStructureValidator validateStructure() {
-        return new EvaporationStructureValidator(getStructure());
     }
 }

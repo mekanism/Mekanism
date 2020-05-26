@@ -6,7 +6,6 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.content.boiler.BoilerMultiblockData;
-import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
@@ -29,11 +28,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     @Override
     public BoilerMultiblockData createMultiblock() {
         return new BoilerMultiblockData(this);
-    }
-
-    @Override
-    public BoilerUpdateProtocol getFormationProtocol() {
-        return new BoilerUpdateProtocol(this);
     }
 
     @Override

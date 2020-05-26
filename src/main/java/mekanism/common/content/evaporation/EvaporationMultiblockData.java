@@ -19,7 +19,7 @@ import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.FluidInventorySlot;
@@ -139,7 +139,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     }
 
     public int getMaxFluid() {
-        return height * 4 * TankUpdateProtocol.FLUID_PER_TANK;
+        return height * 4 * TankMultiblockData.FLUID_PER_TANK;
     }
 
     @Nonnull

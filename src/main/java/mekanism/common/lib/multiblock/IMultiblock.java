@@ -10,8 +10,6 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
         return (T) IMultiblockBase.super.getMultiblockData();
     }
 
-    FormationProtocol<T> getFormationProtocol();
-
     @Override
     T getDefaultData();
 
@@ -31,7 +29,7 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
         return getCache() != null;
     }
 
-    default IStructureValidator validateStructure() {
-        return new CuboidStructureValidator(getStructure());
+    default FormationProtocol<T> createFormationProtocol() {
+        return new FormationProtocol<T>(this, getStructure());
     }
 }

@@ -56,15 +56,27 @@ public class VoxelCuboid implements IShape {
     }
 
     public boolean isOnSide(BlockPos pos) {
-        return getMatches(pos) >= 1;
+        return getWallRelative(pos).isWall();
     }
 
     public boolean isOnEdge(BlockPos pos) {
-        return getMatches(pos) >= 2;
+        return getWallRelative(pos).isOnEdge();
     }
 
     public boolean isOnCorner(BlockPos pos) {
-        return getMatches(pos) >= 3;
+        return getWallRelative(pos).isOnCorner();
+    }
+
+    public WallRelative getWallRelative(BlockPos pos) {
+        int matches = getMatches(pos);
+        if (matches >= 3) {
+            return WallRelative.CORNER;
+        } else if (matches == 2) {
+            return WallRelative.EDGE;
+        } else if (matches == 1) {
+            return WallRelative.SIDE;
+        }
+        return WallRelative.INVALID;
     }
 
     public int getMatches(BlockPos pos) {
@@ -125,6 +137,23 @@ public class VoxelCuboid implements IShape {
     @Override
     public String toString() {
         return "Cuboid(start=" + minPos + ",bounds=(" + length() + "," + height() + "," + width() + "))";
+    }
+
+    public enum WallRelative {
+        SIDE,
+        EDGE,
+        CORNER,
+        INVALID;
+
+        public boolean isWall() {
+            return this != INVALID;
+        }
+        public boolean isOnEdge() {
+            return this == EDGE || this == CORNER;
+        }
+        public boolean isOnCorner() {
+            return this == CORNER;
+        }
     }
 
     public enum CuboidRelative {

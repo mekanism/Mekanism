@@ -18,21 +18,28 @@ public class MultiblockManager<T extends MultiblockData> {
     private static Set<MultiblockManager<?>> managers = new ObjectOpenHashSet<>();
 
     private String name;
+
     private Supplier<MultiblockCache<T>> cacheSupplier;
+    private Supplier<IStructureValidator<T>> validatorSupplier;
 
     /**
      * A map containing references to all multiblock inventory caches.
      */
     public Map<UUID, CacheWrapper> inventories = new Object2ObjectOpenHashMap<>();
 
-    public MultiblockManager(String name, Supplier<MultiblockCache<T>> cacheSupplier) {
+    public MultiblockManager(String name, Supplier<MultiblockCache<T>> cacheSupplier, Supplier<IStructureValidator<T>> validatorSupplier) {
         this.name = name;
         this.cacheSupplier = cacheSupplier;
+        this.validatorSupplier = validatorSupplier;
         managers.add(this);
     }
 
-    public MultiblockCache<T> getNewCache() {
+    public MultiblockCache<T> createCache() {
         return cacheSupplier.get();
+    }
+
+    public IStructureValidator<T> createValidator() {
+        return validatorSupplier.get();
     }
 
     public String getName() {
@@ -117,7 +124,7 @@ public class MultiblockManager<T extends MultiblockData> {
                 if (tile.isMaster()) {
                     // create a new cache for the tile if it needs one
                     if (!tile.hasCache()) {
-                        tile.setCache(getNewCache());
+                        tile.setCache(createCache());
                     }
                     // if this is the master tile, sync the cache with the multiblock and then update our reference
                     tile.getCache().sync(tile.getMultiblock());
