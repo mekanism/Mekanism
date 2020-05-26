@@ -21,7 +21,7 @@ public interface IGasTile extends IGasTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default GasHandlerManager getInitialGasManager() {
-        return new GasHandlerManager(getInitialGasTanks(), new DynamicGasHandler(this::getGasManager, this::extractGasCheck, this::insertGasCheck, this));
+        return new GasHandlerManager(getInitialGasTanks(), new DynamicGasHandler(this::getGasTanks, this::extractGasCheck, this::insertGasCheck, this));
     }
 
     /**

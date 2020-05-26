@@ -21,7 +21,7 @@ public interface IPigmentTile extends IPigmentTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default PigmentHandlerManager getInitialPigmentManager() {
-        return new PigmentHandlerManager(getInitialPigmentTanks(), new DynamicPigmentHandler(this::getPigmentManager, this::extractPigmentCheck, this::insertPigmentCheck, this));
+        return new PigmentHandlerManager(getInitialPigmentTanks(), new DynamicPigmentHandler(this::getPigmentTanks, this::extractPigmentCheck, this::insertPigmentCheck, this));
     }
 
     /**

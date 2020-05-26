@@ -21,7 +21,7 @@ public interface ISlurryTile extends ISlurryTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default SlurryHandlerManager getInitialSlurryManager() {
-        return new SlurryHandlerManager(getInitialSlurryTanks(), new DynamicSlurryHandler(this::getSlurryManager, this::extractSlurryCheck, this::insertSlurryCheck, this));
+        return new SlurryHandlerManager(getInitialSlurryTanks(), new DynamicSlurryHandler(this::getSlurryTanks, this::extractSlurryCheck, this::insertSlurryCheck, this));
     }
 
     /**

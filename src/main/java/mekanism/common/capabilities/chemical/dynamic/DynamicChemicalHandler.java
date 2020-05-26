@@ -1,6 +1,7 @@
 package mekanism.common.capabilities.chemical.dynamic;
 
 import java.util.List;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -11,9 +12,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
-import mekanism.common.capabilities.resolver.manager.chemical.ChemicalHandlerManager;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.util.NonNullSupplier;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -21,16 +20,13 @@ import net.minecraftforge.common.util.NonNullSupplier;
 public abstract class DynamicChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
       implements IMekanismChemicalHandler<CHEMICAL, STACK, TANK> {
 
-    //TODO: instead make this be a supplier for the list of chemical tanks? That way things like the gauge droper can easier implement it
-    private final NonNullSupplier<ChemicalHandlerManager<CHEMICAL, STACK, TANK, ?, ?>> handlerManager;
+    private final Function<Direction, List<TANK>> tankSupplier;
     private final InteractPredicate canExtract;
     private final InteractPredicate canInsert;
     private final IContentsListener listener;
 
-    //TODO: Note that the supplier should basically just return a constant.
-    protected DynamicChemicalHandler(NonNullSupplier<ChemicalHandlerManager<CHEMICAL, STACK, TANK, ?, ?>> handlerManager, InteractPredicate canExtract,
-          InteractPredicate canInsert, IContentsListener listener) {
-        this.handlerManager = handlerManager;
+    protected DynamicChemicalHandler(Function<Direction, List<TANK>> tankSupplier, InteractPredicate canExtract, InteractPredicate canInsert, IContentsListener listener) {
+        this.tankSupplier = tankSupplier;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.listener = listener;
@@ -38,7 +34,7 @@ public abstract class DynamicChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>
 
     @Override
     public List<TANK> getChemicalTanks(@Nullable Direction side) {
-        return handlerManager.get().getContainers(side);
+        return tankSupplier.apply(side);
     }
 
     @Override
@@ -60,6 +56,8 @@ public abstract class DynamicChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>
 
     @FunctionalInterface
     public interface InteractPredicate {
+
+        InteractPredicate ALWAYS_TRUE = (tank, side) -> true;
 
         boolean test(int tank, @Nullable Direction side);
     }

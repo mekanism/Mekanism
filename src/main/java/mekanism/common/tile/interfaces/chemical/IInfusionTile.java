@@ -21,7 +21,7 @@ public interface IInfusionTile extends IInfusionTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default InfusionHandlerManager getInitialInfusionManager() {
-        return new InfusionHandlerManager(getInitialInfusionTanks(), new DynamicInfusionHandler(this::getInfusionManager, this::extractInfusionCheck, this::insertInfusionCheck, this));
+        return new InfusionHandlerManager(getInitialInfusionTanks(), new DynamicInfusionHandler(this::getInfusionTanks, this::extractInfusionCheck, this::insertInfusionCheck, this));
     }
 
     /**
