@@ -18,10 +18,7 @@ import mekanism.client.MekanismClient;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.effect.BoltEffect;
 import mekanism.client.render.effect.BoltRenderer;
-import mekanism.client.render.effect.BoltRenderer.BoltData;
-import mekanism.client.render.effect.BoltRenderer.SpawnFunction;
 import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
@@ -40,6 +37,7 @@ import mekanism.common.lib.Color;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.particle.custom.BoltEffect;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -97,14 +95,14 @@ public class RenderTickHandler {
     public Minecraft minecraft = Minecraft.getInstance();
     public static double prevRadiation = 0;
 
-    private static BoltRenderer electricityRenderer = BoltRenderer.create(BoltEffect.electricity(0.04F), 8, SpawnFunction.noise(8, 4));
+    private static BoltRenderer boltRenderer = new BoltRenderer();
 
     public static void resetCachedOverlays() {
         cachedOverlays.clear();
     }
 
-    public static void renderBolt(Object renderer, Vec3d start, Vec3d end, int segments) {
-        electricityRenderer.update(renderer, new BoltData(start, end, 1, segments), MekanismRenderer.getPartialTick());
+    public static void renderBolt(Object renderer, BoltEffect bolt) {
+        boltRenderer.update(renderer, bolt, MekanismRenderer.getPartialTick());
     }
 
     @SubscribeEvent
@@ -115,7 +113,7 @@ public class RenderTickHandler {
         Vec3d camVec = minecraft.gameRenderer.getActiveRenderInfo().getProjectedView();
         matrix.translate(-camVec.x, -camVec.y, -camVec.z);
         IRenderTypeBuffer.Impl renderer = minecraft.getRenderTypeBuffers().getBufferSource();
-        electricityRenderer.render(minecraft.getRenderPartialTicks(), matrix, renderer);
+        boltRenderer.render(minecraft.getRenderPartialTicks(), matrix, renderer);
         renderer.finish(RenderType.getLightning());
         matrix.pop();
     }

@@ -17,15 +17,15 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.effect.BoltEffect;
 import mekanism.client.render.effect.BoltRenderer;
-import mekanism.client.render.effect.BoltRenderer.BoltData;
-import mekanism.client.render.effect.BoltRenderer.FadeFunction;
-import mekanism.client.render.effect.BoltRenderer.SpawnFunction;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
+import mekanism.common.particle.custom.BoltEffect;
+import mekanism.common.particle.custom.BoltEffect.BoltRenderInfo;
+import mekanism.common.particle.custom.BoltEffect.FadeFunction;
+import mekanism.common.particle.custom.BoltEffect.SpawnFunction;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
@@ -39,8 +39,16 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntityAntiprotonicNucleosynthesizer, MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> {
 
     private static final Vec3d from = new Vec3d(47, 50, 0), to = new Vec3d(147, 50, 0);
-    private BoltRenderer bolt = BoltRenderer.create(BoltEffect.basic().withSize(1F).withColor(0.45F, 0.45F, 0.5F, 1), 1, SpawnFunction.delay(1), FadeFunction.NONE).repeat();
-    private Supplier<BoltData> boltSupplier = () -> new BoltData(from, to, (int) Math.min(Math.ceil(tile.getProcessRate() / 8F), 20), 12);
+    private static final BoltRenderInfo boltRenderInfo = new BoltRenderInfo().color(Color.rgba(0.45F, 0.45F, 0.5F, 1));
+
+    private BoltRenderer bolt = new BoltRenderer();
+    private Supplier<BoltEffect> boltSupplier = () -> new BoltEffect(boltRenderInfo, from, to, 12)
+          .count((int) Math.min(Math.ceil(tile.getProcessRate() / 8F), 20))
+          .size(1)
+          .lifespan(1)
+          .spawn(SpawnFunction.delay(1))
+          .fade(FadeFunction.NONE)
+          .repeat();
 
     public GuiAntiprotonicNucleosynthesizer(MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

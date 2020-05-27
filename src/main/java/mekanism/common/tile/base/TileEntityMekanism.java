@@ -1,6 +1,5 @@
 package mekanism.common.tile.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;

@@ -9,12 +9,12 @@ import mekanism.common.CommonProxy;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.particle.custom.BoltEffect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -39,8 +39,8 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void renderBolt(Object renderer, Vec3d from, Vec3d to, int segments) {
-        RenderTickHandler.renderBolt(renderer, from, to, segments);
+    public void renderBolt(Object renderer, BoltEffect bolt) {
+        RenderTickHandler.renderBolt(renderer, bolt);
     }
 
     @Override

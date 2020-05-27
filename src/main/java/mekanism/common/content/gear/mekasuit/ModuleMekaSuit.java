@@ -31,6 +31,10 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.lib.radiation.capability.IRadiationEntity;
+import mekanism.common.particle.custom.BoltEffect;
+import mekanism.common.particle.custom.BoltEffect.BoltRenderInfo;
+import mekanism.common.particle.custom.BoltEffect.SpawnFunction;
+import mekanism.common.particle.custom.BoltEffect.SpawnFunction;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
@@ -429,7 +433,9 @@ public abstract class ModuleMekaSuit extends Module {
                     Vec3d motionDiff = motionNeeded.subtract(player.getMotion());
                     item.setMotion(motionDiff.scale(0.2));
                     if (client) {
-                        Mekanism.proxy.renderBolt(Objects.hash(player, item), player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int) (diff.length() * 4));
+                        BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int) (diff.length() * 4))
+                              .size(0.04F).lifespan(8).spawn(SpawnFunction.noise(8, 4));
+                        Mekanism.proxy.renderBolt(Objects.hash(player, item), bolt);
                     }
                 }
             }

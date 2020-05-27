@@ -10,12 +10,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import mekanism.client.render.effect.BoltEffect.BoltQuads;
+import mekanism.common.particle.custom.BoltEffect;
+import mekanism.common.particle.custom.BoltEffect.BoltQuads;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.math.Vec3d;
 
 public class BoltRenderer {
 
@@ -28,43 +28,7 @@ public class BoltRenderer {
     private final Random random = new Random();
     private final Minecraft minecraft = Minecraft.getInstance();
 
-    private final int boltLifespan;
-
-    private final BoltEffect boltEffect;
-    private final SpawnFunction spawnFunction;
-    private final FadeFunction fadeFunction;
-
-    private boolean repeat;
-
     private final Map<Object, BoltOwnerData> boltOwners = new Object2ObjectOpenHashMap<>();
-
-    public static BoltRenderer create(BoltEffect boltEffect) {
-        return create(boltEffect, 60);
-    }
-
-    public static BoltRenderer create(BoltEffect boltEffect, int rate) {
-        return create(boltEffect, rate / 2, SpawnFunction.delay(rate));
-    }
-
-    public static BoltRenderer create(BoltEffect boltEffect, int lifespan, SpawnFunction spawnFunction) {
-        return create(boltEffect, lifespan, spawnFunction, FadeFunction.fade(0.5F));
-    }
-
-    public static BoltRenderer create(BoltEffect boltEffect, int boltLifespan, SpawnFunction spawnFunction, FadeFunction fadeFunction) {
-        return new BoltRenderer(boltEffect, boltLifespan, spawnFunction, fadeFunction);
-    }
-
-    public BoltRenderer repeat() {
-        repeat = true;
-        return this;
-    }
-
-    protected BoltRenderer(BoltEffect boltEffect, int boltLifespan, SpawnFunction spawnFunction, FadeFunction fadeFunction) {
-        this.boltEffect = boltEffect;
-        this.boltLifespan = boltLifespan;
-        this.spawnFunction = spawnFunction;
-        this.fadeFunction = fadeFunction;
-    }
 
     public void render(float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn) {
         IVertexBuilder buffer = bufferIn.getBuffer(RenderType.getLightning());
@@ -78,7 +42,6 @@ public class BoltRenderer {
         if (refresh) {
             refreshTimestamp = partialTicks % 1;
         }
-
         for (Iterator<Map.Entry<Object, BoltOwnerData>> iter = boltOwners.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<Object, BoltOwnerData> entry = iter.next();
             BoltOwnerData data = entry.getValue();
@@ -86,8 +49,8 @@ public class BoltRenderer {
             if (refresh) {
                 data.bolts.removeIf(BoltInstance::tick);
             }
-            if (repeat && data.bolts.isEmpty() && data.lastBolt != null) {
-                data.bolts.add(new BoltInstance(boltLifespan, boltEffect.generate(data.lastBolt)));
+            if (data.repeat && data.bolts.isEmpty() && data.lastBolt != null) {
+                data.addBolt(new BoltInstance(data.lastBolt), time);
             }
             data.bolts.forEach(bolt -> bolt.render(matrix, buffer));
 
@@ -97,133 +60,59 @@ public class BoltRenderer {
         }
     }
 
-    public void update(Object owner, BoltData newBoltData, float partialTicks) {
+    public void update(Object owner, BoltEffect newBoltData, float partialTicks) {
         if (minecraft.world == null) {
             return;
         }
-
         BoltOwnerData data = boltOwners.computeIfAbsent(owner, o -> new BoltOwnerData());
+        data.repeat = newBoltData.shouldRepeat();
         double time = minecraft.world.getGameTime() + partialTicks;
-        if (!repeat && time - data.lastBoltTimestamp >= spawnFunction.getSpawnDelay(random)) {
-            data.lastBoltTimestamp = time;
-            data.bolts.add(new BoltInstance(boltLifespan, boltEffect.generate(newBoltData)));
+        if (!data.repeat && time - data.lastBoltTimestamp >= data.lastBoltDelay) {
+            data.addBolt(new BoltInstance(newBoltData), time);
         }
         data.lastUpdateTimestamp = time;
         data.lastBolt = newBoltData;
     }
 
-    public static class BoltOwnerData {
+    public class BoltOwnerData {
 
         private final Set<BoltInstance> bolts = new ObjectOpenHashSet<>();
-        private BoltData lastBolt;
+        private BoltEffect lastBolt;
         private double lastBoltTimestamp;
         private double lastUpdateTimestamp;
-    }
+        private double lastBoltDelay;
+        private boolean repeat;
 
-    public static class BoltData {
-
-        private final Vec3d start;
-        private final Vec3d end;
-        private final int count;
-        private final int segments;
-        private final float size;
-
-        public BoltData(Vec3d start, Vec3d end, int count, int segments) {
-            this(start, end, count, segments, -1);
-        }
-
-        public BoltData(Vec3d start, Vec3d end, int count, int segments, float size) {
-            this.start = start;
-            this.end = end;
-            this.count = count;
-            this.segments = segments;
-            this.size = size;
-        }
-
-        public Vec3d getStart() {
-            return start;
-        }
-
-        public Vec3d getEnd() {
-            return end;
-        }
-
-        public int getCount() {
-            return count;
-        }
-
-        public int getSegments() {
-            return segments;
-        }
-
-        public float getSize() {
-            return size;
+        private void addBolt(BoltInstance instance, double time) {
+            bolts.add(instance);
+            lastBoltDelay = instance.bolt.getSpawnFunction().getSpawnDelay(random);
+            lastBoltTimestamp = time;
         }
     }
 
     public class BoltInstance {
 
+        private final BoltEffect bolt;
         private final List<BoltQuads> renderQuads;
-        private final float lifespan;
         private int ticksExisted;
 
-        public BoltInstance(float lifespan, List<BoltQuads> renderQuads) {
-            this.lifespan = lifespan;
-            this.renderQuads = renderQuads;
+        public BoltInstance(BoltEffect bolt) {
+            this.bolt = bolt;
+            this.renderQuads = bolt.generate();
         }
 
         public void render(Matrix4f matrix, IVertexBuilder buffer) {
-            float lifeScale = ticksExisted / lifespan;
-            Pair<Integer, Integer> bounds = fadeFunction.getRenderBounds(renderQuads.size(), lifeScale);
+            float lifeScale = (float) ticksExisted / bolt.getLifespan();
+            Pair<Integer, Integer> bounds = bolt.getFadeFunction().getRenderBounds(renderQuads.size(), lifeScale);
             for (int i = bounds.getLeft(); i < bounds.getRight(); i++) {
-                renderQuads.get(i).render(matrix, buffer, 1);
+                renderQuads.get(i).getVecs().forEach(v -> buffer.pos(matrix, (float) v.x, (float) v.y, (float) v.z)
+                      .color(bolt.getColor().r, bolt.getColor().g, bolt.getColor().b, bolt.getColor().a)
+                      .endVertex());
             }
         }
 
         public boolean tick() {
-            return ticksExisted++ >= lifespan;
+            return ticksExisted++ >= bolt.getLifespan();
         }
-    }
-
-    public interface SpawnFunction {
-
-        /** Allow for bolts to be spawned each update call without any delay. */
-        SpawnFunction NO_DELAY = (rand) -> Pair.of(0F, 0F);
-
-        /** Spawn bolts with a specified constant delay. */
-        static SpawnFunction delay(float delay) {
-            return (rand) -> Pair.of(delay, delay);
-        }
-
-        /**
-         * Spawns bolts with a specified delay and specified noise value, which will be randomly applied at either end of the delay bounds.
-         */
-        static SpawnFunction noise(float delay, float noise) {
-            return (rand) -> Pair.of(delay - noise, delay + noise);
-        }
-
-        Pair<Float, Float> getSpawnDelayBounds(Random rand);
-
-        default float getSpawnDelay(Random rand) {
-            Pair<Float, Float> bounds = getSpawnDelayBounds(rand);
-            return bounds.getLeft() + (bounds.getRight() - bounds.getLeft()) * rand.nextFloat();
-        }
-    }
-
-    public interface FadeFunction {
-
-        /** No fade; render the bolts entirely throughout their lifespan. */
-        FadeFunction NONE = (totalBolts, lifeScale) -> Pair.of(0, totalBolts);
-
-        /** Remder bolts with a segment-by-segment 'fade' in and out, with a specified fade duration (applied to start and finish). */
-        static FadeFunction fade(float fade) {
-            return (totalBolts, lifeScale) -> {
-                int start = lifeScale > (1 - fade) ? (int) (totalBolts * (lifeScale - (1 - fade)) / fade) : 0;
-                int end = lifeScale < fade ? (int) (totalBolts * (lifeScale / fade)) : totalBolts;
-                return Pair.of(start, end);
-            };
-        }
-
-        Pair<Integer, Integer> getRenderBounds(int totalBolts, float lifeScale);
     }
 }
