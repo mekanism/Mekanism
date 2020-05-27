@@ -168,7 +168,11 @@ public class Structure {
     private static void validate(IMultiblockBase node) {
         if (node instanceof IMultiblock) {
             IMultiblock<?> multiblock = (IMultiblock<?>) node;
-            multiblock.resetStructure(multiblock.getManager());
+            if (!multiblock.getStructure().isValid()) {
+                // only validate if necessary; this will already be valid if we recursively call validate()
+                // from a structural multiblock's perspective
+                multiblock.resetStructure(multiblock.getManager());
+            }
         } else if (node instanceof IStructuralMultiblock) {
             ((IStructuralMultiblock) node).resetStructure(null);
         }
