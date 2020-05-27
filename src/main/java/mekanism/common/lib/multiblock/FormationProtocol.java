@@ -70,7 +70,7 @@ public class FormationProtocol<T extends MultiblockData> {
         T structureFound = result.structureFound;
 
         if (structureFound != null && structureFound.locations.contains(pointer.getTilePos())) {
-            pointer.setMultiblockData(structureFound);
+            pointer.setMultiblockData(manager, structureFound);
             structureFound.setFormedForce(true);
             MultiblockCache<T> cache = manager.createCache();
             UUID idToUse = null;

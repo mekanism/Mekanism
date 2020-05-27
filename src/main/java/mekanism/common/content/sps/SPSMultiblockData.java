@@ -11,6 +11,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
+import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
@@ -23,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class SPSMultiblockData extends MultiblockData {
+public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     private static final long MAX_OUTPUT_GAS = 1_000;
 
@@ -91,6 +92,20 @@ public class SPSMultiblockData extends MultiblockData {
         return needsPacket;
     }
 
+    @Override
+    public void readUpdateTag(CompoundNBT tag) {
+        super.readUpdateTag(tag);
+        coilData.read(tag);
+        lastReceivedEnergy = FloatingLong.parseFloatingLong(tag.getString(NBTConstants.ENERGY_USAGE));
+    }
+
+    @Override
+    public void writeUpdateTag(CompoundNBT tag) {
+        super.writeUpdateTag(tag);
+        coilData.write(tag);
+        tag.putString(NBTConstants.ENERGY_USAGE, lastReceivedEnergy.toString());
+    }
+
     private void process(long operations) {
         if (operations == 0)
             return;
@@ -136,7 +151,7 @@ public class SPSMultiblockData extends MultiblockData {
     }
 
     public boolean handlesSound(TileEntitySPSCasing tile) {
-        return tile.getPos().equals(minLocation.add(3, 0, 0)) || tile.getPos().equals(minLocation.add(3, 0, 7));
+        return tile.getPos().equals(getMinPos().add(3, 0, 0)) || tile.getPos().equals(getMaxPos().add(3, 0, 7));
     }
 
     public static class SyncableCoilData {

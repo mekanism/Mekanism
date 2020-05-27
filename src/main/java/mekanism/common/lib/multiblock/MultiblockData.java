@@ -1,6 +1,7 @@
 package mekanism.common.lib.multiblock;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -12,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -37,6 +39,9 @@ import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -49,9 +54,6 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
-    @ContainerSync(tags = "stats")
-    public int length, width, height;
-
     @ContainerSync(getter = "getVolume", setter = "setVolume")
     private int volume;
 
@@ -62,7 +64,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     @Nullable//may be null if structure has not been fully sent
     public BlockPos renderLocation;
 
-    public BlockPos minLocation, maxLocation;
+    private VoxelCuboid bounds = new VoxelCuboid(0, 0, 0);
 
     @ContainerSync
     private boolean formed;
@@ -106,14 +108,10 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public boolean setShape(IShape shape) {
         if (shape instanceof VoxelCuboid) {
             VoxelCuboid cuboid = (VoxelCuboid) shape;
-            minLocation = cuboid.getMinPos();
-            maxLocation = cuboid.getMaxPos();
-            renderLocation = minLocation.offset(Direction.UP);
-            length = Math.abs(maxLocation.getX() - minLocation.getX()) + 1;
-            height = Math.abs(maxLocation.getY() - minLocation.getY()) + 1;
-            width = Math.abs(maxLocation.getZ() - minLocation.getZ()) + 1;
-            setVolume(length * width * height);
-            return length >= 3 && length <= FormationProtocol.MAX_SIZE && height >= 3 && height <= FormationProtocol.MAX_SIZE && width >= 3 && width <= FormationProtocol.MAX_SIZE;
+            bounds = cuboid;
+            renderLocation = cuboid.getMinPos().offset(Direction.UP);
+            setVolume(bounds.length() * bounds.width() * bounds.height());
+            return true;
         }
         return false;
     }
@@ -183,6 +181,52 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         formed = false;
     }
 
+    public void readUpdateTag(CompoundNBT tag) {
+        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> setVolume(value));
+        NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> renderLocation = value);
+        bounds = new VoxelCuboid(NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MIN)),
+                                 NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MAX)));
+        if (tag.hasUniqueId(NBTConstants.INVENTORY_ID)) {
+            inventoryID = tag.getUniqueId(NBTConstants.INVENTORY_ID);
+        } else {
+            inventoryID = null;
+        }
+    }
+
+    public void writeUpdateTag(CompoundNBT tag) {
+        tag.putInt(NBTConstants.VOLUME, getVolume());
+        tag.put(NBTConstants.RENDER_LOCATION, NBTUtil.writeBlockPos(renderLocation));
+        tag.put(NBTConstants.MIN, NBTUtil.writeBlockPos(bounds.getMinPos()));
+        tag.put(NBTConstants.MAX, NBTUtil.writeBlockPos(bounds.getMaxPos()));
+        if (inventoryID != null) {
+            tag.putUniqueId(NBTConstants.INVENTORY_ID, inventoryID);
+        }
+    }
+
+    public int length() {
+        return bounds.length();
+    }
+
+    public int width() {
+        return bounds.width();
+    }
+
+    public int height() {
+        return bounds.height();
+    }
+
+    public BlockPos getMinPos() {
+        return bounds.getMinPos();
+    }
+
+    public BlockPos getMaxPos() {
+        return bounds.getMaxPos();
+    }
+
+    public VoxelCuboid getBounds() {
+        return bounds;
+    }
+
     @Nonnull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
@@ -241,6 +285,10 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return directionsToEmit;
     }
 
+    public Collection<ValveData> getValveData() {
+        return valves;
+    }
+
     @Override
     public void onContentsChanged() {
     }
@@ -249,9 +297,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public int hashCode() {
         int code = 1;
         code = 31 * code + locations.hashCode();
-        code = 31 * code + length;
-        code = 31 * code + width;
-        code = 31 * code + height;
+        code = 31 * code + bounds.hashCode();
         code = 31 * code + getVolume();
         return code;
     }
@@ -265,7 +311,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         if (!data.locations.equals(locations)) {
             return false;
         }
-        if (data.length != length || data.width != width || data.height != height) {
+        if (!data.bounds.equals(bounds)) {
             return false;
         }
         return data.getVolume() == getVolume();

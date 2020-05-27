@@ -1,9 +1,9 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
@@ -36,9 +36,9 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
             RenderData data = getRenderData(tile.getMultiblock());
             if (data != null) {
                 data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
-                data.height = tile.getMultiblock().height - 2;
-                data.length = tile.getMultiblock().length;
-                data.width = tile.getMultiblock().width;
+                data.height = tile.getMultiblock().height() - 2;
+                data.length = tile.getMultiblock().length();
+                data.width = tile.getMultiblock().width();
                 matrix.push();
 
                 IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());

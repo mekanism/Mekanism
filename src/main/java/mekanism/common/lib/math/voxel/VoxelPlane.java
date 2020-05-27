@@ -1,6 +1,8 @@
 package mekanism.common.lib.math.voxel;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.util.math.BlockPos;
 
@@ -10,12 +12,20 @@ public class VoxelPlane {
     private int minCol, maxCol;
     private int minRow, maxRow;
     private int size;
+    private boolean hasController;
 
-    public VoxelPlane(Axis axis, BlockPos pos) {
+    private Set<BlockPos> outsideSet = new HashSet<>();
+
+    public VoxelPlane(Axis axis, BlockPos pos, boolean controller) {
         this.axis = axis;
-        size = 1;
-        minCol = maxCol = axis.horizontal().getCoord(pos);
-        minRow = maxRow = axis.vertical().getCoord(pos);
+        if (controller) {
+            size = 1;
+            minCol = maxCol = axis.horizontal().getCoord(pos);
+            minRow = maxRow = axis.vertical().getCoord(pos);
+            hasController = true;
+        } else {
+            outsideSet.add(pos);
+        }
     }
 
     public boolean isFull() {
@@ -23,16 +33,45 @@ public class VoxelPlane {
     }
 
     public int getMissing() {
-        int length = maxCol - minCol + 1, height = maxRow - minRow + 1;
-        return (length * height) - size;
+        return (length() * height()) - size;
+    }
+
+    public int length() {
+        return hasController ? (maxCol - minCol) + 1 : 0;
+    }
+
+    public int height() {
+        return hasController ? (maxRow - minRow) + 1 : 0;
+    }
+
+    public boolean hasController() {
+        return hasController;
     }
 
     public void merge(VoxelPlane other) {
-        size += other.size;
-        minCol = Math.min(minCol, other.minCol);
-        maxCol = Math.max(maxCol, other.maxCol);
-        minRow = Math.min(minRow, other.minRow);
-        maxRow = Math.max(maxRow, other.maxRow);
+        outsideSet.addAll(other.outsideSet);
+        if (other.hasController) {
+            size += other.size;
+            if (!hasController) {
+                minCol = other.minCol;
+                maxCol = other.maxCol;
+                minRow = other.minRow;
+                maxRow = other.maxRow;
+            } else {
+                minCol = Math.min(minCol, other.minCol);
+                maxCol = Math.max(maxCol, other.maxCol);
+                minRow = Math.min(minRow, other.minRow);
+                maxRow = Math.max(maxRow, other.maxRow);
+            }
+            hasController |= other.hasController;
+        }
+        outsideSet.removeIf(pos -> {
+            if (!isOutside(pos)) {
+                size++;
+                return true;
+            }
+            return false;
+        });
     }
 
     public Axis getAxis() {
@@ -59,9 +98,14 @@ public class VoxelPlane {
         return maxCol;
     }
 
+    public boolean isOutside(BlockPos pos) {
+        int col = axis.horizontal().getCoord(pos), row = axis.vertical().getCoord(pos);
+        return col < minCol || col > maxCol || row < minRow || row > maxRow;
+    }
+
     @Override
     public String toString() {
-        return "Plane(full=" + isFull() + ",size=" + size() + ",bounds=" + Arrays.asList(minCol, minRow, maxCol, maxRow).toString() + ")";
+        return "Plane(full=" + isFull() + ",size=" + size() + ",controller=" + hasController + ",bounds=" + Arrays.asList(minCol, minRow, maxCol, maxRow).toString() + ")";
     }
 
     @Override

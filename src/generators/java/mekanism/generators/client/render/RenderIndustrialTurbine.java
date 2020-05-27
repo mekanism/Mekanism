@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
@@ -45,14 +45,14 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                 matrix.pop();
             }
             profiler.endSection();
-            if (!tile.getMultiblock().gasTank.isEmpty() && tile.getMultiblock().length > 0) {
-                int height = tile.getMultiblock().lowerVolume / (tile.getMultiblock().length * tile.getMultiblock().width);
+            if (!tile.getMultiblock().gasTank.isEmpty() && tile.getMultiblock().length() > 0) {
+                int height = tile.getMultiblock().lowerVolume / (tile.getMultiblock().length() * tile.getMultiblock().width());
                 if (height >= 1) {
                     GasRenderData data = new GasRenderData(tile.getMultiblock().gasTank.getStack());
                     data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
                     data.height = height;
-                    data.length = tile.getMultiblock().length;
-                    data.width = tile.getMultiblock().width;
+                    data.length = tile.getMultiblock().length();
+                    data.width = tile.getMultiblock().width();
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     Model3D gasModel = ModelRenderer.getModel(data, 1);

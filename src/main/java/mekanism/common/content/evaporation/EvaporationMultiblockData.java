@@ -4,6 +4,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IEvaporationSolar;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -24,20 +25,22 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.lib.math.voxel.VoxelCuboid;
+import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
-public class EvaporationMultiblockData extends MultiblockData implements ITileCachedRecipeHolder<FluidToFluidRecipe> {
+public class EvaporationMultiblockData extends MultiblockData implements ITileCachedRecipeHolder<FluidToFluidRecipe>, IValveHandler {
 
     private static final int MAX_OUTPUT = 10_000;
     private static final int MAX_HEIGHT = 18;
@@ -89,7 +92,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     public void onCreated(World world) {
         super.onCreated(world);
         // update the heat capacity now that we've read
-        heatCapacitor.setHeatCapacity(MekanismConfig.general.evaporationHeatCapacity.get() * height, true);
+        heatCapacitor.setHeatCapacity(MekanismConfig.general.evaporationHeatCapacity.get() * height(), true);
         updateSolars(world);
     }
 
@@ -111,9 +114,25 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
         return needsPacket;
     }
 
+    @Override
+    public void readUpdateTag(CompoundNBT tag) {
+        super.readUpdateTag(tag);
+        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> inputTank.setStack(fluid));
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
+        readValves(tag);
+    }
+
+    @Override
+    public void writeUpdateTag(CompoundNBT tag) {
+        super.writeUpdateTag(tag);
+        tag.put(NBTConstants.FLUID_STORED, inputTank.getFluid().writeToNBT(new CompoundNBT()));
+        tag.putFloat(NBTConstants.SCALE, prevScale);
+        writeValves(tag);
+    }
+
     private void updateTemperature(World world) {
         if (!temperatureSet) {
-            biomeTemp = world.getBiomeManager().getBiome(minLocation).getTemperature(minLocation);
+            biomeTemp = world.getBiomeManager().getBiome(getMinPos()).getTemperature(getMinPos());
             temperatureSet = true;
         }
         heatCapacitor.handleHeat(MekanismConfig.general.evaporationSolarMultiplier.get() * getActiveSolars() * heatCapacitor.getHeatCapacity());
@@ -130,7 +149,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
         heatCapacitor.handleHeat(heatCapacitor.getHeatCapacity() * incr);
 
         totalLoss = incr < 0 ? -incr / heatCapacitor.getHeatCapacity() : 0;
-        tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, heatCapacitor.getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() * ((double) height / MAX_HEIGHT);
+        tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, heatCapacitor.getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() * ((double) height() / MAX_HEIGHT);
         updateHeatCapacitors(null);
     }
 
@@ -139,7 +158,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     }
 
     public int getMaxFluid() {
-        return height * 4 * TankMultiblockData.FLUID_PER_TANK;
+        return height() * 4 * TankMultiblockData.FLUID_PER_TANK;
     }
 
     @Nonnull
@@ -217,15 +236,15 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     }
 
     public boolean isSolarSpot(BlockPos pos) {
-        return pos.getY() == maxLocation.getY() && new VoxelCuboid(minLocation, maxLocation).isOnCorner(pos);
+        return pos.getY() == getMaxPos().getY() && getBounds().isOnCorner(pos);
     }
 
     public void updateSolars(World world) {
         solars = new IEvaporationSolar[4];
-        addSolarPanel(MekanismUtils.getTileEntity(world, maxLocation), 0);
-        addSolarPanel(MekanismUtils.getTileEntity(world, maxLocation.add(-3, 0, 0)), 1);
-        addSolarPanel(MekanismUtils.getTileEntity(world, maxLocation.add(0, 0, -3)), 2);
-        addSolarPanel(MekanismUtils.getTileEntity(world, maxLocation.add(-3, 0, -3)), 3);
+        addSolarPanel(MekanismUtils.getTileEntity(world, getMaxPos()), 0);
+        addSolarPanel(MekanismUtils.getTileEntity(world, getMaxPos().add(-3, 0, 0)), 1);
+        addSolarPanel(MekanismUtils.getTileEntity(world, getMaxPos().add(0, 0, -3)), 2);
+        addSolarPanel(MekanismUtils.getTileEntity(world, getMaxPos().add(-3, 0, -3)), 3);
     }
 
     @Override

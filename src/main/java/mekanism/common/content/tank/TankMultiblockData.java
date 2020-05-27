@@ -2,6 +2,7 @@ package mekanism.common.content.tank;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
@@ -23,13 +24,16 @@ import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.HybridInventorySlot;
+import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
-public class TankMultiblockData extends MultiblockData {
+public class TankMultiblockData extends MultiblockData implements IValveHandler {
 
     public static final int FLUID_PER_TANK = 64_000;
 
@@ -88,6 +92,22 @@ public class TankMultiblockData extends MultiblockData {
             needsPacket = true;
         }
         return needsPacket;
+    }
+
+    @Override
+    public void readUpdateTag(CompoundNBT tag) {
+        super.readUpdateTag(tag);
+        tag.putFloat(NBTConstants.SCALE, prevScale);
+        mergedTank.addToUpdateTag(tag);
+        readValves(tag);
+    }
+
+    @Override
+    public void writeUpdateTag(CompoundNBT tag) {
+        super.writeUpdateTag(tag);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
+        mergedTank.readFromUpdateTag(tag);
+        writeValves(tag);
     }
 
     private float getScale() {
