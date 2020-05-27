@@ -29,11 +29,12 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
 public class BlockStructuralGlass extends BlockMekanism implements IHasTileEntity<TileEntityStructuralGlass>, IHasDescription {
 
     public BlockStructuralGlass() {
-        super(Block.Properties.create(Material.GLASS).hardnessAndResistance(5F, 10F).notSolid());
+        super(Block.Properties.create(Material.GLASS).hardnessAndResistance(5F, 10F).notSolid().harvestTool(ToolType.PICKAXE));
     }
 
     @Override

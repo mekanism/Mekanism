@@ -28,11 +28,12 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
 public class BlockLaserFocusMatrix extends BlockMekanism implements IHasTileEntity<TileEntityReactorLaserFocusMatrix>, IHasDescription {
 
     public BlockLaserFocusMatrix() {
-        super(Block.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 8F).notSolid());
+        super(Block.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 8F).notSolid().harvestTool(ToolType.PICKAXE));
     }
 
     @Override
