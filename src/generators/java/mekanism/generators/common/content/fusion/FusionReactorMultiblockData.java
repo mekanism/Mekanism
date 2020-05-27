@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -25,6 +26,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
@@ -34,6 +36,7 @@ import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
@@ -121,8 +124,22 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 heatHandlers.add((ITileHeatHandler) tile);
             }
         }
-        deathZone = new AxisAlignedBB(minLocation.getX() + 1, minLocation.getY() + 1, minLocation.getZ() + 1,
-              maxLocation.getX(), maxLocation.getY(), maxLocation.getZ());
+        deathZone = new AxisAlignedBB(getMinPos().getX() + 1, getMinPos().getY() + 1, getMinPos().getZ() + 1,
+              getMaxPos().getX(), getMaxPos().getY(), getMaxPos().getZ());
+    }
+
+    @Override
+    public void readUpdateTag(CompoundNBT tag) {
+        super.readUpdateTag(tag);
+        NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, this::setLastPlasmaTemp);
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.BURNING, this::setBurning);
+    }
+
+    @Override
+    public void writeUpdateTag(CompoundNBT tag) {
+        super.writeUpdateTag(tag);
+        tag.putDouble(NBTConstants.PLASMA_TEMP, getLastPlasmaTemp());
+        tag.putBoolean(NBTConstants.BURNING, isBurning());
     }
 
     public void addTemperatureFromEnergyInput(FloatingLong energyAdded) {

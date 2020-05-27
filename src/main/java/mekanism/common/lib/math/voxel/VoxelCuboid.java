@@ -38,6 +38,12 @@ public class VoxelCuboid implements IShape {
         return maxPos;
     }
 
+    public BlockPos getCenter() {
+        return new BlockPos((minPos.getX() + maxPos.getX()) / 2,
+                            (minPos.getY() + maxPos.getY()) / 2,
+                            (minPos.getZ() + maxPos.getZ()) / 2);
+    }
+
     public Direction getSide(BlockPos pos) {
         if (pos.getX() == minPos.getX()) {
             return Direction.WEST;
@@ -114,6 +120,14 @@ public class VoxelCuboid implements IShape {
     }
 
     @Override
+    public int hashCode() {
+        int result = 1;
+        result = 31 * result + maxPos.hashCode();
+        result = 31 * result + minPos.hashCode();
+        return result;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof VoxelCuboid)) {
             return false;
@@ -160,6 +174,10 @@ public class VoxelCuboid implements IShape {
         INSIDE,
         OUTSIDE,
         WALLS;
+
+        public boolean isWall() {
+            return this == WALLS;
+        }
     }
 
     public enum CuboidSide {

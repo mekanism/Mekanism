@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
@@ -54,13 +54,13 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                 }
             }
             if (!tile.getMultiblock().fluidCoolantTank.isEmpty()) {
-                int height = tile.getMultiblock().height - 2;
+                int height = tile.getMultiblock().height() - 2;
                 if (height >= 1) {
                     FluidRenderData data = new FluidRenderData(tile.getMultiblock().fluidCoolantTank.getFluid());
                     data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
                     data.height = height;
-                    data.length = tile.getMultiblock().length;
-                    data.width = tile.getMultiblock().width;
+                    data.length = tile.getMultiblock().length();
+                    data.width = tile.getMultiblock().width();
                     int glow = data.calculateGlowLight(light);
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
@@ -70,13 +70,13 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                 }
             }
             if (!tile.getMultiblock().heatedCoolantTank.isEmpty()) {
-                int height = tile.getMultiblock().height - 2;
+                int height = tile.getMultiblock().height() - 2;
                 if (height >= 1) {
                     GasRenderData data = new GasRenderData(tile.getMultiblock().heatedCoolantTank.getStack());
                     data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
                     data.height = height;
-                    data.length = tile.getMultiblock().length;
-                    data.width = tile.getMultiblock().width;
+                    data.length = tile.getMultiblock().length();
+                    data.width = tile.getMultiblock().width();
                     matrix.push();
                     matrix.scale(0.998F, 0.998F, 0.998F);
                     matrix.translate(data.location.x - pos.getX() + 0.001, data.location.y - pos.getY() + 0.001, data.location.z - pos.getZ() + 0.001);

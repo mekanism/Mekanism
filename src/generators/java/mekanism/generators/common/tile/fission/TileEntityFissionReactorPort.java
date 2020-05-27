@@ -102,7 +102,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
         if (ret.getAmount() < stack.getAmount() && action.execute()) {
-            triggerValveTransfer();
+            getMultiblock().triggerValveTransfer(this);
         }
         return ret;
     }

@@ -6,6 +6,7 @@ import java.util.UUID;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
@@ -22,9 +23,12 @@ import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -133,8 +137,31 @@ public class TurbineMultiblockData extends MultiblockData {
         return needsPacket;
     }
 
+    @Override
+    public void readUpdateTag(CompoundNBT tag) {
+        super.readUpdateTag(tag);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevSteamScale = scale);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> setVolume(value));
+        NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> lowerVolume = value);
+        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> gasTank.setStack(value));
+        NBTUtils.setBlockPosIfPresent(tag, NBTConstants.COMPLEX, value -> complex = value);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.ROTATION, value -> clientRotation = value);
+        clientRotationMap.put(inventoryID, clientRotation);
+    }
+
+    @Override
+    public void writeUpdateTag(CompoundNBT tag) {
+        super.writeUpdateTag(tag);
+        tag.putFloat(NBTConstants.SCALE, prevSteamScale);
+        tag.putInt(NBTConstants.VOLUME, getVolume());
+        tag.putInt(NBTConstants.LOWER_VOLUME, lowerVolume);
+        tag.put(NBTConstants.GAS_STORED, gasTank.getStack().write(new CompoundNBT()));
+        tag.put(NBTConstants.COMPLEX, NBTUtil.writeBlockPos(complex));
+        tag.putFloat(NBTConstants.ROTATION, clientRotation);
+    }
+
     public int getDispersers() {
-        return (length - 2) * (width - 2) - 1;
+        return (length() - 2) * (width() - 2) - 1;
     }
 
     public long getSteamCapacity() {

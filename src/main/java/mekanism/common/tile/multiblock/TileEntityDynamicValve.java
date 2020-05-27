@@ -71,7 +71,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     public FluidStack insertFluid(@Nonnull FluidStack stack, Direction side, @Nonnull Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
         if (action.execute() && ret.getAmount() < stack.getAmount()) {
-            triggerValveTransfer();
+            getMultiblock().triggerValveTransfer(this);
         }
         return ret;
     }

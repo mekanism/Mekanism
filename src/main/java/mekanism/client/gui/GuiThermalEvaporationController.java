@@ -31,7 +31,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         super.init();
         addButton(new GuiInnerScreen(this, 48, 19, 80, 40, () -> Arrays.asList(
               getStruct().translate(),
-              MekanismLang.EVAPORATION_HEIGHT.translate(tile.getMultiblock().height),
+              MekanismLang.EVAPORATION_HEIGHT.translate(tile.getMultiblock().height()),
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getMultiblock().getTemp(), TemperatureUnit.KELVIN, true)),
               MekanismLang.FLUID_PRODUCTION.translate(Math.round(tile.getMultiblock().lastGain * 100D) / 100D)
         )).spacing(1));

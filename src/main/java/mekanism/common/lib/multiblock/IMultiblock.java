@@ -7,7 +7,7 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
     T createMultiblock();
 
     default T getMultiblock() {
-        return (T) IMultiblockBase.super.getMultiblockData();
+        return (T) IMultiblockBase.super.getMultiblockData(getManager());
     }
 
     @Override
@@ -24,6 +24,30 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
     void setCache(MultiblockCache<T> cache);
 
     boolean isMaster();
+
+    Structure getStructure();
+
+    void setStructure(Structure structure);
+
+    @Override
+    default void setStructure(MultiblockManager<?> manager, Structure structure) {
+        if (manager == getManager()) {
+            setStructure(structure);
+        }
+    }
+
+    @Override
+    default Structure getStructure(MultiblockManager<?> manager) {
+        if (manager == getManager()) {
+            return getStructure();
+        }
+        return null;
+    }
+
+    @Override
+    default boolean hasStructure(Structure structure) {
+        return getStructure() == structure;
+    }
 
     default boolean hasCache() {
         return getCache() != null;

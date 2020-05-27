@@ -16,9 +16,9 @@ import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
 
 @ParametersAreNonnullByDefault
-public class RenderThermalEvaporationController extends MekanismTileEntityRenderer<TileEntityThermalEvaporationBlock> {
+public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<TileEntityThermalEvaporationBlock> {
 
-    public RenderThermalEvaporationController(TileEntityRendererDispatcher renderer) {
+    public RenderThermalEvaporationPlant(TileEntityRendererDispatcher renderer) {
         super(renderer);
     }
 
@@ -27,8 +27,8 @@ public class RenderThermalEvaporationController extends MekanismTileEntityRender
           IProfiler profiler) {
         if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && !tile.getMultiblock().inputTank.isEmpty()) {
             FluidRenderData data = new FluidRenderData(tile.getMultiblock().inputTank.getFluid());
-            data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
-            data.height = tile.getMultiblock().height - 2;
+            data.location = new Coord4D(tile.getMultiblock().renderLocation.add(1, 0, 1), tile.getWorld());
+            data.height = tile.getMultiblock().height() - 2;
             data.length = 2;
             data.width = 2;
             matrix.push();

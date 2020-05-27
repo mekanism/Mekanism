@@ -63,8 +63,8 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
 
         //Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
         BlockPos pos = new BlockPos(structure.renderLocation.getX(), initDisperser.getY(), structure.renderLocation.getZ());
-        for (int x = 1; x < structure.length - 1; x++) {
-            for (int z = 1; z < structure.width - 1; z++) {
+        for (int x = 1; x < structure.length() - 1; x++) {
+            for (int z = 1; z < structure.width() - 1; z++) {
                 BlockPos shifted = pos.add(x, 0, z);
                 TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, world, shifted);
                 if (tile == null) {
@@ -92,9 +92,9 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         int totalAir = 0;
 
         //Find the first available block in the structure for water storage (including casings)
-        for (int x = structure.renderLocation.getX(); x < structure.renderLocation.getX() + structure.length; x++) {
+        for (int x = structure.renderLocation.getX(); x < structure.renderLocation.getX() + structure.length(); x++) {
             for (int y = structure.renderLocation.getY(); y < initDisperser.getY(); y++) {
-                for (int z = structure.renderLocation.getZ(); z < structure.renderLocation.getZ() + structure.width; z++) {
+                for (int z = structure.renderLocation.getZ(); z < structure.renderLocation.getZ() + structure.width(); z++) {
                     BlockPos airPos = new BlockPos(x, y, z);
                     if (world.isAirBlock(airPos) || isFrameCompatible(world.getTileEntity(airPos))) {
                         initAir = airPos;
@@ -106,8 +106,8 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
 
         //Gradle build requires these fields to be final
         final BlockPos renderLocation = structure.renderLocation;
-        final int volLength = structure.length;
-        final int volWidth = structure.width;
+        final int volLength = structure.length();
+        final int volWidth = structure.width();
         structure.setWaterVolume(FormationProtocol.explore(initAir, coord ->
               coord.getY() >= renderLocation.getY() - 1 && coord.getY() < initDisperser.getY() &&
               coord.getX() >= renderLocation.getX() && coord.getX() < renderLocation.getX() + volLength &&
@@ -119,8 +119,8 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
             return FormationResult.fail(MekanismLang.BOILER_INVALID_AIR_POCKETS);
         }
 
-        int steamHeight = (structure.renderLocation.getY() + structure.height - 2) - initDisperser.getY();
-        structure.setSteamVolume(structure.width * structure.length * steamHeight);
+        int steamHeight = (structure.renderLocation.getY() + structure.height() - 2) - initDisperser.getY();
+        structure.setSteamVolume(structure.width() * structure.length() * steamHeight);
         structure.upperRenderLocation = new Coord4D(structure.renderLocation.getX(), initDisperser.getY() + 1, structure.renderLocation.getZ(), world.getDimension().getType());
         return FormationResult.SUCCESS;
     }
