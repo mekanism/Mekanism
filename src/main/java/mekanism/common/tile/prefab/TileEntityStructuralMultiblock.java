@@ -70,7 +70,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
             IMultiblock<?> master = entry.getValue().getController();
             if (master != null && getMultiblockData(entry.getKey()).isFormed()) {
                 // make sure this block is on the structure first
-                if (entry.getValue().getMultiblockData().bounds.getRelativeLocation(getPos()).isWall()) {
+                if (entry.getValue().getMultiblockData().getBounds().getRelativeLocation(getPos()).isWall()) {
                     return master.onActivate(player, hand, stack);
                 }
             }

@@ -4,19 +4,15 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
-import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> implements IValveHandler<FissionReactorMultiblockData> {
+public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> {
 
     private boolean handleSound;
     private boolean prevBurning;
@@ -93,21 +89,6 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         updateTag.putBoolean(NBTConstants.HANDLE_SOUND, getMultiblock().isFormed() && getMultiblock().handlesSound(this));
         if (getMultiblock().isFormed()) {
             updateTag.putDouble(NBTConstants.BURNING, getMultiblock().lastBurnRate);
-            if (isMaster) {
-                updateTag.putFloat(NBTConstants.SCALE, getMultiblock().prevCoolantScale);
-                updateTag.putFloat(NBTConstants.SCALE_ALT, getMultiblock().prevFuelScale);
-                updateTag.putFloat(NBTConstants.SCALE_ALT_2, getMultiblock().prevHeatedCoolantScale);
-                updateTag.putFloat(NBTConstants.SCALE_ALT_3, getMultiblock().prevWasteScale);
-                updateTag.putInt(NBTConstants.VOLUME, getMultiblock().getVolume());
-                updateTag.put(NBTConstants.FLUID_STORED, getMultiblock().fluidCoolantTank.getFluid().writeToNBT(new CompoundNBT()));
-                updateTag.put(NBTConstants.GAS_STORED, getMultiblock().fuelTank.getStack().write(new CompoundNBT()));
-                updateTag.put(NBTConstants.GAS_STORED_ALT, getMultiblock().heatedCoolantTank.getStack().write(new CompoundNBT()));
-                updateTag.put(NBTConstants.GAS_STORED_ALT_2, getMultiblock().wasteTank.getStack().write(new CompoundNBT()));
-                writeValves(updateTag);
-                ListNBT list = new ListNBT();
-                getMultiblock().assemblies.forEach(assembly -> list.add(assembly.write()));
-                updateTag.put(NBTConstants.ASSEMBLIES, list);
-            }
         }
         return updateTag;
     }
@@ -118,25 +99,6 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
         if (getMultiblock().isFormed()) {
             NBTUtils.setDoubleIfPresent(tag, NBTConstants.BURNING, value -> getMultiblock().lastBurnRate = value);
-            if (isMaster) {
-                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> getMultiblock().prevCoolantScale = scale);
-                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> getMultiblock().prevFuelScale = scale);
-                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_2, scale -> getMultiblock().prevHeatedCoolantScale = scale);
-                NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_3, scale -> getMultiblock().prevWasteScale = scale);
-                NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> getMultiblock().setVolume(value));
-                NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> getMultiblock().fluidCoolantTank.setStack(value));
-                NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> getMultiblock().fuelTank.setStack(value));
-                NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> getMultiblock().heatedCoolantTank.setStack(value));
-                NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> getMultiblock().wasteTank.setStack(value));
-                readValves(tag);
-                getMultiblock().assemblies.clear();
-                if (tag.contains(NBTConstants.ASSEMBLIES)) {
-                    ListNBT list = tag.getList(NBTConstants.ASSEMBLIES, NBT.TAG_COMPOUND);
-                    for (int i = 0; i < list.size(); i++) {
-                        getMultiblock().assemblies.add(FormedAssembly.read(list.getCompound(i)));
-                    }
-                }
-            }
         }
     }
 }

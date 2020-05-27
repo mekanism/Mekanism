@@ -64,6 +64,10 @@ public class StructureHelper {
             Axis axis = side.getAxis(), horizontal = side.getAxis().horizontal(), vertical = side.getAxis().vertical();
             TreeMap<Integer, VoxelPlane> map = structure.getMajorAxisMap(axis);
             Map.Entry<Integer, VoxelPlane> entry = side.getFace().isPositive() ? map.lastEntry() : map.firstEntry();
+            // fail fast if the plane doesn't exist
+            if (entry == null) {
+                return null;
+            }
             VoxelPlane plane = entry.getValue();
             // handle missing blocks based on tolerance value
             missing += plane.getMissing();

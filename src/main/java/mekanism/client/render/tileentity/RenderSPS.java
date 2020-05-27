@@ -45,8 +45,8 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
 
     @Override
     protected void render(TileEntitySPSCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && tile.getMultiblock().bounds != null) {
-            Vec3d center = new Vec3d(tile.getMultiblock().bounds.getMinPos()).add(new Vec3d(tile.getMultiblock().bounds.getMaxPos())).add(new Vec3d(1, 1, 1)).scale(0.5);
+        if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && tile.getMultiblock().getBounds() != null) {
+            Vec3d center = new Vec3d(tile.getMultiblock().getMinPos()).add(new Vec3d(tile.getMultiblock().getMaxPos())).add(new Vec3d(1, 1, 1)).scale(0.5);
             Vec3d renderCenter = center.subtract(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
             if (!minecraft.isGamePaused()) {
                 for (CoilData data : tile.getMultiblock().coilData.coilMap.values()) {
@@ -62,7 +62,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
             if (!minecraft.isGamePaused() && !tile.getMultiblock().lastReceivedEnergy.isZero()) {
                 if (rand.nextDouble() < getBoundedScale(energyScale, 0.01F, 0.4F)) {
                     CuboidSide side = CuboidSide.SIDES[rand.nextInt(6)];
-                    Plane plane = Plane.getInnerCuboidPlane(tile.getMultiblock().bounds, side);
+                    Plane plane = Plane.getInnerCuboidPlane(tile.getMultiblock().getBounds(), side);
                     Vec3d endPos = plane.getRandomPoint(rand).subtract(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
                     BoltData data = new BoltData(renderCenter, endPos, 1, 15, 0.01F * getBoundedScale(energyScale, 0.5F, 5));
                     edgeBolts.update(Objects.hashCode(side.hashCode(), endPos.hashCode()), data, partialTick);

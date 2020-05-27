@@ -1,25 +1,21 @@
 package mekanism.common.tile.multiblock;
 
 import javax.annotation.Nonnull;
-import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.tank.TankMultiblockData;
-import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.FluidUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockData> implements IFluidContainerManager, IValveHandler<TankMultiblockData> {
+public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockData> implements IFluidContainerManager {
 
     public TileEntityDynamicTank() {
         this(MekanismBlocks.DYNAMIC_TANK);
@@ -69,29 +65,5 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
             return false;
         }
         return FluidUtils.handleTankInteraction(player, hand, itemStack, getMultiblock().getFluidTank());
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
-        if (getMultiblock().isFormed() && isMaster) {
-            updateTag.putFloat(NBTConstants.SCALE, getMultiblock().prevScale);
-            updateTag.putInt(NBTConstants.VOLUME, getMultiblock().getVolume());
-            getMultiblock().mergedTank.addToUpdateTag(updateTag);
-            writeValves(updateTag);
-        }
-        return updateTag;
-    }
-
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
-        if (getMultiblock().isFormed() && isMaster) {
-            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> getMultiblock().prevScale = scale);
-            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> getMultiblock().setVolume(value));
-            getMultiblock().mergedTank.readFromUpdateTag(tag);
-            readValves(tag);
-        }
     }
 }

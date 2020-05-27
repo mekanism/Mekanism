@@ -1,11 +1,14 @@
 package mekanism.common.tile.multiblock;
 
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
+import net.minecraft.util.Direction;
+import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock {
 
@@ -43,6 +46,15 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Override
     public boolean persistInventory() {
         return false;
+    }
+
+    @Override
+    public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
+        FluidStack ret = super.insertFluid(stack, side, action);
+        if (ret.getAmount() < stack.getAmount() && action.execute()) {
+            getMultiblock().triggerValveTransfer(this);
+        }
+        return ret;
     }
 
     @Override

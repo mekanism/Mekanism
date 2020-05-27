@@ -7,30 +7,31 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
-import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
+import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.World;
 
-public class BoilerMultiblockData extends MultiblockData implements IMekanismFluidHandler, IMekanismGasHandler, ITileHeatHandler {
+public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
 
     public static Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
@@ -167,6 +168,34 @@ public class BoilerMultiblockData extends MultiblockData implements IMekanismFlu
             prevSteamScale = steamScale;
         }
         return needsPacket;
+    }
+
+    @Override
+    public void readUpdateTag(CompoundNBT tag) {
+        super.readUpdateTag(tag);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevSteamScale = scale);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> setWaterVolume(value));
+        NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> setSteamVolume(value));
+        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> waterTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> steamTank.setStack(value));
+        NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_Y, value -> upperRenderLocation = value);
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HOT, value -> clientHot = value);
+        readValves(tag);
+    }
+
+    @Override
+    public void writeUpdateTag(CompoundNBT tag) {
+        super.writeUpdateTag(tag);
+        tag.putFloat(NBTConstants.SCALE, prevWaterScale);
+        tag.putFloat(NBTConstants.SCALE_ALT, prevSteamScale);
+        tag.putInt(NBTConstants.VOLUME, getWaterVolume());
+        tag.putInt(NBTConstants.LOWER_VOLUME, getSteamVolume());
+        tag.put(NBTConstants.FLUID_STORED, waterTank.getFluid().writeToNBT(new CompoundNBT()));
+        tag.put(NBTConstants.GAS_STORED, steamTank.getStack().write(new CompoundNBT()));
+        tag.put(NBTConstants.RENDER_Y, upperRenderLocation.write(new CompoundNBT()));
+        tag.putBoolean(NBTConstants.HOT, clientHot);
+        writeValves(tag);
     }
 
     @Override

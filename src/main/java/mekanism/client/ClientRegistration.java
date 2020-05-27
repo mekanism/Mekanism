@@ -124,7 +124,7 @@ import mekanism.client.render.tileentity.RenderSecurityDesk;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
 import mekanism.client.render.tileentity.RenderTeleporter;
-import mekanism.client.render.tileentity.RenderThermalEvaporationController;
+import mekanism.client.render.tileentity.RenderThermalEvaporationPlant;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
@@ -201,7 +201,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SEISMIC_VIBRATOR, RenderSeismicVibrator::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR, RenderSolarNeutronActivator::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.TELEPORTER, RenderTeleporter::new);
-        ClientRegistrationUtil.bindTileEntityRenderer(RenderThermalEvaporationController::new, MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER,
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderThermalEvaporationPlant::new, MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER,
               MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.INDUSTRIAL_ALARM, RenderIndustrialAlarm::new);
         ClientRegistrationUtil.bindTileEntityRenderer(RenderSPS::new, MekanismTileEntityTypes.SPS_CASING, MekanismTileEntityTypes.SPS_PORT);

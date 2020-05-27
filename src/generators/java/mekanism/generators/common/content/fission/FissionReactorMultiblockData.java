@@ -6,6 +6,7 @@ import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
@@ -18,20 +19,24 @@ import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
-import mekanism.common.lib.multiblock.IValveHandler.ValveData;
+import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 
-public class FissionReactorMultiblockData extends MultiblockData {
+public class FissionReactorMultiblockData extends MultiblockData implements IValveHandler {
 
     public static final double INVERSE_INSULATION_COEFFICIENT = 100_000;
     public static final double INVERSE_CONDUCTION_COEFFICIENT = 10;
@@ -169,7 +174,47 @@ public class FissionReactorMultiblockData extends MultiblockData {
         return needsPacket;
     }
 
-    public void handleDamage(World world) {
+    @Override
+    public void readUpdateTag(CompoundNBT tag) {
+        super.readUpdateTag(tag);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevCoolantScale = scale);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevFuelScale = scale);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_2, scale -> prevHeatedCoolantScale = scale);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> setVolume(value));
+        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> fluidCoolantTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> fuelTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> heatedCoolantTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
+        readValves(tag);
+        assemblies.clear();
+        if (tag.contains(NBTConstants.ASSEMBLIES)) {
+            ListNBT list = tag.getList(NBTConstants.ASSEMBLIES, NBT.TAG_COMPOUND);
+            for (int i = 0; i < list.size(); i++) {
+                assemblies.add(FormedAssembly.read(list.getCompound(i)));
+            }
+        }
+    }
+
+    @Override
+    public void writeUpdateTag(CompoundNBT tag) {
+        super.writeUpdateTag(tag);
+        tag.putFloat(NBTConstants.SCALE, prevCoolantScale);
+        tag.putFloat(NBTConstants.SCALE_ALT, prevFuelScale);
+        tag.putFloat(NBTConstants.SCALE_ALT_2, prevHeatedCoolantScale);
+        tag.putFloat(NBTConstants.SCALE_ALT_3, prevWasteScale);
+        tag.putInt(NBTConstants.VOLUME, getVolume());
+        tag.put(NBTConstants.FLUID_STORED, fluidCoolantTank.getFluid().writeToNBT(new CompoundNBT()));
+        tag.put(NBTConstants.GAS_STORED, fuelTank.getStack().write(new CompoundNBT()));
+        tag.put(NBTConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().write(new CompoundNBT()));
+        tag.put(NBTConstants.GAS_STORED_ALT_2, wasteTank.getStack().write(new CompoundNBT()));
+        writeValves(tag);
+        ListNBT list = new ListNBT();
+        assemblies.forEach(assembly -> list.add(assembly.write()));
+        tag.put(NBTConstants.ASSEMBLIES, list);
+    }
+
+    private void handleDamage(World world) {
         double temp = heatCapacitor.getTemperature();
         if (temp > MIN_DAMAGE_TEMPERATURE) {
             double damageRate = Math.min(temp, MAX_DAMAGE_TEMPERATURE) / (MIN_DAMAGE_TEMPERATURE * 10);
@@ -187,13 +232,13 @@ public class FissionReactorMultiblockData extends MultiblockData {
                     radiation += wasteTank.getStored() * wasteTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
                 }
                 radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
-                Mekanism.radiationManager.radiate(new Coord4D(bounds.getCenter(), world), radiation);
-                Mekanism.radiationManager.createMeltdown(world, new Coord4D(bounds.getMinPos(), world), new Coord4D(bounds.getMaxPos(), world), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
+                Mekanism.radiationManager.radiate(new Coord4D(getBounds().getCenter(), world), radiation);
+                Mekanism.radiationManager.createMeltdown(world, new Coord4D(getMinPos(), world), new Coord4D(getMaxPos(), world), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
             }
         }
     }
 
-    public void handleCoolant() {
+    private void handleCoolant() {
         double temp = heatCapacitor.getTemperature();
         double heat = getBoilEfficiency() * (temp - HeatUtils.BASE_BOIL_TEMP) * heatCapacitor.getHeatCapacity();
         long coolantHeated = 0;
@@ -226,29 +271,7 @@ public class FissionReactorMultiblockData extends MultiblockData {
         lastBoilRate = coolantHeated;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public boolean isBurning() {
-        return lastBurnRate > 0;
-    }
-
-    public boolean handlesSound(TileEntityFissionReactorCasing tile) {
-        return bounds.isOnCorner(tile.getPos());
-
-    }
-
-    public double getBoilEfficiency() {
-        double avgSurfaceArea = (double) surfaceArea / (double) fuelAssemblies;
-        return Math.min(1, avgSurfaceArea / MekanismGeneratorsConfig.generators.fissionSurfaceAreaTarget.get());
-    }
-
-    public void burnFuel(World world) {
+    private void burnFuel(World world) {
         double storedFuel = fuelTank.getStored() + burnRemaining;
         double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * BURN_PER_ASSEMBLY);
         storedFuel -= toBurn;
@@ -265,11 +288,33 @@ public class FissionReactorMultiblockData extends MultiblockData {
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0) {
                 double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();
-                Mekanism.radiationManager.radiate(new Coord4D(bounds.getCenter(), world), leftoverWaste * radioactivity);
+                Mekanism.radiationManager.radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * radioactivity);
             }
         }
         // update previous burn
         lastBurnRate = toBurn;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isBurning() {
+        return lastBurnRate > 0;
+    }
+
+    public boolean handlesSound(TileEntityFissionReactorCasing tile) {
+        return getBounds().isOnCorner(tile.getPos());
+
+    }
+
+    public double getBoilEfficiency() {
+        double avgSurfaceArea = (double) surfaceArea / (double) fuelAssemblies;
+        return Math.min(1, avgSurfaceArea / MekanismGeneratorsConfig.generators.fissionSurfaceAreaTarget.get());
     }
 
     @Override

@@ -26,7 +26,6 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -228,15 +227,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         updateTag.putBoolean(NBTConstants.RENDERING, isMaster);
         updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, getMultiblock().isFormed());
         if (getMultiblock().isFormed() && isMaster) {
-            updateTag.putInt(NBTConstants.HEIGHT, getMultiblock().height);
-            updateTag.putInt(NBTConstants.WIDTH, getMultiblock().width);
-            updateTag.putInt(NBTConstants.LENGTH, getMultiblock().length);
-            if (getMultiblock().renderLocation != null) {
-                updateTag.put(NBTConstants.RENDER_LOCATION, NBTUtil.writeBlockPos(getMultiblock().renderLocation));
-            }
-            if (getMultiblock().inventoryID != null) {
-                updateTag.putUniqueId(NBTConstants.INVENTORY_ID, getMultiblock().inventoryID);
-            }
+            getMultiblock().writeUpdateTag(updateTag);
         }
         return updateTag;
     }
@@ -248,17 +239,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> getMultiblock().setFormedForce(value));
         if (isMaster) {
             if (getMultiblock().isFormed()) {
-                NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> getMultiblock().height = value);
-                NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> getMultiblock().width = value);
-                NBTUtils.setIntIfPresent(tag, NBTConstants.LENGTH, value -> getMultiblock().length = value);
-                NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> getMultiblock().renderLocation = value);
-                if (tag.hasUniqueId(NBTConstants.INVENTORY_ID)) {
-                    getMultiblock().inventoryID = tag.getUniqueId(NBTConstants.INVENTORY_ID);
-                } else {
-                    getMultiblock().inventoryID = null;
-                }
+                getMultiblock().readUpdateTag(tag);
                 if (getMultiblock().renderLocation != null && !prevStructure && unformedTicks >= 5) {
-                    Mekanism.proxy.doMultiblockSparkle(this, getMultiblock().renderLocation, getMultiblock().length - 1, getMultiblock().width - 1, getMultiblock().height - 1);
+                    Mekanism.proxy.doMultiblockSparkle(this, getMultiblock().renderLocation, getMultiblock().length() - 1, getMultiblock().width() - 1, getMultiblock().height() - 1);
                 }
             } else {
                 // this will consecutively be set on the server
@@ -309,14 +292,11 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        if (getMultiblock().isFormed() && isMaster && getMultiblock().renderLocation != null) {
+        if (getMultiblock().isFormed() && isMaster && getMultiblock().getBounds() != null) {
             //TODO: Eventually we may want to look into caching this
-            BlockPos corner1 = getMultiblock().renderLocation;
-            //height - 2 up, but then we go up one further to take into account that block
-            BlockPos corner2 = corner1.east(getMultiblock().length + 1).south(getMultiblock().width + 1).up(getMultiblock().height - 1);
             //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
             // how the specific multiblock wants to render, that it is being viewed
-            return new AxisAlignedBB(corner1, corner2);
+            return new AxisAlignedBB(getMultiblock().getMinPos(), getMultiblock().getMaxPos().add(1, 1, 1));
         }
         return super.getRenderBoundingBox();
     }

@@ -120,6 +120,14 @@ public class VoxelCuboid implements IShape {
     }
 
     @Override
+    public int hashCode() {
+        int result = 1;
+        result = 31 * result + maxPos.hashCode();
+        result = 31 * result + minPos.hashCode();
+        return result;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof VoxelCuboid)) {
             return false;
