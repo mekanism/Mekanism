@@ -13,7 +13,7 @@ import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.chemical.MultiblockGasTank;
+import mekanism.common.capabilities.chemical.multiblock.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;

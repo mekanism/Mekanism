@@ -6,7 +6,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.capabilities.chemical.MultiblockGasTank;
+import mekanism.common.capabilities.chemical.multiblock.MultiblockGasTank;
 import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 

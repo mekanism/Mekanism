@@ -28,7 +28,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
+import mekanism.common.capabilities.chemical.variable.VariableCapacityGasTank;
 import mekanism.common.distribution.target.GasHandlerTarget;
 import mekanism.common.distribution.target.GasTransmitterSaveTarget;
 import mekanism.common.util.CapabilityUtils;

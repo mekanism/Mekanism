@@ -19,7 +19,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
+import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitGasTank;
 import mekanism.common.tier.GasTankTier;
 
 @ParametersAreNonnullByDefault
@@ -59,28 +59,6 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
     @Override
     protected List<IGasTank> getInitialTanks() {
         return Collections.singletonList(tank);
-    }
-
-    public static class RateLimitGasTank extends VariableCapacityGasTank {
-
-        private final LongSupplier rate;
-
-        public RateLimitGasTank(LongSupplier rate, LongSupplier capacity, @Nullable ChemicalAttributeValidator attributeValidator, IContentsListener listener) {
-            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, attributeValidator, listener);
-        }
-
-        public RateLimitGasTank(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid,
-              @Nullable ChemicalAttributeValidator attributeValidator, IContentsListener listener) {
-            super(capacity, canExtract, canInsert, isValid, attributeValidator, listener);
-            this.rate = rate;
-        }
-
-        @Override
-        protected long getRate(@Nullable AutomationType automationType) {
-            //Allow unknown or manual interaction to bypass rate limit for the item
-            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsLong();
-        }
     }
 
     @ParametersAreNonnullByDefault

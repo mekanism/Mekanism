@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.chemical;
+package mekanism.common.capabilities.chemical.multiblock;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -8,17 +8,19 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 
-@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MultiblockInfusionTank<MULTIBLOCK extends MultiblockData> extends VariableCapacityInfusionTank {
+public class MultiblockInfusionTank<MULTIBLOCK extends MultiblockData> extends MultiblockChemicalTank<InfuseType, InfusionStack, MULTIBLOCK> implements IInfusionHandler,
+      IInfusionTank {
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockInfusionTank<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
           LongSupplier capacity, Predicate<@NonNull InfuseType> validator) {
@@ -57,28 +59,13 @@ public class MultiblockInfusionTank<MULTIBLOCK extends MultiblockData> extends V
         return new MultiblockInfusionTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, listener);
     }
 
-    protected final MULTIBLOCK multiblock;
-    protected final TileEntityMultiblock<MULTIBLOCK> tile;
-
     protected MultiblockInfusionTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity, Predicate<@NonNull InfuseType> validator) {
-        this(multiblock, tile, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(),
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(), validator, null);
+        super(multiblock, tile, capacity, validator);
     }
 
     protected MultiblockInfusionTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
           BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
           Predicate<@NonNull InfuseType> validator, @Nullable IContentsListener listener) {
-        super(capacity, canExtract, canInsert, validator, listener);
-        this.multiblock = multiblock;
-        this.tile = tile;
-    }
-
-    @Override
-    public void onContentsChanged() {
-        super.onContentsChanged();
-        if (tile.hasWorld() && !tile.isRemote()) {
-            tile.markDirty(false);
-            multiblock.markDirtyComparator(tile.getWorld());
-        }
+        super(multiblock, tile, capacity, canExtract, canInsert, validator, null, listener);
     }
 }

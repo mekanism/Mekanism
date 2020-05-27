@@ -4,14 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -23,6 +20,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
@@ -45,7 +43,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeItem {
+public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeItem, IGasItem {
 
     public ItemFlamethrower(Properties properties) {
         super(properties.maxStackSize(1).rarity(Rarity.RARE).setNoRepair().setISTER(ISTERProvider::flamethrower));
@@ -61,23 +59,6 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged || !ItemStack.areItemsEqual(oldStack, newStack);
-    }
-
-    @Nonnull
-    public GasStack useGas(ItemStack stack, long amount) {
-        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-        if (capability.isPresent()) {
-            IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getChemicalTank(0, null);
-                if (gasTank != null) {
-                    //Should always reach here
-                    return gasTank.extract(amount, Action.EXECUTE, AutomationType.MANUAL);
-                }
-            }
-            return gasHandlerItem.extractChemical(amount, Action.EXECUTE);
-        }
-        return GasStack.EMPTY;
     }
 
     @Override

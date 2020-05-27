@@ -7,7 +7,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
@@ -16,21 +15,19 @@ import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.capabilities.chemical.VariableCapacityInfusionTank;
+import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitInfusionTank;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RateLimitInfusionHandler extends ItemStackMekanismInfusionHandler {
 
-    public static RateLimitInfusionHandler create(long rate, LongSupplier capacity) {
+    public static RateLimitInfusionHandler create(LongSupplier rate, LongSupplier capacity) {
         return create(rate, capacity, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrue);
     }
 
-    public static RateLimitInfusionHandler create(long rate, LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
+    public static RateLimitInfusionHandler create(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> isValid) {
-        if (rate <= 0) {
-            throw new IllegalArgumentException("Rate must be greater than zero");
-        }
+        Objects.requireNonNull(rate, "Rate supplier cannot be null");
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
@@ -47,26 +44,5 @@ public class RateLimitInfusionHandler extends ItemStackMekanismInfusionHandler {
     @Override
     protected List<IInfusionTank> getInitialTanks() {
         return Collections.singletonList(tank);
-    }
-
-    public static class RateLimitInfusionTank extends VariableCapacityInfusionTank {
-
-        private final long rate;
-
-        public RateLimitInfusionTank(long rate, LongSupplier capacity, IContentsListener listener) {
-            this(rate, capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, listener);
-        }
-
-        public RateLimitInfusionTank(long rate, LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> isValid, IContentsListener listener) {
-            super(capacity, canExtract, canInsert, isValid, listener);
-            this.rate = rate;
-        }
-
-        @Override
-        protected long getRate(@Nullable AutomationType automationType) {
-            //Allow unknown or manual interaction to bypass rate limit for the item
-            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate;
-        }
     }
 }

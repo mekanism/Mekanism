@@ -6,9 +6,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicGasHandler;
@@ -16,10 +20,10 @@ import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.Dyna
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicPigmentHandler;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicSlurryHandler;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.InteractPredicate;
-import mekanism.common.capabilities.chemical.item.RateLimitGasHandler.RateLimitGasTank;
-import mekanism.common.capabilities.chemical.item.RateLimitInfusionHandler.RateLimitInfusionTank;
-import mekanism.common.capabilities.chemical.item.RateLimitPigmentHandler.RateLimitPigmentTank;
-import mekanism.common.capabilities.chemical.item.RateLimitSlurryHandler.RateLimitSlurryTank;
+import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitGasTank;
+import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitInfusionTank;
+import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitPigmentTank;
+import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitSlurryTank;
 import mekanism.common.capabilities.fluid.item.ItemStackMekanismFluidHandler;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler.RateLimitFluidTank;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
@@ -56,14 +60,18 @@ public class GaugeDropperContentsHandler extends ItemStackMekanismFluidHandler {
     private GaugeDropperContentsHandler() {
         mergedTank = MergedTank.create(
               new RateLimitFluidTank(TRANSFER_RATE, () -> CAPACITY, this),
-              new RateLimitGasTank(() -> TRANSFER_RATE, () -> CAPACITY, null, gasHandler = new DynamicGasHandler(side -> gasTanks,
-                    InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks))),
-              new RateLimitInfusionTank(TRANSFER_RATE, () -> CAPACITY, infusionHandler = new DynamicInfusionHandler(side -> infusionTanks,
-                    InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.INFUSION_TANKS, infusionTanks))),
-              new RateLimitPigmentTank(TRANSFER_RATE, () -> CAPACITY, pigmentHandler = new DynamicPigmentHandler(side -> pigmentTanks,
-                    InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.PIGMENT_TANKS, pigmentTanks))),
-              new RateLimitSlurryTank(TRANSFER_RATE, () -> CAPACITY, slurryHandler = new DynamicSlurryHandler(side -> slurryTanks,
-                    InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.SLURRY_TANKS, slurryTanks)))
+              new RateLimitGasTank(() -> TRANSFER_RATE, () -> CAPACITY, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, null,
+                    gasHandler = new DynamicGasHandler(side -> gasTanks, InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE,
+                          () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks))),
+              new RateLimitInfusionTank(() -> TRANSFER_RATE, () -> CAPACITY, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrue,
+                    infusionHandler = new DynamicInfusionHandler(side -> infusionTanks, InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE,
+                          () -> onContentsChanged(NBTConstants.INFUSION_TANKS, infusionTanks))),
+              new RateLimitPigmentTank(() -> TRANSFER_RATE, () -> CAPACITY, BasicPigmentTank.alwaysTrueBi, BasicPigmentTank.alwaysTrueBi, BasicPigmentTank.alwaysTrue,
+                    pigmentHandler = new DynamicPigmentHandler(side -> pigmentTanks, InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE,
+                          () -> onContentsChanged(NBTConstants.PIGMENT_TANKS, pigmentTanks))),
+              new RateLimitSlurryTank(() -> TRANSFER_RATE, () -> CAPACITY, BasicSlurryTank.alwaysTrueBi, BasicSlurryTank.alwaysTrueBi, BasicSlurryTank.alwaysTrue,
+                    slurryHandler = new DynamicSlurryHandler(side -> slurryTanks, InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE,
+                          () -> onContentsChanged(NBTConstants.SLURRY_TANKS, slurryTanks)))
         );
     }
 

@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.chemical;
+package mekanism.common.capabilities.chemical.multiblock;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -8,18 +8,19 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 
-@FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MultiblockGasTank<MULTIBLOCK extends MultiblockData> extends VariableCapacityGasTank {
+public class MultiblockGasTank<MULTIBLOCK extends MultiblockData> extends MultiblockChemicalTank<Gas, GasStack, MULTIBLOCK> implements IGasHandler, IGasTank {
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockGasTank<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
           LongSupplier capacity, Predicate<@NonNull Gas> validator) {
@@ -58,28 +59,13 @@ public class MultiblockGasTank<MULTIBLOCK extends MultiblockData> extends Variab
         return new MultiblockGasTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, attributeValidator, listener);
     }
 
-    protected final MULTIBLOCK multiblock;
-    protected final TileEntityMultiblock<MULTIBLOCK> tile;
-
     protected MultiblockGasTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity, Predicate<@NonNull Gas> validator) {
-        this(multiblock, tile, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(),
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(), validator, null, null);
+        super(multiblock, tile, capacity, validator);
     }
 
     protected MultiblockGasTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
           BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
-        super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
-        this.multiblock = multiblock;
-        this.tile = tile;
-    }
-
-    @Override
-    public void onContentsChanged() {
-        super.onContentsChanged();
-        if (tile.hasWorld() && !tile.isRemote()) {
-            tile.markDirty(false);
-            multiblock.markDirtyComparator(tile.getWorld());
-        }
+        super(multiblock, tile, capacity, canExtract, canInsert, validator, attributeValidator, listener);
     }
 }
