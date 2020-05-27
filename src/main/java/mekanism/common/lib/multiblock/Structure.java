@@ -74,7 +74,7 @@ public class Structure {
         return minorPlaneMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
     }
 
-    public TreeMap<Integer, VoxelPlane> getAxisMap(Axis axis) {
+    public TreeMap<Integer, VoxelPlane> getMajorAxisMap(Axis axis) {
         return planeMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
     }
 
@@ -109,7 +109,7 @@ public class Structure {
             });
             for (Axis axis : s.minorPlaneMap.keySet()) {
                 Map<Integer, VoxelPlane> minorMap = getMinorAxisMap(axis);
-                Map<Integer, VoxelPlane> majorMap = getAxisMap(axis);
+                Map<Integer, VoxelPlane> majorMap = getMajorAxisMap(axis);
                 s.minorPlaneMap.get(axis).forEach((key, value) -> {
                     if (majorMap.containsKey(key)) {
                         majorMap.get(key).merge(value);
@@ -128,7 +128,7 @@ public class Structure {
                 });
             }
             for (Axis axis : s.planeMap.keySet()) {
-                Map<Integer, VoxelPlane> map = getAxisMap(axis);
+                Map<Integer, VoxelPlane> map = getMajorAxisMap(axis);
                 s.planeMap.get(axis).forEach((key, value) -> {
                     VoxelPlane p = map.get(key);
                     if (p != null) {
