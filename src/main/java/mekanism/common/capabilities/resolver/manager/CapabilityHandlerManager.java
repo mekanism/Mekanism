@@ -45,6 +45,10 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
         }
     }
 
+    public SIDED_HANDLER getInternal() {
+        return baseHandler;
+    }
+
     @Override
     public boolean canHandle() {
         return canHandle;

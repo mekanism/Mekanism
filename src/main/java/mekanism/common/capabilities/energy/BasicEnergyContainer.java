@@ -6,11 +6,11 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.util.NBTUtils;
@@ -26,27 +26,27 @@ public class BasicEnergyContainer implements IEnergyContainer {
     public static final Predicate<@NonNull AutomationType> internalOnly = automationType -> automationType == AutomationType.INTERNAL;
     public static final Predicate<@NonNull AutomationType> notExternal = automationType -> automationType != AutomationType.EXTERNAL;
 
-    public static BasicEnergyContainer create(FloatingLong maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
+    public static BasicEnergyContainer create(FloatingLong maxEnergy, @Nullable IContentsListener listener) {
         Objects.requireNonNull(maxEnergy, "Max energy cannot be null");
-        return new BasicEnergyContainer(maxEnergy, alwaysTrue, alwaysTrue, energyHandler);
+        return new BasicEnergyContainer(maxEnergy, alwaysTrue, alwaysTrue, listener);
     }
 
-    public static BasicEnergyContainer input(FloatingLong maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
+    public static BasicEnergyContainer input(FloatingLong maxEnergy, @Nullable IContentsListener listener) {
         Objects.requireNonNull(maxEnergy, "Max energy cannot be null");
-        return new BasicEnergyContainer(maxEnergy, notExternal, alwaysTrue, energyHandler);
+        return new BasicEnergyContainer(maxEnergy, notExternal, alwaysTrue, listener);
     }
 
-    public static BasicEnergyContainer output(FloatingLong maxEnergy, @Nullable IMekanismStrictEnergyHandler energyHandler) {
+    public static BasicEnergyContainer output(FloatingLong maxEnergy, @Nullable IContentsListener listener) {
         Objects.requireNonNull(maxEnergy, "Max energy cannot be null");
-        return new BasicEnergyContainer(maxEnergy, alwaysTrue, internalOnly, energyHandler);
+        return new BasicEnergyContainer(maxEnergy, alwaysTrue, internalOnly, listener);
     }
 
     public static BasicEnergyContainer create(FloatingLong maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
-          @Nullable IMekanismStrictEnergyHandler energyHandler) {
+          @Nullable IContentsListener listener) {
         Objects.requireNonNull(maxEnergy, "Max energy cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new BasicEnergyContainer(maxEnergy, canExtract, canInsert, energyHandler);
+        return new BasicEnergyContainer(maxEnergy, canExtract, canInsert, listener);
     }
 
     private FloatingLong stored = FloatingLong.ZERO;
@@ -54,20 +54,20 @@ public class BasicEnergyContainer implements IEnergyContainer {
     protected final Predicate<@NonNull AutomationType> canInsert;
     private final FloatingLong maxEnergy;
     @Nullable
-    private final IMekanismStrictEnergyHandler energyHandler;
+    private final IContentsListener listener;
 
     protected BasicEnergyContainer(FloatingLong maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
-          @Nullable IMekanismStrictEnergyHandler energyHandler) {
+          @Nullable IContentsListener listener) {
         this.maxEnergy = maxEnergy.copyAsConst();
         this.canExtract = canExtract;
         this.canInsert = canInsert;
-        this.energyHandler = energyHandler;
+        this.listener = listener;
     }
 
     @Override
     public void onContentsChanged() {
-        if (energyHandler != null) {
-            energyHandler.onContentsChanged();
+        if (listener != null) {
+            listener.onContentsChanged();
         }
     }
 

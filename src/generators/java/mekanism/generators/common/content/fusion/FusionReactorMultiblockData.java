@@ -14,7 +14,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.MultiblockGasTank;
+import mekanism.common.capabilities.chemical.multiblock.MultiblockGasTank;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -157,9 +157,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 Optional<IGasHandler> capability = MekanismUtils.toOptional(hohlraum.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
                 if (capability.isPresent()) {
                     IGasHandler gasHandlerItem = capability.get();
-                    if (gasHandlerItem.getGasTankCount() > 0) {
+                    if (gasHandlerItem.getTanks() > 0) {
                         //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                        return gasHandlerItem.getGasInTank(0).getAmount() == gasHandlerItem.getGasTankCapacity(0);
+                        return gasHandlerItem.getChemicalInTank(0).getAmount() == gasHandlerItem.getTankCapacity(0);
                     }
                 }
             }
@@ -224,8 +224,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(hohlraum.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem.getGasTankCount() > 0) {
-                fuelTank.insert(gasHandlerItem.getGasInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
+            if (gasHandlerItem.getTanks() > 0) {
+                fuelTank.insert(gasHandlerItem.getChemicalInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
                 lastPlasmaTemperature = getPlasmaTemp();
                 reactorSlot.setStack(ItemStack.EMPTY);
                 setBurning(true);

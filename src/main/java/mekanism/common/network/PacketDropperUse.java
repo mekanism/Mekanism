@@ -1,27 +1,22 @@
 package mekanism.common.network;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
-import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
-import mekanism.api.chemical.pigment.IPigmentHandler;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
-import mekanism.api.chemical.slurry.ISlurryHandler;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
+import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
+import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
+import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -32,6 +27,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -75,32 +71,21 @@ public class PacketDropperUse {
         context.get().setPacketHandled(true);
     }
 
-    private static <HANDLER extends IMekanismFluidHandler & IMekanismGasHandler & IMekanismInfusionHandler & IMekanismPigmentHandler & IMekanismSlurryHandler>
-    void handleTankType(HANDLER handler, PacketDropperUse message, PlayerEntity player, ItemStack stack) {
+    private static <HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> void handleTankType(HANDLER handler,
+          PacketDropperUse message, PlayerEntity player, ItemStack stack) {
         if (message.tankType == TankType.FLUID_TANK) {
             IExtendedFluidTank fluidTank = handler.getFluidTank(message.tankId, null);
             if (fluidTank != null) {
                 handleFluidTank(player, stack, fluidTank, message.action);
             }
-        } else {
-            IChemicalTank<?, ?> tank = null;
-            switch (message.tankType) {
-                case GAS_TANK:
-                    tank = handler.getGasTank(message.tankId, null);
-                    break;
-                case INFUSION_TANK:
-                    tank = handler.getInfusionTank(message.tankId, null);
-                    break;
-                case PIGMENT_TANK:
-                    tank = handler.getPigmentTank(message.tankId, null);
-                    break;
-                case SLURRY_TANK:
-                    tank = handler.getSlurryTank(message.tankId, null);
-                    break;
-            }
-            if (tank != null) {
-                handleChemicalTank(player, stack, tank, message.action);
-            }
+        } else if (message.tankType == TankType.GAS_TANK) {
+            handleChemicalTank(player, stack, handler.getGasTanks(null), message, Capabilities.GAS_HANDLER_CAPABILITY);
+        } else if (message.tankType == TankType.INFUSION_TANK) {
+            handleChemicalTank(player, stack, handler.getInfusionTanks(null), message, Capabilities.INFUSION_HANDLER_CAPABILITY);
+        } else if (message.tankType == TankType.PIGMENT_TANK) {
+            handleChemicalTank(player, stack, handler.getPigmentTanks(null), message, Capabilities.PIGMENT_HANDLER_CAPABILITY);
+        } else if (message.tankType == TankType.SLURRY_TANK) {
+            handleChemicalTank(player, stack, handler.getSlurryTanks(null), message, Capabilities.SLURRY_HANDLER_CAPABILITY);
         }
     }
 
@@ -115,58 +100,33 @@ public class PacketDropperUse {
         return new PacketDropperUse(buf.readBlockPos(), buf.readEnumValue(DropperAction.class), buf.readEnumValue(TankType.class), buf.readVarInt());
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleChemicalTank(PlayerEntity player, ItemStack stack,
-          IChemicalTank<CHEMICAL, STACK> chemicalTank, DropperAction action) {
-        if (action == DropperAction.DUMP_TANK) {
-            //Dump the tank
-            chemicalTank.setEmpty();
-            return;
-        }
-        IChemicalTank<CHEMICAL, STACK> itemChemicalTank = null;
-        //TODO: Eventually try to clean this up further to reduce duplicate code
-        STACK emptyStack = chemicalTank.getEmptyStack();
-        if (emptyStack == GasStack.EMPTY) {
-            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem instanceof IMekanismGasHandler) {
-                    itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
-                }
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
+          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void handleChemicalTank(PlayerEntity player, ItemStack stack, List<TANK> tanks, PacketDropperUse message,
+          Capability<HANDLER> capability) {
+        if (message.tankId >= 0 && message.tankId < tanks.size()) {
+            TANK tank = tanks.get(message.tankId);
+            if (message.action == DropperAction.DUMP_TANK) {
+                //Dump the tank
+                tank.setEmpty();
+                return;
             }
-        } else if (emptyStack == InfusionStack.EMPTY) {
-            Optional<IInfusionHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                IInfusionHandler infusionHandler = capability.get();
-                if (infusionHandler instanceof IMekanismInfusionHandler) {
-                    itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismInfusionHandler) infusionHandler).getInfusionTank(0, null);
+            Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
+            if (cap.isPresent()) {
+                HANDLER handler = cap.get();
+                if (handler instanceof IMekanismChemicalHandler) {
+                    IChemicalTank<CHEMICAL, STACK> itemTank = ((IMekanismChemicalHandler<CHEMICAL, STACK, ?>) handler).getChemicalTank(0, null);
+                    //It is a chemical tank
+                    if (itemTank != null) {
+                        //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                        if (message.action == DropperAction.FILL_DROPPER) {
+                            //Insert chemical into dropper
+                            transferBetweenTanks(tank, itemTank, player);
+                        } else if (message.action == DropperAction.DRAIN_DROPPER) {
+                            //Extract chemical from dropper
+                            transferBetweenTanks(itemTank, tank, player);
+                        }
+                    }
                 }
-            }
-        } else if (emptyStack == PigmentStack.EMPTY) {
-            Optional<IPigmentHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                IPigmentHandler pigmentHandler = capability.get();
-                if (pigmentHandler instanceof IMekanismPigmentHandler) {
-                    itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismPigmentHandler) pigmentHandler).getPigmentTank(0, null);
-                }
-            }
-        } else if (emptyStack == SlurryStack.EMPTY) {
-            Optional<ISlurryHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                ISlurryHandler slurryHandler = capability.get();
-                if (slurryHandler instanceof IMekanismSlurryHandler) {
-                    itemChemicalTank = (IChemicalTank<CHEMICAL, STACK>) ((IMekanismSlurryHandler) slurryHandler).getSlurryTank(0, null);
-                }
-            }
-        }
-        //It is a chemical tank
-        if (itemChemicalTank != null) {
-            //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-            if (action == DropperAction.FILL_DROPPER) {
-                //Insert chemical into dropper
-                transferBetweenTanks(chemicalTank, itemChemicalTank, player);
-            } else if (action == DropperAction.DRAIN_DROPPER) {
-                //Extract chemical from dropper
-                transferBetweenTanks(itemChemicalTank, chemicalTank, player);
             }
         }
     }

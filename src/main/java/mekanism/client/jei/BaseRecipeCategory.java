@@ -1,11 +1,11 @@
 package mekanism.client.jei;
 
-import java.util.List;
-import java.util.Set;
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.longs.Long2ObjectFunction;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.List;
+import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -18,10 +18,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.gauge.GaugeOverlay;
 import mekanism.client.jei.chemical.ChemicalStackRenderer;
-import mekanism.client.jei.chemical.GasStackRenderer;
-import mekanism.client.jei.chemical.InfusionStackRenderer;
-import mekanism.client.jei.chemical.PigmentStackRenderer;
-import mekanism.client.jei.chemical.SlurryStackRenderer;
 import mekanism.common.Mekanism;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -150,19 +146,19 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     protected void initSlurry(IGuiIngredientGroup<@NonNull SlurryStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<SlurryStack> stacks) {
-        initChemical(group, slot, input, x, y, width, height, stacks, max -> new SlurryStackRenderer(max, width, height));
+        initChemical(group, slot, input, x, y, width, height, stacks, max -> new ChemicalStackRenderer<>(max, width, height));
     }
 
     protected void initPigment(IGuiIngredientGroup<@NonNull PigmentStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<PigmentStack> stacks) {
-        initChemical(group, slot, input, x, y, width, height, stacks, max -> new PigmentStackRenderer(max, width, height));
+        initChemical(group, slot, input, x, y, width, height, stacks, max -> new ChemicalStackRenderer<>(max, width, height));
     }
 
     protected void initInfusion(IGuiIngredientGroup<@NonNull InfusionStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<InfusionStack> stacks) {
-        initChemical(group, slot, input, x, y, width, height, stacks, max -> new InfusionStackRenderer(max, width, height));
+        initChemical(group, slot, input, x, y, width, height, stacks, max -> new ChemicalStackRenderer<>(max, width, height));
     }
 
     protected void initGas(IGuiIngredientGroup<@NonNull GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<GasStack> stacks, boolean overlay) {
-        initChemical(group, slot, input, x, y, width, height, stacks, max -> new GasStackRenderer(max, false, width, height,
+        initChemical(group, slot, input, x, y, width, height, stacks, max -> new ChemicalStackRenderer<>(max, false, width, height,
               overlay ? height > 50 ? fluidOverlayLarge : (height == 46 ? fluidOverlaySmallMed : fluidOverlaySmall) : null));
     }
 

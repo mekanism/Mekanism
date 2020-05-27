@@ -5,9 +5,9 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.item.interfaces.IUpgradeItem;
 import net.minecraft.item.Item;
@@ -17,14 +17,14 @@ import net.minecraft.item.Item;
 @MethodsReturnNonnullByDefault
 public class UpgradeInventorySlot extends BasicInventorySlot {
 
-    public static UpgradeInventorySlot of(@Nullable IMekanismInventory inventory, Set<Upgrade> supportedTypes) {
+    public static UpgradeInventorySlot of(@Nullable IContentsListener listener, Set<Upgrade> supportedTypes) {
         Objects.requireNonNull(supportedTypes, "Supported types cannot be null");
-        return new UpgradeInventorySlot(inventory, supportedTypes);
+        return new UpgradeInventorySlot(listener, supportedTypes);
     }
 
     private final Set<Upgrade> supportedTypes;
 
-    private UpgradeInventorySlot(@Nullable IMekanismInventory inventory, Set<Upgrade> supportedTypes) {
+    private UpgradeInventorySlot(@Nullable IContentsListener listener, Set<Upgrade> supportedTypes) {
         super(manualOnly, (stack, automationType) -> {
             Item item = stack.getItem();
             if (item instanceof IUpgradeItem) {
@@ -32,7 +32,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
                 return supportedTypes.contains(upgradeType);
             }
             return false;
-        }, stack -> stack.getItem() instanceof IUpgradeItem, inventory, 154, 7);
+        }, stack -> stack.getItem() instanceof IUpgradeItem, listener, 154, 7);
         this.supportedTypes = supportedTypes;
         setSlotOverlay(SlotOverlay.UPGRADE);
     }

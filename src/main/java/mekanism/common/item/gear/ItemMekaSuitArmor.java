@@ -166,7 +166,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
-            return gasHandlerItem.extractGas(new GasStack(type, amount), Action.EXECUTE);
+            return gasHandlerItem.extractChemical(new GasStack(type, amount), Action.EXECUTE);
         }
         return GasStack.EMPTY;
     }
@@ -175,9 +175,10 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
-            for (int i = 0; i < gasHandlerItem.getGasTankCount(); i++) {
-                if (gasHandlerItem.getGasInTank(i).getType() == type) {
-                    return gasHandlerItem.getGasInTank(i);
+            for (int i = 0; i < gasHandlerItem.getTanks(); i++) {
+                GasStack gasInTank = gasHandlerItem.getChemicalInTank(i);
+                if (gasInTank.getType() == type) {
+                    return gasInTank;
                 }
             }
         }

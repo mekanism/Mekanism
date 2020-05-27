@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -61,8 +62,8 @@ public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
         private final FloatingLongSupplier rate;
 
         private RateLimitEnergyContainer(FloatingLongSupplier rate, FloatingLongSupplier capacity, Predicate<@NonNull AutomationType> canExtract,
-              Predicate<@NonNull AutomationType> canInsert, IMekanismStrictEnergyHandler energyHandler) {
-            super(capacity, canExtract, canInsert, energyHandler);
+              Predicate<@NonNull AutomationType> canInsert, IContentsListener listener) {
+            super(capacity, canExtract, canInsert, listener);
             this.rate = rate;
         }
 
@@ -77,8 +78,8 @@ public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
 
         private final boolean isCreative;
 
-        private EnergyCubeRateLimitEnergyContainer(EnergyCubeTier tier, IMekanismStrictEnergyHandler energyHandler) {
-            super(tier::getOutput, tier::getMaxEnergy, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, energyHandler);
+        private EnergyCubeRateLimitEnergyContainer(EnergyCubeTier tier, IContentsListener listener) {
+            super(tier::getOutput, tier::getMaxEnergy, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, listener);
             isCreative = tier == EnergyCubeTier.CREATIVE;
         }
 

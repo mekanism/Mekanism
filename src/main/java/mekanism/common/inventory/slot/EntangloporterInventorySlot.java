@@ -2,18 +2,18 @@ package mekanism.common.inventory.slot;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.IContentsListener;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 
 public class EntangloporterInventorySlot extends BasicInventorySlot {
 
     @Nonnull
-    public static EntangloporterInventorySlot create(@Nullable IMekanismInventory inventory) {
-        return new EntangloporterInventorySlot(inventory);
+    public static EntangloporterInventorySlot create(@Nullable IContentsListener listener) {
+        return new EntangloporterInventorySlot(listener);
     }
 
-    private EntangloporterInventorySlot(@Nullable IMekanismInventory inventory) {
-        super(alwaysTrueBi, alwaysTrueBi, alwaysTrue, inventory, 0, 0);
+    private EntangloporterInventorySlot(@Nullable IContentsListener listener) {
+        super(alwaysTrueBi, alwaysTrueBi, alwaysTrue, listener, 0, 0);
     }
 
     @Nullable

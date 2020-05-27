@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -45,13 +46,13 @@ public class MultiblockFluidTank<MULTIBLOCK extends MultiblockData> extends Vari
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, IntSupplier capacity,
           BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator,
-          @Nullable IMekanismFluidHandler fluidHandler) {
+          @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Tile cannot be null");
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new MultiblockFluidTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, fluidHandler);
+        return new MultiblockFluidTank<>(multiblock, tile, capacity, canExtract, canInsert, validator, listener);
     }
 
     protected MultiblockFluidTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, IntSupplier capacity, Predicate<@NonNull FluidStack> validator) {
@@ -59,9 +60,10 @@ public class MultiblockFluidTank<MULTIBLOCK extends MultiblockData> extends Vari
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(), validator, null);
     }
 
-    protected MultiblockFluidTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
-        super(capacity, canExtract, canInsert, validator, fluidHandler);
+    protected MultiblockFluidTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, IntSupplier capacity,
+          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert,
+          Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
+        super(capacity, canExtract, canInsert, validator, listener);
         this.multiblock = multiblock;
         this.tile = tile;
     }

@@ -1,5 +1,6 @@
 package mekanism.common.tile.base;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,29 +9,16 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -60,20 +48,19 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.GasHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.InfusionHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.PigmentHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.SlurryHandlerManager;
 import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
 import mekanism.common.capabilities.resolver.manager.FluidHandlerManager;
-import mekanism.common.capabilities.resolver.manager.GasHandlerManager;
 import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
-import mekanism.common.capabilities.resolver.manager.InfusionHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
-import mekanism.common.capabilities.resolver.manager.PigmentHandlerManager;
-import mekanism.common.capabilities.resolver.manager.SlurryHandlerManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -81,10 +68,10 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
-import mekanism.common.inventory.container.sync.SyncableInfusionStack;
-import mekanism.common.inventory.container.sync.SyncablePigmentStack;
-import mekanism.common.inventory.container.sync.SyncableSlurryStack;
+import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
+import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
+import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
+import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.item.ItemConfigurationCard;
@@ -103,6 +90,10 @@ import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.ITileUpgradable;
+import mekanism.common.tile.interfaces.chemical.IGasTile;
+import mekanism.common.tile.interfaces.chemical.IInfusionTile;
+import mekanism.common.tile.interfaces.chemical.IPigmentTile;
+import mekanism.common.tile.interfaces.chemical.ISlurryTile;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -134,8 +125,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
-      ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler,
-      IMekanismPigmentHandler, IMekanismSlurryHandler {
+      ITrackableContainer, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile {
 
     /**
      * The players currently using this block.
@@ -188,21 +178,21 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected final ItemHandlerManager itemHandlerManager;
     //End variables ITileContainer
 
-    //Variables for handling IMekanismGasHandler
-    protected final GasHandlerManager gasHandlerManager;
-    //End variables IMekanismGasHandler
+    //Variables for handling IGasTile
+    private final GasHandlerManager gasHandlerManager;
+    //End variables IGasTile
 
-    //Variables for handling IMekanismInfusionHandler
-    protected final InfusionHandlerManager infusionHandlerManager;
-    //End variables IMekanismInfusionHandler
+    //Variables for handling IInfusionTile
+    private final InfusionHandlerManager infusionHandlerManager;
+    //End variables IInfusionTile
 
-    //Variables for handling IMekanismPigmentHandler
-    protected final PigmentHandlerManager pigmentHandlerManager;
-    //End variables IMekanismPigmentHandler
+    //Variables for handling IPigmentTile
+    private final PigmentHandlerManager pigmentHandlerManager;
+    //End variables IPigmentTile
 
-    //Variables for handling IMekanismSlurryHandler
-    protected final SlurryHandlerManager slurryHandlerManager;
-    //End variables IMekanismSlurryHandler
+    //Variables for handling ISlurryTile
+    private final SlurryHandlerManager slurryHandlerManager;
+    //End variables ISlurryTile
 
     //Variables for handling IMekanismFluidHandler
     protected final FluidHandlerManager fluidHandlerManager;
@@ -243,10 +233,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         this.blockProvider = blockProvider;
         setSupportedTypes(this.blockProvider.getBlock());
         presetVariables();
-        capabilityHandlerManagers.add(gasHandlerManager = new GasHandlerManager(getInitialGasTanks(), this));
-        capabilityHandlerManagers.add(infusionHandlerManager = new InfusionHandlerManager(getInitialInfusionTanks(), this));
-        capabilityHandlerManagers.add(pigmentHandlerManager = new PigmentHandlerManager(getInitialPigmentTanks(), this));
-        capabilityHandlerManagers.add(slurryHandlerManager = new SlurryHandlerManager(getInitialSlurryTanks(), this));
+        capabilityHandlerManagers.add(gasHandlerManager = getInitialGasManager());
+        capabilityHandlerManagers.add(infusionHandlerManager = getInitialInfusionManager());
+        capabilityHandlerManagers.add(pigmentHandlerManager = getInitialPigmentManager());
+        capabilityHandlerManagers.add(slurryHandlerManager = getInitialSlurryManager());
         capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(), this));
         capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(), this));
         capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(), this));
@@ -363,11 +353,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public final boolean canHandleInfusion() {
         return infusionHandlerManager.canHandle();
-    }
-
-    @Override
-    public final boolean canHandlePigment() {
-        return pigmentHandlerManager.canHandle();
     }
 
     @Override
@@ -865,57 +850,37 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
     //End methods ITileContainer
 
-    //Methods for implementing IMekanismGasHandler
-    @Nullable
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        return null;
-    }
-
+    //Methods for implementing IGasTile
     @Nonnull
     @Override
-    public final List<IGasTank> getGasTanks(@Nullable Direction side) {
-        return gasHandlerManager.getContainers(side);
+    public GasHandlerManager getGasManager() {
+        return gasHandlerManager;
     }
-    //End methods IMekanismGasHandler
+    //End methods IGasTile
 
-    //Methods for implementing IMekanismInfusionHandler
-    @Nullable
-    protected IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
-        return null;
-    }
-
+    //Methods for implementing IInfusionTile
     @Nonnull
     @Override
-    public final List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
-        return infusionHandlerManager.getContainers(side);
+    public InfusionHandlerManager getInfusionManager() {
+        return infusionHandlerManager;
     }
-    //End methods IMekanismInfusionHandler
+    //End methods IInfusionTile
 
-    //Methods for implementing IMekanismPigmentHandler
-    @Nullable
-    protected IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
-        return null;
-    }
-
+    //Methods for implementing IPigmentTile
     @Nonnull
     @Override
-    public final List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
-        return pigmentHandlerManager.getContainers(side);
+    public PigmentHandlerManager getPigmentManager() {
+        return pigmentHandlerManager;
     }
-    //End methods IMekanismPigmentHandler
+    //End methods IPigmentTile
 
-    //Methods for implementing IMekanismSlurryHandler
-    @Nullable
-    protected IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
-        return null;
-    }
-
+    //Methods for implementing ISlurryTile
     @Nonnull
     @Override
-    public final List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
-        return slurryHandlerManager.getContainers(side);
+    public SlurryHandlerManager getSlurryManager() {
+        return slurryHandlerManager;
     }
-    //End methods IMekanismSlurryHandler
+    //End methods ISlurryTile
 
     //Methods for implementing IMekanismFluidHandler
     @Nullable

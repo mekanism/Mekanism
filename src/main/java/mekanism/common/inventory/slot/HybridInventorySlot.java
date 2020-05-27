@@ -5,13 +5,18 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MergedTank;
 import mekanism.common.capabilities.MergedTank.CurrentType;
+import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
+import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
+import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
+import mekanism.common.inventory.slot.chemical.SlurryInventorySlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -23,13 +28,13 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
                stack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY).isPresent();
     }
 
-    public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
         Predicate<@NonNull ItemStack> fluidInsertPredicate = FluidInventorySlot.getInputPredicate(mergedTank.getFluidTank());
-        Predicate<@NonNull ItemStack> gasInsertPredicate = GasInventorySlot.getDrainInsertPredicate(mergedTank.getGasTank(), GasInventorySlot::getCapabilityWrapper);
-        Predicate<@NonNull ItemStack> infusionInsertPredicate = InfusionInventorySlot.getDrainInsertPredicate(mergedTank.getInfusionTank(), InfusionInventorySlot::getCapabilityWrapper);
-        Predicate<@NonNull ItemStack> pigmentInsertPredicate = PigmentInventorySlot.getDrainInsertPredicate(mergedTank.getPigmentTank(), PigmentInventorySlot::getCapabilityWrapper);
-        Predicate<@NonNull ItemStack> slurryInsertPredicate = SlurryInventorySlot.getDrainInsertPredicate(mergedTank.getSlurryTank(), SlurryInventorySlot::getCapabilityWrapper);
+        Predicate<@NonNull ItemStack> gasInsertPredicate = GasInventorySlot.getDrainInsertPredicate(mergedTank.getGasTank(), GasInventorySlot::getCapability);
+        Predicate<@NonNull ItemStack> infusionInsertPredicate = InfusionInventorySlot.getDrainInsertPredicate(mergedTank.getInfusionTank(), InfusionInventorySlot::getCapability);
+        Predicate<@NonNull ItemStack> pigmentInsertPredicate = PigmentInventorySlot.getDrainInsertPredicate(mergedTank.getPigmentTank(), PigmentInventorySlot::getCapability);
+        Predicate<@NonNull ItemStack> slurryInsertPredicate = SlurryInventorySlot.getDrainInsertPredicate(mergedTank.getSlurryTank(), SlurryInventorySlot::getCapability);
         BiPredicate<@NonNull ItemStack, @NonNull AutomationType> insertPredicate = (stack, automationType) -> {
             CurrentType currentType = mergedTank.getCurrentType();
             if (currentType == CurrentType.FLUID) {
@@ -48,19 +53,19 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
         };
         //Extract predicate, always allow the player to manually extract or if the insert predicate no longer matches allow for it to be extracted
         return new HybridInventorySlot(mergedTank, (stack, automationType) -> automationType == AutomationType.MANUAL || !insertPredicate.test(stack, automationType),
-              insertPredicate, HybridInventorySlot::hasCapability, inventory, x, y);
+              insertPredicate, HybridInventorySlot::hasCapability, listener, x, y);
     }
 
-    public static HybridInventorySlot outputOrFill(MergedTank mergedTank, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static HybridInventorySlot outputOrFill(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
-        Predicate<@NonNull ItemStack> gasExtractPredicate = GasInventorySlot.getFillExtractPredicate(mergedTank.getGasTank(), GasInventorySlot::getCapabilityWrapper);
-        Predicate<@NonNull ItemStack> infusionExtractPredicate = InfusionInventorySlot.getFillExtractPredicate(mergedTank.getInfusionTank(), InfusionInventorySlot::getCapabilityWrapper);
-        Predicate<@NonNull ItemStack> pigmentExtractPredicate = PigmentInventorySlot.getFillExtractPredicate(mergedTank.getPigmentTank(), PigmentInventorySlot::getCapabilityWrapper);
-        Predicate<@NonNull ItemStack> slurryExtractPredicate = SlurryInventorySlot.getFillExtractPredicate(mergedTank.getSlurryTank(), SlurryInventorySlot::getCapabilityWrapper);
-        Predicate<@NonNull ItemStack> gasInsertPredicate = stack -> GasInventorySlot.fillInsertCheck(mergedTank.getGasTank(), GasInventorySlot.getCapabilityWrapper(stack));
-        Predicate<@NonNull ItemStack> infusionInsertPredicate = stack -> InfusionInventorySlot.fillInsertCheck(mergedTank.getInfusionTank(), InfusionInventorySlot.getCapabilityWrapper(stack));
-        Predicate<@NonNull ItemStack> pigmentInsertPredicate = stack -> PigmentInventorySlot.fillInsertCheck(mergedTank.getPigmentTank(), PigmentInventorySlot.getCapabilityWrapper(stack));
-        Predicate<@NonNull ItemStack> slurryInsertPredicate = stack -> SlurryInventorySlot.fillInsertCheck(mergedTank.getSlurryTank(), SlurryInventorySlot.getCapabilityWrapper(stack));
+        Predicate<@NonNull ItemStack> gasExtractPredicate = GasInventorySlot.getFillExtractPredicate(mergedTank.getGasTank(), GasInventorySlot::getCapability);
+        Predicate<@NonNull ItemStack> infusionExtractPredicate = InfusionInventorySlot.getFillExtractPredicate(mergedTank.getInfusionTank(), InfusionInventorySlot::getCapability);
+        Predicate<@NonNull ItemStack> pigmentExtractPredicate = PigmentInventorySlot.getFillExtractPredicate(mergedTank.getPigmentTank(), PigmentInventorySlot::getCapability);
+        Predicate<@NonNull ItemStack> slurryExtractPredicate = SlurryInventorySlot.getFillExtractPredicate(mergedTank.getSlurryTank(), SlurryInventorySlot::getCapability);
+        Predicate<@NonNull ItemStack> gasInsertPredicate = stack -> GasInventorySlot.fillInsertCheck(mergedTank.getGasTank(), GasInventorySlot.getCapability(stack));
+        Predicate<@NonNull ItemStack> infusionInsertPredicate = stack -> InfusionInventorySlot.fillInsertCheck(mergedTank.getInfusionTank(), InfusionInventorySlot.getCapability(stack));
+        Predicate<@NonNull ItemStack> pigmentInsertPredicate = stack -> PigmentInventorySlot.fillInsertCheck(mergedTank.getPigmentTank(), PigmentInventorySlot.getCapability(stack));
+        Predicate<@NonNull ItemStack> slurryInsertPredicate = stack -> SlurryInventorySlot.fillInsertCheck(mergedTank.getSlurryTank(), SlurryInventorySlot.getCapability(stack));
         return new HybridInventorySlot(mergedTank, (stack, automationType) -> {
             if (automationType == AutomationType.MANUAL) {
                 //Always allow the player to manually extract
@@ -99,7 +104,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
             }
             //otherwise only allow it if one of the chemical insert predicates matches
             return gasInsertPredicate.test(stack) || infusionInsertPredicate.test(stack) || pigmentInsertPredicate.test(stack) || slurryInsertPredicate.test(stack);
-        }, HybridInventorySlot::hasCapability, inventory, x, y);
+        }, HybridInventorySlot::hasCapability, listener, x, y);
     }
 
     private final MergedTank mergedTank;
@@ -109,9 +114,8 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     private boolean isFilling;
 
     private HybridInventorySlot(MergedTank mergedTank, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory,
-          int x, int y) {
-        super(canExtract, canInsert, validator, inventory, x, y);
+          BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+        super(canExtract, canInsert, validator, listener, x, y);
         this.mergedTank = mergedTank;
     }
 
@@ -130,13 +134,13 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
      */
     public void drainChemicalTank(CurrentType type) {
         if (type == CurrentType.GAS) {
-            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getGasTank(), GasInventorySlot.getCapabilityWrapper(current));
+            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getGasTank(), GasInventorySlot.getCapability(current));
         } else if (type == CurrentType.INFUSION) {
-            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getInfusionTank(), InfusionInventorySlot.getCapabilityWrapper(current));
+            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getInfusionTank(), InfusionInventorySlot.getCapability(current));
         } else if (type == CurrentType.PIGMENT) {
-            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getPigmentTank(), PigmentInventorySlot.getCapabilityWrapper(current));
+            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getPigmentTank(), PigmentInventorySlot.getCapability(current));
         } else if (type == CurrentType.SLURRY) {
-            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getSlurryTank(), SlurryInventorySlot.getCapabilityWrapper(current));
+            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getSlurryTank(), SlurryInventorySlot.getCapability(current));
         }
     }
 
@@ -155,13 +159,13 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
      */
     public void fillChemicalTank(CurrentType type) {
         if (type == CurrentType.GAS) {
-            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getGasTank(), GasInventorySlot.getCapabilityWrapper(current));
+            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getGasTank(), GasInventorySlot.getCapability(current));
         } else if (type == CurrentType.INFUSION) {
-            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getInfusionTank(), InfusionInventorySlot.getCapabilityWrapper(current));
+            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getInfusionTank(), InfusionInventorySlot.getCapability(current));
         } else if (type == CurrentType.PIGMENT) {
-            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getPigmentTank(), PigmentInventorySlot.getCapabilityWrapper(current));
+            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getPigmentTank(), PigmentInventorySlot.getCapability(current));
         } else if (type == CurrentType.SLURRY) {
-            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getSlurryTank(), SlurryInventorySlot.getCapabilityWrapper(current));
+            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getSlurryTank(), SlurryInventorySlot.getCapability(current));
         }
     }
 

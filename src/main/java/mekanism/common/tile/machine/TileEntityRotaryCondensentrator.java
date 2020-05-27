@@ -39,8 +39,8 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
-import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -105,7 +105,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         //Only allow extraction
         builder.addTank(gasTank = BasicGasTank.create(CAPACITY, (gas, automationType) -> automationType == AutomationType.MANUAL || mode,

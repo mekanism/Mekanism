@@ -9,9 +9,9 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -20,32 +20,32 @@ import net.minecraftforge.fluids.FluidStack;
 @MethodsReturnNonnullByDefault
 public class VariableCapacityFluidTank extends BasicFluidTank {
 
-    public static VariableCapacityFluidTank input(IntSupplier capacity, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
+    public static VariableCapacityFluidTank input(IntSupplier capacity, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new VariableCapacityFluidTank(capacity, notExternal, alwaysTrueBi, validator, fluidHandler);
+        return new VariableCapacityFluidTank(capacity, notExternal, alwaysTrueBi, validator, listener);
     }
 
-    public static VariableCapacityFluidTank output(IntSupplier capacity, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
+    public static VariableCapacityFluidTank output(IntSupplier capacity, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new VariableCapacityFluidTank(capacity, alwaysTrueBi, internalOnly, validator, fluidHandler);
+        return new VariableCapacityFluidTank(capacity, alwaysTrueBi, internalOnly, validator, listener);
     }
 
     public static VariableCapacityFluidTank create(IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
+          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new VariableCapacityFluidTank(capacity, canExtract, canInsert, validator, fluidHandler);
+        return new VariableCapacityFluidTank(capacity, canExtract, canInsert, validator, listener);
     }
 
     private final IntSupplier capacity;
 
     protected VariableCapacityFluidTank(IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
-        super(capacity.getAsInt(), canExtract, canInsert, validator, fluidHandler);
+          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
+        super(capacity.getAsInt(), canExtract, canInsert, validator, listener);
         this.capacity = capacity;
     }
 

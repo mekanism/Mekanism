@@ -2,13 +2,14 @@ package mekanism.api.heat;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IHeatCapacitor extends INBTSerializable<CompoundNBT> {
+public interface IHeatCapacitor extends INBTSerializable<CompoundNBT>, IContentsListener {
 
     /**
      * Returns the temperature of this capacitor.
@@ -68,11 +69,6 @@ public interface IHeatCapacitor extends INBTSerializable<CompoundNBT> {
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
      */
     void handleHeat(double transfer);
-
-    /**
-     * Called when the contents of this capacitor changes.
-     */
-    void onContentsChanged();
 
     @Override
     default CompoundNBT serializeNBT() {

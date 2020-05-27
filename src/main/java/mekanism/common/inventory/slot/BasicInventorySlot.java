@@ -7,12 +7,12 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -37,26 +37,26 @@ public class BasicInventorySlot implements IInventorySlot {
     public static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
     private static final int DEFAULT_LIMIT = 64;
 
-    public static BasicInventorySlot at(@Nullable IMekanismInventory inventory, int x, int y) {
-        return at(alwaysTrue, inventory, x, y);
+    public static BasicInventorySlot at(@Nullable IContentsListener listener, int x, int y) {
+        return at(alwaysTrue, listener, x, y);
     }
 
-    public static BasicInventorySlot at(Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static BasicInventorySlot at(Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(validator, "Item validity check cannot be null");
-        return new BasicInventorySlot(alwaysTrueBi, alwaysTrueBi, validator, inventory, x, y);
+        return new BasicInventorySlot(alwaysTrueBi, alwaysTrueBi, validator, listener, x, y);
     }
 
-    public static BasicInventorySlot at(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static BasicInventorySlot at(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, inventory, x, y);
+        return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, listener, x, y);
     }
 
-    public static BasicInventorySlot at(BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert,
-          @Nullable IMekanismInventory inventory, int x, int y) {
+    public static BasicInventorySlot at(BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract,
+          BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, inventory, x, y);
+        return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, listener, x, y);
     }
 
     /**
@@ -69,7 +69,7 @@ public class BasicInventorySlot implements IInventorySlot {
     private final Predicate<@NonNull ItemStack> validator;
     private final int limit;
     @Nullable
-    private final IMekanismInventory inventory;
+    private final IContentsListener listener;
     private final int x;
     private final int y;
     protected boolean obeyStackLimit = true;
@@ -78,23 +78,23 @@ public class BasicInventorySlot implements IInventorySlot {
     private SlotOverlay slotOverlay;
 
     protected BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator,
-          @Nullable IMekanismInventory inventory, int x, int y) {
+          @Nullable IContentsListener listener, int x, int y) {
         this((stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack),
-              validator, inventory, x, y);
+              validator, listener, x, y);
     }
 
     protected BasicInventorySlot(BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
-        this(DEFAULT_LIMIT, canExtract, canInsert, validator, inventory, x, y);
+          Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+        this(DEFAULT_LIMIT, canExtract, canInsert, validator, listener, x, y);
     }
 
-    protected BasicInventorySlot(int limit, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
+    protected BasicInventorySlot(int limit, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract,
+          BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         this.limit = limit;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
-        this.inventory = inventory;
+        this.listener = listener;
         this.x = x;
         this.y = y;
     }
@@ -195,8 +195,8 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Override
     public void onContentsChanged() {
-        if (inventory != null) {
-            inventory.onContentsChanged();
+        if (listener != null) {
+            listener.onContentsChanged();
         }
     }
 

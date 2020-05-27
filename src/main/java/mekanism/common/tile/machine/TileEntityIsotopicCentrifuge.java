@@ -31,7 +31,7 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -75,7 +75,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(inputTank = BasicGasTank.create(MAX_GAS, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi,
               gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, this));

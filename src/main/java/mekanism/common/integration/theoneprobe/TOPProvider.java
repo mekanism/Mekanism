@@ -1,5 +1,6 @@
 package mekanism.common.integration.theoneprobe;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -15,11 +16,8 @@ import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.api.TextStyleClass;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandlerWrapper;
-import mekanism.api.chemical.gas.GasHandlerWrapper;
-import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
-import mekanism.api.chemical.pigment.PigmentHandlerWrapper;
-import mekanism.api.chemical.slurry.SlurryHandlerWrapper;
+import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -100,10 +98,10 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
                     }
                 }
                 //Chemicals
-                addInfo(tile, structure, Capabilities.GAS_HANDLER_CAPABILITY, GasHandlerWrapper::new, info, GasElement::new, MekanismLang.GAS);
-                addInfo(tile, structure, Capabilities.INFUSION_HANDLER_CAPABILITY, InfusionHandlerWrapper::new, info, InfuseTypeElement::new, MekanismLang.INFUSE_TYPE);
-                addInfo(tile, structure, Capabilities.PIGMENT_HANDLER_CAPABILITY, PigmentHandlerWrapper::new, info, PigmentElement::new, MekanismLang.PIGMENT);
-                addInfo(tile, structure, Capabilities.SLURRY_HANDLER_CAPABILITY, SlurryHandlerWrapper::new, info, SlurryElement::new, MekanismLang.SLURRY);
+                addInfo(tile, structure, Capabilities.GAS_HANDLER_CAPABILITY, multiblock -> multiblock.getGasTanks(null), info, GasElement::new, MekanismLang.GAS);
+                addInfo(tile, structure, Capabilities.INFUSION_HANDLER_CAPABILITY, multiblock -> multiblock.getInfusionTanks(null), info, InfuseTypeElement::new, MekanismLang.INFUSE_TYPE);
+                addInfo(tile, structure, Capabilities.PIGMENT_HANDLER_CAPABILITY, multiblock -> multiblock.getPigmentTanks(null), info, PigmentElement::new, MekanismLang.PIGMENT);
+                addInfo(tile, structure, Capabilities.SLURRY_HANDLER_CAPABILITY, multiblock -> multiblock.getSlurryTanks(null), info, SlurryElement::new, MekanismLang.SLURRY);
             }
         }
     }
@@ -141,26 +139,27 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         }
     }
 
-    private <HANDLER, CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addInfo(TileEntity tile, @Nullable MultiblockData structure,
-          Capability<HANDLER> capability, Function<HANDLER, IChemicalHandlerWrapper<CHEMICAL, STACK>> wrapperCreator, IProbeInfo info,
-          ElementCreator<CHEMICAL, STACK> elementCreator, ILangEntry langEntry) {
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
+          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(TileEntity tile, @Nullable MultiblockData structure, Capability<HANDLER> capability,
+          Function<MultiblockData, List<TANK>> multiBlockToTanks, IProbeInfo info, ElementCreator<CHEMICAL, STACK> elementCreator, ILangEntry langEntry) {
         Optional<HANDLER> cap = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, capability, null));
         if (cap.isPresent()) {
-            addInfo(wrapperCreator.apply(cap.get()), info, elementCreator, langEntry);
+            HANDLER handler = cap.get();
+            for (int i = 0; i < handler.getTanks(); i++) {
+                STACK chemicalInTank = handler.getChemicalInTank(i);
+                if (!chemicalInTank.isEmpty()) {
+                    info.text(TextStyleClass.NAME + langEntry.translate(chemicalInTank.getType()).getFormattedText());
+                }
+                info.element(elementCreator.create(chemicalInTank, handler.getTankCapacity(i)));
+            }
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the chemicals in a multiblock when looking at things other than the ports
-            addInfo(wrapperCreator.apply((HANDLER) structure), info, elementCreator, langEntry);
-        }
-    }
-
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addInfo(IChemicalHandlerWrapper<CHEMICAL, STACK> wrapper,
-          IProbeInfo info, ElementCreator<CHEMICAL, STACK> elementCreator, ILangEntry langEntry) {
-        for (int i = 0; i < wrapper.getTanks(); i++) {
-            STACK chemicalInTank = wrapper.getChemicalInTank(i);
-            if (!chemicalInTank.isEmpty()) {
-                info.text(TextStyleClass.NAME + langEntry.translate(chemicalInTank.getType()).getFormattedText());
+            for (TANK tank : multiBlockToTanks.apply(structure)) {
+                if (!tank.isEmpty()) {
+                    info.text(TextStyleClass.NAME + langEntry.translate(tank.getType()).getFormattedText());
+                }
+                info.element(elementCreator.create(tank.getStack(), tank.getCapacity()));
             }
-            info.element(elementCreator.create(chemicalInTank, wrapper.getTankCapacity(i)));
         }
     }
 

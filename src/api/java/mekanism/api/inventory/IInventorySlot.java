@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -14,7 +15,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
+public interface IInventorySlot extends INBTSerializable<CompoundNBT>, IContentsListener {
 
     /**
      * Returns the {@link ItemStack} in this {@link IInventorySlot}.
@@ -174,11 +175,6 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * IInventorySlot} can never insert the {@link ItemStack} in any situation.
      */
     boolean isItemValid(ItemStack stack);
-
-    /**
-     * Called when the contents of this slot changes.
-     */
-    void onContentsChanged();
 
     /**
      * Returns a slot for use in auto adding slots to a container.

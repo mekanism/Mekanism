@@ -5,9 +5,9 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -24,7 +24,7 @@ public class LaserEnergyContainer extends BasicEnergyContainer {
     }
 
     private LaserEnergyContainer(FloatingLong maxEnergy, Predicate<@NonNull AutomationType> canExtract, Predicate<@NonNull AutomationType> canInsert,
-          @Nullable IMekanismStrictEnergyHandler energyHandler) {
-        super(maxEnergy, canExtract, canInsert, energyHandler);
+          @Nullable IContentsListener listener) {
+        super(maxEnergy, canExtract, canInsert, listener);
     }
 }

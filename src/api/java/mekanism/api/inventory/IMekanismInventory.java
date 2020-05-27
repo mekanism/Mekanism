@@ -5,12 +5,13 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IMekanismInventory extends ISidedItemHandler {
+public interface IMekanismInventory extends ISidedItemHandler, IContentsListener {
 
     /**
      * Used to check if an instance of {@link IMekanismInventory} actually has an inventory.
@@ -37,11 +38,6 @@ public interface IMekanismInventory extends ISidedItemHandler {
      * to add all the proper slots that are needed. Additionally, if {@link #hasInventory()} is false, this <em>MUST</em> return an empty list.
      */
     List<IInventorySlot> getInventorySlots(@Nullable Direction side);
-
-    /**
-     * Called when the contents of this inventory changes.
-     */
-    void onContentsChanged();
 
     /**
      * Returns the {@link IInventorySlot} that has the given index from the list of slots on the given side.

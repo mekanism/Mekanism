@@ -1,10 +1,10 @@
 package mekanism.common.content.boiler;
 
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.Arrays;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -15,7 +15,7 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.MathUtils;
-import mekanism.common.capabilities.chemical.MultiblockGasTank;
+import mekanism.common.capabilities.chemical.multiblock.MultiblockGasTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;

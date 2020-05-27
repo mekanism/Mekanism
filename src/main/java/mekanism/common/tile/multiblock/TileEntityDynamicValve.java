@@ -35,25 +35,25 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         return side -> getMultiblock().getGasTanks(side);
     }
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
+    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
         return side -> getMultiblock().getInfusionTanks(side);
     }
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
+    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
         return side -> getMultiblock().getPigmentTanks(side);
     }
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
+    public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
         return side -> getMultiblock().getSlurryTanks(side);
     }
 

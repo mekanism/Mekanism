@@ -23,9 +23,9 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.InfusionInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -67,7 +67,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
+    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
         ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusion(this::getDirection);
         builder.addTank(infusionTank = BasicInfusionTank.create(MAX_INFUSE, BasicInfusionTank.notExternal, (type, automationType) -> {
             if (!inputSlot.isEmpty()) {

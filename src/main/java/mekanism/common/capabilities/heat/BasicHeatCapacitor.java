@@ -3,11 +3,11 @@ package mekanism.common.capabilities.heat;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -17,7 +17,7 @@ import net.minecraft.nbt.CompoundNBT;
 public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Nullable
-    private final IMekanismHeatHandler heatHandler;
+    private final IContentsListener listener;
 
     private double heatCapacity;
 
@@ -28,27 +28,26 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     protected double storedHeat;
     protected double heatToHandle;
 
-    public static BasicHeatCapacitor create(double heatCapacity, @Nullable IMekanismHeatHandler heatHandler) {
-        return create(heatCapacity, HeatAPI.DEFAULT_INVERSE_CONDUCTION, HeatAPI.DEFAULT_INVERSE_INSULATION, heatHandler);
+    public static BasicHeatCapacitor create(double heatCapacity, @Nullable IContentsListener listener) {
+        return create(heatCapacity, HeatAPI.DEFAULT_INVERSE_CONDUCTION, HeatAPI.DEFAULT_INVERSE_INSULATION, listener);
     }
 
     public static BasicHeatCapacitor create(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient,
-          @Nullable IMekanismHeatHandler heatHandler) {
+          @Nullable IContentsListener listener) {
         if (heatCapacity < 1) {
             throw new IllegalArgumentException("Heat capacity must be at least one");
         }
         if (inverseConductionCoefficient < 1) {
             throw new IllegalArgumentException("Inverse conduction coefficient must be at least one");
         }
-        return new BasicHeatCapacitor(heatCapacity, inverseConductionCoefficient, inverseInsulationCoefficient, heatHandler);
+        return new BasicHeatCapacitor(heatCapacity, inverseConductionCoefficient, inverseInsulationCoefficient, listener);
     }
 
-    protected BasicHeatCapacitor(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient,
-          @Nullable IMekanismHeatHandler heatHandler) {
+    protected BasicHeatCapacitor(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient, @Nullable IContentsListener listener) {
         this.heatCapacity = heatCapacity;
         this.inverseConductionCoefficient = inverseConductionCoefficient;
         this.inverseInsulationCoefficient = inverseInsulationCoefficient;
-        this.heatHandler = heatHandler;
+        this.listener = listener;
 
         // update the stored heat based on initial capacity
         storedHeat = heatCapacity * HeatAPI.AMBIENT_TEMP;
@@ -76,8 +75,8 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void onContentsChanged() {
-        if (heatHandler != null) {
-            heatHandler.onContentsChanged();
+        if (listener != null) {
+            listener.onContentsChanged();
         }
     }
 

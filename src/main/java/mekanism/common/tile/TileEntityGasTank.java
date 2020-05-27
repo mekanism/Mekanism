@@ -27,7 +27,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
@@ -86,7 +86,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(gasTank = GasTankGasTank.create(tier, this));
         return builder.build();

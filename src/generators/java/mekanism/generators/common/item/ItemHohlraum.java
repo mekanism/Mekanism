@@ -45,12 +45,12 @@ public class ItemHohlraum extends Item {
             Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
             if (capability.isPresent()) {
                 IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem.getGasTankCount() > 0) {
+                if (gasHandlerItem.getTanks() > 0) {
                     //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                    GasStack storedGas = gasHandlerItem.getGasInTank(0);
+                    GasStack storedGas = gasHandlerItem.getChemicalInTank(0);
                     if (!storedGas.isEmpty()) {
                         tooltip.add(MekanismLang.STORED.translate(storedGas, storedGas.getAmount()));
-                        if (storedGas.getAmount() == gasHandlerItem.getGasTankCapacity(0)) {
+                        if (storedGas.getAmount() == gasHandlerItem.getTankCapacity(0)) {
                             tooltip.add(GeneratorsLang.READY_FOR_REACTION.translateColored(EnumColor.DARK_GREEN));
                         } else {
                             tooltip.add(GeneratorsLang.INSUFFICIENT_FUEL.translateColored(EnumColor.DARK_RED));

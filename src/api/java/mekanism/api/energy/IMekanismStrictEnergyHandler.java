@@ -5,13 +5,14 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import net.minecraft.util.Direction;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler {
+public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler, IContentsListener {
 
     /**
      * Used to check if an instance of {@link IMekanismStrictEnergyHandler} actually has the ability to handle energy.
@@ -38,11 +39,6 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler 
      * false, this <em>MUST</em> return an empty list.
      */
     List<IEnergyContainer> getEnergyContainers(@Nullable Direction side);
-
-    /**
-     * Called when the contents of this energy handler change.
-     */
-    void onContentsChanged();
 
     /**
      * Returns the {@link IEnergyContainer} that has the given index from the list of containers on the given side.

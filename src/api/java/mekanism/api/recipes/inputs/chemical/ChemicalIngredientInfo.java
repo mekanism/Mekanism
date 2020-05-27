@@ -1,10 +1,12 @@
 package mekanism.api.recipes.inputs.chemical;
 
+import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils.ChemicalToStackCreator;
 import mekanism.api.chemical.ChemicalUtils.StackToStackCreator;
+import mekanism.api.chemical.IEmptyStackProvider;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -19,7 +21,7 @@ import mekanism.api.chemical.slurry.SlurryStack;
  */
 @SuppressWarnings("Convert2Diamond")
 //The types cannot properly be inferred
-class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
+class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IEmptyStackProvider<CHEMICAL, STACK> {
 
     public static final ChemicalIngredientInfo<Gas, GasStack> GAS = new ChemicalIngredientInfo<Gas, GasStack>(GasStack.EMPTY, GasStack::new, GasStack::new, JsonConstants.GAS);
     public static final ChemicalIngredientInfo<InfuseType, InfusionStack> INFUSION = new ChemicalIngredientInfo<InfuseType, InfusionStack>(InfusionStack.EMPTY, InfusionStack::new, InfusionStack::new, JsonConstants.INFUSE_TYPE);
@@ -43,6 +45,8 @@ class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK extends 
         return serializationKey;
     }
 
+    @Nonnull
+    @Override
     public STACK getEmptyStack() {
         return emptyStack;
     }

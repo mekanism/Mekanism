@@ -1,26 +1,20 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
+import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.ISpecialGear;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -38,7 +32,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
+public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear, IGasItem {
 
     protected ItemGasArmor(IArmorMaterial material, EquipmentSlotType slot, Properties properties) {
         super(material, slot, properties.rarity(Rarity.RARE).setNoRepair().maxStackSize(1));
@@ -82,23 +76,6 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
     @OnlyIn(Dist.CLIENT)
     public CustomArmor getGearModel() {
         return ScubaTankArmor.SCUBA_TANK;
-    }
-
-    @Nonnull
-    public GasStack useGas(ItemStack stack, long amount) {
-        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-        if (capability.isPresent()) {
-            IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
-                if (gasTank != null) {
-                    //Should always reach here
-                    return gasTank.extract(amount, Action.EXECUTE, AutomationType.MANUAL);
-                }
-            }
-            return gasHandlerItem.extractGas(amount, Action.EXECUTE);
-        }
-        return GasStack.EMPTY;
     }
 
     @Override

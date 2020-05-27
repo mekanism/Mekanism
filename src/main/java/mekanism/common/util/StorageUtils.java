@@ -11,20 +11,16 @@ import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandlerWrapper;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.GasHandlerWrapper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
-import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.BasicPigmentTank;
-import mekanism.api.chemical.pigment.PigmentHandlerWrapper;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.BasicSlurryTank;
-import mekanism.api.chemical.slurry.SlurryHandlerWrapper;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -88,10 +84,11 @@ public class StorageUtils {
             Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
             if (capability.isPresent()) {
                 IGasHandler gasHandlerItem = capability.get();
-                int tanks = gasHandlerItem.getGasTankCount();
+                int tanks = gasHandlerItem.getTanks();
                 for (int tank = 0; tank < tanks; tank++) {
-                    tooltip.add(storedFunction.apply(gasHandlerItem.getGasInTank(tank)));
-                    tooltip.addAll(GasUtils.getAttributeTooltips(gasHandlerItem.getGasInTank(tank).getType()));
+                    GasStack gasInTank = gasHandlerItem.getChemicalInTank(tank);
+                    tooltip.add(storedFunction.apply(gasInTank));
+                    tooltip.addAll(GasUtils.getAttributeTooltips(gasInTank.getType()));
                 }
             } else if (showMissingCap) {
                 tooltip.add(emptyLangEntry.translate());
@@ -212,10 +209,10 @@ public class StorageUtils {
             return 1;
         }
         double bestRatio = 0;
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.GAS_HANDLER_CAPABILITY, GasHandlerWrapper::new);
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER_CAPABILITY, InfusionHandlerWrapper::new);
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.PIGMENT_HANDLER_CAPABILITY, PigmentHandlerWrapper::new);
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.SLURRY_HANDLER_CAPABILITY, SlurryHandlerWrapper::new);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.GAS_HANDLER_CAPABILITY);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER_CAPABILITY);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.PIGMENT_HANDLER_CAPABILITY);
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.SLURRY_HANDLER_CAPABILITY);
         Optional<IFluidHandlerItem> fluidCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
         if (fluidCapability.isPresent()) {
             IFluidHandlerItem fluidHandlerItem = fluidCapability.get();
@@ -235,11 +232,11 @@ public class StorageUtils {
         return 1 - bestRatio;
     }
 
-    private static <HANDLER, CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> double calculateRatio(ItemStack stack, double bestRatio,
-          Capability<HANDLER> capability, Function<HANDLER, IChemicalHandlerWrapper<CHEMICAL, STACK>> wrapperCreator) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
+    double calculateRatio(ItemStack stack, double bestRatio, Capability<HANDLER> capability) {
         Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
         if (cap.isPresent()) {
-            IChemicalHandlerWrapper<CHEMICAL, STACK> handler = wrapperCreator.apply(cap.get());
+            HANDLER handler = cap.get();
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 bestRatio = Math.max(bestRatio, getRatio(handler.getChemicalInTank(tank).getAmount(), handler.getTankCapacity(tank)));
             }

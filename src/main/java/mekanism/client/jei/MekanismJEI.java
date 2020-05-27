@@ -2,25 +2,20 @@ package mekanism.client.jei;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils.ChemicalToStackCreator;
-import mekanism.api.chemical.IChemicalHandlerWrapper;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasHandlerWrapper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentHandlerWrapper;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryHandlerWrapper;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
@@ -45,15 +40,11 @@ import mekanism.client.gui.machine.GuiPrecisionSawmill;
 import mekanism.client.gui.machine.GuiSolarNeutronActivator;
 import mekanism.client.gui.robit.GuiRobitCrafting;
 import mekanism.client.jei.chemical.ChemicalStackHelper;
+import mekanism.client.jei.chemical.ChemicalStackHelper.GasStackHelper;
+import mekanism.client.jei.chemical.ChemicalStackHelper.InfusionStackHelper;
+import mekanism.client.jei.chemical.ChemicalStackHelper.PigmentStackHelper;
+import mekanism.client.jei.chemical.ChemicalStackHelper.SlurryStackHelper;
 import mekanism.client.jei.chemical.ChemicalStackRenderer;
-import mekanism.client.jei.chemical.GasStackHelper;
-import mekanism.client.jei.chemical.GasStackRenderer;
-import mekanism.client.jei.chemical.InfusionStackHelper;
-import mekanism.client.jei.chemical.InfusionStackRenderer;
-import mekanism.client.jei.chemical.PigmentStackHelper;
-import mekanism.client.jei.chemical.PigmentStackRenderer;
-import mekanism.client.jei.chemical.SlurryStackHelper;
-import mekanism.client.jei.chemical.SlurryStackRenderer;
 import mekanism.client.jei.machine.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.jei.machine.ChemicalInfuserRecipeCategory;
 import mekanism.client.jei.machine.CombinerRecipeCategory;
@@ -110,10 +101,10 @@ public class MekanismJEI implements IModPlugin {
         if (!stack.hasTag()) {
             return ISubtypeInterpreter.NONE;
         }
-        String nbtRepresentation = addInterpretation("", getChemicalComponent(stack, Capabilities.GAS_HANDLER_CAPABILITY, GasHandlerWrapper::new));
-        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION_HANDLER_CAPABILITY, InfusionHandlerWrapper::new));
-        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT_HANDLER_CAPABILITY, PigmentHandlerWrapper::new));
-        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY_HANDLER_CAPABILITY, SlurryHandlerWrapper::new));
+        String nbtRepresentation = addInterpretation("", getChemicalComponent(stack, Capabilities.GAS_HANDLER_CAPABILITY));
+        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION_HANDLER_CAPABILITY));
+        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT_HANDLER_CAPABILITY));
+        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY_HANDLER_CAPABILITY));
         nbtRepresentation = addInterpretation(nbtRepresentation, getEnergyComponent(stack));
         return nbtRepresentation;
     };
@@ -125,11 +116,11 @@ public class MekanismJEI implements IModPlugin {
         return nbtRepresentation + ":" + component;
     }
 
-    private static <HANDLER, CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String getChemicalComponent(ItemStack stack,
-          Capability<HANDLER> capability, Function<HANDLER, IChemicalHandlerWrapper<CHEMICAL, STACK>> wrapperCreator) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
+    String getChemicalComponent(ItemStack stack, Capability<HANDLER> capability) {
         Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
         if (cap.isPresent()) {
-            IChemicalHandlerWrapper<CHEMICAL, STACK> handler = wrapperCreator.apply(cap.get());
+            HANDLER handler = cap.get();
             String component = "";
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 STACK chemical = handler.getChemicalInTank(tank);
@@ -191,20 +182,20 @@ public class MekanismJEI implements IModPlugin {
     @SuppressWarnings("RedundantTypeArguments")
     public void registerIngredients(IModIngredientRegistration registry) {
         //The types cannot properly be inferred at runtime
-        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.GAS_REGISTRY, TYPE_GAS, new GasStackHelper(), new GasStackRenderer(), GasStack::new);
-        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.INFUSE_TYPE_REGISTRY, TYPE_INFUSION, new InfusionStackHelper(), new InfusionStackRenderer(), InfusionStack::new);
-        this.<Pigment , PigmentStack > registerIngredientType(registry, MekanismAPI.PIGMENT_REGISTRY, TYPE_PIGMENT, new PigmentStackHelper(), new PigmentStackRenderer(), PigmentStack::new);
-        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.SLURRY_REGISTRY, TYPE_SLURRY, new SlurryStackHelper(), new SlurryStackRenderer(), SlurryStack::new);
+        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.GAS_REGISTRY, TYPE_GAS, new GasStackHelper(), GasStack::new);
+        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.INFUSE_TYPE_REGISTRY, TYPE_INFUSION, new InfusionStackHelper(), InfusionStack::new);
+        this.<Pigment , PigmentStack > registerIngredientType(registry, MekanismAPI.PIGMENT_REGISTRY, TYPE_PIGMENT, new PigmentStackHelper(), PigmentStack::new);
+        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.SLURRY_REGISTRY, TYPE_SLURRY, new SlurryStackHelper(), SlurryStack::new);
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void registerIngredientType(IModIngredientRegistration registry,
           IForgeRegistry<CHEMICAL> forgeRegistry, IIngredientType<STACK> ingredientType, ChemicalStackHelper<CHEMICAL, STACK> stackHelper,
-          ChemicalStackRenderer<CHEMICAL, STACK> stackRenderer, ChemicalToStackCreator<CHEMICAL, STACK> stackCreator) {
+          ChemicalToStackCreator<CHEMICAL, STACK> stackCreator) {
         List<STACK> types = forgeRegistry.getValues().stream()
               .filter(chemical -> !chemical.isEmptyType() && !chemical.isHidden())
               .map(chemical -> stackCreator.createStack(chemical, FluidAttributes.BUCKET_VOLUME))
               .collect(Collectors.toList());
-        registry.register(ingredientType, types, stackHelper, stackRenderer);
+        registry.register(ingredientType, types, stackHelper, new ChemicalStackRenderer<>());
     }
 
     @Override

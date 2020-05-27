@@ -136,7 +136,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         return new QuantumEntangloporterGasTankHolder(this);
     }
 

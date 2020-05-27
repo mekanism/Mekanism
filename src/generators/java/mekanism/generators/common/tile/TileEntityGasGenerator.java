@@ -3,12 +3,12 @@ package mekanism.generators.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
@@ -23,7 +23,7 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 
@@ -51,7 +51,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
         builder.addTank(fuelTank = new FuelTank(this), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
@@ -151,25 +151,25 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     //Implementation of gas tank that on no longer being empty updates the output rate of this generator
     private class FuelTank extends BasicGasTank {
 
-        protected FuelTank(@Nullable IMekanismGasHandler gasHandler) {
-            super(MAX_GAS, notExternal, alwaysTrueBi, gas -> gas.has(Fuel.class), gasHandler);
+        protected FuelTank(@Nullable IContentsListener listener) {
+            super(MAX_GAS, notExternal, alwaysTrueBi, gas -> gas.has(Fuel.class), listener);
         }
 
         @Override
         public void setStack(@Nonnull GasStack stack) {
             boolean wasEmpty = isEmpty();
             super.setStack(stack);
-            if (wasEmpty && !stack.isEmpty()) {
-                if (getType().has(Fuel.class)) {
-                    output = getType().get(Fuel.class).getEnergyPerTick().multiply(2);
-                }
-            }
+            recheckOutput(stack, wasEmpty);
         }
 
         @Override
-        protected void setStackUnchecked(@Nonnull GasStack stack) {
+        public void setStackUnchecked(@Nonnull GasStack stack) {
             boolean wasEmpty = isEmpty();
             super.setStackUnchecked(stack);
+            recheckOutput(stack, wasEmpty);
+        }
+
+        private void recheckOutput(@Nonnull GasStack stack, boolean wasEmpty) {
             if (wasEmpty && !stack.isEmpty()) {
                 if (getType().has(Fuel.class)) {
                     output = getType().get(Fuel.class).getEnergyPerTick().multiply(2);

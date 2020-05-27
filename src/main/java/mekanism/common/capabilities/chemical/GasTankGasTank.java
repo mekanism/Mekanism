@@ -6,10 +6,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.tier.GasTankTier;
 
@@ -17,16 +17,16 @@ import mekanism.common.tier.GasTankTier;
 @MethodsReturnNonnullByDefault
 public class GasTankGasTank extends BasicGasTank {
 
-    public static GasTankGasTank create(GasTankTier tier, @Nullable IMekanismGasHandler gasHandler) {
+    public static GasTankGasTank create(GasTankTier tier, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tier, "Gas tank tier cannot be null");
-        return new GasTankGasTank(tier, gasHandler);
+        return new GasTankGasTank(tier, listener);
     }
 
     private final boolean isCreative;
     private final LongSupplier rate;
 
-    private GasTankGasTank(GasTankTier tier, @Nullable IMekanismGasHandler gasHandler) {
-        super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, tier == GasTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, gasHandler);
+    private GasTankGasTank(GasTankTier tier, @Nullable IContentsListener listener) {
+        super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, tier == GasTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
         isCreative = tier == GasTankTier.CREATIVE;
         rate = tier::getOutput;
     }

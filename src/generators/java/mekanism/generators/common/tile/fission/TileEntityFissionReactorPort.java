@@ -58,7 +58,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         return side -> getMultiblock().getGasTanks(side);
     }
 
@@ -107,27 +107,24 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         return ret;
     }
 
-    @Nonnull
     @Override
-    public GasStack insertGas(int tank, @Nonnull GasStack stack, @Nullable Direction side, @Nonnull Action action) {
-        //TODO: Do this better so there is no magic numbers
+    public boolean insertGasCheck(int tank, @Nullable Direction side) {
         if (getMode() != FissionPortMode.INPUT) {
             //Don't allow inserting into the fuel tanks, if we are on output mode
-            return stack;
+            return false;
         }
-        return super.insertGas(tank, stack, side, action);
+        return super.insertGasCheck(tank, side);
     }
 
-    @Nonnull
     @Override
-    public GasStack extractGas(int tank, long amount, @Nullable Direction side, @Nonnull Action action) {
+    public boolean extractGasCheck(int tank, @Nullable Direction side) {
         //TODO: Do this better so there is no magic numbers
         FissionPortMode mode = getMode();
         if (mode == FissionPortMode.INPUT || (tank == 2 && mode == FissionPortMode.OUTPUT_COOLANT) || (tank == 1 && mode == FissionPortMode.OUTPUT_WASTE)) {
             // don't allow extraction from tanks based on mode
-            return GasStack.EMPTY;
+            return false;
         }
-        return super.extractGas(tank, amount, side, action);
+        return super.extractGasCheck(tank, side);
     }
 
     @Override

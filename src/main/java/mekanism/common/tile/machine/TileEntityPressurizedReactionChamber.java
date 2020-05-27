@@ -79,7 +79,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(inputGasTank = BasicGasTank.create(MAX_GAS, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi,
               gas -> containsRecipe(recipe -> recipe.getInputGas().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, this));

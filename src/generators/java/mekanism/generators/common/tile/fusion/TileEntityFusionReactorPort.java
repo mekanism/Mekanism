@@ -37,7 +37,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         //Note: We can just use a proxied holder as the input/output restrictions are done in the tanks themselves
         return side -> getMultiblock().getGasTanks(side);
     }

@@ -36,7 +36,7 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
-import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
@@ -144,7 +144,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
         builder.addTank(leftTank = BasicGasTank.output(MAX_GAS, this));
         builder.addTank(rightTank = BasicGasTank.output(MAX_GAS, this));

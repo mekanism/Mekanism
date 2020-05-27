@@ -7,23 +7,22 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.IChemicalHandlerWrapper;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasHandlerWrapper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.SubstanceType;
+import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class GasRecipeData extends ChemicalRecipeData<IGasHandler, Gas, GasStack, IGasTank> {
+public class GasRecipeData extends ChemicalRecipeData<Gas, GasStack, IGasTank, IGasHandler> {
 
     public GasRecipeData(ListNBT tanks) {
         super(tanks);
@@ -54,16 +53,11 @@ public class GasRecipeData extends ChemicalRecipeData<IGasHandler, Gas, GasStack
     }
 
     @Override
-    protected IChemicalHandlerWrapper<Gas, GasStack> wrap(IGasHandler handler) {
-        return new GasHandlerWrapper(handler);
-    }
-
-    @Override
     protected IGasHandler getOutputHandler(List<IGasTank> tanks) {
         return new IMekanismGasHandler() {
             @Nonnull
             @Override
-            public List<IGasTank> getGasTanks(@Nullable Direction side) {
+            public List<IGasTank> getChemicalTanks(@Nullable Direction side) {
                 return tanks;
             }
 
@@ -80,6 +74,11 @@ public class GasRecipeData extends ChemicalRecipeData<IGasHandler, Gas, GasStack
 
     @Override
     protected Predicate<Gas> cloneValidator(IGasHandler handler, int tank) {
-        return type -> handler.isGasValid(tank, new GasStack(type, 1));
+        return type -> handler.isValid(tank, new GasStack(type, 1));
+    }
+
+    @Override
+    protected IGasHandler getHandlerFromTile(TileEntityMekanism tile) {
+        return tile.getGasManager().getInternal();
     }
 }

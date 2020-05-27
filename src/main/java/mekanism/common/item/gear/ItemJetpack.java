@@ -98,8 +98,8 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
             Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
             if (capability.isPresent()) {
                 IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem.getGasTankCount() > 0) {
-                    stored = gasHandlerItem.getGasInTank(0);
+                if (gasHandlerItem.getTanks() > 0) {
+                    stored = gasHandlerItem.getChemicalInTank(0);
                 }
             }
             list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount()));

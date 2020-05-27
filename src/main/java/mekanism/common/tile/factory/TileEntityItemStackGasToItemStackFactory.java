@@ -8,7 +8,6 @@ import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
@@ -21,7 +20,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.inventory.slot.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -37,7 +36,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //Compressing, injecting, purifying
-public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IMekanismGasHandler, IHasDumpButton {
+public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IHasDumpButton {
 
     private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
@@ -67,7 +66,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Nonnull
     @Override
-    protected IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
+    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(gasTank = BasicGasTank.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes,
               gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));

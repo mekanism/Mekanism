@@ -8,7 +8,7 @@ import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.capabilities.chemical.MultiblockGasTank;
+import mekanism.common.capabilities.chemical.multiblock.MultiblockGasTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;

@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
@@ -37,7 +37,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemCanteen extends Item {
+public class ItemCanteen extends Item implements IGasItem {
 
     private static final long TRANSFER_RATE = 128;
 
@@ -75,9 +75,10 @@ public class ItemCanteen extends Item {
         }
     }
 
+    @Nonnull
     @Override
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
-        if (entityLiving instanceof PlayerEntity) {
+    public ItemStack onItemUseFinish(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull LivingEntity entityLiving) {
+        if (!world.isRemote && entityLiving instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entityLiving;
             long needed = Math.min(20 - player.getFoodStats().getFoodLevel(), getGas(stack).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             player.getFoodStats().addStats((int) needed, MekanismConfig.general.nutritionalPasteSaturation.get());
@@ -87,12 +88,13 @@ public class ItemCanteen extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(@Nonnull ItemStack stack) {
         return 32;
     }
 
+    @Nonnull
     @Override
-    public UseAction getUseAction(ItemStack stack) {
+    public UseAction getUseAction(@Nonnull ItemStack stack) {
         return UseAction.DRINK;
     }
 
@@ -102,33 +104,17 @@ public class ItemCanteen extends Item {
               (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.getGas()));
     }
 
-    @Nonnull
-    private GasStack useGas(ItemStack stack, long amount) {
-        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-        if (capability.isPresent()) {
-            IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
-                if (gasTank != null) {
-                    return gasTank.extract(amount, Action.EXECUTE, AutomationType.MANUAL);
-                }
-            }
-            return gasHandlerItem.extractGas(amount, Action.EXECUTE);
-        }
-        return GasStack.EMPTY;
-    }
-
     private GasStack getGas(ItemStack stack) {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
+                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getChemicalTank(0, null);
                 if (gasTank != null) {
                     return gasTank.getStack();
                 }
             }
-            return gasHandlerItem.getGasInTank(0);
+            return gasHandlerItem.getChemicalInTank(0);
         }
         return GasStack.EMPTY;
     }

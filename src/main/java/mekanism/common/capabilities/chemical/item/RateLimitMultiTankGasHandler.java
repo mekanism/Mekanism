@@ -13,9 +13,8 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.capabilities.chemical.item.RateLimitGasHandler.RateLimitGasTank;
+import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitGasTank;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -29,7 +28,7 @@ public class RateLimitMultiTankGasHandler extends ItemStackMekanismGasHandler {
         return new RateLimitMultiTankGasHandler(tankProviders);
     }
 
-    private List<IGasTank> tanks;
+    private final List<IGasTank> tanks;
 
     private RateLimitMultiTankGasHandler(List<Function<IMekanismGasHandler, IGasTank>> tankProviders) {
         tanks = new ArrayList<>(tankProviders.size());
