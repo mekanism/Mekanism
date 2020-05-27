@@ -34,7 +34,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public static Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
     public static final double CASING_HEAT_CAPACITY = 5;
-    public static final double CASING_INVERSE_INSULATION_COEFFICIENT = 10;
+    public static final double CASING_INVERSE_INSULATION_COEFFICIENT = 100_000;
     public static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
     public static final double BASE_BOIL_TEMP = TemperatureUnit.CELSIUS.zeroOffset + 100;
 
@@ -70,8 +70,8 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
         gasTanks = Collections.singletonList(steamTank);
         heatCapacitor = MultiblockHeatCapacitor.create(tile,
             CASING_HEAT_CAPACITY,
-            () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size(),
-            () -> CASING_INVERSE_INSULATION_COEFFICIENT * locations.size());
+            () -> CASING_INVERSE_CONDUCTION_COEFFICIENT,
+            () -> CASING_INVERSE_INSULATION_COEFFICIENT);
         heatCapacitors = Collections.singletonList(heatCapacitor);
     }
 
@@ -121,7 +121,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     @Override
     public HeatTransfer simulate() {
-        double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (CASING_INVERSE_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT) * locations.size();
+        double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (CASING_INVERSE_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT);
         double heatToTransfer = (heatCapacitor.getTemperature() - HeatAPI.AMBIENT_TEMP) / invConduction;
 
         heatCapacitor.handleHeat(-heatToTransfer * heatCapacitor.getHeatCapacity());
