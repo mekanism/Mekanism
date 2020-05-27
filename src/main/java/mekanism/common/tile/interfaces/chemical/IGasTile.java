@@ -6,10 +6,10 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.common.capabilities.chemical.dynamic.DynamicGasHandler;
+import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicGasHandler;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.resolver.manager.chemical.GasHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.GasHandlerManager;
 import net.minecraft.util.Direction;
 
 @MethodsReturnNonnullByDefault

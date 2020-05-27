@@ -6,10 +6,10 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.common.capabilities.chemical.dynamic.DynamicPigmentHandler;
+import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicPigmentHandler;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.resolver.manager.chemical.PigmentHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.PigmentHandlerManager;
 import net.minecraft.util.Direction;
 
 @MethodsReturnNonnullByDefault

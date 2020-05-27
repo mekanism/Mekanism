@@ -2,7 +2,6 @@ package mekanism.common.inventory.slot.chemical;
 
 import com.mojang.datafixers.util.Pair;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -20,7 +19,6 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -31,13 +29,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
 
     @Nullable
     public static IInfusionHandler getCapability(ItemStack stack) {
-        if (!stack.isEmpty()) {
-            Optional<IInfusionHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                return capability.get();
-            }
-        }
-        return null;
+        return getCapability(stack, Capabilities.INFUSION_HANDLER_CAPABILITY);
     }
 
     /**

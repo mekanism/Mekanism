@@ -1,6 +1,7 @@
 package mekanism.common.inventory.slot.chemical;
 
 import com.mojang.datafixers.util.Pair;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -22,11 +23,24 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends BasicInventorySlot {
+
+    @Nullable
+    protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
+    HANDLER getCapability(ItemStack stack, Capability<HANDLER> capability) {
+        if (!stack.isEmpty()) {
+            Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
+            if (cap.isPresent()) {
+                return cap.get();
+            }
+        }
+        return null;
+    }
 
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NonNull ItemStack> getFillOrConvertExtractPredicate(
           IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NonNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction,

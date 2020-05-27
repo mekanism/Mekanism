@@ -1,7 +1,6 @@
 package mekanism.common.inventory.slot.chemical;
 
 import com.mojang.datafixers.util.Pair;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -16,7 +15,6 @@ import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -27,13 +25,7 @@ public class PigmentInventorySlot extends ChemicalInventorySlot<Pigment, Pigment
 
     @Nullable
     public static IPigmentHandler getCapability(ItemStack stack) {
-        if (!stack.isEmpty()) {
-            Optional<IPigmentHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                return capability.get();
-            }
-        }
-        return null;
+        return getCapability(stack, Capabilities.PIGMENT_HANDLER_CAPABILITY);
     }
 
     //TODO: Implement creators as needed

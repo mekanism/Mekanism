@@ -34,13 +34,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
 
     @Nullable
     public static IGasHandler getCapability(ItemStack stack) {
-        if (!stack.isEmpty()) {
-            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                return capability.get();
-            }
-        }
-        return null;
+        return getCapability(stack, Capabilities.GAS_HANDLER_CAPABILITY);
     }
 
     /**

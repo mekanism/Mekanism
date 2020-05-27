@@ -6,10 +6,10 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.common.capabilities.chemical.dynamic.DynamicInfusionHandler;
+import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicInfusionHandler;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.resolver.manager.chemical.InfusionHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.InfusionHandlerManager;
 import net.minecraft.util.Direction;
 
 @MethodsReturnNonnullByDefault
