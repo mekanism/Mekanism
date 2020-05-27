@@ -121,8 +121,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 heatHandlers.add((ITileHeatHandler) tile);
             }
         }
-        deathZone = new AxisAlignedBB(minLocation.getX() + 1, minLocation.getY() + 1, minLocation.getZ() + 1,
-              maxLocation.getX(), maxLocation.getY(), maxLocation.getZ());
+        deathZone = new AxisAlignedBB(bounds.getMinPos().getX() + 1, bounds.getMinPos().getY() + 1, bounds.getMinPos().getZ() + 1,
+              bounds.getMaxPos().getX(), bounds.getMaxPos().getY(), bounds.getMaxPos().getZ());
     }
 
     public void addTemperatureFromEnergyInput(FloatingLong energyAdded) {

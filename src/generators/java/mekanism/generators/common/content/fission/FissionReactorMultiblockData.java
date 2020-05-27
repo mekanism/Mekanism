@@ -29,7 +29,6 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class FissionReactorMultiblockData extends MultiblockData {
@@ -188,8 +187,8 @@ public class FissionReactorMultiblockData extends MultiblockData {
                     radiation += wasteTank.getStored() * wasteTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
                 }
                 radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
-                Mekanism.radiationManager.radiate(new Coord4D(getCenter(), world), radiation);
-                Mekanism.radiationManager.createMeltdown(world, new Coord4D(minLocation, world), new Coord4D(maxLocation, world), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
+                Mekanism.radiationManager.radiate(new Coord4D(bounds.getCenter(), world), radiation);
+                Mekanism.radiationManager.createMeltdown(world, new Coord4D(bounds.getMinPos(), world), new Coord4D(bounds.getMaxPos(), world), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
             }
         }
     }
@@ -240,10 +239,7 @@ public class FissionReactorMultiblockData extends MultiblockData {
     }
 
     public boolean handlesSound(TileEntityFissionReactorCasing tile) {
-        BlockPos pos = tile.getPos();
-        return (pos.getX() == minLocation.getX() || pos.getX() == maxLocation.getX()) &&
-               (pos.getY() == minLocation.getY() || pos.getY() == maxLocation.getY()) &&
-               (pos.getZ() == minLocation.getZ() || pos.getZ() == maxLocation.getZ());
+        return bounds.isOnCorner(tile.getPos());
 
     }
 
@@ -269,20 +265,11 @@ public class FissionReactorMultiblockData extends MultiblockData {
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0) {
                 double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();
-                Mekanism.radiationManager.radiate(new Coord4D(getCenter(), world), leftoverWaste * radioactivity);
+                Mekanism.radiationManager.radiate(new Coord4D(bounds.getCenter(), world), leftoverWaste * radioactivity);
             }
         }
         // update previous burn
         lastBurnRate = toBurn;
-    }
-
-    public BlockPos getCenter() {
-        if (minLocation == null || maxLocation == null) {
-            return null;
-        }
-        return new BlockPos((minLocation.getX() + maxLocation.getX()) / 2,
-              (minLocation.getY() + maxLocation.getY()) / 2,
-              (minLocation.getZ() + maxLocation.getZ()) / 2);
     }
 
     @Override

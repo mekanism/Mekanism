@@ -21,10 +21,9 @@ public class Structure {
     public static final Structure INVALID = new Structure();
 
     private final Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
-    private final Map<Axis, TreeMap<Integer, VoxelPlane>> planeMap = new Object2ObjectOpenHashMap<>();
 
-    private int minX, minY, minZ;
-    private int maxX, maxY, maxZ;
+    private final Map<Axis, TreeMap<Integer, VoxelPlane>> minorPlaneMap = new Object2ObjectOpenHashMap<>();
+    private final Map<Axis, TreeMap<Integer, VoxelPlane>> planeMap = new Object2ObjectOpenHashMap<>();
 
     private boolean valid;
 
@@ -44,7 +43,7 @@ public class Structure {
     private void init(IMultiblockBase node) {
         nodes.put(node.getTilePos(), node);
         for (Axis axis : Axis.AXES) {
-            getAxisMap(axis).put(axis.getCoord(node.getTilePos()), new VoxelPlane(axis, node.getTilePos()));
+            getMinorAxisMap(axis).put(axis.getCoord(node.getTilePos()), new VoxelPlane(axis, node.getTilePos(), node instanceof IMultiblock));
         }
         if (node instanceof IMultiblock) {
             controller = (IMultiblock<?>) node;
@@ -69,6 +68,10 @@ public class Structure {
 
     public IMultiblockBase getTile(BlockPos pos) {
         return nodes.get(pos);
+    }
+
+    public TreeMap<Integer, VoxelPlane> getMinorAxisMap(Axis axis) {
+        return minorPlaneMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
     }
 
     public TreeMap<Integer, VoxelPlane> getAxisMap(Axis axis) {
@@ -102,9 +105,28 @@ public class Structure {
             }
             s.nodes.forEach((key, value) -> {
                 nodes.put(key, value);
-                System.out.println("Setting " + getManager());
                 value.setStructure(getManager(), this);
             });
+            for (Axis axis : s.minorPlaneMap.keySet()) {
+                Map<Integer, VoxelPlane> minorMap = getMinorAxisMap(axis);
+                Map<Integer, VoxelPlane> majorMap = getAxisMap(axis);
+                s.minorPlaneMap.get(axis).forEach((key, value) -> {
+                    if (majorMap.containsKey(key)) {
+                        majorMap.get(key).merge(value);
+                        return;
+                    }
+                    VoxelPlane p = minorMap.get(key);
+                    if (p != null) {
+                        p.merge(value);
+                    } else {
+                        minorMap.put(key, p = value);
+                    }
+                    if (p.hasController() && p.length() >= 2 && p.height() >= 2) {
+                        majorMap.put(key, p);
+                        minorMap.remove(key);
+                    }
+                });
+            }
             for (Axis axis : s.planeMap.keySet()) {
                 Map<Integer, VoxelPlane> map = getAxisMap(axis);
                 s.planeMap.get(axis).forEach((key, value) -> {
@@ -144,6 +166,12 @@ public class Structure {
     }
 
     private static void validate(IMultiblockBase node) {
+        if (node instanceof IMultiblock) {
+            IMultiblock<?> multiblock = (IMultiblock<?>) node;
+            multiblock.resetStructure(multiblock.getManager());
+        } else if (node instanceof IStructuralMultiblock) {
+            ((IStructuralMultiblock) node).resetStructure(null);
+        }
         FormationProtocol.explore(node.getTilePos(), pos -> {
             if (pos.equals(node.getTilePos()))
                 return true;
@@ -162,7 +190,9 @@ public class Structure {
                         }
                     } else if (node instanceof IStructuralMultiblock) {
                         // validate from the perspective of the IMultiblock
-                        validate(adj);
+                        if (!hasStructure((IStructuralMultiblock) node, (IMultiblock<?>) adj)) {
+                            validate(adj);
+                        }
                         return false;
                     } else if (adj instanceof IStructuralMultiblock) {
                         didMerge = mergeIfNecessary(node, adj, getManager(node));
@@ -176,6 +206,10 @@ public class Structure {
             }
             return false;
         });
+    }
+
+    private static boolean hasStructure(IMultiblockBase structural, IMultiblock<?> multiblock) {
+        return structural.getStructure(multiblock.getManager()) == multiblock.getStructure();
     }
 
     private static boolean mergeIfNecessary(IMultiblockBase node, IMultiblockBase adj, MultiblockManager<?> manager) {

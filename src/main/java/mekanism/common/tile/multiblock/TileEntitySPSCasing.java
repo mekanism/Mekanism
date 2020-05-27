@@ -8,6 +8,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.sps.SPSMultiblockData;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.particle.custom.SPSOrbitEffect;
 import mekanism.common.registries.MekanismBlocks;
@@ -71,8 +72,8 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
             updateTag.putDouble(NBTConstants.LAST_PROCESSED, getMultiblock().lastProcessed);
             if (isMaster) {
                 getMultiblock().coilData.write(updateTag);
-                updateTag.put(NBTConstants.MIN, NBTUtil.writeBlockPos(getMultiblock().minLocation));
-                updateTag.put(NBTConstants.MAX, NBTUtil.writeBlockPos(getMultiblock().maxLocation));
+                updateTag.put(NBTConstants.MIN, NBTUtil.writeBlockPos(getMultiblock().bounds.getMinPos()));
+                updateTag.put(NBTConstants.MAX, NBTUtil.writeBlockPos(getMultiblock().bounds.getMaxPos()));
                 updateTag.putString(NBTConstants.ENERGY_USAGE, getMultiblock().lastReceivedEnergy.toString());
             }
         }
@@ -87,8 +88,8 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
             getMultiblock().lastProcessed = tag.getDouble(NBTConstants.LAST_PROCESSED);
             if (isMaster) {
                 getMultiblock().coilData.read(tag);
-                getMultiblock().minLocation = NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MIN));
-                getMultiblock().maxLocation = NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MAX));
+                getMultiblock().bounds = new VoxelCuboid(NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MIN)),
+                                                         NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MAX)));
                 getMultiblock().lastReceivedEnergy = FloatingLong.parseFloatingLong(tag.getString(NBTConstants.ENERGY_USAGE));
             }
         }

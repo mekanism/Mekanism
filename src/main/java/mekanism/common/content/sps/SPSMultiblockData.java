@@ -136,7 +136,7 @@ public class SPSMultiblockData extends MultiblockData {
     }
 
     public boolean handlesSound(TileEntitySPSCasing tile) {
-        return tile.getPos().equals(minLocation.add(3, 0, 0)) || tile.getPos().equals(minLocation.add(3, 0, 7));
+        return tile.getPos().equals(bounds.getMinPos().add(3, 0, 0)) || tile.getPos().equals(bounds.getMaxPos().add(3, 0, 7));
     }
 
     public static class SyncableCoilData {

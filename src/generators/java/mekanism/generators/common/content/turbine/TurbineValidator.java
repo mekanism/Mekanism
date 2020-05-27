@@ -60,8 +60,8 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
         if (structure.length % 2 != 1 || structure.width % 2 != 1) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH);
         }
-        int centerX = structure.minLocation.getX() + (structure.length - 1) / 2;
-        int centerZ = structure.minLocation.getZ() + (structure.width - 1) / 2;
+        int centerX = structure.bounds.getMinPos().getX() + (structure.length - 1) / 2;
+        int centerZ = structure.bounds.getMinPos().getZ() + (structure.width - 1) / 2;
 
         BlockPos complex = null;
 
@@ -98,7 +98,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_COMPLEX);
         }
 
-        int rotors = complex.getY() - structure.minLocation.getY() + 1;
+        int rotors = complex.getY() - structure.bounds.getMinPos().getY() + 1;
         int innerRadius = (Math.min(structure.length, structure.width) - 3) / 2;
         if (innerRadius < rotors / 4) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_TOO_NARROW);
@@ -134,7 +134,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
         int blades = 0;
 
         // Starting from the complex, walk down and count the number of rotors/blades in the structure
-        for (int y = complex.getY() - 1; y > structure.minLocation.getY(); y--) {
+        for (int y = complex.getY() - 1; y > structure.bounds.getMinPos().getY(); y--) {
             TileEntityTurbineRotor rotor = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, new BlockPos(centerX, y, centerZ));
             if (rotor == null) {
                 // Not a contiguous set of rotors

@@ -24,7 +24,6 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
@@ -113,7 +112,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
 
     private void updateTemperature(World world) {
         if (!temperatureSet) {
-            biomeTemp = world.getBiomeManager().getBiome(minLocation).getTemperature(minLocation);
+            biomeTemp = world.getBiomeManager().getBiome(bounds.getMinPos()).getTemperature(bounds.getMinPos());
             temperatureSet = true;
         }
         heatCapacitor.handleHeat(MekanismConfig.general.evaporationSolarMultiplier.get() * getActiveSolars() * heatCapacitor.getHeatCapacity());
@@ -217,15 +216,15 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     }
 
     public boolean isSolarSpot(BlockPos pos) {
-        return pos.getY() == maxLocation.getY() && new VoxelCuboid(minLocation, maxLocation).isOnCorner(pos);
+        return pos.getY() == bounds.getMaxPos().getY() && bounds.isOnCorner(pos);
     }
 
     public void updateSolars(World world) {
         solars = new IEvaporationSolar[4];
-        addSolarPanel(MekanismUtils.getTileEntity(world, maxLocation), 0);
-        addSolarPanel(MekanismUtils.getTileEntity(world, maxLocation.add(-3, 0, 0)), 1);
-        addSolarPanel(MekanismUtils.getTileEntity(world, maxLocation.add(0, 0, -3)), 2);
-        addSolarPanel(MekanismUtils.getTileEntity(world, maxLocation.add(-3, 0, -3)), 3);
+        addSolarPanel(MekanismUtils.getTileEntity(world, bounds.getMaxPos()), 0);
+        addSolarPanel(MekanismUtils.getTileEntity(world, bounds.getMaxPos().add(-3, 0, 0)), 1);
+        addSolarPanel(MekanismUtils.getTileEntity(world, bounds.getMaxPos().add(0, 0, -3)), 2);
+        addSolarPanel(MekanismUtils.getTileEntity(world, bounds.getMaxPos().add(-3, 0, -3)), 3);
     }
 
     @Override

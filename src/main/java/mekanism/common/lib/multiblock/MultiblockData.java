@@ -62,7 +62,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     @Nullable//may be null if structure has not been fully sent
     public BlockPos renderLocation;
 
-    public BlockPos minLocation, maxLocation;
+    public VoxelCuboid bounds;
 
     @ContainerSync
     private boolean formed;
@@ -106,12 +106,11 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public boolean setShape(IShape shape) {
         if (shape instanceof VoxelCuboid) {
             VoxelCuboid cuboid = (VoxelCuboid) shape;
-            minLocation = cuboid.getMinPos();
-            maxLocation = cuboid.getMaxPos();
-            renderLocation = minLocation.offset(Direction.UP);
-            length = Math.abs(maxLocation.getX() - minLocation.getX()) + 1;
-            height = Math.abs(maxLocation.getY() - minLocation.getY()) + 1;
-            width = Math.abs(maxLocation.getZ() - minLocation.getZ()) + 1;
+            bounds = cuboid;
+            renderLocation = cuboid.getMinPos().offset(Direction.UP);
+            length = cuboid.length();
+            height = cuboid.height();
+            width = cuboid.width();
             setVolume(length * width * height);
             return length >= 3 && length <= FormationProtocol.MAX_SIZE && height >= 3 && height <= FormationProtocol.MAX_SIZE && width >= 3 && width <= FormationProtocol.MAX_SIZE;
         }

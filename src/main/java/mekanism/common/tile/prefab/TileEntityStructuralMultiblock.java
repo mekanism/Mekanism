@@ -6,7 +6,6 @@ import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
-import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
@@ -67,14 +66,11 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        for (Structure s : structures.values()) {
-            System.out.println(s.hashCode() + " " + s.size() + " " + (s.getManager() != null ? s.getManager().getName() : null));
-        }
         for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
             IMultiblock<?> master = entry.getValue().getController();
             if (master != null && getMultiblockData(entry.getKey()).isFormed()) {
                 // make sure this block is on the structure first
-                if (new VoxelCuboid(entry.getValue().getMultiblockData().minLocation, entry.getValue().getMultiblockData().maxLocation).isOnSide(getPos())) {
+                if (entry.getValue().getMultiblockData().bounds.getRelativeLocation(getPos()).isWall()) {
                     return master.onActivate(player, hand, stack);
                 }
             }
@@ -87,7 +83,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
         if (!getWorld().isRemote()) {
             for (Structure s : structures.values()) {
                 IMultiblock<?> master = s.getController();
-                if (master != null && !s.getMultiblockData().isFormed()) {
+                if (master != null && !getMultiblockData(s.getManager()).isFormed()) {
                     FormationResult result = s.runUpdate(this);
                     if (!result.isFormed() && result.getResultText() != null) {
                         player.sendMessage(result.getResultText());
