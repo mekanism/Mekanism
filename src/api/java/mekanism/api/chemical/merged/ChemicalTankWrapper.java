@@ -40,6 +40,11 @@ public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, S
     }
 
     @Override
+    public void setStackUnchecked(STACK stack) {
+        internal.setStackUnchecked(stack);
+    }
+
+    @Override
     public STACK insert(STACK stack, Action action, AutomationType automationType) {
         //Only allow inserting if we pass the check
         return insertCheck.getAsBoolean() ? internal.insert(stack, action, automationType) : stack;

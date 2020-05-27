@@ -1,9 +1,10 @@
-package mekanism.common.inventory.container.sync;
+package mekanism.common.inventory.container.sync.chemical;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.slurry.IEmptySlurryProvider;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -14,7 +15,7 @@ import mekanism.common.network.container.property.chemical.SlurryStackPropertyDa
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling slurry stacks
  */
-public class SyncableSlurryStack extends SyncableChemicalStack<Slurry, SlurryStack> {
+public class SyncableSlurryStack extends SyncableChemicalStack<Slurry, SlurryStack> implements IEmptySlurryProvider {
 
     public static SyncableSlurryStack create(ISlurryTank handler) {
         return new SyncableSlurryStack(handler::getStack, handler::setStack);
@@ -26,12 +27,6 @@ public class SyncableSlurryStack extends SyncableChemicalStack<Slurry, SlurrySta
 
     private SyncableSlurryStack(Supplier<@NonNull SlurryStack> getter, Consumer<@NonNull SlurryStack> setter) {
         super(getter, setter);
-    }
-
-    @Nonnull
-    @Override
-    protected SlurryStack getEmptyStack() {
-        return SlurryStack.EMPTY;
     }
 
     @Nonnull

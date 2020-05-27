@@ -1,9 +1,10 @@
-package mekanism.common.inventory.container.sync;
+package mekanism.common.inventory.container.sync.chemical;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.pigment.IEmptyPigmentProvider;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -14,7 +15,7 @@ import mekanism.common.network.container.property.PropertyData;
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling pigment stacks
  */
-public class SyncablePigmentStack extends SyncableChemicalStack<Pigment, PigmentStack> {
+public class SyncablePigmentStack extends SyncableChemicalStack<Pigment, PigmentStack> implements IEmptyPigmentProvider {
 
     public static SyncablePigmentStack create(IPigmentTank handler) {
         return new SyncablePigmentStack(handler::getStack, handler::setStack);
@@ -26,12 +27,6 @@ public class SyncablePigmentStack extends SyncableChemicalStack<Pigment, Pigment
 
     private SyncablePigmentStack(Supplier<@NonNull PigmentStack> getter, Consumer<@NonNull PigmentStack> setter) {
         super(getter, setter);
-    }
-
-    @Nonnull
-    @Override
-    protected PigmentStack getEmptyStack() {
-        return PigmentStack.EMPTY;
     }
 
     @Nonnull

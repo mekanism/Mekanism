@@ -70,7 +70,8 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
         return Long.MAX_VALUE;
     }
 
-    protected void setStackUnchecked(STACK stack) {
+    @Override
+    public void setStackUnchecked(STACK stack) {
         setStack(stack, false);
     }
 

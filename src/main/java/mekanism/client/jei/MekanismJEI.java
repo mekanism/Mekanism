@@ -40,15 +40,11 @@ import mekanism.client.gui.machine.GuiPrecisionSawmill;
 import mekanism.client.gui.machine.GuiSolarNeutronActivator;
 import mekanism.client.gui.robit.GuiRobitCrafting;
 import mekanism.client.jei.chemical.ChemicalStackHelper;
+import mekanism.client.jei.chemical.ChemicalStackHelper.GasStackHelper;
+import mekanism.client.jei.chemical.ChemicalStackHelper.InfusionStackHelper;
+import mekanism.client.jei.chemical.ChemicalStackHelper.PigmentStackHelper;
+import mekanism.client.jei.chemical.ChemicalStackHelper.SlurryStackHelper;
 import mekanism.client.jei.chemical.ChemicalStackRenderer;
-import mekanism.client.jei.chemical.GasStackHelper;
-import mekanism.client.jei.chemical.GasStackRenderer;
-import mekanism.client.jei.chemical.InfusionStackHelper;
-import mekanism.client.jei.chemical.InfusionStackRenderer;
-import mekanism.client.jei.chemical.PigmentStackHelper;
-import mekanism.client.jei.chemical.PigmentStackRenderer;
-import mekanism.client.jei.chemical.SlurryStackHelper;
-import mekanism.client.jei.chemical.SlurryStackRenderer;
 import mekanism.client.jei.machine.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.jei.machine.ChemicalInfuserRecipeCategory;
 import mekanism.client.jei.machine.CombinerRecipeCategory;
@@ -186,20 +182,20 @@ public class MekanismJEI implements IModPlugin {
     @SuppressWarnings("RedundantTypeArguments")
     public void registerIngredients(IModIngredientRegistration registry) {
         //The types cannot properly be inferred at runtime
-        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.GAS_REGISTRY, TYPE_GAS, new GasStackHelper(), new GasStackRenderer(), GasStack::new);
-        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.INFUSE_TYPE_REGISTRY, TYPE_INFUSION, new InfusionStackHelper(), new InfusionStackRenderer(), InfusionStack::new);
-        this.<Pigment , PigmentStack > registerIngredientType(registry, MekanismAPI.PIGMENT_REGISTRY, TYPE_PIGMENT, new PigmentStackHelper(), new PigmentStackRenderer(), PigmentStack::new);
-        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.SLURRY_REGISTRY, TYPE_SLURRY, new SlurryStackHelper(), new SlurryStackRenderer(), SlurryStack::new);
+        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.GAS_REGISTRY, TYPE_GAS, new GasStackHelper(), GasStack::new);
+        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.INFUSE_TYPE_REGISTRY, TYPE_INFUSION, new InfusionStackHelper(), InfusionStack::new);
+        this.<Pigment , PigmentStack > registerIngredientType(registry, MekanismAPI.PIGMENT_REGISTRY, TYPE_PIGMENT, new PigmentStackHelper(), PigmentStack::new);
+        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.SLURRY_REGISTRY, TYPE_SLURRY, new SlurryStackHelper(), SlurryStack::new);
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void registerIngredientType(IModIngredientRegistration registry,
           IForgeRegistry<CHEMICAL> forgeRegistry, IIngredientType<STACK> ingredientType, ChemicalStackHelper<CHEMICAL, STACK> stackHelper,
-          ChemicalStackRenderer<CHEMICAL, STACK> stackRenderer, ChemicalToStackCreator<CHEMICAL, STACK> stackCreator) {
+          ChemicalToStackCreator<CHEMICAL, STACK> stackCreator) {
         List<STACK> types = forgeRegistry.getValues().stream()
               .filter(chemical -> !chemical.isEmptyType() && !chemical.isHidden())
               .map(chemical -> stackCreator.createStack(chemical, FluidAttributes.BUCKET_VOLUME))
               .collect(Collectors.toList());
-        registry.register(ingredientType, types, stackHelper, stackRenderer);
+        registry.register(ingredientType, types, stackHelper, new ChemicalStackRenderer<>());
     }
 
     @Override

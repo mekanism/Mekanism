@@ -2,7 +2,7 @@ package mekanism.common.capabilities.chemical.item;
 
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.slurry.IMekanismSlurryHandler;
+import mekanism.api.chemical.slurry.ISlurryHandler.IMekanismSlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;

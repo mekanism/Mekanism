@@ -1,13 +1,17 @@
 package mekanism.api.chemical.infuse;
 
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IMekanismChemicalHandler;
+import mekanism.api.chemical.ISidedChemicalHandler;
 
-public interface IInfusionHandler extends IChemicalHandler<InfuseType, InfusionStack> {
+public interface IInfusionHandler extends IChemicalHandler<InfuseType, InfusionStack>, IEmptyInfusionProvider {
 
-    @Nonnull
-    @Override
-    default InfusionStack getEmptyStack() {
-        return InfusionStack.EMPTY;
+    /**
+     * A sided variant of {@link IInfusionHandler}
+     */
+    interface ISidedInfusionHandler extends ISidedChemicalHandler<InfuseType, InfusionStack>, IInfusionHandler {
+    }
+
+    interface IMekanismInfusionHandler extends IMekanismChemicalHandler<InfuseType, InfusionStack, IInfusionTank>, ISidedInfusionHandler {
     }
 }

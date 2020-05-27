@@ -2,8 +2,8 @@ package mekanism.common.capabilities.chemical.item;
 
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.infuse.IInfusionHandler.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.capabilities.Capabilities;

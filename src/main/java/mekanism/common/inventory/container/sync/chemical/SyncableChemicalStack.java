@@ -1,4 +1,4 @@
-package mekanism.common.inventory.container.sync;
+package mekanism.common.inventory.container.sync.chemical;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -6,11 +6,14 @@ import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IEmptyStackProvider;
+import mekanism.common.inventory.container.sync.ISyncableData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling chemical stacks
  */
-public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ISyncableData {
+public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ISyncableData,
+      IEmptyStackProvider<CHEMICAL, STACK> {
 
     @Nonnull
     private ChemicalStack<CHEMICAL> lastKnownValue;
@@ -22,9 +25,6 @@ public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>,
         this.setter = setter;
         lastKnownValue = getEmptyStack();
     }
-
-    @Nonnull
-    protected abstract STACK getEmptyStack();
 
     @Nonnull
     protected abstract STACK createStack(STACK stored, long size);

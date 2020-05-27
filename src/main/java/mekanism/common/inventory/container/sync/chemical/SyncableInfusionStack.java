@@ -1,9 +1,10 @@
-package mekanism.common.inventory.container.sync;
+package mekanism.common.inventory.container.sync.chemical;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.infuse.IEmptyInfusionProvider;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -14,7 +15,7 @@ import mekanism.common.network.container.property.PropertyData;
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling infusion stacks
  */
-public class SyncableInfusionStack extends SyncableChemicalStack<InfuseType, InfusionStack> {
+public class SyncableInfusionStack extends SyncableChemicalStack<InfuseType, InfusionStack> implements IEmptyInfusionProvider {
 
     public static SyncableInfusionStack create(IInfusionTank handler) {
         return new SyncableInfusionStack(handler::getStack, handler::setStack);
@@ -26,12 +27,6 @@ public class SyncableInfusionStack extends SyncableChemicalStack<InfuseType, Inf
 
     private SyncableInfusionStack(Supplier<@NonNull InfusionStack> getter, Consumer<@NonNull InfusionStack> setter) {
         super(getter, setter);
-    }
-
-    @Nonnull
-    @Override
-    protected InfusionStack getEmptyStack() {
-        return InfusionStack.EMPTY;
     }
 
     @Nonnull

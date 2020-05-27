@@ -6,14 +6,7 @@ import mekanism.api.Action;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
-
-    /**
-     * Helper for default implementations to get the empty stack corresponding to the type of chemical this handler is for
-     *
-     * @return The empty stack.
-     */
-    STACK getEmptyStack();
+public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends IEmptyStackProvider<CHEMICAL, STACK> {
 
     /**
      * Returns the number of chemical storage units ("tanks") available

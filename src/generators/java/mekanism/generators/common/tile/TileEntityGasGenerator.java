@@ -159,17 +159,17 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         public void setStack(@Nonnull GasStack stack) {
             boolean wasEmpty = isEmpty();
             super.setStack(stack);
-            if (wasEmpty && !stack.isEmpty()) {
-                if (getType().has(Fuel.class)) {
-                    output = getType().get(Fuel.class).getEnergyPerTick().multiply(2);
-                }
-            }
+            recheckOutput(stack, wasEmpty);
         }
 
         @Override
-        protected void setStackUnchecked(@Nonnull GasStack stack) {
+        public void setStackUnchecked(@Nonnull GasStack stack) {
             boolean wasEmpty = isEmpty();
             super.setStackUnchecked(stack);
+            recheckOutput(stack, wasEmpty);
+        }
+
+        private void recheckOutput(@Nonnull GasStack stack, boolean wasEmpty) {
             if (wasEmpty && !stack.isEmpty()) {
                 if (getType().has(Fuel.class)) {
                     output = getType().get(Fuel.class).getEnergyPerTick().multiply(2);

@@ -12,14 +12,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends INBTSerializable<CompoundNBT>, IContentsListener {
-
-    /**
-     * Helper to get the empty stack for the {@link Chemical} type that this {@link IChemicalTank} stores.
-     *
-     * @return The empty stack instance.
-     */
-    STACK getEmptyStack();
+public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends IEmptyStackProvider<CHEMICAL, STACK>,
+      INBTSerializable<CompoundNBT>, IContentsListener {
 
     /**
      * Helper for creating a stack of the type this {@link IChemicalTank} is storing.
@@ -56,6 +50,17 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
     void setStack(STACK stack);
+
+    /**
+     * Overrides the stack in this {@link IChemicalTank}.
+     *
+     * @param stack {@link ChemicalStack} to set this tank's contents to (may be empty).
+     *
+     * @apiNote Unsafe version of {@link #setStack(ChemicalStack)}. This method is exposed for implementation and code deduplication reasons only and should
+     * <strong>NOT</strong> be directly called outside of your own {@link IChemicalTank} where you already know the given {@link ChemicalStack} is valid.
+     * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
+     */
+    void setStackUnchecked(STACK stack);
 
     /**
      * <p>

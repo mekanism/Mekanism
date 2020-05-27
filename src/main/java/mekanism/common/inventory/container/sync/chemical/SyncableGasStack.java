@@ -1,4 +1,4 @@
-package mekanism.common.inventory.container.sync;
+package mekanism.common.inventory.container.sync.chemical;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IEmptyGasProvider;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.common.network.container.property.chemical.GasStackPropertyData;
 import mekanism.common.network.container.property.LongPropertyData;
@@ -14,7 +15,7 @@ import mekanism.common.network.container.property.PropertyData;
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling gas stacks
  */
-public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> {
+public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> implements IEmptyGasProvider {
 
     public static SyncableGasStack create(IGasTank handler) {
         return new SyncableGasStack(handler::getStack, handler::setStack);
@@ -26,12 +27,6 @@ public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> {
 
     private SyncableGasStack(Supplier<@NonNull GasStack> getter, Consumer<@NonNull GasStack> setter) {
         super(getter, setter);
-    }
-
-    @Nonnull
-    @Override
-    protected GasStack getEmptyStack() {
-        return GasStack.EMPTY;
     }
 
     @Nonnull

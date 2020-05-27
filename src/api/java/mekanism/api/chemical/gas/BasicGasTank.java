@@ -7,13 +7,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.inventory.AutomationType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants.NBT;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -131,17 +128,5 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
     protected BasicGasTank(long capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract, BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert,
           Predicate<@NonNull Gas> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
-    }
-
-    @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        if (nbt.contains(NBTConstants.STORED, NBT.TAG_COMPOUND)) {
-            setStackUnchecked(GasStack.readFromNBT(nbt.getCompound(NBTConstants.STORED)));
-        }
-    }
-
-    @Override
-    public GasStack getEmptyStack() {
-        return GasStack.EMPTY;
     }
 }

@@ -7,13 +7,24 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IEmptyStackProvider;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IEmptyGasProvider;
+import mekanism.api.chemical.infuse.IEmptyInfusionProvider;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.IEmptyPigmentProvider;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.IEmptySlurryProvider;
+import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.text.TextComponentUtil;
 import mezz.jei.api.ingredients.IIngredientHelper;
 
-public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IIngredientHelper<STACK> {
-
-    protected abstract STACK getEmptyStack();
+public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IIngredientHelper<STACK>,
+      IEmptyStackProvider<CHEMICAL, STACK> {
 
     protected abstract String getType();
 
@@ -82,5 +93,37 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
             toStringHelper.add("Amount", ingredient.getAmount());
         }
         return toStringHelper.toString();
+    }
+
+    public static class GasStackHelper extends ChemicalStackHelper<Gas, GasStack> implements IEmptyGasProvider {
+
+        @Override
+        protected String getType() {
+            return "Gas";
+        }
+    }
+
+    public static class InfusionStackHelper extends ChemicalStackHelper<InfuseType, InfusionStack> implements IEmptyInfusionProvider {
+
+        @Override
+        protected String getType() {
+            return "Infuse Type";
+        }
+    }
+
+    public static class PigmentStackHelper extends ChemicalStackHelper<Pigment, PigmentStack> implements IEmptyPigmentProvider {
+
+        @Override
+        protected String getType() {
+            return "Pigment";
+        }
+    }
+
+    public static class SlurryStackHelper extends ChemicalStackHelper<Slurry, SlurryStack> implements IEmptySlurryProvider {
+
+        @Override
+        protected String getType() {
+            return "Slurry";
+        }
     }
 }
