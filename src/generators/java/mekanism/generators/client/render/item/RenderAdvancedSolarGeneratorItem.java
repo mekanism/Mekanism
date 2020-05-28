@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderAdvancedSolarGeneratorItem extends MekanismItemStackRenderer {
 
-    private static ModelAdvancedSolarGenerator advancedSolarGenerator = new ModelAdvancedSolarGenerator();
+    private static final ModelAdvancedSolarGenerator advancedSolarGenerator = new ModelAdvancedSolarGenerator();
     public static ItemLayerWrapper model;
 
     @Override

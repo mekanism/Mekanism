@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderGasGeneratorItem extends MekanismItemStackRenderer {
 
-    private static ModelGasGenerator gasGenerator = new ModelGasGenerator();
+    private static final ModelGasGenerator gasGenerator = new ModelGasGenerator();
     public static ItemLayerWrapper model;
 
     @Override

@@ -31,7 +31,6 @@ import mekanism.generators.client.render.RenderIndustrialTurbine;
 import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindGenerator;
 import mekanism.generators.client.render.item.RenderAdvancedSolarGeneratorItem;
-import mekanism.generators.client.render.item.RenderBioGeneratorItem;
 import mekanism.generators.client.render.item.RenderGasGeneratorItem;
 import mekanism.generators.client.render.item.RenderHeatGeneratorItem;
 import mekanism.generators.client.render.item.RenderWindGeneratorItem;
@@ -109,7 +108,6 @@ public class GeneratorsClientRegistration {
     public static void onModelBake(ModelBakeEvent event) {
         Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         registerItemStackModel(modelRegistry, "heat_generator", model -> RenderHeatGeneratorItem.model = model);
-        registerItemStackModel(modelRegistry, "bio_generator", model -> RenderBioGeneratorItem.model = model);
         registerItemStackModel(modelRegistry, "wind_generator", model -> RenderWindGeneratorItem.model = model);
         registerItemStackModel(modelRegistry, "gas_burning_generator", model -> RenderGasGeneratorItem.model = model);
         registerItemStackModel(modelRegistry, "advanced_solar_generator", model -> RenderAdvancedSolarGeneratorItem.model = model);

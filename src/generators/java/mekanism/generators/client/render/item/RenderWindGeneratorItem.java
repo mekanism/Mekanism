@@ -16,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
 
-    private static ModelWindGenerator windGenerator = new ModelWindGenerator();
+    private static final ModelWindGenerator windGenerator = new ModelWindGenerator();
     private static int angle = 0;
     private static float lastTicksUpdated = 0;
     public static ItemLayerWrapper model;

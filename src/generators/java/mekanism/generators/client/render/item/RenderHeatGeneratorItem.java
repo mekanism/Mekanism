@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderHeatGeneratorItem extends MekanismItemStackRenderer {
 
-    private static ModelHeatGenerator heatGenerator = new ModelHeatGenerator();
+    private static final ModelHeatGenerator heatGenerator = new ModelHeatGenerator();
     public static ItemLayerWrapper model;
 
     @Override
