@@ -17,8 +17,7 @@ public class GeigerSound extends PlayerSound {
 
     public static GeigerSound create(@Nonnull PlayerEntity player, RadiationScale scale) {
         if (scale == RadiationScale.NONE) {
-            Mekanism.logger.error("Can't create a GeigerSound with a RadiationScale of NONE.");
-            return null;
+            throw new IllegalArgumentException("Can't create a GeigerSound with a RadiationScale of NONE.");
         }
         return new GeigerSound(player, scale);
     }
