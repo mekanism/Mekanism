@@ -140,6 +140,9 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements ICo
 
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        if (!isRemote() && player.isCreative() && getReactor() != null) {
+            getReactor().setPlasmaTemp(1_000_000_000);
+        }
         return ActionResultType.PASS;
     }
 }

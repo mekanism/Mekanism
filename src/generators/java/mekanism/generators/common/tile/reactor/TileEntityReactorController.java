@@ -62,7 +62,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     public IGasTank deuteriumTank;
     public IGasTank tritiumTank;
     public IGasTank fuelTank;
-    public double plasmaTemperature;
+    public double plasmaTemperature = HeatAPI.AMBIENT_TEMP;
 
     private AxisAlignedBB box;
     private double clientTemp = HeatAPI.AMBIENT_TEMP;
