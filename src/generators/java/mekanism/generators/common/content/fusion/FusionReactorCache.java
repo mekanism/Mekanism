@@ -8,14 +8,14 @@ import net.minecraft.nbt.CompoundNBT;
 
 public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockData> {
 
-    private double plasmaTemperature;
+    private double plasmaTemperature = -1;
     private int injectionRate;
     private boolean burning;
 
     @Override
     public void merge(MultiblockCache<FusionReactorMultiblockData> mergeCache, List<ItemStack> rejectedItems) {
         super.merge(mergeCache, rejectedItems);
-        plasmaTemperature += ((FusionReactorCache) mergeCache).plasmaTemperature;
+        plasmaTemperature = Math.max(plasmaTemperature, ((FusionReactorCache) mergeCache).plasmaTemperature);
         injectionRate = Math.max(injectionRate, ((FusionReactorCache) mergeCache).injectionRate);
         burning |= ((FusionReactorCache) mergeCache).burning;
     }
@@ -23,7 +23,9 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     @Override
     public void apply(FusionReactorMultiblockData data) {
         super.apply(data);
-        data.plasmaTemperature = plasmaTemperature;
+        if (plasmaTemperature >= 0) {
+            data.plasmaTemperature = plasmaTemperature;
+        }
         data.setInjectionRate(injectionRate);
         data.setBurning(burning);
         data.updateTemperatures();

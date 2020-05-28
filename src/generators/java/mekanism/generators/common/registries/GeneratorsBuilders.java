@@ -71,4 +71,28 @@ public class GeneratorsBuilders {
             return GeneratorsBlocks.FISSION_REACTOR_CASING.getBlock();
         }
     }
+
+    public static class FusionReactorBuilder extends StructureBuilder {
+
+        public FusionReactorBuilder() {
+            super(5, 5, 5);
+        }
+
+        @Override
+        protected void build(World world, BlockPos start) {
+            buildFrame(world, start);
+            buildWalls(world, start);
+            world.setBlockState(start.add(2, 4, 2), GeneratorsBlocks.FUSION_REACTOR_CONTROLLER.getBlock().getDefaultState());
+        }
+
+        @Override
+        protected Block getWallBlock(BlockPos pos) {
+            return GeneratorsBlocks.FUSION_REACTOR_FRAME.getBlock();
+        }
+
+        @Override
+        protected Block getCasing() {
+            return GeneratorsBlocks.FUSION_REACTOR_FRAME.getBlock();
+        }
+    }
 }
