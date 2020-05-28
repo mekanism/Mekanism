@@ -14,11 +14,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ILightReader;
+import net.minecraftforge.common.ToolType;
 
 public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockTile<TILE, TYPE> {
 
     public BlockTileGlass(TYPE type) {
-        super(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).notSolid());
+        super(type, Block.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 16F).notSolid().harvestTool(ToolType.PICKAXE));
     }
 
     @Override
