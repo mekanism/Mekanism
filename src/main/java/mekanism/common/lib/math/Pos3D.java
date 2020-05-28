@@ -97,14 +97,7 @@ public class Pos3D extends Vec3d {
     }
 
     public static AxisAlignedBB getAABB(Pos3D pos1, Pos3D pos2) {
-        return new AxisAlignedBB(
-              pos1.x,
-              pos1.y,
-              pos1.z,
-              pos2.x,
-              pos2.y,
-              pos2.z
-        );
+        return new AxisAlignedBB(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
     }
 
     /**
@@ -302,6 +295,13 @@ public class Pos3D extends Vec3d {
     public Pos3D rotate(float angle, Pos3D axis) {
         return translateMatrix(getRotationMatrix(angle, axis), this);
     }
+
+    public Pos3D transform(Quaternion quaternion) {
+        Quaternion q = quaternion.copy();
+        q.multiply(new Quaternion(x, y, z, 0.0F));
+        q.multiply(quaternion.copy().conjugate());
+        return new Pos3D(q.getX(), q.getY(), q.getZ());
+     }
 
     public double[] getRotationMatrix(float angle) {
         double[] matrix = new double[16];

@@ -29,12 +29,11 @@ import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoos
 import mekanism.common.distribution.target.EnergySaveTarget;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
+import mekanism.common.lib.effect.BoltEffect;
+import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
+import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.lib.radiation.capability.IRadiationEntity;
-import mekanism.common.particle.custom.BoltEffect;
-import mekanism.common.particle.custom.BoltEffect.BoltRenderInfo;
-import mekanism.common.particle.custom.BoltEffect.SpawnFunction;
-import mekanism.common.particle.custom.BoltEffect.SpawnFunction;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;

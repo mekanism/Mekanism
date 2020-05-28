@@ -4,7 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.common.base.MekFakePlayer;
-import mekanism.common.particle.custom.BoltEffect;
+import mekanism.common.lib.effect.BoltEffect;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;

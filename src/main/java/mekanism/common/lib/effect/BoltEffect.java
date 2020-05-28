@@ -1,4 +1,4 @@
-package mekanism.common.particle.custom;
+package mekanism.common.lib.effect;
 
 import java.util.ArrayList;
 import java.util.Arrays;

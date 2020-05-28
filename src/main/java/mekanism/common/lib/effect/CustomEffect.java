@@ -1,4 +1,4 @@
-package mekanism.common.particle.custom;
+package mekanism.common.lib.effect;
 
 import java.util.Random;
 import mekanism.common.lib.Color;

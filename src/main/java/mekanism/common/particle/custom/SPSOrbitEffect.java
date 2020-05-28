@@ -2,7 +2,9 @@ package mekanism.common.particle.custom;
 
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.lib.Color;
+import mekanism.common.lib.effect.CustomEffect;
 import mekanism.common.lib.math.Pos3D;
+import mekanism.common.lib.math.Quaternion;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -44,6 +46,6 @@ public class SPSOrbitEffect extends CustomEffect {
 
     @Override
     public Vec3d getPos(float partialTick) {
-        return center.add(new Pos3D(start).rotate((ticker + partialTick) * speed, axis));
+        return center.add(Quaternion.rotate(start, axis, (ticker + partialTick) * speed));
     }
 }

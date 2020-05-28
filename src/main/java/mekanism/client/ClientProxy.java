@@ -9,7 +9,7 @@ import mekanism.common.CommonProxy;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.particle.custom.BoltEffect;
+import mekanism.common.lib.effect.BoltEffect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
