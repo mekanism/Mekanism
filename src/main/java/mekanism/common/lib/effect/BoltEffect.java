@@ -26,8 +26,6 @@ public class BoltEffect {
 
     private int lifespan = 30;
 
-    private boolean repeat = false;
-
     private SpawnFunction spawnFunction = SpawnFunction.delay(60);
     private FadeFunction fadeFunction = FadeFunction.fade(0.5F);
 
@@ -67,11 +65,6 @@ public class BoltEffect {
         return this;
     }
 
-    public BoltEffect repeat() {
-        repeat = true;
-        return this;
-    }
-
     public int getLifespan() {
         return lifespan;
     }
@@ -86,10 +79,6 @@ public class BoltEffect {
 
     public Color getColor() {
         return renderInfo.color;
-    }
-
-    public boolean shouldRepeat() {
-        return repeat;
     }
 
     public List<BoltQuads> generate() {
@@ -248,6 +237,17 @@ public class BoltEffect {
 
         /** Allow for bolts to be spawned each update call without any delay. */
         SpawnFunction NO_DELAY = (rand) -> Pair.of(0F, 0F);
+        /** Will re-spawn a bolt each time one expires. */
+        SpawnFunction CONSECUTIVE = new SpawnFunction() {
+            @Override
+            public Pair<Float, Float> getSpawnDelayBounds(Random rand) {
+                return Pair.of(0F, 0F);
+            }
+            @Override
+            public boolean isConsecutive() {
+                return true;
+            }
+        };
 
         /** Spawn bolts with a specified constant delay. */
         static SpawnFunction delay(float delay) {
@@ -266,6 +266,10 @@ public class BoltEffect {
         default float getSpawnDelay(Random rand) {
             Pair<Float, Float> bounds = getSpawnDelayBounds(rand);
             return bounds.getLeft() + (bounds.getRight() - bounds.getLeft()) * rand.nextFloat();
+        }
+
+        default boolean isConsecutive() {
+            return false;
         }
     }
 
@@ -289,24 +293,28 @@ public class BoltEffect {
     public static class BoltRenderInfo {
 
         public static final BoltRenderInfo DEFAULT = new BoltRenderInfo();
-        public static final BoltRenderInfo ELECTRICITY = new BoltRenderInfo().color(Color.rgba(0.54F, 0.91F, 1F, 0.8F)).noise(0.2F, 0.3F)
-              .branching(0.1F, 0.6F).spreader(SegmentSpreader.memory(0.85F));
+        public static final BoltRenderInfo ELECTRICITY = electricity();
 
         /** How much variance is allowed in segment lengths (parallel to straight line). */
-        public float parallelNoise = 0.1F;
+        private float parallelNoise = 0.1F;
         /** How much variance is allowed perpendicular to the straight line vector. Scaled by distance and spread function. */
-        public float spreadFactor = 0.1F;
+        private float spreadFactor = 0.1F;
 
         /** The chance of creating an additional branch after a certain segment. */
-        public float branchInitiationFactor = 0.0F;
+        private float branchInitiationFactor = 0.0F;
         /** The chance of a branch continuing (post-initiation). */
-        public float branchContinuationFactor = 0.0F;
+        private float branchContinuationFactor = 0.0F;
 
-        public Color color = Color.rgba(0.45F, 0.45F, 0.5F, 0.8F);
+        private Color color = Color.rgba(0.45F, 0.45F, 0.5F, 0.8F);
 
-        public RandomFunction randomFunction = RandomFunction.GAUSSIAN;
-        public SpreadFunction spreadFunction = SpreadFunction.SINE;
-        public SegmentSpreader segmentSpreader = SegmentSpreader.NO_MEMORY;
+        private RandomFunction randomFunction = RandomFunction.GAUSSIAN;
+        private SpreadFunction spreadFunction = SpreadFunction.SINE;
+        private SegmentSpreader segmentSpreader = SegmentSpreader.NO_MEMORY;
+
+        public static BoltRenderInfo electricity() {
+            return new BoltRenderInfo().color(Color.rgba(0.54F, 0.91F, 1F, 0.8F)).noise(0.2F, 0.3F)
+                  .branching(0.1F, 0.6F).spreader(SegmentSpreader.memory(0.85F));
+        }
 
         public BoltRenderInfo noise(float parallelNoise, float spreadFactor) {
             this.parallelNoise = parallelNoise;

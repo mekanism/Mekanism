@@ -42,13 +42,12 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntity
     private static final BoltRenderInfo boltRenderInfo = new BoltRenderInfo().color(Color.rgba(0.45F, 0.45F, 0.5F, 1));
 
     private BoltRenderer bolt = new BoltRenderer();
-    private Supplier<BoltEffect> boltSupplier = () -> new BoltEffect(boltRenderInfo, from, to, 12)
+    private Supplier<BoltEffect> boltSupplier = () -> new BoltEffect(boltRenderInfo, from, to, 15)
           .count((int) Math.min(Math.ceil(tile.getProcessRate() / 8F), 20))
           .size(1)
           .lifespan(1)
-          .spawn(SpawnFunction.delay(1))
-          .fade(FadeFunction.NONE)
-          .repeat();
+          .spawn(SpawnFunction.CONSECUTIVE)
+          .fade(FadeFunction.NONE);
 
     public GuiAntiprotonicNucleosynthesizer(MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

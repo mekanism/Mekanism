@@ -11,9 +11,9 @@ import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.content.sps.SPSMultiblockData.CoilData;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.effect.BoltEffect;
-import mekanism.common.lib.effect.CustomEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
+import mekanism.common.lib.effect.CustomEffect;
 import mekanism.common.lib.math.Plane;
 import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
 import mekanism.common.particle.custom.SPSOrbitEffect;
@@ -104,7 +104,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
         int count = 1 + (data.prevLevel - 1) / 2;
         float size = 0.01F * data.prevLevel;
         return new BoltEffect(BoltRenderInfo.ELECTRICITY, start.subtract(pos.getX(), pos.getY(), pos.getZ()), center, 15)
-              .count(count).size(size).lifespan(12).spawn(SpawnFunction.delay(6));
+              .count(count).size(size).lifespan(8).spawn(SpawnFunction.delay(4));
     }
 
     @Override

@@ -23,7 +23,8 @@ public class BoltRenderer {
     private static final float REFRESH_TIME = 3F;
     /** We will keep track of an owner's render data for 100 ticks after there are no bolts remaining. */
     private static final double MAX_OWNER_TRACK_TIME = 100;
-    private float refreshTimestamp;
+
+    private Timestamp refreshTimestamp = new Timestamp();
 
     private final Random random = new Random();
     private final Minecraft minecraft = Minecraft.getInstance();
@@ -33,28 +34,24 @@ public class BoltRenderer {
     public void render(float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn) {
         IVertexBuilder buffer = bufferIn.getBuffer(RenderType.getLightning());
         Matrix4f matrix = matrixStackIn.getLast().getMatrix();
-        double time = minecraft.world.getGameTime() + partialTicks;
-
-        if (partialTicks < refreshTimestamp) {
-            partialTicks += 1;
-        }
-        boolean refresh = partialTicks - refreshTimestamp >= (1 / REFRESH_TIME);
+        Timestamp timestamp = new Timestamp(minecraft.world.getGameTime(), partialTicks);
+        boolean refresh = timestamp.isPassed(refreshTimestamp, (1 / REFRESH_TIME));
         if (refresh) {
-            refreshTimestamp = partialTicks % 1;
+            refreshTimestamp = timestamp;
         }
         for (Iterator<Map.Entry<Object, BoltOwnerData>> iter = boltOwners.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<Object, BoltOwnerData> entry = iter.next();
             BoltOwnerData data = entry.getValue();
             // tick our bolts based on the refresh rate, removing if they're now finished
             if (refresh) {
-                data.bolts.removeIf(BoltInstance::tick);
+                data.bolts.removeIf(bolt -> bolt.tick(timestamp));
             }
-            if (data.repeat && data.bolts.isEmpty() && data.lastBolt != null) {
-                data.addBolt(new BoltInstance(data.lastBolt), time);
+            if (data.bolts.isEmpty() && data.lastBolt != null && data.lastBolt.getSpawnFunction().isConsecutive()) {
+                data.addBolt(new BoltInstance(data.lastBolt, timestamp), timestamp);
             }
-            data.bolts.forEach(bolt -> bolt.render(matrix, buffer));
+            data.bolts.forEach(bolt -> bolt.render(matrix, buffer, timestamp));
 
-            if (data.bolts.isEmpty() && time - data.lastUpdateTimestamp >= MAX_OWNER_TRACK_TIME) {
+            if (data.bolts.isEmpty() && timestamp.isPassed(data.lastUpdateTimestamp, MAX_OWNER_TRACK_TIME)) {
                 iter.remove();
             }
         }
@@ -65,28 +62,26 @@ public class BoltRenderer {
             return;
         }
         BoltOwnerData data = boltOwners.computeIfAbsent(owner, o -> new BoltOwnerData());
-        data.repeat = newBoltData.shouldRepeat();
-        double time = minecraft.world.getGameTime() + partialTicks;
-        if (!data.repeat && time - data.lastBoltTimestamp >= data.lastBoltDelay) {
-            data.addBolt(new BoltInstance(newBoltData), time);
-        }
-        data.lastUpdateTimestamp = time;
         data.lastBolt = newBoltData;
+        Timestamp timestamp = new Timestamp(minecraft.world.getGameTime(), partialTicks);
+        if ((!data.lastBolt.getSpawnFunction().isConsecutive() || data.bolts.isEmpty()) && timestamp.isPassed(data.lastBoltTimestamp, data.lastBoltDelay)) {
+            data.addBolt(new BoltInstance(newBoltData, timestamp), timestamp);
+        }
+        data.lastUpdateTimestamp = timestamp;
     }
 
     public class BoltOwnerData {
 
         private final Set<BoltInstance> bolts = new ObjectOpenHashSet<>();
         private BoltEffect lastBolt;
-        private double lastBoltTimestamp;
-        private double lastUpdateTimestamp;
+        private Timestamp lastBoltTimestamp = new Timestamp();
+        private Timestamp lastUpdateTimestamp = new Timestamp();
         private double lastBoltDelay;
-        private boolean repeat;
 
-        private void addBolt(BoltInstance instance, double time) {
+        private void addBolt(BoltInstance instance, Timestamp timestamp) {
             bolts.add(instance);
             lastBoltDelay = instance.bolt.getSpawnFunction().getSpawnDelay(random);
-            lastBoltTimestamp = time;
+            lastBoltTimestamp = timestamp;
         }
     }
 
@@ -94,15 +89,16 @@ public class BoltRenderer {
 
         private final BoltEffect bolt;
         private final List<BoltQuads> renderQuads;
-        private int ticksExisted;
+        private Timestamp createdTimestamp;
 
-        public BoltInstance(BoltEffect bolt) {
+        public BoltInstance(BoltEffect bolt, Timestamp timestamp) {
             this.bolt = bolt;
             this.renderQuads = bolt.generate();
+            this.createdTimestamp = timestamp;
         }
 
-        public void render(Matrix4f matrix, IVertexBuilder buffer) {
-            float lifeScale = (float) ticksExisted / bolt.getLifespan();
+        public void render(Matrix4f matrix, IVertexBuilder buffer, Timestamp timestamp) {
+            float lifeScale = timestamp.subtract(createdTimestamp).value() / bolt.getLifespan();
             Pair<Integer, Integer> bounds = bolt.getFadeFunction().getRenderBounds(renderQuads.size(), lifeScale);
             for (int i = bounds.getLeft(); i < bounds.getRight(); i++) {
                 renderQuads.get(i).getVecs().forEach(v -> buffer.pos(matrix, (float) v.x, (float) v.y, (float) v.z)
@@ -111,8 +107,47 @@ public class BoltRenderer {
             }
         }
 
-        public boolean tick() {
-            return ticksExisted++ >= bolt.getLifespan();
+        public boolean tick(Timestamp timestamp) {
+            return timestamp.isPassed(createdTimestamp, bolt.getLifespan());
+        }
+    }
+
+    public class Timestamp {
+
+        private long ticks;
+        private float partial;
+
+        public Timestamp() {
+            this(0, 0);
+        }
+
+        public Timestamp(long ticks, float partial) {
+            this.ticks = ticks;
+            this.partial = partial;
+        }
+
+        public Timestamp subtract(Timestamp other) {
+            long newTicks = ticks - other.ticks;
+            float newPartial = partial - other.partial;
+            if (newPartial < 0) {
+                newPartial += 1;
+                newTicks -= 1;
+            }
+            return new Timestamp(newTicks, newPartial);
+        }
+
+        public float value() {
+            return ticks + partial;
+        }
+
+        public boolean isPassed(Timestamp prev, double duration) {
+            long ticksPassed = ticks - prev.ticks;
+            if (ticksPassed > duration)
+                return true;
+            duration -= ticksPassed;
+            if (duration >= 1)
+                return false;
+            return (partial - prev.partial) >= duration;
         }
     }
 }
