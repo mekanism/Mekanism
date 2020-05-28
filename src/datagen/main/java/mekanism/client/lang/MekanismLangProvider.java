@@ -437,7 +437,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SPS, "Supercritical Phase Shifter");
         add(MekanismLang.SPS_INVALID_DISCONNECTED_COIL, "Couldn't form, found a coil without a connection to an SPS Port.");
         add(MekanismLang.SPS_PORT_MODE, "Toggled SPS Port mode to: %s.");
-        add(MekanismLang.SPS_ENERGY_INPUT, "Energy Input: %s");
+        add(MekanismLang.SPS_ENERGY_INPUT, "Energy Input: %s/t");
         //Boiler
         add(MekanismLang.BOILER_INVALID_AIR_POCKETS, "Couldn't form, found disconnected interior air pockets.");
         add(MekanismLang.BOILER_INVALID_EXTRA_DISPERSER, "Couldn't form, found invalid Pressure Dispersers.");
