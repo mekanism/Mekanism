@@ -19,10 +19,10 @@ public class ModelIndustrialAlarm extends Model {
     private final RenderType RENDER_TYPE = MekanismRenderType.mekStandard(TEXTURE);
     private final RenderType RENDER_TYPE_ACTIVE = MekanismRenderType.mekStandard(TEXTURE_ACTIVE);
 
-    ModelRenderer base;
-    ModelRenderer bulb;
-    ModelRenderer light_box;
-    ModelRenderer aura;
+    private final ModelRenderer base;
+    private final ModelRenderer bulb;
+    private final ModelRenderer light_box;
+    private final ModelRenderer aura;
 
     public ModelIndustrialAlarm() {
         super(RenderType::getEntitySolid);
@@ -73,13 +73,15 @@ public class ModelIndustrialAlarm extends Model {
             setRotationAngle(aura, 0, 0, 0);
             setRotationAngle(bulb, 0, 0, 0);
         }
-        float test = 0.3F + (Math.abs(((rotation * 2) % 360) - 180F) / 180F) * 0.7F;
-        bulb.render(matrix, vertexBuilder, active ? MekanismRenderer.FULL_LIGHT : light, overlayLight, red, green, blue, test);
+        float bulbAlpha = 0.3F + (Math.abs(((rotation * 2) % 360) - 180F) / 180F) * 0.7F;
+        bulb.render(matrix, vertexBuilder, active ? MekanismRenderer.FULL_LIGHT : light, overlayLight, red, green, blue, bulbAlpha);
         light_box.render(matrix, vertexBuilder, active ? MekanismRenderer.FULL_LIGHT : light, overlayLight, red, green, blue, alpha);
-        aura.render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, test);
+        if (!renderBase) {
+            aura.render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, bulbAlpha);
+        }
     }
 
-    public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    private void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

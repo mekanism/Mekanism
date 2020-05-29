@@ -90,9 +90,7 @@ import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.block.RenderDigitalMinerItem;
-import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.item.block.RenderIndustrialAlarmItem;
 import mekanism.client.render.item.block.RenderSecurityDeskItem;
 import mekanism.client.render.item.block.RenderSeismicVibratorItem;
 import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
@@ -355,13 +353,6 @@ public class ClientRegistration {
         registerItemStackModel(modelRegistry, "solar_neutron_activator", model -> RenderSolarNeutronActivatorItem.model = model);
         registerItemStackModel(modelRegistry, "seismic_vibrator", model -> RenderSeismicVibratorItem.model = model);
         registerItemStackModel(modelRegistry, "security_desk", model -> RenderSecurityDeskItem.model = model);
-        registerItemStackModel(modelRegistry, "industrial_alarm", model -> RenderIndustrialAlarmItem.model = model);
-
-        registerItemStackModel(modelRegistry, "basic_energy_cube", model -> RenderEnergyCubeItem.model = model);
-        registerItemStackModel(modelRegistry, "advanced_energy_cube", model -> RenderEnergyCubeItem.model = model);
-        registerItemStackModel(modelRegistry, "elite_energy_cube", model -> RenderEnergyCubeItem.model = model);
-        registerItemStackModel(modelRegistry, "ultimate_energy_cube", model -> RenderEnergyCubeItem.model = model);
-        registerItemStackModel(modelRegistry, "creative_energy_cube", model -> RenderEnergyCubeItem.model = model);
 
         registerItemStackModel(modelRegistry, "basic_fluid_tank", model -> RenderFluidTankItem.model = model);
         registerItemStackModel(modelRegistry, "advanced_fluid_tank", model -> RenderFluidTankItem.model = model);
