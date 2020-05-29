@@ -19,8 +19,8 @@ import net.minecraft.item.ItemStack;
 
 public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
-    private static ModelEnergyCube energyCube = new ModelEnergyCube();
-    private static ModelEnergyCore core = new ModelEnergyCore();
+    private static final ModelEnergyCube energyCube = new ModelEnergyCube();
+    private static final ModelEnergyCore core = new ModelEnergyCore();
     public static ItemLayerWrapper model;
 
     @Override

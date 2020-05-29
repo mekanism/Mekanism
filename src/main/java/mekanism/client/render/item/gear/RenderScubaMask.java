@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderScubaMask extends MekanismItemStackRenderer {
 
-    private static ModelScubaMask scubaMask = new ModelScubaMask();
+    private static final ModelScubaMask scubaMask = new ModelScubaMask();
     public static ItemLayerWrapper model;
 
     @Override

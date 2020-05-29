@@ -1,10 +1,10 @@
 package mekanism.client;
 
+import com.google.common.collect.Table.Cell;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
-import com.google.common.collect.Table.Cell;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
@@ -89,14 +89,10 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemLayerWrapper;
-import mekanism.client.render.item.block.RenderChemicalCrystallizerItem;
-import mekanism.client.render.item.block.RenderChemicalDissolutionChamberItem;
 import mekanism.client.render.item.block.RenderDigitalMinerItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.block.RenderIndustrialAlarmItem;
-import mekanism.client.render.item.block.RenderQuantumEntangloporterItem;
-import mekanism.client.render.item.block.RenderResistiveHeaterItem;
 import mekanism.client.render.item.block.RenderSecurityDeskItem;
 import mekanism.client.render.item.block.RenderSeismicVibratorItem;
 import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
@@ -357,11 +353,7 @@ public class ClientRegistration {
         registerItemStackModel(modelRegistry, "flamethrower", model -> RenderFlameThrower.model = model);
         registerItemStackModel(modelRegistry, "digital_miner", model -> RenderDigitalMinerItem.model = model);
         registerItemStackModel(modelRegistry, "solar_neutron_activator", model -> RenderSolarNeutronActivatorItem.model = model);
-        registerItemStackModel(modelRegistry, "chemical_dissolution_chamber", model -> RenderChemicalDissolutionChamberItem.model = model);
-        registerItemStackModel(modelRegistry, "chemical_crystallizer", model -> RenderChemicalCrystallizerItem.model = model);
         registerItemStackModel(modelRegistry, "seismic_vibrator", model -> RenderSeismicVibratorItem.model = model);
-        registerItemStackModel(modelRegistry, "quantum_entangloporter", model -> RenderQuantumEntangloporterItem.model = model);
-        registerItemStackModel(modelRegistry, "resistive_heater", model -> RenderResistiveHeaterItem.model = model);
         registerItemStackModel(modelRegistry, "security_desk", model -> RenderSecurityDeskItem.model = model);
         registerItemStackModel(modelRegistry, "industrial_alarm", model -> RenderIndustrialAlarmItem.model = model);
 

@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderFreeRunners extends MekanismItemStackRenderer {
 
-    private static ModelFreeRunners freeRunners = new ModelFreeRunners();
+    private static final ModelFreeRunners freeRunners = new ModelFreeRunners();
     public static ItemLayerWrapper model;
 
     @Override

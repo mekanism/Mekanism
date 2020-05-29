@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderFlameThrower extends MekanismItemStackRenderer {
 
-    private static ModelFlamethrower flamethrower = new ModelFlamethrower();
+    private static final ModelFlamethrower flamethrower = new ModelFlamethrower();
     public static ItemLayerWrapper model;
 
     @Override

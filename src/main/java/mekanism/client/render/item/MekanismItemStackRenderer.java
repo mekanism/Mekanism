@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 // Maybe we can even clean up some of the things currently using TESRs instead of using json.
 // For example the normal solar panel block
 //TODO: Declare the transformations via json and that they are "built in renderers", instead of messing around with the ItemLayerWrapper stuff?
+@Deprecated
 public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRenderer {
 
     protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,

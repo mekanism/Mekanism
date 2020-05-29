@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderSecurityDeskItem extends MekanismItemStackRenderer {
 
-    private static ModelSecurityDesk securityDesk = new ModelSecurityDesk();
+    private static final ModelSecurityDesk securityDesk = new ModelSecurityDesk();
     public static ItemLayerWrapper model;
 
     @Override

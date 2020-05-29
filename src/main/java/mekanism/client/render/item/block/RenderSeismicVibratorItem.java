@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderSeismicVibratorItem extends MekanismItemStackRenderer {
 
-    private static ModelSeismicVibrator seismicVibrator = new ModelSeismicVibrator();
+    private static final ModelSeismicVibrator seismicVibrator = new ModelSeismicVibrator();
     public static ItemLayerWrapper model;
 
     @Override

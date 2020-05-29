@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderScubaTank extends MekanismItemStackRenderer {
 
-    private static ModelScubaTank scubaTank = new ModelScubaTank();
+    private static final ModelScubaTank scubaTank = new ModelScubaTank();
     public static ItemLayerWrapper model;
 
     @Override

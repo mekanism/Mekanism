@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderArmoredJetpack extends MekanismItemStackRenderer {
 
-    private static ModelArmoredJetpack armoredJetpack = new ModelArmoredJetpack();
+    private static final ModelArmoredJetpack armoredJetpack = new ModelArmoredJetpack();
     public static ItemLayerWrapper model;
 
     @Override

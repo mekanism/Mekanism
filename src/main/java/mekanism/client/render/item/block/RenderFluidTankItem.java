@@ -24,9 +24,9 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
 
     public static ItemLayerWrapper model;
 
-    private static ModelFluidTank modelFluidTank = new ModelFluidTank();
-    private static FluidRenderMap<Int2ObjectMap<Model3D>> cachedCenterFluids = new FluidRenderMap<>();
-    private static int stages = 1400;
+    private static final ModelFluidTank modelFluidTank = new ModelFluidTank();
+    private static final FluidRenderMap<Int2ObjectMap<Model3D>> cachedCenterFluids = new FluidRenderMap<>();
+    private static final int stages = 1400;
 
     public static void resetCachedModels() {
         cachedCenterFluids.clear();

@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderIndustrialAlarmItem extends MekanismItemStackRenderer {
 
-    private static ModelIndustrialAlarm industrialAlarm = new ModelIndustrialAlarm();
+    private static final ModelIndustrialAlarm industrialAlarm = new ModelIndustrialAlarm();
     public static ItemLayerWrapper model;
 
     @Override

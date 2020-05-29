@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
 
     private static final Vector3f guiVec = new Vector3f(-MekanismUtils.ONE_OVER_ROOT_TWO, 0, -MekanismUtils.ONE_OVER_ROOT_TWO);
-    private static ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
+    private static final ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
     public static ItemLayerWrapper model;
 
     @Override

@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderSolarNeutronActivatorItem extends MekanismItemStackRenderer {
 
-    private static ModelSolarNeutronActivator solarNeutronActivator = new ModelSolarNeutronActivator();
+    private static final ModelSolarNeutronActivator solarNeutronActivator = new ModelSolarNeutronActivator();
     public static ItemLayerWrapper model;
 
     @Override

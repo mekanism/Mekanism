@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderDigitalMinerItem extends MekanismItemStackRenderer {
 
-    private static ModelDigitalMiner digitalMiner = new ModelDigitalMiner();
+    private static final ModelDigitalMiner digitalMiner = new ModelDigitalMiner();
     public static ItemLayerWrapper model;
 
     @Override
