@@ -23,6 +23,7 @@ import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.model.data.IModelData;
 
 //From: https://github.com/Shadows-of-Fire/Singularities/blob/master/src/main/java/shadows/singularity/client/ItemLayerWrapper.java
+@Deprecated//TODO: Use JSON declarations instead
 public class ItemLayerWrapper implements IBakedModel {
 
     private final IBakedModel internal;
