@@ -89,11 +89,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemLayerWrapper;
-import mekanism.client.render.item.block.RenderDigitalMinerItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.item.block.RenderSecurityDeskItem;
-import mekanism.client.render.item.block.RenderSeismicVibratorItem;
-import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
 import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
@@ -349,10 +345,6 @@ public class ClientRegistration {
         registerItemStackModel(modelRegistry, "free_runners", model -> RenderFreeRunners.model = model);
         registerItemStackModel(modelRegistry, "atomic_disassembler", model -> RenderAtomicDisassembler.model = model);
         registerItemStackModel(modelRegistry, "flamethrower", model -> RenderFlameThrower.model = model);
-        registerItemStackModel(modelRegistry, "digital_miner", model -> RenderDigitalMinerItem.model = model);
-        registerItemStackModel(modelRegistry, "solar_neutron_activator", model -> RenderSolarNeutronActivatorItem.model = model);
-        registerItemStackModel(modelRegistry, "seismic_vibrator", model -> RenderSeismicVibratorItem.model = model);
-        registerItemStackModel(modelRegistry, "security_desk", model -> RenderSecurityDeskItem.model = model);
 
         registerItemStackModel(modelRegistry, "basic_fluid_tank", model -> RenderFluidTankItem.model = model);
         registerItemStackModel(modelRegistry, "advanced_fluid_tank", model -> RenderFluidTankItem.model = model);
@@ -361,6 +353,7 @@ public class ClientRegistration {
         registerItemStackModel(modelRegistry, "creative_fluid_tank", model -> RenderFluidTankItem.model = model);
     }
 
+    @Deprecated
     private static void registerItemStackModel(Map<ResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
         ModelResourceLocation resourceLocation = ClientRegistrationUtil.getInventoryMRL(Mekanism::rl, type);
         modelRegistry.put(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.get(resourceLocation))));

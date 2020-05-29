@@ -15,20 +15,22 @@ import net.minecraft.item.ItemStack;
 @Deprecated
 public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRenderer {
 
-    protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType);
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
+          TransformType transformType) {
+    }
 
-    protected abstract void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType);
+    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
+          TransformType transformType) {
+    }
 
     @Nonnull
     protected abstract TransformType getTransform(@Nonnull ItemStack stack);
 
-    protected boolean earlyExit() {
-        return false;
-    }
-
-    protected void renderWithTransform(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    @Override
+    public void render(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+        matrix.push();
+        matrix.translate(0.5, 0.5, 0.5);
+        matrix.rotate(Vector3f.YP.rotationDegrees(180));
         TransformType transformType = getTransform(stack);
         if (transformType == TransformType.GUI) {
             matrix.rotate(Vector3f.YP.rotationDegrees(180));
@@ -36,22 +38,12 @@ public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRende
 
         renderBlockSpecific(stack, matrix, renderer, light, overlayLight, transformType);
 
-        if (!earlyExit()) {
-            if (transformType == TransformType.GUI) {
-                matrix.rotate(Vector3f.YP.rotationDegrees(90));
-            } else {
-                matrix.rotate(Vector3f.YP.rotationDegrees(180));
-            }
-            renderItemSpecific(stack, matrix, renderer, light, overlayLight, transformType);
+        if (transformType == TransformType.GUI) {
+            matrix.rotate(Vector3f.YP.rotationDegrees(90));
+        } else {
+            matrix.rotate(Vector3f.YP.rotationDegrees(180));
         }
-    }
-
-    @Override
-    public void render(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        matrix.push();
-        matrix.translate(0.5, 0.5, 0.5);
-        matrix.rotate(Vector3f.YP.rotationDegrees(180));
-        renderWithTransform(stack, matrix, renderer, light, overlayLight);
+        renderItemSpecific(stack, matrix, renderer, light, overlayLight, transformType);
         matrix.pop();
     }
 }

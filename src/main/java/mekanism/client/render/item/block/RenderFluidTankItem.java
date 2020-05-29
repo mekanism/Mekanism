@@ -79,7 +79,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             model.minZ = 0.125 + .01;
 
             model.maxX = 0.875 - .01;
-            model.maxY = 0.0625 + ((float) stage / (float) stages) * 0.875 - .01;
+            model.maxY = 0.0625 + (stage / (float) stages) * 0.875 - .01;
             model.maxZ = 0.875 - .01;
         }
         if (cachedCenterFluids.containsKey(fluid)) {
@@ -90,11 +90,6 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             cachedCenterFluids.put(fluid, map);
         }
         return model;
-    }
-
-    @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
     }
 
     @Nonnull

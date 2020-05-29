@@ -1,3 +1,48 @@
 {
-  "parent": "mekanism:block/digital_miner"
+  "parent": "builtin/entity",
+  "textures": {
+    "particle": "mekanism:block/steel_casing"
+  },
+  "display": {
+    "gui": {
+      "rotation": [ 30, 225, 0 ],
+      "translation": [ 2.75, 0, 0],
+      "scale":[ 0.22, 0.22, 0.22 ]
+    },
+    "ground": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 2, 0],
+      "scale":[ 0.088, 0.088, 0.088 ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [ 75, 45, 0 ],
+      "translation": [ -2, 2.5, 0],
+      "scale": [ 0.132, 0.132, 0.132 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 0, 45, 0 ],
+      "translation": [ -2, 0, 0],
+      "scale": [ 0.1408, 0.1408, 0.1408 ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [ 75, 45, 0 ],
+      "translation": [ -2, 2.5, 0],
+      "scale": [ 0.132, 0.132, 0.132 ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ 0, 45, 0 ],
+      "translation": [ -2, 0, 0],
+      "scale": [ 0.1408, 0.1408, 0.1408 ]
+    },
+    "head": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 0, -7],
+      "scale":[ 0.352, 0.352, 0.352]
+    },
+    "fixed": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 3, 0],
+      "scale":[ 0.352, 0.352, 0.352 ]
+    }
+  }
 }
