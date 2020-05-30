@@ -18,7 +18,7 @@ import mekanism.client.MekanismClient;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.effect.BoltRenderer;
+import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;

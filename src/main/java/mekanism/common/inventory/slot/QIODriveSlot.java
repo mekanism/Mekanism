@@ -18,12 +18,12 @@ import net.minecraft.tileentity.TileEntity;
 public class QIODriveSlot extends BasicInventorySlot {
 
     private final IQIODriveHolder driveHolder;
-    private final int slot;
+    private final QIODriveKey key;
 
     public <TILE extends IMekanismInventory & IQIODriveHolder> QIODriveSlot(TILE inventory, int slot, int x, int y) {
         super(notExternal, notExternal, (stack) -> stack.getItem() instanceof IQIODriveItem, inventory, x, y);
-        this.driveHolder = inventory;
-        this.slot = slot;
+        key = new QIODriveKey(inventory, slot);
+        driveHolder = inventory;
     }
 
     @Override
@@ -60,19 +60,23 @@ public class QIODriveSlot extends BasicInventorySlot {
         return super.extractItem(amount, action, automationType);
     }
 
+    public QIODriveKey getKey() {
+        return key;
+    }
+
     private boolean isRemote() {
         return ((TileEntity) driveHolder).getWorld().isRemote();
     }
 
     private void addDrive(ItemStack stack) {
         if (driveHolder.getQIOFrequency() != null) {
-            driveHolder.getQIOFrequency().addDrive(new QIODriveKey(driveHolder, slot));
+            driveHolder.getQIOFrequency().addDrive(key);
         }
     }
 
     private void removeDrive() {
         if (driveHolder.getQIOFrequency() != null) {
-            driveHolder.getQIOFrequency().removeDrive(new QIODriveKey(driveHolder, slot), true);
+            driveHolder.getQIOFrequency().removeDrive(key, true);
         }
     }
 }

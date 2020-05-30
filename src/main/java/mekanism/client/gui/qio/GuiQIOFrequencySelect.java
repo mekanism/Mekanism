@@ -74,7 +74,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
                   }
                   updateButtons();
               }, DialogType.DANGER)));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 131, 119));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 131, 120));
         addButton(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
               () -> getFrequency() != null ? getFrequency().getColor() : null,
               () -> sendColorUpdate(0),

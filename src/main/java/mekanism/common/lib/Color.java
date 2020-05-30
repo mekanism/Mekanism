@@ -1,8 +1,12 @@
 package mekanism.common.lib;
 
+import com.google.common.base.Objects;
+
 public class Color {
 
-    public int r, g, b, a;
+    public static final Color WHITE = rgba(1F, 1F, 1F, 1F);
+
+    private int r, g, b, a;
 
     protected Color(int r, int g, int b, int a) {
         this.r = r;
@@ -14,6 +18,11 @@ public class Color {
     protected Color(double r, double g, double b, double a) {
         this((int) Math.round(r * 255D), (int) Math.round(g * 255D), (int) Math.round(b * 255D), (int) Math.round(a * 255D));
     }
+
+    public int r() { return r; }
+    public int g() { return g; }
+    public int b() { return b; }
+    public int a() { return a; }
 
     public float rf() { return r / 255F; }
     public float gf() { return g / 255F; }
@@ -130,6 +139,21 @@ public class Color {
 
     public static int packOpaque(int rgb) {
         return rgb | (0xFF << 24);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(this instanceof Color))
+            return false;
+        Color other = (Color) obj;
+        return r == other.r && g == other.g && b == other.b && a == other.a;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(r, g, b, a);
     }
 
     public interface ColorFunction {

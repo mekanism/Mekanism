@@ -77,8 +77,8 @@ public class ColorTemperature extends Color {
     }
 
     public ColorTemperature blendOnto(Color baseColor) {
-        double sR = (r & 0xFF) / 255D, sG = (g & 0xFF) / 255D, sB = (b & 0xFF) / 255D, sA = (a & 0xFF) / 255D;
-        double dR = (baseColor.r & 0xFF) / 255D, dG = (baseColor.g & 0xFF) / 255D, dB = (baseColor.b & 0xFF) / 255D, dA = (baseColor.a & 0xFF) / 255D;
+        double sR = rd(), sG = gd(), sB = bd(), sA = ad();
+        double dR = baseColor.rd(), dG = baseColor.gd(), dB = baseColor.bd(), dA = baseColor.ad();
 
         double rR = sR * sA + dR * (1 - sA);
         double rG = sG * sA + dG * (1 - sA);

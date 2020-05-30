@@ -123,7 +123,11 @@ public class Quaternion {
         return new Quaternion(x, y, z, w);
     }
 
+    public Pos3D rotate(Vec3d vec) {
+        return new Pos3D(vec).transform(this);
+    }
+
     public static Pos3D rotate(Vec3d vec, Vec3d axis, double angle) {
-        return new Pos3D(vec).transform(new Quaternion(axis, angle, true));
+        return new Quaternion(axis, angle, true).rotate(vec);
     }
 }

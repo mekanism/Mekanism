@@ -90,9 +90,7 @@ public class Structure {
 
     public <TILE extends TileEntity & IMultiblockBase> FormationResult runUpdate(TILE tile) {
         if (getController() != null && multiblockData == null) {
-            if (multiblockData == null) {
-                return getController().createFormationProtocol().doUpdate();
-            }
+            return getController().createFormationProtocol().doUpdate();
         }
         removeMultiblock(tile.getWorld());
         return FormationResult.FAIL;

@@ -78,6 +78,14 @@ public class QIODriveData {
         return typeCapacity;
     }
 
+    public long getTotalCount() {
+        return itemCount;
+    }
+
+    public int getTotalTypes() {
+        return itemMap.size();
+    }
+
     public static class QIODriveKey {
 
         private final IQIODriveHolder holder;

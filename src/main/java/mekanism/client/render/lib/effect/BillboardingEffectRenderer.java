@@ -1,4 +1,4 @@
-package mekanism.client.render.effect;
+package mekanism.client.render.lib.effect;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;

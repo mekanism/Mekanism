@@ -1,9 +1,5 @@
 package mekanism.common.content.qio;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,6 +9,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
@@ -194,6 +194,10 @@ public class QIOFrequency extends Frequency {
         return data != null ? data.count : 0;
     }
 
+    public QIODriveData getDriveData(QIODriveKey key) {
+        return driveMap.get(key);
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -253,7 +257,9 @@ public class QIOFrequency extends Frequency {
     @Override
     public void onRemove() {
         super.onRemove();
-        driveMap.keySet().forEach(key -> removeDrive(key, false));
+        // copy keys to avoid CME
+        Set<QIODriveKey> keys = new HashSet<>(driveMap.keySet());
+        keys.forEach(key -> removeDrive(key, false));
         driveMap.clear();
         playersViewingItems.forEach(player -> Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.kill(), player));
     }

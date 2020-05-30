@@ -33,7 +33,7 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
         for (int i = 0; i < displayInt; i++) {
             float level = (float) i / (float) (width - 2);
             Color color = colorFunction.getColor(level);
-            RenderSystem.color4f(color.r / 255F, color.g / 255F, color.b / 255F, color.a / 255F);
+            RenderSystem.color4f(color.rf(), color.gf(), color.bf(), color.af());
             if (i == 0) {
                 blit(x + 1, y + 1, 0, 0, 1, texHeight, texWidth, texHeight);
             } else if (i == displayInt - 1) {

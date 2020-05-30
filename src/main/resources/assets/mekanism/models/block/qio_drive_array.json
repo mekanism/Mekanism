@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanism:block/qio_drive_array/right",
+    "front": "mekanism:block/qio_drive_array/front",
+    "west": "mekanism:block/qio_drive_array/right",
+    "east": "mekanism:block/qio_drive_array/left",
+    "south": "mekanism:block/qio_drive_array/back",
+    "up": "mekanism:block/qio_drive_array/top",
+    "down": "mekanism:block/qio_drive_array/bottom"
+  }
+}

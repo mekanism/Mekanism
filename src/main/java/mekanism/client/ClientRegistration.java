@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 import com.google.common.collect.Table.Cell;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
@@ -80,6 +81,7 @@ import mekanism.client.gui.robit.GuiRobitInventory;
 import mekanism.client.gui.robit.GuiRobitMain;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
+import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
@@ -182,6 +184,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
 
+    private static Map<ResourceLocation, CustomModelRegistryObject> customModels = new Object2ObjectOpenHashMap<>();
+
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         //Register entity rendering handlers
@@ -253,6 +257,8 @@ public class ClientRegistration {
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : MekanismFluids.FLUIDS.getAllFluids()) {
             ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
         }
+
+        customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), (orig, evt) -> new DriveArrayBakedModel(orig));
     }
 
     @SubscribeEvent
@@ -376,6 +382,13 @@ public class ClientRegistration {
         registerItemStackModel(modelRegistry, "elite_fluid_tank", model -> RenderFluidTankItem.model = model);
         registerItemStackModel(modelRegistry, "ultimate_fluid_tank", model -> RenderFluidTankItem.model = model);
         registerItemStackModel(modelRegistry, "creative_fluid_tank", model -> RenderFluidTankItem.model = model);
+
+        modelRegistry.forEach((rl, model) -> {
+            CustomModelRegistryObject obj = customModels.get(new ResourceLocation(rl.getNamespace(), rl.getPath()));
+            if (obj != null) {
+                modelRegistry.put(rl, obj.createModel(modelRegistry.get(rl), event));
+            }
+        });
     }
 
     private static void registerItemStackModel(Map<ResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
@@ -476,5 +489,10 @@ public class ClientRegistration {
                 break;
             }
         }
+    }
+
+    private interface CustomModelRegistryObject {
+
+        IBakedModel createModel(IBakedModel original, ModelBakeEvent event);
     }
 }
