@@ -91,9 +91,6 @@ import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
-import mekanism.client.render.item.gear.RenderFreeRunners;
-import mekanism.client.render.item.gear.RenderScubaMask;
-import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
@@ -335,9 +332,6 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {
         Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
-        registerItemStackModel(modelRegistry, "scuba_mask", model -> RenderScubaMask.model = model);
-        registerItemStackModel(modelRegistry, "scuba_tank", model -> RenderScubaTank.model = model);
-        registerItemStackModel(modelRegistry, "free_runners", model -> RenderFreeRunners.model = model);
         registerItemStackModel(modelRegistry, "atomic_disassembler", model -> RenderAtomicDisassembler.model = model);
         registerItemStackModel(modelRegistry, "flamethrower", model -> RenderFlameThrower.model = model);
     }
