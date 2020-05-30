@@ -115,14 +115,13 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    public EnumColor getRenderColor() {
-        return null;
+    protected TransmitterModelData initModelData() {
+        return new TransmitterModelData.Diversion();
     }
 
-    @Nonnull
     @Override
-    protected TransmitterModelData.Diversion initModelData() {
-        return new TransmitterModelData.Diversion();
+    public EnumColor getRenderColor() {
+        return null;
     }
 
     @Override

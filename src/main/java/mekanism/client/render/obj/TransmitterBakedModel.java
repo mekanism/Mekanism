@@ -1,20 +1,20 @@
 package mekanism.client.render.obj;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.client.model.data.ModelProperties;
+import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.render.obj.TransmitterModelConfiguration.IconStatus;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
@@ -53,12 +53,12 @@ public class TransmitterBakedModel implements IBakedModel {
     private final ResourceLocation modelLocation;
     private final IBakedModel bakedVariant;
 
-    private final Int2ObjectMap<List<BakedQuad>> modelCache;
+    private final Map<QuickHash, List<BakedQuad>> modelCache;
 
     public TransmitterBakedModel(OBJModel internal, @Nullable OBJModel glass, IModelConfiguration owner, ModelBakery bakery,
           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
         //4^6 number of states, if we have a glass texture (support coloring), multiply by 2
-        this.modelCache = new Int2ObjectOpenHashMap<>(glass == null ? 4_096 : 8_192);
+        this.modelCache = new Object2ObjectOpenHashMap<>(glass == null ? 4_096 : 8_192);
         this.internal = internal;
         this.glass = glass;
         this.owner = owner;
@@ -84,42 +84,16 @@ public class TransmitterBakedModel implements IBakedModel {
         if (side != null) {
             return ImmutableList.of();
         }
-        if (extraData.hasProperty(ModelProperties.DOWN_CONNECTION) && extraData.hasProperty(ModelProperties.UP_CONNECTION) &&
-            extraData.hasProperty(ModelProperties.NORTH_CONNECTION) && extraData.hasProperty(ModelProperties.SOUTH_CONNECTION) &&
-            extraData.hasProperty(ModelProperties.WEST_CONNECTION) && extraData.hasProperty(ModelProperties.EAST_CONNECTION)) {
-            ConnectionType down = extraData.getData(ModelProperties.DOWN_CONNECTION);
-            ConnectionType up = extraData.getData(ModelProperties.UP_CONNECTION);
-            ConnectionType north = extraData.getData(ModelProperties.NORTH_CONNECTION);
-            ConnectionType south = extraData.getData(ModelProperties.SOUTH_CONNECTION);
-            ConnectionType west = extraData.getData(ModelProperties.WEST_CONNECTION);
-            ConnectionType east = extraData.getData(ModelProperties.EAST_CONNECTION);
-
+        if (extraData.hasProperty(TileEntitySidedPipe.TRANSMITTER_PROPERTY)) {
+            TransmitterModelData data = extraData.getData(TileEntitySidedPipe.TRANSMITTER_PROPERTY);
             RenderType layer = MinecraftForgeClient.getRenderLayer();
-            boolean hasColor = false;
-            if (extraData.hasProperty(ModelProperties.COLOR) && layer == RenderType.getTranslucent()) {
-                //Only try getting the color property for ones that will have a color
-                Boolean color = extraData.getData(ModelProperties.COLOR);
-                hasColor = color != null && color;
-            }
-
-            int hash = 1;
-            hash = hash * 31 + down.ordinal();
-            hash = hash * 31 + up.ordinal();
-            hash = hash * 31 + north.ordinal();
-            hash = hash * 31 + south.ordinal();
-            hash = hash * 31 + west.ordinal();
-            hash = hash * 31 + east.ordinal();
-            if (hasColor) {
-                hash = hash * 31 + 1;
-            }
+            boolean hasColor = data.getHasColor() && layer == RenderType.getTranslucent();
+            QuickHash hash = new QuickHash(data.getConnectionsMap(), hasColor);
             if (!modelCache.containsKey(hash)) {
                 List<String> visible = new ArrayList<>();
-                visible.add(Direction.DOWN.getName() + down.getName().toUpperCase());
-                visible.add(Direction.UP.getName() + up.getName().toUpperCase());
-                visible.add(Direction.NORTH.getName() + north.getName().toUpperCase());
-                visible.add(Direction.SOUTH.getName() + south.getName().toUpperCase());
-                visible.add(Direction.WEST.getName() + west.getName().toUpperCase());
-                visible.add(Direction.EAST.getName() + east.getName().toUpperCase());
+                for (Direction dir : EnumUtils.DIRECTIONS) {
+                    visible.add(dir.getName() + data.getConnectionType(dir).getName().toUpperCase());
+                }
                 List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData), hasColor).getQuads(state, side, rand, extraData);
                 modelCache.put(hash, result);
                 return result;
@@ -245,4 +219,25 @@ public class TransmitterBakedModel implements IBakedModel {
     public ItemCameraTransforms getItemCameraTransforms() {
         return bakedVariant.getItemCameraTransforms();
     }
-}
+
+    private class QuickHash {
+
+        private Object[] objs;
+
+        public QuickHash(Object... objs) {
+            this.objs = objs;
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(objs);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this)
+                return true;
+            return obj instanceof QuickHash && Arrays.deepEquals(objs, ((QuickHash) obj).objs);
+        }
+    }
+ }

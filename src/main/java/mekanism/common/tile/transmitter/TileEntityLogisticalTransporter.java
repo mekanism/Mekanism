@@ -295,15 +295,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     protected void updateModelData(TransmitterModelData modelData) {
         super.updateModelData(modelData);
-        if (modelData instanceof TransmitterModelData.Colorable) {
-            TransmitterModelData.Colorable colorable = (TransmitterModelData.Colorable) modelData;
-            colorable.setColor(getRenderColor() != null);
-        }
-    }
-
-    @Nonnull
-    @Override
-    protected TransmitterModelData initModelData() {
-        return new TransmitterModelData.Colorable();
+        modelData.setHasColor(getRenderColor() != null);
     }
 }

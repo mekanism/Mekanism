@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
@@ -48,12 +49,16 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
-import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntitySidedPipe extends CapabilityTileEntity implements IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
+
+    public static final ModelProperty<TransmitterModelData> TRANSMITTER_PROPERTY = new ModelProperty<>();
 
     private final Map<Direction, NonNullConsumer<LazyOptional<?>>> cachedListeners = new EnumMap<>(Direction.class);
     public byte currentAcceptorConnections = 0x00;
@@ -70,9 +75,6 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
     public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
                                                ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
     public TileEntity[] cachedAcceptors = new TileEntity[6];
-
-    @Nullable
-    private TransmitterModelData modelData;
 
     public TileEntitySidedPipe(TileEntityType<? extends TileEntitySidedPipe> type) {
         super(type);
@@ -581,22 +583,12 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
         return ActionResultType.SUCCESS;
     }
 
-    @Override
-    public void requestModelDataUpdate() {
-        //We set our model data to null so that we make sure an updated variant is called when getModelData is next called
-        modelData = null;
-        super.requestModelDataUpdate();
-    }
-
     @Nonnull
     @Override
-    public TransmitterModelData getModelData() {
-        if (modelData == null) {
-            modelData = initModelData();
-            //Update the model data with side/color specific information
-            updateModelData(modelData);
-        }
-        return modelData;
+    public IModelData getModelData() {
+        TransmitterModelData data = initModelData();
+        updateModelData(data);
+        return new ModelDataMap.Builder().withInitial(TRANSMITTER_PROPERTY, data).build();
     }
 
     protected void updateModelData(TransmitterModelData modelData) {

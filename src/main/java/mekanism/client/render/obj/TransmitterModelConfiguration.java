@@ -3,9 +3,10 @@ package mekanism.client.render.obj;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.client.model.data.ModelProperties;
+import com.google.common.base.Predicate;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.util.Direction;
@@ -15,11 +16,11 @@ import net.minecraftforge.client.model.data.IModelData;
 public class TransmitterModelConfiguration extends VisibleModelConfiguration {
 
     @Nonnull
-    private IModelData modelData;
+    private TransmitterModelData modelData;
 
     public TransmitterModelConfiguration(IModelConfiguration internal, List<String> visibleGroups, @Nonnull IModelData modelData) {
         super(internal, visibleGroups);
-        this.modelData = modelData;
+        this.modelData = modelData.getData(TileEntitySidedPipe.TRANSMITTER_PROPERTY);
     }
 
     @Nullable
@@ -66,38 +67,20 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
         if (modelData instanceof TransmitterModelData.Diversion) {
             return IconStatus.NO_SHOW;
         }
-        boolean hasDown = modelData.getData(ModelProperties.DOWN_CONNECTION) != ConnectionType.NONE;
-        boolean hasUp = modelData.getData(ModelProperties.UP_CONNECTION) != ConnectionType.NONE;
-        boolean hasNorth = modelData.getData(ModelProperties.NORTH_CONNECTION) != ConnectionType.NONE;
-        boolean hasSouth = modelData.getData(ModelProperties.SOUTH_CONNECTION) != ConnectionType.NONE;
-        boolean hasWest = modelData.getData(ModelProperties.WEST_CONNECTION) != ConnectionType.NONE;
-        boolean hasEast = modelData.getData(ModelProperties.EAST_CONNECTION) != ConnectionType.NONE;
-        boolean hasConnection = false;
-        if (side == Direction.DOWN) {
-            hasConnection = hasDown;
-        } else if (side == Direction.UP) {
-            hasConnection = hasUp;
-        } else if (side == Direction.NORTH) {
-            hasConnection = hasNorth;
-        } else if (side == Direction.SOUTH) {
-            hasConnection = hasSouth;
-        } else if (side == Direction.WEST) {
-            hasConnection = hasWest;
-        } else if (side == Direction.EAST) {
-            hasConnection = hasEast;
-        }
+        boolean hasConnection = modelData.getConnectionType(side) != ConnectionType.NONE;
+        Predicate<Direction> has = (dir) -> modelData.getConnectionType(dir) != ConnectionType.NONE;
         if (!hasConnection) {
             //If we don't have a connection coming out of this side
-            boolean hasUpDown = hasDown || hasUp;
-            boolean hasNorthSouth = hasNorth || hasSouth;
-            boolean hasEastWest = hasEast || hasWest;
+            boolean hasUpDown = has.apply(Direction.DOWN) || has.apply(Direction.UP);
+            boolean hasNorthSouth = has.apply(Direction.NORTH) || has.apply(Direction.SOUTH);
+            boolean hasEastWest = has.apply(Direction.EAST) || has.apply(Direction.WEST);
             switch (side) {
                 case DOWN:
                 case UP:
                     if (hasNorthSouth && !hasEastWest || !hasNorthSouth && hasEastWest) {
-                        if (hasNorth && hasSouth) {
+                        if (has.apply(Direction.NORTH) && has.apply(Direction.SOUTH)) {
                             return IconStatus.NO_ROTATION;
-                        } else if (hasEast && hasWest) {
+                        } else if (has.apply(Direction.EAST) && has.apply(Direction.WEST)) {
                             return IconStatus.ROTATE_270;
                         }
                     }
@@ -105,9 +88,9 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
                 case NORTH:
                 case SOUTH:
                     if (hasUpDown && !hasEastWest || !hasUpDown && hasEastWest) {
-                        if (hasUp && hasDown) {
+                        if (has.apply(Direction.UP) && has.apply(Direction.DOWN)) {
                             return IconStatus.NO_ROTATION;
-                        } else if (hasEast && hasWest) {
+                        } else if (has.apply(Direction.EAST) && has.apply(Direction.WEST)) {
                             return IconStatus.ROTATE_270;
                         }
                     }
@@ -115,9 +98,9 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
                 case WEST:
                 case EAST:
                     if (hasUpDown && !hasNorthSouth || !hasUpDown && hasNorthSouth) {
-                        if (hasUp && hasDown) {
+                        if (has.apply(Direction.UP) && has.apply(Direction.DOWN)) {
                             return IconStatus.NO_ROTATION;
-                        } else if (hasNorth && hasSouth) {
+                        } else if (has.apply(Direction.NORTH) && has.apply(Direction.SOUTH)) {
                             return IconStatus.ROTATE_270;
                         }
                     }
