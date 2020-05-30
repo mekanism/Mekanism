@@ -10,6 +10,14 @@ public class QuadUtils {
 
     private static final float eps = 1F / 0x100;
 
+    public static List<BakedQuad> bake(List<Quad> quads) {
+        return quads.stream().map(quad -> quad.bake()).collect(Collectors.toList());
+    }
+
+    public static List<Quad> mirror(List<Quad> quads) {
+        return quads.stream().map(quad -> quad.mirror()).collect(Collectors.toList());
+    }
+
     public static List<Quad> transformQuads(List<Quad> orig, QuadTransformation transformation) {
         return orig.stream().peek(q -> transformation.transform(q)).collect(Collectors.toList());
     }

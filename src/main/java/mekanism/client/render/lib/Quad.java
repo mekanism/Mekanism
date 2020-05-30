@@ -18,19 +18,21 @@ public class Quad {
     private static final int SIZE = DefaultVertexFormats.BLOCK.getElements().size();
 
     private Vertex[] vertices;
-    private boolean applyDiffuseLighting;
     private Direction side;
-    private int tintIndex = -1;
     private TextureAtlasSprite sprite;
-
-    private Quad(TextureAtlasSprite sprite, Direction side) {
-        this.sprite = sprite;
-        this.side = side;
-    }
+    private int tintIndex = -1;
+    private boolean applyDiffuseLighting;
 
     public Quad(TextureAtlasSprite sprite, Direction side, Vertex[] vertices) {
-        this(sprite, side);
+        this(sprite, side, vertices, -1, false);
+    }
+
+    public Quad(TextureAtlasSprite sprite, Direction side, Vertex[] vertices, int tintIndex, boolean applyDiffuseLighting) {
+        this.sprite = sprite;
+        this.side = side;
         this.vertices = vertices;
+        this.tintIndex = tintIndex;
+        this.applyDiffuseLighting = applyDiffuseLighting;
     }
 
     public Quad(BakedQuad quad) {
@@ -61,6 +63,15 @@ public class Quad {
             }
         }
         return new BakedQuad(ret, tintIndex, side, sprite, applyDiffuseLighting);
+    }
+
+    public Quad mirror() {
+        Vertex[] flipped = new Vertex[4];
+        flipped[3] = vertices[0].copy().normal(vertices[0].getNormal().scale(-1));
+        flipped[2] = vertices[1].copy().normal(vertices[1].getNormal().scale(-1));
+        flipped[1] = vertices[2].copy().normal(vertices[2].getNormal().scale(-1));
+        flipped[0] = vertices[3].copy().normal(vertices[3].getNormal().scale(-1));
+        return new Quad(sprite, side.getOpposite(), flipped);
     }
 
     private class BakedQuadUnpacker implements IVertexConsumer {
