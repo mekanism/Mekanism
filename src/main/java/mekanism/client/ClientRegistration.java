@@ -89,11 +89,9 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemLayerWrapper;
-import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
-import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
@@ -337,8 +335,6 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {
         Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
-        registerItemStackModel(modelRegistry, "jetpack", model -> RenderJetpack.model = model);
-        registerItemStackModel(modelRegistry, "jetpack_armored", model -> RenderArmoredJetpack.model = model);
         registerItemStackModel(modelRegistry, "scuba_mask", model -> RenderScubaMask.model = model);
         registerItemStackModel(modelRegistry, "scuba_tank", model -> RenderScubaTank.model = model);
         registerItemStackModel(modelRegistry, "free_runners", model -> RenderFreeRunners.model = model);
@@ -348,7 +344,7 @@ public class ClientRegistration {
 
     @Deprecated
     private static void registerItemStackModel(Map<ResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
-        ModelResourceLocation resourceLocation = ClientRegistrationUtil.getInventoryMRL(Mekanism::rl, type);
+        ModelResourceLocation resourceLocation = new ModelResourceLocation(Mekanism.rl(type), "inventory");
         modelRegistry.put(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.get(resourceLocation))));
     }
 

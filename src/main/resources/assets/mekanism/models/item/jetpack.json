@@ -1,3 +1,43 @@
 {
-    "parent": "mekanism:item/standard_item"
+    "parent": "builtin/entity",
+    "textures": {
+        "particle": "mekanism:block/steel_casing"
+    },
+    "display": {
+        "gui": {
+            "rotation": [ 30, 45, 0 ],
+            "translation": [ -1, 4, 0],
+            "scale":[ 0.625, 0.625, 0.625 ]
+        },
+        "ground": {
+            "rotation": [ 0, 90, 0 ],
+            "translation": [ 0, 2, 0],
+            "scale":[ 0.25, 0.25, 0.25 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 75, 135, 0 ],
+            "translation": [ 0, 0, 2],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 135, 0 ],
+            "translation": [ 0, 1, 0],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [ 75, 135, 0 ],
+            "translation": [ 0, 0, 2],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        },
+        "firstperson_lefthand": {
+            "rotation": [ 0, 135, 0 ],
+            "translation": [ 0, 1, 0],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 180, 0 ],
+            "translation": [ 0, 3.5, 2],
+            "scale":[ 1, 1, 1 ]
+        }
+    }
 }
