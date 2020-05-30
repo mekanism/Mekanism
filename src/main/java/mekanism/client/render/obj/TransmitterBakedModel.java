@@ -138,20 +138,7 @@ public class TransmitterBakedModel implements IBakedModel {
 
     @Nullable
     private static Direction directionForPiece(@Nonnull String piece) {
-        if (piece.startsWith("down")) {
-            return Direction.DOWN;
-        } else if (piece.startsWith("up")) {
-            return Direction.UP;
-        } else if (piece.startsWith("north")) {
-            return Direction.NORTH;
-        } else if (piece.startsWith("south")) {
-            return Direction.SOUTH;
-        } else if (piece.startsWith("east")) {
-            return Direction.EAST;
-        } else if (piece.startsWith("west")) {
-            return Direction.WEST;
-        }
-        return null;
+        return Arrays.stream(EnumUtils.DIRECTIONS).filter(dir -> piece.startsWith(dir.getName().toLowerCase())).findFirst().orElse(null);
     }
 
     @Override

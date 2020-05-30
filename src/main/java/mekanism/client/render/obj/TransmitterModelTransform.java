@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.Vec3d;
 
 public class TransmitterModelTransform implements IModelTransform {
 
@@ -19,21 +20,9 @@ public class TransmitterModelTransform implements IModelTransform {
     }
 
     private static Vector3f vecForDirection(Direction dir) {
-        switch (dir) {
-            case EAST:
-                return Vector3f.XN;
-            case WEST:
-                return Vector3f.XP;
-            case UP:
-                return Vector3f.YN;
-            case DOWN:
-                return Vector3f.YP;
-            case SOUTH:
-                return Vector3f.ZN;
-            case NORTH:
-                return Vector3f.ZP;
-        }
-        return new Vector3f(0, 0, 0);
+        Vector3f vec = new Vector3f(new Vec3d(dir.getDirectionVec()));
+        vec.mul(-1);
+        return vec;
     }
 
     @Nonnull
