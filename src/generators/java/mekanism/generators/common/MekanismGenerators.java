@@ -22,6 +22,7 @@ import mekanism.generators.common.content.turbine.TurbineValidator;
 import mekanism.generators.common.network.GeneratorsPacketHandler;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsBuilders.FissionReactorBuilder;
+import mekanism.generators.common.registries.GeneratorsBuilders.FusionReactorBuilder;
 import mekanism.generators.common.registries.GeneratorsBuilders.TurbineBuilder;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.registries.GeneratorsFluids;
@@ -90,6 +91,7 @@ public class MekanismGenerators implements IModule {
 
         BuildCommand.register("turbine", new TurbineBuilder());
         BuildCommand.register("fission", new FissionReactorBuilder());
+        BuildCommand.register("fusion", new FusionReactorBuilder());
 
         packetHandler.initialize();
 

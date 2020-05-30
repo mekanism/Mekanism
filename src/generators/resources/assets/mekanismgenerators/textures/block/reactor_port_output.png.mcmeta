@@ -9,16 +9,16 @@
     "extra": {
       "connect_to": [
         {
-          "block": "mekanismgenerators:reactor_frame"
+          "block": "mekanismgenerators:fusion_reactor_frame"
         },
         {
-          "block": "mekanismgenerators:reactor_controller"
+          "block": "mekanismgenerators:fusion_reactor_controller"
         },
         {
-          "block": "mekanismgenerators:reactor_logic_adapter"
+          "block": "mekanismgenerators:fusion_reactor_logic_adapter"
         },
         {
-          "block": "mekanismgenerators:reactor_port"
+          "block": "mekanismgenerators:fusion_reactor_port"
         }
       ]
     }

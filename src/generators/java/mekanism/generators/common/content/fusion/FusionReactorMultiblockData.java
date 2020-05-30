@@ -93,7 +93,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @ContainerSync(tags = "fuel", getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 0;
 
-    public double plasmaTemperature;
+    public double plasmaTemperature = HeatAPI.AMBIENT_TEMP;
 
     private ReactorInventorySlot reactorSlot;
 

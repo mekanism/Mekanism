@@ -10,54 +10,44 @@ import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.item.ItemLayerWrapper;
-import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-public class RenderFluidTankItem extends MekanismItemStackRenderer {
+public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
 
-    public static ItemLayerWrapper model;
-
-    private static ModelFluidTank modelFluidTank = new ModelFluidTank();
-    private static FluidRenderMap<Int2ObjectMap<Model3D>> cachedCenterFluids = new FluidRenderMap<>();
-    private static int stages = 1400;
+    private static final ModelFluidTank modelFluidTank = new ModelFluidTank();
+    private static final FluidRenderMap<Int2ObjectMap<Model3D>> cachedCenterFluids = new FluidRenderMap<>();
+    private static final int stages = 1400;
 
     public static void resetCachedModels() {
         cachedCenterFluids.clear();
     }
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
+    public void render(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         FluidTankTier tier = ((ItemBlockFluidTank) stack.getItem()).getTier();
         FluidStack fluid = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluid.isEmpty()) {
             float fluidScale = (float) fluid.getAmount() / tier.getStorage();
             if (fluidScale > 0) {
-                matrix.push();
-                matrix.translate(-0.5, -0.5, -0.5);
                 int modelNumber;
-                int color;
                 if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
                     modelNumber = stages - 1;
-                    color = MekanismRenderer.getColorARGB(fluid, fluidScale);
                 } else {
-                    modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
-                    color = MekanismRenderer.getColorARGB(fluid);
+                    modelNumber = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
                 }
-                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()), color,
-                      MekanismRenderer.calculateGlowLight(light, fluid));
-                matrix.pop();
+                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
+                      MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid));
             }
         }
         matrix.push();
-        matrix.translate(0, -0.9, 0);
+        //TODO: Eventually move more of this to the model json
+        matrix.translate(0.5, -0.4, 0.5);
         matrix.scale(0.9F, 0.8F, 0.9F);
         //Scale to to size of item
         matrix.scale(1.168F, 1.168F, 1.168F);
@@ -79,7 +69,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             model.minZ = 0.125 + .01;
 
             model.maxX = 0.875 - .01;
-            model.maxY = 0.0625 + ((float) stage / (float) stages) * 0.875 - .01;
+            model.maxY = 0.0625 + (stage / (float) stages) * 0.875 - .01;
             model.maxZ = 0.875 - .01;
         }
         if (cachedCenterFluids.containsKey(fluid)) {
@@ -90,16 +80,5 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             cachedCenterFluids.put(fluid, map);
         }
         return model;
-    }
-
-    @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
-    }
-
-    @Nonnull
-    @Override
-    protected TransformType getTransform(@Nonnull ItemStack stack) {
-        return model.getTransform();
     }
 }

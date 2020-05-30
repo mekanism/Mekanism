@@ -18,7 +18,8 @@ public class ModelJetpack extends Model {
 
     private static final ResourceLocation JETPACK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png");
     private static final RenderType WING_RENDER_TYPE = MekanismRenderType.mekStandard(JETPACK_TEXTURE);
-    private final RenderType RENDER_TYPE = getRenderType(JETPACK_TEXTURE);
+    private final RenderType frameRenderType;
+    private final RenderType wingRenderType;
 
     private final ModelRenderer Packtop;
     private final ModelRenderer Packbottom;
@@ -43,7 +44,16 @@ public class ModelJetpack extends Model {
     private final ModelRenderer light3;
 
     public ModelJetpack() {
+        this(JETPACK_TEXTURE, WING_RENDER_TYPE, -3);
+    }
+
+    /**
+     * @param fuelZ Z offset for the Fuel Tubes, thrusters are offset by {@code fuelZ - 0.5}
+     */
+    protected ModelJetpack(ResourceLocation texture, RenderType wingRenderType, float fuelZ) {
         super(RenderType::getEntitySolid);
+        this.frameRenderType = getRenderType(texture);
+        this.wingRenderType = wingRenderType;
         textureWidth = 128;
         textureHeight = 64;
 
@@ -60,25 +70,25 @@ public class ModelJetpack extends Model {
         Packbottom.mirror = true;
         setRotation(Packbottom, -0.0872665F, 0F, 0F);
         Thrusterleft = new ModelRenderer(this, 69, 30);
-        Thrusterleft.addBox(7.8F, 1.5F, -3.5F, 3, 3, 3, false);
+        Thrusterleft.addBox(7.8F, 1.5F, fuelZ - 0.5F, 3, 3, 3, false);
         Thrusterleft.setRotationPoint(0F, 0F, 0F);
         Thrusterleft.setTextureSize(128, 64);
         Thrusterleft.mirror = true;
         setRotation(Thrusterleft, 0.7853982F, -0.715585F, 0.3490659F);
         Thrusterright = new ModelRenderer(this, 69, 30);
-        Thrusterright.addBox(-10.8F, 1.5F, -3.5F, 3, 3, 3, false);
+        Thrusterright.addBox(-10.8F, 1.5F, fuelZ - 0.5F, 3, 3, 3, false);
         Thrusterright.setRotationPoint(0F, 0F, 0F);
         Thrusterright.setTextureSize(128, 64);
         Thrusterright.mirror = true;
         setRotation(Thrusterright, 0.7853982F, 0.715585F, -0.3490659F);
         Fueltuberight = new ModelRenderer(this, 92, 23);
-        Fueltuberight.addBox(-11.2F, 2F, -3F, 8, 2, 2, false);
+        Fueltuberight.addBox(-11.2F, 2F, fuelZ, 8, 2, 2, false);
         Fueltuberight.setRotationPoint(0F, 0F, 0F);
         Fueltuberight.setTextureSize(128, 64);
         Fueltuberight.mirror = true;
         setRotation(Fueltuberight, 0.7853982F, 0.715585F, -0.3490659F);
         Fueltubeleft = new ModelRenderer(this, 92, 23);
-        Fueltubeleft.addBox(3.2F, 2F, -3F, 8, 2, 2, false);
+        Fueltubeleft.addBox(3.2F, 2F, fuelZ, 8, 2, 2, false);
         Fueltubeleft.setRotationPoint(0F, 0F, 0F);
         Fueltubeleft.setTextureSize(128, 64);
         Fueltubeleft.mirror = true;
@@ -176,9 +186,9 @@ public class ModelJetpack extends Model {
     }
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
+        render(matrix, getVertexBuilder(renderer, frameRenderType, hasEffect), light, overlayLight, 1, 1, 1, 1);
         //TODO: Should our wing render type have cull enabled? It previously was enabled
-        renderWings(matrix, getVertexBuilder(renderer, WING_RENDER_TYPE, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.2F);
+        renderWings(matrix, getVertexBuilder(renderer, wingRenderType, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.2F);
     }
 
     private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, RenderType renderType, boolean hasEffect) {
@@ -194,21 +204,17 @@ public class ModelJetpack extends Model {
         Fueltuberight.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         Fueltubeleft.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         Packmid.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-
         WingsupportL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         WingsupportR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         Packtoprear.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         ExtendosupportL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         ExtendosupportR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-
         Packdoodad2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         Packdoodad3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         Bottomthruster.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
 
         //Stuff below here uses full bright for the lighting
         light = MekanismRenderer.FULL_LIGHT;
-        Packcore.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-
         light1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         light2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         light3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
@@ -220,7 +226,7 @@ public class ModelJetpack extends Model {
         WingbladeR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
+    protected void setRotation(ModelRenderer model, float x, float y, float z) {
         model.rotateAngleX = x;
         model.rotateAngleY = y;
         model.rotateAngleZ = z;

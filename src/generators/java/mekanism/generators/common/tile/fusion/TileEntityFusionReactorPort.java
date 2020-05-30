@@ -110,11 +110,6 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     }
 
     @Override
-    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        return ActionResultType.PASS;
-    }
-
-    @Override
     public int getRedstoneLevel() {
         return getMultiblock().getCurrentRedstoneLevel();
     }

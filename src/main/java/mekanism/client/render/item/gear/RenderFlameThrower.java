@@ -12,13 +12,8 @@ import net.minecraft.item.ItemStack;
 
 public class RenderFlameThrower extends MekanismItemStackRenderer {
 
-    private static ModelFlamethrower flamethrower = new ModelFlamethrower();
+    private static final ModelFlamethrower flamethrower = new ModelFlamethrower();
     public static ItemLayerWrapper model;
-
-    @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
-    }
 
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,

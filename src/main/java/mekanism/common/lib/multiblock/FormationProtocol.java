@@ -29,10 +29,10 @@ public class FormationProtocol<T extends MultiblockData> {
     private Structure structure;
     private MultiblockManager<T> manager;
 
-    Set<BlockPos> locations = new ObjectOpenHashSet<>();
-    Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
-    Set<ValveData> valves = new ObjectOpenHashSet<>();
-    Set<UUID> idsFound = new ObjectOpenHashSet<>();
+    public Set<BlockPos> locations = new ObjectOpenHashSet<>();
+    public Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();
+    public Set<ValveData> valves = new ObjectOpenHashSet<>();
+    public Set<UUID> idsFound = new ObjectOpenHashSet<>();
 
     public FormationProtocol(IMultiblock<T> tile, Structure structure) {
         pointer = tile;

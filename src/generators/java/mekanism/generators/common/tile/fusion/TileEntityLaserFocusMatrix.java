@@ -6,6 +6,8 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 
 public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock implements ILaserReceptor {
@@ -20,6 +22,15 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
         if (getMultiblock().isFormed()) {
             getMultiblock().addTemperatureFromEnergyInput(energy);
         }
+    }
+
+    @Override
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        if (!isRemote() && player.isCreative() && getMultiblock().isFormed()) {
+            getMultiblock().setPlasmaTemp(1_000_000_000);
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.PASS;
     }
 
     @Override

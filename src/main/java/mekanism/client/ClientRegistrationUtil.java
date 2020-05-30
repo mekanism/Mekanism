@@ -91,10 +91,6 @@ public class ClientRegistrationUtil {
         });
     }
 
-    public static ModelResourceLocation getInventoryMRL(Function<String, ResourceLocation> rlCreator, String type) {
-        return new ModelResourceLocation(rlCreator.apply(type), "inventory");
-    }
-
     public static void registerItemColorHandler(ItemColors colors, IItemColor itemColor, IItemProvider... items) {
         for (IItemProvider itemProvider : items) {
             colors.register(itemColor, itemProvider.getItem());
