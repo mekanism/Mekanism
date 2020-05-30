@@ -32,7 +32,7 @@ public class SPSOrbitEffect extends CustomEffect {
         pos = center.add(start);
         axis = new Pos3D(randVec());
         scale = 0.01F + rand.nextFloat() * 0.04F;
-        color = Color.rgba(102, 215, 237, 240);
+        color = Color.rgbai(102, 215, 237, 240);
     }
 
     @Override

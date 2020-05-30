@@ -50,7 +50,7 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
             public double getLevel() {
                 return tile.getMultiblock().getScaledProgress();
             }
-        }, 7, 79, xSize - 16, ColorFunction.scale(Color.rgb(60, 45, 74), Color.rgb(100, 30, 170))));
+        }, 7, 79, xSize - 16, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }
 
     @Override

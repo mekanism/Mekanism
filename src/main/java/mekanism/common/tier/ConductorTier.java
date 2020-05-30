@@ -8,10 +8,10 @@ import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
 
 public enum ConductorTier implements ITier {
-    BASIC(BaseTier.BASIC, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 10, Color.rgba(0.2, 0.2, 0.2, 1)),
-    ADVANCED(BaseTier.ADVANCED, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 400, Color.rgba(0.2, 0.2, 0.2, 1)),
-    ELITE(BaseTier.ELITE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 8_000, Color.rgba(0.2, 0.2, 0.2, 1)),
-    ULTIMATE(BaseTier.ULTIMATE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 100_000, Color.rgba(0.2, 0.2, 0.2, 1));
+    BASIC(BaseTier.BASIC, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 10, Color.rgbad(0.2, 0.2, 0.2, 1)),
+    ADVANCED(BaseTier.ADVANCED, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 400, Color.rgbad(0.2, 0.2, 0.2, 1)),
+    ELITE(BaseTier.ELITE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 8_000, Color.rgbad(0.2, 0.2, 0.2, 1)),
+    ULTIMATE(BaseTier.ULTIMATE, 5, HeatAPI.DEFAULT_HEAT_CAPACITY, 100_000, Color.rgbad(0.2, 0.2, 0.2, 1));
 
     private final Color baseColor;
     private final double baseConduction;

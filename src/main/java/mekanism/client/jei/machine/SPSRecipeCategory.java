@@ -48,7 +48,7 @@ public class SPSRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
             public double getLevel() {
                 return timer.getValue() / 20D;
             }
-        }, 6, 75, getWidth() - 8, ColorFunction.scale(Color.rgb(60, 45, 74), Color.rgb(100, 30, 170))));
+        }, 6, 75, getWidth() - 8, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }
 
     @Nonnull

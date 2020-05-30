@@ -1,12 +1,12 @@
 package mekanism.client.render.transmitter;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.client.render.ColorTemperature;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
+import mekanism.common.util.HeatUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -24,7 +24,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
           IProfiler profiler) {
         matrix.push();
         matrix.translate(0.5, 0.5, 0.5);
-        int argb = ColorTemperature.fromTemperature(conductor.getTotalTemperature(), conductor.getBaseColor()).argb();
+        int argb = HeatUtils.getColorFromTemp(conductor.getTotalTemperature(), conductor.getBaseColor()).argb();
         renderModel(conductor, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), argb,
               MekanismRenderer.getAlpha(argb), MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.heatIcon);
         matrix.pop();

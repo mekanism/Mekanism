@@ -39,7 +39,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
 
     public RenderSPS(TileEntityRendererDispatcher renderer) {
         super(renderer);
-        CORE.setColor(Color.rgba(255, 255, 255, 240));
+        CORE.setColor(Color.rgbai(255, 255, 255, 240));
     }
 
     @Override

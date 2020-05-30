@@ -39,7 +39,7 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntityAntiprotonicNucleosynthesizer, MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> {
 
     private static final Vec3d from = new Vec3d(47, 50, 0), to = new Vec3d(147, 50, 0);
-    private static final BoltRenderInfo boltRenderInfo = new BoltRenderInfo().color(Color.rgba(0.45F, 0.45F, 0.5F, 1));
+    private static final BoltRenderInfo boltRenderInfo = new BoltRenderInfo().color(Color.rgbad(0.45F, 0.45F, 0.5F, 1));
 
     private BoltRenderer bolt = new BoltRenderer();
     private Supplier<BoltEffect> boltSupplier = () -> new BoltEffect(boltRenderInfo, from, to, 15)
@@ -80,7 +80,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntity
             public double getLevel() {
                 return tile.getScaledProgress();
             }
-        }, 5, 88, xSize - 12, ColorFunction.scale(Color.rgb(60, 45, 74), Color.rgb(100, 30, 170))));
+        }, 5, 88, xSize - 12, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }
 
     @Override

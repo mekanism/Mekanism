@@ -84,7 +84,7 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
             public double getLevel() {
                 return timer.getValue() / 20D;
             }
-        }, 5, 88, getWidth() - 6, ColorFunction.scale(Color.rgb(60, 45, 74), Color.rgb(100, 30, 170))));
+        }, 5, 88, getWidth() - 6, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }
 
     @Override

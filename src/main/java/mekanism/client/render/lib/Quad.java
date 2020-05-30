@@ -108,7 +108,7 @@ public class Quad {
                     vertex.normal(new Vec3d(f0, f1, f2));
                     break;
                 case COLOR:
-                    vertex.color(Color.rgba(f0, f1, f2, f3));
+                    vertex.color(Color.rgbad(f0, f1, f2, f3));
                     break;
                 case UV: {
                     switch (element.getIndex()) {

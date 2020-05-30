@@ -13,7 +13,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class GuiWindow extends GuiTexturedElement {
 
-    private static final Color OVERLAY_COLOR = Color.rgba(60, 60, 60, 128);
+    private static final Color OVERLAY_COLOR = Color.rgbai(60, 60, 60, 128);
 
     private Runnable closeListener;
 

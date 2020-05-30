@@ -4,18 +4,19 @@ import com.google.common.base.Objects;
 
 public class Color {
 
-    public static final Color WHITE = rgba(1F, 1F, 1F, 1F);
+    public static final Color WHITE = rgbad(1F, 1F, 1F, 1F);
+    public static final Color BLACK = rgbad(0F, 0F, 0F, 1F);
 
     private int r, g, b, a;
 
-    protected Color(int r, int g, int b, int a) {
+    private Color(int r, int g, int b, int a) {
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a;
     }
 
-    protected Color(double r, double g, double b, double a) {
+    private Color(double r, double g, double b, double a) {
         this((int) Math.round(r * 255D), (int) Math.round(g * 255D), (int) Math.round(b * 255D), (int) Math.round(a * 255D));
     }
 
@@ -63,53 +64,68 @@ public class Color {
      * @return blended color
      */
     public Color blend(Color to, double scale) {
-        return rgba((int) Math.round(r + (to.r - r) * scale),
+        return rgbai((int) Math.round(r + (to.r - r) * scale),
                     (int) Math.round(g + (to.g - g) * scale),
                     (int) Math.round(b + (to.b - b) * scale),
                     (int) Math.round(a + (to.a - a) * scale));
     }
 
-    public Color darken(double amount) {
-        return rgba((int) Math.round(r * (1 - amount)),
-                    (int) Math.round(g * (1 - amount)),
-                    (int) Math.round(b * (1 - amount)),
-                    (int) Math.round(a * (1 - amount)));
+    public Color blendOnto(Color baseColor) {
+        double sR = rd(), sG = gd(), sB = bd(), sA = ad();
+        double dR = baseColor.rd(), dG = baseColor.gd(), dB = baseColor.bd(), dA = baseColor.ad();
+
+        double rR = sR * sA + dR * (1 - sA);
+        double rG = sG * sA + dG * (1 - sA);
+        double rB = sB * sA + dB * (1 - sA);
+        double rA = dA * 1D + sA * (1 - dA);
+        return rgbad(rR, rG, rB, rA);
     }
 
-    public static Color rgba(int r, int g, int b, int a) {
+    public Color darken(double amount) {
+        return rgbai((int) Math.round(r * (1 - amount)),
+                    (int) Math.round(g * (1 - amount)),
+                    (int) Math.round(b * (1 - amount)),
+                    a);
+    }
+
+    public static Color blend(Color src, Color dest) {
+        return src.blendOnto(dest);
+    }
+
+    public static Color rgbai(int r, int g, int b, int a) {
         return new Color(r, g, b, a);
     }
 
-    public static Color rgba(double r, double g, double b, double a) {
+    public static Color rgbad(double r, double g, double b, double a) {
         return new Color(r, g, b, a);
     }
 
     public static Color rgba(int color) {
-        return rgba((color >> 24) & 0xFF, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+        return rgbai((color >> 24) & 0xFF, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
     }
 
-    public static Color argb(int a, int r, int g, int b) {
-        return rgba(r, g, b, a);
+    public static Color argbi(int a, int r, int g, int b) {
+        return rgbai(r, g, b, a);
     }
 
-    public static Color argb(double a, double r, double g, double b) {
-        return rgba(r, g, b, a);
+    public static Color argbd(double a, double r, double g, double b) {
+        return rgbad(r, g, b, a);
     }
 
     public static Color argb(int color) {
-        return argb((color >> 24) & 0xFF, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+        return argbi((color >> 24) & 0xFF, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
     }
 
-    public static Color rgb(int r, int g, int b) {
-        return rgba(r, g, b, 255);
+    public static Color rgbi(int r, int g, int b) {
+        return rgbai(r, g, b, 255);
     }
 
-    public static Color rgb(double r, double g, double b) {
-        return rgba(r, g, b, 1D);
+    public static Color rgbd(double r, double g, double b) {
+        return rgbad(r, g, b, 1D);
     }
 
     public static Color rgb(int color) {
-        return rgb((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+        return rgbi((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
     }
 
     public static Color hsv(double h, double s, double v) {
@@ -122,18 +138,18 @@ public class Color {
 
         switch (i) {
             case 0:
-                return rgb(v, t, p);
+                return rgbd(v, t, p);
             case 1:
-                return rgb(q, v, p);
+                return rgbd(q, v, p);
             case 2:
-                return rgb(p, v, t);
+                return rgbd(p, v, t);
             case 3:
-                return rgb(p, q, v);
+                return rgbd(p, q, v);
             case 4:
-                return rgb(t, p, v);
+                return rgbd(t, p, v);
             case 5:
             default:
-                return rgb(v, p, q);
+                return rgbd(v, p, q);
         }
     }
 
@@ -158,7 +174,7 @@ public class Color {
 
     public interface ColorFunction {
 
-        ColorFunction HEAT = (level) -> Color.rgba((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 255);
+        ColorFunction HEAT = (level) -> Color.rgbai((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 255);
 
         static ColorFunction scale(Color from, Color to) {
             return (level) -> from.blend(to, level);

@@ -386,14 +386,14 @@ public class BoltEffect {
         /** The chance of a branch continuing (post-initiation). */
         private float branchContinuationFactor = 0.0F;
 
-        private Color color = Color.rgba(0.45F, 0.45F, 0.5F, 0.8F);
+        private Color color = Color.rgbad(0.45F, 0.45F, 0.5F, 0.8F);
 
         private RandomFunction randomFunction = RandomFunction.GAUSSIAN;
         private SpreadFunction spreadFunction = SpreadFunction.SINE;
         private SegmentSpreader segmentSpreader = SegmentSpreader.NO_MEMORY;
 
         public static BoltRenderInfo electricity() {
-            return new BoltRenderInfo().color(Color.rgba(0.54F, 0.91F, 1F, 0.8F)).noise(0.2F, 0.2F).branching(0.1F, 0.6F).spreader(SegmentSpreader.memory(0.9F));
+            return new BoltRenderInfo().color(Color.rgbad(0.54F, 0.91F, 1F, 0.8F)).noise(0.2F, 0.2F).branching(0.1F, 0.6F).spreader(SegmentSpreader.memory(0.9F));
         }
 
         public BoltRenderInfo noise(float parallelNoise, float spreadFactor) {
