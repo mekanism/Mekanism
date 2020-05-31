@@ -556,6 +556,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityRadioactiveWasteBarrel> RADIOACTIVE_WASTE_BARREL = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.RADIOACTIVE_WASTE_BARREL, MekanismLang.DESCRIPTION_RADIOACTIVE_WASTE_BARREL)
           .with(new AttributeStateFacing())
+          .withCustomShape(BlockShapes.RADIOACTIVE_WASTE_BARREL)
           .build();
     // Industrial Alarm
     public static final BlockTypeTile<TileEntityIndustrialAlarm> INDUSTRIAL_ALARM = BlockTileBuilder

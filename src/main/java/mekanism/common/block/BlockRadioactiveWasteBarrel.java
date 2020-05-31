@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.prefab.BlockTile;
+import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.registries.MekanismParticleTypes;
@@ -22,7 +22,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockRadioactiveWasteBarrel extends BlockTile<TileEntityRadioactiveWasteBarrel, BlockTypeTile<TileEntityRadioactiveWasteBarrel>> {
+public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioactiveWasteBarrel, BlockTypeTile<TileEntityRadioactiveWasteBarrel>> {
 
     public BlockRadioactiveWasteBarrel() {
         super(MekanismBlockTypes.RADIOACTIVE_WASTE_BARREL);

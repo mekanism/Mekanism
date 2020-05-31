@@ -54,6 +54,14 @@ public class Quad {
         return vertices;
     }
 
+    public void setSide(Direction side) {
+        this.side = side;
+    }
+
+    public Direction getSide() {
+        return side;
+    }
+
     public BakedQuad bake() {
         int[] ret = new int[FORMAT.getIntegerSize() * 4];
         for (int v = 0; v < vertices.length; v++) {
@@ -65,7 +73,7 @@ public class Quad {
         return new BakedQuad(ret, tintIndex, side, sprite, applyDiffuseLighting);
     }
 
-    public Quad mirror() {
+    public Quad flip() {
         Vertex[] flipped = new Vertex[4];
         flipped[3] = vertices[0].copy().normal(vertices[0].getNormal().scale(-1));
         flipped[2] = vertices[1].copy().normal(vertices[1].getNormal().scale(-1));

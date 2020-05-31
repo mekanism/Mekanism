@@ -13,6 +13,13 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
 public interface QuadTransformation {
+    // down up north south west east
+    static final Direction[][] ROTATION_MATRIX = new Direction[][] {{ Direction.SOUTH, Direction.NORTH, Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.DOWN },
+                                                                    { Direction.NORTH, Direction.SOUTH, Direction.UP, Direction.UP, Direction.UP, Direction.UP },
+                                                                    { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST },
+                                                                    { Direction.UP, Direction.DOWN, Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST },
+                                                                    { Direction.WEST, Direction.WEST, Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH },
+                                                                    { Direction.EAST, Direction.EAST, Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH }};
 
     static QuadTransformation identity = q -> {};
 
@@ -27,6 +34,8 @@ public interface QuadTransformation {
     }
 
     static QuadTransformation rotate(Direction side) {
+        if (side == null)
+            return identity;
         switch (side) {
             case UP: return rotate(90, 0, 0);
             case DOWN: return rotate(-90, 0, 0);
@@ -50,7 +59,37 @@ public interface QuadTransformation {
         return new RotationTransformation(quat);
     }
 
+    static QuadTransformation sideRotate(Direction side) {
+        return new SideTransformation(side);
+    }
+
     void transform(Quad quad);
+
+    public class SideTransformation implements QuadTransformation {
+
+        private final Direction side;
+
+        public SideTransformation(Direction side) {
+            this.side = side;
+        }
+
+        @Override
+        public void transform(Quad quad) {
+            if (side == null)
+                return;
+            quad.setSide(ROTATION_MATRIX[quad.getSide().ordinal()][side.ordinal()]);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof SideTransformation && side == ((SideTransformation) other).side;
+        }
+
+        @Override
+        public int hashCode() {
+            return side != null ? side.hashCode() : -1;
+        }
+    }
 
     public class ColorTransformation implements QuadTransformation {
 
