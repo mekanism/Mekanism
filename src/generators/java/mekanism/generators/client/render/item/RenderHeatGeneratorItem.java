@@ -19,7 +19,7 @@ public class RenderHeatGeneratorItem extends ItemStackTileEntityRenderer {
         matrix.translate(0.5, 0.5, 0.5);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.translate(0, -1, 0);
-        heatGenerator.render(matrix, renderer, light, overlayLight, !StorageUtils.getStoredEnergyFromNBT(stack).isZero());
+        heatGenerator.render(matrix, renderer, light, overlayLight, !StorageUtils.getStoredEnergyFromNBT(stack).isZero(), stack.hasEffect());
         matrix.pop();
     }
 }

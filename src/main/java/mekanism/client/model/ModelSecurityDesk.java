@@ -9,11 +9,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelSecurityDesk extends Model {
+public class ModelSecurityDesk extends MekanismModel {
 
     private static final ResourceLocation DESK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "security_desk.png");
     private static final ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "security_desk_overlay.png");
@@ -98,12 +97,12 @@ public class ModelSecurityDesk extends Model {
         setRotation(monitorScreen, -0.4712389F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         matrix.push();
         matrix.scale(1.001F, 1.001F, 1.001F);
         matrix.translate(0, -0.0011, 0);
-        render(matrix, renderer.getBuffer(RENDER_TYPE_OVERLAY), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 1);
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE_OVERLAY, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 1);
         matrix.pop();
     }
 
@@ -128,11 +127,5 @@ public class ModelSecurityDesk extends Model {
         standBase.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         deskMiddle.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         monitorScreen.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-    }
-
-    private void setRotation(ExtendedModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

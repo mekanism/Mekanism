@@ -11,11 +11,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelDigitalMiner extends Model {
+public class ModelDigitalMiner extends MekanismModel {
 
     private static final ResourceLocation MINER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "digital_miner.png");
     private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "digital_miner_overlay_on.png");
@@ -430,13 +429,13 @@ public class ModelDigitalMiner extends Model {
         setRotation(monitor3, 0.0872665F, 0.2094395F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean on) {
-        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean on, boolean hasEffect) {
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         matrix.push();
         matrix.scale(1.001F, 1.001F, 1.001F);
         matrix.translate(-0.0011, -0.0011, -0.0011);
         boolean may4 = HolidayManager.getHoliday() instanceof May4;
-        render(matrix, renderer.getBuffer(on ? (may4 ? RENDER_TYPE_ON_MAY4 : RENDER_TYPE_ON) : RENDER_TYPE_OFF), light, overlayLight, 1, 1, 1, 1);
+        render(matrix, getVertexBuilder(renderer, on ? (may4 ? RENDER_TYPE_ON_MAY4 : RENDER_TYPE_ON) : RENDER_TYPE_OFF, hasEffect), light, overlayLight, 1, 1, 1, 1);
         matrix.pop();
     }
 
@@ -506,11 +505,5 @@ public class ModelDigitalMiner extends Model {
         frame2b.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         frame2c.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         frame2d.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-    }
-
-    private void setRotation(ExtendedModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

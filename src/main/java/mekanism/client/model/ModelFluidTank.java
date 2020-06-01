@@ -10,12 +10,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
 //TODO: Replace usage of this by using the json model and drawing fluid inside of it?
-public class ModelFluidTank extends Model {
+public class ModelFluidTank extends MekanismModel {
 
     private static final ResourceLocation TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "fluid_tank.png");
     private static final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(TANK_TEXTURE);
@@ -99,11 +98,11 @@ public class ModelFluidTank extends Model {
         setRotation(LeftGlass, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, FluidTankTier tier) {
-        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, FluidTankTier tier, boolean hasEffect) {
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         EnumColor color = tier.getBaseTier().getColor();
         //TODO: Try to make it so the lines can still show up on the back walls of the tank in first person
-        renderGlass(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
+        renderGlass(matrix, getVertexBuilder(renderer, GLASS_RENDER_TYPE, hasEffect), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
     }
 
     @Override
@@ -121,11 +120,5 @@ public class ModelFluidTank extends Model {
         BackGlass.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         RightGlass.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         LeftGlass.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

@@ -8,13 +8,11 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelScubaMask extends Model {
+public class ModelScubaMask extends MekanismModel {
 
     private static final ResourceLocation MASK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
     private static final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(MASK_TEXTURE);
@@ -232,10 +230,6 @@ public class ModelScubaMask extends Model {
         renderGlass(matrix, getVertexBuilder(renderer, GLASS_RENDER_TYPE, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.3F);
     }
 
-    private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, RenderType renderType, boolean hasEffect) {
-        return ItemRenderer.getBuffer(renderer, renderType, false, hasEffect);
-    }
-
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         helmetfeed.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
@@ -265,18 +259,12 @@ public class ModelScubaMask extends Model {
         lightR.render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
     }
 
-    public void renderGlass(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    private void renderGlass(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         glasstop.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         glassfront.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         glassR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         glassL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         glassbackR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         glassbackL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

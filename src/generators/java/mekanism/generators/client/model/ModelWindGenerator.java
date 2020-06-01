@@ -4,15 +4,15 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ExtendedModelRenderer;
+import mekanism.client.model.MekanismModel;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelWindGenerator extends Model {
+public class ModelWindGenerator extends MekanismModel {
 
     private static final ResourceLocation GENERATOR_TEXTURE = MekanismGenerators.rl("render/wind_generator.png");
     private final RenderType RENDER_TYPE = getRenderType(GENERATOR_TEXTURE);
@@ -172,7 +172,7 @@ public class ModelWindGenerator extends Model {
         setRotation(post1d, -0.0347321F, 0F, -0.0347321F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, double angle, int light, int overlayLight) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, double angle, int light, int overlayLight, boolean hasEffect) {
         float baseRotation = getAbsoluteRotation(angle);
         setRotation(blade1a, 0F, 0F, baseRotation);
         setRotation(blade1b, 0F, 0F, 0.0349066F + baseRotation);
@@ -188,7 +188,7 @@ public class ModelWindGenerator extends Model {
         setRotation(bladeCap, 0F, 0F, baseRotation);
         setRotation(bladeCenter, 0F, 0F, baseRotation);
 
-        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
@@ -242,11 +242,5 @@ public class ModelWindGenerator extends Model {
 
     private float getAbsoluteRotation(double angle) {
         return (float) Math.toRadians(angle % 360);
-    }
-
-    private void setRotation(ExtendedModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

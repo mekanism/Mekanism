@@ -8,11 +8,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelSolarNeutronActivator extends Model {
+public class ModelSolarNeutronActivator extends MekanismModel {
 
     private static final ResourceLocation ACTIVATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "solar_neutron_activator.png");
     private final RenderType RENDER_TYPE = getRenderType(ACTIVATOR_TEXTURE);
@@ -354,8 +353,8 @@ public class ModelSolarNeutronActivator extends Model {
         setRotation(laserBeamToggle, -0.1117011F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
@@ -416,11 +415,5 @@ public class ModelSolarNeutronActivator extends Model {
         support16.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         portConnector.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         laserBeamToggle.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-    }
-
-    private void setRotation(ExtendedModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

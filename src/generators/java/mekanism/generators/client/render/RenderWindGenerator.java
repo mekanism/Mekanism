@@ -27,7 +27,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
     @Override
     protected void render(TileEntityWindGenerator tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         double angle = performTranslationsAndGetAngle(tile, partialTick, matrix);
-        model.render(matrix, renderer, angle, light, overlayLight);
+        model.render(matrix, renderer, angle, light, overlayLight, false);
         matrix.pop();
     }
 

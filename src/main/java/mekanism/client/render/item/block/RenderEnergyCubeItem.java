@@ -29,8 +29,8 @@ public class RenderEnergyCubeItem extends ItemStackTileEntityRenderer {
         matrix.push();
         matrix.translate(0, -1, 0);
         //TODO: Instead of having this be a thing, make it do it from model like the block does?
-        energyCube.render(matrix, renderer, light, overlayLight, tier, true);
-        energyCube.renderSidesBatched(stack, tier, matrix, renderer, light, overlayLight);
+        energyCube.render(matrix, renderer, light, overlayLight, tier, true, stack.hasEffect());
+        energyCube.renderSidesBatched(stack, tier, matrix, renderer, light, overlayLight, stack.hasEffect());
         matrix.pop();
         double energyPercentage = StorageUtils.getStoredEnergyFromNBT(stack).divideToLevel(tier.getMaxEnergy());
         if (energyPercentage > 0) {

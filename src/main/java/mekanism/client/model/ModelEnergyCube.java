@@ -22,14 +22,13 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class ModelEnergyCube extends Model {
+public class ModelEnergyCube extends MekanismModel {
 
     private static final ResourceLocation CUBE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube.png");
     private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube_overlay_on.png");
@@ -65,30 +64,6 @@ public class ModelEnergyCube extends Model {
     private final ModelRenderer corner3;
     private final ModelRenderer corner2;
     private final ModelRenderer corner1;
-    private final ModelRenderer connectorBackToggle;
-    private final ModelRenderer connectorRightToggle;
-    private final ModelRenderer connectorBottomToggle;
-    private final ModelRenderer connectorLeftToggle;
-    private final ModelRenderer connectorFrontToggle;
-    private final ModelRenderer connectorTopToggle;
-    private final ModelRenderer portBackToggle;
-    private final ModelRenderer portBottomToggle;
-    private final ModelRenderer portFrontToggle;
-    private final ModelRenderer portLeftToggle;
-    private final ModelRenderer portRightToggle;
-    private final ModelRenderer portTopToggle;
-    private final ModelRenderer ledTop1;
-    private final ModelRenderer ledTop2;
-    private final ModelRenderer ledBack1;
-    private final ModelRenderer ledBack2;
-    private final ModelRenderer ledBottom2;
-    private final ModelRenderer ledBottom1;
-    private final ModelRenderer ledFront1;
-    private final ModelRenderer ledFront2;
-    private final ModelRenderer ledRight2;
-    private final ModelRenderer ledRight1;
-    private final ModelRenderer ledLeft1;
-    private final ModelRenderer ledLeft2;
 
     public ModelEnergyCube() {
         super(RenderType::getEntitySolid);
@@ -215,145 +190,145 @@ public class ModelEnergyCube extends Model {
         corner1.setTextureSize(64, 64);
         corner1.mirror = true;
         setRotation(corner1, 0F, 0F, 0F);
-        connectorBackToggle = new ModelRenderer(this, 38, 16);
+        ModelRenderer connectorBackToggle = new ModelRenderer(this, 38, 16);
         connectorBackToggle.addBox(0F, 0F, 0F, 10, 6, 1, false);
         connectorBackToggle.setRotationPoint(-5F, 13F, 6F);
         connectorBackToggle.setTextureSize(64, 64);
         connectorBackToggle.mirror = true;
         setRotation(connectorBackToggle, 0F, 0F, 0F);
-        connectorRightToggle = new ModelRenderer(this, 38, 0);
+        ModelRenderer connectorRightToggle = new ModelRenderer(this, 38, 0);
         connectorRightToggle.addBox(0F, 0F, 0F, 1, 6, 10, false);
         connectorRightToggle.setRotationPoint(6F, 13F, -5F);
         connectorRightToggle.setTextureSize(64, 64);
         connectorRightToggle.mirror = true;
         setRotation(connectorRightToggle, 0F, 0F, 0F);
-        connectorBottomToggle = new ModelRenderer(this, 0, 19);
+        ModelRenderer connectorBottomToggle = new ModelRenderer(this, 0, 19);
         connectorBottomToggle.addBox(0F, 0F, 0F, 10, 1, 6, false);
         connectorBottomToggle.setRotationPoint(-5F, 22F, -3F);
         connectorBottomToggle.setTextureSize(64, 64);
         connectorBottomToggle.mirror = true;
         setRotation(connectorBottomToggle, 0F, 0F, 0F);
-        connectorLeftToggle = new ModelRenderer(this, 38, 0);
+        ModelRenderer connectorLeftToggle = new ModelRenderer(this, 38, 0);
         connectorLeftToggle.addBox(0F, 0F, 0F, 1, 6, 10, false);
         connectorLeftToggle.setRotationPoint(-7F, 13F, -5F);
         connectorLeftToggle.setTextureSize(64, 64);
         connectorLeftToggle.mirror = true;
         setRotation(connectorLeftToggle, 0F, 0F, 0F);
-        connectorFrontToggle = new ModelRenderer(this, 38, 16);
+        ModelRenderer connectorFrontToggle = new ModelRenderer(this, 38, 16);
         connectorFrontToggle.addBox(0F, 0F, 0F, 10, 6, 1, false);
         connectorFrontToggle.setRotationPoint(-5F, 13F, -7F);
         connectorFrontToggle.setTextureSize(64, 64);
         connectorFrontToggle.mirror = true;
         setRotation(connectorFrontToggle, 0F, 0F, 0F);
-        connectorTopToggle = new ModelRenderer(this, 0, 19);
+        ModelRenderer connectorTopToggle = new ModelRenderer(this, 0, 19);
         connectorTopToggle.addBox(0F, 0F, 0F, 10, 1, 6, false);
         connectorTopToggle.setRotationPoint(-5F, 9F, -3F);
         connectorTopToggle.setTextureSize(64, 64);
         connectorTopToggle.mirror = true;
         setRotation(connectorTopToggle, 0F, 0F, 0F);
-        portBackToggle = new ModelRenderer(this, 18, 35);
+        ModelRenderer portBackToggle = new ModelRenderer(this, 18, 35);
         portBackToggle.addBox(0F, 0F, 0F, 8, 8, 1, false);
         portBackToggle.setRotationPoint(-4F, 12F, 7F);
         portBackToggle.setTextureSize(64, 64);
         portBackToggle.mirror = true;
         setRotation(portBackToggle, 0F, 0F, 0F);
-        portBottomToggle = new ModelRenderer(this, 0, 26);
+        ModelRenderer portBottomToggle = new ModelRenderer(this, 0, 26);
         portBottomToggle.addBox(0F, 0F, 0F, 8, 1, 8, false);
         portBottomToggle.setRotationPoint(-4F, 23F, -4F);
         portBottomToggle.setTextureSize(64, 64);
         portBottomToggle.mirror = true;
         setRotation(portBottomToggle, 0F, 0F, 0F);
-        portFrontToggle = new ModelRenderer(this, 18, 35);
+        ModelRenderer portFrontToggle = new ModelRenderer(this, 18, 35);
         portFrontToggle.addBox(0F, 0F, 0F, 8, 8, 1, false);
         portFrontToggle.setRotationPoint(-4F, 12F, -8F);
         portFrontToggle.setTextureSize(64, 64);
         portFrontToggle.mirror = true;
         setRotation(portFrontToggle, 0F, 0F, 0F);
-        portLeftToggle = new ModelRenderer(this, 0, 35);
+        ModelRenderer portLeftToggle = new ModelRenderer(this, 0, 35);
         portLeftToggle.addBox(0F, 0F, 0F, 1, 8, 8, false);
         portLeftToggle.setRotationPoint(-8F, 12F, -4F);
         portLeftToggle.setTextureSize(64, 64);
         portLeftToggle.mirror = true;
         setRotation(portLeftToggle, 0F, 0F, 0F);
-        portRightToggle = new ModelRenderer(this, 0, 35);
+        ModelRenderer portRightToggle = new ModelRenderer(this, 0, 35);
         portRightToggle.addBox(0F, 0F, 0F, 1, 8, 8, false);
         portRightToggle.setRotationPoint(7F, 12F, -4F);
         portRightToggle.setTextureSize(64, 64);
         portRightToggle.mirror = true;
         setRotation(portRightToggle, 0F, 0F, 0F);
-        portTopToggle = new ModelRenderer(this, 0, 26);
+        ModelRenderer portTopToggle = new ModelRenderer(this, 0, 26);
         portTopToggle.addBox(0F, 0F, 0F, 8, 1, 8, false);
         portTopToggle.setRotationPoint(-4F, 8F, -4F);
         portTopToggle.setTextureSize(64, 64);
         portTopToggle.mirror = true;
         setRotation(portTopToggle, 0F, 0F, 0F);
-        ledTop1 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledTop1 = new ModelRenderer(this, 0, 51);
         ledTop1.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledTop1.setRotationPoint(-5.5F, 8.1F, -0.5F);
         ledTop1.setTextureSize(64, 64);
         ledTop1.mirror = true;
         setRotation(ledTop1, 0F, 0F, 0F);
-        ledTop2 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledTop2 = new ModelRenderer(this, 0, 51);
         ledTop2.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledTop2.setRotationPoint(4.5F, 8.1F, -0.5F);
         ledTop2.setTextureSize(64, 64);
         ledTop2.mirror = true;
         setRotation(ledTop2, 0F, 0F, 0F);
-        ledBack1 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledBack1 = new ModelRenderer(this, 0, 51);
         ledBack1.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledBack1.setRotationPoint(-5.5F, 15.5F, 6.9F);
         ledBack1.setTextureSize(64, 64);
         ledBack1.mirror = true;
         setRotation(ledBack1, 0F, 0F, 0F);
-        ledBack2 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledBack2 = new ModelRenderer(this, 0, 51);
         ledBack2.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledBack2.setRotationPoint(4.5F, 15.5F, 6.9F);
         ledBack2.setTextureSize(64, 64);
         ledBack2.mirror = true;
         setRotation(ledBack2, 0F, 0F, 0F);
-        ledBottom2 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledBottom2 = new ModelRenderer(this, 0, 51);
         ledBottom2.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledBottom2.setRotationPoint(4.5F, 22.9F, -0.5F);
         ledBottom2.setTextureSize(64, 64);
         ledBottom2.mirror = true;
         setRotation(ledBottom2, 0F, 0F, 0F);
-        ledBottom1 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledBottom1 = new ModelRenderer(this, 0, 51);
         ledBottom1.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledBottom1.setRotationPoint(-5.5F, 22.9F, -0.5F);
         ledBottom1.setTextureSize(64, 64);
         ledBottom1.mirror = true;
         setRotation(ledBottom1, 0F, 0F, 0F);
-        ledFront1 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledFront1 = new ModelRenderer(this, 0, 51);
         ledFront1.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledFront1.setRotationPoint(-5.5F, 15.5F, -7.9F);
         ledFront1.setTextureSize(64, 64);
         ledFront1.mirror = true;
         setRotation(ledFront1, 0F, 0F, 0F);
-        ledFront2 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledFront2 = new ModelRenderer(this, 0, 51);
         ledFront2.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledFront2.setRotationPoint(4.5F, 15.5F, -7.9F);
         ledFront2.setTextureSize(64, 64);
         ledFront2.mirror = true;
         setRotation(ledFront2, 0F, 0F, 0F);
-        ledRight2 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledRight2 = new ModelRenderer(this, 0, 51);
         ledRight2.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledRight2.setRotationPoint(6.9F, 15.5F, 4.5F);
         ledRight2.setTextureSize(64, 64);
         ledRight2.mirror = true;
         setRotation(ledRight2, 0F, 0F, 0F);
-        ledRight1 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledRight1 = new ModelRenderer(this, 0, 51);
         ledRight1.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledRight1.setRotationPoint(6.9F, 15.5F, -5.5F);
         ledRight1.setTextureSize(64, 64);
         ledRight1.mirror = true;
         setRotation(ledRight1, 0F, 0F, 0F);
-        ledLeft1 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledLeft1 = new ModelRenderer(this, 0, 51);
         ledLeft1.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledLeft1.setRotationPoint(-7.9F, 15.5F, 4.5F);
         ledLeft1.setTextureSize(64, 64);
         ledLeft1.mirror = true;
         setRotation(ledLeft1, 0F, 0F, 0F);
-        ledLeft2 = new ModelRenderer(this, 0, 51);
+        ModelRenderer ledLeft2 = new ModelRenderer(this, 0, 51);
         ledLeft2.addBox(0F, 0F, 0F, 1, 1, 1, false);
         ledLeft2.setRotationPoint(-7.9F, 15.5F, -5.5F);
         ledLeft2.setTextureSize(64, 64);
@@ -367,12 +342,13 @@ public class ModelEnergyCube extends Model {
         connectors = new ModelRenderer[]{connectorFrontToggle, connectorLeftToggle, connectorRightToggle, connectorBackToggle, connectorTopToggle, connectorBottomToggle};
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, EnergyCubeTier tier, boolean renderMain) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, EnergyCubeTier tier, boolean renderMain, boolean hasEffect) {
         if (renderMain) {
-            render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+            render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         }
         EnumColor color = tier.getBaseTier().getColor();
-        renderCorners(matrix, renderer.getBuffer(RENDER_TYPE_BASE), MekanismRenderer.FULL_LIGHT, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
+        renderCorners(matrix, getVertexBuilder(renderer, RENDER_TYPE_BASE, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, color.getColor(0),
+              color.getColor(1), color.getColor(2), 1);
     }
 
     @Override
@@ -400,7 +376,8 @@ public class ModelEnergyCube extends Model {
         corner1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderCorners(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    private void renderCorners(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue,
+          float alpha) {
         matrix.push();
         matrix.scale(1.001F, 1.005F, 1.001F);
         matrix.translate(0, -0.0061, 0);
@@ -413,22 +390,6 @@ public class ModelEnergyCube extends Model {
         corner2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         corner1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         matrix.pop();
-    }
-
-    public void renderSide(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, RelativeSide side, boolean canInput, boolean canOutput) {
-        int sideOrdinal = side.ordinal();
-        if (canInput || canOutput) {
-            IVertexBuilder buffer = renderer.getBuffer(RENDER_TYPE);
-            connectors[sideOrdinal].render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
-            ports[sideOrdinal].render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
-        }
-        if (canOutput) {
-            light = MekanismRenderer.FULL_LIGHT;
-            ports[sideOrdinal].render(matrix, renderer.getBuffer(RENDER_TYPE_BASE), light, overlayLight, 1, 1, 1, 1);
-        }
-        IVertexBuilder ledBuffer = renderer.getBuffer(canOutput ? RENDER_TYPE_ON : RENDER_TYPE_OFF);
-        leds1[sideOrdinal].render(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
-        leds2[sideOrdinal].render(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
     }
 
     public void renderSidesBatched(@Nonnull TileEntityEnergyCube tile, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
@@ -448,11 +409,11 @@ public class ModelEnergyCube extends Model {
                 }
             }
         }
-        renderSidesBatched(matrix, renderer, light, overlayLight, enabledSides, outputSides);
+        renderSidesBatched(matrix, renderer, light, overlayLight, enabledSides, outputSides, false);
     }
 
     public void renderSidesBatched(@Nonnull ItemStack stack, EnergyCubeTier tier, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int overlayLight) {
+          int overlayLight, boolean hasEffect) {
         Set<RelativeSide> enabledSides;
         Set<RelativeSide> outputSides;
         CompoundNBT configData = ItemDataUtils.getDataMapIfPresent(stack);
@@ -478,35 +439,34 @@ public class ModelEnergyCube extends Model {
                 outputSides = EnumSet.of(RelativeSide.FRONT);
             }
         }
-        renderSidesBatched(matrix, renderer, light, overlayLight, enabledSides, outputSides);
+        renderSidesBatched(matrix, renderer, light, overlayLight, enabledSides, outputSides, hasEffect);
     }
 
     /**
-     * Batched version of {@link #renderSide(MatrixStack, IRenderTypeBuffer, int, int, RelativeSide, boolean, boolean)} that render all sides per render type before
-     * switching to the next render type. This is because the way Minecraft draws custom render types, is it flushes and instantly draws as soon as it gets a new type if
-     * it doesn't know how to handle the type.
+     * Batched version of to render sides of the energy cube that render all sides per render type before switching to the next render type. This is because the way
+     * Minecraft draws custom render types, is it flushes and instantly draws as soon as it gets a new type if it doesn't know how to handle the type.
      */
     private void renderSidesBatched(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, Set<RelativeSide> enabledSides,
-          Set<RelativeSide> outputSides) {
+          Set<RelativeSide> outputSides, boolean hasEffect) {
         if (!enabledSides.isEmpty()) {
-            IVertexBuilder buffer = renderer.getBuffer(RENDER_TYPE);
+            IVertexBuilder buffer = getVertexBuilder(renderer, RENDER_TYPE, hasEffect);
             for (RelativeSide enabledSide : enabledSides) {
                 int sideOrdinal = enabledSide.ordinal();
                 connectors[sideOrdinal].render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
                 ports[sideOrdinal].render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
             }
             if (!outputSides.isEmpty()) {
-                buffer = renderer.getBuffer(RENDER_TYPE_BASE);
+                buffer = getVertexBuilder(renderer, RENDER_TYPE_BASE, hasEffect);
                 for (RelativeSide outputSide : outputSides) {
                     ports[outputSide.ordinal()].render(matrix, buffer, MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 1);
                 }
-                renderLEDS(outputSides, renderer.getBuffer(RENDER_TYPE_ON), matrix, MekanismRenderer.FULL_LIGHT, overlayLight);
+                renderLEDS(outputSides, getVertexBuilder(renderer, RENDER_TYPE_ON, hasEffect), matrix, MekanismRenderer.FULL_LIGHT, overlayLight);
             }
         }
         if (outputSides.size() < EnumUtils.SIDES.length) {
             Set<RelativeSide> remainingSides = EnumSet.allOf(RelativeSide.class);
             remainingSides.removeAll(outputSides);
-            renderLEDS(remainingSides, renderer.getBuffer(RENDER_TYPE_OFF), matrix, light, overlayLight);
+            renderLEDS(remainingSides, getVertexBuilder(renderer, RENDER_TYPE_OFF, hasEffect), matrix, light, overlayLight);
         }
     }
 
@@ -518,18 +478,12 @@ public class ModelEnergyCube extends Model {
         }
     }
 
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
-    }
-
-    public static class ModelEnergyCore extends Model {
+    public static class ModelEnergyCore extends MekanismModel {
 
         private static final ResourceLocation CORE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");
 
         private final RenderType RENDER_TYPE = getRenderType(CORE_TEXTURE);
-        private ModelRenderer cube;
+        private final ModelRenderer cube;
 
         public ModelEnergyCore() {
             super(MekanismRenderType::mekStandard);

@@ -25,7 +25,7 @@ public class RenderSecurityDesk extends MekanismTileEntityRenderer<TileEntitySec
     @Override
     protected void render(TileEntitySecurityDesk tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         performTranslations(tile, matrix);
-        model.render(matrix, renderer, light, overlayLight);
+        model.render(matrix, renderer, light, overlayLight, false);
         matrix.pop();
     }
 

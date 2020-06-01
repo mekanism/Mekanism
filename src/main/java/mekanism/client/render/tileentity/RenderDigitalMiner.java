@@ -26,7 +26,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
     @Override
     protected void render(TileEntityDigitalMiner tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         performTranslations(tile, matrix);
-        model.render(matrix, renderer, light, overlayLight, tile.getActive());
+        model.render(matrix, renderer, light, overlayLight, tile.getActive(), false);
         matrix.pop();
         if (tile.clientRendering) {
             profiler.startSection(ProfilerConstants.DIGITAL_MINER_VISUALS);

@@ -26,7 +26,7 @@ public class RenderSolarNeutronActivator extends MekanismTileEntityRenderer<Tile
     protected void render(TileEntitySolarNeutronActivator tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
         performTranslations(tile, matrix);
-        model.render(matrix, renderer, light, overlayLight);
+        model.render(matrix, renderer, light, overlayLight, false);
         matrix.pop();
     }
 

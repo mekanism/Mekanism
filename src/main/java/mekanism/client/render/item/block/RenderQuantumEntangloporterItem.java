@@ -19,7 +19,7 @@ public class RenderQuantumEntangloporterItem extends ItemStackTileEntityRenderer
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.translate(0, -1, 0);
         //TODO: Try to get the main part rendering based on the json model instead
-        quantumEntangloporter.render(matrix, renderer, light, overlayLight, true);
+        quantumEntangloporter.render(matrix, renderer, light, overlayLight, true, stack.hasEffect());
         matrix.pop();
     }
 }

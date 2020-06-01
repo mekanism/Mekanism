@@ -53,7 +53,7 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
         matrix.scale(1.168F, 1.168F, 1.168F);
         //Shift the fluid slightly so that is visible with the min amount in
         matrix.translate(0, -0.06, 0);
-        modelFluidTank.render(matrix, renderer, light, overlayLight, tier);
+        modelFluidTank.render(matrix, renderer, light, overlayLight, tier, stack.hasEffect());
         matrix.pop();
     }
 

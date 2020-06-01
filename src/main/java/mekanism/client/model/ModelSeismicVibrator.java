@@ -8,11 +8,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelSeismicVibrator extends Model {
+public class ModelSeismicVibrator extends MekanismModel {
 
     private static final ResourceLocation VIBRATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "seismic_vibrator.png");
     private final RenderType RENDER_TYPE = getRenderType(VIBRATOR_TEXTURE);
@@ -340,11 +339,11 @@ public class ModelSeismicVibrator extends Model {
         setRotation(rivet9, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float piston) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float piston, boolean hasEffect) {
         shaft1.rotationPointY = 6 - (piston * 12);
         plate2.rotationPointY = 21 - (piston * 12);
         plate3.rotationPointY = 22 - (piston * 12);
-        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
@@ -405,11 +404,5 @@ public class ModelSeismicVibrator extends Model {
         rivet8.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         rivet4.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         rivet9.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-    }
-
-    private void setRotation(ExtendedModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

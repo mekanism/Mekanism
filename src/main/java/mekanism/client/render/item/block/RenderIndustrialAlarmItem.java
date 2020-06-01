@@ -15,7 +15,7 @@ public class RenderIndustrialAlarmItem extends ItemStackTileEntityRenderer {
     public void render(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         matrix.push();
         matrix.translate(0.5, 0.3, 0.5);
-        industrialAlarm.render(matrix, renderer, light, overlayLight, false, 0, true);
+        industrialAlarm.render(matrix, renderer, light, overlayLight, false, 0, true, stack.hasEffect());
         matrix.pop();
     }
 }

@@ -8,13 +8,11 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelJetpack extends Model {
+public class ModelJetpack extends MekanismModel {
 
     private static final ResourceLocation JETPACK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png");
     private static final RenderType WING_RENDER_TYPE = MekanismRenderType.mekStandard(JETPACK_TEXTURE);
@@ -191,10 +189,6 @@ public class ModelJetpack extends Model {
         renderWings(matrix, getVertexBuilder(renderer, wingRenderType, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.2F);
     }
 
-    private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, RenderType renderType, boolean hasEffect) {
-        return ItemRenderer.getBuffer(renderer, renderType, false, hasEffect);
-    }
-
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         Packtop.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
@@ -224,11 +218,5 @@ public class ModelJetpack extends Model {
     public void renderWings(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         WingbladeL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         WingbladeR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    protected void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

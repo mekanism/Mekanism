@@ -19,7 +19,7 @@ public class RenderResistiveHeaterItem extends ItemStackTileEntityRenderer {
         matrix.translate(0.5, 0.5, 0.5);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.translate(0, -1, 0);
-        resistiveHeater.render(matrix, renderer, light, overlayLight, !StorageUtils.getStoredEnergyFromNBT(stack).isZero());
+        resistiveHeater.render(matrix, renderer, light, overlayLight, !StorageUtils.getStoredEnergyFromNBT(stack).isZero(), stack.hasEffect());
         matrix.pop();
     }
 }
