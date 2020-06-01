@@ -1,20 +1,21 @@
 package mekanism.client.render.transmitter;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.matrix.MatrixStack.Entry;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.ParametersAreNonnullByDefault;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.matrix.MatrixStack.Entry;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.obj.ContentsModelConfiguration;
 import mekanism.client.render.obj.VisibleModelConfiguration;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -54,8 +55,12 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
     }
 
     protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, int rgb, float alpha, int light, int overlayLight, TextureAtlasSprite icon) {
+        List<String> segments = Arrays.stream(EnumUtils.DIRECTIONS)
+              .filter(s -> transmitter.getConnectionType(s) != ConnectionType.NONE)
+              .map(s -> s.getName() + "NORMAL")
+              .collect(Collectors.toList());
         renderModel(transmitter, matrix, builder, MekanismRenderer.getRed(rgb), MekanismRenderer.getGreen(rgb), MekanismRenderer.getBlue(rgb), alpha, light, overlayLight, icon,
-              Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName() + transmitter.getConnectionType(side).getName().toUpperCase()).collect(Collectors.toList()));
+              segments);
     }
 
     protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, float red, float green, float blue, float alpha, int light, int overlayLight,
