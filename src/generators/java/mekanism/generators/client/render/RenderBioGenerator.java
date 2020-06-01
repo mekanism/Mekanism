@@ -53,7 +53,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 180, 0, 270, 90);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
-        model.render(matrix, renderer, light, overlayLight);
+        model.render(matrix, renderer, light, overlayLight, false);
         matrix.pop();
     }
 

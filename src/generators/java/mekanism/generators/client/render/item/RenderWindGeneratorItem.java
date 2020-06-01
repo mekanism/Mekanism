@@ -34,7 +34,7 @@ public class RenderWindGeneratorItem extends ItemStackTileEntityRenderer {
         matrix.push();
         matrix.translate(0.5, 0.5, 0.5);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
-        windGenerator.render(matrix, renderer, angle, light, overlayLight);
+        windGenerator.render(matrix, renderer, angle, light, overlayLight, stack.hasEffect());
         matrix.pop();
     }
 }

@@ -25,7 +25,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
     protected void render(TileEntityIndustrialAlarm tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         performTranslations(tile, matrix);
         float rotation = (tile.getWorld().getGameTime() + partialTick) * ROTATE_SPEED % 360;
-        model.render(matrix, renderer, light, overlayLight, Attribute.isActive(tile.getBlockState()), rotation, false);
+        model.render(matrix, renderer, light, overlayLight, Attribute.isActive(tile.getBlockState()), rotation, false, false);
         matrix.pop();
     }
 

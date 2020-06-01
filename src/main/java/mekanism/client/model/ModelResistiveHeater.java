@@ -9,11 +9,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelResistiveHeater extends Model {
+public class ModelResistiveHeater extends MekanismModel {
 
     private static final ResourceLocation HEATER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "resistive_heater.png");
     private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "resistive_heater_overlay_on.png");
@@ -171,12 +170,12 @@ public class ModelResistiveHeater extends Model {
         setRotation(portLeft, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean on) {
-        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean on, boolean hasEffect) {
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         matrix.push();
         matrix.scale(1.001F, 1.001F, 1.001F);
         matrix.translate(0, -0.0011, 0);
-        render(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 1);
+        render(matrix, getVertexBuilder(renderer, on ? RENDER_TYPE_ON : RENDER_TYPE_OFF, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 1);
         matrix.pop();
     }
 
@@ -203,11 +202,5 @@ public class ModelResistiveHeater extends Model {
         bar3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         wallRight.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         portLeft.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

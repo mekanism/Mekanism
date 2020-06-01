@@ -18,7 +18,7 @@ public class RenderDigitalMinerItem extends ItemStackTileEntityRenderer {
         matrix.push();
         matrix.translate(0.5, 0.5, 0.5);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
-        digitalMiner.render(matrix, renderer, light, overlayLight, !StorageUtils.getStoredEnergyFromNBT(stack).isZero());
+        digitalMiner.render(matrix, renderer, light, overlayLight, !StorageUtils.getStoredEnergyFromNBT(stack).isZero(), stack.hasEffect());
         matrix.pop();
     }
 }

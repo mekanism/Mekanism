@@ -6,13 +6,11 @@ import javax.annotation.Nonnull;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelScubaTank extends Model {
+public class ModelScubaTank extends MekanismModel {
 
     private static final ResourceLocation TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
     private final RenderType RENDER_TYPE = getRenderType(TANK_TEXTURE);
@@ -90,11 +88,7 @@ public class ModelScubaTank extends Model {
     }
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        render(matrix, getVertexBuilder(renderer, hasEffect), light, overlayLight, 1, 1, 1, 1);
-    }
-
-    private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, boolean hasEffect) {
-        return ItemRenderer.getBuffer(renderer, RENDER_TYPE, false, hasEffect);
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
@@ -108,11 +102,5 @@ public class ModelScubaTank extends Model {
         tankpipelower.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         tankpipeupper.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         tankbackbrace.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

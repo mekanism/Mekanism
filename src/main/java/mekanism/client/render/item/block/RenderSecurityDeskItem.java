@@ -18,7 +18,7 @@ public class RenderSecurityDeskItem extends ItemStackTileEntityRenderer {
         matrix.translate(0.5, 0.5, 0.5);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.translate(0, -0.8, 0);
-        securityDesk.render(matrix, renderer, light, overlayLight);
+        securityDesk.render(matrix, renderer, light, overlayLight, stack.hasEffect());
         matrix.pop();
     }
 }

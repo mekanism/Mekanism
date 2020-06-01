@@ -9,11 +9,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelQuantumEntangloporter extends Model {
+public class ModelQuantumEntangloporter extends MekanismModel {
 
     private static final ResourceLocation ENTANGLOPORTER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "quantum_entangloporter.png");
     private static final ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "quantum_entangloporter_overlay.png");
@@ -301,14 +300,14 @@ public class ModelQuantumEntangloporter extends Model {
         setRotation(corner8, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean renderMain) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean renderMain, boolean hasEffect) {
         if (renderMain) {
-            render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+            render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         }
         matrix.push();
         matrix.scale(1.001F, 1.001F, 1.001F);
         matrix.translate(0, -0.0011, 0);
-        render(matrix, renderer.getBuffer(RENDER_TYPE_OVERLAY), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 1);
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE_OVERLAY, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 1);
         matrix.pop();
     }
 
@@ -354,11 +353,5 @@ public class ModelQuantumEntangloporter extends Model {
         corner6.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         corner7.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         corner8.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

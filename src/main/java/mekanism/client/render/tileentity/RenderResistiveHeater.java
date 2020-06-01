@@ -27,7 +27,7 @@ public class RenderResistiveHeater extends MekanismTileEntityRenderer<TileEntity
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
-        model.render(matrix, renderer, light, overlayLight, tile.getActive());
+        model.render(matrix, renderer, light, overlayLight, tile.getActive(), false);
         matrix.pop();
     }
 

@@ -3,15 +3,15 @@ package mekanism.generators.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.client.model.MekanismModel;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelHeatGenerator extends Model {
+public class ModelHeatGenerator extends MekanismModel {
 
     private static final ResourceLocation GENERATOR_TEXTURE = MekanismGenerators.rl("render/heat_generator.png");
     private static final ResourceLocation OVERLAY_ON = MekanismGenerators.rl("render/heat_generator_overlay_on.png");
@@ -144,14 +144,14 @@ public class ModelHeatGenerator extends Model {
         setRotation(base, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean on) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean on, boolean hasEffect) {
         //Render the main model
-        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         //Adjust size/positioning slightly and render the overlay
         matrix.push();
         matrix.scale(1.001F, 1.001F, 1.001F);
         matrix.translate(0, -0.0011, 0);
-        render(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), light, overlayLight, 1, 1, 1, 1);
+        render(matrix, getVertexBuilder(renderer, on ? RENDER_TYPE_ON : RENDER_TYPE_OFF, hasEffect), light, overlayLight, 1, 1, 1, 1);
         matrix.pop();
     }
 
@@ -174,11 +174,5 @@ public class ModelHeatGenerator extends Model {
         fin5.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         fin6.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         base.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

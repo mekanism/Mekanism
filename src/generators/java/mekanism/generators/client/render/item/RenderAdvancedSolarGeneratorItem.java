@@ -18,7 +18,7 @@ public class RenderAdvancedSolarGeneratorItem extends ItemStackTileEntityRendere
         matrix.translate(0.5, 0.5, 0.5);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.translate(0, 0.2, 0);
-        advancedSolarGenerator.render(matrix, renderer, light, overlayLight);
+        advancedSolarGenerator.render(matrix, renderer, light, overlayLight, stack.hasEffect());
         matrix.pop();
     }
 }

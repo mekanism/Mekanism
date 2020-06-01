@@ -8,11 +8,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelChemicalDissolutionChamber extends Model {
+public class ModelChemicalDissolutionChamber extends MekanismModel {
 
     private static final ResourceLocation DISSOLUTION_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "chemical_dissolution_chamber.png");
     private final RenderType RENDER_TYPE = getRenderType(DISSOLUTION_TEXTURE);
@@ -236,11 +235,11 @@ public class ModelChemicalDissolutionChamber extends Model {
         setRotation(portToggle2, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         //Render the glass on a more translucent layer
         //Note: The glass makes water, ice etc behind it invisible. This is due to an engine limitation
-        glass.render(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+        glass.render(matrix, getVertexBuilder(renderer, GLASS_RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
@@ -274,11 +273,5 @@ public class ModelChemicalDissolutionChamber extends Model {
         nozzle1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         portToggle1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         portToggle2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

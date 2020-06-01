@@ -25,7 +25,7 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     @Override
     protected void render(TileEntitySeismicVibrator tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         float actualRate = performTranslationsAndGetRate(tile, partialTick, matrix);
-        model.render(matrix, renderer, light, overlayLight, actualRate);
+        model.render(matrix, renderer, light, overlayLight, actualRate, false);
         matrix.pop();
     }
 

@@ -27,7 +27,7 @@ public class RenderQuantumEntangloporter extends MekanismTileEntityRenderer<Tile
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
-        model.render(matrix, renderer, light, overlayLight, false);
+        model.render(matrix, renderer, light, overlayLight, false, false);
         matrix.pop();
     }
 

@@ -8,13 +8,11 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelAtomicDisassembler extends Model {
+public class ModelAtomicDisassembler extends MekanismModel {
 
     private static final ResourceLocation DISASSEMBLER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "atomic_disassembler.png");
     private static final RenderType BLADE_RENDER_TYPE = MekanismRenderType.bladeRender(DISASSEMBLER_TEXTURE);
@@ -145,10 +143,6 @@ public class ModelAtomicDisassembler extends Model {
         renderBlade(matrix, getVertexBuilder(renderer, BLADE_RENDER_TYPE, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.75F);
     }
 
-    private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, RenderType renderType, boolean hasEffect) {
-        return ItemRenderer.getBuffer(renderer, renderType, false, hasEffect);
-    }
-
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         handle.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
@@ -170,11 +164,5 @@ public class ModelAtomicDisassembler extends Model {
         bladeFrontUpper.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         bladeFrontLower.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         bladeBackSmall.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }

@@ -28,7 +28,7 @@ public class RenderHeatGenerator extends MekanismTileEntityRenderer<TileEntityHe
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 180, 0, 270, 90);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
-        model.render(matrix, renderer, light, overlayLight, tile.getActive());
+        model.render(matrix, renderer, light, overlayLight, tile.getActive(), false);
         matrix.pop();
     }
 

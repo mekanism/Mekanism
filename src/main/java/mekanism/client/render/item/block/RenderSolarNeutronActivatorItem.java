@@ -18,7 +18,7 @@ public class RenderSolarNeutronActivatorItem extends ItemStackTileEntityRenderer
         matrix.translate(0.5, 0.5, 0.5);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.translate(0, -0.55, 0);
-        solarNeutronActivator.render(matrix, renderer, light, overlayLight);
+        solarNeutronActivator.render(matrix, renderer, light, overlayLight, stack.hasEffect());
         matrix.pop();
     }
 }

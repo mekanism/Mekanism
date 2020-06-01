@@ -18,7 +18,7 @@ public class RenderSeismicVibratorItem extends ItemStackTileEntityRenderer {
         matrix.translate(0.5, 0.5, 0.5);
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.translate(0, -0.55, 0);
-        seismicVibrator.render(matrix, renderer, light, overlayLight, 0);
+        seismicVibrator.render(matrix, renderer, light, overlayLight, 0, stack.hasEffect());
         matrix.pop();
     }
 }

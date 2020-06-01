@@ -6,13 +6,11 @@ import javax.annotation.Nonnull;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelFreeRunners extends Model {
+public class ModelFreeRunners extends MekanismModel {
 
     private static final ResourceLocation FREE_RUNNER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "free_runners.png");
     private final RenderType RENDER_TYPE = getRenderType(FREE_RUNNER_TEXTURE);
@@ -70,11 +68,7 @@ public class ModelFreeRunners extends Model {
     }
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        render(matrix, getVertexBuilder(renderer, hasEffect), light, overlayLight, 1, 1, 1, 1);
-    }
-
-    private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, boolean hasEffect) {
-        return ItemRenderer.getBuffer(renderer, RENDER_TYPE, false, hasEffect);
+        render(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
@@ -88,7 +82,7 @@ public class ModelFreeRunners extends Model {
     }
 
     public void renderLeg(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, boolean left) {
-        IVertexBuilder vertexBuilder = getVertexBuilder(renderer, hasEffect);
+        IVertexBuilder vertexBuilder = getVertexBuilder(renderer, RENDER_TYPE, hasEffect);
         float red = 1;
         float green = 1;
         float blue = 1;
@@ -102,11 +96,5 @@ public class ModelFreeRunners extends Model {
             BraceR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
             SupportR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         }
-    }
-
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
     }
 }
