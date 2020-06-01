@@ -95,7 +95,7 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
         if (!connectionMapContainsSide(allConnections, side)) {
             return ConnectionType.NONE;
         } else if (connectionMapContainsSide(transmitterConnections, side)) {
-            return ConnectionType.NORMAL;
+            return ConnectionType.TRANSMITTER;
         }
         return types[side.ordinal()];
     }
@@ -538,7 +538,7 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
                 }
                 hitSide = side;
             }
-            connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].getNext();
+            connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].getNext(t -> t != ConnectionType.TRANSMITTER);
             onModeChange(Direction.byIndex(hitSide.ordinal()));
 
             refreshConnections();
@@ -614,6 +614,7 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
 
     public enum ConnectionType implements IIncrementalEnum<ConnectionType>, IStringSerializable, IHasTranslationKey {
         NORMAL(MekanismLang.CONNECTION_NORMAL),
+        TRANSMITTER(MekanismLang.CONNECTION_NORMAL),
         PUSH(MekanismLang.CONNECTION_PUSH),
         PULL(MekanismLang.CONNECTION_PULL),
         NONE(MekanismLang.CONNECTION_NONE);

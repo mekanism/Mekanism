@@ -3,6 +3,7 @@
   "loader": "mekanism:transmitter",
   "model": "mekanism:models/block/transmitter_small.obj.mek",
   "flip-v": true,
+
   "textures": {
     "particle": "#center_down",
     "center_up": "#center_down",
@@ -10,5 +11,6 @@
     "center_south": "#center_down",
     "center_east": "#center_down",
     "center_west": "#center_down"
-  }
+  },
+  
 }

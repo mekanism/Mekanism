@@ -2,14 +2,8 @@ package mekanism.client.render.obj;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.google.common.base.Predicate;
 import mekanism.client.model.data.TransmitterModelData;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
-import net.minecraft.client.renderer.model.Material;
-import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -23,26 +17,7 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
         this.modelData = modelData.getData(TileEntitySidedPipe.TRANSMITTER_PROPERTY);
     }
 
-    @Nullable
-    private static Direction directionForPiece(@Nonnull String piece) {
-        if (piece.endsWith("down")) {
-            return Direction.DOWN;
-        } else if (piece.endsWith("up")) {
-            return Direction.UP;
-        } else if (piece.endsWith("north")) {
-            return Direction.NORTH;
-        } else if (piece.endsWith("south")) {
-            return Direction.SOUTH;
-        } else if (piece.endsWith("east")) {
-            return Direction.EAST;
-        } else if (piece.endsWith("west")) {
-            return Direction.WEST;
-        }
-        return null;
-    }
-
-    private String adjustTextureName(String name) {
-        Direction direction = directionForPiece(name);
+    /*private String adjustTextureName(String name) {
         if (direction != null) {
             if (getIconStatus(direction) != IconStatus.NO_SHOW) {
                 name = name.contains("glass") ? "#side_glass" : "#side";
@@ -108,9 +83,9 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
             }
         }
         return IconStatus.NO_SHOW;
-    }
+    }*/
 
-    @Override
+ /*   @Override
     public boolean isTexturePresent(@Nonnull String name) {
         return internal.isTexturePresent(adjustTextureName(name));
     }
@@ -119,21 +94,5 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
     @Override
     public Material resolveTexture(@Nonnull String name) {
         return internal.resolveTexture(adjustTextureName(name));
-    }
-
-    public enum IconStatus {
-        NO_ROTATION(0),
-        ROTATE_270(270),
-        NO_SHOW(0);
-
-        private float angle;
-
-        IconStatus(float angle) {
-            this.angle = angle;
-        }
-
-        public float getAngle() {
-            return angle;
-        }
-    }
+    }*/
 }

@@ -11,6 +11,7 @@ import mekanism.common.lib.Color;
 import mekanism.common.lib.math.Quaternion;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 public interface QuadTransformation {
     // down up north south west east
@@ -31,6 +32,10 @@ public interface QuadTransformation {
 
     static QuadTransformation light(float light) {
         return new LightTransformation(light, light);
+    }
+
+    static QuadTransformation translate(Vec3d translation) {
+        return new TranslationTransformation(translation);
     }
 
     static QuadTransformation rotate(Direction side) {
@@ -65,7 +70,7 @@ public interface QuadTransformation {
 
     void transform(Quad quad);
 
-    public class SideTransformation implements QuadTransformation {
+    public static class SideTransformation implements QuadTransformation {
 
         private final Direction side;
 
@@ -91,7 +96,7 @@ public interface QuadTransformation {
         }
     }
 
-    public class ColorTransformation implements QuadTransformation {
+    public static class ColorTransformation implements QuadTransformation {
 
         private final Color color;
 
@@ -115,7 +120,7 @@ public interface QuadTransformation {
         }
     }
 
-    public class LightTransformation implements QuadTransformation {
+    public static class LightTransformation implements QuadTransformation {
 
         private final float lightU;
         private final float lightV;
@@ -141,7 +146,7 @@ public interface QuadTransformation {
         }
     }
 
-    public class RotationTransformation implements QuadTransformation {
+    public static class RotationTransformation implements QuadTransformation {
 
         private final Quaternion quaternion;
 
@@ -168,7 +173,31 @@ public interface QuadTransformation {
         }
     }
 
-    public class TextureFilteredTransformation implements QuadTransformation {
+    public static class TranslationTransformation implements QuadTransformation {
+
+        private Vec3d translation;
+
+        public TranslationTransformation(Vec3d translation) {
+            this.translation = translation;
+        }
+
+        @Override
+        public void transform(Quad quad) {
+            quad.transform(v -> v.pos(v.getPos().add(translation)));
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof TranslationTransformation && translation.equals(((TranslationTransformation) other).translation);
+        }
+
+        @Override
+        public int hashCode() {
+            return translation.hashCode();
+        }
+    }
+
+    public static class TextureFilteredTransformation implements QuadTransformation {
 
         private QuadTransformation original;
         private Set<ResourceLocation> textures = new HashSet<>();
