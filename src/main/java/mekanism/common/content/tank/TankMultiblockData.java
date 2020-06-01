@@ -98,7 +98,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     public void readUpdateTag(CompoundNBT tag) {
         super.readUpdateTag(tag);
         tag.putFloat(NBTConstants.SCALE, prevScale);
-        mergedTank.addToUpdateTag(tag);
+        mergedTank.readFromUpdateTag(tag);
         readValves(tag);
     }
 
@@ -106,7 +106,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     public void writeUpdateTag(CompoundNBT tag) {
         super.writeUpdateTag(tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
-        mergedTank.readFromUpdateTag(tag);
+        mergedTank.addToUpdateTag(tag);
         writeValves(tag);
     }
 
