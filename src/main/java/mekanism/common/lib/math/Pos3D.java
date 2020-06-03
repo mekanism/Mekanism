@@ -70,17 +70,6 @@ public class Pos3D extends Vec3d {
         return new Pos3D(tag.getDouble(NBTConstants.X), tag.getDouble(NBTConstants.Y), tag.getDouble(NBTConstants.Z));
     }
 
-    /**
-     * Creates a new Pos3D from the motion of an entity.
-     *
-     * @param entity Entitiy to get the motion from
-     *
-     * @return Pos3D representing the motion of the given entity
-     */
-    public static Pos3D fromMotion(Entity entity) {
-        return new Pos3D(entity.getMotion());
-    }
-
     public static Pos3D translateMatrix(double[] matrix, Pos3D translation) {
         double x = translation.x * matrix[0] + translation.y * matrix[1] + translation.z * matrix[2] + matrix[3];
         double y = translation.x * matrix[4] + translation.y * matrix[5] + translation.z * matrix[6] + matrix[7];
@@ -165,6 +154,25 @@ public class Pos3D extends Vec3d {
      */
     public Pos3D translate(Vec3d pos) {
         return translate(pos.x, pos.y, pos.z);
+    }
+
+    /**
+     * Performs the same operation as translate(x, y, z), but with multiple Pos3Ds to avoid having to create intermediary objects.
+     *
+     * @param positions - Pos3D values to translate by
+     *
+     * @return translated Pos3D
+     */
+    public Pos3D translate(Vec3d... positions) {
+        double x = this.x;
+        double y = this.y;
+        double z = this.z;
+        for (Vec3d position : positions) {
+            x += position.x;
+            y += position.y;
+            z += position.z;
+        }
+        return new Pos3D(x, y, z);
     }
 
     /**

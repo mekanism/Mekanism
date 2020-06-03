@@ -27,7 +27,10 @@ public interface IModeItem {
     ITextComponent getScrollTextComponent(@Nonnull ItemStack stack);
 
     static boolean isModeItem(@Nonnull PlayerEntity player, @Nonnull EquipmentSlotType slotType) {
-        ItemStack stack = player.getItemStackFromSlot(slotType);
+        return isModeItem(player.getItemStackFromSlot(slotType), slotType);
+    }
+
+    static boolean isModeItem(@Nonnull ItemStack stack, @Nonnull EquipmentSlotType slotType) {
         return !stack.isEmpty() && stack.getItem() instanceof IModeItem && ((IModeItem) stack.getItem()).supportsSlotType(slotType);
     }
 }

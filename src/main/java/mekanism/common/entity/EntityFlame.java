@@ -65,12 +65,13 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         Pos3D playerPos = new Pos3D(player).translate(0, 1.6, 0);
         Pos3D flameVec = new Pos3D(1, 1, 1);
 
-        flameVec = flameVec.multiply(new Pos3D(player.getLookVec())).rotateYaw(6);
+        Vec3d lookVec = player.getLookVec();
+        flameVec = flameVec.multiply(lookVec).rotateYaw(6);
 
         Pos3D mergedVec = playerPos.translate(flameVec);
         setPosition(mergedVec.x, mergedVec.y, mergedVec.z);
 
-        Pos3D motion = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(player.getLookVec()));
+        Pos3D motion = new Pos3D(0.4, 0.4, 0.4).multiply(lookVec);
 
         setHeading(motion);
         setMotion(motion);
