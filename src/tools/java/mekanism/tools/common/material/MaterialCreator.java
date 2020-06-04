@@ -17,6 +17,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
 
     private final BaseMekanismMaterial fallBack;
 
+    private final CachedIntValue shieldDurability;
     private final CachedIntValue swordDamage;
     private final CachedFloatValue swordAtkSpeed;
     private final CachedFloatValue shovelDamage;
@@ -51,6 +52,8 @@ public class MaterialCreator extends BaseMekanismMaterial {
         fallBack = materialDefaults;
         String toolKey = materialDefaults.getRegistryPrefix();
         builder.comment(" Material Settings for " + toolKey).push(toolKey);
+        shieldDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " shields.")
+              .defineInRange(toolKey + "ShieldDurability", materialDefaults.getShieldDurability(), 0, Integer.MAX_VALUE));
         swordDamage = CachedIntValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " swords.")
               .defineInRange(toolKey + "SwordDamage", materialDefaults.getSwordDamage(), 0, Integer.MAX_VALUE));
         swordAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " swords.")
@@ -110,6 +113,11 @@ public class MaterialCreator extends BaseMekanismMaterial {
         helmetArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + toolKey + " helmets.")
               .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.HEAD), 0, Integer.MAX_VALUE));
         builder.pop();
+    }
+
+    @Override
+    public int getShieldDurability() {
+        return shieldDurability.get();
     }
 
     @Override

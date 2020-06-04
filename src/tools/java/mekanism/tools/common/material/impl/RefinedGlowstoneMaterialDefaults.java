@@ -11,6 +11,11 @@ import net.minecraft.util.SoundEvents;
 public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
+    public int getShieldDurability() {
+        return 403;
+    }
+
+    @Override
     public float getAxeDamage() {
         return 3;
     }

@@ -1,0 +1,14 @@
+{
+  "parent": "item/shield",
+  "textures": {
+    "particle": "mekanism:block/block_refined_obsidian"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "blocking": 1.0
+      },
+      "model": "mekanismtools:item/refined_obsidian_shield_blocking"
+    }
+  ]
+}

@@ -11,6 +11,11 @@ import net.minecraft.util.SoundEvents;
 public class SteelMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
+    public int getShieldDurability() {
+        return 896;
+    }
+
+    @Override
     public float getAxeDamage() {
         return 4;
     }

@@ -6,6 +6,8 @@ import net.minecraft.item.crafting.Ingredient;
 
 public abstract class BaseMekanismMaterial extends IItemTierHelper implements IArmorMaterialHelper {
 
+    public abstract int getShieldDurability();
+
     public int getSwordDamage() {
         return 3;
     }

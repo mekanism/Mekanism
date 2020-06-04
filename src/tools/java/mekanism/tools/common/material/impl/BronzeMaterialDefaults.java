@@ -11,6 +11,11 @@ import net.minecraft.util.SoundEvents;
 public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
+    public int getShieldDurability() {
+        return 784;
+    }
+
+    @Override
     public float getAxeDamage() {
         return 2;
     }

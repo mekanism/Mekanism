@@ -11,6 +11,11 @@ import net.minecraftforge.common.Tags;
 public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
+    public int getShieldDurability() {
+        return 291;
+    }
+
+    @Override
     public float getAxeDamage() {
         return 6;
     }

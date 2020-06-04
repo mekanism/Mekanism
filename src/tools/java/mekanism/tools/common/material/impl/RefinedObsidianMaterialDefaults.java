@@ -11,6 +11,11 @@ import net.minecraft.util.SoundEvents;
 public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
+    public int getShieldDurability() {
+        return 1_120;
+    }
+
+    @Override
     public float getAxeDamage() {
         return 2;
     }

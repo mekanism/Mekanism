@@ -1,4 +1,4 @@
-package mekanism.tools.client;
+package mekanism.tools.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;

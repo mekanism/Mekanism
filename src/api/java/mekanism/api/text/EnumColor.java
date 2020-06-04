@@ -1,6 +1,7 @@
 package mekanism.api.text;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.MathUtils;
 import net.minecraft.block.material.MaterialColor;
@@ -51,15 +52,16 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     private final APILang langEntry;
     private final String englishName;
     private final String registryPrefix;
+    @Nullable
     private final String dyeName;
     private final MaterialColor mapColor;
     private final Tag<Item> dyeTag;
 
-    EnumColor(String s, APILang langEntry, String englishName, String dyeName, String registryPrefix, int[] rgbCode, TextFormatting textFormatting, DyeColor dyeColor) {
+    EnumColor(String s, APILang langEntry, String englishName, @Nullable String dyeName, String registryPrefix, int[] rgbCode, TextFormatting textFormatting, DyeColor dyeColor) {
         this(s, langEntry, englishName, dyeName, registryPrefix, rgbCode, textFormatting, dyeColor.getMapColor(), dyeColor.getTag());
     }
 
-    EnumColor(String code, APILang langEntry, String englishName, String dyeName, String registryPrefix, int[] rgbCode, TextFormatting textFormatting,
+    EnumColor(String code, APILang langEntry, String englishName, @Nullable String dyeName, String registryPrefix, int[] rgbCode, TextFormatting textFormatting,
           MaterialColor mapColor, Tag<Item> dyeTag) {
         this.code = code;
         this.langEntry = langEntry;
@@ -86,6 +88,10 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
 
     public Tag<Item> getDyeTag() {
         return dyeTag;
+    }
+
+    public boolean hasDyeName() {
+        return dyeName != null;
     }
 
     /**

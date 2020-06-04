@@ -1,0 +1,14 @@
+{
+  "parent": "item/shield",
+  "textures": {
+    "particle": "mekanism:block/block_steel"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "blocking": 1.0
+      },
+      "model": "mekanismtools:item/steel_shield_blocking"
+    }
+  ]
+}

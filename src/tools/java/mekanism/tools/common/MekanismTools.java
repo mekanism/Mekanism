@@ -8,6 +8,7 @@ import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.registries.ToolsItems;
+import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
@@ -46,6 +47,7 @@ public class MekanismTools implements IModule {
         MinecraftForge.EVENT_BUS.addListener(this::onLivingSpecialSpawn);
 
         ToolsItems.ITEMS.register(modEventBus);
+        ToolsRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
     }
