@@ -53,6 +53,8 @@ public enum SubstanceType {
                 return tile.canHandleInfusion();
             case PIGMENT:
                 return tile.canHandlePigment();
+            case SLURRY:
+                return tile.canHandleSlurry();
             case HEAT:
                 return tile.canHandleHeat();
         }
