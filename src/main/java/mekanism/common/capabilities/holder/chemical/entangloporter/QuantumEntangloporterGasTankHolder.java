@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.holder.chemical;
+package mekanism.common.capabilities.holder.chemical.entangloporter;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +9,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.holder.QuantumEntangloporterConfigHolder;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import net.minecraft.util.Direction;
 

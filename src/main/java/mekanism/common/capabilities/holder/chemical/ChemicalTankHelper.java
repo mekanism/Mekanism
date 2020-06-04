@@ -18,6 +18,10 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigGasTankHolder;
+import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigInfusionTankHolder;
+import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigPigmentTankHolder;
+import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigSlurryTankHolder;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.util.Direction;
 
@@ -46,8 +50,21 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         return new ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank>(new ChemicalTankHolder<>(facingSupplier));
     }
 
+    //TODO - V10: Decide if we want to add side configs for the various other chemical types
     public static ChemicalTankHelper<Gas, GasStack, IGasTank> forSideGasWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
         return new ChemicalTankHelper<>(new ConfigGasTankHolder(facingSupplier, configSupplier));
+    }
+
+    public static ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> forSideInfusionWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
+        return new ChemicalTankHelper<>(new ConfigInfusionTankHolder(facingSupplier, configSupplier));
+    }
+
+    public static ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> forSidePigmentWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
+        return new ChemicalTankHelper<>(new ConfigPigmentTankHolder(facingSupplier, configSupplier));
+    }
+
+    public static ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> forSideSlurryWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
+        return new ChemicalTankHelper<>(new ConfigSlurryTankHolder(facingSupplier, configSupplier));
     }
 
     public void addTank(@Nonnull TANK tank) {

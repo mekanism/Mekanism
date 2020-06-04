@@ -3,6 +3,9 @@ package mekanism.common.tile.interfaces;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
@@ -43,18 +46,26 @@ public interface ISideConfiguration {
 
     @Nullable
     default DataType getActiveDataType(Object container) {
+        ConfigInfo info = null;
         if (container instanceof IGasTank && getConfig().supports(TransmissionType.GAS)) {
-            ConfigInfo info = getConfig().getConfig(TransmissionType.GAS);
-            List<DataType> types = info.getDataTypeForContainer(container);
-            return types.size() > 0 && types.size() < info.getSupportedDataTypes().size() - 1 ? types.get(0) : null;
+            info = getConfig().getConfig(TransmissionType.GAS);
+        } else if (container instanceof IInfusionTank && getConfig().supports(TransmissionType.INFUSION)) {
+            info = getConfig().getConfig(TransmissionType.INFUSION);
+        } else if (container instanceof IPigmentTank && getConfig().supports(TransmissionType.PIGMENT)) {
+            info = getConfig().getConfig(TransmissionType.PIGMENT);
+        } else if (container instanceof ISlurryTank && getConfig().supports(TransmissionType.SLURRY)) {
+            info = getConfig().getConfig(TransmissionType.SLURRY);
         } else if (container instanceof IExtendedFluidTank && getConfig().supports(TransmissionType.FLUID)) {
-            ConfigInfo info = getConfig().getConfig(TransmissionType.FLUID);
-            List<DataType> types = info.getDataTypeForContainer(container);
-            return types.size() > 0 && types.size() < info.getSupportedDataTypes().size() - 1 ? types.get(0) : null;
+            info = getConfig().getConfig(TransmissionType.FLUID);
         } else if (container instanceof IInventorySlot && getConfig().supports(TransmissionType.ITEM)) {
-            ConfigInfo info = getConfig().getConfig(TransmissionType.ITEM);
+            info = getConfig().getConfig(TransmissionType.ITEM);
+        }
+        if (info != null) {
             List<DataType> types = info.getDataTypeForContainer(container);
-            return types.size() > 0 && types.size() < info.getSupportedDataTypes().size() - 1 ? types.get(0) : null;
+            int count = types.size();
+            if (count > 0 && count < info.getSupportedDataTypes().size() - 1) {
+                return types.get(0);
+            }
         }
         return null;
     }

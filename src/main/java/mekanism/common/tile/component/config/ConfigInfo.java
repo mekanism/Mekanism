@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
-import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
@@ -100,8 +100,8 @@ public class ConfigInfo {
     public void addSlotInfo(@Nonnull DataType dataType, @Nonnull ISlotInfo info) {
         slotInfo.put(dataType, info);
         // set up mapping
-        if (info instanceof GasSlotInfo) {
-            for (IGasTank tank : ((GasSlotInfo) info).getTanks()) {
+        if (info instanceof ChemicalSlotInfo) {
+            for (IChemicalTank<?, ?> tank : ((ChemicalSlotInfo<?, ?, ?>) info).getTanks()) {
                 containerTypeMapping.computeIfAbsent(tank, (t) -> new ArrayList<>()).add(dataType);
             }
         } else if (info instanceof FluidSlotInfo) {

@@ -32,8 +32,7 @@ public class GuiSlurryGauge extends GuiChemicalGauge<Slurry, SlurryStack, ISlurr
 
     @Override
     public TransmissionType getTransmission() {
-        //Currently there is no side config type for slurry
-        return null;
+        return TransmissionType.SLURRY;
     }
 
     @Override

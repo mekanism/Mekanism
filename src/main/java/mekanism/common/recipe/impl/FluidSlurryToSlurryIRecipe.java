@@ -1,10 +1,10 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.FluidGasToGasRecipe;
+import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
@@ -13,21 +13,21 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 
-public class FluidGasToGasIRecipe extends FluidGasToGasRecipe {
+public class FluidSlurryToSlurryIRecipe extends FluidSlurryToSlurryRecipe {
 
-    public FluidGasToGasIRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack output) {
-        super(id, fluidInput, gasInput, output);
+    public FluidSlurryToSlurryIRecipe(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
+        super(id, fluidInput, slurryInput, output);
     }
 
     @Nonnull
     @Override
-    public IRecipeType<FluidGasToGasRecipe> getType() {
+    public IRecipeType<FluidSlurryToSlurryRecipe> getType() {
         return MekanismRecipeType.WASHING;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<FluidGasToGasRecipe> getSerializer() {
+    public IRecipeSerializer<FluidSlurryToSlurryRecipe> getSerializer() {
         return MekanismRecipeSerializers.WASHING.getRecipeSerializer();
     }
 

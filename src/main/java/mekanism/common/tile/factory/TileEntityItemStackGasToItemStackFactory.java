@@ -23,9 +23,6 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.ITileComponent;
-import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
@@ -50,17 +47,9 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider) {
         super(blockProvider);
-
         gasInputHandler = InputHelper.getInputHandler(gasTank);
-
         configComponent.addSupported(TransmissionType.GAS);
-        ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
-        if (gasConfig != null) {
-            gasConfig.addSlotInfo(DataType.INPUT, new GasSlotInfo(true, false, gasTank));
-            //Set default config directions
-            gasConfig.fill(DataType.INPUT);
-            gasConfig.setCanEject(false);
-        }
+        configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
         secondaryEnergyPerTick = getSecondaryEnergyPerTick();
     }
 

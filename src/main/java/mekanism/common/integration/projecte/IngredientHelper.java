@@ -102,6 +102,14 @@ public class IngredientHelper {
         return addAsConversion(NSSInfuseType.createInfuseType(stack), stack.getAmount());
     }
 
+    public boolean addAsConversion(PigmentStack stack) {
+        return addAsConversion(NSSPigment.createPigment(stack), stack.getAmount());
+    }
+
+    public boolean addAsConversion(SlurryStack stack) {
+        return addAsConversion(NSSSlurry.createSlurry(stack), stack.getAmount());
+    }
+
     public boolean addAsConversion(FluidStack stack) {
         return addAsConversion(NSSFluid.createFluid(stack), stack.getAmount());
     }

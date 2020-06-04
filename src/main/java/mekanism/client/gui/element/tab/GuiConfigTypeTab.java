@@ -43,6 +43,15 @@ public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
             case GAS:
                 MekanismRenderer.color(EnumColor.YELLOW);
                 break;
+            case INFUSION:
+                MekanismRenderer.color(EnumColor.DARK_RED);
+                break;
+            case PIGMENT:
+                MekanismRenderer.color(EnumColor.PINK);
+                break;
+            case SLURRY:
+                MekanismRenderer.color(EnumColor.BROWN);
+                break;
             case ITEM:
                 break;
             case HEAT:
@@ -53,6 +62,7 @@ public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
+        //TODO - V10: FIXME, the tooltip doesn't render for some reason (probably due to the nested windows)
         displayTooltip(TextComponentUtil.translate(transmission.getTranslationKey()), mouseX, mouseY);
     }
 

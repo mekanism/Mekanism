@@ -14,6 +14,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -38,12 +39,14 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider) {
         super(blockProvider);
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
+        configComponent.addSupported(TransmissionType.INFUSION);
+        configComponent.setupInputConfig(TransmissionType.INFUSION, infusionTank);
     }
 
     @Nonnull
     @Override
     public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
-        ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusion(this::getDirection);
+        ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
         builder.addTank(infusionTank = BasicInfusionTank.input(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes,
               type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this));
         return builder.build();

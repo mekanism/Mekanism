@@ -236,6 +236,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
         CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true),
         CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true),
         CONFIGURATE_GASES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_INFUSE_TYPES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.INFUSION, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_PIGMENTS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.PIGMENT, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_SLURRIES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.SLURRY, EnumColor.BRIGHT_GREEN, true),
         CONFIGURATE_ENERGY(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ENERGY, EnumColor.BRIGHT_GREEN, true),
         CONFIGURATE_HEAT(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.HEAT, EnumColor.BRIGHT_GREEN, true),
         EMPTY(MekanismLang.CONFIGURATOR_EMPTY, null, EnumColor.DARK_RED, false),
@@ -281,6 +284,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
                     return TransmissionType.FLUID;
                 case CONFIGURATE_GASES:
                     return TransmissionType.GAS;
+                case CONFIGURATE_INFUSE_TYPES:
+                    return TransmissionType.INFUSION;
+                case CONFIGURATE_PIGMENTS:
+                    return TransmissionType.PIGMENT;
+                case CONFIGURATE_SLURRIES:
+                    return TransmissionType.SLURRY;
                 case CONFIGURATE_ENERGY:
                     return TransmissionType.ENERGY;
                 case CONFIGURATE_HEAT:

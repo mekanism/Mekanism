@@ -67,7 +67,7 @@ public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStac
         List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
         int scale = TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, scale)).collect(Collectors.toList());
-        initGas(gasStacks, 0, true, 8 - xOffset, 5 - yOffset, 16, 58, scaledGases, true);
-        initGas(gasStacks, 1, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputDefinition()), true);
+        initChemical(gasStacks, 0, true, 8 - xOffset, 5 - yOffset, 16, 58, scaledGases, true);
+        initChemical(gasStacks, 1, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputDefinition()), true);
     }
 }

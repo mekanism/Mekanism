@@ -25,15 +25,16 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 
+//TODO - V10: Make this GUI look better, we extended it vertically to be able to fit the extra types, but now there is a decent bit of empty space at the bottom
 public class GuiSideConfiguration extends GuiWindow {
 
-    private List<GuiPos> slotPosList = new ArrayList<>();
+    private final List<GuiPos> slotPosList = new ArrayList<>();
+    private final List<GuiConfigTypeTab> configTabs = new ArrayList<>();
+    private final TileEntityMekanism tile;
     private TransmissionType currentType;
-    private List<GuiConfigTypeTab> configTabs = new ArrayList<>();
-    private TileEntityMekanism tile;
 
     public GuiSideConfiguration(IGuiWrapper gui, int x, int y, TileEntityMekanism tile) {
-        super(gui, x, y, 156, 95);
+        super(gui, x, y, 156, 115);
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
         currentType = getTopTransmission();
@@ -59,8 +60,7 @@ public class GuiSideConfiguration extends GuiWindow {
         addChild(new GuiInnerScreen(gui, relativeX + 55, relativeY + 63, 16, 16));
         List<TransmissionType> transmissions = getTile().getConfig().getTransmissions();
         for (int i = 0; i < transmissions.size(); i++) {
-            TransmissionType type = transmissions.get(i);
-            GuiConfigTypeTab tab = new GuiConfigTypeTab(gui, type, relativeX + (i < 3 ? -26 : width), relativeY + (2 + 28 * (i % 3)), this, i < 3);
+            GuiConfigTypeTab tab = new GuiConfigTypeTab(gui, transmissions.get(i), relativeX + (i < 4 ? -26 : width), relativeY + (2 + 28 * (i % 4)), this, i < 4);
             addChild(tab);
             configTabs.add(tab);
         }

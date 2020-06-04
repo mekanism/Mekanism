@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import net.minecraft.item.crafting.IRecipeSerializer;

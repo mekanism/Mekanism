@@ -403,6 +403,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.TRANSMISSION_TYPE_ENERGY, "Energy");
         add(APILang.TRANSMISSION_TYPE_FLUID, "Fluids");
         add(APILang.TRANSMISSION_TYPE_GAS, "Gases");
+        add(APILang.TRANSMISSION_TYPE_INFUSION, "Infuse Types");
+        add(APILang.TRANSMISSION_TYPE_PIGMENT, "Pigments");
+        add(APILang.TRANSMISSION_TYPE_SLURRY, "Slurries");
         add(APILang.TRANSMISSION_TYPE_ITEM, "Items");
         add(APILang.TRANSMISSION_TYPE_HEAT, "Heat");
         //Chemical Attributes

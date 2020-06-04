@@ -9,6 +9,12 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.infuse.BasicInfusionTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.pigment.BasicPigmentTank;
+import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.BasicSlurryTank;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -18,6 +24,9 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
+import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
+import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
+import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -30,16 +39,23 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
-public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker {
+public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker,
+      IInfusionTracker, IPigmentTracker, ISlurryTracker {
 
-    public BasicFluidTank storedFluid;
-    public BasicGasTank storedGas;
+    private BasicFluidTank storedFluid;
+    private BasicGasTank storedGas;
+    private BasicInfusionTank storedInfusion;
+    private BasicPigmentTank storedPigment;
+    private BasicSlurryTank storedSlurry;
     private IInventorySlot storedItem;
     public IEnergyContainer storedEnergy;
-    public BasicHeatCapacitor storedHeat;
+    private BasicHeatCapacitor storedHeat;
 
     private List<IInventorySlot> inventorySlots;
     private List<IGasTank> gasTanks;
+    private List<IInfusionTank> infusionTanks;
+    private List<IPigmentTank> pigmentTanks;
+    private List<ISlurryTank> slurryTanks;
     private List<IExtendedFluidTank> fluidTanks;
     private List<IEnergyContainer> energyContainers;
     private List<IHeatCapacitor> heatCapacitors;
@@ -54,16 +70,14 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     private void presetVariables() {
-        storedFluid = BasicFluidTank.create(MekanismConfig.general.entangloporterFluidBuffer.get(), this);
-        fluidTanks = Collections.singletonList(storedFluid);
-        storedGas = BasicGasTank.create(MekanismConfig.general.entangloporterGasBuffer.get(), this);
-        gasTanks = Collections.singletonList(storedGas);
-        storedItem = EntangloporterInventorySlot.create(this);
-        inventorySlots = Collections.singletonList(storedItem);
-        storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.get(), this);
-        energyContainers = Collections.singletonList(storedEnergy);
-        storedHeat = BasicHeatCapacitor.create(1, 1, 1_000, this);
-        heatCapacitors = Collections.singletonList(storedHeat);
+        fluidTanks = Collections.singletonList(storedFluid = BasicFluidTank.create(MekanismConfig.general.entangloporterFluidBuffer.get(), this));
+        gasTanks = Collections.singletonList(storedGas = BasicGasTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
+        infusionTanks = Collections.singletonList(storedInfusion = BasicInfusionTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
+        pigmentTanks = Collections.singletonList(storedPigment = BasicPigmentTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
+        slurryTanks = Collections.singletonList(storedSlurry = BasicSlurryTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
+        inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
+        energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.get(), this));
+        heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(1, 1, 1_000, this));
     }
 
     @Override
@@ -72,6 +86,9 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         nbtTags.put(NBTConstants.ENERGY_STORED, storedEnergy.serializeNBT());
         nbtTags.put(NBTConstants.FLUID_STORED, storedFluid.serializeNBT());
         nbtTags.put(NBTConstants.GAS_STORED, storedGas.serializeNBT());
+        nbtTags.put(NBTConstants.INFUSE_TYPE_STORED, storedInfusion.serializeNBT());
+        nbtTags.put(NBTConstants.PIGMENT_STORED, storedPigment.serializeNBT());
+        nbtTags.put(NBTConstants.SLURRY_STORED, storedSlurry.serializeNBT());
         nbtTags.put(NBTConstants.ITEM, storedItem.serializeNBT());
         nbtTags.put(NBTConstants.HEAT_STORED, storedHeat.serializeNBT());
     }
@@ -83,6 +100,9 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         storedEnergy.deserializeNBT(nbtTags.getCompound(NBTConstants.ENERGY_STORED));
         storedFluid.deserializeNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
         storedGas.deserializeNBT(nbtTags.getCompound(NBTConstants.GAS_STORED));
+        storedInfusion.deserializeNBT(nbtTags.getCompound(NBTConstants.INFUSE_TYPE_STORED));
+        storedPigment.deserializeNBT(nbtTags.getCompound(NBTConstants.PIGMENT_STORED));
+        storedSlurry.deserializeNBT(nbtTags.getCompound(NBTConstants.SLURRY_STORED));
         storedItem.deserializeNBT(nbtTags.getCompound(NBTConstants.ITEM));
         storedHeat.deserializeNBT(nbtTags.getCompound(NBTConstants.HEAT_STORED));
     }
@@ -93,6 +113,9 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         storedEnergy.getEnergy().writeToBuffer(buffer);
         buffer.writeFluidStack(storedFluid.getFluid());
         ChemicalUtils.writeChemicalStack(buffer, storedGas.getStack());
+        ChemicalUtils.writeChemicalStack(buffer, storedInfusion.getStack());
+        ChemicalUtils.writeChemicalStack(buffer, storedPigment.getStack());
+        ChemicalUtils.writeChemicalStack(buffer, storedSlurry.getStack());
         buffer.writeCompoundTag(storedItem.serializeNBT());
         buffer.writeDouble(storedHeat.getHeat());
     }
@@ -104,6 +127,9 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         storedEnergy.setEnergy(FloatingLong.readFromBuffer(dataStream));
         storedFluid.setStack(dataStream.readFluidStack());
         storedGas.setStack(ChemicalUtils.readGasStack(dataStream));
+        storedInfusion.setStack(ChemicalUtils.readInfusionStack(dataStream));
+        storedPigment.setStack(ChemicalUtils.readPigmentStack(dataStream));
+        storedSlurry.setStack(ChemicalUtils.readSlurryStack(dataStream));
         storedItem.deserializeNBT(dataStream.readCompoundTag());
         storedHeat.setHeat(dataStream.readDouble());
     }
@@ -118,6 +144,24 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
+    }
+
+    @Nonnull
+    @Override
+    public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
+        return infusionTanks;
+    }
+
+    @Nonnull
+    @Override
+    public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
+        return pigmentTanks;
+    }
+
+    @Nonnull
+    @Override
+    public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
+        return slurryTanks;
     }
 
     @Nonnull

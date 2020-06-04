@@ -5,9 +5,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -16,45 +16,45 @@ import org.jetbrains.annotations.Contract;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class FluidGasToGasRecipe extends MekanismRecipe implements BiPredicate<@NonNull FluidStack, @NonNull GasStack> {
+public abstract class FluidSlurryToSlurryRecipe extends MekanismRecipe implements BiPredicate<@NonNull FluidStack, @NonNull SlurryStack> {
 
-    private final GasStackIngredient gasInput;
+    private final SlurryStackIngredient slurryInput;
     private final FluidStackIngredient fluidInput;
-    private final GasStack output;
+    private final SlurryStack output;
 
-    public FluidGasToGasRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack output) {
+    public FluidSlurryToSlurryRecipe(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
         super(id);
         this.fluidInput = fluidInput;
-        this.gasInput = gasInput;
+        this.slurryInput = slurryInput;
         this.output = output;
     }
 
     @Override
-    public boolean test(FluidStack fluidStack, GasStack gasStack) {
-        return fluidInput.test(fluidStack) && gasInput.test(gasStack);
+    public boolean test(FluidStack fluidStack, SlurryStack slurryStack) {
+        return fluidInput.test(fluidStack) && slurryInput.test(slurryStack);
     }
 
     public FluidStackIngredient getFluidInput() {
         return fluidInput;
     }
 
-    public GasStackIngredient getGasInput() {
-        return gasInput;
+    public SlurryStackIngredient getSlurryInput() {
+        return slurryInput;
     }
 
-    public GasStack getOutputRepresentation() {
+    public SlurryStack getOutputRepresentation() {
         return output;
     }
 
     @Contract(value = "_, _ -> new", pure = true)
-    public GasStack getOutput(FluidStack fluidStack, GasStack input) {
+    public SlurryStack getOutput(FluidStack fluidStack, SlurryStack slurryStack) {
         return output.copy();
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         fluidInput.write(buffer);
-        gasInput.write(buffer);
+        slurryInput.write(buffer);
         output.writeToPacket(buffer);
     }
 }

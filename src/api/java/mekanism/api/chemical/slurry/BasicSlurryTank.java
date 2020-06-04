@@ -45,6 +45,13 @@ public class BasicSlurryTank extends BasicChemicalTank<Slurry, SlurryStack> impl
         return new BasicSlurryTank(capacity, notExternal, alwaysTrueBi, validator, listener);
     }
 
+    public static BasicSlurryTank output(long capacity, @Nullable IContentsListener listener) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
+        return new BasicSlurryTank(capacity, alwaysTrueBi, internalOnly, alwaysTrue, listener);
+    }
+
     public static BasicSlurryTank create(long capacity, Predicate<@NonNull Slurry> canExtract, Predicate<@NonNull Slurry> canInsert,
           Predicate<@NonNull Slurry> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {

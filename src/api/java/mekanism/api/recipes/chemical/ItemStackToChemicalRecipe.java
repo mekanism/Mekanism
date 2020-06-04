@@ -1,4 +1,4 @@
-package mekanism.api.recipes;
+package mekanism.api.recipes.chemical;
 
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -7,6 +7,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -15,7 +16,8 @@ import net.minecraft.util.ResourceLocation;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends MekanismRecipe implements Predicate<@NonNull ItemStack> {
+public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends MekanismRecipe implements
+      Predicate<@NonNull ItemStack> {
 
     protected final ItemStackIngredient input;
     protected final STACK output;

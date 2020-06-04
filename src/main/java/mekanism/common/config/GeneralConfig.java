@@ -82,7 +82,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Quantum Entangloporter
     public final CachedFloatingLongValue entangloporterEnergyBuffer;
     public final CachedIntValue entangloporterFluidBuffer;
-    public final CachedLongValue entangloporterGasBuffer;
+    public final CachedLongValue entangloporterChemicalBuffer;
     //Security
     public final CachedBooleanValue allowProtection;
     public final CachedBooleanValue opsBypassRestrictions;
@@ -205,9 +205,9 @@ public class GeneralConfig extends BaseMekanismConfig {
         entangloporterFluidBuffer = CachedIntValue.wrap(this, builder.comment("Maximum fluid buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
               .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseStorage(), 1, Integer.MAX_VALUE));
-        entangloporterGasBuffer = CachedLongValue.wrap(this, builder.comment("Maximum gas buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
+        entangloporterChemicalBuffer = CachedLongValue.wrap(this, builder.comment("Maximum chemical buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
-              .defineInRange("gasBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
+              .defineInRange("chemicalBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
         builder.pop();
 
         builder.comment("Block security/protection Settings").push(SECURITY_CATEGORY);
