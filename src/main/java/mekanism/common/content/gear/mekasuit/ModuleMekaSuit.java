@@ -382,12 +382,12 @@ public abstract class ModuleMekaSuit extends Module {
 
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
-            PlayerEntity player = Minecraft.getInstance().player;
-            Optional<IRadiationEntity> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(player, Capabilities.RADIATION_ENTITY_CAPABILITY, null));
+            Optional<IRadiationEntity> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(Minecraft.getInstance().player,
+                  Capabilities.RADIATION_ENTITY_CAPABILITY, null));
             if (capability.isPresent()) {
-                IRadiationEntity cap = capability.get();
-                list.add(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(cap.getRadiation()),
-                      UnitDisplayUtils.getDisplayShort(cap.getRadiation(), RadiationUnit.SV, 3)));
+                double radiation = capability.get().getRadiation();
+                list.add(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(radiation),
+                      UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)));
             }
         }
     }
