@@ -100,7 +100,7 @@ public class FormationProtocol<T extends MultiblockData> {
     }
 
     protected static ITextComponent text(BlockPos pos) {
-        return MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ());
+        return MekanismLang.GENERIC_PARENTHESIS.translate(MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ()));
     }
 
     public static int explore(BlockPos start, Predicate<BlockPos> checker) {

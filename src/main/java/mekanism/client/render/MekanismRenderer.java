@@ -31,6 +31,7 @@ import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
+import mekanism.common.lib.Color;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
@@ -163,6 +164,10 @@ public class MekanismRenderer {
 
     public static void color(int color) {
         RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), getAlpha(color));
+    }
+
+    public static void color(Color color) {
+        RenderSystem.color4f(color.rf(), color.gf(), color.bf(), color.af());
     }
 
     public static void color(@Nonnull FluidStack fluid) {
