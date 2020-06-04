@@ -106,7 +106,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     @Nonnull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(leftTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, rightTank), this::isValidGas, this));
         builder.addTank(rightTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, leftTank), this::isValidGas, this));
         builder.addTank(centerTank = BasicGasTank.output(MAX_GAS, this));
@@ -133,7 +133,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     @Nonnull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
+        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
         return builder.build();
     }
@@ -141,7 +141,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //TODO: Should our gas checking, also check the other tank's contents so we don't let putting the same gas in on both sides
         builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this, 5, 56));
         builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this, 155, 56));

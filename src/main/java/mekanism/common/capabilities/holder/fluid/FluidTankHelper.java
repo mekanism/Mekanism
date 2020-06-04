@@ -26,24 +26,26 @@ public class FluidTankHelper {
 
     public void addTank(@Nonnull IExtendedFluidTank tank) {
         if (built) {
-            throw new RuntimeException("Builder has already built.");
+            throw new IllegalStateException("Builder has already built.");
         }
         if (slotHolder instanceof FluidTankHolder) {
             ((FluidTankHolder) slotHolder).addTank(tank);
         } else if (slotHolder instanceof ConfigFluidTankHolder) {
             ((ConfigFluidTankHolder) slotHolder).addTank(tank);
+        } else {
+            throw new IllegalArgumentException("Holder does not know how to add tanks");
         }
-        //TODO: Else warning?
     }
 
     public void addTank(@Nonnull IExtendedFluidTank tank, RelativeSide... sides) {
         if (built) {
-            throw new RuntimeException("Builder has already built.");
+            throw new IllegalStateException("Builder has already built.");
         }
         if (slotHolder instanceof FluidTankHolder) {
             ((FluidTankHolder) slotHolder).addTank(tank, sides);
+        } else {
+            throw new IllegalArgumentException("Holder does not know how to add tanks on specific sides");
         }
-        //TODO: Else warning?
     }
 
     public IFluidTankHolder build() {

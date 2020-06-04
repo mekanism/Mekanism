@@ -31,24 +31,26 @@ public class InventorySlotHelper {
 
     public void addSlot(@Nonnull IInventorySlot slot) {
         if (built) {
-            throw new RuntimeException("Builder has already built.");
+            throw new IllegalStateException("Builder has already built.");
         }
         if (slotHolder instanceof InventorySlotHolder) {
             ((InventorySlotHolder) slotHolder).addSlot(slot);
         } else if (slotHolder instanceof ConfigInventorySlotHolder) {
             ((ConfigInventorySlotHolder) slotHolder).addSlot(slot);
+        } else {
+            throw new IllegalArgumentException("Holder does not know how to add slots");
         }
-        //TODO: Else warning?
     }
 
     public void addSlot(@Nonnull IInventorySlot slot, RelativeSide... sides) {
         if (built) {
-            throw new RuntimeException("Builder has already built.");
+            throw new IllegalStateException("Builder has already built.");
         }
         if (slotHolder instanceof InventorySlotHolder) {
             ((InventorySlotHolder) slotHolder).addSlot(slot, sides);
+        } else {
+            throw new IllegalArgumentException("Holder does not know how to add slots on specific sides");
         }
-        //TODO: Else warning?
     }
 
     public IInventorySlotHolder build() {

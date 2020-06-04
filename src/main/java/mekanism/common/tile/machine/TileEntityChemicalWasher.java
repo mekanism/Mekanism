@@ -53,7 +53,6 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     public BasicFluidTank fluidTank;
     public BasicSlurryTank inputTank;
     public BasicSlurryTank outputTank;
-    public long slurryOutput = 256;
 
     public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
@@ -86,7 +85,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @Nonnull
     @Override
     public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
-        ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurry(this::getDirection);
+        ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurryWithConfig(this::getDirection, this::getConfig);
         builder.addTank(inputTank = BasicSlurryTank.input(MAX_SLURRY, slurry -> containsRecipe(recipe -> recipe.getSlurryInput().testType(slurry)), this));
         builder.addTank(outputTank = BasicSlurryTank.output(MAX_SLURRY, this));
         return builder.build();

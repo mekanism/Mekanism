@@ -26,24 +26,26 @@ public class EnergyContainerHelper {
 
     public void addContainer(@Nonnull IEnergyContainer container) {
         if (built) {
-            throw new RuntimeException("Builder has already built.");
+            throw new IllegalStateException("Builder has already built.");
         }
         if (slotHolder instanceof EnergyContainerHolder) {
             ((EnergyContainerHolder) slotHolder).addContainer(container);
         } else if (slotHolder instanceof ConfigEnergyContainerHolder) {
             ((ConfigEnergyContainerHolder) slotHolder).addContainer(container);
+        } else {
+            throw new IllegalArgumentException("Holder does not know how to add containers");
         }
-        //TODO: Else warning?
     }
 
     public void addContainer(@Nonnull IEnergyContainer container, RelativeSide... sides) {
         if (built) {
-            throw new RuntimeException("Builder has already built.");
+            throw new IllegalStateException("Builder has already built.");
         }
         if (slotHolder instanceof EnergyContainerHolder) {
             ((EnergyContainerHolder) slotHolder).addContainer(container, sides);
+        } else {
+            throw new IllegalArgumentException("Holder does not know how to add containers on specific sides");
         }
-        //TODO: Else warning?
     }
 
     public IEnergyContainerHolder build() {
