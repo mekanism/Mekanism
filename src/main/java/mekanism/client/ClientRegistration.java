@@ -89,8 +89,6 @@ import mekanism.client.particle.ScubaBubbleParticle;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
-import mekanism.client.render.item.ItemLayerWrapper;
-import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
@@ -145,7 +143,6 @@ import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.container.ContainerType;
@@ -335,10 +332,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {
-        Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
-        ModelResourceLocation resourceLocation = new ModelResourceLocation(Mekanism.rl("flamethrower"), "inventory");
-        modelRegistry.put(resourceLocation, RenderFlameThrower.model = new ItemLayerWrapper(modelRegistry.get(resourceLocation)));
-        modelRegistry.replaceAll((rl, model) -> {
+        event.getModelRegistry().replaceAll((rl, model) -> {
             CustomModelRegistryObject obj = customModels.get(new ResourceLocation(rl.getNamespace(), rl.getPath()));
             return obj == null ? model : obj.createModel(model, event);
         });

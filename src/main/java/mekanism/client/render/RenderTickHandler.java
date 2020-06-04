@@ -1,15 +1,15 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.UUID;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -48,6 +48,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
@@ -88,16 +89,15 @@ public class RenderTickHandler {
                                                                                        EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS,
                                                                                        EquipmentSlotType.FEET};
 
-    private static double HUD_SCALE = 0.6;
+    private static final double HUD_SCALE = 0.6;
 
     private static HUDRenderer hudRenderer = new HUDRenderer();
 
     public static int modeSwitchTimer = 0;
-    public Random rand = new Random();
     public Minecraft minecraft = Minecraft.getInstance();
     public static double prevRadiation = 0;
 
-    private static BoltRenderer boltRenderer = new BoltRenderer();
+    private static final BoltRenderer boltRenderer = new BoltRenderer();
 
     public static void resetCachedOverlays() {
         cachedOverlays.clear();
@@ -132,8 +132,8 @@ public class RenderTickHandler {
                 }
             }
             if (!capacity.isZero()) {
-                int x = minecraft.getMainWindow().getScaledWidth() / 2 - 91;
-                int y = minecraft.getMainWindow().getScaledHeight() - ForgeIngameGui.left_height + 2;
+                int x = event.getWindow().getScaledWidth() / 2 - 91;
+                int y = event.getWindow().getScaledHeight() - ForgeIngameGui.left_height + 2;
                 int length = (int) Math.round(stored.divide(capacity).doubleValue() * 79);
 
                 GuiUtils.renderExtendedTexture(GuiBar.BAR, 2, 2, x, y, 81, 6);
@@ -144,8 +144,6 @@ public class RenderTickHandler {
             }
         } else if (event.getType() == ElementType.HOTBAR) {
             if (!minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
-                int y = minecraft.getMainWindow().getScaledHeight();
-                boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
                 int count = 0;
                 Map<EquipmentSlotType, List<ITextComponent>> renderStrings = new LinkedHashMap<>();
                 for (EquipmentSlotType slotType : EQUIPMENT_ORDER) {
@@ -153,19 +151,22 @@ public class RenderTickHandler {
                     if (stack.getItem() instanceof IItemHUDProvider) {
                         List<ITextComponent> list = new ArrayList<>();
                         ((IItemHUDProvider) stack.getItem()).addHUDStrings(list, stack, slotType);
-                        if (!list.isEmpty()) {
+                        int size = list.size();
+                        if (size > 0) {
                             renderStrings.put(slotType, list);
+                            count += size;
                         }
-                        count += list.size();
                     }
                 }
-
+                int start = (renderStrings.size() * 2) + (count * 9);
+                boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
+                MainWindow window = event.getWindow();
+                int y = window.getScaledHeight();
                 RenderSystem.pushMatrix();
                 RenderSystem.scaled(HUD_SCALE, HUD_SCALE, HUD_SCALE);
-                int start = (renderStrings.size() * 2) + (count * 9);
                 for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
                     for (ITextComponent text : entry.getValue()) {
-                        drawString(text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
+                        drawString(window, text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
                         start -= 9;
                     }
                     start -= 2;
@@ -180,107 +181,58 @@ public class RenderTickHandler {
     @SubscribeEvent
     public void tickEnd(RenderTickEvent event) {
         if (event.phase == Phase.END) {
-            if (minecraft.player != null && minecraft.player.world != null && !minecraft.isGamePaused() && minecraft.fontRenderer != null) {
-                FontRenderer font = minecraft.fontRenderer;
+            if (minecraft.player != null && minecraft.player.world != null && !minecraft.isGamePaused()) {
                 PlayerEntity player = minecraft.player;
                 World world = minecraft.player.world;
-                //TODO: use vanilla status bar text? Note, the vanilla status bar text stays a lot longer than we have our message
-                // display for, so we would need to somehow modify it. This can be done via ATs but does cause it to always appear
-                // to be more faded in color, and blinks to full color just before disappearing
-                if (modeSwitchTimer > 1 && minecraft.currentScreen == null && IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND)) {
-                    ItemStack stack = player.getHeldItemMainhand();
-                    ITextComponent scrollTextComponent = ((IModeItem) stack.getItem()).getScrollTextComponent(stack);
-                    if (scrollTextComponent != null) {
-                        int x = minecraft.getMainWindow().getScaledWidth();
-                        int y = minecraft.getMainWindow().getScaledHeight();
-                        String text = scrollTextComponent.getFormattedText();
-                        int color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F).argb();
-                        font.drawString(text, x / 2 - font.getStringWidth(text) / 2, y - 60, color);
-                    }
-                }
-
-                modeSwitchTimer = Math.max(modeSwitchTimer - 1, 0);
-
-                // Traverse a copy of jetpack state and do animations
+                renderStatusBar(player);
+                //Traverse active jetpacks and do animations
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
                     PlayerEntity p = world.getPlayerByUuid(uuid);
-                    if (p == null) {
-                        continue;
+                    if (p != null) {
+                        Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
+                        Vec3d playerMotion = p.getMotion();
+                        float random = (world.rand.nextFloat() - 0.5F) * 0.1F;
+                        Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isCrouching() ? 20 : 0).rotateYaw(p.renderYawOffset);
+                        renderJetpackSmoke(world, playerPos.translate(vLeft, playerMotion), vLeft.scale(0.2).translate(playerMotion, vLeft.scale(random)));
+                        Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.isCrouching() ? 20 : 0).rotateYaw(p.renderYawOffset);
+                        renderJetpackSmoke(world, playerPos.translate(vRight, playerMotion), vRight.scale(0.2).translate(playerMotion, vRight.scale(random)));
+                        Pos3D vCenter = new Pos3D((world.rand.nextFloat() - 0.5) * 0.4, -0.86, -0.30).rotatePitch(p.isCrouching() ? 25 : 0).rotateYaw(p.renderYawOffset);
+                        renderJetpackSmoke(world, playerPos.translate(vCenter, playerMotion), vCenter.scale(0.2).translate(playerMotion));
                     }
-                    Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
-                    float random = (rand.nextFloat() - 0.5F) * 0.1F;
-                    Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
-                    Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
-                    Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30).rotatePitch(p.isSneaking() ? 25 : 0).rotateYaw(p.renderYawOffset);
-
-                    Pos3D rLeft = vLeft.scale(random);
-                    Pos3D rRight = vRight.scale(random);
-
-                    Pos3D mLeft = vLeft.scale(0.2).translate(new Pos3D(p.getMotion()));
-                    Pos3D mRight = vRight.scale(0.2).translate(new Pos3D(p.getMotion()));
-                    Pos3D mCenter = vCenter.scale(0.2).translate(new Pos3D(p.getMotion()));
-
-                    mLeft = mLeft.translate(rLeft);
-                    mRight = mRight.translate(rRight);
-
-                    Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.getMotion()));
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
-
-                    v = playerPos.translate(vRight).translate(new Pos3D(p.getMotion()));
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
-
-                    v = playerPos.translate(vCenter).translate(new Pos3D(p.getMotion()));
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
                 }
 
-                // Traverse a copy of scuba mask state and do animations
-                if (world.getDayTime() % 4 == 0) {
+                if (world.getGameTime() % 4 == 0) {
+                    //Traverse active scuba masks and do animations
                     for (UUID uuid : Mekanism.playerState.getActiveScubaMasks()) {
                         PlayerEntity p = world.getPlayerByUuid(uuid);
-                        if (p == null || !p.isInWater()) {
-                            continue;
+                        if (p != null && p.isInWater()) {
+                            Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(p.getLook(1)).translate(0, -0.2, 0);
+                            Pos3D motion = vec.scale(0.2).translate(p.getMotion());
+                            Pos3D v = new Pos3D(p).translate(0, 1.7, 0).translate(vec);
+                            world.addParticle((BasicParticleType) MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                         }
-
-                        Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
-
-                        Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(p.getLook(1))).translate(0, -0.2, 0);
-                        Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.getMotion()));
-
-                        Pos3D v = playerPos.translate(vec);
-                        world.addParticle((BasicParticleType) MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                     }
-                }
-
-                // Traverse a copy of flamethrower state and do animations
-                if (world.getGameTime() % 4 == 0) {
+                    //Traverse players and do animations for idle flame throwers
                     for (PlayerEntity p : world.getPlayers()) {
-                        if (!Mekanism.playerState.isFlamethrowerOn(p) && !p.isSwingInProgress) {
-                            ItemStack currentItem = p.inventory.getCurrentItem();
+                        if (!p.isSwingInProgress && !Mekanism.playerState.isFlamethrowerOn(p)) {
+                            ItemStack currentItem = p.getHeldItemMainhand();
                             if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && GasUtils.hasGas(currentItem)) {
-                                Pos3D playerPos = new Pos3D(p);
                                 Pos3D flameVec;
-                                double flameXCoord = 0;
-                                double flameYCoord = 1.5;
-                                double flameZCoord = 0;
-                                Vec3d motion = p.getMotion();
-                                Pos3D flameMotion = new Pos3D(motion.getX(), p.onGround ? 0 : motion.getY(), motion.getZ());
                                 if (player == p && minecraft.gameSettings.thirdPersonView == 0) {
-                                    flameVec = new Pos3D(1, 1, 1).multiply(p.getLook(1)).rotateYaw(5).translate(flameXCoord, flameYCoord + 0.1, flameZCoord);
+                                    flameVec = new Pos3D(1, 1, 1).multiply(p.getLook(1)).rotateYaw(5).translate(0, 1.6, 0);
                                 } else {
-                                    flameXCoord += 0.25F;
-                                    flameXCoord -= 0.45F;
-                                    flameZCoord += 0.15F;
-                                    if (p.isSneaking()) {
-                                        flameYCoord -= 0.55F;
-                                        flameZCoord -= 0.15F;
+                                    double flameXCoord = -0.2;
+                                    double flameYCoord = 1;
+                                    double flameZCoord = 1.2;
+                                    if (p.isCrouching()) {
+                                        flameYCoord -= 0.55;
+                                        flameZCoord -= 0.15;
                                     }
-                                    flameYCoord -= 0.5F;
-                                    flameZCoord += 1.05F;
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).rotateYaw(p.renderYawOffset);
                                 }
+                                Vec3d motion = p.getMotion();
+                                Pos3D flameMotion = new Pos3D(motion.getX(), p.onGround ? 0 : motion.getY(), motion.getZ());
+                                Pos3D playerPos = new Pos3D(p);
                                 Pos3D mergedVec = playerPos.translate(flameVec);
                                 world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(),
                                       mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
@@ -394,7 +346,34 @@ public class RenderTickHandler {
         }
     }
 
-    private void drawString(ITextComponent textComponent, boolean leftSide, int y, int color) {
+    private void renderStatusBar(@Nonnull PlayerEntity player) {
+        //TODO: use vanilla status bar text? Note, the vanilla status bar text stays a lot longer than we have our message
+        // display for, so we would need to somehow modify it. This can be done via ATs but does cause it to always appear
+        // to be more faded in color, and blinks to full color just before disappearing
+        if (modeSwitchTimer > 1) {
+            if (minecraft.currentScreen == null && minecraft.fontRenderer != null) {
+                ItemStack stack = player.getHeldItemMainhand();
+                if (IModeItem.isModeItem(stack, EquipmentSlotType.MAINHAND)) {
+                    ITextComponent scrollTextComponent = ((IModeItem) stack.getItem()).getScrollTextComponent(stack);
+                    if (scrollTextComponent != null) {
+                        int x = minecraft.getMainWindow().getScaledWidth();
+                        int y = minecraft.getMainWindow().getScaledHeight();
+                        String text = scrollTextComponent.getFormattedText();
+                        int color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F).argb();
+                        minecraft.fontRenderer.drawString(text, x / 2 - minecraft.fontRenderer.getStringWidth(text) / 2, y - 60, color);
+                    }
+                }
+            }
+            modeSwitchTimer--;
+        }
+    }
+
+    private void renderJetpackSmoke(World world, Pos3D pos, Pos3D motion) {
+        world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+        world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+    }
+
+    private void drawString(MainWindow window, ITextComponent textComponent, boolean leftSide, int y, int color) {
         String s = textComponent.getFormattedText();
         FontRenderer font = minecraft.fontRenderer;
         // Note that we always offset by 2 pixels when left or right aligned
@@ -402,7 +381,7 @@ public class RenderTickHandler {
             font.drawStringWithShadow(s, 2, y, color);
         } else {
             int width = font.getStringWidth(s) + 2;
-            font.drawStringWithShadow(s, minecraft.getMainWindow().getScaledWidth() - width, y, color);
+            font.drawStringWithShadow(s, window.getScaledWidth() - width, y, color);
         }
     }
 
