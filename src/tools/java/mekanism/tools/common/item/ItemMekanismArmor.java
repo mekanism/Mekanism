@@ -7,7 +7,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.registration.impl.ItemDeferredRegister;
-import mekanism.tools.client.GlowArmor;
+import mekanism.tools.client.render.GlowArmor;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.material.BaseMekanismMaterial;

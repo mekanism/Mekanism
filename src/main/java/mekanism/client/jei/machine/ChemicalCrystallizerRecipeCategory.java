@@ -69,6 +69,6 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<GasTo
         itemStacks.init(0, false, 128 - xOffset, 56 - yOffset);
         itemStacks.set(0, recipe.getOutputDefinition());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 8 - xOffset, 5 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
+        initChemical(gasStacks, 0, true, 8 - xOffset, 5 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
     }
 }

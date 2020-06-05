@@ -26,21 +26,25 @@ public class HeatCapacitorHelper {
 
     public void addCapacitor(@Nonnull IHeatCapacitor capacitor) {
         if (built) {
-            throw new RuntimeException("Builder has already built.");
+            throw new IllegalStateException("Builder has already built.");
         }
         if (slotHolder instanceof HeatCapacitorHolder) {
             ((HeatCapacitorHolder) slotHolder).addCapacitor(capacitor);
         } else if (slotHolder instanceof ConfigHeatCapacitorHolder) {
             ((ConfigHeatCapacitorHolder) slotHolder).addCapacitor(capacitor);
+        } else {
+            throw new IllegalArgumentException("Holder does not know how to add capacitors");
         }
     }
 
     public void addCapacitor(@Nonnull IHeatCapacitor container, RelativeSide... sides) {
         if (built) {
-            throw new RuntimeException("Builder has already built.");
+            throw new IllegalStateException("Builder has already built.");
         }
         if (slotHolder instanceof HeatCapacitorHolder) {
             ((HeatCapacitorHolder) slotHolder).addCapacitor(container, sides);
+        } else {
+            throw new IllegalArgumentException("Holder does not know how to add capacitors on specific sides");
         }
     }
 

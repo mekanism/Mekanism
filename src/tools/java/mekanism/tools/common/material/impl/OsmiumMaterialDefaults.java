@@ -13,6 +13,11 @@ import net.minecraft.util.SoundEvents;
 public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
+    public int getShieldDurability() {
+        return 672;
+    }
+
+    @Override
     public float getAxeDamage() {
         return 4;
     }

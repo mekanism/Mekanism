@@ -12,6 +12,9 @@ import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
@@ -27,9 +30,12 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.BaseSlotInfo;
+import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.GasSlotInfo;
+import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.InfusionSlotInfo;
+import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.PigmentSlotInfo;
+import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.SlurrySlotInfo;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
-import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.HeatSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
@@ -71,6 +77,15 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             case GAS:
                 tile.invalidateCapability(Capabilities.GAS_HANDLER_CAPABILITY, direction);
                 break;
+            case INFUSION:
+                tile.invalidateCapability(Capabilities.INFUSION_HANDLER_CAPABILITY, direction);
+                break;
+            case PIGMENT:
+                tile.invalidateCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY, direction);
+                break;
+            case SLURRY:
+                tile.invalidateCapability(Capabilities.SLURRY_HANDLER_CAPABILITY, direction);
+                break;
             case ITEM:
                 tile.invalidateCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction);
                 break;
@@ -108,6 +123,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             type = TransmissionType.ITEM;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             type = TransmissionType.GAS;
+        } else if (capability == Capabilities.INFUSION_HANDLER_CAPABILITY) {
+            type = TransmissionType.INFUSION;
+        } else if (capability == Capabilities.PIGMENT_HANDLER_CAPABILITY) {
+            type = TransmissionType.PIGMENT;
+        } else if (capability == Capabilities.SLURRY_HANDLER_CAPABILITY) {
+            type = TransmissionType.SLURRY;
         } else if (capability == Capabilities.HEAT_HANDLER_CAPABILITY) {
             type = TransmissionType.HEAT;
         } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
@@ -324,6 +345,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
                 return new FluidSlotInfo(input, output, (List<IExtendedFluidTank>) containers);
             case GAS:
                 return new GasSlotInfo(input, output, (List<IGasTank>) containers);
+            case INFUSION:
+                return new InfusionSlotInfo(input, output, (List<IInfusionTank>) containers);
+            case PIGMENT:
+                return new PigmentSlotInfo(input, output, (List<IPigmentTank>) containers);
+            case SLURRY:
+                return new SlurrySlotInfo(input, output, (List<ISlurryTank>) containers);
             case ENERGY:
                 return new EnergySlotInfo(input, output, (List<IEnergyContainer>) containers);
             case HEAT:

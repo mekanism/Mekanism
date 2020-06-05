@@ -2,8 +2,8 @@ package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.FluidGasToGasRecipe;
+import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
@@ -23,9 +23,9 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraftforge.fluids.FluidStack;
 
-public class FluidGasToGasRecipeCategory extends BaseRecipeCategory<FluidGasToGasRecipe> {
+public class FluidSlurryToSlurryRecipeCategory extends BaseRecipeCategory<FluidSlurryToSlurryRecipe> {
 
-    public FluidGasToGasRecipeCategory(IGuiHelper helper) {
+    public FluidSlurryToSlurryRecipeCategory(IGuiHelper helper) {
         super(helper, MekanismBlocks.CHEMICAL_WASHER, 3, 3, 170, 70);
     }
 
@@ -40,26 +40,26 @@ public class FluidGasToGasRecipeCategory extends BaseRecipeCategory<FluidGasToGa
     }
 
     @Override
-    public Class<? extends FluidGasToGasRecipe> getRecipeClass() {
-        return FluidGasToGasRecipe.class;
+    public Class<? extends FluidSlurryToSlurryRecipe> getRecipeClass() {
+        return FluidSlurryToSlurryRecipe.class;
     }
 
     @Override
-    public void setIngredients(FluidGasToGasRecipe recipe, IIngredients ingredients) {
+    public void setIngredients(FluidSlurryToSlurryRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getFluidInput().getRepresentations()));
-        ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getGasInput().getRepresentations()));
-        ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.getOutputRepresentation());
+        ingredients.setInputLists(MekanismJEI.TYPE_SLURRY, Collections.singletonList(recipe.getSlurryInput().getRepresentations()));
+        ingredients.setOutput(MekanismJEI.TYPE_SLURRY, recipe.getOutputRepresentation());
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, FluidGasToGasRecipe recipe, IIngredients ingredients) {
+    public void setRecipe(IRecipeLayout recipeLayout, FluidSlurryToSlurryRecipe recipe, IIngredients ingredients) {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
         List<FluidStack> fluidInputs = recipe.getFluidInput().getRepresentations();
         int max = fluidInputs.stream().mapToInt(FluidStack::getAmount).filter(input -> input >= 0).max().orElse(0);
         fluidStacks.init(0, true, 8 - xOffset, 14 - yOffset, 16, 58, max, false, fluidOverlayLarge);
         fluidStacks.set(0, fluidInputs);
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 29 - xOffset, 14 - yOffset, 16, 58, recipe.getGasInput().getRepresentations(), true);
-        initGas(gasStacks, 1, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
+        IGuiIngredientGroup<SlurryStack> slurryStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_SLURRY);
+        initChemical(slurryStacks, 0, true, 29 - xOffset, 14 - yOffset, 16, 58, recipe.getSlurryInput().getRepresentations(), true);
+        initChemical(slurryStacks, 1, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
 }

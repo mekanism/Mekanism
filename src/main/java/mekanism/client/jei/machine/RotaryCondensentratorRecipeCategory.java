@@ -88,7 +88,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
             if (recipe.hasGasToFluid()) {
                 //Setup gas
                 IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-                initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, recipe.getGasInput().getRepresentations(), true);
+                initChemical(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, recipe.getGasInput().getRepresentations(), true);
                 //Setup fluid
                 IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
                 fluidStacks.init(0, true, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getFluidOutputRepresentation().getAmount(), false, fluidOverlayLarge);
@@ -103,7 +103,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
             fluidStacks.set(0, fluidInputs);
             //Setup gas
             IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-            initGas(gasStacks, 0, false, 26 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getGasOutputRepresentation()), true);
+            initChemical(gasStacks, 0, false, 26 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getGasOutputRepresentation()), true);
             gasStacks.set(0, recipe.getGasOutputRepresentation());
         }
     }

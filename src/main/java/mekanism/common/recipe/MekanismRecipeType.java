@@ -13,7 +13,7 @@ import mekanism.api.inventory.IgnoredIInventory;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
-import mekanism.api.recipes.FluidGasToGasRecipe;
+import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.GasToItemStackRecipe;
@@ -59,7 +59,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
 
     public static final MekanismRecipeType<ElectrolysisRecipe> SEPARATING = create("separating");
 
-    public static final MekanismRecipeType<FluidGasToGasRecipe> WASHING = create("washing");
+    public static final MekanismRecipeType<FluidSlurryToSlurryRecipe> WASHING = create("washing");
 
     public static final MekanismRecipeType<FluidToFluidRecipe> EVAPORATING = create("evaporating");
 

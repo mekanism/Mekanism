@@ -3,6 +3,7 @@ package mekanism.common.recipe.impl;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.FluidSlurryToSlurryRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackGasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackGasToItemStackRecipeBuilder;
@@ -10,9 +11,11 @@ import mekanism.api.datagen.recipe.builder.ItemStackToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.MetallurgicInfuserRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
@@ -34,6 +37,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
@@ -176,11 +180,11 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
         // Slurry
         // clean
-        //TODO - V10: Figure out how to handle slurries for recipes
-        /*FluidGasToGasRecipeBuilder.washing(FluidStackIngredient.from(FluidTags.WATER, 5), SlurryStackIngredient.from(slurry.getDirtySlurry(), 1), slurry.getCleanSlurry().getSlurryStack(1))
+        FluidSlurryToSlurryRecipeBuilder.washing(FluidStackIngredient.from(FluidTags.WATER, 5), SlurryStackIngredient.from(slurry.getDirtySlurry(), 1), slurry.getCleanSlurry().getSlurryStack(1))
               .build(consumer, Mekanism.rl(basePath + "slurry/clean"));
         // dirty
-        ItemStackGasToGasRecipeBuilder.dissolution(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1), slurry.getDirtySlurry().getSlurryStack(1_000))
+        //TODO - V10: Figure out how to handle slurries for recipes
+        /*ItemStackGasToGasRecipeBuilder.dissolution(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1), slurry.getDirtySlurry().getSlurryStack(1_000))
               .build(consumer, Mekanism.rl(basePath + "slurry/dirty"));*/
     }
 

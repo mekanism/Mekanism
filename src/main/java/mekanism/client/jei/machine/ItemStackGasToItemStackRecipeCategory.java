@@ -87,7 +87,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         }
         itemStacks.set(2, gasItemProviders);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 41, 21, 6, 12, scaledGases, false);
+        initChemical(gasStacks, 0, true, 41, 21, 6, 12, scaledGases, false);
     }
 
     /**

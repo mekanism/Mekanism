@@ -36,6 +36,10 @@ import net.minecraftforge.items.IItemHandler;
 
 public abstract class BaseBlockLootTables extends BlockLootTables {
 
+    /**
+     * Cached value of {@link SubstanceType#values()}. DO NOT MODIFY THIS LIST.
+     */
+    private static final SubstanceType[] SUBSTANCE_TYPES = SubstanceType.values();
     private final Set<Block> knownBlocks = new ObjectOpenHashSet<>();
     private final Set<Block> toSkip = new ObjectOpenHashSet<>();
 
@@ -128,7 +132,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             }
             if (tile instanceof TileEntityMekanism) {
                 TileEntityMekanism tileEntity = (TileEntityMekanism) tile;
-                for (SubstanceType type : SubstanceType.values()) {
+                for (SubstanceType type : SUBSTANCE_TYPES) {
                     if (tileEntity.handles(type)) {
                         List<? extends INBTSerializable<CompoundNBT>> list = type.getContainers(tileEntity);
                         if (list.size() > 0) {

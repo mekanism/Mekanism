@@ -6,7 +6,7 @@ import mekanism.api.transmitters.TransmissionType;
 public enum TransmitterType {
     UNIVERSAL_CABLE(Size.SMALL, TransmissionType.ENERGY),
     MECHANICAL_PIPE(Size.LARGE, TransmissionType.FLUID),
-    PRESSURIZED_TUBE(Size.SMALL, TransmissionType.GAS),
+    PRESSURIZED_TUBE(Size.SMALL, TransmissionType.GAS),//TODO - V10: Re-evaluate this, make pressurized tubes able to support multiple types
     LOGISTICAL_TRANSPORTER(Size.LARGE, TransmissionType.ITEM),
     RESTRICTIVE_TRANSPORTER(Size.LARGE, TransmissionType.ITEM),
     DIVERSION_TRANSPORTER(Size.LARGE, TransmissionType.ITEM),

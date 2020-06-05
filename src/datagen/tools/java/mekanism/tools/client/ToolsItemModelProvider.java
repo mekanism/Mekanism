@@ -2,13 +2,18 @@ package mekanism.tools.client;
 
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.model.BaseItemModelProvider;
+import mekanism.common.Mekanism;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.item.ItemMekanismPaxel;
+import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 
 public class ToolsItemModelProvider extends BaseItemModelProvider {
 
@@ -18,8 +23,21 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
 
     @Override
     protected void registerModels() {
+        //Shields
+        //TODO - V10: Decide if these are the particles we do want to have used, or if the texture looks different and we would rather use a different particle
+        addShieldModel(ToolsItems.BRONZE_SHIELD, Mekanism.rl("block/block_bronze"));
+        addShieldModel(ToolsItems.LAPIS_LAZULI_SHIELD, mcLoc("block/lapis_block"));
+        addShieldModel(ToolsItems.OSMIUM_SHIELD, Mekanism.rl("block/block_osmium"));
+        addShieldModel(ToolsItems.REFINED_GLOWSTONE_SHIELD, Mekanism.rl("block/block_refined_glowstone"));
+        addShieldModel(ToolsItems.REFINED_OBSIDIAN_SHIELD, Mekanism.rl("block/block_refined_obsidian"));
+        addShieldModel(ToolsItems.STEEL_SHIELD, Mekanism.rl("block/block_steel"));
         //Armor items are generated textures, all other tools module items are handheld
         for (IItemProvider itemProvider : ToolsItems.ITEMS.getAllItems()) {
+            Item item = itemProvider.getItem();
+            if (item instanceof ItemMekanismShield) {
+                //Skip shields, we manually handle them above
+                continue;
+            }
             ResourceLocation texture;
             if (isVanilla(itemProvider)) {
                 texture = itemTexture(itemProvider);
@@ -28,7 +46,7 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
                 int index = name.lastIndexOf('_');
                 texture = modLoc("item/" + name.substring(0, index) + '/' + name.substring(index + 1));
             }
-            if (itemProvider.getItem() instanceof ArmorItem) {
+            if (item instanceof ArmorItem) {
                 generated(itemProvider, texture);
             } else {
                 handheld(itemProvider, texture);
@@ -42,5 +60,18 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
             return name.startsWith("diamond") || name.startsWith("gold") || name.startsWith("iron") || name.startsWith("stone") || name.startsWith("wood");
         }
         return false;
+    }
+
+    private void addShieldModel(IItemProvider shield, ResourceLocation particle) {
+        ItemModelBuilder blockingModel = getBuilder(shield.getName() + "_blocking")
+              .parent(new ExistingModelFile(mcLoc(folder + "/shield_blocking"), existingFileHelper))
+              .texture("particle", particle);
+        getBuilder(shield.getName())
+              .parent(new ExistingModelFile(mcLoc(folder + "/shield"), existingFileHelper))
+              .texture("particle", particle)
+              .override()
+              .predicate(mcLoc("blocking"), 1)
+              .model(blockingModel)
+              .end();
     }
 }

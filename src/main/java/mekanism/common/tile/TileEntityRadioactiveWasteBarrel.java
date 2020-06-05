@@ -33,7 +33,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
     @Nonnull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSide(this::getDirection);
         builder.addTank(gasTank = BasicGasTank.create(MekanismConfig.general.radioactiveWasteBarrelMaxGas.get(), BasicGasTank.alwaysTrueBi,
               BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.createStrict(GasAttributes.Radiation.class), this),
               RelativeSide.TOP, RelativeSide.BOTTOM);

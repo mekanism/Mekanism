@@ -32,8 +32,7 @@ public class GuiPigmentGauge extends GuiChemicalGauge<Pigment, PigmentStack, IPi
 
     @Override
     public TransmissionType getTransmission() {
-        //Currently there is no side config type for infusion
-        return null;
+        return TransmissionType.PIGMENT;
     }
 
     @Override

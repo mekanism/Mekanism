@@ -57,8 +57,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "GasTanks",
-                  "target": "mekData.GasTanks",
+                  "source": "SlurryTanks",
+                  "target": "mekData.SlurryTanks",
                   "op": "replace"
                 },
                 {

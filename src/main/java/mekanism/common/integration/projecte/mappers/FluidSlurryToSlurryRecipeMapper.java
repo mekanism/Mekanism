@@ -2,8 +2,8 @@ package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.FluidGasToGasRecipe;
+import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -16,11 +16,11 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraftforge.fluids.FluidStack;
 
 @RecipeTypeMapper
-public class FluidGasToGasRecipeMapper implements IRecipeTypeMapper {
+public class FluidSlurryToSlurryRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public String getName() {
-        return "MekFluidGasToGas";
+        return "MekFluidSlurryToSlurry";
     }
 
     @Override
@@ -35,22 +35,22 @@ public class FluidGasToGasRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-        if (!(iRecipe instanceof FluidGasToGasRecipe)) {
+        if (!(iRecipe instanceof FluidSlurryToSlurryRecipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        FluidGasToGasRecipe recipe = (FluidGasToGasRecipe) iRecipe;
+        FluidSlurryToSlurryRecipe recipe = (FluidSlurryToSlurryRecipe) iRecipe;
         List<@NonNull FluidStack> fluidRepresentations = recipe.getFluidInput().getRepresentations();
-        List<@NonNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
+        List<@NonNull SlurryStack> slurryRepresentations = recipe.getSlurryInput().getRepresentations();
         for (FluidStack fluidRepresentation : fluidRepresentations) {
             NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
-            for (GasStack gasRepresentation : gasRepresentations) {
-                GasStack output = recipe.getOutput(fluidRepresentation, gasRepresentation);
+            for (SlurryStack slurryRepresentation : slurryRepresentations) {
+                SlurryStack output = recipe.getOutput(fluidRepresentation, slurryRepresentation);
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
-                    ingredientHelper.put(gasRepresentation);
+                    ingredientHelper.put(slurryRepresentation);
                     if (ingredientHelper.addAsConversion(output)) {
                         handled = true;
                     }

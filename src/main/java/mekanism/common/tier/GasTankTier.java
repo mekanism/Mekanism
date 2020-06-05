@@ -6,6 +6,7 @@ import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedLongValue;
 import net.minecraft.util.IStringSerializable;
 
+//TODO - V10: Rename this to ChemicalTankTier
 public enum GasTankTier implements ITier, IStringSerializable {
     BASIC(BaseTier.BASIC, 64_000, 256),
     ADVANCED(BaseTier.ADVANCED, 128_000, 512),

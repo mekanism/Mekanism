@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:washing",
+  "fluidInput": {
+    "amount": 5,
+    "tag": "minecraft:water"
+  },
+  "slurryInput": {
+    "amount": 1,
+    "slurry": "mekanism:dirty_uranium"
+  },
+  "output": {
+    "slurry": "mekanism:clean_uranium",
+    "amount": 1
+  }
+}

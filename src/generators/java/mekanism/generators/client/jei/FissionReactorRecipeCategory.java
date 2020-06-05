@@ -88,8 +88,8 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         fluidStacks.init(0, true, 7 - xOffset, 14 - yOffset, 16, 58, 1, false, fluidOverlayLarge);
         fluidStacks.set(0, waterInput);
-        initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
-        initGas(gasStacks, 1, true, 153 - xOffset, 14 - yOffset, 16, 58, steamOutput, true);
-        initGas(gasStacks, 2, false, 172 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
+        initChemical(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
+        initChemical(gasStacks, 1, true, 153 - xOffset, 14 - yOffset, 16, 58, steamOutput, true);
+        initChemical(gasStacks, 2, false, 172 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
 }

@@ -53,9 +53,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     public TileEntityMetallurgicInfuser() {
         super(MekanismBlocks.METALLURGIC_INFUSER, 200);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.INFUSION);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, infusionSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
+        configComponent.setupInputConfig(TransmissionType.INFUSION, infusionTank);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
@@ -68,7 +69,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     @Nonnull
     @Override
     public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
-        ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusion(this::getDirection);
+        ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
         builder.addTank(infusionTank = BasicInfusionTank.create(MAX_INFUSE, BasicInfusionTank.notExternal, (type, automationType) -> {
             if (!inputSlot.isEmpty()) {
                 ItemStack stack = inputSlot.getStack();

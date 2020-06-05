@@ -72,7 +72,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
             infuseItemProviders.addAll(getStacksForInfusion(infusionStack.getType()));
         }
         itemStacks.set(2, infuseItemProviders);
-        initInfusion(recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_INFUSION), 0, true, 3, 0, 4, 52, infusionStacks);
+        initChemical(recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_INFUSION), 0, true, 3, 0, 4, 52, infusionStacks);
     }
 
     /**

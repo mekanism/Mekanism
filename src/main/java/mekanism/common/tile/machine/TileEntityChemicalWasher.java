@@ -7,14 +7,14 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.slurry.BasicSlurryTank;
+import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.FluidGasToGasRecipe;
+import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.FluidGasToGasCachedRecipe;
+import mekanism.api.recipes.cache.FluidSlurryToSlurryCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -37,7 +37,7 @@ import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.SlurryInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -46,50 +46,48 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidGasToGasRecipe> {
+public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurryToSlurryRecipe> {
 
-    public static final long MAX_GAS = 10_000;
+    public static final long MAX_SLURRY = 10_000;
     public static final int MAX_FLUID = 10_000;
     public BasicFluidTank fluidTank;
-    public BasicGasTank inputTank;
-    public BasicGasTank outputTank;
-    public long gasOutput = 256;
+    public BasicSlurryTank inputTank;
+    public BasicSlurryTank outputTank;
 
     public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
-    private final IOutputHandler<@NonNull GasStack> outputHandler;
+    private final IOutputHandler<@NonNull SlurryStack> outputHandler;
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
-    private final IInputHandler<@NonNull GasStack> gasInputHandler;
+    private final IInputHandler<@NonNull SlurryStack> slurryInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalWasher> energyContainer;
     private FluidInventorySlot fluidSlot;
     private OutputInventorySlot fluidOutputSlot;
-    private GasInventorySlot gasOutputSlot;
+    private SlurryInventorySlot slurryOutputSlot;
     private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalWasher() {
         super(MekanismBlocks.CHEMICAL_WASHER);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID, TransmissionType.ENERGY);
-        configComponent.setupItemIOConfig(Collections.singletonList(fluidSlot), Arrays.asList(gasOutputSlot, fluidOutputSlot), energySlot, true);
-        configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.RIGHT)
-              .setEjecting(true);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.SLURRY, TransmissionType.FLUID, TransmissionType.ENERGY);
+        configComponent.setupItemIOConfig(Collections.singletonList(fluidSlot), Arrays.asList(slurryOutputSlot, fluidOutputSlot), energySlot, true);
+        configComponent.setupIOConfig(TransmissionType.SLURRY, inputTank, outputTank, RelativeSide.RIGHT).setEjecting(true);
         configComponent.setupInputConfig(TransmissionType.FLUID, fluidTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.SLURRY);
 
         fluidInputHandler = InputHelper.getInputHandler(fluidTank);
-        gasInputHandler = InputHelper.getInputHandler(inputTank);
+        slurryInputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
 
     @Nonnull
     @Override
-    public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
-        builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this));
+    public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
+        ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurryWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(inputTank = BasicSlurryTank.input(MAX_SLURRY, slurry -> containsRecipe(recipe -> recipe.getSlurryInput().testType(slurry)), this));
+        builder.addTank(outputTank = BasicSlurryTank.output(MAX_SLURRY, this));
         return builder.build();
     }
 
@@ -116,9 +114,9 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidGasTo
         builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 180, 71));
         //Output slot for the fluid container that was used as an input
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 180, 102));
-        builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 152, 56));
+        builder.addSlot(slurryOutputSlot = SlurryInventorySlot.drain(outputTank, this, 152, 56));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 152, 5));
-        gasOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
+        slurryOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
         fluidSlot.setSlotType(ContainerSlotType.INPUT);
         return builder.build();
     }
@@ -128,7 +126,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidGasTo
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         fluidSlot.fillTank(fluidOutputSlot);
-        gasOutputSlot.drainTank();
+        slurryOutputSlot.drainTank();
         FloatingLong prev = energyContainer.getEnergy().copyAsConst();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
@@ -140,28 +138,28 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidGasTo
 
     @Nonnull
     @Override
-    public MekanismRecipeType<FluidGasToGasRecipe> getRecipeType() {
+    public MekanismRecipeType<FluidSlurryToSlurryRecipe> getRecipeType() {
         return MekanismRecipeType.WASHING;
     }
 
     @Nullable
     @Override
-    public FluidGasToGasRecipe getRecipe(int cacheIndex) {
-        GasStack gasStack = gasInputHandler.getInput();
-        if (gasStack.isEmpty()) {
+    public FluidSlurryToSlurryRecipe getRecipe(int cacheIndex) {
+        SlurryStack slurryStack = slurryInputHandler.getInput();
+        if (slurryStack.isEmpty()) {
             return null;
         }
         FluidStack fluid = fluidInputHandler.getInput();
         if (fluid.isEmpty()) {
             return null;
         }
-        return findFirstRecipe(recipe -> recipe.test(fluid, gasStack));
+        return findFirstRecipe(recipe -> recipe.test(fluid, slurryStack));
     }
 
     @Nullable
     @Override
-    public CachedRecipe<FluidGasToGasRecipe> createNewCachedRecipe(@Nonnull FluidGasToGasRecipe recipe, int cacheIndex) {
-        return new FluidGasToGasCachedRecipe(recipe, fluidInputHandler, gasInputHandler, outputHandler)
+    public CachedRecipe<FluidSlurryToSlurryRecipe> createNewCachedRecipe(@Nonnull FluidSlurryToSlurryRecipe recipe, int cacheIndex) {
+        return new FluidSlurryToSlurryCachedRecipe(recipe, fluidInputHandler, slurryInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

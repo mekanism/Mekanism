@@ -47,6 +47,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 
+//TODO - V10: Convert to ChemicalTank
 public class TileEntityGasTank extends TileEntityMekanism implements ISideConfiguration, ISustainedData, IHasGasMode {
 
     /**

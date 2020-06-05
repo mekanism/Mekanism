@@ -18,6 +18,10 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigGasTankHolder;
+import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigInfusionTankHolder;
+import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigPigmentTankHolder;
+import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigSlurryTankHolder;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.util.Direction;
 
@@ -30,46 +34,49 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         this.slotHolder = slotHolder;
     }
 
-    public static ChemicalTankHelper<Gas, GasStack, IGasTank> forSideGas(Supplier<Direction> facingSupplier) {
-        return new ChemicalTankHelper<Gas, GasStack, IGasTank>(new ChemicalTankHolder<>(facingSupplier));
-    }
-
-    public static ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> forSideInfusion(Supplier<Direction> facingSupplier) {
-        return new ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank>(new ChemicalTankHolder<>(facingSupplier));
-    }
-
-    public static ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> forSidePigment(Supplier<Direction> facingSupplier) {
-        return new ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank>(new ChemicalTankHolder<>(facingSupplier));
-    }
-
-    public static ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> forSideSlurry(Supplier<Direction> facingSupplier) {
-        return new ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank>(new ChemicalTankHolder<>(facingSupplier));
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
+    ChemicalTankHelper<CHEMICAL, STACK, TANK> forSide(Supplier<Direction> facingSupplier) {
+        return new ChemicalTankHelper<CHEMICAL, STACK, TANK>(new ChemicalTankHolder<>(facingSupplier));
     }
 
     public static ChemicalTankHelper<Gas, GasStack, IGasTank> forSideGasWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
         return new ChemicalTankHelper<>(new ConfigGasTankHolder(facingSupplier, configSupplier));
     }
 
+    public static ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> forSideInfusionWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
+        return new ChemicalTankHelper<>(new ConfigInfusionTankHolder(facingSupplier, configSupplier));
+    }
+
+    public static ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> forSidePigmentWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
+        return new ChemicalTankHelper<>(new ConfigPigmentTankHolder(facingSupplier, configSupplier));
+    }
+
+    public static ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> forSideSlurryWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
+        return new ChemicalTankHelper<>(new ConfigSlurryTankHolder(facingSupplier, configSupplier));
+    }
+
     public void addTank(@Nonnull TANK tank) {
         if (built) {
-            throw new RuntimeException("Builder has already built.");
+            throw new IllegalStateException("Builder has already built.");
         }
         if (slotHolder instanceof ChemicalTankHolder) {
             ((ChemicalTankHolder<CHEMICAL, STACK, TANK>) slotHolder).addTank(tank);
         } else if (slotHolder instanceof ConfigChemicalTankHolder) {
             ((ConfigChemicalTankHolder<CHEMICAL, STACK, TANK>) slotHolder).addTank(tank);
+        } else {
+            throw new IllegalArgumentException("Holder does not know how to add tanks");
         }
-        //TODO: Else warning?
     }
 
     public void addTank(@Nonnull TANK tank, RelativeSide... sides) {
         if (built) {
-            throw new RuntimeException("Builder has already built.");
+            throw new IllegalStateException("Builder has already built.");
         }
         if (slotHolder instanceof ChemicalTankHolder) {
             ((ChemicalTankHolder<CHEMICAL, STACK, TANK>) slotHolder).addTank(tank, sides);
+        } else {
+            throw new IllegalArgumentException("Holder does not know how to add tanks on specific sides");
         }
-        //TODO: Else warning?
     }
 
     public IChemicalTankHolder<CHEMICAL, STACK, TANK> build() {

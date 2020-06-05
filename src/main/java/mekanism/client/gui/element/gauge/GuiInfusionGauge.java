@@ -32,8 +32,7 @@ public class GuiInfusionGauge extends GuiChemicalGauge<InfuseType, InfusionStack
 
     @Override
     public TransmissionType getTransmission() {
-        //Currently there is no side config type for infusion
-        return null;
+        return TransmissionType.INFUSION;
     }
 
     @Override

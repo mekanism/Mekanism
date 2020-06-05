@@ -3,7 +3,7 @@ package mekanism.common.registries;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
-import mekanism.api.recipes.FluidGasToGasRecipe;
+import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.GasToItemStackRecipe;
@@ -32,7 +32,7 @@ import mekanism.common.recipe.impl.CrushingIRecipe;
 import mekanism.common.recipe.impl.ElectrolysisIRecipe;
 import mekanism.common.recipe.impl.EnergyConversionIRecipe;
 import mekanism.common.recipe.impl.EnrichingIRecipe;
-import mekanism.common.recipe.impl.FluidGasToGasIRecipe;
+import mekanism.common.recipe.impl.FluidSlurryToSlurryIRecipe;
 import mekanism.common.recipe.impl.FluidToFluidIRecipe;
 import mekanism.common.recipe.impl.GasConversionIRecipe;
 import mekanism.common.recipe.impl.InfusionConversionIRecipe;
@@ -48,7 +48,7 @@ import mekanism.common.recipe.impl.SmeltingIRecipe;
 import mekanism.common.recipe.serializer.ChemicalInfuserRecipeSerializer;
 import mekanism.common.recipe.serializer.CombinerRecipeSerializer;
 import mekanism.common.recipe.serializer.ElectrolysisRecipeSerializer;
-import mekanism.common.recipe.serializer.FluidGasToGasRecipeSerializer;
+import mekanism.common.recipe.serializer.FluidSlurryToSlurryRecipeSerializer;
 import mekanism.common.recipe.serializer.FluidToFluidRecipeSerializer;
 import mekanism.common.recipe.serializer.GasToGasRecipeSerializer;
 import mekanism.common.recipe.serializer.GasToItemStackRecipeSerializer;
@@ -83,7 +83,7 @@ public class MekanismRecipeSerializers {
 
     public static final IRecipeSerializerRegistryObject<ElectrolysisRecipe> SEPARATING = RECIPE_SERIALIZERS.register("separating", () -> new ElectrolysisRecipeSerializer<>(ElectrolysisIRecipe::new));
 
-    public static final IRecipeSerializerRegistryObject<FluidGasToGasRecipe> WASHING = RECIPE_SERIALIZERS.register("washing", () -> new FluidGasToGasRecipeSerializer<>(FluidGasToGasIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<FluidSlurryToSlurryRecipe> WASHING = RECIPE_SERIALIZERS.register("washing", () -> new FluidSlurryToSlurryRecipeSerializer<>(FluidSlurryToSlurryIRecipe::new));
 
     public static final IRecipeSerializerRegistryObject<FluidToFluidRecipe> EVAPORATING = RECIPE_SERIALIZERS.register("evaporating", () -> new FluidToFluidRecipeSerializer<>(FluidToFluidIRecipe::new));
 

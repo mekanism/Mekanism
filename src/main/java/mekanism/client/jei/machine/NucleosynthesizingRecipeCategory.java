@@ -125,7 +125,7 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
         }
         itemStacks.set(2, gasItemProviders);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 6 - xOffset, 19 - yOffset, 16, 46, scaledGases, true);
+        initChemical(gasStacks, 0, true, 6 - xOffset, 19 - yOffset, 16, 46, scaledGases, true);
     }
 
     /**
