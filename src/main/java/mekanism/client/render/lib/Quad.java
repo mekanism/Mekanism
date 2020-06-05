@@ -44,10 +44,17 @@ public class Quad {
         return sprite;
     }
 
-    public void transform(Consumer<Vertex> transformation) {
+    public void vertexTransform(Consumer<Vertex> transformation) {
         for (Vertex v : vertices) {
             transformation.accept(v);
         }
+    }
+
+    public Quad transform(QuadTransformation... transformations) {
+        for (QuadTransformation transform : transformations) {
+            transform.transform(this);
+        }
+        return this;
     }
 
     public Vertex[] getVertices() {
@@ -62,6 +69,14 @@ public class Quad {
         return side;
     }
 
+    public boolean getApplyDiffuseLighting() {
+        return applyDiffuseLighting;
+    }
+
+    public void setApplyDiffuseLighting(boolean applyDiffuseLighting) {
+        this.applyDiffuseLighting = applyDiffuseLighting;
+    }
+
     public BakedQuad bake() {
         int[] ret = new int[FORMAT.getIntegerSize() * 4];
         for (int v = 0; v < vertices.length; v++) {
@@ -73,13 +88,21 @@ public class Quad {
         return new BakedQuad(ret, tintIndex, side, sprite, applyDiffuseLighting);
     }
 
+    public Quad copy() {
+        Vertex[] newVertices = new Vertex[4];
+        for (int i = 0; i < 4; i++) {
+            newVertices[i] = vertices[i].copy();
+        }
+        return new Quad(sprite, side, newVertices, tintIndex, applyDiffuseLighting);
+    }
+
     public Quad flip() {
         Vertex[] flipped = new Vertex[4];
         flipped[3] = vertices[0].copy().normal(vertices[0].getNormal().scale(-1));
         flipped[2] = vertices[1].copy().normal(vertices[1].getNormal().scale(-1));
         flipped[1] = vertices[2].copy().normal(vertices[2].getNormal().scale(-1));
         flipped[0] = vertices[3].copy().normal(vertices[3].getNormal().scale(-1));
-        return new Quad(sprite, side.getOpposite(), flipped);
+        return new Quad(sprite, side.getOpposite(), flipped, tintIndex, applyDiffuseLighting);
     }
 
     private class BakedQuadUnpacker implements IVertexConsumer {
@@ -163,6 +186,7 @@ public class Quad {
         private float lightU, lightV;
 
         private int tintIndex = -1;
+        private boolean applyDiffuseLighting;
         private boolean contractUVs = true;
 
         public Builder(TextureAtlasSprite texture, Direction side) {
@@ -194,8 +218,13 @@ public class Quad {
             return this;
         }
 
-        public Builder contractUVs() {
-            this.contractUVs = true;
+        public Builder applyDiffuseLighting(boolean applyDiffuseLighting) {
+            this.applyDiffuseLighting = applyDiffuseLighting;
+            return this;
+        }
+
+        public Builder contractUVs(boolean contractUVs) {
+            this.contractUVs = contractUVs;
             return this;
         }
 
@@ -223,8 +252,7 @@ public class Quad {
             vertices[1] = Vertex.create(vec2, normal, texture, minU, maxV).light(lightU, lightV);
             vertices[2] = Vertex.create(vec3, normal, texture, maxU, maxV).light(lightU, lightV);
             vertices[3] = Vertex.create(vec4, normal, texture, maxU, minV).light(lightU, lightV);
-            Quad quad = new Quad(texture, side, vertices);
-            quad.tintIndex = tintIndex;
+            Quad quad = new Quad(texture, side, vertices, tintIndex, applyDiffuseLighting);
             if (contractUVs) {
                 QuadUtils.contractUVs(quad);
             }

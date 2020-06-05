@@ -11,6 +11,7 @@ import mekanism.common.lib.Color;
 import mekanism.common.lib.math.Quaternion;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 public interface QuadTransformation {
     // down up north south west east
@@ -39,9 +40,9 @@ public interface QuadTransformation {
         switch (side) {
             case UP: return rotate(90, 0, 0);
             case DOWN: return rotate(-90, 0, 0);
-            case WEST: return rotate(0, -90, 0);
-            case EAST: return rotate(0, 90, 0);
-            case NORTH: return rotate(0, 180, 0);
+            case WEST: return rotate(0, 90, 0);
+            case EAST: return rotate(0, -90, 0);
+            case SOUTH: return rotate(0, 180, 0);
             default:
                 return identity;
         }
@@ -61,6 +62,10 @@ public interface QuadTransformation {
 
     static QuadTransformation sideRotate(Direction side) {
         return new SideTransformation(side);
+    }
+
+    static QuadTransformation list(QuadTransformation... transforms) {
+        return TransformationList.of(transforms);
     }
 
     void transform(Quad quad);
@@ -101,7 +106,7 @@ public interface QuadTransformation {
 
         @Override
         public void transform(Quad quad) {
-            quad.transform(v -> v.color(color));
+            quad.vertexTransform(v -> v.color(color));
         }
 
         @Override
@@ -127,7 +132,7 @@ public interface QuadTransformation {
 
         @Override
         public void transform(Quad quad) {
-            quad.transform(v -> v.light(lightU, lightV));
+            quad.vertexTransform(v -> v.light(lightU, lightV));
         }
 
         @Override
@@ -143,6 +148,9 @@ public interface QuadTransformation {
 
     public class RotationTransformation implements QuadTransformation {
 
+        // quaternion math isn't exact- we round to nearest ten-thousandth
+        private static final double EPSILON = 10_000;
+
         private final Quaternion quaternion;
 
         public RotationTransformation(Quaternion quaternion) {
@@ -151,10 +159,14 @@ public interface QuadTransformation {
 
         @Override
         public void transform(Quad quad) {
-            quad.transform(v -> {
-                v.pos(quaternion.rotate(v.getPos().subtract(0.5, 0.5, 0.5)).add(0.5, 0.5, 0.5));
-                v.normal(quaternion.rotate(v.getNormal()).normalize());
+            quad.vertexTransform(v -> {
+                v.pos(round(quaternion.rotate(v.getPos().subtract(0.5, 0.5, 0.5)).add(0.5, 0.5, 0.5)));
+                v.normal(round(quaternion.rotate(v.getNormal()).normalize()));
             });
+        }
+
+        private static Vec3d round(Vec3d vec) {
+            return new Vec3d(Math.round(vec.x * EPSILON) / EPSILON, Math.round(vec.y * EPSILON) / EPSILON, Math.round(vec.z * EPSILON) / EPSILON);
         }
 
         @Override
