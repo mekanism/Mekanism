@@ -8,13 +8,14 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
@@ -34,7 +35,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         super.onUpdateServer();
         if (getMultiblock().isFormed()) {
             if (getActive()) {
-                GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().outputTank, this);
+                ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().outputTank, this);
             }
 
             if (!energyContainer.isEmpty() && getMultiblock().canSupplyCoilEnergy(this)) {

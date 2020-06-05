@@ -18,10 +18,12 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
@@ -30,7 +32,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -44,8 +46,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     public BasicGasTank inputTank;
     public BasicGasTank outputTank;
-
-    public long gasOutput = 256;
 
     private CachedRecipe<GasToGasRecipe> cachedRecipe;
 
@@ -106,7 +106,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
-        GasUtils.emit(EnumSet.of(getDirection()), outputTank, this, gasOutput);
+        ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, EnumSet.of(getDirection()), outputTank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
     }
 
     @Nonnull

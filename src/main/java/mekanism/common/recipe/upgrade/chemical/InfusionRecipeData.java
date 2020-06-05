@@ -44,7 +44,7 @@ public class InfusionRecipeData extends ChemicalRecipeData<InfuseType, InfusionS
 
     @Override
     protected IInfusionTank createTank() {
-        return BasicInfusionTank.create(Long.MAX_VALUE, null);
+        return BasicInfusionTank.createDummy(Long.MAX_VALUE);
     }
 
     @Override

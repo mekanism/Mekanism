@@ -23,6 +23,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
     private static final String CONVERSION_CATEGORY = "energy_conversion";
 
+    private static final String EJECT_CATEGORY = "auto_eject";
     private static final String MINER_CATEGORY = "digital_miner";
     private static final String LASER_SETTINGS = "laser";
     private static final String PUMP_CATEGORY = "pump";
@@ -47,6 +48,9 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue resistiveHeaterEfficiency;
     public final CachedDoubleValue superheatingHeatTransfer;
     public final CachedEnumValue<TempType> tempUnit;
+    //Auto eject
+    public final CachedIntValue fluidAutoEjectRate;
+    public final CachedLongValue chemicalAutoEjectRate;
     //Energy Conversion
     public final CachedBooleanValue blacklistIC2;
     public final CachedFloatingLongValue FROM_IC2;
@@ -168,6 +172,13 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("negativeEffectsMinSeverity", 0.1D, 0, 1));
         radioactiveWasteBarrelMaxGas = CachedIntValue.wrap(this, builder.comment("Amount of gas (mB) that can be stored in a Radioactive Waste Barrel.")
               .defineInRange("radioactiveWasteBarrelMaxGas", 64_000, 1, Integer.MAX_VALUE));
+        builder.pop();
+
+        builder.comment("Auto Eject Settings").push(EJECT_CATEGORY);
+        fluidAutoEjectRate = CachedIntValue.wrap(this, builder.comment("Rate at which fluid gets auto ejected from tiles.")
+              .define("fluid", 1_024));
+        chemicalAutoEjectRate = CachedLongValue.wrap(this, builder.comment("Rate at which chemicals gets auto ejected from tiles.")
+              .define("chemical", 1_024L));
         builder.pop();
 
         builder.comment("Digital Miner Settings").push(MINER_CATEGORY);

@@ -48,7 +48,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     public BasicGasTank outputTank;
     public double injectUsage = BASE_INJECT_USAGE;
     public long injectUsageThisTick;
-    public long gasOutput = 256;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;

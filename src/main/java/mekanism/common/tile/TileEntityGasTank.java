@@ -18,6 +18,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.GasTankGasTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -38,7 +39,7 @@ import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.upgrade.GasTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -56,11 +57,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
     public GasTankGasTank gasTank;
 
     public GasTankTier tier;
-
-    public GasMode dumping;
-
-    public long currentGasAmount;
-
+    public GasMode dumping = GasMode.IDLE;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
@@ -70,13 +67,8 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
     public TileEntityGasTank(IBlockProvider blockProvider) {
         super(blockProvider);
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.ITEM);
-        configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, RelativeSide.FRONT, true)
-              .setCanEject(false);
-        configComponent.setupIOConfig(TransmissionType.GAS, gasTank, gasTank, RelativeSide.FRONT)
-              .setEjecting(true);
-
-        dumping = GasMode.IDLE;
-
+        configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, RelativeSide.FRONT, true).setCanEject(false);
+        configComponent.setupIOConfig(TransmissionType.GAS, gasTank, gasTank, RelativeSide.FRONT).setEjecting(true);
         ejectorComponent = new TileComponentEjector(this);
     }
 
@@ -114,7 +106,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
         if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
             ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
             if (config != null && config.isEjecting()) {
-                GasUtils.emit(config.getAllOutputtingSides(), gasTank, this, tier.getOutput());
+                ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, config.getAllOutputtingSides(), gasTank, this, tier.getOutput());
             }
         }
 
@@ -128,12 +120,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
                 }
             }
         }
-
-        long newGasAmount = gasTank.getStored();
-        if (newGasAmount != currentGasAmount) {
-            markDirty(false);
-        }
-        currentGasAmount = newGasAmount;
     }
 
     @Override

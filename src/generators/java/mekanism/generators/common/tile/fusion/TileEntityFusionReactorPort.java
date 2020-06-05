@@ -1,5 +1,6 @@
 package mekanism.generators.common.tile.fusion;
 
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
@@ -18,7 +19,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
@@ -83,8 +84,9 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (getActive() && getMultiblock().isFormed()) {
-            GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().steamTank, this);
-            CableUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().energyContainer, this);
+            Set<Direction> directionsToEmit = getMultiblock().getDirectionsToEmit(getPos());
+            ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, directionsToEmit, getMultiblock().steamTank, this);
+            CableUtils.emit(directionsToEmit, getMultiblock().energyContainer, this);
         }
     }
 

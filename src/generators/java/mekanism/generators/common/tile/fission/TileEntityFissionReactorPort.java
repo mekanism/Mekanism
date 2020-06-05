@@ -10,11 +10,12 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
@@ -37,9 +38,9 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
             FissionPortMode mode = getMode();
 
             if (mode == FissionPortMode.OUTPUT_COOLANT) {
-                GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().heatedCoolantTank, this);
+                ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().heatedCoolantTank, this);
             } else if (mode == FissionPortMode.OUTPUT_WASTE) {
-                GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().wasteTank, this);
+                ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().wasteTank, this);
             }
         }
     }
@@ -93,7 +94,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
             mode = FissionPortMode.values()[(mode.ordinal() + 1) % FissionPortMode.values().length];
             world.setBlockState(pos, getBlockState().with(AttributeStateFissionPortMode.modeProperty, mode));
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode.translate())));
+                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode)));
         }
         return ActionResultType.SUCCESS;
     }

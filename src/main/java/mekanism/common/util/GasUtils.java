@@ -1,28 +1,20 @@
 package mekanism.common.util;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.distribution.target.GasHandlerTarget;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -72,60 +64,6 @@ public final class GasUtils {
 
     public static boolean hasGas(ItemStack stack) {
         return hasGas(stack, (s) -> true);
-    }
-
-    public static void emit(IGasTank tank, TileEntity from) {
-        emit(EnumSet.allOf(Direction.class), tank, from);
-    }
-
-    public static void emit(Set<Direction> outputSides, IGasTank tank, TileEntity from) {
-        emit(outputSides, tank, from, tank.getCapacity());
-    }
-
-    public static void emit(Set<Direction> outputSides, IGasTank tank, TileEntity from, long maxOutput) {
-        if (!tank.isEmpty() && maxOutput > 0) {
-            tank.extract(emit(outputSides, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
-        }
-    }
-
-    /**
-     * Emits gas from a central block by splitting the received stack among the sides given.
-     *
-     * @param sides - the list of sides to output from
-     * @param stack - the stack to output
-     * @param from  - the TileEntity to output from
-     *
-     * @return the amount of gas emitted
-     */
-    public static long emit(Set<Direction> sides, @Nonnull GasStack stack, TileEntity from) {
-        if (stack.isEmpty() || sides.isEmpty()) {
-            return 0;
-        }
-        //Fake that we have one target given we know that no sides will overlap
-        // This allows us to have slightly better performance
-        GasHandlerTarget target = new GasHandlerTarget(stack);
-        GasStack unitStack = new GasStack(stack, 1);
-        EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
-            //Insert to access side
-            Direction accessSide = side.getOpposite();
-            //Collect cap
-            CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
-                if (canInsert(handler, unitStack)) {
-                    target.addHandler(accessSide, handler);
-                }
-            });
-        });
-        int curHandlers = target.getHandlers().size();
-        if (curHandlers > 0) {
-            Set<GasHandlerTarget> targets = new ObjectOpenHashSet<>();
-            targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), stack.copy());
-        }
-        return 0;
-    }
-
-    public static boolean canInsert(IGasHandler handler, @Nonnull GasStack unitStack) {
-        return handler.insertChemical(unitStack, Action.SIMULATE).isEmpty();
     }
 
     public static List<ITextComponent> getAttributeTooltips(Gas gas) {

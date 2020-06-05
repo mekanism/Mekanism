@@ -25,6 +25,10 @@ public class BasicPigmentTank extends BasicChemicalTank<Pigment, PigmentStack> i
         return create(capacity, alwaysTrue, listener);
     }
 
+    public static BasicPigmentTank createDummy(long capacity) {
+        return create(capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, null);
+    }
+
     public static BasicPigmentTank create(long capacity, Predicate<@NonNull Pigment> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");

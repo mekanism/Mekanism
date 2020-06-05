@@ -44,7 +44,7 @@ public class PigmentRecipeData extends ChemicalRecipeData<Pigment, PigmentStack,
 
     @Override
     protected IPigmentTank createTank() {
-        return BasicPigmentTank.create(Long.MAX_VALUE, null);
+        return BasicPigmentTank.createDummy(Long.MAX_VALUE);
     }
 
     @Override

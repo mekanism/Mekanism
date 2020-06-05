@@ -44,7 +44,7 @@ public class SlurryRecipeData extends ChemicalRecipeData<Slurry, SlurryStack, IS
 
     @Override
     protected ISlurryTank createTank() {
-        return BasicSlurryTank.create(Long.MAX_VALUE, null);
+        return BasicSlurryTank.createDummy(Long.MAX_VALUE);
     }
 
     @Override
