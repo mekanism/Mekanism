@@ -56,7 +56,7 @@ import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityModificationStation;
@@ -625,12 +625,12 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityFluidTank> ULTIMATE_FLUID_TANK = createFluidTank(FluidTankTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_FLUID_TANK, null);
     public static final Machine<TileEntityFluidTank> CREATIVE_FLUID_TANK = createFluidTank(FluidTankTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_FLUID_TANK, null);
 
-    // Gas Tanks
-    public static final Machine<TileEntityGasTank> BASIC_GAS_TANK = createGasTank(ChemicalTankTier.BASIC, () -> MekanismTileEntityTypes.BASIC_GAS_TANK, () -> MekanismBlocks.ADVANCED_GAS_TANK);
-    public static final Machine<TileEntityGasTank> ADVANCED_GAS_TANK = createGasTank(ChemicalTankTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_GAS_TANK, () -> MekanismBlocks.ELITE_GAS_TANK);
-    public static final Machine<TileEntityGasTank> ELITE_GAS_TANK = createGasTank(ChemicalTankTier.ELITE, () -> MekanismTileEntityTypes.ELITE_GAS_TANK, () -> MekanismBlocks.ULTIMATE_GAS_TANK);
-    public static final Machine<TileEntityGasTank> ULTIMATE_GAS_TANK = createGasTank(ChemicalTankTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_GAS_TANK, null);
-    public static final Machine<TileEntityGasTank> CREATIVE_GAS_TANK = createGasTank(ChemicalTankTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_GAS_TANK, null);
+    // Chemical Tanks
+    public static final Machine<TileEntityChemicalTank> BASIC_CHEMICAL_TANK = createChemicalTank(ChemicalTankTier.BASIC, () -> MekanismTileEntityTypes.BASIC_CHEMICAL_TANK, () -> MekanismBlocks.ADVANCED_CHEMICAL_TANK);
+    public static final Machine<TileEntityChemicalTank> ADVANCED_CHEMICAL_TANK = createChemicalTank(ChemicalTankTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_CHEMICAL_TANK, () -> MekanismBlocks.ELITE_CHEMICAL_TANK);
+    public static final Machine<TileEntityChemicalTank> ELITE_CHEMICAL_TANK = createChemicalTank(ChemicalTankTier.ELITE, () -> MekanismTileEntityTypes.ELITE_CHEMICAL_TANK, () -> MekanismBlocks.ULTIMATE_CHEMICAL_TANK);
+    public static final Machine<TileEntityChemicalTank> ULTIMATE_CHEMICAL_TANK = createChemicalTank(ChemicalTankTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_CHEMICAL_TANK, null);
+    public static final Machine<TileEntityChemicalTank> CREATIVE_CHEMICAL_TANK = createChemicalTank(ChemicalTankTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_CHEMICAL_TANK, null);
 
     static {
         for (FactoryTier tier : FactoryTier.values()) {
@@ -683,10 +683,10 @@ public class MekanismBlockTypes {
               .build();
     }
 
-    private static <TILE extends TileEntityGasTank> Machine<TILE> createGasTank(ChemicalTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
-        return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_GAS_TANK)
-              .withGui(() -> MekanismContainerTypes.GAS_TANK)
-              .withCustomShape(BlockShapes.GAS_TANK)
+    private static <TILE extends TileEntityChemicalTank> Machine<TILE> createChemicalTank(ChemicalTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+        return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_CHEMICAL_TANK)
+              .withGui(() -> MekanismContainerTypes.CHEMICAL_TANK)
+              .withCustomShape(BlockShapes.CHEMICAL_TANK)
               .with(new AttributeTier<>(tier), new AttributeUpgradeable(upgradeBlock))
               .without(AttributeParticleFX.class, AttributeStateActive.class, AttributeUpgradeSupport.class)
               .build();

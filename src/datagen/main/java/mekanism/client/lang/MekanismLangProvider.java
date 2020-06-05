@@ -285,7 +285,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTiered(MekanismBlocks.BASIC_BIN, MekanismBlocks.ADVANCED_BIN, MekanismBlocks.ELITE_BIN, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.CREATIVE_BIN, "Bin");
         addTiered(MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.CREATIVE_ENERGY_CUBE, "Energy Cube");
         addTiered(MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK, "Fluid Tank");
-        addTiered(MekanismBlocks.BASIC_GAS_TANK, MekanismBlocks.ADVANCED_GAS_TANK, MekanismBlocks.ELITE_GAS_TANK, MekanismBlocks.ULTIMATE_GAS_TANK, MekanismBlocks.CREATIVE_GAS_TANK, "Gas Tank");
+        addTiered(MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ULTIMATE_CHEMICAL_TANK, MekanismBlocks.CREATIVE_CHEMICAL_TANK, "Chemical Tank");
         //Factories
         for (FactoryTier tier : FactoryTier.values()) {
             for (FactoryType type : FactoryType.values()) {
@@ -376,13 +376,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addSlurry(SlurryRegistryObject<Slurry, Slurry> slurryRO, String name) {
-        add(slurryRO.getDirtySlurry(), name);
-        add(slurryRO.getCleanSlurry(), "Clean " + name);
+        add(slurryRO.getDirtySlurry(), "Dirty " + name + " Slurry");
+        add(slurryRO.getCleanSlurry(), "Clean " + name + " Slurry");
     }
 
     private void addDamageSources() {
         add(MekanismDamageSource.LASER, "%s was incinerated.");
-        add(MekanismDamageSource.RADIATION, "%1$s was killed by radiation poisoning.");
+        add(MekanismDamageSource.RADIATION, "%s was killed by radiation poisoning.");
     }
 
     private void addMisc() {
@@ -411,7 +411,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Chemical Attributes
         add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, " - Radioactivity: %s sV/h");
         add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY, " - Coolant Efficiency: %s");
-        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, " - Themal Enthalpy: %sJ/mB");
+        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, " - Thermal Enthalpy: %s J/mB");
         //Colors
         for (EnumColor color : EnumColor.values()) {
             add(color.getLangEntry(), color.getEnglishName());
@@ -573,6 +573,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.FUEL, "Fuel: %s");
         add(MekanismLang.VOLUME, "Volume: %s");
         add(MekanismLang.NO_FLUID, "No fluid");
+        add(MekanismLang.CHEMICAL, "Chemical: %s");
         add(MekanismLang.GAS, "Gas: %s");
         add(MekanismLang.INFUSE_TYPE, "Infuse Type: %s");
         add(MekanismLang.PIGMENT, "Pigment: %s");
@@ -1057,7 +1058,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_RADIOACTIVE_WASTE_BARREL, "A barrel that can be used to 'safety' store radioactive waste. WARNING: breaking this barrel will release its contents into the atmosphere.");
         add(MekanismLang.DESCRIPTION_INDUSTRIAL_ALARM, "Not just your everyday alarm... this is an 'industrial' alarm!");
         add(MekanismLang.DESCRIPTION_ENERGY_CUBE, "An advanced device for storing and distributing energy.");
-        add(MekanismLang.DESCRIPTION_GAS_TANK, "A portable tank that lets you carry gas wherever you please.");
+        add(MekanismLang.DESCRIPTION_CHEMICAL_TANK, "A portable tank that lets you carry chemicals wherever you please.");
         add(MekanismLang.DESCRIPTION_DIVERSION, "- Controllable by redstone");
         add(MekanismLang.DESCRIPTION_RESTRICTIVE, "- Only used if no other paths available");
         add(MekanismLang.DESCRIPTION_SPS_CASING, "Reinforced casing capable of resisting intense chemical and thermal effects from phase-shifting reactions.");
@@ -1125,7 +1126,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, "Uses electrolysis to create breathable oxygen from water. Will also fill a jetpack module with hydrogen when necessary.");
         add(MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, "Applies a miniature electromagnetic field around the breathing apparatus, preventing negative potion effects.");
         add(MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
-        add(MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, "Brightens the surrounding environment, allowing the user to see through darkness. Install multiple for more effective nightvision.");
+        add(MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, "Brightens the surrounding environment, allowing the user to see through darkness. Install multiple for more effective night vision.");
         add(MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging. Requires Mekanism: Generators.");
         add(MekanismLang.DESCRIPTION_NUTRITIONAL_INJECTION_UNIT, "Automatically feeds the player Nutritional Paste when hungry.");
         add(MekanismLang.DESCRIPTION_JETPACK_UNIT, "Applies a hydrogen-fueled jetpack to the MekaSuit.");
@@ -1140,7 +1141,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add("description.mekanism.copper_ore", "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");
         add("description.mekanism.tin_ore", "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
         add("description.mekanism.fluorite_ore", "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
-        add("description.mekanism.uranium_ore", "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occuring form, it is not radioactive enough to cause harm.");
+        add("description.mekanism.uranium_ore", "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occurring form, it is not radioactive enough to cause harm.");
         add("description.mekanism.lead_ore", "A somewhat rare metal that is excellent at resisting radioactive particles, spawning slightly less frequently than iron.");
     }
 

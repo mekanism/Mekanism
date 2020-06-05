@@ -21,12 +21,16 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IGasProvider;
@@ -104,21 +108,10 @@ public class ChemicalUtil {
      *
      * @param chemical - chemical to fill the tank with
      *
-     * @return filled gas tank
+     * @return filled chemical tank
      */
     public static ItemStack getFullChemicalTank(ChemicalTankTier tier, @Nonnull Chemical<?> chemical) {
-        ItemStack tankItem = getEmptyChemicalTank(tier);
-        if (chemical instanceof Gas) {
-            return getFilledVariant(tankItem, tier.getStorage(), (Gas) chemical);
-        } else if (chemical instanceof InfuseType) {
-            return getFilledVariant(tankItem, tier.getStorage(), (InfuseType) chemical);
-        } else if (chemical instanceof Pigment) {
-            return getFilledVariant(tankItem, tier.getStorage(), (Pigment) chemical);
-        } else if (chemical instanceof Slurry) {
-            return getFilledVariant(tankItem, tier.getStorage(), (Slurry) chemical);
-        } else {
-            throw new IllegalStateException("Unknown Chemical Type: " + chemical.getClass().getName());
-        }
+        return getFilledVariant(getEmptyChemicalTank(tier), tier.getStorage(), chemical);
     }
 
     /**
@@ -129,33 +122,31 @@ public class ChemicalUtil {
     private static ItemStack getEmptyChemicalTank(ChemicalTankTier tier) {
         switch (tier) {
             case BASIC:
-                return MekanismBlocks.BASIC_GAS_TANK.getItemStack();
+                return MekanismBlocks.BASIC_CHEMICAL_TANK.getItemStack();
             case ADVANCED:
-                return MekanismBlocks.ADVANCED_GAS_TANK.getItemStack();
+                return MekanismBlocks.ADVANCED_CHEMICAL_TANK.getItemStack();
             case ELITE:
-                return MekanismBlocks.ELITE_GAS_TANK.getItemStack();
+                return MekanismBlocks.ELITE_CHEMICAL_TANK.getItemStack();
             case ULTIMATE:
-                return MekanismBlocks.ULTIMATE_GAS_TANK.getItemStack();
+                return MekanismBlocks.ULTIMATE_CHEMICAL_TANK.getItemStack();
             case CREATIVE:
-                return MekanismBlocks.CREATIVE_GAS_TANK.getItemStack();
+                return MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack();
         }
         return ItemStack.EMPTY;
     }
 
-    public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IGasProvider provider) {
-        return getFilledVariant(toFill, BasicGasTank.createDummy(capacity), provider, NBTConstants.GAS_TANKS);
-    }
-
-    public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IInfuseTypeProvider provider) {
-        return getFilledVariant(toFill, BasicInfusionTank.createDummy(capacity), provider, NBTConstants.INFUSION_TANKS);
-    }
-
-    public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IPigmentProvider provider) {
-        return getFilledVariant(toFill, BasicPigmentTank.createDummy(capacity), provider, NBTConstants.PIGMENT_TANKS);
-    }
-
-    public static ItemStack getFilledVariant(ItemStack toFill, long capacity, ISlurryProvider provider) {
-        return getFilledVariant(toFill, BasicSlurryTank.createDummy(capacity), provider, NBTConstants.SLURRY_TANKS);
+    public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IChemicalProvider<?> provider) {
+        if (provider instanceof IGasProvider) {
+            return getFilledVariant(toFill, BasicGasTank.createDummy(capacity), (IGasProvider) provider, NBTConstants.GAS_TANKS);
+        } else if (provider instanceof IInfuseTypeProvider) {
+            return getFilledVariant(toFill, BasicInfusionTank.createDummy(capacity), (IInfuseTypeProvider) provider, NBTConstants.INFUSION_TANKS);
+        } else if (provider instanceof IPigmentProvider) {
+            return getFilledVariant(toFill, BasicPigmentTank.createDummy(capacity), (IPigmentProvider) provider, NBTConstants.PIGMENT_TANKS);
+        } else if (provider instanceof ISlurryProvider) {
+            return getFilledVariant(toFill, BasicSlurryTank.createDummy(capacity), (ISlurryProvider) provider, NBTConstants.SLURRY_TANKS);
+        } else {
+            throw new IllegalStateException("Unknown Chemical Type: " + provider.getChemical().getClass().getName());
+        }
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
@@ -165,6 +156,27 @@ public class ChemicalUtil {
         ItemDataUtils.setList(toFill, key, DataHandlerUtils.writeContainers(Collections.singletonList(dummyTank)));
         //The item is now filled return it for convenience
         return toFill;
+    }
+
+    public static int getRGBDurabilityForDisplay(ItemStack stack) {
+        //TODO: Technically doesn't support things where the color is part of the texture such as lava
+        GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
+        if (!gasStack.isEmpty()) {
+            return gasStack.getChemicalTint();
+        }
+        InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
+        if (!infusionStack.isEmpty()) {
+            return infusionStack.getChemicalTint();
+        }
+        PigmentStack pigmentStack = StorageUtils.getStoredPigmentFromNBT(stack);
+        if (!pigmentStack.isEmpty()) {
+            return pigmentStack.getChemicalTint();
+        }
+        SlurryStack slurryStack = StorageUtils.getStoredSlurryFromNBT(stack);
+        if (!slurryStack.isEmpty()) {
+            return slurryStack.getChemicalTint();
+        }
+        return 0;
     }
 
     public static boolean hasGas(ItemStack stack) {

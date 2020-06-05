@@ -11,7 +11,7 @@ import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiDynamicTank;
 import mekanism.client.gui.GuiEnergyCube;
 import mekanism.client.gui.GuiFluidTank;
-import mekanism.client.gui.GuiGasTank;
+import mekanism.client.gui.GuiChemicalTank;
 import mekanism.client.gui.GuiInductionMatrix;
 import mekanism.client.gui.GuiLaserAmplifier;
 import mekanism.client.gui.GuiLaserTractorBeam;
@@ -302,7 +302,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.SPS, GuiSPS::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FACTORY, GuiFactory::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.GAS_TANK, GuiGasTank::new);
+        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.CHEMICAL_TANK, GuiChemicalTank::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FLUID_TANK, GuiFluidTank::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.ENERGY_CUBE, GuiEnergyCube::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.INDUCTION_MATRIX, GuiInductionMatrix::new);

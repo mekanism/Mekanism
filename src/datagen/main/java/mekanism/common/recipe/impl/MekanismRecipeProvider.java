@@ -48,7 +48,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     static final char SORTER_CHAR = 'S';
     static final char TELEPORTATION_CORE_CHAR = 'T';
 
-    //TODO: Do we want to use same pattern for fluid tank and gas tank at some point
+    //TODO: Do we want to use same pattern for fluid tank and chemical tank at some point
     static final RecipePattern TIER_PATTERN = RecipePattern.createPattern(
           TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
           TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
@@ -62,6 +62,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
           new BinRecipeProvider(),
           new ChemicalInfuserRecipeProvider(),
           new ChemicalInjectorRecipeProvider(),
+          new ChemicalTankRecipeProvider(),
           new CombinerRecipeProvider(),
           new ControlCircuitRecipeProvider(),
           new CrusherRecipeProvider(),
@@ -73,7 +74,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
           new FactoryRecipeProvider(),
           new FluidTankRecipeProvider(),
           new GasConversionRecipeProvider(),
-          new GasTankRecipeProvider(),
           new InductionRecipeProvider(),
           new InfusionConversionRecipeProvider(),
           new MetallurgicInfuserRecipeProvider(),
@@ -174,7 +174,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT))
-              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
@@ -185,7 +185,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT))
-              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
@@ -196,7 +196,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(Pattern.TANK, Pattern.STEEL_CASING, Pattern.TANK),
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
-              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
@@ -218,7 +218,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(PERSONAL_CHEST_CHAR, Pattern.CONSTANT, Pattern.TANK),
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
-              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CONSTANT, MekanismBlocks.DYNAMIC_TANK)
@@ -230,7 +230,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.BUCKET, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT))
-              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
@@ -412,7 +412,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
                     TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.STEEL),
                     TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT))
-              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
               .key(Pattern.CONSTANT, MekanismTags.Items.INGOTS_BRONZE)
               .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
@@ -563,7 +563,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
-              .key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .build(consumer);
         //Jetpack
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.JETPACK)
@@ -571,7 +571,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.CIRCUIT, Pattern.STEEL),
                     TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT),
                     TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
-              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
@@ -727,7 +727,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.TANK, Pattern.CONSTANT, Pattern.TANK))
               ).key(Pattern.PREVIOUS, MekanismBlocks.ENRICHMENT_CHAMBER)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CONSTANT, MekanismBlocks.DYNAMIC_TANK)
@@ -794,7 +794,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR))
               ).key(GLASS_CHAR, Tags.Items.GLASS)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
-              .key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_FLUID_TANK)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .build(consumer);
@@ -804,7 +804,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.CIRCUIT, Pattern.EMPTY),
                     TripleLine.of(Pattern.ALLOY, Pattern.TANK, Pattern.ALLOY),
                     TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL))
-              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)

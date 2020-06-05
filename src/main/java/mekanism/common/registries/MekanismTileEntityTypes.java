@@ -14,7 +14,7 @@ import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityModificationStation;
@@ -215,12 +215,12 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> ELITE_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_ENERGY_CUBE, () -> new TileEntityEnergyCube(MekanismBlocks.ELITE_ENERGY_CUBE));
     public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> ULTIMATE_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_ENERGY_CUBE, () -> new TileEntityEnergyCube(MekanismBlocks.ULTIMATE_ENERGY_CUBE));
     public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> CREATIVE_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_ENERGY_CUBE, () -> new TileEntityEnergyCube(MekanismBlocks.CREATIVE_ENERGY_CUBE));
-    //Gas Tanks
-    public static final TileEntityTypeRegistryObject<TileEntityGasTank> BASIC_GAS_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_GAS_TANK, () -> new TileEntityGasTank(MekanismBlocks.BASIC_GAS_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityGasTank> ADVANCED_GAS_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_GAS_TANK, () -> new TileEntityGasTank(MekanismBlocks.ADVANCED_GAS_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityGasTank> ELITE_GAS_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_GAS_TANK, () -> new TileEntityGasTank(MekanismBlocks.ELITE_GAS_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityGasTank> ULTIMATE_GAS_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_GAS_TANK, () -> new TileEntityGasTank(MekanismBlocks.ULTIMATE_GAS_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityGasTank> CREATIVE_GAS_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_GAS_TANK, () -> new TileEntityGasTank(MekanismBlocks.CREATIVE_GAS_TANK));
+    //Chemical Tanks
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> BASIC_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_CHEMICAL_TANK, () -> new TileEntityChemicalTank(MekanismBlocks.BASIC_CHEMICAL_TANK));
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> ADVANCED_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_CHEMICAL_TANK, () -> new TileEntityChemicalTank(MekanismBlocks.ADVANCED_CHEMICAL_TANK));
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> ELITE_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_CHEMICAL_TANK, () -> new TileEntityChemicalTank(MekanismBlocks.ELITE_CHEMICAL_TANK));
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> ULTIMATE_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_CHEMICAL_TANK, () -> new TileEntityChemicalTank(MekanismBlocks.ULTIMATE_CHEMICAL_TANK));
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> CREATIVE_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_CHEMICAL_TANK, () -> new TileEntityChemicalTank(MekanismBlocks.CREATIVE_CHEMICAL_TANK));
     //Fluid Tanks
     public static final TileEntityTypeRegistryObject<TileEntityFluidTank> BASIC_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_FLUID_TANK, () -> new TileEntityFluidTank(MekanismBlocks.BASIC_FLUID_TANK));
     public static final TileEntityTypeRegistryObject<TileEntityFluidTank> ADVANCED_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_FLUID_TANK, () -> new TileEntityFluidTank(MekanismBlocks.ADVANCED_FLUID_TANK));

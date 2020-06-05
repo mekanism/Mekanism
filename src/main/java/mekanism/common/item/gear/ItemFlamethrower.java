@@ -73,8 +73,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
 
     @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
-        GasStack stored = StorageUtils.getStoredGasFromNBT(stack);
-        return stored.isEmpty() ? 0 : stored.getChemicalTint();
+        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
     }
 
     @Override

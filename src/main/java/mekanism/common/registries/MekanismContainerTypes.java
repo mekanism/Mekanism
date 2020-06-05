@@ -39,7 +39,7 @@ import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.tile.TileEntityPersonalChest;
@@ -157,7 +157,7 @@ public class MekanismContainerTypes {
 
     //Named
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFactory<?>>> FACTORY = CONTAINER_TYPES.register("factory", FactoryContainer::new);
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityGasTank>> GAS_TANK = CONTAINER_TYPES.register("gas_tank", TileEntityGasTank.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityChemicalTank>> CHEMICAL_TANK = CONTAINER_TYPES.register("chemical_tank", TileEntityChemicalTank.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFluidTank>> FLUID_TANK = CONTAINER_TYPES.register("fluid_tank", TileEntityFluidTank.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityEnergyCube>> ENERGY_CUBE = CONTAINER_TYPES.register("energy_cube", TileEntityEnergyCube.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityInductionCasing>> INDUCTION_MATRIX = CONTAINER_TYPES.register("induction_matrix", TileEntityInductionCasing.class);

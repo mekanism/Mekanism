@@ -39,6 +39,6 @@ public class GasConversionIRecipe extends ItemStackToGasRecipe {
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlocks.CREATIVE_GAS_TANK.getItemStack();
+        return MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack();
     }
 }

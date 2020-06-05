@@ -7,7 +7,7 @@ import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.IJEIIngredientHelper;
-import mekanism.common.capabilities.MergedTank;
+import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
@@ -48,8 +48,8 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTrac
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        GuiTankGauge<?, ?> currentGaugeNoFallback = getCurrentGaugeNoFallback();
-        if (currentGaugeNoFallback == null) {
+        GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
+        if (currentGauge == null) {
             //If all the tanks are currently empty, pass the click event to all of them;
             // if multiple types are somehow stored in the dropper, insertion checks should prevent them from being inserted at the same time
             fluidGauge.mouseClicked(mouseX, mouseY, button);
@@ -59,28 +59,30 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTrac
             slurryGauge.mouseClicked(mouseX, mouseY, button);
         } else {
             //Otherwise just send the click event to the corresponding gauge
-            currentGaugeNoFallback.mouseClicked(mouseX, mouseY, button);
+            currentGauge.mouseClicked(mouseX, mouseY, button);
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     protected void applyRenderColor() {
-        GuiTankGauge<?, ?> currentGaugeNoFallback = getCurrentGaugeNoFallback();
-        if (currentGaugeNoFallback != null) {
-            currentGaugeNoFallback.applyRenderColor();
+        GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
+        if (currentGauge != null) {
+            currentGauge.applyRenderColor();
         }
     }
 
     @Nullable
     @Override
     public Object getIngredient() {
-        return getCurrentGauge().getIngredient();
+        GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
+        return currentGauge == null ? null : currentGauge.getIngredient();
     }
 
     @Override
     public int getScaledLevel() {
-        return getCurrentGauge().getScaledLevel();
+        GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
+        return currentGauge == null ? 0 : currentGauge.getScaledLevel();
     }
 
     @Override

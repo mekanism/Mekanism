@@ -79,7 +79,7 @@ public class TierConfig extends BaseMekanismConfig {
 
     private void addGasTankCategory(ForgeConfigSpec.Builder builder) {
         builder.comment("Chemical Tanks").push(CHEMICAL_TANK_CATEGORY);
-        for (ChemicalTankTier tier : EnumUtils.GAS_TANK_TIERS) {
+        for (ChemicalTankTier tier : EnumUtils.CHEMICAL_TANK_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedLongValue storageReference = CachedLongValue.wrap(this, builder.comment("Storage size of " + tierName + " chemical tanks in mB.")
                   .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Long.MAX_VALUE));
