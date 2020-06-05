@@ -1,13 +1,13 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
@@ -232,6 +232,14 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
      */
     protected boolean resetColorBeforeRender() {
         return true;
+    }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        if (super.isMouseOver(mouseX, mouseY)) {
+            return true;
+        }
+        return children.stream().anyMatch(child -> child.isMouseOver(mouseX, mouseY));
     }
 
     //TODO: Convert this stuff into a javadoc
