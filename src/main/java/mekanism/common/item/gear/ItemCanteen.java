@@ -63,8 +63,7 @@ public class ItemCanteen extends Item implements IGasItem {
 
     @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
-        GasStack stored = StorageUtils.getStoredGasFromNBT(stack);
-        return stored.isEmpty() ? 0 : stored.getType().getTint();
+        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
     }
 
     @Override

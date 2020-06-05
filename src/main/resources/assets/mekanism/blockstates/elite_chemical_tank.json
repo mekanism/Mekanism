@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mekanism:block/chemical_tank/elite"
+    },
+    "facing=south": {
+      "model": "mekanism:block/chemical_tank/elite",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanism:block/chemical_tank/elite",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanism:block/chemical_tank/elite",
+      "y": -90
+    }
+  }
+}

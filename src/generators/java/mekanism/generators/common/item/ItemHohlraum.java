@@ -76,8 +76,7 @@ public class ItemHohlraum extends Item {
 
     @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
-        GasStack stored = StorageUtils.getStoredGasFromNBT(stack);
-        return stored.isEmpty() ? 0 : stored.getChemicalTint();
+        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
     }
 
     @Override

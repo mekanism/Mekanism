@@ -94,7 +94,7 @@ public class EnumUtils {
     /**
      * Cached value of {@link ChemicalTankTier#values()}. DO NOT MODIFY THIS LIST.
      */
-    public static final ChemicalTankTier[] GAS_TANK_TIERS = ChemicalTankTier.values();
+    public static final ChemicalTankTier[] CHEMICAL_TANK_TIERS = ChemicalTankTier.values();
 
     /**
      * Cached value of {@link FluidTankTier#values()}. DO NOT MODIFY THIS LIST.

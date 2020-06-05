@@ -49,7 +49,7 @@ import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.item.block.ItemBlockEnergyCube;
-import mekanism.common.item.block.ItemBlockGasTank;
+import mekanism.common.item.block.ItemBlockChemicalTank;
 import mekanism.common.item.block.ItemBlockInductionCell;
 import mekanism.common.item.block.ItemBlockInductionProvider;
 import mekanism.common.item.block.ItemBlockIndustrialAlarm;
@@ -94,7 +94,7 @@ import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.TileEntityPressureDisperser;
@@ -323,11 +323,11 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockBounding, BlockItem> BOUNDING_BLOCK = registerBoundingBlock("bounding_block", () -> new BlockBounding(false));
     public static final BlockRegistryObject<BlockBounding, BlockItem> ADVANCED_BOUNDING_BLOCK = registerBoundingBlock("advanced_bounding_block", () -> new BlockBounding(true));
 
-    public static final BlockRegistryObject<BlockTileModel<TileEntityGasTank, Machine<TileEntityGasTank>>, ItemBlockGasTank> BASIC_GAS_TANK = registerGasTank(MekanismBlockTypes.BASIC_GAS_TANK);
-    public static final BlockRegistryObject<BlockTileModel<TileEntityGasTank, Machine<TileEntityGasTank>>, ItemBlockGasTank> ADVANCED_GAS_TANK = registerGasTank(MekanismBlockTypes.ADVANCED_GAS_TANK);
-    public static final BlockRegistryObject<BlockTileModel<TileEntityGasTank, Machine<TileEntityGasTank>>, ItemBlockGasTank> ELITE_GAS_TANK = registerGasTank(MekanismBlockTypes.ELITE_GAS_TANK);
-    public static final BlockRegistryObject<BlockTileModel<TileEntityGasTank, Machine<TileEntityGasTank>>, ItemBlockGasTank> ULTIMATE_GAS_TANK = registerGasTank(MekanismBlockTypes.ULTIMATE_GAS_TANK);
-    public static final BlockRegistryObject<BlockTileModel<TileEntityGasTank, Machine<TileEntityGasTank>>, ItemBlockGasTank> CREATIVE_GAS_TANK = registerGasTank(MekanismBlockTypes.CREATIVE_GAS_TANK);
+    public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>, ItemBlockChemicalTank> BASIC_CHEMICAL_TANK = registerChemicalTank(MekanismBlockTypes.BASIC_CHEMICAL_TANK);
+    public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>, ItemBlockChemicalTank> ADVANCED_CHEMICAL_TANK = registerChemicalTank(MekanismBlockTypes.ADVANCED_CHEMICAL_TANK);
+    public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>, ItemBlockChemicalTank> ELITE_CHEMICAL_TANK = registerChemicalTank(MekanismBlockTypes.ELITE_CHEMICAL_TANK);
+    public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>, ItemBlockChemicalTank> ULTIMATE_CHEMICAL_TANK = registerChemicalTank(MekanismBlockTypes.ULTIMATE_CHEMICAL_TANK);
+    public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>, ItemBlockChemicalTank> CREATIVE_CHEMICAL_TANK = registerChemicalTank(MekanismBlockTypes.CREATIVE_CHEMICAL_TANK);
 
     public static final BlockRegistryObject<BlockCardboardBox, ItemBlockCardboardBox> CARDBOARD_BOX = BLOCKS.register("cardboard_box", BlockCardboardBox::new, ItemBlockCardboardBox::new);
     public static final BlockRegistryObject<Block, BlockItem> SALT_BLOCK = BLOCKS.register("block_salt", Block.Properties.create(Material.SAND).hardnessAndResistance(0.5F, 0).sound(SoundType.SAND));
@@ -380,8 +380,9 @@ public class MekanismBlocks {
         return registerTieredBlock(tier, "_thermodynamic_conductor", () -> new BlockThermodynamicConductor(tier), ItemBlockThermodynamicConductor::new);
     }
 
-    private static BlockRegistryObject<BlockTileModel<TileEntityGasTank, Machine<TileEntityGasTank>>, ItemBlockGasTank> registerGasTank(Machine<TileEntityGasTank> type) {
-        return registerTieredBlock(type.get(AttributeTier.class).getTier(), "_gas_tank", () -> new BlockTileModel<>(type), ItemBlockGasTank::new);
+    private static BlockRegistryObject<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>, ItemBlockChemicalTank> registerChemicalTank(
+          Machine<TileEntityChemicalTank> type) {
+        return registerTieredBlock(type.get(AttributeTier.class).getTier(), "_chemical_tank", () -> new BlockTileModel<>(type), ItemBlockChemicalTank::new);
     }
 
     private static <TILE extends TileEntityFactory<?>> BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> registerFactory(Factory<TILE> type) {

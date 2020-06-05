@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanism:basic_chemical_tank"
+  },
+  "pattern": [
+    "AOA",
+    "O O",
+    "AOA"
+  ],
+  "key": {
+    "O": {
+      "tag": "forge:ingots/osmium"
+    },
+    "A": {
+      "tag": "mekanism:alloys/basic"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mekanism:block/chemical_tank/creative"
+    },
+    "facing=south": {
+      "model": "mekanism:block/chemical_tank/creative",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "mekanism:block/chemical_tank/creative",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "mekanism:block/chemical_tank/creative",
+      "y": -90
+    }
+  }
+}

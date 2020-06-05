@@ -10,17 +10,17 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.MergedTank;
-import mekanism.common.capabilities.MergedTank.CurrentType;
-import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
+import mekanism.common.capabilities.merged.MergedTank;
+import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
+import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
 import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
 import mekanism.common.inventory.slot.chemical.SlurryInventorySlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-public class HybridInventorySlot extends BasicInventorySlot implements IFluidHandlerSlot {
+public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank> implements IFluidHandlerSlot {
 
     private static boolean hasCapability(@Nonnull ItemStack stack) {
         return FluidUtil.getFluidHandler(stack).isPresent() || stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent() ||
@@ -107,66 +107,13 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
         }, HybridInventorySlot::hasCapability, listener, x, y);
     }
 
-    private final MergedTank mergedTank;
-
     // used by IFluidHandlerSlot
     private boolean isDraining;
     private boolean isFilling;
 
     private HybridInventorySlot(MergedTank mergedTank, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
-        super(canExtract, canInsert, validator, listener, x, y);
-        this.mergedTank = mergedTank;
-    }
-
-    /**
-     * Drains tank into slot (tries all types)
-     */
-    public void drainChemicalTanks() {
-        drainChemicalTank(CurrentType.GAS);
-        drainChemicalTank(CurrentType.INFUSION);
-        drainChemicalTank(CurrentType.PIGMENT);
-        drainChemicalTank(CurrentType.SLURRY);
-    }
-
-    /**
-     * Drains tank into slot
-     */
-    public void drainChemicalTank(CurrentType type) {
-        if (type == CurrentType.GAS) {
-            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getGasTank(), GasInventorySlot.getCapability(current));
-        } else if (type == CurrentType.INFUSION) {
-            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getInfusionTank(), InfusionInventorySlot.getCapability(current));
-        } else if (type == CurrentType.PIGMENT) {
-            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getPigmentTank(), PigmentInventorySlot.getCapability(current));
-        } else if (type == CurrentType.SLURRY) {
-            ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getSlurryTank(), SlurryInventorySlot.getCapability(current));
-        }
-    }
-
-    /**
-     * Fills tank from slot (tries all types)
-     */
-    public void fillChemicalTanks() {
-        fillChemicalTank(CurrentType.GAS);
-        fillChemicalTank(CurrentType.INFUSION);
-        fillChemicalTank(CurrentType.PIGMENT);
-        fillChemicalTank(CurrentType.SLURRY);
-    }
-
-    /**
-     * Fills tank from slot
-     */
-    public void fillChemicalTank(CurrentType type) {
-        if (type == CurrentType.GAS) {
-            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getGasTank(), GasInventorySlot.getCapability(current));
-        } else if (type == CurrentType.INFUSION) {
-            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getInfusionTank(), InfusionInventorySlot.getCapability(current));
-        } else if (type == CurrentType.PIGMENT) {
-            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getPigmentTank(), PigmentInventorySlot.getCapability(current));
-        } else if (type == CurrentType.SLURRY) {
-            ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getSlurryTank(), SlurryInventorySlot.getCapability(current));
-        }
+        super(mergedTank, canExtract, canInsert, validator, listener, x, y);
     }
 
     @Override

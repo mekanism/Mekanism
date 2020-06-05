@@ -232,7 +232,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.STEEL, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .build(consumer, MekanismGenerators.rl("fission_reactor/fuel_assembly"));
         //Control Rod Assembly
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.CONTROL_ROD_ASSEMBLY)
@@ -322,7 +322,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(GLASS_CHAR, Tags.Items.GLASS_PANES)
               .key(FRAME_CHAR, GeneratorsBlocks.FUSION_REACTOR_FRAME)
-              .key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .build(consumer, MekanismGenerators.rl("reactor/controller"));
     }
 

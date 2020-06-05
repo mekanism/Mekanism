@@ -32,6 +32,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     private static final String EVAPORATION_CATEGORY = "thermal_evaporation";
     private static final String SPS_CATEGORY = "sps";
     private static final String RADIATION_CATEGORY = "radiation";
+    private static final String PREFILLED_CATEGORY = "chemical_tanks";
     private static final String NUTRITIONAL_PASTE_CATEGORY = "nutritional_paste";
 
     private final ForgeConfigSpec configSpec;
@@ -40,7 +41,6 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue allowChunkloading;
     public final CachedIntValue blockDeactivationDelay;
     public final CachedConfigValue<List<String>> cardboardModBlacklist;
-    public final CachedBooleanValue prefilledGasTanks;
     public final CachedBooleanValue transmitterAlloyUpgrade;
     public final CachedIntValue maxUpgradeMultiplier;
     public final CachedDoubleValue boilerWaterConductivity;
@@ -51,6 +51,11 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Auto eject
     public final CachedIntValue fluidAutoEjectRate;
     public final CachedLongValue chemicalAutoEjectRate;
+    //Chemical Tanks
+    public final CachedBooleanValue prefilledGasTanks;
+    public final CachedBooleanValue prefilledInfusionTanks;
+    public final CachedBooleanValue prefilledPigmentTanks;
+    public final CachedBooleanValue prefilledSlurryTanks;
     //Energy Conversion
     public final CachedBooleanValue blacklistIC2;
     public final CachedFloatingLongValue FROM_IC2;
@@ -114,8 +119,6 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("blockDeactivationDelay", 60));
         cardboardModBlacklist = CachedConfigValue.wrap(this, builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box.")
               .define("cardboardModBlacklist", new ArrayList<>()));
-        prefilledGasTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative gas tanks to creative/JEI.")
-              .define("prefilledGasTanks", true));
         transmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
               .define("transmitterAlloyUpgrade", true));
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
@@ -131,6 +134,25 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("superheatingHeatTransfer", 16_000_000D));
         tempUnit = CachedEnumValue.wrap(this, builder.comment("Displayed temperature unit in Mekanism GUIs.")
               .defineEnum("temperatureUnit", TempType.K));
+
+        builder.comment("Auto Eject Settings").push(EJECT_CATEGORY);
+        fluidAutoEjectRate = CachedIntValue.wrap(this, builder.comment("Rate at which fluid gets auto ejected from tiles.")
+              .define("fluid", 1_024));
+        chemicalAutoEjectRate = CachedLongValue.wrap(this, builder.comment("Rate at which chemicals gets auto ejected from tiles.")
+              .define("chemical", 1_024L));
+        builder.pop();
+
+        builder.comment("Prefilled Chemical Tanks").push(PREFILLED_CATEGORY);
+        prefilledGasTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative gas tanks to creative/JEI.")
+              .define("gasTanks", true));
+        prefilledInfusionTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative infusion tanks to creative/JEI.")
+              .define("infusionTanks", true));
+        prefilledPigmentTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative pigment tanks to creative/JEI.")
+              .define("pigmentTanks", true));
+        prefilledSlurryTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative slurry tanks to creative/JEI.")
+              .define("slurryTanks", true));
+        builder.pop();
+
         builder.comment("Energy Conversion Rate Settings").push(CONVERSION_CATEGORY);
         blacklistIC2 = CachedBooleanValue.wrap(this, builder.comment("Disables IC2 power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
@@ -172,13 +194,6 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("negativeEffectsMinSeverity", 0.1D, 0, 1));
         radioactiveWasteBarrelMaxGas = CachedIntValue.wrap(this, builder.comment("Amount of gas (mB) that can be stored in a Radioactive Waste Barrel.")
               .defineInRange("radioactiveWasteBarrelMaxGas", 64_000, 1, Integer.MAX_VALUE));
-        builder.pop();
-
-        builder.comment("Auto Eject Settings").push(EJECT_CATEGORY);
-        fluidAutoEjectRate = CachedIntValue.wrap(this, builder.comment("Rate at which fluid gets auto ejected from tiles.")
-              .define("fluid", 1_024));
-        chemicalAutoEjectRate = CachedLongValue.wrap(this, builder.comment("Rate at which chemicals gets auto ejected from tiles.")
-              .define("chemical", 1_024L));
         builder.pop();
 
         builder.comment("Digital Miner Settings").push(MINER_CATEGORY);

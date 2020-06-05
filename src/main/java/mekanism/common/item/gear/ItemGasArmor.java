@@ -5,7 +5,6 @@ import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
 import mekanism.client.render.armor.CustomArmor;
@@ -62,8 +61,7 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear, IG
 
     @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
-        GasStack stored = StorageUtils.getStoredGasFromNBT(stack);
-        return stored.isEmpty() ? 0 : stored.getChemicalTint();
+        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
     }
 
     @Override

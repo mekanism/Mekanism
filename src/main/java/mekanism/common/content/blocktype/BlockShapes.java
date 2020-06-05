@@ -33,7 +33,7 @@ public final class BlockShapes {
     public static final VoxelShape[] QUANTUM_ENTANGLOPORTER = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] LOGISTICAL_SORTER = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] SECURITY_DESK = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
-    public static final VoxelShape[] GAS_TANK = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] CHEMICAL_TANK = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] INDUSTRIAL_ALARM = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] QIO_DASHBOARD = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] RADIOACTIVE_WASTE_BARREL = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -629,7 +629,7 @@ public final class BlockShapes {
               makeCuboidShape(4, 13, 11, 12, 16, 12),//rim3
               makeCuboidShape(4, 13, 5, 5, 16, 11),//rim4
               makeCuboidShape(4, 13, 4, 6, 16, 5)//rim5
-        ), GAS_TANK);
+        ), CHEMICAL_TANK);
 
         setShape(VoxelShapeUtils.combine(
               makeCuboidShape(5, 15, 5, 11, 16, 11),

@@ -16,7 +16,7 @@
       "tag": "forge:circuits/ultimate"
     },
     "T": {
-      "item": "mekanism:basic_gas_tank"
+      "item": "mekanism:basic_chemical_tank"
     }
   }
 }

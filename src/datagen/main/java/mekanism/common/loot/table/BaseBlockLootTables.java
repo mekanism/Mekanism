@@ -88,7 +88,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
 
     protected void registerDropSelfWithContentsLootTable(List<IBlockProvider> blockProviders) {
         //TODO: See if there is other stuff we want to be transferring which we currently do not
-        // For example, when writing this we added dump mode for gas tanks to getting transferred to the item
+        // For example, when writing this we added dump mode for chemical tanks to getting transferred to the item
         for (IBlockProvider blockProvider : blockProviders) {
             Block block = blockProvider.getBlock();
             if (skipBlock(block)) {

@@ -21,7 +21,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;

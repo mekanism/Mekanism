@@ -89,6 +89,27 @@ public class MergedChemicalTank {
         return (ISlurryTank) tankMap.get(ChemicalTankType.SLURRY);
     }
 
+    public Current getCurrent() {
+        if (!getGasTank().isEmpty()) {
+            return Current.GAS;
+        } else if (!getInfusionTank().isEmpty()) {
+            return Current.INFUSION;
+        } else if (!getPigmentTank().isEmpty()) {
+            return Current.PIGMENT;
+        } else if (!getSlurryTank().isEmpty()) {
+            return Current.SLURRY;
+        }
+        return Current.EMPTY;
+    }
+
+    public enum Current {
+        EMPTY,
+        GAS,
+        INFUSION,
+        PIGMENT,
+        SLURRY
+    }
+
     private static class ChemicalTankType<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
 
         private static final List<ChemicalTankType<?, ?, ?>> TYPES = new ArrayList<>();

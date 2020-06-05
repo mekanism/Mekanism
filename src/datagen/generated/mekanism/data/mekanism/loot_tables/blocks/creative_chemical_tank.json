@@ -1,0 +1,87 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "componentSecurity.ownerMost",
+                  "target": "mekData.ownerMost",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentSecurity.ownerLeast",
+                  "target": "mekData.ownerLeast",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentSecurity.securityMode",
+                  "target": "mekData.securityMode",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentConfig",
+                  "target": "mekData.componentConfig",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentEjector",
+                  "target": "mekData.componentEjector",
+                  "op": "replace"
+                },
+                {
+                  "source": "dumping",
+                  "target": "mekData.dumping",
+                  "op": "replace"
+                },
+                {
+                  "source": "controlType",
+                  "target": "mekData.controlType",
+                  "op": "replace"
+                },
+                {
+                  "source": "GasTanks",
+                  "target": "mekData.GasTanks",
+                  "op": "replace"
+                },
+                {
+                  "source": "InfusionTanks",
+                  "target": "mekData.InfusionTanks",
+                  "op": "replace"
+                },
+                {
+                  "source": "PigmentTanks",
+                  "target": "mekData.PigmentTanks",
+                  "op": "replace"
+                },
+                {
+                  "source": "SlurryTanks",
+                  "target": "mekData.SlurryTanks",
+                  "op": "replace"
+                },
+                {
+                  "source": "Items",
+                  "target": "mekData.Items",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
+          "name": "mekanism:creative_chemical_tank"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

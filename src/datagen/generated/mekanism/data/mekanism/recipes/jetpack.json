@@ -10,7 +10,7 @@
   ],
   "key": {
     "T": {
-      "item": "mekanism:basic_gas_tank"
+      "item": "mekanism:basic_chemical_tank"
     },
     "C": {
       "tag": "forge:circuits/basic"
