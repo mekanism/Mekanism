@@ -29,7 +29,7 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
-import mekanism.common.tier.GasTankTier;
+import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -56,7 +56,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
      */
     public GasTankGasTank gasTank;
 
-    public GasTankTier tier;
+    public ChemicalTankTier tier;
     public GasMode dumping = GasMode.IDLE;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
@@ -74,7 +74,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
 
     @Override
     protected void presetVariables() {
-        tier = Attribute.getTier(getBlockType(), GasTankTier.class);
+        tier = Attribute.getTier(getBlockType(), ChemicalTankTier.class);
     }
 
     @Nonnull
@@ -103,14 +103,14 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
         super.onUpdateServer();
         drainSlot.drainTank();
         fillSlot.fillTank();
-        if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
+        if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
             ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
             if (config != null && config.isEjecting()) {
                 ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, config.getAllOutputtingSides(), gasTank, this, tier.getOutput());
             }
         }
 
-        if (tier != GasTankTier.CREATIVE) {
+        if (tier != ChemicalTankTier.CREATIVE) {
             if (dumping == GasMode.DUMPING) {
                 gasTank.shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
             } else if (dumping == GasMode.DUMPING_EXCESS) {

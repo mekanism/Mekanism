@@ -88,7 +88,7 @@ public class StorageUtils {
                 for (int tank = 0; tank < tanks; tank++) {
                     GasStack gasInTank = gasHandlerItem.getChemicalInTank(tank);
                     tooltip.add(storedFunction.apply(gasInTank));
-                    tooltip.addAll(GasUtils.getAttributeTooltips(gasInTank.getType()));
+                    tooltip.addAll(ChemicalUtil.getAttributeTooltips(gasInTank.getType()));
                 }
             } else if (showMissingCap) {
                 tooltip.add(emptyLangEntry.translate());

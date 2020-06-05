@@ -18,6 +18,7 @@ import mekanism.common.network.PacketDropperUse.TankType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
@@ -120,6 +121,7 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
     }
 
     protected void addAttributeTooltips(List<ITextComponent> tooltips, CHEMICAL chemical) {
+        tooltips.addAll(ChemicalUtil.getAttributeTooltips(chemical));
     }
 
     @Override

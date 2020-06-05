@@ -1,6 +1,5 @@
 package mekanism.common.inventory.slot.chemical;
 
-import com.mojang.datafixers.util.Pair;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -16,7 +15,7 @@ import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
+import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.item.ItemStack;
@@ -36,8 +35,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
      * Gets the InfusionStack from ItemStack conversion, ignoring the size of the item stack.
      */
     private static InfusionStack getPotentialConversion(@Nullable World world, ItemStack itemStack) {
-        ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(world, recipe -> recipe.getInput().testType(itemStack));
-        return foundRecipe == null ? InfusionStack.EMPTY : foundRecipe.getOutput(itemStack);
+        return getPotentialConversion(MekanismRecipeType.INFUSION_CONVERSION, world, itemStack, InfusionStack.EMPTY);
     }
 
     /**
@@ -72,14 +70,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
 
     @Nullable
     @Override
-    protected Pair<ItemStack, InfusionStack> getConversion() {
-        ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
-        if (foundRecipe != null) {
-            ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
-            if (!itemInput.isEmpty()) {
-                return Pair.of(itemInput, foundRecipe.getOutput(itemInput));
-            }
-        }
-        return null;
+    protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<InfuseType, InfusionStack>> getConversionRecipeType() {
+        return MekanismRecipeType.INFUSION_CONVERSION;
     }
 }

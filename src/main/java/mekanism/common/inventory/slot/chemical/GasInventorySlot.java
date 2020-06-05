@@ -1,6 +1,5 @@
 package mekanism.common.inventory.slot.chemical;
 
-import com.mojang.datafixers.util.Pair;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
@@ -20,7 +19,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
@@ -41,8 +40,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
      * Gets the GasStack from ItemStack conversion, ignoring the size of the item stack.
      */
     private static GasStack getPotentialConversion(@Nullable World world, ItemStack itemStack) {
-        ItemStackToGasRecipe foundRecipe = MekanismRecipeType.GAS_CONVERSION.findFirst(world, recipe -> recipe.getInput().testType(itemStack));
-        return foundRecipe == null ? GasStack.EMPTY : foundRecipe.getOutput(itemStack);
+        return getPotentialConversion(MekanismRecipeType.GAS_CONVERSION, world, itemStack, GasStack.EMPTY);
     }
 
     /**
@@ -134,14 +132,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
 
     @Nullable
     @Override
-    protected Pair<ItemStack, GasStack> getConversion() {
-        ItemStackToGasRecipe foundRecipe = MekanismRecipeType.GAS_CONVERSION.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
-        if (foundRecipe != null) {
-            ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
-            if (!itemInput.isEmpty()) {
-                return Pair.of(itemInput, foundRecipe.getOutput(itemInput));
-            }
-        }
-        return null;
+    protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<Gas, GasStack>> getConversionRecipeType() {
+        return MekanismRecipeType.GAS_CONVERSION;
     }
 }

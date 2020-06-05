@@ -9,7 +9,7 @@ import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.tier.GasTankTier;
+import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
@@ -23,7 +23,7 @@ public class TierConfig extends BaseMekanismConfig {
 
     private static final String ENERGY_CUBE_CATEGORY = "energy_cubes";
     private static final String FLUID_TANK_CATEGORY = "fluid_tanks";
-    private static final String GAS_TANK_CATEGORY = "gas_tanks";
+    private static final String CHEMICAL_TANK_CATEGORY = "chemical_tanks";
     private static final String BIN_CATEGORY = "bins";
     private static final String INDUCTION_CATEGORY = "induction";
     private static final String TRANSMITTER_CATEGORY = "transmitters";
@@ -78,12 +78,12 @@ public class TierConfig extends BaseMekanismConfig {
     }
 
     private void addGasTankCategory(ForgeConfigSpec.Builder builder) {
-        builder.comment("Gas Tanks").push(GAS_TANK_CATEGORY);
-        for (GasTankTier tier : EnumUtils.GAS_TANK_TIERS) {
+        builder.comment("Chemical Tanks").push(CHEMICAL_TANK_CATEGORY);
+        for (ChemicalTankTier tier : EnumUtils.GAS_TANK_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
-            CachedLongValue storageReference = CachedLongValue.wrap(this, builder.comment("Storage size of " + tierName + " gas tanks in mB.")
+            CachedLongValue storageReference = CachedLongValue.wrap(this, builder.comment("Storage size of " + tierName + " chemical tanks in mB.")
                   .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Long.MAX_VALUE));
-            CachedLongValue outputReference = CachedLongValue.wrap(this, builder.comment("Output rate of " + tierName + " gas tanks in mB.")
+            CachedLongValue outputReference = CachedLongValue.wrap(this, builder.comment("Output rate of " + tierName + " chemical tanks in mB.")
                   .defineInRange(tierName.toLowerCase() + "Output", tier.getBaseOutput(), 1, Long.MAX_VALUE));
             tier.setConfigReference(storageReference, outputReference);
         }

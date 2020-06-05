@@ -6,8 +6,7 @@ import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedLongValue;
 import net.minecraft.util.IStringSerializable;
 
-//TODO - V10: Rename this to ChemicalTankTier
-public enum GasTankTier implements ITier, IStringSerializable {
+public enum ChemicalTankTier implements ITier, IStringSerializable {
     BASIC(BaseTier.BASIC, 64_000, 256),
     ADVANCED(BaseTier.ADVANCED, 128_000, 512),
     ELITE(BaseTier.ELITE, 256_000, 1_028),
@@ -20,7 +19,7 @@ public enum GasTankTier implements ITier, IStringSerializable {
     private CachedLongValue storageReference;
     private CachedLongValue outputReference;
 
-    GasTankTier(BaseTier tier, long s, long o) {
+    ChemicalTankTier(BaseTier tier, long s, long o) {
         baseStorage = s;
         baseOutput = o;
         baseTier = tier;

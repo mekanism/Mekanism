@@ -10,7 +10,7 @@ import mekanism.common.tier.ConductorTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.tier.GasTankTier;
+import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
@@ -92,9 +92,9 @@ public class EnumUtils {
     public static final PipeTier[] PIPE_TIERS = PipeTier.values();
 
     /**
-     * Cached value of {@link GasTankTier#values()}. DO NOT MODIFY THIS LIST.
+     * Cached value of {@link ChemicalTankTier#values()}. DO NOT MODIFY THIS LIST.
      */
-    public static final GasTankTier[] GAS_TANK_TIERS = GasTankTier.values();
+    public static final ChemicalTankTier[] GAS_TANK_TIERS = ChemicalTankTier.values();
 
     /**
      * Cached value of {@link FluidTankTier#values()}. DO NOT MODIFY THIS LIST.

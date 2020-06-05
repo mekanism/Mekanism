@@ -97,6 +97,11 @@ public class MekanismJEI implements IModPlugin {
     public static final IIngredientType<PigmentStack> TYPE_PIGMENT = () -> PigmentStack.class;
     public static final IIngredientType<SlurryStack> TYPE_SLURRY = () -> SlurryStack.class;
 
+    public static final GasStackHelper GAS_STACK_HELPER = new GasStackHelper();
+    public static final InfusionStackHelper INFUSION_STACK_HELPER = new InfusionStackHelper();
+    public static final PigmentStackHelper PIGMENT_STACK_HELPER = new PigmentStackHelper();
+    public static final SlurryStackHelper SLURRY_STACK_HELPER = new SlurryStackHelper();
+
     private static final ISubtypeInterpreter MEKANISM_NBT_INTERPRETER = stack -> {
         if (!stack.hasTag()) {
             return ISubtypeInterpreter.NONE;
@@ -182,10 +187,10 @@ public class MekanismJEI implements IModPlugin {
     @SuppressWarnings("RedundantTypeArguments")
     public void registerIngredients(IModIngredientRegistration registry) {
         //The types cannot properly be inferred at runtime
-        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.GAS_REGISTRY, TYPE_GAS, new GasStackHelper(), GasStack::new);
-        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.INFUSE_TYPE_REGISTRY, TYPE_INFUSION, new InfusionStackHelper(), InfusionStack::new);
-        this.<Pigment , PigmentStack > registerIngredientType(registry, MekanismAPI.PIGMENT_REGISTRY, TYPE_PIGMENT, new PigmentStackHelper(), PigmentStack::new);
-        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.SLURRY_REGISTRY, TYPE_SLURRY, new SlurryStackHelper(), SlurryStack::new);
+        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.GAS_REGISTRY, TYPE_GAS, GAS_STACK_HELPER, GasStack::new);
+        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.INFUSE_TYPE_REGISTRY, TYPE_INFUSION, INFUSION_STACK_HELPER, InfusionStack::new);
+        this.<Pigment , PigmentStack > registerIngredientType(registry, MekanismAPI.PIGMENT_REGISTRY, TYPE_PIGMENT, PIGMENT_STACK_HELPER, PigmentStack::new);
+        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.SLURRY_REGISTRY, TYPE_SLURRY, SLURRY_STACK_HELPER, SlurryStack::new);
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void registerIngredientType(IModIngredientRegistration registry,

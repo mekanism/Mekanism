@@ -16,7 +16,7 @@ import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.registration.impl.ItemDeferredRegister;
-import mekanism.common.tier.GasTankTier;
+import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.SecurityUtils;
@@ -42,23 +42,23 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockTileModel<TileEntity
     }
 
     @Override
-    public GasTankTier getTier() {
-        return Attribute.getTier(getBlock(), GasTankTier.class);
+    public ChemicalTankTier getTier() {
+        return Attribute.getTier(getBlock(), ChemicalTankTier.class);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        GasTankTier tier = getTier();
+        ChemicalTankTier tier = getTier();
         StorageUtils.addStoredGas(stack, tooltip, true, true, MekanismLang.EMPTY, stored -> {
             if (stored.isEmpty()) {
                 return MekanismLang.EMPTY.translate();
-            } else if (tier == GasTankTier.CREATIVE) {
+            } else if (tier == ChemicalTankTier.CREATIVE) {
                 return MekanismLang.GENERIC_STORED.translateColored(EnumColor.ORANGE, stored, EnumColor.GRAY, MekanismLang.INFINITE);
             }
             return MekanismLang.GENERIC_STORED.translateColored(EnumColor.ORANGE, stored, EnumColor.GRAY, stored.getAmount());
         });
-        if (tier == GasTankTier.CREATIVE) {
+        if (tier == ChemicalTankTier.CREATIVE) {
             tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
             tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getStorage()));
@@ -81,8 +81,8 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockTileModel<TileEntity
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            GasTankTier tier = Attribute.getTier(getBlock(), GasTankTier.class);
-            if (tier == GasTankTier.CREATIVE && MekanismConfig.general.prefilledGasTanks.get()) {
+            ChemicalTankTier tier = Attribute.getTier(getBlock(), ChemicalTankTier.class);
+            if (tier == ChemicalTankTier.CREATIVE && MekanismConfig.general.prefilledGasTanks.get()) {
                 for (Gas type : MekanismAPI.GAS_REGISTRY.getValues()) {
                     if (!type.isHidden()) {
                         items.add(GasUtils.getFilledVariant(new ItemStack(this), tier.getStorage(), type));
@@ -110,6 +110,6 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockTileModel<TileEntity
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(Attribute.getTier(getBlock(), GasTankTier.class)));
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(Attribute.getTier(getBlock(), ChemicalTankTier.class)));
     }
 }

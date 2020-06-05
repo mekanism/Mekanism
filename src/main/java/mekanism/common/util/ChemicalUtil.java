@@ -1,9 +1,15 @@
 package mekanism.common.util;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -11,13 +17,17 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.distribution.target.ChemicalHandlerTarget;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * @apiNote This class is called ChemicalUtil instead of ChemicalUtils so that it does not overlap with {@link mekanism.api.chemical.ChemicalUtils}
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ChemicalUtil {
 
     /**
@@ -34,6 +44,27 @@ public class ChemicalUtil {
         STACK copy = (STACK) stack.copy();
         copy.setAmount(amount);
         return copy;
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
+    boolean hasChemical(ItemStack stack, Predicate<STACK> validityCheck, Capability<HANDLER> capability) {
+        Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
+        if (cap.isPresent()) {
+            HANDLER handler = cap.get();
+            for (int tank = 0; tank < handler.getTanks(); tank++) {
+                STACK chemicalStack = handler.getChemicalInTank(tank);
+                if (!chemicalStack.isEmpty() && validityCheck.test(chemicalStack)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>> List<ITextComponent> getAttributeTooltips(CHEMICAL chemical) {
+        List<ITextComponent> list = new ArrayList<>();
+        chemical.getAttributes().forEach(attr -> attr.addTooltipText(list));
+        return list;
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void emit(

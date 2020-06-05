@@ -12,11 +12,12 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.tier.GasTankTier;
+import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+//TODO - V10: Rename to GuiChemicalTank
 public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileContainer<TileEntityGasTank>> {
 
     public GuiGasTank(MekanismTileContainer<TileEntityGasTank> container, PlayerInventory inv, ITextComponent title) {
@@ -38,11 +39,11 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
                 component = MekanismLang.GAS.translate(gasStack);
             }
             list.add(component);
-            if (!tile.gasTank.isEmpty() && tile.tier == GasTankTier.CREATIVE) {
+            if (!tile.gasTank.isEmpty() && tile.tier == ChemicalTankTier.CREATIVE) {
                 component = MekanismLang.INFINITE.translate();
             } else {
                 component = MekanismLang.GENERIC_FRACTION.translate(formatInt(tile.gasTank.getStored()),
-                      tile.tier == GasTankTier.CREATIVE ? MekanismLang.INFINITE : formatInt(tile.tier.getStorage()));
+                      tile.tier == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : formatInt(tile.tier.getStorage()));
             }
             list.add(component);
             return list;

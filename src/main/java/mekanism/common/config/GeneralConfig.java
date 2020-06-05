@@ -13,7 +13,7 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.tier.GasTankTier;
+import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -218,7 +218,7 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseStorage(), 1, Integer.MAX_VALUE));
         entangloporterChemicalBuffer = CachedLongValue.wrap(this, builder.comment("Maximum chemical buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
-              .defineInRange("chemicalBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
+              .defineInRange("chemicalBuffer", ChemicalTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
         builder.pop();
 
         builder.comment("Block security/protection Settings").push(SECURITY_CATEGORY);
