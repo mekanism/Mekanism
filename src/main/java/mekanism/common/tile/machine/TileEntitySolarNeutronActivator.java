@@ -18,7 +18,6 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -106,7 +105,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         if (cachedRecipe != null) {
             cachedRecipe.process();
         }
-        ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, EnumSet.of(getDirection()), outputTank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
+        ChemicalUtil.emit(EnumSet.of(getDirection()), outputTank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
     }
 
     @Nonnull

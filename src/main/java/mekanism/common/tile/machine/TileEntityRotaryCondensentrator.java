@@ -22,7 +22,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -164,7 +163,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
             // emit
             ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
             if (config != null && config.isEjecting()) {
-                ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, config.getAllOutputtingSides(), gasTank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
+                ChemicalUtil.emit(config.getAllOutputtingSides(), gasTank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
             }
         } else {//Gas to Fluid
             gasOutputSlot.fillTank();

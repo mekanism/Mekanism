@@ -20,17 +20,17 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReactionRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<T> factory;
+    private final IFactory<RECIPE> factory;
 
-    public PressurizedReactionRecipeSerializer(IFactory<T> factory) {
+    public PressurizedReactionRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement itemInput = JSONUtils.isJsonArray(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.ITEM_INPUT) :
                                 JSONUtils.getJsonObject(json, JsonConstants.ITEM_INPUT);
         ItemStackIngredient solidIngredient = ItemStackIngredient.deserialize(itemInput);
@@ -79,7 +79,7 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
             FluidStackIngredient inputFluid = FluidStackIngredient.read(buffer);
@@ -96,7 +96,7 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -105,9 +105,10 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
         }
     }
 
-    public interface IFactory<T extends PressurizedReactionRecipe> {
+    @FunctionalInterface
+    public interface IFactory<RECIPE extends PressurizedReactionRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient itemInput, FluidStackIngredient fluidInput, GasStackIngredient gasInput, FloatingLong energyRequired, int duration,
+        RECIPE create(ResourceLocation id, ItemStackIngredient itemInput, FluidStackIngredient fluidInput, GasStackIngredient gasInput, FloatingLong energyRequired, int duration,
               ItemStack outputItem, GasStack outputGas);
     }
 }

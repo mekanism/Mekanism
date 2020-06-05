@@ -18,17 +18,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class RotaryRecipeSerializer<T extends RotaryRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<T> factory;
+    private final IFactory<RECIPE> factory;
 
-    public RotaryRecipeSerializer(IFactory<T> factory) {
+    public RotaryRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         FluidStackIngredient fluidInputIngredient = null;
         GasStackIngredient gasInputIngredient = null;
         GasStack gasOutput = null;
@@ -66,7 +66,7 @@ public class RotaryRecipeSerializer<T extends RotaryRecipe> extends ForgeRegistr
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             FluidStackIngredient fluidInputIngredient = null;
             GasStackIngredient gasInputIngredient = null;
@@ -99,7 +99,7 @@ public class RotaryRecipeSerializer<T extends RotaryRecipe> extends ForgeRegistr
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         if (recipe.hasFluidToGas() || recipe.hasGasToFluid()) {
             try {
                 recipe.write(buffer);
@@ -112,12 +112,12 @@ public class RotaryRecipeSerializer<T extends RotaryRecipe> extends ForgeRegistr
         }
     }
 
-    public interface IFactory<T extends RotaryRecipe> {
+    public interface IFactory<RECIPE extends RotaryRecipe> {
 
-        T create(ResourceLocation id, FluidStackIngredient fluidInput, GasStack gasOutput);
+        RECIPE create(ResourceLocation id, FluidStackIngredient fluidInput, GasStack gasOutput);
 
-        T create(ResourceLocation id, GasStackIngredient gasInput, FluidStack fluidOutput);
+        RECIPE create(ResourceLocation id, GasStackIngredient gasInput, FluidStack fluidOutput);
 
-        T create(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput);
+        RECIPE create(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput);
     }
 }

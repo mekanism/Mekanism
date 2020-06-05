@@ -14,8 +14,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -177,7 +175,7 @@ public final class MekanismUtils {
         return getScale(prevScale, tank.getFluidAmount(), tank.getCapacity(), tank.isEmpty());
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> float getScale(float prevScale, IChemicalTank<CHEMICAL, STACK> tank) {
+    public static float getScale(float prevScale, IChemicalTank<?, ?> tank) {
         return getScale(prevScale, tank.getStored(), tank.getCapacity(), tank.isEmpty());
     }
 

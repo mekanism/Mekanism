@@ -1,7 +1,6 @@
 package mekanism.common.network.container.chemical;
 
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -11,8 +10,7 @@ import net.minecraft.network.PacketBuffer;
 /**
  * Version of {@link net.minecraft.network.play.server.SWindowPropertyPacket} for slurry stacks
  */
-public abstract class PacketUpdateContainerChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends
-      PacketUpdateContainer<PacketUpdateContainerChemicalStack<CHEMICAL, STACK>> {
+public abstract class PacketUpdateContainerChemicalStack<STACK extends ChemicalStack<?>> extends PacketUpdateContainer<PacketUpdateContainerChemicalStack<STACK>> {
 
     @Nonnull
     private final STACK value;
@@ -36,7 +34,7 @@ public abstract class PacketUpdateContainerChemicalStack<CHEMICAL extends Chemic
     }
 
     @Override
-    protected void handle(MekanismContainer container, PacketUpdateContainerChemicalStack<CHEMICAL, STACK> message) {
+    protected void handle(MekanismContainer container, PacketUpdateContainerChemicalStack<STACK> message) {
         container.handleWindowProperty(message.property, message.value);
     }
 }

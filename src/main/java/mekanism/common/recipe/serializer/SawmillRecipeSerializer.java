@@ -16,17 +16,17 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class SawmillRecipeSerializer<T extends SawmillRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class SawmillRecipeSerializer<RECIPE extends SawmillRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<T> factory;
+    private final IFactory<RECIPE> factory;
 
-    public SawmillRecipeSerializer(IFactory<T> factory) {
+    public SawmillRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
                             JSONUtils.getJsonObject(json, JsonConstants.INPUT);
         ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
@@ -65,7 +65,7 @@ public class SawmillRecipeSerializer<T extends SawmillRecipe> extends ForgeRegis
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
             ItemStack mainOutput = buffer.readItemStack();
@@ -79,7 +79,7 @@ public class SawmillRecipeSerializer<T extends SawmillRecipe> extends ForgeRegis
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -88,8 +88,9 @@ public class SawmillRecipeSerializer<T extends SawmillRecipe> extends ForgeRegis
         }
     }
 
-    public interface IFactory<T extends SawmillRecipe> {
+    @FunctionalInterface
+    public interface IFactory<RECIPE extends SawmillRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance);
+        RECIPE create(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance);
     }
 }

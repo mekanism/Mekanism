@@ -1,24 +1,22 @@
 package mekanism.common.integration.theoneprobe;
 
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.math.MathUtils;
-import mekanism.api.text.ILangEntry;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class ChemicalElement<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends TOPElement {
+public abstract class ChemicalElement extends TOPElement {
 
     @Nonnull
-    protected final STACK stored;
+    protected final ChemicalStack<?> stored;
     protected final long capacity;
 
-    protected ChemicalElement(@Nonnull STACK stored, long capacity) {
+    protected ChemicalElement(@Nonnull ChemicalStack<?> stored, long capacity) {
         super(0xFF000000, 0xFFFFFF);
         this.stored = stored;
         this.capacity = capacity;
@@ -43,15 +41,13 @@ public abstract class ChemicalElement<CHEMICAL extends Chemical<CHEMICAL>, STACK
         return stored.isEmpty() ? null : MekanismRenderer.getChemicalTexture(stored.getType());
     }
 
-    protected abstract ILangEntry getStoredFormat();
-
     @Override
     public ITextComponent getText() {
         long amount = stored.getAmount();
         if (amount == Long.MAX_VALUE) {
             return MekanismLang.GENERIC_STORED.translate(stored.getType(), MekanismLang.INFINITE);
         }
-        return getStoredFormat().translate(stored.getType(), amount);
+        return MekanismLang.GENERIC_STORED_MB.translate(stored.getType(), amount);
     }
 
     @Override

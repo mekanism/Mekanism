@@ -10,7 +10,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
@@ -46,9 +45,9 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
             BoilerValveMode mode = getMode();
 
             if (mode == BoilerValveMode.OUTPUT_STEAM) {
-                ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().steamTank, this);
+                ChemicalUtil.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().steamTank, this);
             } else if (mode == BoilerValveMode.OUTPUT_COOLANT) {
-                ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().cooledCoolantTank, this);
+                ChemicalUtil.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().cooledCoolantTank, this);
             }
         }
     }

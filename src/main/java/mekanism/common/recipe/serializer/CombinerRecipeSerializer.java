@@ -16,17 +16,17 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class CombinerRecipeSerializer<T extends CombinerRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class CombinerRecipeSerializer<RECIPE extends CombinerRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<T> factory;
+    private final IFactory<RECIPE> factory;
 
-    public CombinerRecipeSerializer(IFactory<T> factory) {
+    public CombinerRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement mainInput = JSONUtils.isJsonArray(json, JsonConstants.MAIN_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.MAIN_INPUT) :
                                 JSONUtils.getJsonObject(json, JsonConstants.MAIN_INPUT);
         ItemStackIngredient mainIngredient = ItemStackIngredient.deserialize(mainInput);
@@ -41,7 +41,7 @@ public class CombinerRecipeSerializer<T extends CombinerRecipe> extends ForgeReg
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient mainInput = ItemStackIngredient.read(buffer);
             ItemStackIngredient extraInput = ItemStackIngredient.read(buffer);
@@ -54,7 +54,7 @@ public class CombinerRecipeSerializer<T extends CombinerRecipe> extends ForgeReg
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -63,8 +63,9 @@ public class CombinerRecipeSerializer<T extends CombinerRecipe> extends ForgeReg
         }
     }
 
-    public interface IFactory<T extends CombinerRecipe> {
+    @FunctionalInterface
+    public interface IFactory<RECIPE extends CombinerRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output);
+        RECIPE create(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output);
     }
 }

@@ -18,6 +18,7 @@ import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
@@ -56,7 +57,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockTileModel<TileEntity
             } else if (tier == ChemicalTankTier.CREATIVE) {
                 return MekanismLang.GENERIC_STORED.translateColored(EnumColor.ORANGE, stored, EnumColor.GRAY, MekanismLang.INFINITE);
             }
-            return MekanismLang.GENERIC_STORED.translateColored(EnumColor.ORANGE, stored, EnumColor.GRAY, stored.getAmount());
+            return MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.ORANGE, stored, EnumColor.GRAY, stored.getAmount());
         });
         if (tier == ChemicalTankTier.CREATIVE) {
             tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
@@ -94,7 +95,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockTileModel<TileEntity
 
     @Override
     public boolean showDurabilityBar(ItemStack stack) {
-        return GasUtils.hasGas(stack); // No bar for empty containers as bars are drawn on top of stack count number
+        return ChemicalUtil.hasGas(stack); // No bar for empty containers as bars are drawn on top of stack count number
     }
 
     @Override

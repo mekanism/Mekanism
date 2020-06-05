@@ -1,10 +1,9 @@
 package mekanism.client.render.data;
 
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 
-public class PigmentRenderData extends ChemicalRenderData<Pigment, PigmentStack> {
+public class PigmentRenderData extends ChemicalRenderData<PigmentStack> {
 
     public PigmentRenderData(@Nonnull PigmentStack chemicalType) {
         super(chemicalType);

@@ -121,16 +121,15 @@ public class MekanismJEI implements IModPlugin {
         return nbtRepresentation + ":" + component;
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    String getChemicalComponent(ItemStack stack, Capability<HANDLER> capability) {
-        Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
+    private static String getChemicalComponent(ItemStack stack, Capability<? extends IChemicalHandler<?, ?>> capability) {
+        Optional<? extends IChemicalHandler<?, ?>> cap = MekanismUtils.toOptional(stack.getCapability(capability));
         if (cap.isPresent()) {
-            HANDLER handler = cap.get();
+            IChemicalHandler<?, ?> handler = cap.get();
             String component = "";
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
-                STACK chemical = handler.getChemicalInTank(tank);
-                if (!chemical.isEmpty()) {
-                    component = addInterpretation(component, chemical.getTypeRegistryName().toString());
+                ChemicalStack<?> chemicalStack = handler.getChemicalInTank(tank);
+                if (!chemicalStack.isEmpty()) {
+                    component = addInterpretation(component, chemicalStack.getTypeRegistryName().toString());
                 } else if (tanks > 1) {
                     component = addInterpretation(component, "empty");
                 }

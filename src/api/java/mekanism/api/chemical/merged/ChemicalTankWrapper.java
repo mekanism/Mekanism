@@ -17,13 +17,12 @@ import net.minecraft.nbt.CompoundNBT;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
-      implements IChemicalTank<CHEMICAL, STACK> {
+public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IChemicalTank<CHEMICAL, STACK> {
 
-    private final TANK internal;
+    private final IChemicalTank<CHEMICAL, STACK> internal;
     private final BooleanSupplier insertCheck;
 
-    public ChemicalTankWrapper(TANK internal, BooleanSupplier insertCheck) {
+    public ChemicalTankWrapper(IChemicalTank<CHEMICAL, STACK> internal, BooleanSupplier insertCheck) {
         //TODO: Do we want to short circuit it so that if we are not empty it allows for inserting before checking the insertCheck
         this.internal = internal;
         this.insertCheck = insertCheck;

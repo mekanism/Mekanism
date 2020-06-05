@@ -15,8 +15,15 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.inventory.AutomationType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.distribution.target.ChemicalHandlerTarget;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -30,6 +37,30 @@ import net.minecraftforge.common.capabilities.Capability;
 @MethodsReturnNonnullByDefault
 public class ChemicalUtil {
 
+    //TODO: See how much these methods are used and maybe just inline some of them
+    public static <HANDLER extends IChemicalHandler<?, ?>> Capability<HANDLER> getCapabilityForChemical(Chemical<?> chemical) {
+        if (chemical instanceof Gas) {
+            return (Capability<HANDLER>) Capabilities.GAS_HANDLER_CAPABILITY;
+        } else if (chemical instanceof InfuseType) {
+            return (Capability<HANDLER>) Capabilities.INFUSION_HANDLER_CAPABILITY;
+        } else if (chemical instanceof Pigment) {
+            return (Capability<HANDLER>) Capabilities.PIGMENT_HANDLER_CAPABILITY;
+        } else if (chemical instanceof Slurry) {
+            return (Capability<HANDLER>) Capabilities.SLURRY_HANDLER_CAPABILITY;
+        } else {
+            throw new IllegalStateException("Unknown Chemical Type: " + chemical.getClass().getName());
+        }
+    }
+
+    public static <HANDLER extends IChemicalHandler<?, ?>> Capability<HANDLER> getCapabilityForChemical(ChemicalStack<?> stack) {
+        return getCapabilityForChemical(stack.getType());
+    }
+
+    public static <HANDLER extends IChemicalHandler<?, ?>> Capability<HANDLER> getCapabilityForChemical(IChemicalTank<?, ?> tank) {
+        //Note: We just use getEmptyStack as it still has enough information
+        return getCapabilityForChemical(tank.getEmptyStack());
+    }
+
     /**
      * Helper to resize a chemical stack when we don't know what implementation it is.
      *
@@ -40,14 +71,56 @@ public class ChemicalUtil {
      *
      * @apiNote Should only be called if we know that copy returns STACK
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK copyWithAmount(STACK stack, long amount) {
+    public static <STACK extends ChemicalStack<?>> STACK copyWithAmount(STACK stack, long amount) {
         STACK copy = (STACK) stack.copy();
         copy.setAmount(amount);
         return copy;
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    boolean hasChemical(ItemStack stack, Predicate<STACK> validityCheck, Capability<HANDLER> capability) {
+    /**
+     * Creates and returns a full chemical tank with the specified chemical type.
+     *
+     * @param chemical - chemical to fill the tank with
+     *
+     * @return filled gas tank
+     */
+    public static ItemStack getFullChemicalTank(ChemicalTankTier tier, @Nonnull Gas chemical) {
+        //TODO - V10: Properly transition this over to handling all the different chemical types
+        return GasUtils.getFilledVariant(getEmptyChemicalTank(tier), tier.getStorage(), chemical);
+    }
+
+    /**
+     * Retrieves an empty Chemical Tank.
+     *
+     * @return empty chemical tank
+     */
+    private static ItemStack getEmptyChemicalTank(ChemicalTankTier tier) {
+        switch (tier) {
+            case BASIC:
+                return MekanismBlocks.BASIC_GAS_TANK.getItemStack();
+            case ADVANCED:
+                return MekanismBlocks.ADVANCED_GAS_TANK.getItemStack();
+            case ELITE:
+                return MekanismBlocks.ELITE_GAS_TANK.getItemStack();
+            case ULTIMATE:
+                return MekanismBlocks.ULTIMATE_GAS_TANK.getItemStack();
+            case CREATIVE:
+                return MekanismBlocks.CREATIVE_GAS_TANK.getItemStack();
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public static boolean hasGas(ItemStack stack) {
+        return hasChemical(stack, s -> true, Capabilities.GAS_HANDLER_CAPABILITY);
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean hasChemical(ItemStack stack, CHEMICAL type) {
+        Capability<IChemicalHandler<CHEMICAL, STACK>> capability = getCapabilityForChemical(type);
+        return hasChemical(stack, s -> s.isTypeEqual(type), capability);
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> boolean hasChemical(
+          ItemStack stack, Predicate<STACK> validityCheck, Capability<HANDLER> capability) {
         Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
         if (cap.isPresent()) {
             HANDLER handler = cap.get();
@@ -61,26 +134,23 @@ public class ChemicalUtil {
         return false;
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>> List<ITextComponent> getAttributeTooltips(CHEMICAL chemical) {
+    public static List<ITextComponent> getAttributeTooltips(Chemical<?> chemical) {
         List<ITextComponent> list = new ArrayList<>();
         chemical.getAttributes().forEach(attr -> attr.addTooltipText(list));
         return list;
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void emit(
-          Capability<HANDLER> capability, IChemicalTank<CHEMICAL, STACK> tank, TileEntity from) {
-        emit(capability, EnumSet.allOf(Direction.class), tank, from);
+    public static void emit(IChemicalTank<?, ?> tank, TileEntity from) {
+        emit(EnumSet.allOf(Direction.class), tank, from);
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void emit(
-          Capability<HANDLER> capability, Set<Direction> outputSides, IChemicalTank<CHEMICAL, STACK> tank, TileEntity from) {
-        emit(capability, outputSides, tank, from, tank.getCapacity());
+    public static void emit(Set<Direction> outputSides, IChemicalTank<?, ?> tank, TileEntity from) {
+        emit(outputSides, tank, from, tank.getCapacity());
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void emit(
-          Capability<HANDLER> capability, Set<Direction> outputSides, IChemicalTank<CHEMICAL, STACK> tank, TileEntity from, long maxOutput) {
+    public static void emit(Set<Direction> outputSides, IChemicalTank<?, ?> tank, TileEntity from, long maxOutput) {
         if (!tank.isEmpty() && maxOutput > 0) {
-            tank.extract(emit(capability, outputSides, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
+            tank.extract(emit(outputSides, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 
@@ -93,14 +163,14 @@ public class ChemicalUtil {
      *
      * @return the amount of chemical emitted
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> long emit(
-          Capability<HANDLER> capability, Set<Direction> sides, @Nonnull STACK stack, TileEntity from) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> long emit(Set<Direction> sides, @Nonnull STACK stack, TileEntity from) {
         if (stack.isEmpty() || sides.isEmpty()) {
             return 0;
         }
+        Capability<IChemicalHandler<CHEMICAL, STACK>> capability = getCapabilityForChemical(stack);
         //Fake that we have one target given we know that no sides will overlap
         // This allows us to have slightly better performance
-        ChemicalHandlerTarget<CHEMICAL, STACK, HANDLER> target = new ChemicalHandlerTarget<>(stack);
+        ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack);
         EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
             //Insert to access side
             Direction accessSide = side.getOpposite();
@@ -113,7 +183,7 @@ public class ChemicalUtil {
         });
         int curHandlers = target.getHandlers().size();
         if (curHandlers > 0) {
-            Set<ChemicalHandlerTarget<CHEMICAL, STACK, HANDLER>> targets = new ObjectOpenHashSet<>();
+            Set<ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>>> targets = new ObjectOpenHashSet<>();
             targets.add(target);
             return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), (STACK) stack.copy());
         }

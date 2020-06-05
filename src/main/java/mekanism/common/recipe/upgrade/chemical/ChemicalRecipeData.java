@@ -33,8 +33,7 @@ import net.minecraftforge.common.capabilities.Capability;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
-      HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-      implements RecipeUpgradeData<ChemicalRecipeData<CHEMICAL, STACK, TANK, HANDLER>> {
+      HANDLER extends IChemicalHandler<CHEMICAL, STACK>> implements RecipeUpgradeData<ChemicalRecipeData<CHEMICAL, STACK, TANK, HANDLER>> {
 
     protected final List<TANK> tanks;
 

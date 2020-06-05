@@ -20,7 +20,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.ElectrolyticSeparatorEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -204,8 +203,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
             } else {
                 ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
                 if (config != null && config.isEjecting()) {
-                    ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, config.getSidesForOutput(right ? DataType.OUTPUT_2 : DataType.OUTPUT_1), tank, this,
-                          MekanismConfig.general.chemicalAutoEjectRate.get());
+                    ChemicalUtil.emit(config.getSidesForOutput(right ? DataType.OUTPUT_2 : DataType.OUTPUT_1), tank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
                 }
                 if (mode == GasMode.DUMPING_EXCESS) {
                     long needed = tank.getNeeded();

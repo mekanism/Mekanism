@@ -17,17 +17,17 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class ElectrolysisRecipeSerializer<RECIPE extends ElectrolysisRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<T> factory;
+    private final IFactory<RECIPE> factory;
 
-    public ElectrolysisRecipeSerializer(IFactory<T> factory) {
+    public ElectrolysisRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
                             JSONUtils.getJsonObject(json, JsonConstants.INPUT);
         FluidStackIngredient inputIngredient = FluidStackIngredient.deserialize(input);
@@ -47,7 +47,7 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             FluidStackIngredient input = FluidStackIngredient.read(buffer);
             FloatingLong energyMultiplier = FloatingLong.readFromBuffer(buffer);
@@ -61,7 +61,7 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -70,8 +70,9 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
         }
     }
 
-    public interface IFactory<T extends ElectrolysisRecipe> {
+    @FunctionalInterface
+    public interface IFactory<RECIPE extends ElectrolysisRecipe> {
 
-        T create(ResourceLocation id, FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput);
+        RECIPE create(ResourceLocation id, FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput);
     }
 }

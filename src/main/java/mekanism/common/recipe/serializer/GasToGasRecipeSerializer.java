@@ -16,17 +16,17 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class GasToGasRecipeSerializer<T extends GasToGasRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<T> factory;
+    private final IFactory<RECIPE> factory;
 
-    public GasToGasRecipeSerializer(IFactory<T> factory) {
+    public GasToGasRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
                             JSONUtils.getJsonObject(json, JsonConstants.INPUT);
         GasStackIngredient inputIngredient = GasStackIngredient.deserialize(input);
@@ -38,7 +38,7 @@ public class GasToGasRecipeSerializer<T extends GasToGasRecipe> extends ForgeReg
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             GasStackIngredient inputIngredient = GasStackIngredient.read(buffer);
             GasStack output = GasStack.readFromPacket(buffer);
@@ -50,7 +50,7 @@ public class GasToGasRecipeSerializer<T extends GasToGasRecipe> extends ForgeReg
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -59,8 +59,9 @@ public class GasToGasRecipeSerializer<T extends GasToGasRecipe> extends ForgeReg
         }
     }
 
-    public interface IFactory<T extends GasToGasRecipe> {
+    @FunctionalInterface
+    public interface IFactory<RECIPE extends GasToGasRecipe> {
 
-        T create(ResourceLocation id, GasStackIngredient input, GasStack output);
+        RECIPE create(ResourceLocation id, GasStackIngredient input, GasStack output);
     }
 }

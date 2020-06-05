@@ -17,11 +17,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      T extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+      RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<CHEMICAL, STACK, T> factory;
+    private final IFactory<CHEMICAL, STACK, RECIPE> factory;
 
-    public ItemStackToChemicalRecipeSerializer(IFactory<CHEMICAL, STACK, T> factory) {
+    public ItemStackToChemicalRecipeSerializer(IFactory<CHEMICAL, STACK, RECIPE> factory) {
         this.factory = factory;
     }
 
@@ -31,7 +31,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
                             JSONUtils.getJsonObject(json, JsonConstants.INPUT);
         ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
@@ -43,7 +43,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
             STACK output = fromBuffer(buffer);
@@ -55,7 +55,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -64,8 +64,9 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
         }
     }
 
-    public interface IFactory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, T extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> {
+    @FunctionalInterface
+    public interface IFactory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> {
 
-        T create(ResourceLocation id, ItemStackIngredient input, STACK output);
+        RECIPE create(ResourceLocation id, ItemStackIngredient input, STACK output);
     }
 }

@@ -11,8 +11,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class FluidElement extends TOPElement {
 
-    public static int ID;
-
     @Nonnull
     protected final FluidStack stored;
     protected final int capacity;
@@ -63,6 +61,6 @@ public class FluidElement extends TOPElement {
 
     @Override
     public int getID() {
-        return ID;
+        return TOPProvider.FLUID_ELEMENT_ID;
     }
 }

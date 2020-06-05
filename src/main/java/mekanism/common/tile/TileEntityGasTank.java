@@ -18,7 +18,6 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.GasTankGasTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -106,7 +105,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
         if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
             ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
             if (config != null && config.isEjecting()) {
-                ChemicalUtil.emit(Capabilities.GAS_HANDLER_CAPABILITY, config.getAllOutputtingSides(), gasTank, this, tier.getOutput());
+                ChemicalUtil.emit(config.getAllOutputtingSides(), gasTank, this, tier.getOutput());
             }
         }
 

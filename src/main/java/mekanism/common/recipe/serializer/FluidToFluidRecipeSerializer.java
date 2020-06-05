@@ -16,17 +16,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class FluidToFluidRecipeSerializer<T extends FluidToFluidRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class FluidToFluidRecipeSerializer<RECIPE extends FluidToFluidRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<T> factory;
+    private final IFactory<RECIPE> factory;
 
-    public FluidToFluidRecipeSerializer(IFactory<T> factory) {
+    public FluidToFluidRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
                             JSONUtils.getJsonObject(json, JsonConstants.INPUT);
         FluidStackIngredient inputIngredient = FluidStackIngredient.deserialize(input);
@@ -38,7 +38,7 @@ public class FluidToFluidRecipeSerializer<T extends FluidToFluidRecipe> extends 
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             FluidStackIngredient inputIngredient = FluidStackIngredient.read(buffer);
             FluidStack output = FluidStack.readFromPacket(buffer);
@@ -50,7 +50,7 @@ public class FluidToFluidRecipeSerializer<T extends FluidToFluidRecipe> extends 
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -59,8 +59,9 @@ public class FluidToFluidRecipeSerializer<T extends FluidToFluidRecipe> extends 
         }
     }
 
-    public interface IFactory<T extends FluidToFluidRecipe> {
+    @FunctionalInterface
+    public interface IFactory<RECIPE extends FluidToFluidRecipe> {
 
-        T create(ResourceLocation id, FluidStackIngredient input, FluidStack output);
+        RECIPE create(ResourceLocation id, FluidStackIngredient input, FluidStack output);
     }
 }

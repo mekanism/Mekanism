@@ -126,28 +126,28 @@ public class MergedChemicalTank {
         }
     }
 
-    private static class GasTankWrapper extends ChemicalTankWrapper<Gas, GasStack, IGasTank> implements IGasTank {
+    private static class GasTankWrapper extends ChemicalTankWrapper<Gas, GasStack> implements IGasTank {
 
         public GasTankWrapper(IGasTank internal, BooleanSupplier insertCheck) {
             super(internal, insertCheck);
         }
     }
 
-    private static class InfusionTankWrapper extends ChemicalTankWrapper<InfuseType, InfusionStack, IInfusionTank> implements IInfusionTank {
+    private static class InfusionTankWrapper extends ChemicalTankWrapper<InfuseType, InfusionStack> implements IInfusionTank {
 
         public InfusionTankWrapper(IInfusionTank internal, BooleanSupplier insertCheck) {
             super(internal, insertCheck);
         }
     }
 
-    private static class PigmentTankWrapper extends ChemicalTankWrapper<Pigment, PigmentStack, IPigmentTank> implements IPigmentTank {
+    private static class PigmentTankWrapper extends ChemicalTankWrapper<Pigment, PigmentStack> implements IPigmentTank {
 
         public PigmentTankWrapper(IPigmentTank internal, BooleanSupplier insertCheck) {
             super(internal, insertCheck);
         }
     }
 
-    private static class SlurryTankWrapper extends ChemicalTankWrapper<Slurry, SlurryStack, ISlurryTank> implements ISlurryTank {
+    private static class SlurryTankWrapper extends ChemicalTankWrapper<Slurry, SlurryStack> implements ISlurryTank {
 
         public SlurryTankWrapper(ISlurryTank internal, BooleanSupplier insertCheck) {
             super(internal, insertCheck);

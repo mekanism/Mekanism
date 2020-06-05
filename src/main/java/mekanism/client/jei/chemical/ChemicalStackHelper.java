@@ -117,13 +117,12 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         List<ItemStack> stacks = new ArrayList<>();
         //Always include the chemical tank of the type to portray that we accept items
         //TODO - V10: FIXME
-        //stacks.add(GasUtils.getFullChemicalTank(ChemicalTankTier.BASIC, type));
+        //stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type));
         if (displayConversions) {
             //See if there are any chemical to item mappings
             MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> recipeType = getConversionRecipeType();
             if (recipeType != null) {
-                List<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> recipes = recipeType.getRecipes(world);
-                for (ItemStackToChemicalRecipe<CHEMICAL, STACK> recipe : recipes) {
+                for (ItemStackToChemicalRecipe<CHEMICAL, STACK> recipe : recipeType.getRecipes(world)) {
                     if (recipe.getOutputDefinition().isTypeEqual(type)) {
                         stacks.addAll(recipe.getInput().getRepresentations());
                     }

@@ -9,8 +9,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public class EnergyElement extends TOPElement {
 
-    public static int ID;
-
     private final FloatingLong energy;
     private final FloatingLong maxEnergy;
 
@@ -50,6 +48,6 @@ public class EnergyElement extends TOPElement {
 
     @Override
     public int getID() {
-        return ID;
+        return TOPProvider.ENERGY_ELEMENT_ID;
     }
 }

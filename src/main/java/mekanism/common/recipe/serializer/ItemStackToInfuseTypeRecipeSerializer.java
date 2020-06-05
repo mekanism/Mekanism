@@ -8,9 +8,9 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import net.minecraft.network.PacketBuffer;
 
-public class ItemStackToInfuseTypeRecipeSerializer<T extends ItemStackToInfuseTypeRecipe> extends ItemStackToChemicalRecipeSerializer<InfuseType, InfusionStack, T> {
+public class ItemStackToInfuseTypeRecipeSerializer<RECIPE extends ItemStackToInfuseTypeRecipe> extends ItemStackToChemicalRecipeSerializer<InfuseType, InfusionStack, RECIPE> {
 
-    public ItemStackToInfuseTypeRecipeSerializer(IFactory<InfuseType, InfusionStack, T> factory) {
+    public ItemStackToInfuseTypeRecipeSerializer(IFactory<InfuseType, InfusionStack, RECIPE> factory) {
         super(factory);
     }
 

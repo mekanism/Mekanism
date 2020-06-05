@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -25,20 +24,20 @@ import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableByte;
-import mekanism.common.inventory.container.sync.chemical.SyncableChemicalStack;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloat;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
-import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
-import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
-import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
 import mekanism.common.inventory.container.sync.SyncableShort;
+import mekanism.common.inventory.container.sync.chemical.SyncableChemicalStack;
+import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
+import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
+import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
 import mekanism.common.inventory.container.sync.list.SyncableList;
 import mekanism.common.lib.frequency.Frequency;
@@ -393,7 +392,7 @@ public abstract class MekanismContainer extends Container {
         }
     }
 
-    public <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleWindowProperty(short property, @Nonnull STACK value) {
+    public <STACK extends ChemicalStack<?>> void handleWindowProperty(short property, @Nonnull STACK value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableGasStack && value instanceof GasStack) {
             ((SyncableGasStack) data).set((GasStack) value);

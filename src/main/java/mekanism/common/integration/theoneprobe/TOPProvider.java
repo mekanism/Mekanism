@@ -45,17 +45,23 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
 
     private boolean displayFluidTanks;
     private ConfigMode tankMode = ConfigMode.EXTENDED;
+    static int ENERGY_ELEMENT_ID;
+    static int FLUID_ELEMENT_ID;
+    static int GAS_ELEMENT_ID;
+    static int INFUSION_ELEMENT_ID;
+    static int PIGMENT_ELEMENT_ID;
+    static int SLURRY_ELEMENT_ID;
 
     @Override
     public Void apply(ITheOneProbe probe) {
         probe.registerProvider(this);
         probe.registerProbeConfigProvider(ProbeConfigProvider.INSTANCE);
-        EnergyElement.ID = probe.registerElementFactory(EnergyElement::new);
-        FluidElement.ID = probe.registerElementFactory(FluidElement::new);
-        GasElement.ID = probe.registerElementFactory(GasElement::new);
-        InfuseTypeElement.ID = probe.registerElementFactory(InfuseTypeElement::new);
-        PigmentElement.ID = probe.registerElementFactory(PigmentElement::new);
-        SlurryElement.ID = probe.registerElementFactory(SlurryElement::new);
+        ENERGY_ELEMENT_ID = probe.registerElementFactory(EnergyElement::new);
+        FLUID_ELEMENT_ID = probe.registerElementFactory(FluidElement::new);
+        GAS_ELEMENT_ID = probe.registerElementFactory(GasElement::new);
+        INFUSION_ELEMENT_ID = probe.registerElementFactory(InfuseTypeElement::new);
+        PIGMENT_ELEMENT_ID = probe.registerElementFactory(PigmentElement::new);
+        SLURRY_ELEMENT_ID = probe.registerElementFactory(SlurryElement::new);
         //Grab the default view settings
         IProbeConfig probeConfig = probe.createProbeConfig();
         displayFluidTanks = probeConfig.getTankMode() > 0;
