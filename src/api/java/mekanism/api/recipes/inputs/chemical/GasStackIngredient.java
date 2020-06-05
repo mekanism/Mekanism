@@ -19,7 +19,7 @@ public interface GasStackIngredient extends IChemicalStackIngredient<Gas, GasSta
     }
 
     static GasStackIngredient from(@Nonnull IGasProvider gas, long amount) {
-        return new Single(gas.getGasStack(amount));
+        return new Single(gas.getStack(amount));
     }
 
     static GasStackIngredient from(@Nonnull Tag<Gas> tag, long amount) {

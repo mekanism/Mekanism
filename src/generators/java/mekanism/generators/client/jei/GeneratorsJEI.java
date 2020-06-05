@@ -43,7 +43,7 @@ public class GeneratorsJEI implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
         //TODO - V10: FIXME, all these nonnull things should not be null (recipe id, serializer, type)
-        GasToGasRecipe recipe = new GasToGasRecipe(null, GasStackIngredient.from(MekanismGases.FISSILE_FUEL, 1), MekanismGases.NUCLEAR_WASTE.getGasStack(1)) {
+        GasToGasRecipe recipe = new GasToGasRecipe(null, GasStackIngredient.from(MekanismGases.FISSILE_FUEL, 1), MekanismGases.NUCLEAR_WASTE.getStack(1)) {
             @Override
             public IRecipeSerializer<?> getSerializer() {
                 return null;

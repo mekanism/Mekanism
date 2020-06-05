@@ -315,7 +315,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             gasTank.setEmpty();
         } else {
             lastGas = gas;
-            gasTank.setStack(lastGas.getGasStack(1));
+            gasTank.setStack(lastGas.getStack(1));
         }
     }
 

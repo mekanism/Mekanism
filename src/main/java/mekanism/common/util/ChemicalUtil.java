@@ -2,24 +2,37 @@ package mekanism.common.util;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.DataHandlerUtils;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.providers.IChemicalProvider;
+import mekanism.api.providers.IGasProvider;
+import mekanism.api.providers.IInfuseTypeProvider;
+import mekanism.api.providers.IPigmentProvider;
+import mekanism.api.providers.ISlurryProvider;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.distribution.target.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
@@ -27,7 +40,9 @@ import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -37,7 +52,6 @@ import net.minecraftforge.common.capabilities.Capability;
 @MethodsReturnNonnullByDefault
 public class ChemicalUtil {
 
-    //TODO: See how much these methods are used and maybe just inline some of them
     public static <HANDLER extends IChemicalHandler<?, ?>> Capability<HANDLER> getCapabilityForChemical(Chemical<?> chemical) {
         if (chemical instanceof Gas) {
             return (Capability<HANDLER>) Capabilities.GAS_HANDLER_CAPABILITY;
@@ -77,6 +91,14 @@ public class ChemicalUtil {
         return copy;
     }
 
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
+    HANDLER[] getConnectedAcceptors(BlockPos pos, @Nullable World world, Set<Direction> sides, Capability<HANDLER> capability) {
+        HANDLER[] acceptors = (HANDLER[]) new IChemicalHandler[EnumUtils.DIRECTIONS.length];
+        EmitUtils.forEachSide(world, pos, sides,
+              (tile, side) -> CapabilityUtils.getCapability(tile, capability, side.getOpposite()).ifPresent(handler -> acceptors[side.ordinal()] = handler));
+        return acceptors;
+    }
+
     /**
      * Creates and returns a full chemical tank with the specified chemical type.
      *
@@ -84,9 +106,19 @@ public class ChemicalUtil {
      *
      * @return filled gas tank
      */
-    public static ItemStack getFullChemicalTank(ChemicalTankTier tier, @Nonnull Gas chemical) {
-        //TODO - V10: Properly transition this over to handling all the different chemical types
-        return GasUtils.getFilledVariant(getEmptyChemicalTank(tier), tier.getStorage(), chemical);
+    public static ItemStack getFullChemicalTank(ChemicalTankTier tier, @Nonnull Chemical<?> chemical) {
+        ItemStack tankItem = getEmptyChemicalTank(tier);
+        if (chemical instanceof Gas) {
+            return getFilledVariant(tankItem, tier.getStorage(), (Gas) chemical);
+        } else if (chemical instanceof InfuseType) {
+            return getFilledVariant(tankItem, tier.getStorage(), (InfuseType) chemical);
+        } else if (chemical instanceof Pigment) {
+            return getFilledVariant(tankItem, tier.getStorage(), (Pigment) chemical);
+        } else if (chemical instanceof Slurry) {
+            return getFilledVariant(tankItem, tier.getStorage(), (Slurry) chemical);
+        } else {
+            throw new IllegalStateException("Unknown Chemical Type: " + chemical.getClass().getName());
+        }
     }
 
     /**
@@ -108,6 +140,31 @@ public class ChemicalUtil {
                 return MekanismBlocks.CREATIVE_GAS_TANK.getItemStack();
         }
         return ItemStack.EMPTY;
+    }
+
+    public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IGasProvider provider) {
+        return getFilledVariant(toFill, BasicGasTank.createDummy(capacity), provider, NBTConstants.GAS_TANKS);
+    }
+
+    public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IInfuseTypeProvider provider) {
+        return getFilledVariant(toFill, BasicInfusionTank.createDummy(capacity), provider, NBTConstants.INFUSION_TANKS);
+    }
+
+    public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IPigmentProvider provider) {
+        return getFilledVariant(toFill, BasicPigmentTank.createDummy(capacity), provider, NBTConstants.PIGMENT_TANKS);
+    }
+
+    public static ItemStack getFilledVariant(ItemStack toFill, long capacity, ISlurryProvider provider) {
+        return getFilledVariant(toFill, BasicSlurryTank.createDummy(capacity), provider, NBTConstants.SLURRY_TANKS);
+    }
+
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
+    ItemStack getFilledVariant(ItemStack toFill, TANK dummyTank, IChemicalProvider<CHEMICAL> provider, String key) {
+        //Manually handle filling it as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
+        dummyTank.setStack((STACK) provider.getStack(dummyTank.getCapacity()));
+        ItemDataUtils.setList(toFill, key, DataHandlerUtils.writeContainers(Collections.singletonList(dummyTank)));
+        //The item is now filled return it for convenience
+        return toFill;
     }
 
     public static boolean hasGas(ItemStack stack) {

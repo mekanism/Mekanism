@@ -113,7 +113,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         inputProcessed += operations;
         inputTank.shrinkStack(operations, Action.EXECUTE);
         if (inputProcessed >= inputPerAntimatter) {
-            GasStack toAdd = MekanismGases.ANTIMATTER.getGasStack(inputProcessed / inputPerAntimatter);
+            GasStack toAdd = MekanismGases.ANTIMATTER.getStack(inputProcessed / inputPerAntimatter);
             outputTank.insert(toAdd, Action.EXECUTE, AutomationType.INTERNAL);
             inputProcessed %= inputPerAntimatter;
         }

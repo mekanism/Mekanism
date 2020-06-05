@@ -45,7 +45,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         if (eastWest) {
             if (EAST_WEST == null) {
                 EAST_WEST = new Model3D();
-                EAST_WEST.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getGas()));
+                EAST_WEST.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
                 EAST_WEST.minY = 1;
                 EAST_WEST.maxY = 3;
                 EAST_WEST.minX = 0;
@@ -57,7 +57,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         }
         if (NORTH_SOUTH == null) {
             NORTH_SOUTH = new Model3D();
-            NORTH_SOUTH.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getGas()));
+            NORTH_SOUTH.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
             NORTH_SOUTH.minY = 1;
             NORTH_SOUTH.maxY = 3;
             NORTH_SOUTH.minX = 0.46;

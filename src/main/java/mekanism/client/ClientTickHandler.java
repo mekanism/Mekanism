@@ -95,7 +95,7 @@ public class ClientTickHandler {
     private static JetpackMode getJetpackMode(ItemStack stack) {
         if (stack.getItem() instanceof ItemJetpack && ChemicalUtil.hasGas(stack)) {
             return ((ItemJetpack) stack.getItem()).getMode(stack);
-        } else if ( stack.getItem() instanceof IModuleContainerItem && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get())) {
+        } else if (stack.getItem() instanceof IModuleContainerItem && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get())) {
             ModuleJetpackUnit module = Modules.load(stack, Modules.JETPACK_UNIT);
             if (module != null && module.isEnabled()) {
                 return module.getMode();

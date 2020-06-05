@@ -87,7 +87,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         fluidTanks.add(waterTank);
         steamTank = MultiblockGasTank.create(this, tile, this::getSteamTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
-              gas -> gas == MekanismGases.STEAM.getGas());
+              gas -> gas == MekanismGases.STEAM.getChemical());
         cooledCoolantTank = MultiblockGasTank.create(this, tile, this::getCooledCoolantTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas.has(CooledCoolant.class));
@@ -126,7 +126,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             if (coolantType != null) {
                 long toCool = Math.round(BoilerMultiblockData.COOLANT_COOLING_EFFICIENCY * superheatedCoolantTank.getStored());
                 toCool *= 1 - heatCapacitor.getTemperature() / HeatUtils.HEATED_COOLANT_TEMP;
-                GasStack cooledCoolant = coolantType.getCooledGas().getGasStack(toCool);
+                GasStack cooledCoolant = coolantType.getCooledGas().getStack(toCool);
                 toCool = Math.min(toCool, toCool - cooledCoolantTank.insert(cooledCoolant, Action.EXECUTE, AutomationType.INTERNAL).getAmount());
                 if (toCool > 0) {
                     double heatEnergy = toCool * coolantType.getThermalEnthalpy();
@@ -146,7 +146,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                 waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
             }
             if (steamTank.isEmpty()) {
-                steamTank.setStack(MekanismGases.STEAM.getGasStack(amountToBoil));
+                steamTank.setStack(MekanismGases.STEAM.getStack(amountToBoil));
             } else {
                 steamTank.growStack(amountToBoil, Action.EXECUTE);
             }

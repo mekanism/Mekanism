@@ -14,7 +14,7 @@ public class GasRegistryObject<GAS extends Gas> extends WrappedRegistryObject<GA
 
     @Nonnull
     @Override
-    public GAS getGas() {
+    public GAS getChemical() {
         return get();
     }
 }

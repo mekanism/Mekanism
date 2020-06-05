@@ -33,11 +33,6 @@ public class Pigment extends Chemical<Pigment> implements IPigmentProvider {
     }
 
     @Override
-    public Pigment getPigment() {
-        return this;
-    }
-
-    @Override
     public String toString() {
         return "[Pigment: " + getRegistryName() + "]";
     }

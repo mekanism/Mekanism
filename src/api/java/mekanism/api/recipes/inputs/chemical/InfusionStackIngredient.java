@@ -19,7 +19,7 @@ public interface InfusionStackIngredient extends IChemicalStackIngredient<Infuse
     }
 
     static InfusionStackIngredient from(@Nonnull IInfuseTypeProvider infuseType, long amount) {
-        return new Single(infuseType.getInfusionStack(amount));
+        return new Single(infuseType.getStack(amount));
     }
 
     static InfusionStackIngredient from(@Nonnull Tag<InfuseType> tag, long amount) {

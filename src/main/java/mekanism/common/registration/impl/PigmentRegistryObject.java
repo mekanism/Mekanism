@@ -14,7 +14,7 @@ public class PigmentRegistryObject<PIGMENT extends Pigment> extends WrappedRegis
 
     @Nonnull
     @Override
-    public PIGMENT getPigment() {
+    public PIGMENT getChemical() {
         return get();
     }
 }

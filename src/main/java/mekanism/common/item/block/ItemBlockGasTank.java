@@ -19,7 +19,6 @@ import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
@@ -86,7 +85,7 @@ public class ItemBlockGasTank extends ItemBlockTooltip<BlockTileModel<TileEntity
             if (tier == ChemicalTankTier.CREATIVE && MekanismConfig.general.prefilledGasTanks.get()) {
                 for (Gas type : MekanismAPI.GAS_REGISTRY.getValues()) {
                     if (!type.isHidden()) {
-                        items.add(GasUtils.getFilledVariant(new ItemStack(this), tier.getStorage(), type));
+                        items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), tier.getStorage(), type));
                     }
                 }
             }

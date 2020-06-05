@@ -24,7 +24,7 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
      * @param amount             - amount of the infusion type to be referenced in this InfusionStack
      */
     public InfusionStack(IInfuseTypeProvider infuseTypeProvider, long amount) {
-        super(infuseTypeProvider.getInfuseType(), amount);
+        super(infuseTypeProvider.getChemical(), amount);
     }
 
     public InfusionStack(InfusionStack stack, long amount) {

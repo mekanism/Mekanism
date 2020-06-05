@@ -21,7 +21,7 @@ public class GasAttributes {
      */
     public static class Radiation extends ChemicalAttribute {
 
-        private double radioactivity;
+        private final double radioactivity;
 
         public Radiation(double radioactivity) {
             this.radioactivity = radioactivity;
@@ -58,8 +58,8 @@ public class GasAttributes {
      */
     public static abstract class Coolant extends ChemicalAttribute {
 
-        private double thermalEnthalpy;
-        private double conductivity;
+        private final double thermalEnthalpy;
+        private final double conductivity;
 
         public Coolant(double thermalEnthalpy, double conductivity) {
             this.thermalEnthalpy = thermalEnthalpy;
@@ -90,7 +90,7 @@ public class GasAttributes {
      */
     public static class CooledCoolant extends Coolant {
 
-        private IGasProvider heatedGas;
+        private final IGasProvider heatedGas;
 
         public CooledCoolant(IGasProvider heatedGas, double thermalEnthalpy, double conductivity) {
             super(thermalEnthalpy, conductivity);
@@ -98,7 +98,7 @@ public class GasAttributes {
         }
 
         public IGasProvider getHeatedGas() {
-            return heatedGas.getGas();
+            return heatedGas.getChemical();
         }
     }
 
@@ -109,7 +109,7 @@ public class GasAttributes {
      */
     public static class HeatedCoolant extends Coolant {
 
-        private IGasProvider cooledGas;
+        private final IGasProvider cooledGas;
 
         public HeatedCoolant(IGasProvider cooledGas, double thermalEnthalpy, double conductivity) {
             super(thermalEnthalpy, conductivity);
@@ -117,7 +117,7 @@ public class GasAttributes {
         }
 
         public Gas getCooledGas() {
-            return cooledGas.getGas();
+            return cooledGas.getChemical();
         }
     }
 
@@ -129,8 +129,8 @@ public class GasAttributes {
      */
     public static class Fuel extends ChemicalAttribute {
 
-        private IntSupplier burnTicks;
-        private FloatingLongSupplier energyDensity;
+        private final IntSupplier burnTicks;
+        private final FloatingLongSupplier energyDensity;
 
         public Fuel(IntSupplier burnTicks, FloatingLongSupplier energyDensity) {
             this.burnTicks = burnTicks;

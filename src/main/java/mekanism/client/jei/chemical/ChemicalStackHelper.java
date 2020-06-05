@@ -26,6 +26,8 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.util.ChemicalUtil;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -116,8 +118,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         }
         List<ItemStack> stacks = new ArrayList<>();
         //Always include the chemical tank of the type to portray that we accept items
-        //TODO - V10: FIXME
-        //stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type));
+        stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type));
         if (displayConversions) {
             //See if there are any chemical to item mappings
             MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> recipeType = getConversionRecipeType();

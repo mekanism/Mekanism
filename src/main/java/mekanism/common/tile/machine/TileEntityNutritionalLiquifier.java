@@ -99,7 +99,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         }
         Food food = stack.getItem().getFood();
         //TODO - V10: FIXME - no null recipe ids
-        return new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(stack.getItem()), MekanismGases.NUTRITIONAL_PASTE.getGasStack(food.getHealing() * 50));
+        return new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(stack.getItem()), MekanismGases.NUTRITIONAL_PASTE.getStack(food.getHealing() * 50));
     }
 
     @Nullable

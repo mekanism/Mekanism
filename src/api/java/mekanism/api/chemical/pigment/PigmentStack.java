@@ -24,7 +24,7 @@ public class PigmentStack extends ChemicalStack<Pigment> {
      * @param amount          - amount of the pigment to be referenced in this PigmentStack
      */
     public PigmentStack(IPigmentProvider pigmentProvider, long amount) {
-        super(pigmentProvider.getPigment(), amount);
+        super(pigmentProvider.getChemical(), amount);
     }
 
     public PigmentStack(PigmentStack stack, long amount) {

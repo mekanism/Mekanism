@@ -32,7 +32,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
 
     //TODO - V10: Replace with FluidTags.WATER
     private final List<FluidStack> waterInput = Collections.singletonList(new FluidStack(Fluids.WATER, 1_000));
-    private final List<GasStack> steamOutput = Collections.singletonList(MekanismGases.STEAM.getGasStack(1_000));
+    private final List<GasStack> steamOutput = Collections.singletonList(MekanismGases.STEAM.getStack(1_000));
 
     private final ResourceLocation iconRL = MekanismUtils.getResource(ResourceType.GUI, "radioactive.png");
     private final IDrawable icon;

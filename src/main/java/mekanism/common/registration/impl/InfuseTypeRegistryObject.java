@@ -14,7 +14,7 @@ public class InfuseTypeRegistryObject<INFUSE_TYPE extends InfuseType> extends Wr
 
     @Nonnull
     @Override
-    public INFUSE_TYPE getInfuseType() {
+    public INFUSE_TYPE getChemical() {
         return get();
     }
 }

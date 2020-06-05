@@ -24,7 +24,7 @@ public class SlurryStack extends ChemicalStack<Slurry> {
      * @param amount         - amount of the slurry to be referenced in this SlurryStack
      */
     public SlurryStack(ISlurryProvider slurryProvider, long amount) {
-        super(slurryProvider.getSlurry(), amount);
+        super(slurryProvider.getChemical(), amount);
     }
 
     public SlurryStack(SlurryStack stack, long amount) {

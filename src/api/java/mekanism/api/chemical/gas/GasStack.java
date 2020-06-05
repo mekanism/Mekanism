@@ -29,7 +29,7 @@ public class GasStack extends ChemicalStack<Gas> {
      * @param amount      - amount of gas to be referenced in this GasStack
      */
     public GasStack(IGasProvider gasProvider, long amount) {
-        super(gasProvider.getGas(), amount);
+        super(gasProvider.getChemical(), amount);
     }
 
     public GasStack(GasStack stack, long amount) {

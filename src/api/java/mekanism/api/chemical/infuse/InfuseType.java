@@ -30,11 +30,6 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
     }
 
     @Override
-    public InfuseType getInfuseType() {
-        return this;
-    }
-
-    @Override
     public String toString() {
         return "[InfuseType: " + getRegistryName() + "]";
     }

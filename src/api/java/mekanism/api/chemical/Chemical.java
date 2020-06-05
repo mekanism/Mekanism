@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
@@ -19,7 +20,8 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends ForgeRegistryEntry<CHEMICAL> implements IHasTextComponent, IHasTranslationKey {
+public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends ForgeRegistryEntry<CHEMICAL> implements IChemicalProvider<CHEMICAL>, IHasTextComponent,
+      IHasTranslationKey {
 
     private final ReverseTagWrapper<CHEMICAL> reverseTags;
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
@@ -31,11 +33,16 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
     private String translationKey;
 
     protected Chemical(ChemicalBuilder<CHEMICAL, ?> builder, ChemicalTags<CHEMICAL> chemicalTags) {
-        reverseTags = new ReverseTagWrapper<>((CHEMICAL) this, chemicalTags::getGeneration, chemicalTags::getCollection);
+        reverseTags = new ReverseTagWrapper<>(getChemical(), chemicalTags::getGeneration, chemicalTags::getCollection);
         this.attributeMap = builder.getAttributeMap();
         this.iconLocation = builder.getTexture();
         this.tint = builder.getColor();
         this.hidden = builder.isHidden();
+    }
+
+    @Override
+    public CHEMICAL getChemical() {
+        return (CHEMICAL) this;
     }
 
     @Override
@@ -141,7 +148,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
     }
 
     public boolean isIn(Tag<CHEMICAL> tag) {
-        return tag.contains((CHEMICAL) this);
+        return tag.contains(getChemical());
     }
 
     public Set<ResourceLocation> getTags() {
