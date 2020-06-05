@@ -3,6 +3,7 @@ package mekanism.generators.common.block.attribute;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeState;
@@ -36,7 +37,7 @@ public class AttributeStateFissionPortMode extends AttributeState {
         properties.add(modeProperty);
     }
 
-    public enum FissionPortMode implements IStringSerializable {
+    public enum FissionPortMode implements IStringSerializable, IHasTextComponent {
         INPUT("input", GeneratorsLang.FISSION_PORT_MODE_INPUT, EnumColor.BRIGHT_GREEN),
         OUTPUT_WASTE("output_waste", GeneratorsLang.FISSION_PORT_MODE_OUTPUT_WASTE, EnumColor.BROWN),
         OUTPUT_COOLANT("output_coolant", GeneratorsLang.FISSION_PORT_MODE_OUTPUT_COOLANT, EnumColor.DARK_AQUA);
@@ -57,7 +58,8 @@ public class AttributeStateFissionPortMode extends AttributeState {
             return name;
         }
 
-        public ITextComponent translate() {
+        @Override
+        public ITextComponent getTextComponent() {
             return langEntry.translateColored(color);
         }
     }

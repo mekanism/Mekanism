@@ -39,11 +39,6 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
     }
 
     @Override
-    public Slurry getSlurry() {
-        return this;
-    }
-
-    @Override
     public String toString() {
         return "[Slurry: " + getRegistryName() + "]";
     }

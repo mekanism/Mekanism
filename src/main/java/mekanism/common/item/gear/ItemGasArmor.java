@@ -14,7 +14,7 @@ import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.ISpecialGear;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -82,13 +82,13 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear, IG
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(GasUtils.getFilledVariant(new ItemStack(this), getMaxGas().getAsLong(), getGasType()));
+            items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), getMaxGas().getAsLong(), getGasType()));
         }
     }
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(getFillRate(), getMaxGas(),
-              (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == getGasType().getGas()));
+              (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == getGasType().getChemical()));
     }
 }

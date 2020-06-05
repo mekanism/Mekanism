@@ -32,6 +32,7 @@ import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -48,8 +49,8 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.FluidUtils;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
@@ -66,9 +67,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
      * False: gas -> fluid
      */
     public boolean mode;
-
-    public long gasOutput = 256;
-    public int fluidOutput = 256;
 
     private final IOutputHandler<@NonNull GasStack> gasOutputHandler;
     private final IOutputHandler<@NonNull FluidStack> fluidOutputHandler;
@@ -165,7 +163,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
             // emit
             ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
             if (config != null && config.isEjecting()) {
-                GasUtils.emit(config.getAllOutputtingSides(), gasTank, this, gasOutput);
+                ChemicalUtil.emit(config.getAllOutputtingSides(), gasTank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
             }
         } else {//Gas to Fluid
             gasOutputSlot.fillTank();
@@ -173,7 +171,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
             // emit
             ConfigInfo config = configComponent.getConfig(TransmissionType.FLUID);
             if (config != null && config.isEjecting()) {
-                FluidUtils.emit(config.getAllOutputtingSides(), fluidTank, this, fluidOutput);
+                FluidUtils.emit(config.getAllOutputtingSides(), fluidTank, this, MekanismConfig.general.fluidAutoEjectRate.get());
             }
         }
         FloatingLong prev = energyContainer.getEnergy().copyAsConst();

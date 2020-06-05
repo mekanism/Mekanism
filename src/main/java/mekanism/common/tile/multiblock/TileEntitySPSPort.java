@@ -14,7 +14,7 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
@@ -34,7 +34,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         super.onUpdateServer();
         if (getMultiblock().isFormed()) {
             if (getActive()) {
-                GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().outputTank, this);
+                ChemicalUtil.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().outputTank, this);
             }
 
             if (!energyContainer.isEmpty() && getMultiblock().canSupplyCoilEnergy(this)) {

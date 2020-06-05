@@ -39,7 +39,6 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
 
     public static final long MAX_GAS = 10_000;
     public BasicGasTank gasTank;
-    public long gasOutput = 256;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;

@@ -8,8 +8,6 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.network.PacketDropperUse.TankType;
-import mekanism.common.util.GasUtils;
-import net.minecraft.util.text.ITextComponent;
 
 public class GuiGasGauge extends GuiChemicalGauge<Gas, GasStack, IGasTank> {
 
@@ -34,10 +32,5 @@ public class GuiGasGauge extends GuiChemicalGauge<Gas, GasStack, IGasTank> {
     @Override
     public TransmissionType getTransmission() {
         return TransmissionType.GAS;
-    }
-
-    @Override
-    protected void addAttributeTooltips(List<ITextComponent> tooltips, Gas chemical) {
-        tooltips.addAll(GasUtils.getAttributeTooltips(chemical));
     }
 }

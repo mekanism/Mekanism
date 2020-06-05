@@ -102,13 +102,13 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
               gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty());
         fuelTank = MultiblockGasTank.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
-              gas -> gas == MekanismGases.FISSILE_FUEL.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
+              gas -> gas == MekanismGases.FISSILE_FUEL.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
         heatedCoolantTank = MultiblockGasTank.create(this, tile, () -> getVolume() * HEATED_COOLANT_PER_VOLUME,
               (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas == MekanismGases.STEAM.get() || gas.has(HeatedCoolant.class));
         wasteTank = MultiblockGasTank.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
               (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
-              gas -> gas == MekanismGases.NUCLEAR_WASTE.getGas(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
+              gas -> gas == MekanismGases.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
         gasTanks.addAll(Arrays.asList(fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank));
         heatCapacitor = MultiblockHeatCapacitor.create(this, tile,
               MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
@@ -250,7 +250,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             if (coolantHeated > 0) {
                 MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE), coolantHeated);
                 // extra steam is dumped
-                heatedCoolantTank.insert(MekanismGases.STEAM.getGasStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
+                heatedCoolantTank.insert(MekanismGases.STEAM.getStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
                 caseCoolantHeat = coolantHeated * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
                 heatCapacitor.handleHeat(-caseCoolantHeat);
             }
@@ -262,7 +262,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 coolantHeated = Math.max(0, Math.min(coolantHeated, gasCoolantTank.getStored()));
                 if (coolantHeated > 0) {
                     MekanismUtils.logMismatchedStackSize(gasCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE), coolantHeated);
-                    heatedCoolantTank.insert(coolantType.getHeatedGas().getGasStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
+                    heatedCoolantTank.insert(coolantType.getHeatedGas().getStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
                     caseCoolantHeat = coolantHeated * coolantType.getThermalEnthalpy();
                     heatCapacitor.handleHeat(-caseCoolantHeat);
                 }
@@ -284,7 +284,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         if (newWaste > 0) {
             partialWaste %= 1;
             long leftoverWaste = Math.max(0, newWaste - wasteTank.getNeeded());
-            GasStack wasteToAdd = MekanismGases.NUCLEAR_WASTE.getGasStack(newWaste);
+            GasStack wasteToAdd = MekanismGases.NUCLEAR_WASTE.getStack(newWaste);
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0) {
                 double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();

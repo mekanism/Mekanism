@@ -66,9 +66,9 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
     private final Function<INGREDIENT[], INGREDIENT> multiCreator;
     private final String name;
 
-    private ChemicalIngredientDeserializer(String name, ChemicalIngredientInfo<CHEMICAL, STACK> info, ChemicalTags<CHEMICAL> tags, Function<PacketBuffer, STACK> fromPacket, Function<ResourceLocation, CHEMICAL> fromRegistry,
-          Function<STACK, INGREDIENT> stackToIngredient,
-          TagIngredientCreator<CHEMICAL, STACK, INGREDIENT> tagToIngredient, Function<INGREDIENT[], INGREDIENT> multiCreator, IntFunction<INGREDIENT[]> arrayCreator) {
+    private ChemicalIngredientDeserializer(String name, ChemicalIngredientInfo<CHEMICAL, STACK> info, ChemicalTags<CHEMICAL> tags, Function<PacketBuffer, STACK> fromPacket,
+          Function<ResourceLocation, CHEMICAL> fromRegistry, Function<STACK, INGREDIENT> stackToIngredient, TagIngredientCreator<CHEMICAL, STACK, INGREDIENT> tagToIngredient,
+          Function<INGREDIENT[], INGREDIENT> multiCreator, IntFunction<INGREDIENT[]> arrayCreator) {
         this.fromPacket = fromPacket;
         this.fromRegistry = fromRegistry;
         this.tags = tags;

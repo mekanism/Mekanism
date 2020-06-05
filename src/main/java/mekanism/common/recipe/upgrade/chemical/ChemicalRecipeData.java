@@ -33,8 +33,7 @@ import net.minecraftforge.common.capabilities.Capability;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
-      HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-      implements RecipeUpgradeData<ChemicalRecipeData<CHEMICAL, STACK, TANK, HANDLER>> {
+      HANDLER extends IChemicalHandler<CHEMICAL, STACK>> implements RecipeUpgradeData<ChemicalRecipeData<CHEMICAL, STACK, TANK, HANDLER>> {
 
     protected final List<TANK> tanks;
 
@@ -109,6 +108,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
         }
         List<TANK> tanks = new ArrayList<>();
         for (int tank = 0; tank < tankCount; tank++) {
+            //TODO: Do we need to also clone the attribute validator
             tanks.add(createTank(handler.getTankCapacity(tank), cloneValidator(handler, tank)));
         }
         //TODO: Improve the logic used so that it tries to batch similar types of chemicals together first

@@ -88,7 +88,7 @@ public class StorageUtils {
                 for (int tank = 0; tank < tanks; tank++) {
                     GasStack gasInTank = gasHandlerItem.getChemicalInTank(tank);
                     tooltip.add(storedFunction.apply(gasInTank));
-                    tooltip.addAll(GasUtils.getAttributeTooltips(gasInTank.getType()));
+                    tooltip.addAll(ChemicalUtil.getAttributeTooltips(gasInTank.getType()));
                 }
             } else if (showMissingCap) {
                 tooltip.add(emptyLangEntry.translate());
@@ -113,7 +113,7 @@ public class StorageUtils {
      */
     @Nonnull
     public static GasStack getStoredGasFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, BasicGasTank.create(Long.MAX_VALUE, null), NBTConstants.GAS_TANKS);
+        return getStoredChemicalFromNBT(stack, BasicGasTank.createDummy(Long.MAX_VALUE), NBTConstants.GAS_TANKS);
     }
 
     /**
@@ -122,7 +122,7 @@ public class StorageUtils {
      */
     @Nonnull
     public static InfusionStack getStoredInfusionFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, BasicInfusionTank.create(Long.MAX_VALUE, null), NBTConstants.INFUSION_TANKS);
+        return getStoredChemicalFromNBT(stack, BasicInfusionTank.createDummy(Long.MAX_VALUE), NBTConstants.INFUSION_TANKS);
     }
 
     /**
@@ -131,7 +131,7 @@ public class StorageUtils {
      */
     @Nonnull
     public static PigmentStack getStoredPigmentFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, BasicPigmentTank.create(Long.MAX_VALUE, null), NBTConstants.PIGMENT_TANKS);
+        return getStoredChemicalFromNBT(stack, BasicPigmentTank.createDummy(Long.MAX_VALUE), NBTConstants.PIGMENT_TANKS);
     }
 
     /**
@@ -140,12 +140,11 @@ public class StorageUtils {
      */
     @Nonnull
     public static SlurryStack getStoredSlurryFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, BasicSlurryTank.create(Long.MAX_VALUE, null), NBTConstants.SLURRY_TANKS);
+        return getStoredChemicalFromNBT(stack, BasicSlurryTank.createDummy(Long.MAX_VALUE), NBTConstants.SLURRY_TANKS);
     }
 
     @Nonnull
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
-    STACK getStoredChemicalFromNBT(ItemStack stack, TANK tank, String tag) {
+    private static <STACK extends ChemicalStack<?>> STACK getStoredChemicalFromNBT(ItemStack stack, IChemicalTank<?, STACK> tank, String tag) {
         DataHandlerUtils.readContainers(Collections.singletonList(tank), ItemDataUtils.getList(stack, tag));
         return tank.getStack();
     }
@@ -232,11 +231,10 @@ public class StorageUtils {
         return 1 - bestRatio;
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    double calculateRatio(ItemStack stack, double bestRatio, Capability<HANDLER> capability) {
-        Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
+    private static double calculateRatio(ItemStack stack, double bestRatio, Capability<? extends IChemicalHandler<?, ?>> capability) {
+        Optional<? extends IChemicalHandler<?, ?>> cap = MekanismUtils.toOptional(stack.getCapability(capability));
         if (cap.isPresent()) {
-            HANDLER handler = cap.get();
+            IChemicalHandler<?, ?> handler = cap.get();
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 bestRatio = Math.max(bestRatio, getRatio(handler.getChemicalInTank(tank).getAmount(), handler.getTankCapacity(tank)));
             }

@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -27,11 +24,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
-import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -39,10 +33,8 @@ import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 
 public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<NucleosynthesizingRecipe> {
 
@@ -119,36 +111,12 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
         List<GasStack> scaledGases = new ArrayList<>();
         long scale = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
         for (GasStack gas : gasInputs) {
-            gasItemProviders.addAll(getStacksForGas(gas.getType()));
+            gasItemProviders.addAll(MekanismJEI.GAS_STACK_HELPER.getStacksFor(gas.getType(), true));
             //While we are already looping the gases ensure we scale it to get the average amount that will get used over all
             scaledGases.add(new GasStack(gas, scale));
         }
         itemStacks.set(2, gasItemProviders);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initChemical(gasStacks, 0, true, 6 - xOffset, 19 - yOffset, 16, 46, scaledGases, true);
-    }
-
-    /**
-     * Helper method for JEI to get the stacks to display for a specific type of gas
-     */
-    private static List<ItemStack> getStacksForGas(@Nonnull Gas type) {
-        if (type.isEmptyType()) {
-            return Collections.emptyList();
-        }
-        World world = Minecraft.getInstance().world;
-        if (world == null) {
-            return Collections.emptyList();
-        }
-        List<ItemStack> stacks = new ArrayList<>();
-        //Always include the gas tank of the type
-        stacks.add(MekanismUtils.getFullGasTank(GasTankTier.BASIC, type));
-        //See if there are any gas to item mappings
-        List<ItemStackToGasRecipe> recipes = MekanismRecipeType.GAS_CONVERSION.getRecipes(world);
-        for (ItemStackToGasRecipe recipe : recipes) {
-            if (recipe.getOutputDefinition().isTypeEqual(type)) {
-                stacks.addAll(recipe.getInput().getRepresentations());
-            }
-        }
-        return stacks;
     }
 }

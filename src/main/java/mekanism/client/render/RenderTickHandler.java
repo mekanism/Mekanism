@@ -43,7 +43,7 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
@@ -216,7 +216,7 @@ public class RenderTickHandler {
                     for (PlayerEntity p : world.getPlayers()) {
                         if (!p.isSwingInProgress && !Mekanism.playerState.isFlamethrowerOn(p)) {
                             ItemStack currentItem = p.getHeldItemMainhand();
-                            if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && GasUtils.hasGas(currentItem)) {
+                            if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem)) {
                                 Pos3D flameVec;
                                 if (player == p && minecraft.gameSettings.thirdPersonView == 0) {
                                     flameVec = new Pos3D(1, 1, 1).multiply(p.getLook(1)).rotateYaw(5).translate(0, 1.6, 0);

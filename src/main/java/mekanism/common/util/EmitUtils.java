@@ -62,7 +62,8 @@ public class EmitUtils {
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(Set<TARGET> availableTargets, int totalTargets, int amountToSplit, EXTRA toSend) {
+    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(Set<TARGET> availableTargets, int totalTargets, int amountToSplit,
+          EXTRA toSend) {
         return sendToAcceptors(availableTargets, totalTargets, new IntegerSplitInfo(amountToSplit, totalTargets), toSend);
     }
 
@@ -77,7 +78,8 @@ public class EmitUtils {
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Long, EXTRA>> long sendToAcceptors(Set<TARGET> availableTargets, int totalTargets, long amountToSplit, EXTRA toSend) {
+    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Long, EXTRA>> long sendToAcceptors(Set<TARGET> availableTargets, int totalTargets, long amountToSplit,
+          EXTRA toSend) {
         return sendToAcceptors(availableTargets, totalTargets, new LongSplitInfo(amountToSplit, totalTargets), toSend);
     }
 

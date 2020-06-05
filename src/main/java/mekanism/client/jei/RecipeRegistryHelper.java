@@ -71,13 +71,13 @@ public class RecipeRegistryHelper {
     public static void registerNutritionalLiquifier(IRecipeRegistration registry) {
         //TODO - V10: FIXME don't use a null recipe id
         registry.addRecipes(ForgeRegistries.ITEMS.getValues().stream().filter(Item::isFood)
-              .map(item -> new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getGasStack(item.getFood().getHealing() * 50)))
+              .map(item -> new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(item.getFood().getHealing() * 50)))
               .collect(Collectors.toList()), MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
     }
 
     public static void registerSPS(IRecipeRegistration registry) {
         //TODO - V10: FIXME, all these nonnull things should not be null (recipe id, serializer, type)
-        GasToGasRecipe recipe = new GasToGasRecipe(null, GasStackIngredient.from(MekanismGases.POLONIUM, 1000), MekanismGases.ANTIMATTER.getGasStack(1)) {
+        GasToGasRecipe recipe = new GasToGasRecipe(null, GasStackIngredient.from(MekanismGases.POLONIUM, 1000), MekanismGases.ANTIMATTER.getStack(1)) {
             @Override
             public IRecipeSerializer<?> getSerializer() {
                 return null;

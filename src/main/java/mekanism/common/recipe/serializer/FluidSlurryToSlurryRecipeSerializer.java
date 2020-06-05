@@ -17,17 +17,17 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class FluidSlurryToSlurryRecipeSerializer<T extends FluidSlurryToSlurryRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlurryRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<T> factory;
+    private final IFactory<RECIPE> factory;
 
-    public FluidSlurryToSlurryRecipeSerializer(IFactory<T> factory) {
+    public FluidSlurryToSlurryRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement fluidInput = JSONUtils.isJsonArray(json, JsonConstants.FLUID_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.FLUID_INPUT) :
                                  JSONUtils.getJsonObject(json, JsonConstants.FLUID_INPUT);
         FluidStackIngredient fluidIngredient = FluidStackIngredient.deserialize(fluidInput);
@@ -42,7 +42,7 @@ public class FluidSlurryToSlurryRecipeSerializer<T extends FluidSlurryToSlurryRe
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             FluidStackIngredient fluidInput = FluidStackIngredient.read(buffer);
             SlurryStackIngredient slurryInput = SlurryStackIngredient.read(buffer);
@@ -55,7 +55,7 @@ public class FluidSlurryToSlurryRecipeSerializer<T extends FluidSlurryToSlurryRe
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -64,8 +64,9 @@ public class FluidSlurryToSlurryRecipeSerializer<T extends FluidSlurryToSlurryRe
         }
     }
 
-    public interface IFactory<T extends FluidSlurryToSlurryRecipe> {
+    @FunctionalInterface
+    public interface IFactory<RECIPE extends FluidSlurryToSlurryRecipe> {
 
-        T create(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output);
+        RECIPE create(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output);
     }
 }

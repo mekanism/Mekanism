@@ -14,7 +14,7 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -45,9 +45,9 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
             BoilerValveMode mode = getMode();
 
             if (mode == BoilerValveMode.OUTPUT_STEAM) {
-                GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().steamTank, this);
+                ChemicalUtil.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().steamTank, this);
             } else if (mode == BoilerValveMode.OUTPUT_COOLANT) {
-                GasUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().cooledCoolantTank, this);
+                ChemicalUtil.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().cooledCoolantTank, this);
             }
         }
     }
@@ -77,7 +77,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
             mode = BoilerValveMode.values()[(mode.ordinal() + 1) % BoilerValveMode.values().length];
             world.setBlockState(pos, getBlockState().with(AttributeStateBoilerValveMode.modeProperty, mode));
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode.translate())));
+                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode)));
         }
         return ActionResultType.SUCCESS;
     }

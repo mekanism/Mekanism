@@ -18,12 +18,6 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
     private final ITankInfoHandler<TANK> infoHandler;
     private final TankType tankType;
 
-    public GuiTankGauge(GaugeType type, IGuiWrapper gui, int x, int y, ITankInfoHandler<TANK> infoHandler, TankType tankType) {
-        super(type, gui, x, y);
-        this.infoHandler = infoHandler;
-        this.tankType = tankType;
-    }
-
     public GuiTankGauge(GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY, ITankInfoHandler<TANK> infoHandler, TankType tankType) {
         super(type, gui, x, y, sizeX, sizeY);
         this.infoHandler = infoHandler;

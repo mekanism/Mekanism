@@ -18,6 +18,7 @@ import mekanism.common.network.PacketDropperUse.TankType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
@@ -25,7 +26,6 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
       extends GuiTankGauge<CHEMICAL, TANK> {
 
     protected ITextComponent label;
-    private Supplier<TANK> tankSupplier;
 
     public GuiChemicalGauge(ITankInfoHandler<TANK> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY, TankType tankType) {
         super(type, gui, x, y, sizeX, sizeY, handler, tankType);
@@ -50,18 +50,19 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
                 return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
             }
         }, type, gui, x, y, sizeX, sizeY, tankType);
-        this.tankSupplier = tankSupplier;
     }
 
     @Override
     protected GaugeInfo getGaugeColor() {
-        TANK tank;
-        if (guiObj instanceof GuiMekanismTile && tankSupplier != null && (tank = tankSupplier.get()) != null) {
-            TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) guiObj).getContainer().getTileEntity();
-            if (tile instanceof ISideConfiguration) {
-                DataType dataType = ((ISideConfiguration) tile).getActiveDataType(tank);
-                if (dataType != null) {
-                    return GaugeInfo.get(dataType);
+        if (guiObj instanceof GuiMekanismTile) {
+            TANK tank = getTank();
+            if (tank != null) {
+                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) guiObj).getContainer().getTileEntity();
+                if (tile instanceof ISideConfiguration) {
+                    DataType dataType = ((ISideConfiguration) tile).getActiveDataType(tank);
+                    if (dataType != null) {
+                        return GaugeInfo.get(dataType);
+                    }
                 }
             }
         }
@@ -120,6 +121,7 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
     }
 
     protected void addAttributeTooltips(List<ITextComponent> tooltips, CHEMICAL chemical) {
+        tooltips.addAll(ChemicalUtil.getAttributeTooltips(chemical));
     }
 
     @Override

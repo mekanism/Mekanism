@@ -24,7 +24,7 @@ import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -81,7 +81,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(GasUtils.getFilledVariant(new ItemStack(this), MekanismConfig.gear.flamethrowerMaxGas.get(), MekanismGases.HYDROGEN));
+            items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismConfig.gear.flamethrowerMaxGas.get(), MekanismGases.HYDROGEN));
         }
     }
 
@@ -96,7 +96,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerMaxGas,
-              (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getGas()));
+              (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getChemical()));
     }
 
     @Override

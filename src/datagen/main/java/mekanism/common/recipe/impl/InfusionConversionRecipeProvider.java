@@ -32,7 +32,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         //Bio fuel
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(MekanismTags.Items.FUELS_BIO),
-              MekanismInfuseTypes.BIO.getInfusionStack(5)
+              MekanismInfuseTypes.BIO.getStack(5)
         ).build(consumer, Mekanism.rl(basePath + "from_bio_fuel"));
     }
 
@@ -40,7 +40,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         //Charcoal Block
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL),
-              MekanismInfuseTypes.CARBON.getInfusionStack(180)
+              MekanismInfuseTypes.CARBON.getStack(180)
         ).build(consumer, Mekanism.rl(basePath + "from_charcoal_block"));
         //Charcoal
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
@@ -48,13 +48,13 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
                     ItemStackIngredient.from(Items.CHARCOAL),
                     ItemStackIngredient.from(MekanismTags.Items.DUSTS_CHARCOAL)
               ),
-              MekanismInfuseTypes.CARBON.getInfusionStack(20)
+              MekanismInfuseTypes.CARBON.getStack(20)
         ).build(consumer, Mekanism.rl(basePath + "from_charcoal"));
 
         //Coal Block
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(Tags.Items.STORAGE_BLOCKS_COAL),
-              MekanismInfuseTypes.CARBON.getInfusionStack(90)
+              MekanismInfuseTypes.CARBON.getStack(90)
         ).build(consumer, Mekanism.rl(basePath + "from_coal_block"));
         //Coal
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
@@ -62,13 +62,13 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
                     ItemStackIngredient.from(Items.COAL),
                     ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL)
               ),
-              MekanismInfuseTypes.CARBON.getInfusionStack(10)
+              MekanismInfuseTypes.CARBON.getStack(10)
         ).build(consumer, Mekanism.rl(basePath + "from_coal"));
 
         //Enriched
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(MekanismTags.Items.ENRICHED_CARBON),
-              MekanismInfuseTypes.CARBON.getInfusionStack(80)
+              MekanismInfuseTypes.CARBON.getStack(80)
         ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
     }
 
@@ -76,12 +76,12 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         //Dust
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_DIAMOND),
-              MekanismInfuseTypes.DIAMOND.getInfusionStack(10)
+              MekanismInfuseTypes.DIAMOND.getStack(10)
         ).build(consumer, Mekanism.rl(basePath + "from_dust"));
         //Enriched
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(MekanismTags.Items.ENRICHED_DIAMOND),
-              MekanismInfuseTypes.DIAMOND.getInfusionStack(80)
+              MekanismInfuseTypes.DIAMOND.getStack(80)
         ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
     }
 
@@ -89,7 +89,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         //Mushrooms
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(Tags.Items.MUSHROOMS),
-              MekanismInfuseTypes.FUNGI.getInfusionStack(10)
+              MekanismInfuseTypes.FUNGI.getStack(10)
         ).build(consumer, Mekanism.rl(basePath + "from_mushrooms"));
     }
 
@@ -97,17 +97,17 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         //Block
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(Tags.Items.STORAGE_BLOCKS_REDSTONE),
-              MekanismInfuseTypes.REDSTONE.getInfusionStack(90)
+              MekanismInfuseTypes.REDSTONE.getStack(90)
         ).build(consumer, Mekanism.rl(basePath + "from_block"));
         //Dust
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE),
-              MekanismInfuseTypes.REDSTONE.getInfusionStack(10)
+              MekanismInfuseTypes.REDSTONE.getStack(10)
         ).build(consumer, Mekanism.rl(basePath + "from_dust"));
         //Enriched
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(MekanismTags.Items.ENRICHED_REDSTONE),
-              MekanismInfuseTypes.REDSTONE.getInfusionStack(80)
+              MekanismInfuseTypes.REDSTONE.getStack(80)
         ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
     }
 
@@ -115,12 +115,12 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         //Dust
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_REFINED_OBSIDIAN),
-              MekanismInfuseTypes.REFINED_OBSIDIAN.getInfusionStack(10)
+              MekanismInfuseTypes.REFINED_OBSIDIAN.getStack(10)
         ).build(consumer, Mekanism.rl(basePath + "from_dust"));
         //Enriched
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(MekanismTags.Items.ENRICHED_OBSIDIAN),
-              MekanismInfuseTypes.REFINED_OBSIDIAN.getInfusionStack(80)
+              MekanismInfuseTypes.REFINED_OBSIDIAN.getStack(80)
         ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
     }
 
@@ -128,12 +128,12 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         //Dust
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.TIN)),
-              MekanismInfuseTypes.TIN.getInfusionStack(10)
+              MekanismInfuseTypes.TIN.getStack(10)
         ).build(consumer, Mekanism.rl(basePath + "from_dust"));
         //Enriched
         ItemStackToInfuseTypeRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(MekanismTags.Items.ENRICHED_TIN),
-              MekanismInfuseTypes.TIN.getInfusionStack(80)
+              MekanismInfuseTypes.TIN.getStack(80)
         ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
     }
 }

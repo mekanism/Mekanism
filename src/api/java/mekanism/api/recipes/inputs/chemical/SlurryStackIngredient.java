@@ -19,7 +19,7 @@ public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, 
     }
 
     static SlurryStackIngredient from(@Nonnull ISlurryProvider slurry, long amount) {
-        return new Single(slurry.getSlurryStack(amount));
+        return new Single(slurry.getStack(amount));
     }
 
     static SlurryStackIngredient from(@Nonnull Tag<Slurry> tag, long amount) {

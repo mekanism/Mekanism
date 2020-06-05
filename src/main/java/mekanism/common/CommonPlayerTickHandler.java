@@ -26,7 +26,7 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.registries.MekanismGases;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.block.BlockState;
@@ -69,7 +69,7 @@ public class CommonPlayerTickHandler {
     public static boolean isScubaMaskOn(PlayerEntity player) {
         ItemStack tank = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
         ItemStack mask = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
-        return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemScubaMask && GasUtils.hasGas(tank) &&
+        return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemScubaMask && ChemicalUtil.hasGas(tank) &&
                ((ItemScubaTank) tank.getItem()).getFlowing(tank);
     }
 
@@ -223,9 +223,9 @@ public class CommonPlayerTickHandler {
 
     /** Will return null if jetpack mode is not active */
     private static JetpackMode getJetpackMode(ItemStack stack) {
-        if (stack.getItem() instanceof ItemJetpack && GasUtils.hasGas(stack)) {
+        if (stack.getItem() instanceof ItemJetpack && ChemicalUtil.hasGas(stack)) {
             return ((ItemJetpack) stack.getItem()).getMode(stack);
-        } else if (stack.getItem() instanceof IModuleContainerItem && GasUtils.hasGas(stack, MekanismGases.HYDROGEN.get())) {
+        } else if (stack.getItem() instanceof IModuleContainerItem && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get())) {
             ModuleJetpackUnit module = Modules.load(stack, Modules.JETPACK_UNIT);
             if (module != null && module.isEnabled()) {
                 return module.getMode();
@@ -244,7 +244,7 @@ public class CommonPlayerTickHandler {
                 ItemStack chestStack = base.getItemStackFromSlot(EquipmentSlotType.CHEST);
                 if (!chestStack.isEmpty()) {
                     if (chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
-                        GasUtils.hasGas(chestStack)) {
+                        ChemicalUtil.hasGas(chestStack)) {
                         event.setCanceled(true);
                         return;
                     }

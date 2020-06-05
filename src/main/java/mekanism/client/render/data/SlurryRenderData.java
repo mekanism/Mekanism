@@ -1,10 +1,9 @@
 package mekanism.client.render.data;
 
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 
-public class SlurryRenderData extends ChemicalRenderData<Slurry, SlurryStack> {
+public class SlurryRenderData extends ChemicalRenderData<SlurryStack> {
 
     public SlurryRenderData(@Nonnull SlurryStack chemicalType) {
         super(chemicalType);

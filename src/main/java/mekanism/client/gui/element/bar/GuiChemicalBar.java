@@ -28,12 +28,12 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends GuiBar<ChemicalInfoProvider<CHEMICAL, STACK>>
+public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends GuiBar<ChemicalInfoProvider<STACK>>
       implements IJEIIngredientHelper {
 
     private final boolean horizontal;
 
-    public GuiChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL, STACK> infoProvider, int x, int y, int width, int height, boolean horizontal) {
+    public GuiChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<STACK> infoProvider, int x, int y, int width, int height, boolean horizontal) {
         super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, x, y, width, height);
         this.horizontal = horizontal;
     }
@@ -99,7 +99,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     }
 
     //Note the GuiBar.IBarInfoHandler is needed, as it cannot compile and resolve just IBarInfoHandler
-    public interface ChemicalInfoProvider<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends GuiBar.IBarInfoHandler {
+    public interface ChemicalInfoProvider<STACK extends ChemicalStack<?>> extends GuiBar.IBarInfoHandler {
 
         @Nonnull
         STACK getStack();
@@ -107,9 +107,8 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
         int getTankIndex();
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ChemicalInfoProvider<CHEMICAL, STACK> getProvider(IChemicalTank<CHEMICAL, STACK> tank,
-          List<? extends IChemicalTank<CHEMICAL, STACK>> tanks) {
-        return new ChemicalInfoProvider<CHEMICAL, STACK>() {
+    public static <STACK extends ChemicalStack<?>, TANK extends IChemicalTank<?, STACK>> ChemicalInfoProvider<STACK> getProvider(TANK tank, List<TANK> tanks) {
+        return new ChemicalInfoProvider<STACK>() {
             @Nonnull
             @Override
             public STACK getStack() {
@@ -128,7 +127,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                 } else if (tank.getStored() == Long.MAX_VALUE) {
                     return MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE);
                 }
-                return MekanismLang.GENERIC_STORED.translate(tank.getType(), tank.getStored());
+                return MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), tank.getStored());
             }
 
             @Override

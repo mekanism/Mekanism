@@ -14,10 +14,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLong;
@@ -30,7 +27,6 @@ import mekanism.common.integration.GenericWrench;
 import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.interfaces.IActiveState;
@@ -116,27 +112,6 @@ public final class MekanismUtils {
     }
 
     /**
-     * Retrieves an empty Gas Tank.
-     *
-     * @return empty gas tank
-     */
-    public static ItemStack getEmptyGasTank(GasTankTier tier) {
-        switch (tier) {
-            case BASIC:
-                return MekanismBlocks.BASIC_GAS_TANK.getItemStack();
-            case ADVANCED:
-                return MekanismBlocks.ADVANCED_GAS_TANK.getItemStack();
-            case ELITE:
-                return MekanismBlocks.ELITE_GAS_TANK.getItemStack();
-            case ULTIMATE:
-                return MekanismBlocks.ULTIMATE_GAS_TANK.getItemStack();
-            case CREATIVE:
-                return MekanismBlocks.CREATIVE_GAS_TANK.getItemStack();
-        }
-        return ItemStack.EMPTY;
-    }
-
-    /**
      * Converts a {@link LazyOptional} to a normal {@link Optional}. This is useful for if we are going to resolve the value anyways if it is present.
      *
      * @param lazyOptional The lazy optional to convert
@@ -200,7 +175,7 @@ public final class MekanismUtils {
         return getScale(prevScale, tank.getFluidAmount(), tank.getCapacity(), tank.isEmpty());
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> float getScale(float prevScale, IChemicalTank<CHEMICAL, STACK> tank) {
+    public static float getScale(float prevScale, IChemicalTank<?, ?> tank) {
         return getScale(prevScale, tank.getStored(), tank.getCapacity(), tank.isEmpty());
     }
 
@@ -697,28 +672,6 @@ public final class MekanismUtils {
                 return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT, shift);
         }
         return MekanismLang.ERROR.translate();
-    }
-
-    /**
-     * Gets a clean view of a coordinate value without the dimension ID.
-     *
-     * @param pos - coordinate to check
-     *
-     * @return coordinate display
-     */
-    public static String getCoordDisplay(BlockPos pos) {
-        return "[" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]";
-    }
-
-    /**
-     * Creates and returns a full gas tank with the specified gas type.
-     *
-     * @param gas - gas to fill the tank with
-     *
-     * @return filled gas tank
-     */
-    public static ItemStack getFullGasTank(GasTankTier tier, @Nonnull Gas gas) {
-        return GasUtils.getFilledVariant(getEmptyGasTank(tier), tier.getStorage(), gas);
     }
 
     public static CraftingInventory getDummyCraftingInv() {

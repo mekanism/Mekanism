@@ -5,7 +5,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -66,8 +65,7 @@ public class InputHelper {
         };
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ILongInputHandler<@NonNull STACK> getInputHandler(
-          IChemicalTank<CHEMICAL, STACK> tank) {
+    public static <STACK extends ChemicalStack<?>> ILongInputHandler<@NonNull STACK> getInputHandler(IChemicalTank<?, STACK> tank) {
         return new ILongInputHandler<@NonNull STACK>() {
 
             @Nonnull

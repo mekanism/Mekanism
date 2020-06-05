@@ -2,15 +2,10 @@ package mekanism.common.integration.theoneprobe;
 
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalUtils;
-import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.text.ILangEntry;
-import mekanism.common.MekanismLang;
 import net.minecraft.network.PacketBuffer;
 
-public class InfuseTypeElement extends ChemicalElement<InfuseType, InfusionStack> {
-
-    public static int ID;
+public class InfuseTypeElement extends ChemicalElement {
 
     public InfuseTypeElement(@Nonnull InfusionStack stored, long capacity) {
         super(stored, capacity);
@@ -21,12 +16,7 @@ public class InfuseTypeElement extends ChemicalElement<InfuseType, InfusionStack
     }
 
     @Override
-    protected ILangEntry getStoredFormat() {
-        return MekanismLang.GENERIC_STORED;
-    }
-
-    @Override
     public int getID() {
-        return ID;
+        return TOPProvider.INFUSION_ELEMENT_ID;
     }
 }

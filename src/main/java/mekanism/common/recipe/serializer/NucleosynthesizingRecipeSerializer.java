@@ -17,17 +17,17 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class NucleosynthesizingRecipeSerializer<T extends NucleosynthesizingRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class NucleosynthesizingRecipeSerializer<RECIPE extends NucleosynthesizingRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<T> factory;
+    private final IFactory<RECIPE> factory;
 
-    public NucleosynthesizingRecipeSerializer(IFactory<T> factory) {
+    public NucleosynthesizingRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement itemInput = JSONUtils.isJsonArray(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.ITEM_INPUT) :
                                 JSONUtils.getJsonObject(json, JsonConstants.ITEM_INPUT);
         ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
@@ -52,7 +52,7 @@ public class NucleosynthesizingRecipeSerializer<T extends NucleosynthesizingReci
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
             GasStackIngredient inputGas = GasStackIngredient.read(buffer);
@@ -66,7 +66,7 @@ public class NucleosynthesizingRecipeSerializer<T extends NucleosynthesizingReci
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -75,8 +75,9 @@ public class NucleosynthesizingRecipeSerializer<T extends NucleosynthesizingReci
         }
     }
 
-    public interface IFactory<T extends NucleosynthesizingRecipe> {
+    @FunctionalInterface
+    public interface IFactory<RECIPE extends NucleosynthesizingRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack outputItem, int duration);
+        RECIPE create(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack outputItem, int duration);
     }
 }

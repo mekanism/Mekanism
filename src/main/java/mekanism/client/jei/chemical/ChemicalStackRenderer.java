@@ -29,7 +29,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
 import org.lwjgl.opengl.GL11;
 
-public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IIngredientRenderer<STACK> {
+public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements IIngredientRenderer<STACK> {
 
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();
     protected static final int TEX_WIDTH = 16;
@@ -92,11 +92,11 @@ public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         if (desiredHeight > height) {
             desiredHeight = height;
         }
-        CHEMICAL chemical = stack.getType();
+        Chemical<?> chemical = stack.getType();
         drawTiledSprite(xPosition, yPosition, width, desiredHeight, height, chemical);
     }
 
-    private void drawTiledSprite(int xPosition, int yPosition, int desiredWidth, int desiredHeight, int yOffset, @Nonnull CHEMICAL chemical) {
+    private void drawTiledSprite(int xPosition, int yPosition, int desiredWidth, int desiredHeight, int yOffset, @Nonnull Chemical<?> chemical) {
         if (desiredWidth == 0 || desiredHeight == 0) {
             return;
         }
@@ -150,7 +150,7 @@ public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     @Override
     public List<String> getTooltip(@Nonnull STACK stack, ITooltipFlag tooltipFlag) {
         List<String> tooltip = new ArrayList<>();
-        CHEMICAL chemical = stack.getType();
+        Chemical<?> chemical = stack.getType();
         if (chemical.isEmptyType()) {
             return tooltip;
         }

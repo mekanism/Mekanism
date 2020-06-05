@@ -180,11 +180,11 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
         // Slurry
         // clean
-        FluidSlurryToSlurryRecipeBuilder.washing(FluidStackIngredient.from(FluidTags.WATER, 5), SlurryStackIngredient.from(slurry.getDirtySlurry(), 1), slurry.getCleanSlurry().getSlurryStack(1))
+        FluidSlurryToSlurryRecipeBuilder.washing(FluidStackIngredient.from(FluidTags.WATER, 5), SlurryStackIngredient.from(slurry.getDirtySlurry(), 1), slurry.getCleanSlurry().getStack(1))
               .build(consumer, Mekanism.rl(basePath + "slurry/clean"));
         // dirty
         //TODO - V10: Figure out how to handle slurries for recipes
-        /*ItemStackGasToGasRecipeBuilder.dissolution(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1), slurry.getDirtySlurry().getSlurryStack(1_000))
+        /*ItemStackGasToGasRecipeBuilder.dissolution(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1), slurry.getDirtySlurry().getStack(1_000))
               .build(consumer, Mekanism.rl(basePath + "slurry/dirty"));*/
     }
 
@@ -377,23 +377,23 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ItemStackGasToGasRecipeBuilder.dissolution(
               ItemStackIngredient.from(MekanismTags.Items.GEMS_FLUORITE),
               GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
-              MekanismGases.HYDROFLUORIC_ACID.getGasStack(1000)
+              MekanismGases.HYDROFLUORIC_ACID.getStack(1000)
         ).build(consumer, Mekanism.rl(basePath + "hydrofluoric_acid"));
         //uranium oxide
         ItemStackToGasRecipeBuilder.oxidizing(
               ItemStackIngredient.from(MekanismTags.Items.YELLOW_CAKE_URANIUM),
-              MekanismGases.URANIUM_OXIDE.getGasStack(250)
+              MekanismGases.URANIUM_OXIDE.getStack(250)
         ).build(consumer, Mekanism.rl(basePath + "uranium_oxide"));
         //uranium hexafluoride
         ChemicalInfuserRecipeBuilder.chemicalInfusing(
               GasStackIngredient.from(MekanismGases.HYDROFLUORIC_ACID, 1),
               GasStackIngredient.from(MekanismGases.URANIUM_OXIDE, 1),
-              MekanismGases.URANIUM_HEXAFLUORIDE.getGasStack(2)
+              MekanismGases.URANIUM_HEXAFLUORIDE.getStack(2)
         ).build(consumer, Mekanism.rl(basePath + "sulfuric_acid"));
         //fissile fuel
         GasToGasRecipeBuilder.centrifuging(
               GasStackIngredient.from(MekanismGases.URANIUM_HEXAFLUORIDE, 1),
-              MekanismGases.FISSILE_FUEL.getGasStack(1)
+              MekanismGases.FISSILE_FUEL.getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "fissile_fuel"));
         //fissile fuel reprocessing (IMPORTANT)
         ItemStackGasToItemStackRecipeBuilder.injecting(
@@ -404,7 +404,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //fragment -> fuel
         ItemStackToGasRecipeBuilder.oxidizing(
               ItemStackIngredient.from(MekanismItems.REPROCESSED_FISSILE_FRAGMENT),
-              MekanismGases.FISSILE_FUEL.getGasStack(2000)
+              MekanismGases.FISSILE_FUEL.getStack(2000)
         ).build(consumer, Mekanism.rl(basePath + "reprocessing/to_fuel"));
     }
 }

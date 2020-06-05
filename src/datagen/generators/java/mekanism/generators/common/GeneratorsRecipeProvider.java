@@ -73,8 +73,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Heavy water
         ElectrolysisRecipeBuilder.separating(
               FluidStackIngredient.from(MekanismTags.Fluids.HEAVY_WATER, 2),
-              GeneratorsGases.DEUTERIUM.getGasStack(2),
-              MekanismGases.OXYGEN.getGasStack(1)
+              GeneratorsGases.DEUTERIUM.getStack(2),
+              MekanismGases.OXYGEN.getStack(1)
         ).energyMultiplier(FloatingLong.createConst(2))
               .build(consumer, MekanismGenerators.rl(basePath + "heavy_water"));
     }
@@ -91,7 +91,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         RotaryRecipeBuilder.rotary(
               FluidStackIngredient.from(fluidInput, 1),
               GasStackIngredient.from(gasInput, 1),
-              gas.getGasStack(1),
+              gas.getStack(1),
               fluidOutput.getFluidStack(1)
         ).build(consumer, MekanismGenerators.rl(basePath + gas.getName()));
     }
@@ -102,7 +102,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         ChemicalInfuserRecipeBuilder.chemicalInfusing(
               GasStackIngredient.from(GeneratorsGases.DEUTERIUM, 1),
               GasStackIngredient.from(GeneratorsGases.TRITIUM, 1),
-              GeneratorsGases.FUSION_FUEL.getGasStack(1)
+              GeneratorsGases.FUSION_FUEL.getStack(1)
         ).build(consumer, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
 
@@ -110,7 +110,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         String basePath = "activating/";
         GasToGasRecipeBuilder.activating(
               GasStackIngredient.from(MekanismGases.LITHIUM, 1),
-              GeneratorsGases.TRITIUM.getGasStack(1)
+              GeneratorsGases.TRITIUM.getStack(1)
         ).build(consumer, MekanismGenerators.rl(basePath + "tritium"));
     }
 

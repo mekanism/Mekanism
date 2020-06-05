@@ -49,7 +49,6 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     public BasicGasTank leftTank;
     public BasicGasTank rightTank;
     public BasicGasTank centerTank;
-    public long gasOutput = 256;
 
     public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 

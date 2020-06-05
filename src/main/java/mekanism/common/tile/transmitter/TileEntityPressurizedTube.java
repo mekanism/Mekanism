@@ -34,7 +34,7 @@ import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
@@ -65,7 +65,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         if (!isRemote()) {
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
-                for (IGasHandler connectedAcceptor : GasUtils.getConnectedAcceptors(getPos(), getWorld(), connections)) {
+                for (IGasHandler connectedAcceptor : ChemicalUtil.getConnectedAcceptors(getPos(), getWorld(), connections, Capabilities.GAS_HANDLER_CAPABILITY)) {
                     if (connectedAcceptor != null) {
                         GasStack received;
                         //Note: We recheck the buffer each time in case we ended up accepting gas somewhere

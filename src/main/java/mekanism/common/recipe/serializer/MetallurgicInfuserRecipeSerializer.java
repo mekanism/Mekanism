@@ -17,17 +17,17 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class MetallurgicInfuserRecipeSerializer<T extends MetallurgicInfuserRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class MetallurgicInfuserRecipeSerializer<RECIPE extends MetallurgicInfuserRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<T> factory;
+    private final IFactory<RECIPE> factory;
 
-    public MetallurgicInfuserRecipeSerializer(IFactory<T> factory) {
+    public MetallurgicInfuserRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement itemInput = JSONUtils.isJsonArray(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.ITEM_INPUT) :
                                 JSONUtils.getJsonObject(json, JsonConstants.ITEM_INPUT);
         ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
@@ -42,7 +42,7 @@ public class MetallurgicInfuserRecipeSerializer<T extends MetallurgicInfuserReci
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient itemInput = ItemStackIngredient.read(buffer);
             InfusionStackIngredient infusionInput = InfusionStackIngredient.read(buffer);
@@ -55,7 +55,7 @@ public class MetallurgicInfuserRecipeSerializer<T extends MetallurgicInfuserReci
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -64,8 +64,9 @@ public class MetallurgicInfuserRecipeSerializer<T extends MetallurgicInfuserReci
         }
     }
 
-    public interface IFactory<T extends MetallurgicInfuserRecipe> {
+    @FunctionalInterface
+    public interface IFactory<RECIPE extends MetallurgicInfuserRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output);
+        RECIPE create(ResourceLocation id, ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output);
     }
 }

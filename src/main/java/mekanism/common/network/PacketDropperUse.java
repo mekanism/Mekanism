@@ -1,5 +1,6 @@
 package mekanism.common.network;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -12,7 +13,6 @@ import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
@@ -21,13 +21,13 @@ import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -49,7 +49,7 @@ public class PacketDropperUse {
 
     public static void handle(PacketDropperUse message, Supplier<Context> context) {
         PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
+        if (player == null || message.tankId < 0) {
             return;
         }
         context.get().enqueueWork(() -> {
@@ -78,14 +78,20 @@ public class PacketDropperUse {
             if (fluidTank != null) {
                 handleFluidTank(player, stack, fluidTank, message.action);
             }
-        } else if (message.tankType == TankType.GAS_TANK) {
-            handleChemicalTank(player, stack, handler.getGasTanks(null), message, Capabilities.GAS_HANDLER_CAPABILITY);
-        } else if (message.tankType == TankType.INFUSION_TANK) {
-            handleChemicalTank(player, stack, handler.getInfusionTanks(null), message, Capabilities.INFUSION_HANDLER_CAPABILITY);
-        } else if (message.tankType == TankType.PIGMENT_TANK) {
-            handleChemicalTank(player, stack, handler.getPigmentTanks(null), message, Capabilities.PIGMENT_HANDLER_CAPABILITY);
-        } else if (message.tankType == TankType.SLURRY_TANK) {
-            handleChemicalTank(player, stack, handler.getSlurryTanks(null), message, Capabilities.SLURRY_HANDLER_CAPABILITY);
+        } else {
+            List<? extends IChemicalTank<?, ?>> tanks = Collections.emptyList();
+            if (message.tankType == TankType.GAS_TANK) {
+                tanks = handler.getGasTanks(null);
+            } else if (message.tankType == TankType.INFUSION_TANK) {
+                tanks = handler.getInfusionTanks(null);
+            } else if (message.tankType == TankType.PIGMENT_TANK) {
+                tanks = handler.getPigmentTanks(null);
+            } else if (message.tankType == TankType.SLURRY_TANK) {
+                tanks = handler.getSlurryTanks(null);
+            }
+            if (message.tankId < tanks.size()) {
+                handleChemicalTank(player, stack, tanks.get(message.tankId), message.action);
+            }
         }
     }
 
@@ -100,28 +106,24 @@ public class PacketDropperUse {
         return new PacketDropperUse(buf.readBlockPos(), buf.readEnumValue(DropperAction.class), buf.readEnumValue(TankType.class), buf.readVarInt());
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
-          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void handleChemicalTank(PlayerEntity player, ItemStack stack, List<TANK> tanks, PacketDropperUse message,
-          Capability<HANDLER> capability) {
-        if (message.tankId >= 0 && message.tankId < tanks.size()) {
-            TANK tank = tanks.get(message.tankId);
-            if (message.action == DropperAction.DUMP_TANK) {
-                //Dump the tank
-                tank.setEmpty();
-                return;
-            }
-            Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleChemicalTank(PlayerEntity player, ItemStack stack,
+          IChemicalTank<CHEMICAL, STACK> tank, DropperAction action) {
+        if (action == DropperAction.DUMP_TANK) {
+            //Dump the tank
+            tank.setEmpty();
+        } else {
+            Optional<IChemicalHandler<CHEMICAL, STACK>> cap = MekanismUtils.toOptional(stack.getCapability(ChemicalUtil.getCapabilityForChemical(tank)));
             if (cap.isPresent()) {
-                HANDLER handler = cap.get();
+                IChemicalHandler<CHEMICAL, STACK> handler = cap.get();
                 if (handler instanceof IMekanismChemicalHandler) {
                     IChemicalTank<CHEMICAL, STACK> itemTank = ((IMekanismChemicalHandler<CHEMICAL, STACK, ?>) handler).getChemicalTank(0, null);
                     //It is a chemical tank
                     if (itemTank != null) {
                         //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                        if (message.action == DropperAction.FILL_DROPPER) {
+                        if (action == DropperAction.FILL_DROPPER) {
                             //Insert chemical into dropper
                             transferBetweenTanks(tank, itemTank, player);
-                        } else if (message.action == DropperAction.DRAIN_DROPPER) {
+                        } else if (action == DropperAction.DRAIN_DROPPER) {
                             //Extract chemical from dropper
                             transferBetweenTanks(itemTank, tank, player);
                         }

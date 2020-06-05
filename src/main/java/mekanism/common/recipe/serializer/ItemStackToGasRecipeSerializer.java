@@ -8,9 +8,9 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import net.minecraft.network.PacketBuffer;
 
-public class ItemStackToGasRecipeSerializer<T extends ItemStackToGasRecipe> extends ItemStackToChemicalRecipeSerializer<Gas, GasStack, T> {
+public class ItemStackToGasRecipeSerializer<RECIPE extends ItemStackToGasRecipe> extends ItemStackToChemicalRecipeSerializer<Gas, GasStack, RECIPE> {
 
-    public ItemStackToGasRecipeSerializer(IFactory<Gas, GasStack, T> factory) {
+    public ItemStackToGasRecipeSerializer(IFactory<Gas, GasStack, RECIPE> factory) {
         super(factory);
     }
 

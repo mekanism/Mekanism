@@ -14,11 +14,13 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;
@@ -202,30 +204,25 @@ public abstract class BaseTagProvider implements IDataProvider {
     }
 
     protected void addToTag(Tag<Gas> tag, IGasProvider... gasProviders) {
-        Tag.Builder<Gas> tagBuilder = getGasBuilder(tag);
-        for (IGasProvider gasProvider : gasProviders) {
-            tagBuilder.add(gasProvider.getGas());
-        }
+        addToTag(getGasBuilder(tag), gasProviders);
     }
 
     protected void addToTag(Tag<InfuseType> tag, IInfuseTypeProvider... infuseTypeProviders) {
-        Tag.Builder<InfuseType> tagBuilder = getInfuseTypeBuilder(tag);
-        for (IInfuseTypeProvider infuseTypeProvider : infuseTypeProviders) {
-            tagBuilder.add(infuseTypeProvider.getInfuseType());
-        }
+        addToTag(getInfuseTypeBuilder(tag), infuseTypeProviders);
     }
 
     protected void addToTag(Tag<Pigment> tag, IPigmentProvider... pigmentProviders) {
-        Tag.Builder<Pigment> tagBuilder = getPigmentBuilder(tag);
-        for (IPigmentProvider pigmentProvider : pigmentProviders) {
-            tagBuilder.add(pigmentProvider.getPigment());
-        }
+        addToTag(getPigmentBuilder(tag), pigmentProviders);
     }
 
     protected void addToTag(Tag<Slurry> tag, ISlurryProvider... slurryProviders) {
-        Tag.Builder<Slurry> tagBuilder = getSlurryBuilder(tag);
-        for (ISlurryProvider slurryProvider : slurryProviders) {
-            tagBuilder.add(slurryProvider.getSlurry());
+        addToTag(getSlurryBuilder(tag), slurryProviders);
+    }
+
+    @SafeVarargs
+    protected final <CHEMICAL extends Chemical<CHEMICAL>> void addToTag(Tag.Builder<CHEMICAL> tagBuilder, IChemicalProvider<CHEMICAL>... providers) {
+        for (IChemicalProvider<CHEMICAL> provider : providers) {
+            tagBuilder.add(provider.getChemical());
         }
     }
 }

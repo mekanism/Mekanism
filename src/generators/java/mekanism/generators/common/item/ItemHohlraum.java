@@ -12,7 +12,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.GeneratorTags;
@@ -84,7 +84,7 @@ public class ItemHohlraum extends Item {
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(GasUtils.getFilledVariant(new ItemStack(this), MekanismGeneratorsConfig.generators.hohlraumMaxGas.get(), GeneratorsGases.FUSION_FUEL));
+            items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismGeneratorsConfig.generators.hohlraumMaxGas.get(), GeneratorsGases.FUSION_FUEL));
         }
     }
 

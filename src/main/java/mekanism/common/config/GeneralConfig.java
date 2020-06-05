@@ -13,7 +13,7 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.tier.GasTankTier;
+import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -23,6 +23,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
     private static final String CONVERSION_CATEGORY = "energy_conversion";
 
+    private static final String EJECT_CATEGORY = "auto_eject";
     private static final String MINER_CATEGORY = "digital_miner";
     private static final String LASER_SETTINGS = "laser";
     private static final String PUMP_CATEGORY = "pump";
@@ -47,6 +48,9 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue resistiveHeaterEfficiency;
     public final CachedDoubleValue superheatingHeatTransfer;
     public final CachedEnumValue<TempType> tempUnit;
+    //Auto eject
+    public final CachedIntValue fluidAutoEjectRate;
+    public final CachedLongValue chemicalAutoEjectRate;
     //Energy Conversion
     public final CachedBooleanValue blacklistIC2;
     public final CachedFloatingLongValue FROM_IC2;
@@ -170,6 +174,13 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("radioactiveWasteBarrelMaxGas", 64_000, 1, Integer.MAX_VALUE));
         builder.pop();
 
+        builder.comment("Auto Eject Settings").push(EJECT_CATEGORY);
+        fluidAutoEjectRate = CachedIntValue.wrap(this, builder.comment("Rate at which fluid gets auto ejected from tiles.")
+              .define("fluid", 1_024));
+        chemicalAutoEjectRate = CachedLongValue.wrap(this, builder.comment("Rate at which chemicals gets auto ejected from tiles.")
+              .define("chemical", 1_024L));
+        builder.pop();
+
         builder.comment("Digital Miner Settings").push(MINER_CATEGORY);
         minerSilkMultiplier = CachedIntValue.wrap(this, builder.comment("Energy multiplier for using silk touch mode with the Digital Miner.")
               .define("silkMultiplier", 6));
@@ -207,7 +218,7 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseStorage(), 1, Integer.MAX_VALUE));
         entangloporterChemicalBuffer = CachedLongValue.wrap(this, builder.comment("Maximum chemical buffer (mb) of an Entangoloporter frequency - i.e. the maximum transfer per tick per frequency. Default is ultimate tier tank capacity.")
               .worldRestart()
-              .defineInRange("chemicalBuffer", GasTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
+              .defineInRange("chemicalBuffer", ChemicalTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
         builder.pop();
 
         builder.comment("Block security/protection Settings").push(SECURITY_CATEGORY);

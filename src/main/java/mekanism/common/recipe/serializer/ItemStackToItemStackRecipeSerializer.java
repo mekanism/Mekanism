@@ -16,17 +16,17 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ItemStackToItemStackRecipeSerializer<T extends ItemStackToItemStackRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItemStackRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
 
-    private final IFactory<T> factory;
+    private final IFactory<RECIPE> factory;
 
-    public ItemStackToItemStackRecipeSerializer(IFactory<T> factory) {
+    public ItemStackToItemStackRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
     @Nonnull
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
                             JSONUtils.getJsonObject(json, JsonConstants.INPUT);
         ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
@@ -38,7 +38,7 @@ public class ItemStackToItemStackRecipeSerializer<T extends ItemStackToItemStack
     }
 
     @Override
-    public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
             ItemStack output = buffer.readItemStack();
@@ -50,7 +50,7 @@ public class ItemStackToItemStackRecipeSerializer<T extends ItemStackToItemStack
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull T recipe) {
+    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {
@@ -59,8 +59,9 @@ public class ItemStackToItemStackRecipeSerializer<T extends ItemStackToItemStack
         }
     }
 
-    public interface IFactory<T extends ItemStackToItemStackRecipe> {
+    @FunctionalInterface
+    public interface IFactory<RECIPE extends ItemStackToItemStackRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient input, ItemStack output);
+        RECIPE create(ResourceLocation id, ItemStackIngredient input, ItemStack output);
     }
 }

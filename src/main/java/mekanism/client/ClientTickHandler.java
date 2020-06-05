@@ -1,13 +1,13 @@
 package mekanism.client;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.GeigerSound;
@@ -34,7 +34,7 @@ import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketPortableTeleporterGui;
 import mekanism.common.network.PacketPortableTeleporterGui.PortableTeleporterPacketType;
 import mekanism.common.registries.MekanismGases;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -93,9 +93,9 @@ public class ClientTickHandler {
 
     /** Will return null if jetpack module is not active */
     private static JetpackMode getJetpackMode(ItemStack stack) {
-        if (stack.getItem() instanceof ItemJetpack && GasUtils.hasGas(stack)) {
+        if (stack.getItem() instanceof ItemJetpack && ChemicalUtil.hasGas(stack)) {
             return ((ItemJetpack) stack.getItem()).getMode(stack);
-        } else if (stack.getItem() instanceof IModuleContainerItem && GasUtils.hasGas(stack, MekanismGases.HYDROGEN.get())) {
+        } else if (stack.getItem() instanceof IModuleContainerItem && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get())) {
             ModuleJetpackUnit module = Modules.load(stack, Modules.JETPACK_UNIT);
             if (module != null && module.isEnabled()) {
                 return module.getMode();
@@ -135,7 +135,7 @@ public class ClientTickHandler {
 
     public static boolean hasFlamethrower(PlayerEntity player) {
         ItemStack currentItem = player.inventory.getCurrentItem();
-        return !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && GasUtils.hasGas(currentItem);
+        return !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem);
     }
 
     public static void portableTeleport(PlayerEntity player, Hand hand, TeleporterFrequency freq) {

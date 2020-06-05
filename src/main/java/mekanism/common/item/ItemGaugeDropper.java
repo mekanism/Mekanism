@@ -12,9 +12,9 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.GaugeDropperContentsHandler;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -31,7 +31,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -94,21 +93,20 @@ public class ItemGaugeDropper extends Item {
                     }
                 }
             }
-            clearChemicalTanks(stack, GasStack.EMPTY, Capabilities.GAS_HANDLER_CAPABILITY);
-            clearChemicalTanks(stack, InfusionStack.EMPTY, Capabilities.INFUSION_HANDLER_CAPABILITY);
-            clearChemicalTanks(stack, PigmentStack.EMPTY, Capabilities.PIGMENT_HANDLER_CAPABILITY);
-            clearChemicalTanks(stack, SlurryStack.EMPTY, Capabilities.SLURRY_HANDLER_CAPABILITY);
+            clearChemicalTanks(stack, GasStack.EMPTY);
+            clearChemicalTanks(stack, InfusionStack.EMPTY);
+            clearChemicalTanks(stack, PigmentStack.EMPTY);
+            clearChemicalTanks(stack, SlurryStack.EMPTY);
             ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         return new ActionResult<>(ActionResultType.PASS, stack);
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    void clearChemicalTanks(ItemStack stack, STACK empty, Capability<HANDLER> capability) {
-        Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void clearChemicalTanks(ItemStack stack, STACK empty) {
+        Optional<IChemicalHandler<CHEMICAL, STACK>> cap = MekanismUtils.toOptional(stack.getCapability(ChemicalUtil.getCapabilityForChemical(empty)));
         if (cap.isPresent()) {
-            HANDLER handler = cap.get();
+            IChemicalHandler<CHEMICAL, STACK> handler = cap.get();
             for (int tank = 0; tank < handler.getTanks(); tank++) {
                 handler.setChemicalInTank(tank, empty);
             }

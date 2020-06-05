@@ -1,6 +1,5 @@
 package mekanism.common.inventory.slot.chemical;
 
-import com.mojang.datafixers.util.Pair;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -15,7 +14,9 @@ import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -60,7 +61,7 @@ public class SlurryInventorySlot extends ChemicalInventorySlot<Slurry, SlurrySta
 
     @Nullable
     @Override
-    protected Pair<ItemStack, SlurryStack> getConversion() {
+    protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<Slurry, SlurryStack>> getConversionRecipeType() {
         return null;
     }
 }

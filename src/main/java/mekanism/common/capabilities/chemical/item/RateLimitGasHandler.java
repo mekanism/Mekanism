@@ -20,7 +20,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitGasTank;
-import mekanism.common.tier.GasTankTier;
+import mekanism.common.tier.ChemicalTankTier;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -30,7 +30,7 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         return create(rate, capacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, null);
     }
 
-    public static RateLimitGasHandler create(GasTankTier tier) {
+    public static RateLimitGasHandler create(ChemicalTankTier tier) {
         Objects.requireNonNull(tier, "Gas tank tier cannot be null");
         return new RateLimitGasHandler(handler -> new GasTankRateLimitGasTank(tier, handler));
     }
@@ -67,10 +67,10 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
 
         private final boolean isCreative;
 
-        private GasTankRateLimitGasTank(GasTankTier tier, IContentsListener listener) {
+        private GasTankRateLimitGasTank(ChemicalTankTier tier, IContentsListener listener) {
             super(tier::getOutput, tier::getStorage, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue,
-                  tier == GasTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
-            isCreative = tier == GasTankTier.CREATIVE;
+                  tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
+            isCreative = tier == ChemicalTankTier.CREATIVE;
         }
 
         @Override

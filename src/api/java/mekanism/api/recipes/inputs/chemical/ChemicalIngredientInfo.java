@@ -29,11 +29,11 @@ class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK extends 
     public static final ChemicalIngredientInfo<Slurry, SlurryStack> SLURRY = new ChemicalIngredientInfo<Slurry, SlurryStack>(SlurryStack.EMPTY, SlurryStack::new, SlurryStack::new, JsonConstants.SLURRY);
 
     private final ChemicalToStackCreator<CHEMICAL, STACK> chemicalToStackCreator;
-    private final StackToStackCreator<CHEMICAL, STACK> stackToStackCreator;
+    private final StackToStackCreator<STACK> stackToStackCreator;
     private final String serializationKey;
     private final STACK emptyStack;
 
-    private ChemicalIngredientInfo(STACK emptyStack, ChemicalToStackCreator<CHEMICAL, STACK> chemicalToStackCreator, StackToStackCreator<CHEMICAL, STACK> stackToStackCreator,
+    private ChemicalIngredientInfo(STACK emptyStack, ChemicalToStackCreator<CHEMICAL, STACK> chemicalToStackCreator, StackToStackCreator<STACK> stackToStackCreator,
           String serializationKey) {
         this.chemicalToStackCreator = chemicalToStackCreator;
         this.stackToStackCreator = stackToStackCreator;

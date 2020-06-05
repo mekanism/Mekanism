@@ -43,7 +43,6 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     public static final int MAX_GAS = 10_000;
     public BasicGasTank gasTank;
-    public int gasOutput = 256;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
@@ -100,7 +99,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         }
         Food food = stack.getItem().getFood();
         //TODO - V10: FIXME - no null recipe ids
-        return new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(stack.getItem()), MekanismGases.NUTRITIONAL_PASTE.getGasStack(food.getHealing() * 50));
+        return new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(stack.getItem()), MekanismGases.NUTRITIONAL_PASTE.getStack(food.getHealing() * 50));
     }
 
     @Nullable

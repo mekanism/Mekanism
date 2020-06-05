@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IBaseProvider;
 import mekanism.client.gui.IGuiWrapper;
@@ -141,21 +140,21 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         return null;
     }
 
-    protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void initChemical(IGuiIngredientGroup<STACK> group, int slot, boolean input,
-          int x, int y, int width, int height, @Nonnull List<STACK> stacks) {
+    protected <STACK extends ChemicalStack<?>> void initChemical(IGuiIngredientGroup<STACK> group, int slot, boolean input, int x, int y, int width, int height,
+          @Nonnull List<STACK> stacks) {
         initChemical(group, slot, input, x, y, width, height, stacks, max -> new ChemicalStackRenderer<>(max, width, height));
     }
 
-    protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void initChemical(IGuiIngredientGroup<STACK> group, int slot, boolean input,
-          int x, int y, int width, int height, @Nonnull List<STACK> stacks, boolean overlay) {
+    protected <STACK extends ChemicalStack<?>> void initChemical(IGuiIngredientGroup<STACK> group, int slot, boolean input, int x, int y, int width, int height,
+          @Nonnull List<STACK> stacks, boolean overlay) {
         initChemical(group, slot, input, x, y, width, height, stacks, max -> new ChemicalStackRenderer<>(max, false, width, height,
               overlay ? height > 50 ? fluidOverlayLarge : (height == 46 ? fluidOverlaySmallMed : fluidOverlaySmall) : null));
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void initChemical(IGuiIngredientGroup<@NonNull STACK> group, int slot,
-          boolean input, int x, int y, int width, int height, @Nonnull List<STACK> stacks, Long2ObjectFunction<ChemicalStackRenderer<CHEMICAL, STACK>> rendererSupplier) {
+    private <STACK extends ChemicalStack<?>> void initChemical(IGuiIngredientGroup<@NonNull STACK> group, int slot, boolean input, int x, int y, int width, int height,
+          @Nonnull List<STACK> stacks, Long2ObjectFunction<ChemicalStackRenderer<STACK>> rendererSupplier) {
         if (!stacks.isEmpty()) {
-            long max = stacks.stream().mapToLong(STACK::getAmount).filter(stack -> stack >= 0).max().orElse(0);
+            long max = stacks.stream().mapToLong(ChemicalStack::getAmount).filter(stack -> stack >= 0).max().orElse(0);
             group.init(slot, input, rendererSupplier.apply(max), x, y, width, height, 0, 0);
             group.set(slot, stacks);
         }

@@ -108,7 +108,7 @@ public class MekanismRenderer {
         return getSprite(spriteLocation);
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>> TextureAtlasSprite getChemicalTexture(@Nonnull CHEMICAL chemical) {
+    public static TextureAtlasSprite getChemicalTexture(@Nonnull Chemical<?> chemical) {
         return getSprite(chemical.getIcon());
     }
 
@@ -176,13 +176,13 @@ public class MekanismRenderer {
         }
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>> void color(@Nonnull ChemicalStack<CHEMICAL> chemicalStack) {
+    public static void color(@Nonnull ChemicalStack<?> chemicalStack) {
         if (!chemicalStack.isEmpty()) {
             color(chemicalStack.getType());
         }
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>> void color(@Nonnull CHEMICAL chemical) {
+    public static void color(@Nonnull Chemical<?> chemical) {
         if (!chemical.isEmptyType()) {
             int color = chemical.getTint();
             RenderSystem.color3f(getRed(color), getGreen(color), getBlue(color));
@@ -227,7 +227,7 @@ public class MekanismRenderer {
         return color;
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> int getColorARGB(@Nonnull STACK stack, float scale, boolean gaseous) {
+    public static int getColorARGB(@Nonnull ChemicalStack<?> stack, float scale, boolean gaseous) {
         if (stack.isEmpty()) {
             return -1;
         }

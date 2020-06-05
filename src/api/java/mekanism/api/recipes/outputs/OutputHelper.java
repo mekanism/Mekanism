@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.GasStack;
@@ -21,8 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @ParametersAreNonnullByDefault
 public class OutputHelper {
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> IOutputHandler<@NonNull STACK> getOutputHandler(
-          IChemicalTank<CHEMICAL, STACK> tank) {
+    public static <STACK extends ChemicalStack<?>> IOutputHandler<@NonNull STACK> getOutputHandler(IChemicalTank<?, STACK> tank) {
         return new IOutputHandler<@NonNull STACK>() {
 
             @Override
@@ -125,7 +123,7 @@ public class OutputHelper {
         };
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleOutput(IChemicalTank<CHEMICAL, STACK> tank, STACK toOutput,
+    private static <STACK extends ChemicalStack<?>> void handleOutput(IChemicalTank<?, STACK> tank, STACK toOutput,
           int operations) {
         if (operations == 0) {
             //This should not happen
@@ -156,8 +154,7 @@ public class OutputHelper {
         inventorySlot.insertItem(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> int operationsRoomFor(IChemicalTank<CHEMICAL, STACK> tank, STACK toOutput,
-          int currentMax) {
+    private static <STACK extends ChemicalStack<?>> int operationsRoomFor(IChemicalTank<?, STACK> tank, STACK toOutput, int currentMax) {
         if (currentMax <= 0 || toOutput.isEmpty()) {
             //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;

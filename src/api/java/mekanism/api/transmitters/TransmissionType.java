@@ -49,6 +49,10 @@ public enum TransmissionType implements IHasTranslationKey {
         return langEntry.getTranslationKey();
     }
 
+    public boolean isChemical() {
+        return this == GAS || this == INFUSION || this == PIGMENT || this == SLURRY;
+    }
+
     public boolean checkTransmissionType(ITransmitter transmitter) {
         return transmitter.getTransmissionType() == this;
     }

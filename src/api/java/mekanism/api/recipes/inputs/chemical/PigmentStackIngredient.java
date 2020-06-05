@@ -19,7 +19,7 @@ public interface PigmentStackIngredient extends IChemicalStackIngredient<Pigment
     }
 
     static PigmentStackIngredient from(@Nonnull IPigmentProvider pigment, long amount) {
-        return new Single(pigment.getPigmentStack(amount));
+        return new Single(pigment.getStack(amount));
     }
 
     static PigmentStackIngredient from(@Nonnull Tag<Pigment> tag, long amount) {

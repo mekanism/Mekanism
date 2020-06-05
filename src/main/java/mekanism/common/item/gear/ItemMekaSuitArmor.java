@@ -64,9 +64,10 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
           DamageSource.ON_FIRE, DamageSource.SWEET_BERRY_BUSH, DamageSource.WITHER));
 
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
+    //TODO: Make this a config option?
     private static final int GAS_TRANSFER_RATE = 256;
 
-    private Set<GasTankSpec> gasTankSpecs = new HashSet<>();
+    private final Set<GasTankSpec> gasTankSpecs = new HashSet<>();
     private float absorption;
 
     public ItemMekaSuitArmor(EquipmentSlotType slot, Properties properties) {

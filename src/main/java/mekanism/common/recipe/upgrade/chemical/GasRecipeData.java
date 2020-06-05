@@ -44,7 +44,7 @@ public class GasRecipeData extends ChemicalRecipeData<Gas, GasStack, IGasTank, I
 
     @Override
     protected IGasTank createTank() {
-        return BasicGasTank.create(Long.MAX_VALUE, null);
+        return BasicGasTank.createDummy(Long.MAX_VALUE);
     }
 
     @Override

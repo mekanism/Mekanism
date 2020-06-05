@@ -49,7 +49,7 @@ import mekanism.common.tier.BinTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.tier.GasTankTier;
+import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.TileEntityBin;
@@ -626,11 +626,11 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityFluidTank> CREATIVE_FLUID_TANK = createFluidTank(FluidTankTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_FLUID_TANK, null);
 
     // Gas Tanks
-    public static final Machine<TileEntityGasTank> BASIC_GAS_TANK = createGasTank(GasTankTier.BASIC, () -> MekanismTileEntityTypes.BASIC_GAS_TANK, () -> MekanismBlocks.ADVANCED_GAS_TANK);
-    public static final Machine<TileEntityGasTank> ADVANCED_GAS_TANK = createGasTank(GasTankTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_GAS_TANK, () -> MekanismBlocks.ELITE_GAS_TANK);
-    public static final Machine<TileEntityGasTank> ELITE_GAS_TANK = createGasTank(GasTankTier.ELITE, () -> MekanismTileEntityTypes.ELITE_GAS_TANK, () -> MekanismBlocks.ULTIMATE_GAS_TANK);
-    public static final Machine<TileEntityGasTank> ULTIMATE_GAS_TANK = createGasTank(GasTankTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_GAS_TANK, null);
-    public static final Machine<TileEntityGasTank> CREATIVE_GAS_TANK = createGasTank(GasTankTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_GAS_TANK, null);
+    public static final Machine<TileEntityGasTank> BASIC_GAS_TANK = createGasTank(ChemicalTankTier.BASIC, () -> MekanismTileEntityTypes.BASIC_GAS_TANK, () -> MekanismBlocks.ADVANCED_GAS_TANK);
+    public static final Machine<TileEntityGasTank> ADVANCED_GAS_TANK = createGasTank(ChemicalTankTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_GAS_TANK, () -> MekanismBlocks.ELITE_GAS_TANK);
+    public static final Machine<TileEntityGasTank> ELITE_GAS_TANK = createGasTank(ChemicalTankTier.ELITE, () -> MekanismTileEntityTypes.ELITE_GAS_TANK, () -> MekanismBlocks.ULTIMATE_GAS_TANK);
+    public static final Machine<TileEntityGasTank> ULTIMATE_GAS_TANK = createGasTank(ChemicalTankTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_GAS_TANK, null);
+    public static final Machine<TileEntityGasTank> CREATIVE_GAS_TANK = createGasTank(ChemicalTankTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_GAS_TANK, null);
 
     static {
         for (FactoryTier tier : FactoryTier.values()) {
@@ -683,7 +683,7 @@ public class MekanismBlockTypes {
               .build();
     }
 
-    private static <TILE extends TileEntityGasTank> Machine<TILE> createGasTank(GasTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
+    private static <TILE extends TileEntityGasTank> Machine<TILE> createGasTank(ChemicalTankTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, Supplier<BlockRegistryObject<?, ?>> upgradeBlock) {
         return MachineBuilder.createMachine(tile, MekanismLang.DESCRIPTION_GAS_TANK)
               .withGui(() -> MekanismContainerTypes.GAS_TANK)
               .withCustomShape(BlockShapes.GAS_TANK)

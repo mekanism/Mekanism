@@ -25,6 +25,10 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
         return create(capacity, alwaysTrue, listener);
     }
 
+    public static BasicInfusionTank createDummy(long capacity) {
+        return create(capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, null);
+    }
+
     public static BasicInfusionTank create(long capacity, Predicate<@NonNull InfuseType> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");

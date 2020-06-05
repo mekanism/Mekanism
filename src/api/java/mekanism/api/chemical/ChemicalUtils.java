@@ -72,7 +72,7 @@ public class ChemicalUtils {
      * Util method for a generic insert implementation for various handlers. Mainly for internal use only
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK insert(STACK stack, Action action, STACK empty,
-          IntSupplier tankCount, Int2ObjectFunction<@NonNull STACK> inTankGetter, InsertChemical<CHEMICAL, STACK> insertChemical) {
+          IntSupplier tankCount, Int2ObjectFunction<@NonNull STACK> inTankGetter, InsertChemical<STACK> insertChemical) {
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             return insertChemical.insert(0, stack, action);
@@ -114,7 +114,7 @@ public class ChemicalUtils {
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(long amount, Action action, STACK empty,
-          IntSupplier tankCount, Int2ObjectFunction<@NonNull STACK> inTankGetter, ExtractChemical<CHEMICAL, STACK> extractChemical) {
+          IntSupplier tankCount, Int2ObjectFunction<@NonNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             return extractChemical.extract(0, amount, action);
@@ -149,7 +149,7 @@ public class ChemicalUtils {
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(STACK stack, Action action, STACK empty,
-          IntSupplier tankCount, Int2ObjectFunction<@NonNull STACK> inTankGetter, ExtractChemical<CHEMICAL, STACK> extractChemical) {
+          IntSupplier tankCount, Int2ObjectFunction<@NonNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             STACK inTank = inTankGetter.get(0);
@@ -184,13 +184,13 @@ public class ChemicalUtils {
     }
 
     @FunctionalInterface
-    public interface InsertChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
+    public interface InsertChemical<STACK extends ChemicalStack<?>> {
 
         STACK insert(int tank, STACK stack, Action action);
     }
 
     @FunctionalInterface
-    public interface ExtractChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
+    public interface ExtractChemical<STACK extends ChemicalStack<?>> {
 
         STACK extract(int tank, long amount, Action action);
     }
@@ -202,7 +202,7 @@ public class ChemicalUtils {
     }
 
     @FunctionalInterface
-    public interface StackToStackCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
+    public interface StackToStackCreator<STACK extends ChemicalStack<?>> {
 
         STACK createStack(STACK chemical, long amount);
     }

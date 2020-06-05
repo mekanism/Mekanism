@@ -30,6 +30,7 @@ import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -48,7 +49,7 @@ import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -74,10 +75,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
      * The amount of hydrogen this block is storing.
      */
     public BasicGasTank rightTank;
-    /**
-     * How fast this block can output gas.
-     */
-    public long output = 512;
     /**
      * The type of gas this block is outputting.
      */
@@ -206,10 +203,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
             } else {
                 ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
                 if (config != null && config.isEjecting()) {
-                    GasUtils.emit(config.getSidesForOutput(right ? DataType.OUTPUT_2 : DataType.OUTPUT_1), tank, this, output);
+                    ChemicalUtil.emit(config.getSidesForOutput(right ? DataType.OUTPUT_2 : DataType.OUTPUT_1), tank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
                 }
                 if (mode == GasMode.DUMPING_EXCESS) {
                     long needed = tank.getNeeded();
+                    long output = MekanismConfig.general.chemicalAutoEjectRate.get();
                     if (needed < output) {
                         tank.shrinkStack(output - needed, Action.EXECUTE);
                     }
