@@ -1,0 +1,10 @@
+# Made in Blockbench 3.5.4
+newmtl 2
+map_Kd player.png 
+newmtl 3
+map_Kd mekasuit_armor_body.png 
+newmtl 4
+map_Kd mekasuit_armor_helmet.png 
+newmtl 5
+map_Kd mekasuit_armor_exoskeleton.png 
+newmtl none

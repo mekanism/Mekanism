@@ -1,7 +1,7 @@
 package mekanism.client.render.layer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.common.item.interfaces.ISpecialGear;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -34,7 +34,7 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
                 model.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTick);
                 setModelSlotVisible((A) model, slot);
                 model.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                model.render(matrix, renderer, light, OverlayTexture.NO_OVERLAY, stack.hasEffect());
+                model.render(matrix, renderer, light, OverlayTexture.NO_OVERLAY, stack.hasEffect(), stack);
             }
         }
     }

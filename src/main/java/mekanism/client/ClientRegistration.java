@@ -1,10 +1,10 @@
 package mekanism.client;
 
-import com.google.common.collect.Table.Cell;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import com.google.common.collect.Table.Cell;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
@@ -90,6 +90,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.layer.MekanismArmorLayer;
+import mekanism.client.render.obj.OBJModelCache;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
@@ -336,6 +337,7 @@ public class ClientRegistration {
             CustomModelRegistryObject obj = customModels.get(new ResourceLocation(rl.getNamespace(), rl.getPath()));
             return obj == null ? model : obj.createModel(model, event);
         });
+        OBJModelCache.onBake(event);
     }
 
     @SubscribeEvent

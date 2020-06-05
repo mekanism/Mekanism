@@ -19,6 +19,8 @@ import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
+import mekanism.client.render.armor.CustomArmor;
+import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -34,10 +36,12 @@ import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.item.interfaces.ISpecialGear;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -54,7 +58,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem, IModeItem, IItemHUDProvider/*, ISpecialGear*/ {
+public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem, IModeItem, IItemHUDProvider, ISpecialGear {
 
     // TODO separate these into individual modules maybe (specifically fire-related - on_fire, in_fire, lava)
     private static final Set<DamageSource> ALWAYS_SUPPORTED_SOURCES = new HashSet<>(Arrays.asList(
@@ -218,6 +222,27 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     @Override
     public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
         return null;
+    }
+
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+        return "mekanism:render/null_armor.png";
+    }
+
+    @Nonnull
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public CustomArmor getGearModel() {
+        switch (getEquipmentSlot()) {
+            case HEAD:
+                return MekaSuitArmor.HELMET;
+            case CHEST:
+                return MekaSuitArmor.BODYARMOR;
+            case LEGS:
+                return MekaSuitArmor.PANTS;
+            default:
+                return MekaSuitArmor.BOOTS;
+        }
     }
 
     private FloatingLong getMaxEnergy(ItemStack stack) {

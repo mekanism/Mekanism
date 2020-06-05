@@ -1,10 +1,11 @@
 package mekanism.client.render.armor;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelJetpack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.item.ItemStack;
 
 public class JetpackArmor extends CustomArmor {
 
@@ -21,7 +22,7 @@ public class JetpackArmor extends CustomArmor {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, ItemStack stack) {
         if (!bipedBody.showModel) {
             //If the body model shouldn't show don't bother displaying it
             return;
