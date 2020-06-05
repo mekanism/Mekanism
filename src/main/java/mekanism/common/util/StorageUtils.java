@@ -112,6 +112,7 @@ public class StorageUtils {
         InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
         PigmentStack pigmentStack = StorageUtils.getStoredPigmentFromNBT(stack);
         SlurryStack slurryStack = StorageUtils.getStoredSlurryFromNBT(stack);
+        //TODO - V10: Improve this further by also including the "type" of the stored substance
         if (fluidStack.isEmpty() && gasStack.isEmpty() && infusionStack.isEmpty() && pigmentStack.isEmpty() && slurryStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translate());
         } else if (!fluidStack.isEmpty()) {

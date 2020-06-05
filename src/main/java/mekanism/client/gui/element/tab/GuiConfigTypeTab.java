@@ -62,7 +62,6 @@ public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        //TODO - V10: FIXME, the tooltip doesn't render for some reason (probably due to the nested windows)
         displayTooltip(TextComponentUtil.translate(transmission.getTranslationKey()), mouseX, mouseY);
     }
 
