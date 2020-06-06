@@ -1,10 +1,10 @@
 # Made in Blockbench 3.5.4
 newmtl 2
-map_Kd player.png 
+map_Kd mekanism:entity/armor/mekasuit_player
 newmtl 3
-map_Kd mekasuit_armor_body.png 
+map_Kd mekanism:entity/armor/mekasuit_armor_body
 newmtl 4
-map_Kd mekasuit_armor_helmet.png 
+map_Kd mekanism:entity/armor/mekasuit_armor_helmet
 newmtl 5
-map_Kd mekasuit_armor_exoskeleton.png 
+map_Kd mekanism:entity/armor/mekasuit_armor_exoskeleton
 newmtl none

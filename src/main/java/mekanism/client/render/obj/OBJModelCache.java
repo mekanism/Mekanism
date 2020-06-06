@@ -41,7 +41,7 @@ public class OBJModelCache {
         }
 
         private void reload() {
-            model = OBJLoader.INSTANCE.loadModel(new ModelSettings(rl, true, false, false, true, null));
+            model = OBJLoader.INSTANCE.loadModel(new ModelSettings(rl, true, false, true, true, null));
             bakedMap.clear();
         }
 

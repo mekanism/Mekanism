@@ -207,7 +207,7 @@ public class TransmitterBakedModel implements IBakedModel {
         return bakedVariant.getItemCameraTransforms();
     }
 
-    private class QuickHash {
+    public static class QuickHash {
 
         private Object[] objs;
 

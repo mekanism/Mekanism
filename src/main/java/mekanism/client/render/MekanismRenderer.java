@@ -350,6 +350,13 @@ public class MekanismRenderer {
         event.addSprite(Mekanism.rl("liquid/energy"));
         event.addSprite(Mekanism.rl("liquid/heat"));
 
+        //MekaSuit
+        event.addSprite(Mekanism.rl("entity/armor/blank"));
+        event.addSprite(Mekanism.rl("entity/armor/mekasuit_player"));
+        event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_body"));
+        event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_helmet"));
+        event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_exoskeleton"));
+
         for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
             event.addSprite(gas.getIcon());
         }

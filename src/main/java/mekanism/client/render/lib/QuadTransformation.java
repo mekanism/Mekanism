@@ -2,11 +2,9 @@ package mekanism.client.render.lib;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import com.google.common.collect.Sets;
+import java.util.function.Predicate;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.math.Quaternion;
 import net.minecraft.util.Direction;
@@ -32,6 +30,10 @@ public interface QuadTransformation {
 
     static QuadTransformation light(float light) {
         return new LightTransformation(light, light);
+    }
+
+    static QuadTransformation translate(Vec3d translation) {
+        return new TranslationTransformation(translation);
     }
 
     static QuadTransformation rotate(Direction side) {
@@ -69,6 +71,10 @@ public interface QuadTransformation {
     }
 
     void transform(Quad quad);
+
+    default QuadTransformation and(QuadTransformation other) {
+        return list(this, other);
+    }
 
     public class SideTransformation implements QuadTransformation {
 
@@ -180,25 +186,47 @@ public interface QuadTransformation {
         }
     }
 
-    public class TextureFilteredTransformation implements QuadTransformation {
+    public class TranslationTransformation implements QuadTransformation {
 
-        private QuadTransformation original;
-        private Set<ResourceLocation> textures = new HashSet<>();
-        private int hash;
+        private Vec3d translation;
 
-        public TextureFilteredTransformation(QuadTransformation original, Set<ResourceLocation> textures) {
-            this.original = original;
-            this.textures = textures;
-            hash = Objects.hash(original, textures);
-        }
-
-        public static TextureFilteredTransformation of(QuadTransformation original, ResourceLocation... textures) {
-            return new TextureFilteredTransformation(original, Sets.newHashSet(textures));
+        public TranslationTransformation(Vec3d translation) {
+            this.translation = translation;
         }
 
         @Override
         public void transform(Quad quad) {
-            if (textures.contains(quad.getTexture().getName())) {
+            quad.vertexTransform(v -> v.pos(v.getPos().add(translation)));
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof TranslationTransformation && translation.equals(((TranslationTransformation) other).translation);
+        }
+
+        @Override
+        public int hashCode() {
+            return translation.hashCode();
+        }
+    }
+
+    public class TextureFilteredTransformation implements QuadTransformation {
+
+        private QuadTransformation original;
+        private Predicate<ResourceLocation> verifier;
+
+        public TextureFilteredTransformation(QuadTransformation original, Predicate<ResourceLocation> verifier) {
+            this.original = original;
+            this.verifier = verifier;
+        }
+
+        public static TextureFilteredTransformation of(QuadTransformation original, Predicate<ResourceLocation> verifier) {
+            return new TextureFilteredTransformation(original, verifier);
+        }
+
+        @Override
+        public void transform(Quad quad) {
+            if (verifier.test(quad.getTexture().getName())) {
                 quad.transform(v -> {
                     original.transform(quad);
                 });
@@ -207,12 +235,12 @@ public interface QuadTransformation {
 
         @Override
         public boolean equals(Object other) {
-            return other instanceof TextureFilteredTransformation && textures.equals(((TextureFilteredTransformation) other).textures);
+            return other instanceof TextureFilteredTransformation && verifier.equals(((TextureFilteredTransformation) other).verifier);
         }
 
         @Override
         public int hashCode() {
-            return hash;
+            return Objects.hash(original, verifier);
         }
     }
 
@@ -238,6 +266,13 @@ public interface QuadTransformation {
         @Override
         public boolean equals(Object other) {
             return other instanceof TransformationList && list.equals(((TransformationList) other).list);
+        }
+
+        @Override
+        public QuadTransformation and(QuadTransformation other) {
+            List<QuadTransformation> newList = new ArrayList<>(list);
+            newList.add(other);
+            return new TransformationList(newList);
         }
 
         @Override
