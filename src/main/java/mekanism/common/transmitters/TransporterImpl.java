@@ -13,7 +13,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
@@ -25,7 +24,6 @@ import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.InventoryNetwork;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
@@ -147,8 +145,9 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                             if (!stack.isFinal(this)) {
                                 TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
                                 if (stack.canInsertToTransporter(tile, stack.getSide(this), containingTile)) {
-                                    CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).ifPresent(nextTile ->
-                                          nextTile.entityEntering(stack, stack.progress % 100));
+                                    if (tile instanceof ILogisticalTransporter) {
+                                        ((ILogisticalTransporter) tile).entityEntering(stack, stack.progress % 100);
+                                    }
                                     deletes.add(stackId);
                                     continue;
                                 }

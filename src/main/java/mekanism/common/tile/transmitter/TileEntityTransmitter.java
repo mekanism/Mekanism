@@ -13,9 +13,9 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
-import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.lib.transmitter.DynamicNetwork;
+import mekanism.common.lib.transmitter.IGridTransmitter;
+import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
@@ -42,7 +42,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         super(((IHasTileEntity<? extends TileEntityTransmitter<?, ?, ?>>) blockProvider.getBlock()).getTileType());
         transmitterDelegate = new TransmitterImpl<>(this);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION_CAPABILITY, this));
-        addCapabilityResolver(BasicCapabilityResolver.persistent(Capabilities.GRID_TRANSMITTER_CAPABILITY, this::getTransmitter));
     }
 
     @Nonnull

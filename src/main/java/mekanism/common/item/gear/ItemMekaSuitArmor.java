@@ -15,7 +15,6 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -194,7 +193,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         if (slotType == getEquipmentSlot()) {
             list.add(MekanismLang.GENERIC_PRE_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, MekanismLang.get(slotType),
-                  EnumColor.GRAY, APILang.TRANSMISSION_TYPE_ENERGY, StorageUtils.getEnergyPercent(stack)));
+                  EnumColor.GRAY, MekanismLang.TRANSMISSION_TYPE_ENERGY, StorageUtils.getEnergyPercent(stack)));
             for (Module module : Modules.loadAll(stack)) {
                 if (module.renderHUD()) {
                     module.addHUDStrings(list);

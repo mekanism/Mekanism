@@ -1,7 +1,6 @@
 package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -9,19 +8,18 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.lib.transmitter.IGridTransmitter;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
@@ -29,7 +27,6 @@ import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.upgrade.transmitter.LogisticalTransporterUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
@@ -58,7 +55,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
             this.tier = TransporterTier.BASIC;
         }
         transmitterDelegate = new TransporterImpl(this);
-        addCapabilityResolver(BasicCapabilityResolver.persistent(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, this::getTransmitter));
     }
 
     @Override
@@ -83,9 +79,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public boolean isValidTransmitter(TileEntity tile) {
-        Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
-        if (capability.isPresent()) {
-            ILogisticalTransporter transporter = capability.get();
+        if (tile instanceof ILogisticalTransporter) {
+            ILogisticalTransporter transporter = (ILogisticalTransporter) tile;
             if (getTransmitter().getColor() == null || transporter.getColor() == null || getTransmitter().getColor() == transporter.getColor()) {
                 return super.isValidTransmitter(tile);
             }
@@ -97,8 +92,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
         //TODO: Maybe merge this back with TransporterUtils.isValidAcceptorOnSide
         //return TransporterUtils.isValidAcceptorOnSide(tile, side);
-        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
-              TransmissionType.checkTransmissionType(transmitter, TransmissionType.ITEM)).isPresent()) {
+        if (tile instanceof IGridTransmitter && TransmissionType.ITEM.checkTransmissionType(((IGridTransmitter<?, ?, ?>) tile))) {
             return false;
         }
         return isAcceptorAndListen(tile, side, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);

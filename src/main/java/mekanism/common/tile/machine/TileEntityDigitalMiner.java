@@ -1,19 +1,18 @@
 package mekanism.common.tile.machine;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -61,7 +60,6 @@ import mekanism.common.tile.interfaces.IAdvancedBoundingBlock;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
@@ -285,9 +283,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 TransitRequest ejectMap = getEjectItemMap(ejectTile, getOppositeDirection());
                 if (!ejectMap.isEmpty()) {
                     TransitResponse response;
-                    Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()));
-                    if (capability.isPresent()) {
-                        response = capability.get().insert(ejectTile, ejectMap, null, true, 0);
+                    if (ejectInv instanceof ILogisticalTransporter) {
+                        response = ((ILogisticalTransporter) ejectInv).insert(ejectTile, ejectMap, null, true, 0);
                     } else {
                         response = ejectMap.addToInventory(ejectInv, getOppositeDirection(), false);
                     }

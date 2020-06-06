@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
-import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
@@ -32,7 +31,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -124,9 +122,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     private TransitResponse emitItemToTransporter(TileEntity front, TransitRequest request, EnumColor filterColor, int min) {
-        Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()));
-        if (capability.isPresent()) {
-            ILogisticalTransporter transporter = capability.get();
+        if (front instanceof ILogisticalTransporter) {
+            ILogisticalTransporter transporter = (ILogisticalTransporter) front;
             if (roundRobin) {
                 return transporter.insertRR(this, request, filterColor, true, min);
             }

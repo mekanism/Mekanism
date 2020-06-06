@@ -1,11 +1,11 @@
 package mekanism.common.tile.interfaces;
 
 import mekanism.api.text.EnumColor;
-import mekanism.api.transmitters.IBlockableConnection;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.lib.transmitter.IBlockableConnection;
+import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import net.minecraft.tileentity.TileEntity;

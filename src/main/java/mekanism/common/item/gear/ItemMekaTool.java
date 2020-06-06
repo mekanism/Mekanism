@@ -1,16 +1,15 @@
 package mekanism.common.item.gear;
 
+import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.Multimap;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -305,7 +304,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         list.add(MekanismLang.GENERIC_PRE_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, stack.getItem(),
-              EnumColor.GRAY, APILang.TRANSMISSION_TYPE_ENERGY, StorageUtils.getEnergyPercent(stack)));
+              EnumColor.GRAY, MekanismLang.TRANSMISSION_TYPE_ENERGY, StorageUtils.getEnergyPercent(stack)));
         for (Module module : Modules.loadAll(stack)) {
             if (module.renderHUD()) {
                 module.addHUDStrings(list);

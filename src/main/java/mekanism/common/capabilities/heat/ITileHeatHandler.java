@@ -8,12 +8,10 @@ import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.IMekanismHeatHandler;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.CapabilityUtils;
+import mekanism.common.lib.transmitter.IGridTransmitter;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -71,8 +69,7 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
                 double tempToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
                 handleHeat(-tempToTransfer * heatCapacity, side);
                 sink.handleHeat(tempToTransfer * heatCapacity);
-                if (!(sink instanceof ICapabilityProvider) || !CapabilityUtils.getCapability((ICapabilityProvider) sink, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)
-                      .filter(transmitter -> TransmissionType.checkTransmissionType(transmitter, TransmissionType.HEAT)).isPresent()) {
+                if (!(sink instanceof IGridTransmitter) || !TransmissionType.HEAT.checkTransmissionType((IGridTransmitter<?, ?, ?>) sink)) {
                     adjacentTransfer += tempToTransfer;
                 }
             }

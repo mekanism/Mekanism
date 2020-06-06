@@ -10,12 +10,11 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.api.text.EnumColor;
 import mekanism.common.content.transporter.PathfinderCache.CachedPath;
 import mekanism.common.content.transporter.PathfinderCache.PathData;
 import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
@@ -26,7 +25,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.transmitters.grid.InventoryNetwork.AcceptorData;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -60,10 +58,9 @@ public final class TransporterPathfinder {
     private static boolean checkPath(World world, List<Coord4D> path, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
         for (int i = path.size() - 1; i > 0; i--) {
             TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, path.get(i));
-            Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
-            if (capability.isPresent()) {
-                ILogisticalTransporter transporter = capability.get();
-                if (transporter.getColor() != null && transporter.getColor() != stack.color) {
+            if (tile instanceof ILogisticalTransporter) {
+                EnumColor color = ((ILogisticalTransporter) tile).getColor();
+                if (color != null && color != stack.color) {
                     return false;
                 }
             } else {
@@ -190,9 +187,8 @@ public final class TransporterPathfinder {
                 return new Destination(ret, true, null, 0).setPathType(Path.NONE);
             }
             TransitRequest request = TransitRequest.simple(transportStack.itemStack);
-            Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(startTile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
-            if (capability.isPresent()) {
-                Destination newPath = TransporterPathfinder.getNewBasePath(capability.get(), transportStack, request, 0);
+            if (startTile instanceof ILogisticalTransporter) {
+                Destination newPath = TransporterPathfinder.getNewBasePath((ILogisticalTransporter) startTile, transportStack, request, 0);
                 if (newPath != null && newPath.getResponse() != null) {
                     transportStack.idleDir = null;
                     newPath.setPathType(Path.DEST);
@@ -265,15 +261,6 @@ public final class TransporterPathfinder {
 
         public Destination setPathType(Path type) {
             pathType = type;
-            return this;
-        }
-
-        public Destination calculateScore(World world, Long2ObjectMap<IChunk> chunkMap) {
-            score = 0;
-            for (Coord4D location : path) {
-                CapabilityUtils.getCapability(MekanismUtils.getTileEntity(world, chunkMap, location.getPos()), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null)
-                      .ifPresent(transporter -> score += transporter.getCost());
-            }
             return this;
         }
 
@@ -403,10 +390,8 @@ public final class TransporterPathfinder {
                     if (transportStack.canInsertToTransporter(neighborEntity, direction, currentNodeTile)) {
                         //If the neighbor is a transporter and the stack is valid for it
                         double tentativeG = currentScore;
-                        Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(neighborEntity,
-                              Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, direction.getOpposite()));
-                        if (capability.isPresent()) {
-                            tentativeG += capability.get().getCost();
+                        if (neighborEntity instanceof ILogisticalTransporter) {
+                            tentativeG += ((ILogisticalTransporter) neighborEntity).getCost();
                         }
                         if (closedSet.contains(neighbor) && tentativeG >= gScore.getDouble(neighbor)) {
                             continue;
@@ -434,20 +419,16 @@ public final class TransporterPathfinder {
          */
         private boolean isValidDestination(Coord4D start, TileEntity startTile, Direction direction, Coord4D neighbor, TileEntity neighborTile) {
             //Check to make sure that it is the destination
-            if (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborTile)) {
-                Optional<ILogisticalTransporter> startTransporter = MekanismUtils.toOptional(CapabilityUtils.getCapability(startTile,
-                      Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
-                if (startTransporter.isPresent()) {
-                    ILogisticalTransporter transporter = startTransporter.get();
-                    if (transporter.canEmitTo(neighborTile, direction) || (finalNode.equals(transportStack.homeLocation) && transporter.canConnect(direction))) {
-                        //If it is and we can emit to it (normal or push mode),
-                        // or it is the home location of the stack (it is returning back due to not having been able to get to its destination)
-                        // and we can connect to it (normal, push, or pull (should always be pull as otherwise canEmitTo would have been true)),
-                        // then this is the proper path so we mark it as so and return true indicating that we found and marked the ideal path
-                        side = direction;
-                        results = reconstructPath(navMap, start);
-                        return true;
-                    }
+            if (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborTile) && startTile instanceof ILogisticalTransporter) {
+                ILogisticalTransporter transporter = (ILogisticalTransporter) startTile;
+                if (transporter.canEmitTo(neighborTile, direction) || (finalNode.equals(transportStack.homeLocation) && transporter.canConnect(direction))) {
+                    //If it is and we can emit to it (normal or push mode),
+                    // or it is the home location of the stack (it is returning back due to not having been able to get to its destination)
+                    // and we can connect to it (normal, push, or pull (should always be pull as otherwise canEmitTo would have been true)),
+                    // then this is the proper path so we mark it as so and return true indicating that we found and marked the ideal path
+                    side = direction;
+                    results = reconstructPath(navMap, start);
+                    return true;
                 }
             }
             return false;

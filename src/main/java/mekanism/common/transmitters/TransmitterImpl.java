@@ -1,18 +1,15 @@
 package mekanism.common.transmitters;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.lib.transmitter.DynamicNetwork;
+import mekanism.common.lib.transmitter.IGridTransmitter;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -54,9 +51,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
         if (!containingTile.canConnectMutual(side, potentialTransmitterTile)) {
             return null;
         }
-        Optional<IGridTransmitter<?, ?, ?>> gridTransmitter = MekanismUtils.toOptional(CapabilityUtils.getCapability(potentialTransmitterTile,
-              Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()));
-        if (gridTransmitter.isPresent() && TransmissionType.checkTransmissionType(gridTransmitter.get(), getTransmissionType()) &&
+        if (potentialTransmitterTile instanceof IGridTransmitter && getTransmissionType().checkTransmissionType((IGridTransmitter<?, ?, ?>) potentialTransmitterTile) &&
             containingTile.isValidTransmitter(potentialTransmitterTile)) {
             return sideCoord;
         }
@@ -97,11 +92,10 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
 
     @Override
     public NETWORK getExternalNetwork(Coord4D from) {
-        Optional<IGridTransmitter<?, ?, ?>> gridTransmitter = MekanismUtils.toOptional(CapabilityUtils.getCapability(MekanismUtils.getTileEntity(world(), from.getPos()),
-              Capabilities.GRID_TRANSMITTER_CAPABILITY, null));
-        if (gridTransmitter.isPresent()) {
-            IGridTransmitter<?, ?, ?> transmitter = gridTransmitter.get();
-            if (TransmissionType.checkTransmissionType(transmitter, getTransmissionType())) {
+        TileEntity tile = MekanismUtils.getTileEntity(world(), from.getPos());
+        if (tile instanceof IGridTransmitter) {
+            IGridTransmitter<?, ?, ?> transmitter = (IGridTransmitter<?, ?, ?>) tile;
+            if (getTransmissionType().checkTransmissionType(transmitter)) {
                 return ((IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>) transmitter).getTransmitterNetwork();
             }
         }

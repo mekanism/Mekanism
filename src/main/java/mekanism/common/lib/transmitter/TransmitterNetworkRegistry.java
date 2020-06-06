@@ -1,4 +1,4 @@
-package mekanism.api.transmitters;
+package mekanism.common.lib.transmitter;
 
 import java.util.Deque;
 import java.util.LinkedList;

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.IJEIIngredientHelper;
 import mekanism.common.capabilities.merged.MergedTank;

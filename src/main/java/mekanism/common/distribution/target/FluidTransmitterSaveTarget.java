@@ -3,7 +3,7 @@ package mekanism.common.distribution.target;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.math.MathUtils;
-import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.distribution.SplitInfo;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.transmitters.TransmitterImpl;

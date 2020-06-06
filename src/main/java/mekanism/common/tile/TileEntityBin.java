@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
@@ -19,7 +18,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.upgrade.BinUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -82,9 +80,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 TileTransitRequest request = new TileTransitRequest(this, Direction.DOWN);
                 request.addItem(binSlot.getBottomStack(), 0);
                 TransitResponse response;
-                Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, Direction.UP));
-                if (capability.isPresent()) {
-                    response = capability.get().insert(this, request, null, true, 0);
+                if (tile instanceof ILogisticalTransporter) {
+                    response = ((ILogisticalTransporter) tile).insert(this, request, null, true, 0);
                 } else {
                     response = request.addToInventory(tile, Direction.DOWN, false);
                 }

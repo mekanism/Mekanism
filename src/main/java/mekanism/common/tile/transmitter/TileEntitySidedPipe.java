@@ -6,11 +6,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
@@ -18,10 +16,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
-import mekanism.api.transmitters.IBlockableConnection;
-import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitter;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.states.TransmitterType;
@@ -30,6 +24,9 @@ import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
+import mekanism.common.lib.transmitter.IBlockableConnection;
+import mekanism.common.lib.transmitter.IGridTransmitter;
+import mekanism.common.lib.transmitter.ITransmitter;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
@@ -55,6 +52,7 @@ import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
+import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntitySidedPipe extends CapabilityTileEntity implements IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
 
@@ -79,7 +77,6 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
     public TileEntitySidedPipe(TileEntityType<? extends TileEntitySidedPipe> type) {
         super(type);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, this));
     }
 
     public static boolean connectionMapContainsSide(byte connections, Direction side) {
@@ -119,11 +116,9 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
             TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-            if (canConnectMutual(side, tile)) {
-                Optional<IGridTransmitter<?, ?, ?>> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()));
-                if (capability.isPresent() && TransmissionType.checkTransmissionType(capability.get(), getTransmitterType().getTransmission()) && isValidTransmitter(tile)) {
-                    connections |= 1 << side.ordinal();
-                }
+            if (canConnectMutual(side, tile) && tile instanceof IGridTransmitter &&
+                getTransmitterType().getTransmission().checkTransmissionType((IGridTransmitter<?, ?, ?>) tile) && isValidTransmitter(tile)) {
+                connections |= 1 << side.ordinal();
             }
         }
         return connections;
@@ -153,11 +148,8 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
             return false;
         }
         TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-        if (canConnectMutual(side, tile)) {
-            Optional<IGridTransmitter<?, ?, ?>> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()));
-            if (capability.isPresent()) {
-                return TransmissionType.checkTransmissionType(capability.get(), getTransmitterType().getTransmission()) && isValidTransmitter(tile);
-            }
+        if (canConnectMutual(side, tile) && tile instanceof IGridTransmitter) {
+            return getTransmitterType().getTransmission().checkTransmissionType((IGridTransmitter<?, ?, ?>) tile) && isValidTransmitter(tile);
         }
         return false;
     }
@@ -264,8 +256,7 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
             //If we don't already have the tile that is on the side calculated, do so
             cachedTile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         }
-        return CapabilityUtils.getCapability(cachedTile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite())
-              .map(connection -> connection.canConnect(side.getOpposite())).orElse(true);
+        return !(cachedTile instanceof IBlockableConnection) || ((IBlockableConnection) cachedTile).canConnect(side.getOpposite());
     }
 
     @Override

@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.distribution.SplitInfo;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.transmitters.TransmitterImpl;

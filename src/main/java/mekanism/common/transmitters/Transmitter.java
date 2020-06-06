@@ -1,7 +1,7 @@
 package mekanism.common.transmitters;
 
-import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.lib.transmitter.DynamicNetwork;
+import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import net.minecraft.util.text.ITextComponent;
 

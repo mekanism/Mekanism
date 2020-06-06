@@ -2,21 +2,16 @@ package mekanism.common.content.transporter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
-import mekanism.api.transmitters.IBlockableConnection;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
-import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
@@ -248,16 +243,11 @@ public class TransporterStack {
     }
 
     public boolean canInsertToTransporter(TileEntity tile, Direction from, @Nullable TileEntity tileFrom) {
-        Direction opposite = from.getOpposite();
-        Optional<ILogisticalTransporter> transporterCap = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, opposite));
-        if (transporterCap.isPresent()) {
-            ILogisticalTransporter transporter = transporterCap.get();
+        if (tile instanceof ILogisticalTransporter) {
+            ILogisticalTransporter transporter = (ILogisticalTransporter) tile;
             if (transporter.getColor() == null || transporter.getColor() == color) {
-                //If the color is valid, make sure that the connection is not blocked
-                Optional<IBlockableConnection> blockableConnection = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, opposite));
-                if (blockableConnection.isPresent()) {
-                    return blockableConnection.get().canConnectMutual(opposite, tileFrom);
-                }
+                //If the color is valid, make sure that the connection is valid
+                return transporter.canConnectMutual(from.getOpposite(), tileFrom);
             }
         }
         return false;

@@ -2,7 +2,7 @@ package mekanism.common.distribution.target;
 
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.distribution.SplitInfo;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.transmitters.TransmitterImpl;

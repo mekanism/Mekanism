@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Set;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;

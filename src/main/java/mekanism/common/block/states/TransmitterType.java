@@ -1,7 +1,7 @@
 package mekanism.common.block.states;
 
 import mekanism.api.math.MathUtils;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 
 public enum TransmitterType {
     UNIVERSAL_CABLE(Size.SMALL, TransmissionType.ENERGY),

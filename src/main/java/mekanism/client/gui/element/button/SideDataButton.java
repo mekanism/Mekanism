@@ -3,7 +3,7 @@ package mekanism.client.gui.element.button;
 import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;

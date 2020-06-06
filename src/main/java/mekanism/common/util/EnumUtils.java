@@ -2,7 +2,7 @@ package mekanism.common.util;
 
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;

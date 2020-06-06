@@ -1,5 +1,6 @@
-package mekanism.api.transmitters;
+package mekanism.common.lib.transmitter;
 
+//TODO: Merge with IGridTransmitter?
 public interface ITransmitter {
 
     /**

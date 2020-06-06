@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
-import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.client.ClientProxy;
 import mekanism.client.ModelLoaderRegisterHelper;
 import mekanism.common.base.IModule;

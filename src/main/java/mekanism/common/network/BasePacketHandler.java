@@ -5,7 +5,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.Range3D;
-import mekanism.api.transmitters.DynamicNetwork;
+import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.entity.Entity;

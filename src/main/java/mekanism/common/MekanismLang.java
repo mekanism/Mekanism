@@ -123,6 +123,15 @@ public enum MekanismLang implements ILangEntry {
     COMMAND_RADIATION_GET("command", "radiation.get"),
     COMMAND_RADIATION_CLEAR("command", "radiation.clear"),
     COMMAND_RADIATION_REMOVE_ALL("command", "radiation.remove_all"),
+    //Transmission types
+    TRANSMISSION_TYPE_ENERGY("transmission", "energy"),
+    TRANSMISSION_TYPE_FLUID("transmission", "fluids"),
+    TRANSMISSION_TYPE_GAS("transmission", "gases"),
+    TRANSMISSION_TYPE_INFUSION("transmission", "infuse_types"),
+    TRANSMISSION_TYPE_PIGMENT("transmission", "pigments"),
+    TRANSMISSION_TYPE_SLURRY("transmission", "slurries"),
+    TRANSMISSION_TYPE_ITEM("transmission", "items"),
+    TRANSMISSION_TYPE_HEAT("transmission", "heat"),
     //Tooltip stuff
     MODE("tooltip", "mode"),
     FIRE_MODE("tooltip", "fire_mode"),
