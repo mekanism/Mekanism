@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import mekanism.common.util.EnumUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -20,11 +21,6 @@ import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class TransmitterNetworkRegistry {
-
-    /**
-     * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
-     */
-    private static final Direction[] DIRECTIONS = Direction.values();
 
     private static final TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
     private static boolean loaderRegistered = false;
@@ -248,7 +244,7 @@ public class TransmitterNetworkRegistry {
                     connectedTransmitters.add(transmitter);
                     transmitter.setOrphan(false);
 
-                    for (Direction direction : DIRECTIONS) {
+                    for (Direction direction : EnumUtils.DIRECTIONS) {
                         if (direction.getAxis().isHorizontal() && !transmitter.world().isBlockPresent(from.getPos().offset(direction))) {
                             continue;
                         }

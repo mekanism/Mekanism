@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import mekanism.common.Mekanism;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -61,9 +63,9 @@ public class BuildCommand {
         while (!openSet.isEmpty()) {
             BlockPos ptr = openSet.pop();
             BlockState state = world.getBlockState(ptr);
-            if (state.getBlock().getRegistryName().getNamespace().contains("mekanism")) {
+            if (state.getBlock().getRegistryName().getNamespace().contains(Mekanism.MODID)) {
                 world.setBlockState(ptr, Blocks.AIR.getDefaultState());
-                for (Direction side : Direction.values()) {
+                for (Direction side : EnumUtils.DIRECTIONS) {
                     BlockPos offset = ptr.offset(side);
                     if (!traversed.contains(offset)) {
                         openSet.add(offset);

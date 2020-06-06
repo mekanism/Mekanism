@@ -21,6 +21,7 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -81,7 +82,7 @@ public abstract class BlockMekanism extends Block {
         if (tile.supportsRedstone()) {
             ItemDataUtils.setInt(itemStack, NBTConstants.CONTROL_TYPE, tile.getControlType().ordinal());
         }
-        for (SubstanceType type : SubstanceType.values()) {
+        for (SubstanceType type : EnumUtils.SUBSTANCES) {
             if (tile.handles(type)) {
                 ItemDataUtils.setList(itemStack, type.getContainerTag(), DataHandlerUtils.writeContainers(type.getContainers(tile)));
             }
@@ -176,7 +177,7 @@ public abstract class BlockMekanism extends Block {
             config.getConfig().read(ItemDataUtils.getDataMap(stack));
             config.getEjector().read(ItemDataUtils.getDataMap(stack));
         }
-        for (SubstanceType type : SubstanceType.values()) {
+        for (SubstanceType type : EnumUtils.SUBSTANCES) {
             if (type.canHandle(tile)) {
                 DataHandlerUtils.readContainers(type.getContainers(tile), ItemDataUtils.getList(stack, type.getContainerTag()));
             }

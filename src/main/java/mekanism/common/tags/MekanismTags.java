@@ -2,7 +2,7 @@ package mekanism.common.tags;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
@@ -13,6 +13,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -27,12 +28,12 @@ public class MekanismTags {
     public static class Items {
 
         public static final Table<ResourceType, PrimaryResource, Tag<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
-        public static final Map<PrimaryResource, Tag<Item>> PROCESSED_RESOURCE_BLOCKS = new Object2ObjectOpenHashMap<>();
-        public static final Map<OreType, Tag<Item>> ORES = new Object2ObjectOpenHashMap<>();
+        public static final Map<PrimaryResource, Tag<Item>> PROCESSED_RESOURCE_BLOCKS = new EnumMap<>(PrimaryResource.class);
+        public static final Map<OreType, Tag<Item>> ORES = new EnumMap<>(OreType.class);
 
         static {
-            for (PrimaryResource resource : PrimaryResource.values()) {
-                for (ResourceType type : ResourceType.values()) {
+            for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
+                for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
                     if (type == ResourceType.INGOT || type == ResourceType.NUGGET || type == ResourceType.DUST) {
                         PROCESSED_RESOURCES.put(type, resource, forgeTag(type.getRegistryPrefix() + "s/" + resource.getName()));
                     } else {
@@ -43,7 +44,7 @@ public class MekanismTags {
                     PROCESSED_RESOURCE_BLOCKS.put(resource, forgeTag("storage_blocks/" + resource.getName()));
                 }
             }
-            for (OreType ore : OreType.values()) {
+            for (OreType ore : EnumUtils.ORE_TYPES) {
                 ORES.put(ore, forgeTag("ores/" + ore.getResource().getRegistrySuffix()));
             }
         }
@@ -142,16 +143,16 @@ public class MekanismTags {
 
     public static class Blocks {
 
-        public static final Map<PrimaryResource, Tag<Block>> RESOURCE_STORAGE_BLOCKS = new Object2ObjectOpenHashMap<>();
-        public static final Map<OreType, Tag<Block>> ORES = new Object2ObjectOpenHashMap<>();
+        public static final Map<PrimaryResource, Tag<Block>> RESOURCE_STORAGE_BLOCKS = new EnumMap<>(PrimaryResource.class);
+        public static final Map<OreType, Tag<Block>> ORES = new EnumMap<>(OreType.class);
 
         static {
-            for (PrimaryResource resource : PrimaryResource.values()) {
+            for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
                 if (!resource.isVanilla()) {
                     RESOURCE_STORAGE_BLOCKS.put(resource, forgeTag("storage_blocks/" + resource.getName()));
                 }
             }
-            for (OreType ore : OreType.values()) {
+            for (OreType ore : EnumUtils.ORE_TYPES) {
                 ORES.put(ore, forgeTag("ores/" + ore.getResource().getRegistrySuffix()));
             }
         }

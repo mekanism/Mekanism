@@ -142,7 +142,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         getConfigurationData(nbtTags);
         return nbtTags;

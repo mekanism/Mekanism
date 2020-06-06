@@ -13,7 +13,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class PacketOpenGui {
 
-    private GuiType type;
+    private final GuiType type;
 
     public PacketOpenGui(GuiType type) {
         this.type = type;
@@ -29,11 +29,11 @@ public class PacketOpenGui {
     }
 
     public static void encode(PacketOpenGui pkt, PacketBuffer buf) {
-        buf.writeInt(pkt.type.ordinal());
+        buf.writeEnumValue(pkt.type);
     }
 
     public static PacketOpenGui decode(PacketBuffer buf) {
-        return new PacketOpenGui(GuiType.values()[buf.readInt()]);
+        return new PacketOpenGui(buf.readEnumValue(GuiType.class));
     }
 
     public enum GuiType {

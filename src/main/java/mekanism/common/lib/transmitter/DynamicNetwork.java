@@ -13,17 +13,13 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.Range3D;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements INetworkDataHandler, IHasTextComponent {
-
-    /**
-     * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
-     */
-    private static final Direction[] DIRECTIONS = Direction.values();
 
     protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectLinkedOpenHashSet<>();
     protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectOpenHashSet<>();
@@ -71,7 +67,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                         world = transmitter.world();
                     }
 
-                    for (Direction side : DIRECTIONS) {
+                    for (Direction side : EnumUtils.DIRECTIONS) {
                         updateTransmitterOnSide(transmitter, side);
                     }
 

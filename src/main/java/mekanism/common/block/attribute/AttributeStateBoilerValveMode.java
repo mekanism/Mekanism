@@ -2,6 +2,8 @@ package mekanism.common.block.attribute;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.IIncrementalEnum;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -35,10 +37,12 @@ public class AttributeStateBoilerValveMode extends AttributeState {
         properties.add(modeProperty);
     }
 
-    public enum BoilerValveMode implements IStringSerializable, IHasTextComponent {
+    public enum BoilerValveMode implements IStringSerializable, IHasTextComponent, IIncrementalEnum<BoilerValveMode> {
         INPUT("input", MekanismLang.BOILER_VALVE_MODE_INPUT, EnumColor.BRIGHT_GREEN),
         OUTPUT_STEAM("output_steam", MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, EnumColor.GRAY),
         OUTPUT_COOLANT("output_coolant", MekanismLang.BOILER_VALVE_MODE_OUTPUT_COOLANT, EnumColor.DARK_AQUA);
+
+        private static final BoilerValveMode[] MODES = values();
 
         private final String name;
         private final ILangEntry langEntry;
@@ -59,6 +63,17 @@ public class AttributeStateBoilerValveMode extends AttributeState {
         @Override
         public ITextComponent getTextComponent() {
             return langEntry.translateColored(color);
+        }
+
+        @Nonnull
+        public static BoilerValveMode byIndexStatic(int index) {
+            return MathUtils.getByIndexMod(MODES, index);
+        }
+
+        @Nonnull
+        @Override
+        public BoilerValveMode byIndex(int index) {
+            return byIndexStatic(index);
         }
     }
 }

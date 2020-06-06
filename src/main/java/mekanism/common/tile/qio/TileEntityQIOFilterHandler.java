@@ -99,7 +99,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         return getConfigurationData(nbtTags);
     }

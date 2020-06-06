@@ -78,7 +78,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.BURN_TIME, burnTime);
         nbtTags.putInt(NBTConstants.MAX_BURN_TIME, maxBurnTime);

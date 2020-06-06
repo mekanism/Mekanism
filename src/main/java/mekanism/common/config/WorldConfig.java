@@ -5,6 +5,7 @@ import java.util.Map;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.resource.OreType;
+import mekanism.common.util.EnumUtils;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -25,7 +26,7 @@ public class WorldConfig extends BaseMekanismConfig {
               .define("enableRegeneration", false));
         userGenVersion = CachedIntValue.wrap(this, builder.comment("Change this value to cause Mekanism to regen its ore in all loaded chunks.")
               .defineInRange("userWorldGenVersion", 0, 0, Integer.MAX_VALUE));
-        for (OreType ore : OreType.values()) {
+        for (OreType ore : EnumUtils.ORE_TYPES) {
             ores.put(ore, new OreConfig(this, builder, ore.getResource().getRegistrySuffix(), true, ore.getPerChunk(), ore.getMaxVeinSize(), ore.getBottomOffset(),
                   ore.getTopOffset(), ore.getMaxHeight()));
         }

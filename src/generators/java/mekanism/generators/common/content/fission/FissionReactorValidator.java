@@ -12,6 +12,7 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
@@ -68,7 +69,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
                 assemblyCount++;
                 // compute surface area
                 surfaceArea += 6;
-                for (Direction side : Direction.values()) {
+                for (Direction side : EnumUtils.DIRECTIONS) {
                     if (fuelAssemblyCoords.contains(coord.offset(side))) {
                         surfaceArea -= 2;
                     }

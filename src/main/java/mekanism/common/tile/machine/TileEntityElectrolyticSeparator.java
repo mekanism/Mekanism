@@ -273,7 +273,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
         nbtTags.putInt(NBTConstants.DUMP_RIGHT, dumpRight.ordinal());

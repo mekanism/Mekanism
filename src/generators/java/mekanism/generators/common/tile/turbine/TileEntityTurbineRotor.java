@@ -140,7 +140,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.BLADES, getHousedBlades());
         nbtTags.putInt(NBTConstants.POSITION, getPosition());

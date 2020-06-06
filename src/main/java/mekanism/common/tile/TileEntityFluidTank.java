@@ -133,7 +133,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.EDIT_MODE, editMode.ordinal());
         return nbtTags;

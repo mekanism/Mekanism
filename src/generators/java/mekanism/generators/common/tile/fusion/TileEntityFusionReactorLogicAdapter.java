@@ -75,7 +75,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.LOGIC_TYPE, logicType.ordinal());
         nbtTags.putBoolean(NBTConstants.ACTIVE_COOLED, activeCooled);

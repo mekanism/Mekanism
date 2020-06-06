@@ -120,6 +120,7 @@ import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -633,8 +634,8 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityChemicalTank> CREATIVE_CHEMICAL_TANK = createChemicalTank(ChemicalTankTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_CHEMICAL_TANK, null);
 
     static {
-        for (FactoryTier tier : FactoryTier.values()) {
-            for (FactoryType type : FactoryType.values()) {
+        for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
+            for (FactoryType type : EnumUtils.FACTORY_TYPES) {
                 FACTORIES.put(tier, type,
                       FactoryBuilder.createFactory(() -> MekanismTileEntityTypes.getFactoryTile(tier, type), () -> MekanismContainerTypes.FACTORY, type.getBaseMachine(), tier).build());
             }

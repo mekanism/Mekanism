@@ -522,7 +522,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.AUTO, autoMode);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);

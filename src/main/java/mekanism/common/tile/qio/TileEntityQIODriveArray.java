@@ -84,8 +84,9 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         driveStatus[slot] = (byte) status.ordinal();
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT write(@Nonnull CompoundNBT tag) {
         QIOFrequency freq = getFrequency(FrequencyType.QIO);
         if (freq != null) {
             // save all item data before we save

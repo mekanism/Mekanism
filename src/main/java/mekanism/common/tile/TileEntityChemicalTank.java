@@ -211,7 +211,7 @@ public class TileEntityChemicalTank extends TileEntityMekanism implements ISideC
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.DUMP_MODE, dumping.ordinal());
         return nbtTags;

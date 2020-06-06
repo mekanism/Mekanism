@@ -1,6 +1,7 @@
 package mekanism.common.tile.interfaces;
 
 import java.util.Map;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -10,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 public interface ITileNeighborCache extends ITileWrapper {
 
     default void createNeighborCache() {
-        for (Direction side : Direction.values()) {
+        for (Direction side : EnumUtils.DIRECTIONS) {
             updateNeighborCache(getTilePos().offset(side));
         }
     }

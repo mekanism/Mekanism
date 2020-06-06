@@ -31,6 +31,7 @@ import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
@@ -46,7 +47,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
     @Override
     public void addRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "processing/";
-        for (PrimaryResource resource : PrimaryResource.values()) {
+        for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
             addDynamicOreProcessingIngotRecipes(consumer, basePath + resource.getRegistrySuffix() + "/", resource);
         }
 

@@ -115,7 +115,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putString(NBTConstants.MIN, minThreshold.toString());
         nbtTags.putString(NBTConstants.MAX, maxThreshold.toString());

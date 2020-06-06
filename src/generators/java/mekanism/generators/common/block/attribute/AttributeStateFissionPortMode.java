@@ -2,6 +2,8 @@ package mekanism.generators.common.block.attribute;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.IIncrementalEnum;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -37,10 +39,12 @@ public class AttributeStateFissionPortMode extends AttributeState {
         properties.add(modeProperty);
     }
 
-    public enum FissionPortMode implements IStringSerializable, IHasTextComponent {
+    public enum FissionPortMode implements IStringSerializable, IHasTextComponent, IIncrementalEnum<FissionPortMode> {
         INPUT("input", GeneratorsLang.FISSION_PORT_MODE_INPUT, EnumColor.BRIGHT_GREEN),
         OUTPUT_WASTE("output_waste", GeneratorsLang.FISSION_PORT_MODE_OUTPUT_WASTE, EnumColor.BROWN),
         OUTPUT_COOLANT("output_coolant", GeneratorsLang.FISSION_PORT_MODE_OUTPUT_COOLANT, EnumColor.DARK_AQUA);
+
+        private static final FissionPortMode[] MODES = values();
 
         private final String name;
         private final ILangEntry langEntry;
@@ -61,6 +65,16 @@ public class AttributeStateFissionPortMode extends AttributeState {
         @Override
         public ITextComponent getTextComponent() {
             return langEntry.translateColored(color);
+        }
+
+        public static FissionPortMode byIndexStatic(int index) {
+            return MathUtils.getByIndexMod(MODES, index);
+        }
+
+        @Nonnull
+        @Override
+        public FissionPortMode byIndex(int index) {
+            return byIndexStatic(index);
         }
     }
 }
