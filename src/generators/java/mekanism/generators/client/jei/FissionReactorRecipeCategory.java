@@ -1,5 +1,6 @@
 package mekanism.generators.client.jei;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -24,17 +25,16 @@ import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
 
-    //TODO - V10: Replace with FluidTags.WATER
-    private final List<FluidStack> waterInput = Collections.singletonList(new FluidStack(Fluids.WATER, 1_000));
-    private final List<GasStack> steamOutput = Collections.singletonList(MekanismGases.STEAM.getStack(1_000));
+    private static final ResourceLocation iconRL = MekanismUtils.getResource(ResourceType.GUI, "radioactive.png");
 
-    private final ResourceLocation iconRL = MekanismUtils.getResource(ResourceType.GUI, "radioactive.png");
+    private final List<GasStack> steamOutput = Collections.singletonList(MekanismGases.STEAM.getStack(1_000));
     private final IDrawable icon;
 
     public FissionReactorRecipeCategory(IGuiHelper helper) {
@@ -57,6 +57,14 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
               .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
     }
 
+    private List<FluidStack> getWaterInput() {
+        List<FluidStack> representations = new ArrayList<>();
+        for (Fluid fluid : FluidTags.WATER.getAllElements()) {
+            representations.add(new FluidStack(fluid, 1_000));
+        }
+        return representations;
+    }
+
     @Nonnull
     @Override
     public String getTitle() {
@@ -77,7 +85,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
 
     @Override
     public void setIngredients(GasToGasRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(waterInput));
+        ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(getWaterInput()));
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getInput().getRepresentations()));
         ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.getOutputRepresentation());
     }
@@ -87,7 +95,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         fluidStacks.init(0, true, 7 - xOffset, 14 - yOffset, 16, 58, 1, false, fluidOverlayLarge);
-        fluidStacks.set(0, waterInput);
+        fluidStacks.set(0, getWaterInput());
         initChemical(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
         initChemical(gasStacks, 1, true, 153 - xOffset, 14 - yOffset, 16, 58, steamOutput, true);
         initChemical(gasStacks, 2, false, 172 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
