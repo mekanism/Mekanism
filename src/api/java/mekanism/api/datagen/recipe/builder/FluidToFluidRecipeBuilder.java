@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
@@ -22,7 +21,7 @@ public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFlui
     private final FluidStack output;
 
     protected FluidToFluidRecipeBuilder(FluidStackIngredient input, FluidStack output) {
-        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "evaporating"));
+        super(mekSerializer("evaporating"));
         this.input = input;
         this.output = output;
     }

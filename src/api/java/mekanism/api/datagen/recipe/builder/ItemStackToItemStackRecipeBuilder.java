@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
@@ -33,21 +32,21 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This crushing recipe requires a non empty item output.");
         }
-        return new ItemStackToItemStackRecipeBuilder(input, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "crushing"));
+        return new ItemStackToItemStackRecipeBuilder(input, output, mekSerializer("crushing"));
     }
 
     public static ItemStackToItemStackRecipeBuilder enriching(ItemStackIngredient input, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This enriching recipe requires a non empty item output.");
         }
-        return new ItemStackToItemStackRecipeBuilder(input, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "enriching"));
+        return new ItemStackToItemStackRecipeBuilder(input, output, mekSerializer("enriching"));
     }
 
     public static ItemStackToItemStackRecipeBuilder smelting(ItemStackIngredient input, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This smelting recipe requires a non empty item output.");
         }
-        return new ItemStackToItemStackRecipeBuilder(input, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "smelting"));
+        return new ItemStackToItemStackRecipeBuilder(input, output, mekSerializer("smelting"));
     }
 
     @Override

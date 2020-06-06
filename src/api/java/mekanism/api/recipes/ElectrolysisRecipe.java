@@ -13,10 +13,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Contract;
 
-/**
- * Created by Thiakil on 15/07/2019.
- */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -52,6 +50,7 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
         return this.input.test(fluidStack);
     }
 
+    @Contract(value = "_ -> new", pure = true)
     public Pair<@NonNull GasStack, @NonNull GasStack> getOutput(FluidStack input) {
         return Pair.of(leftGasOutput.copy(), rightGasOutput.copy());
     }

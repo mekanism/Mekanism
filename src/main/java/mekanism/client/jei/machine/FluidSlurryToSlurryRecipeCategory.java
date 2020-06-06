@@ -47,7 +47,7 @@ public class FluidSlurryToSlurryRecipeCategory extends BaseRecipeCategory<FluidS
     @Override
     public void setIngredients(FluidSlurryToSlurryRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getFluidInput().getRepresentations()));
-        ingredients.setInputLists(MekanismJEI.TYPE_SLURRY, Collections.singletonList(recipe.getSlurryInput().getRepresentations()));
+        ingredients.setInputLists(MekanismJEI.TYPE_SLURRY, Collections.singletonList(recipe.getChemicalInput().getRepresentations()));
         ingredients.setOutput(MekanismJEI.TYPE_SLURRY, recipe.getOutputRepresentation());
     }
 
@@ -59,7 +59,7 @@ public class FluidSlurryToSlurryRecipeCategory extends BaseRecipeCategory<FluidS
         fluidStacks.init(0, true, 8 - xOffset, 14 - yOffset, 16, 58, max, false, fluidOverlayLarge);
         fluidStacks.set(0, fluidInputs);
         IGuiIngredientGroup<SlurryStack> slurryStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_SLURRY);
-        initChemical(slurryStacks, 0, true, 29 - xOffset, 14 - yOffset, 16, 58, recipe.getSlurryInput().getRepresentations(), true);
+        initChemical(slurryStacks, 0, true, 29 - xOffset, 14 - yOffset, 16, 58, recipe.getChemicalInput().getRepresentations(), true);
         initChemical(slurryStacks, 1, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
 }

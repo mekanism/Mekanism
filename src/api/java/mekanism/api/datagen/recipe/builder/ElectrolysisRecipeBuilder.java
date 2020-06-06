@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
@@ -25,7 +24,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
     private FloatingLong energyMultiplier = FloatingLong.ONE;
 
     protected ElectrolysisRecipeBuilder(FluidStackIngredient input, GasStack leftGasOutput, GasStack rightGasOutput) {
-        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "separating"));
+        super(mekSerializer("separating"));
         this.input = input;
         this.leftGasOutput = leftGasOutput;
         this.rightGasOutput = rightGasOutput;

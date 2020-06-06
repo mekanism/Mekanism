@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
@@ -23,7 +22,7 @@ public class ChemicalInfuserRecipeBuilder extends MekanismRecipeBuilder<Chemical
     private final GasStack output;
 
     protected ChemicalInfuserRecipeBuilder(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_infusing"));
+        super(mekSerializer("chemical_infusing"));
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.output = output;

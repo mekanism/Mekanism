@@ -6,12 +6,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -27,7 +26,7 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
     private final int duration;
 
     protected NucleosynthesizingRecipeBuilder(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
-        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "nucleosynthesizing"));
+        super(mekSerializer("nucleosynthesizing"));
         this.itemInput = itemInput;
         this.gasInput = gasInput;
         this.output = output;

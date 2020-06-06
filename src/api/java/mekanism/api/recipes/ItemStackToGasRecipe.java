@@ -9,9 +9,6 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-/**
- * Created by Thiakil on 14/07/2019.
- */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ItemStackToGasRecipe extends ItemStackToChemicalRecipe<Gas, GasStack> {

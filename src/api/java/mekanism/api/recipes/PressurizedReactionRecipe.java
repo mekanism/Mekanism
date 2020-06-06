@@ -9,14 +9,15 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.TriPredicate;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Contract;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -75,6 +76,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
         return Pair.of(Collections.singletonList(this.outputItem), this.outputGas);
     }
 
+    @Contract(value = "_, _, _ -> new", pure = true)
     public Pair<@NonNull ItemStack, @NonNull GasStack> getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
         return Pair.of(this.outputItem.copy(), this.outputGas.copy());
     }

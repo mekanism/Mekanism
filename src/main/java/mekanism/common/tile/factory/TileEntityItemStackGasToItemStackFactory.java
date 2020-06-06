@@ -58,7 +58,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(gasTank = BasicGasTank.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes,
-              gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
+              gas -> containsRecipe(recipe -> recipe.getChemicalInput().testType(gas)), this));
         return builder.build();
     }
 
@@ -92,7 +92,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         CachedRecipe<ItemStackGasToItemStackRecipe> cached = getCachedRecipe(process);
         if (cached != null) {
             ItemStackGasToItemStackRecipe cachedRecipe = cached.getRecipe();
-            if (cachedRecipe.getItemInput().testType(fallbackInput) && (gasTank.isEmpty() || cachedRecipe.getGasInput().testType(gasTank.getType()))) {
+            if (cachedRecipe.getItemInput().testType(fallbackInput) && (gasTank.isEmpty() || cachedRecipe.getChemicalInput().testType(gasTank.getType()))) {
                 //Our input matches the recipe we have cached for this slot
                 return true;
             }
@@ -104,7 +104,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         ItemStackGasToItemStackRecipe foundRecipe = findFirstRecipe(recipe -> {
             if (recipe.getItemInput().testType(fallbackInput)) {
                 //If we don't have a gas stored ignore checking for a match
-                if (gasStack.isEmpty() || recipe.getGasInput().testType(gas)) {
+                if (gasStack.isEmpty() || recipe.getChemicalInput().testType(gas)) {
                     //TODO: Give it something that is not null when we don't have a stored gas stack
                     return ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput, gasStack), output);
                 }

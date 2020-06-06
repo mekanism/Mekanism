@@ -11,10 +11,8 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.Contract;
 
-/**
- * Created by Thiakil on 13/07/2019.
- */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -36,6 +34,7 @@ public abstract class ChemicalInfuserRecipe extends MekanismRecipe implements Bi
         return (leftInput.test(input1) && rightInput.test(input2)) || (rightInput.test(input1) && leftInput.test(input2));
     }
 
+    @Contract(value = "_, _ -> new", pure = true)
     public GasStack getOutput(GasStack input1, GasStack input2) {
         return output.copy();
     }

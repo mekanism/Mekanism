@@ -6,12 +6,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -36,21 +35,21 @@ public class ItemStackGasToItemStackRecipeBuilder extends MekanismRecipeBuilder<
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This compressing recipe requires a non empty item output.");
         }
-        return new ItemStackGasToItemStackRecipeBuilder(itemInput, gasInput, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "compressing"));
+        return new ItemStackGasToItemStackRecipeBuilder(itemInput, gasInput, output, mekSerializer("compressing"));
     }
 
     public static ItemStackGasToItemStackRecipeBuilder purifying(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This purifying recipe requires a non empty item output.");
         }
-        return new ItemStackGasToItemStackRecipeBuilder(itemInput, gasInput, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "purifying"));
+        return new ItemStackGasToItemStackRecipeBuilder(itemInput, gasInput, output, mekSerializer("purifying"));
     }
 
     public static ItemStackGasToItemStackRecipeBuilder injecting(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This injecting recipe requires a non empty item output.");
         }
-        return new ItemStackGasToItemStackRecipeBuilder(itemInput, gasInput, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "injecting"));
+        return new ItemStackGasToItemStackRecipeBuilder(itemInput, gasInput, output, mekSerializer("injecting"));
     }
 
     @Override

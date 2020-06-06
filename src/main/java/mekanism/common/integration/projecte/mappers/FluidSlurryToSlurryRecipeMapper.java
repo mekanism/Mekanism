@@ -42,7 +42,7 @@ public class FluidSlurryToSlurryRecipeMapper implements IRecipeTypeMapper {
         boolean handled = false;
         FluidSlurryToSlurryRecipe recipe = (FluidSlurryToSlurryRecipe) iRecipe;
         List<@NonNull FluidStack> fluidRepresentations = recipe.getFluidInput().getRepresentations();
-        List<@NonNull SlurryStack> slurryRepresentations = recipe.getSlurryInput().getRepresentations();
+        List<@NonNull SlurryStack> slurryRepresentations = recipe.getChemicalInput().getRepresentations();
         for (FluidStack fluidRepresentation : fluidRepresentations) {
             NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
             for (SlurryStack slurryRepresentation : slurryRepresentations) {
