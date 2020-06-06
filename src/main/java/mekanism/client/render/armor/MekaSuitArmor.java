@@ -134,12 +134,12 @@ public class MekaSuitArmor extends CustomArmor {
 
         helmetQuads = getArmorQuads(s -> s.startsWith("helmet"), BASE_TRANSFORM);
         chestQuads = getArmorQuads(s -> s.startsWith("chest") || s.startsWith("shoulder") || s.startsWith("back") || s.startsWith("body"), BASE_TRANSFORM);
-        leftArmQuads = getArmorQuads(s -> s.startsWith("left_arm"), BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(-0.28125, -0.15625, 0))));
-        rightArmQuads = getArmorQuads(s -> s.startsWith("right_arm"), BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(0.28125, -0.15625, 0))));
+        leftArmQuads = getArmorQuads(s -> s.startsWith("left_arm"), BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(-0.3125, -0.125, 0))));
+        rightArmQuads = getArmorQuads(s -> s.startsWith("right_arm"), BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(0.3125, -0.125, 0))));
         leftLegQuads = getArmorQuads(s -> s.startsWith("left_leg"), BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(-0.125, -0.75, 0))));
         rightLegQuads = getArmorQuads(s -> s.startsWith("right_leg"), BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(0.125, -0.75, 0))));
-        leftBootQuads = getArmorQuads(s -> s.startsWith("left_boot"), BASE_TRANSFORM);
-        rightBootQuads = getArmorQuads(s -> s.startsWith("right_boot"), BASE_TRANSFORM);
+        leftBootQuads = getArmorQuads(s -> s.startsWith("left_boot"), BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(-0.125, -0.75, 0))));
+        rightBootQuads = getArmorQuads(s -> s.startsWith("right_boot"), BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(0.125, -0.75, 0))));
     }
 
     private static class MekaSuitModelConfiguration implements IModelConfiguration {
