@@ -26,7 +26,7 @@ import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver
 import mekanism.common.lib.Color;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
-import mekanism.common.transmitters.grid.HeatNetwork;
+import mekanism.common.content.transmitter.grid.HeatNetwork;
 import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
@@ -111,7 +111,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT write(@Nonnull CompoundNBT tag) {
         super.write(tag);
         buffer.serializeNBT();
         tag.put(NBTConstants.HEAT_CAPACITORS, DataHandlerUtils.writeContainers(getHeatCapacitors(null)));
@@ -119,7 +119,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public void read(CompoundNBT tag) {
+    public void read(@Nonnull CompoundNBT tag) {
         super.read(tag);
         DataHandlerUtils.readContainers(getHeatCapacitors(null), tag.getList(NBTConstants.HEAT_CAPACITORS, NBT.TAG_COMPOUND));
     }

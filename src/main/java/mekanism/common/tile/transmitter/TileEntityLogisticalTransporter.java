@@ -23,8 +23,8 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
-import mekanism.common.transmitters.TransporterImpl;
-import mekanism.common.transmitters.grid.InventoryNetwork;
+import mekanism.common.content.transmitter.TransporterImpl;
+import mekanism.common.content.transmitter.grid.InventoryNetwork;
 import mekanism.common.upgrade.transmitter.LogisticalTransporterUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.MekanismUtils;
@@ -170,14 +170,14 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         getTransmitter().readFromNBT(nbtTags);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         getTransmitter().writeToNBT(nbtTags);
         return nbtTags;

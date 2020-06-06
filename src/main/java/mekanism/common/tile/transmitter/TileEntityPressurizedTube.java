@@ -30,8 +30,8 @@ import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TubeTier;
-import mekanism.common.transmitters.TransmitterImpl;
-import mekanism.common.transmitters.grid.GasNetwork;
+import mekanism.common.content.transmitter.TransmitterImpl;
+import mekanism.common.content.transmitter.grid.GasNetwork;
 import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
@@ -118,7 +118,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains(NBTConstants.GAS_STORED, NBT.TAG_COMPOUND)) {
             saveShare = GasStack.readFromNBT(nbtTags.getCompound(NBTConstants.GAS_STORED));
@@ -130,7 +130,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (getTransmitter().hasTransmitterNetwork()) {
             getTransmitter().getTransmitterNetwork().validateSaveShares(getTransmitter());

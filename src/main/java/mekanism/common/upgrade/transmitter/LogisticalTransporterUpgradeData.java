@@ -1,7 +1,7 @@
 package mekanism.common.upgrade.transmitter;
 
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
-import mekanism.common.transmitters.TransporterImpl;
+import mekanism.common.content.transmitter.TransporterImpl;
 import net.minecraft.nbt.CompoundNBT;
 
 public class LogisticalTransporterUpgradeData extends TransmitterUpgradeData {

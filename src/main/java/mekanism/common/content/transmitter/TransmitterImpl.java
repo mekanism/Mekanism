@@ -1,4 +1,4 @@
-package mekanism.common.transmitters;
+package mekanism.common.content.transmitter;
 
 import java.util.Collection;
 import java.util.UUID;

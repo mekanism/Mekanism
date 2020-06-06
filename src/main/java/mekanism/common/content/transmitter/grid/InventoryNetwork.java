@@ -1,4 +1,4 @@
-package mekanism.common.transmitters.grid;
+package mekanism.common.content.transmitter.grid;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.ArrayList;

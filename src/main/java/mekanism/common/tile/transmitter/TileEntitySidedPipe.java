@@ -310,7 +310,7 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         redstoneReactive = nbtTags.getBoolean(NBTConstants.REDSTONE);
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
@@ -321,7 +321,7 @@ public abstract class TileEntitySidedPipe extends CapabilityTileEntity implement
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.REDSTONE, redstoneReactive);
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {

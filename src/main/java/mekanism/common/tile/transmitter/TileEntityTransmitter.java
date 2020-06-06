@@ -19,7 +19,7 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
-import mekanism.common.transmitters.TransmitterImpl;
+import mekanism.common.content.transmitter.TransmitterImpl;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -313,7 +313,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
-        Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
+        Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
     }
 
     @Nonnull

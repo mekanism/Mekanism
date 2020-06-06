@@ -1,4 +1,4 @@
-package mekanism.common.transmitters.grid;
+package mekanism.common.content.transmitter.grid;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -9,7 +9,7 @@ import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
-import mekanism.common.transmitters.TransmitterImpl;
+import mekanism.common.content.transmitter.TransmitterImpl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.util.text.ITextComponent;

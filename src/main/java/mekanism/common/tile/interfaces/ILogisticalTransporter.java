@@ -7,7 +7,7 @@ import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.IBlockableConnection;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.transmitters.grid.InventoryNetwork;
+import mekanism.common.content.transmitter.grid.InventoryNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 

@@ -7,8 +7,8 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.distribution.SplitInfo;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
-import mekanism.common.transmitters.TransmitterImpl;
-import mekanism.common.transmitters.grid.GasNetwork;
+import mekanism.common.content.transmitter.TransmitterImpl;
+import mekanism.common.content.transmitter.grid.GasNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 

@@ -9,7 +9,7 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
-import mekanism.common.transmitters.TransporterImpl;
+import mekanism.common.content.transmitter.TransporterImpl;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;

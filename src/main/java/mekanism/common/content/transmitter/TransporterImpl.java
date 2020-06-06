@@ -1,4 +1,4 @@
-package mekanism.common.transmitters;
+package mekanism.common.content.transmitter;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -23,7 +23,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
-import mekanism.common.transmitters.grid.InventoryNetwork;
+import mekanism.common.content.transmitter.grid.InventoryNetwork;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
@@ -36,7 +36,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwork, Void> implements ILogisticalTransporter {
 
-    private final Int2ObjectOpenHashMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
     private EnumColor color;
     private int nextId = 0;

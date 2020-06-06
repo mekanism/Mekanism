@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
-import mekanism.common.transmitters.grid.InventoryNetwork;
+import mekanism.common.content.transmitter.grid.InventoryNetwork;
 import net.minecraft.util.Direction;
 
 public class PathfinderCache {

@@ -1,4 +1,4 @@
-package mekanism.common.transmitters;
+package mekanism.common.content.transmitter;
 
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.IGridTransmitter;
