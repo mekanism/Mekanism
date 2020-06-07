@@ -14,7 +14,6 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -23,10 +22,11 @@ import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.proxy.ProxyHeatHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
+import mekanism.common.content.transmitter.HeatNetwork;
 import mekanism.common.lib.Color;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
-import mekanism.common.content.transmitter.HeatNetwork;
 import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
@@ -150,7 +150,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public void onContentsChanged() {
-        if (!world.isRemote()) {
+        if (!isRemote()) {
             if (Math.abs(buffer.getTemperature() - clientTemperature) > (buffer.getTemperature() / 20)) {
                 clientTemperature = buffer.getTemperature();
                 sendUpdatePacket();

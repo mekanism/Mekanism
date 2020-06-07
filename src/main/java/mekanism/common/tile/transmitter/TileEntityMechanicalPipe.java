@@ -23,6 +23,7 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.proxy.ProxyFluidHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.content.transmitter.FluidNetwork;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;

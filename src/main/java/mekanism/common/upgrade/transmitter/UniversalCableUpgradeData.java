@@ -1,7 +1,7 @@
 package mekanism.common.upgrade.transmitter;
 
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.common.tile.transmitter.TileEntityTransmitter.ConnectionType;
+import mekanism.common.lib.transmitter.ConnectionType;
 
 public class UniversalCableUpgradeData extends TransmitterUpgradeData {
 

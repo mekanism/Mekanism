@@ -7,7 +7,7 @@ import com.google.common.base.Predicate;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.tile.transmitter.TileEntityTransmitter.ConnectionType;
+import mekanism.common.lib.transmitter.ConnectionType;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.IModelConfiguration;

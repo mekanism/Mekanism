@@ -30,6 +30,7 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketTransporterUpdate;
@@ -54,7 +55,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-//TODO - V10: Inline a bunch of the code
+//TODO: Validate that the sub classes of this still work properly
 public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> implements ILogisticalTransporter {
 
     private final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
@@ -147,8 +148,103 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public void tick() {
         super.tick();
-        //TODO - V10: Inline
-        update();
+        if (isRemote()) {
+            for (TransporterStack stack : transit.values()) {
+                stack.progress = Math.min(100, stack.progress + tier.getSpeed());
+            }
+        } else if (getTransmitterNetwork() != null) {
+            IntSet deletes = new IntOpenHashSet();
+            pullItems();
+            Coord4D coord = coord();
+            //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
+            // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
+            // collection to occur actually causing the tick time to go up slightly.
+            for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
+                int stackId = entry.getIntKey();
+                TransporterStack stack = entry.getValue();
+                if (!stack.initiatedPath) {
+                    if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, null)) {
+                        deletes.add(stackId);
+                        continue;
+                    }
+                }
+
+                stack.progress += tier.getSpeed();
+                if (stack.progress >= 100) {
+                    Coord4D prevSet = null;
+                    if (stack.hasPath()) {
+                        int currentIndex = stack.getPath().indexOf(coord);
+                        if (currentIndex == 0) { //Necessary for transition reasons, not sure why
+                            deletes.add(stackId);
+                            continue;
+                        }
+
+                        Coord4D next = stack.getPath().get(currentIndex - 1);
+                        if (next != null) {
+                            if (!stack.isFinal(this)) {
+                                TileEntity tile = MekanismUtils.getTileEntity(world, next.getPos());
+                                if (stack.canInsertToTransporter(tile, stack.getSide(this), this)) {
+                                    if (tile instanceof ILogisticalTransporter) {
+                                        ((ILogisticalTransporter) tile).entityEntering(stack, stack.progress % 100);
+                                    }
+                                    deletes.add(stackId);
+                                    continue;
+                                }
+                                prevSet = next;
+                            } else if (stack.getPathType() != Path.NONE) {
+                                TileEntity tile = MekanismUtils.getTileEntity(world, next.getPos());
+                                if (tile != null) {
+                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this),
+                                          stack.getPathType() == Path.HOME);
+                                    // Nothing was rejected; remove the stack from the prediction tracker and
+                                    // schedule this stack for deletion. Continue the loop thereafter
+                                    ItemStack rejected = response.getRejected();
+                                    if (rejected.isEmpty()) {
+                                        TransporterManager.remove(stack);
+                                        deletes.add(stackId);
+                                        continue;
+                                    }
+                                    // Some portion of the stack got rejected; save the remainder and
+                                    // let the recalculate below sort out what to do next
+                                    stack.itemStack = rejected;
+                                    prevSet = next;
+                                }
+                            }
+                        }
+                    }
+                    if (!recalculate(stackId, stack, prevSet)) {
+                        deletes.add(stackId);
+                    } else if (prevSet != null) {
+                        stack.progress = 0;
+                    } else {
+                        stack.progress = 50;
+                    }
+                } else if (stack.progress == 50) {
+                    boolean tryRecalculate;
+                    if (stack.isFinal(this)) {
+                        tryRecalculate = checkPath(stack, Path.DEST, false) || checkPath(stack, Path.HOME, true) || stack.getPathType() == Path.NONE;
+                    } else {
+                        tryRecalculate = !stack.canInsertToTransporter(MekanismUtils.getTileEntity(world, stack.getNext(this).getPos()), stack.getSide(this), this);
+                    }
+                    if (tryRecalculate && !recalculate(stackId, stack, null)) {
+                        deletes.add(stackId);
+                    }
+                }
+            }
+
+            if (!deletes.isEmpty() || !needsSync.isEmpty()) {
+                //Notify clients, so that we send the information before we start clearing our lists
+                Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), world, coord.getPos());
+                // Now remove any entries from transit that have been deleted
+                deletes.forEach((IntConsumer) (this::deleteStack));
+
+                // Clear the pending sync packets
+                needsSync.clear();
+
+                // Finally, mark chunk for save
+                MekanismUtils.saveChunk(this);
+            }
+        }
     }
 
     public void pullItems() {
@@ -206,15 +302,33 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        //TODO - V10: Inline?
-        writeToUpdateTag(updateTag);
+        updateTag.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(getColor()));
+        ListNBT stacks = new ListNBT();
+        for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
+            CompoundNBT tagCompound = new CompoundNBT();
+            tagCompound.putInt(NBTConstants.INDEX, entry.getIntKey());
+            entry.getValue().writeToUpdateTag(this, tagCompound);
+            stacks.add(tagCompound);
+        }
+        if (!stacks.isEmpty()) {
+            updateTag.put(NBTConstants.ITEMS, stacks);
+        }
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        readFromUpdateTag(tag);
+        NBTUtils.setEnumIfPresent(tag, NBTConstants.COLOR, TransporterUtils::readColor, this::setColor);
+        transit.clear();
+        if (tag.contains(NBTConstants.ITEMS, NBT.TAG_LIST)) {
+            ListNBT tagList = tag.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
+            for (int i = 0; i < tagList.size(); i++) {
+                CompoundNBT compound = tagList.getCompound(i);
+                TransporterStack stack = TransporterStack.readFromUpdate(compound);
+                addStack(compound.getInt(NBTConstants.INDEX), stack);
+            }
+        }
     }
 
     @Override
@@ -223,12 +337,36 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         readFromNBT(nbtTags);
     }
 
+    public void readFromNBT(CompoundNBT nbtTags) {
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, this::setColor);
+        if (nbtTags.contains(NBTConstants.ITEMS, NBT.TAG_LIST)) {
+            ListNBT tagList = nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
+            for (int i = 0; i < tagList.size(); i++) {
+                TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompound(i));
+                addStack(nextId++, stack);
+            }
+        }
+    }
+
     @Nonnull
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         writeToNBT(nbtTags);
         return nbtTags;
+    }
+
+    public void writeToNBT(CompoundNBT nbtTags) {
+        nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(getColor()));
+        ListNBT stacks = new ListNBT();
+        for (TransporterStack stack : getTransit()) {
+            CompoundNBT tagCompound = new CompoundNBT();
+            stack.write(tagCompound);
+            stacks.add(tagCompound);
+        }
+        if (!stacks.isEmpty()) {
+            nbtTags.put(NBTConstants.ITEMS, stacks);
+        }
     }
 
     @Override
@@ -249,11 +387,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
               MekanismLang.CURRENT_COLOR.translateColored(EnumColor.GRAY, color != null ? color.getColoredName() : MekanismLang.NONE)));
         return ActionResultType.SUCCESS;
-    }
-
-    @Override
-    public EnumColor getRenderColor() {
-        return getColor();
     }
 
     @Override
@@ -332,7 +465,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     protected void updateModelData(TransmitterModelData modelData) {
         super.updateModelData(modelData);
-        modelData.setHasColor(getRenderColor() != null);
+        modelData.setHasColor(getColor() != null);
     }
 
     public Collection<TransporterStack> getTransit() {
@@ -347,159 +480,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         transit.put(id, s);
     }
 
-    public void writeToUpdateTag(CompoundNBT updateTag) {
-        updateTag.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(getColor()));
-        ListNBT stacks = new ListNBT();
-        for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            tagCompound.putInt(NBTConstants.INDEX, entry.getIntKey());
-            entry.getValue().writeToUpdateTag(this, tagCompound);
-            stacks.add(tagCompound);
-        }
-        if (!stacks.isEmpty()) {
-            updateTag.put(NBTConstants.ITEMS, stacks);
-        }
-    }
-
-    public void readFromUpdateTag(CompoundNBT updateTag) {
-        NBTUtils.setEnumIfPresent(updateTag, NBTConstants.COLOR, TransporterUtils::readColor, this::setColor);
-        transit.clear();
-        if (updateTag.contains(NBTConstants.ITEMS, NBT.TAG_LIST)) {
-            ListNBT tagList = updateTag.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                CompoundNBT compound = tagList.getCompound(i);
-                TransporterStack stack = TransporterStack.readFromUpdate(compound);
-                addStack(compound.getInt(NBTConstants.INDEX), stack);
-            }
-        }
-    }
-
-    public void writeToNBT(CompoundNBT nbtTags) {
-        nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(getColor()));
-        ListNBT stacks = new ListNBT();
-        for (TransporterStack stack : getTransit()) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            stack.write(tagCompound);
-            stacks.add(tagCompound);
-        }
-        if (!stacks.isEmpty()) {
-            nbtTags.put(NBTConstants.ITEMS, stacks);
-        }
-    }
-
-    public void readFromNBT(CompoundNBT nbtTags) {
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, this::setColor);
-        if (nbtTags.contains(NBTConstants.ITEMS, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompound(i));
-                addStack(nextId++, stack);
-            }
-        }
-    }
-
-    public void update() {
-        if (world().isRemote) {
-            for (TransporterStack stack : transit.values()) {
-                stack.progress = Math.min(100, stack.progress + tier.getSpeed());
-            }
-        } else if (getTransmitterNetwork() != null) {
-            IntSet deletes = new IntOpenHashSet();
-            pullItems();
-            Coord4D coord = coord();
-            //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
-            // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
-            // collection to occur actually causing the tick time to go up slightly.
-            for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
-                int stackId = entry.getIntKey();
-                TransporterStack stack = entry.getValue();
-                if (!stack.initiatedPath) {
-                    if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, null)) {
-                        deletes.add(stackId);
-                        continue;
-                    }
-                }
-
-                stack.progress += tier.getSpeed();
-                if (stack.progress >= 100) {
-                    Coord4D prevSet = null;
-                    if (stack.hasPath()) {
-                        int currentIndex = stack.getPath().indexOf(coord);
-                        if (currentIndex == 0) { //Necessary for transition reasons, not sure why
-                            deletes.add(stackId);
-                            continue;
-                        }
-
-                        Coord4D next = stack.getPath().get(currentIndex - 1);
-                        if (next != null) {
-                            if (!stack.isFinal(this)) {
-                                TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
-                                if (stack.canInsertToTransporter(tile, stack.getSide(this), this)) {
-                                    if (tile instanceof ILogisticalTransporter) {
-                                        ((ILogisticalTransporter) tile).entityEntering(stack, stack.progress % 100);
-                                    }
-                                    deletes.add(stackId);
-                                    continue;
-                                }
-                                prevSet = next;
-                            } else if (stack.getPathType() != Path.NONE) {
-                                TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
-                                if (tile != null) {
-                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this),
-                                          stack.getPathType() == Path.HOME);
-                                    // Nothing was rejected; remove the stack from the prediction tracker and
-                                    // schedule this stack for deletion. Continue the loop thereafter
-                                    ItemStack rejected = response.getRejected();
-                                    if (rejected.isEmpty()) {
-                                        TransporterManager.remove(stack);
-                                        deletes.add(stackId);
-                                        continue;
-                                    }
-                                    // Some portion of the stack got rejected; save the remainder and
-                                    // let the recalculate below sort out what to do next
-                                    stack.itemStack = rejected;
-                                    prevSet = next;
-                                }
-                            }
-                        }
-                    }
-                    if (!recalculate(stackId, stack, prevSet)) {
-                        deletes.add(stackId);
-                    } else if (prevSet != null) {
-                        stack.progress = 0;
-                    } else {
-                        stack.progress = 50;
-                    }
-                } else if (stack.progress == 50) {
-                    boolean tryRecalculate;
-                    if (stack.isFinal(this)) {
-                        tryRecalculate = checkPath(stack, Path.DEST, false) || checkPath(stack, Path.HOME, true) || stack.getPathType() == Path.NONE;
-                    } else {
-                        tryRecalculate = !stack.canInsertToTransporter(MekanismUtils.getTileEntity(world(), stack.getNext(this).getPos()), stack.getSide(this), this);
-                    }
-                    if (tryRecalculate && !recalculate(stackId, stack, null)) {
-                        deletes.add(stackId);
-                    }
-                }
-            }
-
-            if (!deletes.isEmpty() || !needsSync.isEmpty()) {
-                //Notify clients, so that we send the information before we start clearing our lists
-                Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), world(), coord.getPos());
-                // Now remove any entries from transit that have been deleted
-                deletes.forEach((IntConsumer) (this::deleteStack));
-
-                // Clear the pending sync packets
-                needsSync.clear();
-
-                // Finally, mark chunk for save
-                MekanismUtils.saveChunk(getTileEntity());
-            }
-        }
-    }
-
     private boolean checkPath(TransporterStack stack, Path dest, boolean home) {
-        return stack.getPathType() == dest && (!checkSideForInsert(stack) || !TransporterUtils.canInsert(MekanismUtils.getTileEntity(world(), stack.getDest().getPos()),
+        return stack.getPathType() == dest && (!checkSideForInsert(stack) || !TransporterUtils.canInsert(MekanismUtils.getTileEntity(world, stack.getDest().getPos()),
               stack.color, stack.itemStack, stack.getSide(this), home));
     }
 

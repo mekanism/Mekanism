@@ -24,6 +24,7 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.resolver.advanced.AdvancedEnergyCapabilityResolver;
 import mekanism.common.content.transmitter.EnergyNetwork;
 import mekanism.common.integration.energy.EnergyCompatUtils;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;

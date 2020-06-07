@@ -114,13 +114,14 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         return (mode != 2 || !redstone) && (mode != 1 || redstone);
     }
 
+    @Nonnull
     @Override
     protected TransmitterModelData initModelData() {
         return new TransmitterModelData.Diversion();
     }
 
     @Override
-    public EnumColor getRenderColor() {
+    public EnumColor getColor() {
         return null;
     }
 

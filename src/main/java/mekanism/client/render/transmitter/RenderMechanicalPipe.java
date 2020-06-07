@@ -17,7 +17,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.transmitter.FluidNetwork;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
-import mekanism.common.tile.transmitter.TileEntityTransmitter.ConnectionType;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;

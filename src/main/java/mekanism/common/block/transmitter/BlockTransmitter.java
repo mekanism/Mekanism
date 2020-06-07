@@ -13,7 +13,7 @@ import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.tile.transmitter.TileEntityTransmitter.ConnectionType;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;

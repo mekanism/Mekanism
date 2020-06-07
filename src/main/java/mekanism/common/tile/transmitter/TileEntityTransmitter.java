@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -13,15 +12,11 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
-import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTranslationKey;
-import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.model.data.TransmitterModelData;
@@ -33,6 +28,7 @@ import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.IBlockableConnection;
 import mekanism.common.lib.transmitter.IGridTransmitter;
@@ -55,7 +51,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -75,6 +70,24 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
       IBlockableConnection, IConfigurable, ITickableTileEntity, IAlloyInteraction, IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> {
 
     public static final ModelProperty<TransmitterModelData> TRANSMITTER_PROPERTY = new ModelProperty<>();
+
+    public static boolean connectionMapContainsSide(byte connections, Direction side) {
+        byte tester = (byte) (1 << side.ordinal());
+        return (connections & tester) > 0;
+    }
+
+    public static byte setConnectionBit(byte connections, boolean toSet, Direction side) {
+        return (byte) ((connections & ~(byte) (1 << side.ordinal())) | (byte) ((toSet ? 1 : 0) << side.ordinal()));
+    }
+
+    public static ConnectionType getConnectionType(Direction side, byte allConnections, byte transmitterConnections, ConnectionType[] types) {
+        if (!connectionMapContainsSide(allConnections, side)) {
+            return ConnectionType.NONE;
+        } else if (connectionMapContainsSide(transmitterConnections, side)) {
+            return ConnectionType.NORMAL;
+        }
+        return types[side.ordinal()];
+    }
 
     private final Map<Direction, NonNullConsumer<LazyOptional<?>>> cachedListeners = new EnumMap<>(Direction.class);
     public byte currentAcceptorConnections = 0x00;
@@ -121,12 +134,12 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         if (theNetwork == network) {
             return;
         }
-        if (world().isRemote && theNetwork != null) {
+        if (isRemote() && theNetwork != null) {
             theNetwork.removeTransmitter(this);
         }
         theNetwork = network;
         orphaned = theNetwork == null;
-        if (world().isRemote) {
+        if (isRemote()) {
             if (theNetwork != null) {
                 theNetwork.addTransmitter(this);
             }
@@ -358,7 +371,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     @Override
     public Coord4D getAdjacentConnectableTransmitterCoord(Direction side) {
         Coord4D sideCoord = coord().offset(side);
-        TileEntity potentialTransmitterTile = MekanismUtils.getTileEntity(world(), sideCoord.getPos());
+        TileEntity potentialTransmitterTile = MekanismUtils.getTileEntity(world, sideCoord.getPos());
         if (!canConnectMutual(side, potentialTransmitterTile)) {
             return null;
         }
@@ -387,7 +400,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
 
     @Override
     public NETWORK getExternalNetwork(Coord4D from) {
-        TileEntity tile = MekanismUtils.getTileEntity(world(), from.getPos());
+        TileEntity tile = MekanismUtils.getTileEntity(world, from.getPos());
         if (tile instanceof IGridTransmitter) {
             IGridTransmitter<?, ?, ?> transmitter = (IGridTransmitter<?, ?, ?>) tile;
             if (getTransmissionType().checkTransmissionType(transmitter)) {
@@ -548,9 +561,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
     }
 
-    /**
-     * Only call on the server
-     */
     @Override
     public void requestsUpdate() {
         if (canHaveIncompatibleNetworks()) {
@@ -983,10 +993,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return ActionResultType.PASS;
     }
 
-    public EnumColor getRenderColor() {
-        return null;
-    }
-
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         if (!isRemote() && handlesRedstone()) {
@@ -1021,64 +1027,5 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
 
     public void notifyTileChange() {
         MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
-    }
-
-    @Override
-    public boolean canRenderBreaking() {
-        //TODO - V10: Remove this? I believe it is either not used anymore or at least mojang did a better job at rendering breaking on TEs
-        // Experiment with this being removed
-        return false;
-    }
-
-    public static boolean connectionMapContainsSide(byte connections, Direction side) {
-        byte tester = (byte) (1 << side.ordinal());
-        return (connections & tester) > 0;
-    }
-
-    public static byte setConnectionBit(byte connections, boolean toSet, Direction side) {
-        return (byte) ((connections & ~(byte) (1 << side.ordinal())) | (byte) ((toSet ? 1 : 0) << side.ordinal()));
-    }
-
-    public static ConnectionType getConnectionType(Direction side, byte allConnections, byte transmitterConnections, ConnectionType[] types) {
-        if (!connectionMapContainsSide(allConnections, side)) {
-            return ConnectionType.NONE;
-        } else if (connectionMapContainsSide(transmitterConnections, side)) {
-            return ConnectionType.NORMAL;
-        }
-        return types[side.ordinal()];
-    }
-
-    public enum ConnectionType implements IIncrementalEnum<ConnectionType>, IStringSerializable, IHasTranslationKey {
-        NORMAL(MekanismLang.CONNECTION_NORMAL),
-        PUSH(MekanismLang.CONNECTION_PUSH),
-        PULL(MekanismLang.CONNECTION_PULL),
-        NONE(MekanismLang.CONNECTION_NONE);
-
-        private static final ConnectionType[] TYPES = values();
-        private final ILangEntry langEntry;
-
-        ConnectionType(ILangEntry langEntry) {
-            this.langEntry = langEntry;
-        }
-
-        @Override
-        public String getName() {
-            return name().toLowerCase(Locale.ROOT);
-        }
-
-        @Override
-        public String getTranslationKey() {
-            return langEntry.getTranslationKey();
-        }
-
-        @Nonnull
-        @Override
-        public ConnectionType byIndex(int index) {
-            return byIndexStatic(index);
-        }
-
-        public static ConnectionType byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(TYPES, index);
-        }
     }
 }

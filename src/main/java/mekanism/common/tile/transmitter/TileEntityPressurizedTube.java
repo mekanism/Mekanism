@@ -27,6 +27,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyGasHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.content.transmitter.GasNetwork;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
