@@ -205,14 +205,14 @@ public class TransmitterNetworkRegistry {
 
     public class OrphanPathFinder<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> {
 
-        public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> startPoint;
+        public final TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> startPoint;
 
-        public Set<Coord4D> iterated = new ObjectOpenHashSet<>();
+        public final Set<Coord4D> iterated = new ObjectOpenHashSet<>();
 
-        public Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> connectedTransmitters = new ObjectOpenHashSet<>();
-        public Set<NETWORK> networksFound = new ObjectOpenHashSet<>();
+        public final Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> connectedTransmitters = new ObjectOpenHashSet<>();
+        public final Set<NETWORK> networksFound = new ObjectOpenHashSet<>();
 
-        private Deque<Coord4D> queue = new LinkedList<>();
+        private final Deque<Coord4D> queue = new LinkedList<>();
 
         public OrphanPathFinder(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> start) {
             startPoint = start;
@@ -245,7 +245,7 @@ public class TransmitterNetworkRegistry {
                     transmitter.setOrphan(false);
 
                     for (Direction direction : EnumUtils.DIRECTIONS) {
-                        if (direction.getAxis().isHorizontal() && !transmitter.world().isBlockPresent(from.getPos().offset(direction))) {
+                        if (direction.getAxis().isHorizontal() && !transmitter.getWorld().isBlockPresent(from.getPos().offset(direction))) {
                             continue;
                         }
                         Coord4D directionCoord = transmitter.getAdjacentConnectableTransmitterCoord(direction);

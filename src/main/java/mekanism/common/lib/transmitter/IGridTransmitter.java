@@ -9,7 +9,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 
 public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> {
 
@@ -57,9 +56,6 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     FloatingLong getCapacityAsFloatingLong();
 
     long getCapacity();
-
-    //TODO: Remove the need for this?
-    World world();
 
     //TODO: Remove the need for this?
     Coord4D coord();

@@ -75,7 +75,7 @@ public final class TransporterPathfinder {
         if (response.getSendingAmount() >= min) {
             Coord4D dest = data.getLocation();
             CachedPath test = PathfinderCache.getCache(start, dest, data.getSides());
-            if (test != null && checkPath(start.world(), test.getPath(), stack, chunkMap)) {
+            if (test != null && checkPath(start.getWorld(), test.getPath(), stack, chunkMap)) {
                 return new Destination(test.getPath(), false, response, test.getCost());
             }
             Pathfinder p = new Pathfinder(new DestChecker() {
@@ -83,7 +83,7 @@ public final class TransporterPathfinder {
                 public boolean isValid(TransporterStack stack, Direction dir, TileEntity tile) {
                     return TransporterUtils.canInsert(tile, stack.color, response.getStack(), dir, false);
                 }
-            }, start.world(), dest, start.coord(), stack, chunkMap);
+            }, start.getWorld(), dest, start.coord(), stack, chunkMap);
             List<Coord4D> path = p.getPath();
             if (path.size() >= 2) {
                 PathfinderCache.addCachedPath(start, new PathData(start.coord(), dest, p.getSide()), path, p.finalScore);
@@ -140,7 +140,7 @@ public final class TransporterPathfinder {
                 public boolean isValid(TransporterStack stack, Direction side, TileEntity tile) {
                     return TransporterUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
                 }
-            }, start.world(), stack.homeLocation, start.coord(), stack, chunkMap);
+            }, start.getWorld(), stack.homeLocation, start.coord(), stack, chunkMap);
             List<Coord4D> path = p.getPath();
             if (path.size() >= 2) {
                 return Pair.of(path, Path.HOME);
@@ -148,7 +148,7 @@ public final class TransporterPathfinder {
             stack.homeLocation = null;
         }
 
-        IdlePath d = new IdlePath(start.world(), start.coord(), stack);
+        IdlePath d = new IdlePath(start.getWorld(), start.coord(), stack);
         Destination dest = d.find(chunkMap);
         if (dest == null) {
             return null;
@@ -421,7 +421,7 @@ public final class TransporterPathfinder {
             //Check to make sure that it is the destination
             if (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborTile) && startTile instanceof TileEntityLogisticalTransporter) {
                 TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter) startTile;
-                if (transporter.canEmitTo(neighborTile, direction) || (finalNode.equals(transportStack.homeLocation) && transporter.canConnect(direction))) {
+                if (transporter.canEmitTo(direction) || (finalNode.equals(transportStack.homeLocation) && transporter.canConnect(direction))) {
                     //If it is and we can emit to it (normal or push mode),
                     // or it is the home location of the stack (it is returning back due to not having been able to get to its destination)
                     // and we can connect to it (normal, push, or pull (should always be pull as otherwise canEmitTo would have been true)),

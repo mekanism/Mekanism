@@ -98,7 +98,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         color = c;
     }
 
-    public boolean canEmitTo(TileEntity tile, Direction side) {
+    public boolean canEmitTo(Direction side) {
         if (!canConnect(side)) {
             return false;
         }
@@ -106,7 +106,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PUSH;
     }
 
-    public boolean canReceiveFrom(TileEntity tile, Direction side) {
+    public boolean canReceiveFrom(Direction side) {
         if (!canConnect(side)) {
             return false;
         }
@@ -228,7 +228,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
             if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                 //Notify clients, so that we send the information before we start clearing our lists
-                Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), world, coord.getPos());
+                Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), world, getPos());
                 // Now remove any entries from transit that have been deleted
                 deletes.forEach((IntConsumer) (this::deleteStack));
 
@@ -364,7 +364,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     @Override
-    protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
+    protected ActionResultType onConfigure(PlayerEntity player, Direction side) {
         TransporterUtils.incrementColor(this);
         PathfinderCache.onChanged(getTransmitterNetwork());
         sendUpdatePacket();
@@ -531,12 +531,13 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        Direction from = coord().sideDifference(Coord4D.get(outputter)).getOpposite();
+        Coord4D outputterCoord = Coord4D.get(outputter);
+        Direction from = coord().sideDifference(outputterCoord).getOpposite();
         TransporterStack stack = new TransporterStack();
-        stack.originalLocation = Coord4D.get(outputter);
-        stack.homeLocation = Coord4D.get(outputter);
+        stack.originalLocation = outputterCoord;
+        stack.homeLocation = outputterCoord;
         stack.color = color;
-        if (!canReceiveFrom(outputter, from) || !stack.canInsertToTransporter(this, from, outputter)) {
+        if (!canReceiveFrom(from) || !stack.canInsertToTransporter(this, from, outputter)) {
             return request.getEmptyResponse();
         }
         TransitResponse response = stack.recalculateRRPath(request, outputter, this, min);

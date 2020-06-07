@@ -1,11 +1,12 @@
 package mekanism.common.lib.multiblock;
 
+import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.ToIntFunction;
-import com.google.common.collect.Sets;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.lib.math.voxel.BlockPosBuilder;
 import mekanism.common.lib.math.voxel.VoxelPlane;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
@@ -22,8 +23,8 @@ public class Structure {
 
     private final Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
 
-    private final Map<Axis, TreeMap<Integer, VoxelPlane>> minorPlaneMap = new Object2ObjectOpenHashMap<>();
-    private final Map<Axis, TreeMap<Integer, VoxelPlane>> planeMap = new Object2ObjectOpenHashMap<>();
+    private final Map<Axis, TreeMap<Integer, VoxelPlane>> minorPlaneMap = new EnumMap<>(Axis.class);
+    private final Map<Axis, TreeMap<Integer, VoxelPlane>> planeMap = new EnumMap<>(Axis.class);
 
     private boolean valid;
 
@@ -172,7 +173,7 @@ public class Structure {
                 multiblock.resetStructure(multiblock.getManager());
             }
         } else if (node instanceof IStructuralMultiblock) {
-            ((IStructuralMultiblock) node).resetStructure(null);
+            node.resetStructure(null);
         }
         FormationProtocol.explore(node.getTilePos(), pos -> {
             if (pos.equals(node.getTilePos()))
@@ -192,7 +193,7 @@ public class Structure {
                         }
                     } else if (node instanceof IStructuralMultiblock) {
                         // validate from the perspective of the IMultiblock
-                        if (!hasStructure((IStructuralMultiblock) node, (IMultiblock<?>) adj)) {
+                        if (!hasStructure(node, (IMultiblock<?>) adj)) {
                             validate(adj);
                         }
                         return false;
@@ -231,7 +232,7 @@ public class Structure {
     private static void mergeStructures(IMultiblockBase node, IMultiblockBase adj, MultiblockManager<?> manager) {
         Structure nodeStructure = node.getStructure(manager);
         Structure adjStructure = adj.getStructure(manager);
-        Structure changed = null;
+        Structure changed;
 
         // merge into the bigger structure for efficiency
         if (nodeStructure.size() > adjStructure.size()) {

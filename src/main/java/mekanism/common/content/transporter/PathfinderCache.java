@@ -45,8 +45,8 @@ public class PathfinderCache {
 
     public static class CachedPath {
 
-        private List<Coord4D> path;
-        private double cost;
+        private final List<Coord4D> path;
+        private final double cost;
 
         public CachedPath(List<Coord4D> path, double cost) {
             this.path = path;

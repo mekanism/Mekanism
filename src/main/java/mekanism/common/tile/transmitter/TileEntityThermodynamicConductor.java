@@ -45,7 +45,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     public double clientTemperature = HeatAPI.AMBIENT_TEMP;
 
     private final List<IHeatCapacitor> capacitors;
-    public BasicHeatCapacitor buffer;
+    public final BasicHeatCapacitor buffer;
 
     public TileEntityThermodynamicConductor(IBlockProvider blockProvider) {
         super(blockProvider);

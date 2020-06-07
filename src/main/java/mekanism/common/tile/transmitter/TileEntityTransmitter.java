@@ -30,7 +30,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.lib.transmitter.IBlockableConnection;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.base.CapabilityTileEntity;
@@ -56,7 +55,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -67,7 +65,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 //TODO - V10: Re-order various methods that are in this class
 public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> extends CapabilityTileEntity implements
-      IBlockableConnection, IConfigurable, ITickableTileEntity, IAlloyInteraction, IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> {
+      IConfigurable, ITickableTileEntity, IAlloyInteraction, IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> {
 
     public static final ModelProperty<TransmitterModelData> TRANSMITTER_PROPERTY = new ModelProperty<>();
 
@@ -103,7 +101,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
 
     public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
                                                ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
-    public TileEntity[] cachedAcceptors = new TileEntity[6];
+    public final TileEntity[] cachedAcceptors = new TileEntity[6];
 
     public NETWORK theNetwork = null;
     public boolean orphaned = true;
@@ -112,11 +110,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         super(((IHasTileEntity<? extends TileEntityTransmitter<?, ?, ?>>) blockProvider.getBlock()).getTileType());
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION_CAPABILITY, this));
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
-    }
-
-    @Override
-    public World world() {
-        return getWorld();
     }
 
     @Override
@@ -331,9 +324,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
                 //If it is a transmitter, only allow declare it as valid, if we don't have a combination
                 // of a transmitter with a network and an orphaned transmitter, but only bother if
                 // we can have incompatible networks
-                if (hasTransmitterNetwork() && other.isOrphan()) {
-                    return false;
-                } else if (other.hasTransmitterNetwork() && isOrphan()) {
+                if (hasTransmitterNetwork() && other.isOrphan() || other.hasTransmitterNetwork() && isOrphan()) {
                     return false;
                 }
             }
@@ -396,9 +387,9 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
 
     @Override
     public NETWORK getExternalNetwork(Coord4D from) {
-        TileEntityTransmitter<?, ?, ?> transmitter = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, from.getPos());
+        TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, from.getPos());
         if (transmitter != null && getTransmissionType().checkTransmissionType(transmitter)) {
-            return ((TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>) transmitter).getTransmitterNetwork();
+            return transmitter.getTransmitterNetwork();
         }
         return null;
     }
@@ -439,7 +430,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         };
     }
 
-    @Override
     public boolean canConnectMutual(Direction side, @Nullable TileEntity cachedTile) {
         if (!canConnect(side)) {
             return false;
@@ -448,10 +438,9 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
             //If we don't already have the tile that is on the side calculated, do so
             cachedTile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         }
-        return !(cachedTile instanceof IBlockableConnection) || ((IBlockableConnection) cachedTile).canConnect(side.getOpposite());
+        return !(cachedTile instanceof TileEntityTransmitter) || ((TileEntityTransmitter<?, ?, ?>) cachedTile).canConnect(side.getOpposite());
     }
 
-    @Override
     public boolean canConnect(Direction side) {
         if (connectionTypes[side.ordinal()] == ConnectionType.NONE) {
             return false;
@@ -484,9 +473,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
             List<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> list = new ArrayList<>(transmitterNetwork.getTransmitters());
             list.sort((o1, o2) -> {
                 if (o1 != null && o2 != null) {
-                    BlockPos o1Pos = o1.coord().getPos();
-                    BlockPos o2Pos = o2.coord().getPos();
-                    return Double.compare(o1Pos.distanceSq(getPos()), o2Pos.distanceSq(getPos()));
+                    return Double.compare(o1.getPos().distanceSq(pos), o2.getPos().distanceSq(pos));
                 }
                 return 0;
             });
@@ -767,7 +754,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
             //This fixes pipes not reconnecting cross chunk
             for (Direction side : EnumUtils.DIRECTIONS) {
                 if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
-                    TileEntityTransmitter tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, getWorld(), getPos().offset(side));
+                    TileEntityTransmitter<?, ?, ?> tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, getWorld(), getPos().offset(side));
                     if (tile != null) {
                         tile.refreshConnections(side.getOpposite());
                     }
@@ -944,9 +931,19 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
             if (result == null) {
                 return ActionResultType.PASS;
             }
-            Direction hitSide = sideHit(result.hit.subHit + 1);
-            if (hitSide == null) {
-                if (connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, 6, side) == ActionResultType.SUCCESS) {
+            List<Direction> list = new ArrayList<>();
+            byte connections = getAllCurrentConnections();
+            for (Direction dir : EnumUtils.DIRECTIONS) {
+                if (connectionMapContainsSide(connections, dir)) {
+                    list.add(dir);
+                }
+            }
+            Direction hitSide;
+            int boxIndex = result.hit.subHit + 1;
+            if (boxIndex < list.size()) {
+                hitSide = list.get(boxIndex);
+            } else {
+                if (connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, side) == ActionResultType.SUCCESS) {
                     //Refresh/notify so that we actually update the block and how it can connect given color or things might have changed
                     refreshConnections();
                     notifyTileChange();
@@ -965,21 +962,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return ActionResultType.SUCCESS;
     }
 
-    protected Direction sideHit(int boxIndex) {
-        List<Direction> list = new ArrayList<>();
-        for (Direction side : EnumUtils.DIRECTIONS) {
-            byte connections = getAllCurrentConnections();
-            if (connectionMapContainsSide(connections, side)) {
-                list.add(side);
-            }
-        }
-        if (boxIndex < list.size()) {
-            return list.get(boxIndex);
-        }
-        return null;
-    }
-
-    protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
+    protected ActionResultType onConfigure(PlayerEntity player, Direction side) {
         return ActionResultType.PASS;
     }
 

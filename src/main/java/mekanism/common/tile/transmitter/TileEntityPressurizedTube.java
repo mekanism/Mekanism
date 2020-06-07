@@ -50,7 +50,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     public GasStack saveShare = GasStack.EMPTY;
     private final List<IGasTank> tanks;
-    public BasicGasTank buffer;
+    public final BasicGasTank buffer;
 
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
         super(blockProvider);

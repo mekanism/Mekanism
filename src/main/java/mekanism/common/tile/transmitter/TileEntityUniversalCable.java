@@ -43,7 +43,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     public final CableTier tier;
 
     private final List<IEnergyContainer> energyContainers;
-    public BasicEnergyContainer buffer;
+    public final BasicEnergyContainer buffer;
     public FloatingLong lastWrite = FloatingLong.ZERO;
 
     public TileEntityUniversalCable(IBlockProvider blockProvider) {

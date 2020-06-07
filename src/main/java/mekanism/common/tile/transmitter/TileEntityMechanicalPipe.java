@@ -49,7 +49,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Nonnull
     public FluidStack saveShare = FluidStack.EMPTY;
     private final List<IExtendedFluidTank> tanks;
-    public BasicFluidTank buffer;
+    public final BasicFluidTank buffer;
 
     public TileEntityMechanicalPipe(IBlockProvider blockProvider) {
         super(blockProvider);

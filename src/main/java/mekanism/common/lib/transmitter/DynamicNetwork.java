@@ -22,14 +22,14 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements INetworkDataHandler, IHasTextComponent {
 
-    protected Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectLinkedOpenHashSet<>();
-    protected Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectOpenHashSet<>();
+    protected final Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectLinkedOpenHashSet<>();
+    protected final Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectOpenHashSet<>();
 
-    protected Set<Coord4D> possibleAcceptors = new ObjectOpenHashSet<>();
-    protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
-    protected Map<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
+    protected final Set<Coord4D> possibleAcceptors = new ObjectOpenHashSet<>();
+    protected final Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
+    protected final Map<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
     protected Range3D packetRange = null;
-    protected Set<ChunkPos> chunks = new ObjectOpenHashSet<>();
+    protected final Set<ChunkPos> chunks = new ObjectOpenHashSet<>();
     protected long capacity;
     protected boolean needsUpdate = false;
     @Nullable
@@ -69,7 +69,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 if (transmitter != null && transmitter.isValid()) {
                     addedValidTransmitters = true;
                     if (world == null) {
-                        world = transmitter.world();
+                        world = transmitter.getWorld();
                     }
 
                     for (Direction side : EnumUtils.DIRECTIONS) {
@@ -81,7 +81,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                     updateCapacity(transmitter);
                     absorbBuffer(transmitter);
                     transmitters.add(transmitter);
-                    chunks.add(new ChunkPos(transmitter.coord().getPos()));
+                    chunks.add(new ChunkPos(transmitter.getPos()));
                 }
             }
             transmittersToAdd.clear();
@@ -112,7 +112,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     public void updateTransmitterOnSide(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
         ACCEPTOR acceptor = transmitter.getAcceptor(side);
         Coord4D acceptorCoord = transmitter.coord().offset(side);
-        EnumSet<Direction> directions = acceptorDirections.get(acceptorCoord);
+        Set<Direction> directions = acceptorDirections.get(acceptorCoord);
 
         if (acceptor != null) {
             possibleAcceptors.add(acceptorCoord);
@@ -217,6 +217,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public Range3D getPacketRange() {
+        //TODO: FIXME? It never updates the value of packetRange
         return packetRange == null ? genPacketRange() : packetRange;
     }
 
@@ -244,7 +245,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 maxZ = coord.z;
             }
         }
-        return new Range3D(minX, minZ, maxX, maxZ, initTransmitter.world().getDimension().getType());
+        return new Range3D(minX, minZ, maxX, maxZ, initTransmitter.getWorld().getDimension().getType());
     }
 
     public void register() {

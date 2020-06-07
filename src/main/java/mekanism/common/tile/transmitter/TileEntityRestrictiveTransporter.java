@@ -24,7 +24,7 @@ public class TileEntityRestrictiveTransporter extends TileEntityLogisticalTransp
     }
 
     @Override
-    protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
+    protected ActionResultType onConfigure(PlayerEntity player, Direction side) {
         return ActionResultType.PASS;
     }
 

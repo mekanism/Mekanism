@@ -201,7 +201,7 @@ public class TransporterStack {
     }
 
     public Coord4D getNext(TileEntityLogisticalTransporter transporter) {
-        if (!transporter.world().isRemote) {
+        if (!transporter.isRemote()) {
             int index = pathToTarget.indexOf(transporter.coord()) - 1;
             if (index < 0) {
                 return null;
@@ -212,7 +212,7 @@ public class TransporterStack {
     }
 
     public Coord4D getPrev(TileEntityLogisticalTransporter transporter) {
-        if (!transporter.world().isRemote) {
+        if (!transporter.isRemote()) {
             int index = pathToTarget.indexOf(transporter.coord()) + 1;
             if (index < pathToTarget.size()) {
                 return pathToTarget.get(index);

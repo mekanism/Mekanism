@@ -61,15 +61,13 @@ public final class TransporterUtils {
     }
 
     public static void drop(TileEntityLogisticalTransporter tile, TransporterStack stack) {
-        float[] pos;
+        BlockPos blockPos = tile.getPos();
         if (stack.hasPath()) {
-            pos = TransporterUtils.getStackPosition(tile, stack, 0);
-        } else {
-            pos = new float[]{0, 0, 0};
+            float[] pos = TransporterUtils.getStackPosition(tile, stack, 0);
+            blockPos = blockPos.add(pos[0], pos[1], pos[2]);
         }
         TransporterManager.remove(stack);
-        BlockPos blockPos = new BlockPos(tile.coord().x + pos[0], tile.coord().y + pos[1], tile.coord().z + pos[2]);
-        Block.spawnAsEntity(tile.world(), blockPos, stack.itemStack);
+        Block.spawnAsEntity(tile.getWorld(), blockPos, stack.itemStack);
     }
 
     public static float[] getStackPosition(TileEntityLogisticalTransporter tile, TransporterStack stack, float partial) {

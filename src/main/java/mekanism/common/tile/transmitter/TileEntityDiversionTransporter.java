@@ -78,7 +78,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
+    protected ActionResultType onConfigure(PlayerEntity player, Direction side) {
         int newMode = (modes[side.ordinal()] + 1) % 3;
         ILangEntry langEntry;
         modes[side.ordinal()] = newMode;
