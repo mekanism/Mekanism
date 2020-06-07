@@ -14,7 +14,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.render.obj.TransmitterModelConfiguration.IconStatus;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
@@ -84,8 +84,8 @@ public class TransmitterBakedModel implements IBakedModel {
         if (side != null) {
             return ImmutableList.of();
         }
-        if (extraData.hasProperty(TileEntitySidedPipe.TRANSMITTER_PROPERTY)) {
-            TransmitterModelData data = extraData.getData(TileEntitySidedPipe.TRANSMITTER_PROPERTY);
+        if (extraData.hasProperty(TileEntityTransmitter.TRANSMITTER_PROPERTY)) {
+            TransmitterModelData data = extraData.getData(TileEntityTransmitter.TRANSMITTER_PROPERTY);
             RenderType layer = MinecraftForgeClient.getRenderLayer();
             boolean hasColor = data.getHasColor() && layer == RenderType.getTranslucent();
             QuickHash hash = new QuickHash(data.getConnectionsMap(), hasColor);

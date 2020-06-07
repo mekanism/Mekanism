@@ -7,9 +7,9 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
-import mekanism.common.content.transmitter.TransmitterImpl;
+import mekanism.common.content.transmitter.Transmitter;
 import mekanism.common.content.transmitter.grid.GasNetwork;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -25,7 +25,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
     @Override
     protected void render(TileEntityPressurizedTube tube, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = tube.getTransmitter();
+        Transmitter<IGasHandler, GasNetwork, GasStack> transmitter = tube.getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
             GasNetwork network = transmitter.getTransmitterNetwork();
             if (!network.lastGas.isEmptyType() && !network.gasTank.isEmpty() && network.gasScale > 0) {

@@ -6,8 +6,8 @@ import javax.annotation.Nullable;
 import com.google.common.base.Predicate;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.tile.transmitter.TileEntityTransmitter.ConnectionType;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -20,7 +20,7 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
 
     public TransmitterModelConfiguration(IModelConfiguration internal, List<String> visibleGroups, @Nonnull IModelData modelData) {
         super(internal, visibleGroups);
-        this.modelData = modelData.getData(TileEntitySidedPipe.TRANSMITTER_PROPERTY);
+        this.modelData = modelData.getData(TileEntityTransmitter.TRANSMITTER_PROPERTY);
     }
 
     @Nullable

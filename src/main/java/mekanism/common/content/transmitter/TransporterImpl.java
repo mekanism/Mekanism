@@ -22,7 +22,7 @@ import mekanism.common.network.PacketTransporterUpdate;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.tile.transmitter.TileEntityTransmitter.ConnectionType;
 import mekanism.common.content.transmitter.grid.InventoryNetwork;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -34,7 +34,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwork, Void> implements ILogisticalTransporter {
+public class TransporterImpl extends Transmitter<TileEntity, InventoryNetwork, Void> implements ILogisticalTransporter {
 
     private final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();

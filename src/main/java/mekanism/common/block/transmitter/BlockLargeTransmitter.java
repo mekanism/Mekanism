@@ -1,6 +1,6 @@
 package mekanism.common.block.transmitter;
 
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.tile.transmitter.TileEntityTransmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.util.Direction;

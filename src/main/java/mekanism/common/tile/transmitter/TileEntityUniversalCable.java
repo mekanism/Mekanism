@@ -22,13 +22,13 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.resolver.advanced.AdvancedEnergyCapabilityResolver;
+import mekanism.common.content.transmitter.Transmitter;
+import mekanism.common.content.transmitter.grid.EnergyNetwork;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.CableTier;
-import mekanism.common.content.transmitter.TransmitterImpl;
-import mekanism.common.content.transmitter.grid.EnergyNetwork;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.CableUtils;
@@ -286,7 +286,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     public CompoundNBT getUpdateTag() {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
         CompoundNBT updateTag = super.getUpdateTag();
-        TransmitterImpl<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter = getTransmitter();
+        Transmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter = getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
             updateTag.putString(NBTConstants.ENERGY_STORED, transmitter.getTransmitterNetwork().energyContainer.getEnergy().toString());
             updateTag.putFloat(NBTConstants.SCALE, transmitter.getTransmitterNetwork().energyScale);

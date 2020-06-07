@@ -22,12 +22,12 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.proxy.ProxyFluidHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
+import mekanism.common.content.transmitter.Transmitter;
+import mekanism.common.content.transmitter.grid.FluidNetwork;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.PipeTier;
-import mekanism.common.content.transmitter.TransmitterImpl;
-import mekanism.common.content.transmitter.grid.FluidNetwork;
 import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
@@ -320,7 +320,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public CompoundNBT getUpdateTag() {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
         CompoundNBT updateTag = super.getUpdateTag();
-        TransmitterImpl<IFluidHandler, FluidNetwork, FluidStack> transmitter = getTransmitter();
+        Transmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter = getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
             updateTag.put(NBTConstants.FLUID_STORED, transmitter.getTransmitterNetwork().lastFluid.writeToNBT(new CompoundNBT()));
             updateTag.putFloat(NBTConstants.SCALE, transmitter.getTransmitterNetwork().fluidScale);

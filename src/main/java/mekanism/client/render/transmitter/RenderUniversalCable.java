@@ -7,9 +7,9 @@ import mekanism.api.math.FloatingLong;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.tile.transmitter.TileEntityUniversalCable;
-import mekanism.common.content.transmitter.TransmitterImpl;
+import mekanism.common.content.transmitter.Transmitter;
 import mekanism.common.content.transmitter.grid.EnergyNetwork;
+import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -25,7 +25,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
     @Override
     protected void render(TileEntityUniversalCable cable, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        TransmitterImpl<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter = cable.getTransmitter();
+        Transmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter = cable.getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
             EnergyNetwork network = transmitter.getTransmitterNetwork();
             //Note: We don't check if the network is empty as we don't actually ever sync the energy value to the client

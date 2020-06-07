@@ -5,11 +5,11 @@ import java.util.UUID;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
-import mekanism.common.content.transmitter.TransmitterImpl;
+import mekanism.common.content.transmitter.Transmitter;
+import mekanism.common.lib.transmitter.DynamicNetwork;
+import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.util.text.ITextComponent;
@@ -80,10 +80,10 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
         if (!isRemote()) {
             double newSumTemp = 0, newHeatLost = 0, newHeatTransferred = 0;
             for (IGridTransmitter<IHeatHandler, HeatNetwork, Void> transmitter : transmitters) {
-                if (transmitter instanceof TransmitterImpl) {
+                if (transmitter instanceof Transmitter) {
                     // change this when we re-integrate with multipart
-                    if (((TransmitterImpl<?, ?, ?>) transmitter).containingTile instanceof ITileHeatHandler) {
-                        ITileHeatHandler heatTile = (ITileHeatHandler) ((TransmitterImpl<?, ?, ?>) transmitter).containingTile;
+                    if (((Transmitter<?, ?, ?>) transmitter).containingTile instanceof ITileHeatHandler) {
+                        ITileHeatHandler heatTile = (ITileHeatHandler) ((Transmitter<?, ?, ?>) transmitter).containingTile;
                         HeatTransfer transfer = heatTile.simulate();
                         heatTile.updateHeatCapacitors(null);
                         newHeatTransferred += transfer.getAdjacentTransfer();

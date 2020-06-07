@@ -2,11 +2,11 @@ package mekanism.common.distribution.target;
 
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.lib.transmitter.IGridTransmitter;
-import mekanism.common.distribution.SplitInfo;
-import mekanism.common.tile.transmitter.TileEntityUniversalCable;
-import mekanism.common.content.transmitter.TransmitterImpl;
+import mekanism.common.content.transmitter.Transmitter;
 import mekanism.common.content.transmitter.grid.EnergyNetwork;
+import mekanism.common.distribution.SplitInfo;
+import mekanism.common.lib.transmitter.IGridTransmitter;
+import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 
@@ -28,8 +28,8 @@ public class EnergyTransmitterSaveTarget extends Target<IGridTransmitter<IStrict
 
     public void saveShare(Direction handlerDirection) {
         IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter = handlers.get(handlerDirection);
-        if (transmitter instanceof TransmitterImpl<?, ?, ?>) {
-            TileEntity tile = ((TransmitterImpl<?, ?, ?>) transmitter).getTileEntity();
+        if (transmitter instanceof Transmitter) {
+            TileEntity tile = ((Transmitter<?, ?, ?>) transmitter).getTileEntity();
             if (tile instanceof TileEntityUniversalCable) {
                 TileEntityUniversalCable cable = (TileEntityUniversalCable) tile;
                 if (!currentStored.isZero() || !cable.lastWrite.isZero()) {

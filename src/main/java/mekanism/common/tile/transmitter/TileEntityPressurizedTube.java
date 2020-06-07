@@ -26,12 +26,12 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyGasHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
+import mekanism.common.content.transmitter.Transmitter;
+import mekanism.common.content.transmitter.grid.GasNetwork;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TubeTier;
-import mekanism.common.content.transmitter.TransmitterImpl;
-import mekanism.common.content.transmitter.grid.GasNetwork;
 import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
@@ -321,7 +321,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public CompoundNBT getUpdateTag() {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
         CompoundNBT updateTag = super.getUpdateTag();
-        TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = getTransmitter();
+        Transmitter<IGasHandler, GasNetwork, GasStack> transmitter = getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
             updateTag.put(NBTConstants.GAS_STORED, transmitter.getTransmitterNetwork().lastGas.write(new CompoundNBT()));
             updateTag.putFloat(NBTConstants.SCALE, transmitter.getTransmitterNetwork().gasScale);

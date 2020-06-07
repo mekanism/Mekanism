@@ -1,6 +1,6 @@
 package mekanism.common.upgrade.transmitter;
 
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.tile.transmitter.TileEntityTransmitter.ConnectionType;
 import mekanism.common.content.transmitter.TransporterImpl;
 import net.minecraft.nbt.CompoundNBT;
 
