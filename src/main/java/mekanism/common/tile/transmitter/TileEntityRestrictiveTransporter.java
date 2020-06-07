@@ -1,16 +1,13 @@
 package mekanism.common.tile.transmitter;
 
-import mekanism.api.tier.AlloyTier;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.registries.MekanismBlocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import mekanism.common.tier.TransporterTier;
 
-public class TileEntityRestrictiveTransporter extends TileEntityLogisticalTransporter {
+public class TileEntityRestrictiveTransporter extends TileEntityLogisticalTransporterBase {
 
     public TileEntityRestrictiveTransporter() {
-        super(MekanismBlocks.RESTRICTIVE_TRANSPORTER);
+        super(MekanismBlocks.RESTRICTIVE_TRANSPORTER, TransporterTier.BASIC);
     }
 
     @Override
@@ -20,16 +17,6 @@ public class TileEntityRestrictiveTransporter extends TileEntityLogisticalTransp
 
     @Override
     public double getCost() {
-        return 1000;
-    }
-
-    @Override
-    protected ActionResultType onConfigure(PlayerEntity player, Direction side) {
-        return ActionResultType.PASS;
-    }
-
-    @Override
-    protected boolean canUpgrade(AlloyTier tier) {
-        return false;
+        return 1_000;
     }
 }

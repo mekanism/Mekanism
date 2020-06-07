@@ -11,7 +11,7 @@ import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
@@ -60,7 +60,7 @@ public class TransporterStack {
         return stack;
     }
 
-    public void write(TileEntityLogisticalTransporter transporter, PacketBuffer buf) {
+    public void write(TileEntityLogisticalTransporterBase transporter, PacketBuffer buf) {
         buf.writeVarInt(TransporterUtils.getColorIndex(color));
         buf.writeVarInt(progress);
         originalLocation.write(buf);
@@ -88,7 +88,7 @@ public class TransporterStack {
         itemStack = dataStream.readItemStack();
     }
 
-    public void writeToUpdateTag(TileEntityLogisticalTransporter transporter, CompoundNBT updateTag) {
+    public void writeToUpdateTag(TileEntityLogisticalTransporterBase transporter, CompoundNBT updateTag) {
         updateTag.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
         updateTag.putInt(NBTConstants.PROGRESS, progress);
         updateTag.put(NBTConstants.ORIGINAL_LOCATION, originalLocation.write(new CompoundNBT()));
@@ -160,7 +160,7 @@ public class TransporterStack {
         return pathType;
     }
 
-    public TransitResponse recalculatePath(TransitRequest request, TileEntityLogisticalTransporter transporter, int min) {
+    public TransitResponse recalculatePath(TransitRequest request, TileEntityLogisticalTransporterBase transporter, int min) {
         Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min);
         if (newPath == null) {
             return request.getEmptyResponse();
@@ -171,7 +171,7 @@ public class TransporterStack {
         return newPath.getResponse();
     }
 
-    public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporter transporter, int min) {
+    public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporterBase transporter, int min) {
         Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min);
         if (newPath == null) {
             return request.getEmptyResponse();
@@ -182,7 +182,7 @@ public class TransporterStack {
         return newPath.getResponse();
     }
 
-    public boolean calculateIdle(TileEntityLogisticalTransporter transporter) {
+    public boolean calculateIdle(TileEntityLogisticalTransporterBase transporter) {
         Pair<List<Coord4D>, Path> newPath = TransporterPathfinder.getIdlePath(transporter, this);
         if (newPath == null) {
             return false;
@@ -196,11 +196,11 @@ public class TransporterStack {
         return true;
     }
 
-    public boolean isFinal(TileEntityLogisticalTransporter transporter) {
+    public boolean isFinal(TileEntityLogisticalTransporterBase transporter) {
         return pathToTarget.indexOf(transporter.coord()) == (pathType == Path.NONE ? 0 : 1);
     }
 
-    public Coord4D getNext(TileEntityLogisticalTransporter transporter) {
+    public Coord4D getNext(TileEntityLogisticalTransporterBase transporter) {
         if (!transporter.isRemote()) {
             int index = pathToTarget.indexOf(transporter.coord()) - 1;
             if (index < 0) {
@@ -211,7 +211,7 @@ public class TransporterStack {
         return clientNext;
     }
 
-    public Coord4D getPrev(TileEntityLogisticalTransporter transporter) {
+    public Coord4D getPrev(TileEntityLogisticalTransporterBase transporter) {
         if (!transporter.isRemote()) {
             int index = pathToTarget.indexOf(transporter.coord()) + 1;
             if (index < pathToTarget.size()) {
@@ -222,7 +222,7 @@ public class TransporterStack {
         return clientPrev;
     }
 
-    public Direction getSide(TileEntityLogisticalTransporter transporter) {
+    public Direction getSide(TileEntityLogisticalTransporterBase transporter) {
         Direction side = null;
         if (progress < 50) {
             Coord4D prev = getPrev(transporter);
@@ -243,8 +243,8 @@ public class TransporterStack {
     }
 
     public boolean canInsertToTransporter(TileEntity tile, Direction from, @Nullable TileEntity tileFrom) {
-        if (tile instanceof TileEntityLogisticalTransporter) {
-            TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter) tile;
+        if (tile instanceof TileEntityLogisticalTransporterBase) {
+            TileEntityLogisticalTransporterBase transporter = (TileEntityLogisticalTransporterBase) tile;
             if (transporter.getColor() == null || transporter.getColor() == color) {
                 //If the color is valid, make sure that the connection is valid
                 return transporter.canConnectMutual(from.getOpposite(), tileFrom);

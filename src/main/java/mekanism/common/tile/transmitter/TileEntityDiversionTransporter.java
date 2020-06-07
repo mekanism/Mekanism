@@ -4,11 +4,11 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
-import mekanism.api.tier.AlloyTier;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tier.TransporterTier;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -17,12 +17,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 
-public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporter {
+public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporterBase {
 
     public int[] modes = {0, 0, 0, 0, 0, 0};
 
     public TileEntityDiversionTransporter() {
-        super(MekanismBlocks.DIVERSION_TRANSPORTER);
+        super(MekanismBlocks.DIVERSION_TRANSPORTER, TransporterTier.BASIC);
     }
 
     @Override
@@ -106,27 +106,17 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 
     @Override
     public boolean canConnect(Direction side) {
-        if (!super.canConnect(side)) {
-            return false;
+        if (super.canConnect(side)) {
+            int mode = modes[side.ordinal()];
+            boolean redstone = MekanismUtils.isGettingPowered(getWorld(), getPos());
+            return (mode != 2 || !redstone) && (mode != 1 || redstone);
         }
-        int mode = modes[side.ordinal()];
-        boolean redstone = MekanismUtils.isGettingPowered(getWorld(), getPos());
-        return (mode != 2 || !redstone) && (mode != 1 || redstone);
+        return false;
     }
 
     @Nonnull
     @Override
     protected TransmitterModelData initModelData() {
         return new TransmitterModelData.Diversion();
-    }
-
-    @Override
-    public EnumColor getColor() {
-        return null;
-    }
-
-    @Override
-    protected boolean canUpgrade(AlloyTier tier) {
-        return false;
     }
 }

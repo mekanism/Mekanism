@@ -15,7 +15,7 @@ import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.upgrade.BinUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
@@ -80,8 +80,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 TileTransitRequest request = new TileTransitRequest(this, Direction.DOWN);
                 request.addItem(binSlot.getBottomStack(), 0);
                 TransitResponse response;
-                if (tile instanceof TileEntityLogisticalTransporter) {
-                    response = ((TileEntityLogisticalTransporter) tile).insert(this, request, null, true, 0);
+                if (tile instanceof TileEntityLogisticalTransporterBase) {
+                    response = ((TileEntityLogisticalTransporterBase) tile).insert(this, request, null, true, 0);
                 } else {
                     response = request.addToInventory(tile, Direction.DOWN, false);
                 }

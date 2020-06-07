@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.function.Supplier;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,7 +22,7 @@ public class PacketTransporterUpdate {
     private final boolean isSync;
     private final BlockPos pos;
 
-    private TileEntityLogisticalTransporter transporter;
+    private TileEntityLogisticalTransporterBase transporter;
     private int[] modes;
 
     //Sync
@@ -32,19 +32,19 @@ public class PacketTransporterUpdate {
     private Int2ObjectMap<TransporterStack> updates;
     private IntSet deletes;
 
-    public PacketTransporterUpdate(TileEntityLogisticalTransporter tile, int stackId, TransporterStack stack) {
+    public PacketTransporterUpdate(TileEntityLogisticalTransporterBase tile, int stackId, TransporterStack stack) {
         this(tile, true);
         this.stackId = stackId;
         this.stack = stack;
     }
 
-    public PacketTransporterUpdate(TileEntityLogisticalTransporter tile, Int2ObjectMap<TransporterStack> updates, IntSet deletes) {
+    public PacketTransporterUpdate(TileEntityLogisticalTransporterBase tile, Int2ObjectMap<TransporterStack> updates, IntSet deletes) {
         this(tile, false);
         this.updates = updates;
         this.deletes = deletes;
     }
 
-    private PacketTransporterUpdate(TileEntityLogisticalTransporter transporter, boolean isSync) {
+    private PacketTransporterUpdate(TileEntityLogisticalTransporterBase transporter, boolean isSync) {
         this.isSync = isSync;
         this.pos = transporter.getPos();
         this.isDiversion = transporter instanceof TileEntityDiversionTransporter;
@@ -66,7 +66,7 @@ public class PacketTransporterUpdate {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntityLogisticalTransporter tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporter.class, player.world, message.pos);
+            TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, player.world, message.pos);
             if (tile != null) {
                 if (message.isSync) {
                     tile.addStack(message.stackId, message.stack);

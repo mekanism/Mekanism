@@ -968,7 +968,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
 
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        if (!isRemote() && handlesRedstone()) {
+        if (handlesRedstone()) {
             redstoneReactive ^= true;
             refreshConnections();
             notifyTileChange();

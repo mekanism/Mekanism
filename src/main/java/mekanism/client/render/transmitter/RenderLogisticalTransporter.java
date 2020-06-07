@@ -21,7 +21,7 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
@@ -41,7 +41,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 
 @ParametersAreNonnullByDefault
-public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
+public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
 
     private static Map<Direction, Int2ObjectMap<Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static TextureAtlasSprite gunpowderIcon;
@@ -64,7 +64,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     }
 
     @Override
-    protected void render(TileEntityLogisticalTransporter transporter, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+    protected void render(TileEntityLogisticalTransporterBase transporter, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
         Collection<TransporterStack> inTransit = transporter.getTransit();
         BlockPos pos = transporter.getPos();
