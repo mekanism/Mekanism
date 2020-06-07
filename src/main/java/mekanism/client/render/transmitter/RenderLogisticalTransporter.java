@@ -66,7 +66,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     @Override
     protected void render(TileEntityLogisticalTransporter transporter, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        Collection<TransporterStack> inTransit = transporter.getTransmitter().getTransit();
+        Collection<TransporterStack> inTransit = transporter.getTransit();
         BlockPos pos = transporter.getPos();
         if (!inTransit.isEmpty()) {
             matrix.push();
@@ -77,7 +77,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
             for (TransporterStack stack : reducedTransit) {
                 entityItem.setItem(stack.itemStack);
-                float[] stackPos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partial);
+                float[] stackPos = TransporterUtils.getStackPosition(transporter, stack, partial);
                 matrix.push();
                 matrix.translate(stackPos[0], stackPos[1], stackPos[2]);
                 matrix.scale(0.75F, 0.75F, 0.75F);

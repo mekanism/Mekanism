@@ -9,7 +9,6 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
-import mekanism.common.content.transmitter.TransporterImpl;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,14 +45,14 @@ public class PacketTransporterUpdate {
         this.deletes = deletes;
     }
 
-    private PacketTransporterUpdate(TileEntityLogisticalTransporter tile, boolean isSync) {
+    private PacketTransporterUpdate(TileEntityLogisticalTransporter transporter, boolean isSync) {
         this.isSync = isSync;
-        pos = tile.getPos();
-        isDiversion = tile instanceof TileEntityDiversionTransporter;
-        if (isDiversion) {
-            modes = ((TileEntityDiversionTransporter) tile).modes;
+        this.pos = transporter.getPos();
+        this.isDiversion = transporter instanceof TileEntityDiversionTransporter;
+        if (this.isDiversion) {
+            this.modes = ((TileEntityDiversionTransporter) transporter).modes;
         }
-        transporter = tile.getTransmitter();
+        this.transporter = transporter;
     }
 
     private PacketTransporterUpdate(BlockPos pos, boolean isSync, boolean isDiversion) {
@@ -70,15 +69,14 @@ public class PacketTransporterUpdate {
         context.get().enqueueWork(() -> {
             TileEntityLogisticalTransporter tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporter.class, player.world, message.pos);
             if (tile != null) {
-                TransporterImpl transmitter = tile.getTransmitter();
                 if (message.isSync) {
-                    transmitter.addStack(message.stackId, message.stack);
+                    tile.addStack(message.stackId, message.stack);
                 } else {
                     for (Int2ObjectMap.Entry<TransporterStack> entry : message.updates.int2ObjectEntrySet()) {
-                        transmitter.addStack(entry.getIntKey(), entry.getValue());
+                        tile.addStack(entry.getIntKey(), entry.getValue());
                     }
                     for (int toDelete : message.deletes) {
-                        transmitter.deleteStack(toDelete);
+                        tile.deleteStack(toDelete);
                     }
                 }
                 if (message.isDiversion && tile instanceof TileEntityDiversionTransporter) {

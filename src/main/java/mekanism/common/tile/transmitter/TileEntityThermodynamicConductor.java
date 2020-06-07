@@ -26,7 +26,7 @@ import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver
 import mekanism.common.lib.Color;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
-import mekanism.common.content.transmitter.grid.HeatNetwork;
+import mekanism.common.content.transmitter.HeatNetwork;
 import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
@@ -56,12 +56,12 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public HeatNetwork createNewNetwork() {
+    public HeatNetwork createEmptyNetwork() {
         return new HeatNetwork();
     }
 
     @Override
-    public HeatNetwork createNewNetworkWithID(UUID networkID) {
+    public HeatNetwork createEmptyNetworkWithID(UUID networkID) {
         return new HeatNetwork(networkID);
     }
 
@@ -105,7 +105,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public IHeatHandler getCachedAcceptor(Direction side) {
+    public IHeatHandler getAcceptor(Direction side) {
         return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 

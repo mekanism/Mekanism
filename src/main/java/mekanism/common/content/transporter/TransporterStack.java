@@ -253,10 +253,6 @@ public class TransporterStack {
         return false;
     }
 
-    public boolean canInsertToTransporter(ILogisticalTransporter transporter, Direction side, @Nullable TileEntity tileFrom) {
-        return (transporter.getColor() == color || transporter.getColor() == null) && transporter.canConnectMutual(side, tileFrom);
-    }
-
     public Coord4D getDest() {
         return pathToTarget.get(0);
     }

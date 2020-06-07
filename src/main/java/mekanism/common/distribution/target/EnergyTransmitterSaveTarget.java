@@ -2,12 +2,10 @@ package mekanism.common.distribution.target;
 
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.content.transmitter.Transmitter;
-import mekanism.common.content.transmitter.grid.EnergyNetwork;
+import mekanism.common.content.transmitter.EnergyNetwork;
 import mekanism.common.distribution.SplitInfo;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 
 public class EnergyTransmitterSaveTarget extends Target<IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong>, FloatingLong, FloatingLong> {
@@ -28,14 +26,11 @@ public class EnergyTransmitterSaveTarget extends Target<IGridTransmitter<IStrict
 
     public void saveShare(Direction handlerDirection) {
         IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter = handlers.get(handlerDirection);
-        if (transmitter instanceof Transmitter) {
-            TileEntity tile = ((Transmitter<?, ?, ?>) transmitter).getTileEntity();
-            if (tile instanceof TileEntityUniversalCable) {
-                TileEntityUniversalCable cable = (TileEntityUniversalCable) tile;
-                if (!currentStored.isZero() || !cable.lastWrite.isZero()) {
-                    cable.lastWrite = currentStored;
-                    cable.markDirty(false);
-                }
+        if (transmitter instanceof TileEntityUniversalCable) {
+            TileEntityUniversalCable cable = (TileEntityUniversalCable) transmitter;
+            if (!currentStored.isZero() || !cable.lastWrite.isZero()) {
+                cable.lastWrite = currentStored;
+                cable.markDirty(false);
             }
         }
     }

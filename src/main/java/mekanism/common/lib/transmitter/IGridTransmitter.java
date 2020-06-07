@@ -31,7 +31,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     /**
      * Only call on the server
      */
-    void setRequestsUpdate();
+    void requestsUpdate();
 
     int getTransmitterNetworkSize();
 
@@ -50,8 +50,10 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     long getCapacity();
 
+    //TODO: Remove the need for this?
     World world();
 
+    //TODO: Remove the need for this?
     Coord4D coord();
 
     Coord4D getAdjacentConnectableTransmitterCoord(Direction side);
@@ -68,7 +70,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     NETWORK createEmptyNetworkWithID(UUID networkID);
 
-    NETWORK mergeNetworks(Collection<NETWORK> toMerge);
+    NETWORK createNetworkByMerging(Collection<NETWORK> toMerge);
 
     NETWORK getExternalNetwork(Coord4D from);
 

@@ -172,7 +172,7 @@ public class TransmitterNetworkRegistry {
                         logger.info("Merging {} networks with {} new transmitters", finder.networksFound.size(), finder.connectedTransmitters.size());
                     }
                     //TODO: Should we take one of the existing network's uuids?
-                    network = startOrphan.mergeNetworks(finder.networksFound);
+                    network = startOrphan.createNetworkByMerging(finder.networksFound);
             }
 
             network.addNewTransmitters(finder.connectedTransmitters);

@@ -26,8 +26,7 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyGasHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
-import mekanism.common.content.transmitter.Transmitter;
-import mekanism.common.content.transmitter.grid.GasNetwork;
+import mekanism.common.content.transmitter.GasNetwork;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
@@ -94,8 +93,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     private long getAvailablePull() {
-        if (getTransmitter().hasTransmitterNetwork()) {
-            return Math.min(tier.getTubePullAmount(), getTransmitter().getTransmitterNetwork().gasTank.getNeeded());
+        if (hasTransmitterNetwork()) {
+            return Math.min(tier.getTubePullAmount(), getTransmitterNetwork().gasTank.getNeeded());
         }
         return Math.min(tier.getTubePullAmount(), buffer.getNeeded());
     }
@@ -132,8 +131,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (getTransmitter().hasTransmitterNetwork()) {
-            getTransmitter().getTransmitterNetwork().validateSaveShares(getTransmitter());
+        if (hasTransmitterNetwork()) {
+            getTransmitterNetwork().validateSaveShares(this);
         }
         if (saveShare.isEmpty()) {
             nbtTags.remove(NBTConstants.GAS_STORED);
@@ -170,24 +169,24 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
             return true;
         }
         Gas buffer = getBufferWithFallback().getType();
-        if (buffer.isEmptyType() && getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().getPrevTransferAmount() > 0) {
-            buffer = getTransmitter().getTransmitterNetwork().lastGas;
+        if (buffer.isEmptyType() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
+            buffer = getTransmitterNetwork().lastGas;
         }
         TileEntityPressurizedTube other = (TileEntityPressurizedTube) tile;
         Gas otherBuffer = other.getBufferWithFallback().getType();
-        if (otherBuffer.isEmptyType() && other.getTransmitter().hasTransmitterNetwork() && other.getTransmitter().getTransmitterNetwork().getPrevTransferAmount() > 0) {
-            otherBuffer = other.getTransmitter().getTransmitterNetwork().lastGas;
+        if (otherBuffer.isEmptyType() && other.hasTransmitterNetwork() && other.getTransmitterNetwork().getPrevTransferAmount() > 0) {
+            otherBuffer = other.getTransmitterNetwork().lastGas;
         }
         return buffer.isEmptyType() || otherBuffer.isEmptyType() || buffer == otherBuffer;
     }
 
     @Override
-    public GasNetwork createNewNetwork() {
+    public GasNetwork createEmptyNetwork() {
         return new GasNetwork();
     }
 
     @Override
-    public GasNetwork createNewNetworkWithID(UUID networkID) {
+    public GasNetwork createEmptyNetworkWithID(UUID networkID) {
         return new GasNetwork(networkID);
     }
 
@@ -229,16 +228,16 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public GasStack getBufferWithFallback() {
         GasStack buffer = getShare();
         //If we don't have a buffer try falling back to the network's buffer
-        if (buffer.isEmpty() && getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().getBuffer();
+        if (buffer.isEmpty() && hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getBuffer();
         }
         return buffer;
     }
 
     @Override
     public void takeShare() {
-        if (getTransmitter().hasTransmitterNetwork()) {
-            GasNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
+        if (hasTransmitterNetwork()) {
+            GasNetwork transmitterNetwork = getTransmitterNetwork();
             if (!transmitterNetwork.gasTank.isEmpty() && !saveShare.isEmpty()) {
                 long amount = saveShare.getAmount();
                 MekanismUtils.logMismatchedStackSize(transmitterNetwork.gasTank.shrinkStack(amount, Action.EXECUTE), amount);
@@ -252,8 +251,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
      */
     @Nonnull
     private GasStack takeGas(GasStack gasStack, Action action) {
-        if (getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().gasTank.insert(gasStack, action, AutomationType.INTERNAL);
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().gasTank.insert(gasStack, action, AutomationType.INTERNAL);
         }
         return buffer.insert(gasStack, action, AutomationType.INTERNAL);
     }
@@ -261,8 +260,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     @Override
     public List<IGasTank> getChemicalTanks(@Nullable Direction side) {
-        if (getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().getChemicalTanks(side);
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getChemicalTanks(side);
         }
         return tanks;
     }
@@ -273,7 +272,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
-    public IGasHandler getCachedAcceptor(Direction side) {
+    public IGasHandler getAcceptor(Direction side) {
         return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 
@@ -321,10 +320,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public CompoundNBT getUpdateTag() {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
         CompoundNBT updateTag = super.getUpdateTag();
-        Transmitter<IGasHandler, GasNetwork, GasStack> transmitter = getTransmitter();
-        if (transmitter.hasTransmitterNetwork()) {
-            updateTag.put(NBTConstants.GAS_STORED, transmitter.getTransmitterNetwork().lastGas.write(new CompoundNBT()));
-            updateTag.putFloat(NBTConstants.SCALE, transmitter.getTransmitterNetwork().gasScale);
+        if (hasTransmitterNetwork()) {
+            updateTag.put(NBTConstants.GAS_STORED, getTransmitterNetwork().lastGas.write(new CompoundNBT()));
+            updateTag.putFloat(NBTConstants.SCALE, getTransmitterNetwork().gasScale);
         }
         return updateTag;
     }

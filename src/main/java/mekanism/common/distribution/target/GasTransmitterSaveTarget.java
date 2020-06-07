@@ -4,12 +4,10 @@ import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.common.content.transmitter.Transmitter;
-import mekanism.common.content.transmitter.grid.GasNetwork;
+import mekanism.common.content.transmitter.GasNetwork;
 import mekanism.common.distribution.SplitInfo;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 
 public class GasTransmitterSaveTarget extends Target<IGridTransmitter<IGasHandler, GasNetwork, GasStack>, Long, @NonNull GasStack> {
@@ -42,14 +40,11 @@ public class GasTransmitterSaveTarget extends Target<IGridTransmitter<IGasHandle
 
     public void saveShare(Direction handlerDirection) {
         IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter = handlers.get(handlerDirection);
-        if (transmitter instanceof Transmitter) {
-            TileEntity tile = ((Transmitter<?, ?, ?>) transmitter).getTileEntity();
-            if (tile instanceof TileEntityPressurizedTube) {
-                TileEntityPressurizedTube tube = (TileEntityPressurizedTube) tile;
-                if (currentStored.isEmpty() != tube.saveShare.isEmpty() || (!currentStored.isEmpty() && !currentStored.isStackIdentical(tube.saveShare))) {
-                    tube.saveShare = currentStored;
-                    tube.markDirty(false);
-                }
+        if (transmitter instanceof TileEntityPressurizedTube) {
+            TileEntityPressurizedTube tube = (TileEntityPressurizedTube) transmitter;
+            if (currentStored.isEmpty() != tube.saveShare.isEmpty() || (!currentStored.isEmpty() && !currentStored.isStackIdentical(tube.saveShare))) {
+                tube.saveShare = currentStored;
+                tube.markDirty(false);
             }
         }
     }

@@ -22,8 +22,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.resolver.advanced.AdvancedEnergyCapabilityResolver;
-import mekanism.common.content.transmitter.Transmitter;
-import mekanism.common.content.transmitter.grid.EnergyNetwork;
+import mekanism.common.content.transmitter.EnergyNetwork;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -76,8 +75,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     }
 
     private FloatingLong getAvailablePull() {
-        if (getTransmitter().hasTransmitterNetwork()) {
-            return getCapacityAsFloatingLong().min(getTransmitter().getTransmitterNetwork().energyContainer.getNeeded());
+        if (hasTransmitterNetwork()) {
+            return getCapacityAsFloatingLong().min(getTransmitterNetwork().energyContainer.getNeeded());
         }
         return getCapacityAsFloatingLong().min(buffer.getNeeded());
     }
@@ -85,8 +84,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Nonnull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        if (getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().getEnergyContainers(side);
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getEnergyContainers(side);
         }
         return energyContainers;
     }
@@ -137,8 +136,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (getTransmitter().hasTransmitterNetwork()) {
-            getTransmitter().getTransmitterNetwork().validateSaveShares(getTransmitter());
+        if (hasTransmitterNetwork()) {
+            getTransmitterNetwork().validateSaveShares(this);
         }
         if (lastWrite.isZero()) {
             nbtTags.remove(NBTConstants.ENERGY_STORED);
@@ -167,12 +166,12 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     }
 
     @Override
-    public EnergyNetwork createNewNetwork() {
+    public EnergyNetwork createEmptyNetwork() {
         return new EnergyNetwork();
     }
 
     @Override
-    public EnergyNetwork createNewNetworkWithID(UUID networkID) {
+    public EnergyNetwork createEmptyNetworkWithID(UUID networkID) {
         return new EnergyNetwork(networkID);
     }
 
@@ -199,16 +198,16 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     public FloatingLong getBufferWithFallback() {
         FloatingLong buffer = getShare();
         //If we don't have a buffer try falling back to the network's buffer
-        if (buffer.isZero() && getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().getBuffer();
+        if (buffer.isZero() && hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getBuffer();
         }
         return buffer;
     }
 
     @Override
     public void takeShare() {
-        if (getTransmitter().hasTransmitterNetwork()) {
-            EnergyNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
+        if (hasTransmitterNetwork()) {
+            EnergyNetwork transmitterNetwork = getTransmitterNetwork();
             if (!transmitterNetwork.energyContainer.isEmpty() && !lastWrite.isZero()) {
                 transmitterNetwork.energyContainer.setEnergy(transmitterNetwork.energyContainer.getEnergy().subtract(lastWrite));
                 buffer.setEnergy(lastWrite);
@@ -231,14 +230,14 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
      * @return remainder
      */
     private FloatingLong takeEnergy(FloatingLong amount, Action action) {
-        if (getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().energyContainer.insert(amount, action, AutomationType.INTERNAL);
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().energyContainer.insert(amount, action, AutomationType.INTERNAL);
         }
         return buffer.insert(amount, action, AutomationType.INTERNAL);
     }
 
     @Override
-    public IStrictEnergyHandler getCachedAcceptor(Direction side) {
+    public IStrictEnergyHandler getAcceptor(Direction side) {
         return EnergyCompatUtils.getStrictEnergyHandler(getCachedTile(side), side.getOpposite());
     }
 
@@ -286,10 +285,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
     public CompoundNBT getUpdateTag() {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
         CompoundNBT updateTag = super.getUpdateTag();
-        Transmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter = getTransmitter();
-        if (transmitter.hasTransmitterNetwork()) {
-            updateTag.putString(NBTConstants.ENERGY_STORED, transmitter.getTransmitterNetwork().energyContainer.getEnergy().toString());
-            updateTag.putFloat(NBTConstants.SCALE, transmitter.getTransmitterNetwork().energyScale);
+        if (hasTransmitterNetwork()) {
+            updateTag.putString(NBTConstants.ENERGY_STORED, getTransmitterNetwork().energyContainer.getEnergy().toString());
+            updateTag.putFloat(NBTConstants.SCALE, getTransmitterNetwork().energyScale);
         }
         return updateTag;
     }

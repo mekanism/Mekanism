@@ -15,8 +15,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.content.transmitter.Transmitter;
-import mekanism.common.content.transmitter.grid.FluidNetwork;
+import mekanism.common.content.transmitter.FluidNetwork;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntityTransmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
@@ -26,7 +25,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 @ParametersAreNonnullByDefault
 public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe> {
@@ -48,9 +46,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     @Override
     protected void render(TileEntityMechanicalPipe pipe, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        Transmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter = pipe.getTransmitter();
-        if (transmitter.hasTransmitterNetwork()) {
-            FluidNetwork network = transmitter.getTransmitterNetwork();
+        if (pipe.hasTransmitterNetwork()) {
+            FluidNetwork network = pipe.getTransmitterNetwork();
             if (!network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.fluidScale > 0) {
                 FluidStack fluidStack = network.lastFluid;
                 float fluidScale = network.fluidScale;

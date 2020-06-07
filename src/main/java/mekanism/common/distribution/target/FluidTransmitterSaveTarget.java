@@ -3,12 +3,10 @@ package mekanism.common.distribution.target;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.math.MathUtils;
-import mekanism.common.content.transmitter.Transmitter;
-import mekanism.common.content.transmitter.grid.FluidNetwork;
+import mekanism.common.content.transmitter.FluidNetwork;
 import mekanism.common.distribution.SplitInfo;
 import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -44,14 +42,11 @@ public class FluidTransmitterSaveTarget extends Target<IGridTransmitter<IFluidHa
 
     public void saveShare(Direction handlerDirection) {
         IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter = handlers.get(handlerDirection);
-        if (transmitter instanceof Transmitter) {
-            TileEntity tile = ((Transmitter<?, ?, ?>) transmitter).getTileEntity();
-            if (tile instanceof TileEntityMechanicalPipe) {
-                TileEntityMechanicalPipe pipe = (TileEntityMechanicalPipe) tile;
-                if (currentStored.isEmpty() != pipe.saveShare.isEmpty() || (!currentStored.isEmpty() && !currentStored.isFluidStackIdentical(pipe.saveShare))) {
-                    pipe.saveShare = currentStored;
-                    pipe.markDirty(false);
-                }
+        if (transmitter instanceof TileEntityMechanicalPipe) {
+            TileEntityMechanicalPipe pipe = (TileEntityMechanicalPipe) transmitter;
+            if (currentStored.isEmpty() != pipe.saveShare.isEmpty() || (!currentStored.isEmpty() && !currentStored.isFluidStackIdentical(pipe.saveShare))) {
+                pipe.saveShare = currentStored;
+                pipe.markDirty(false);
             }
         }
     }
