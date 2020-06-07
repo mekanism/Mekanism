@@ -24,6 +24,7 @@ public class ItemBlockLogisticalTransporter extends ItemBlockMultipartAble<Block
     }
 
     @Nonnull
+    @Override
     public TransporterTier getTier() {
         return Attribute.getTier(getBlock(), TransporterTier.class);
     }

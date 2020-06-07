@@ -72,7 +72,7 @@ public class TransmitterNetworkRegistry {
     }
 
     public static void registerOrphanTransmitter(TileEntityTransmitter<?, ?, ?> transmitter) {
-        Coord4D coord = transmitter.coord();
+        Coord4D coord = Coord4D.get(transmitter);
         TileEntityTransmitter<?, ?, ?> previous = getInstance().newOrphanTransmitters.put(coord, transmitter);
         if (previous != null && previous != transmitter) {
             logger.error("Different orphan transmitter was already registered at location! {}", coord.toString());
@@ -223,7 +223,7 @@ public class TransmitterNetworkRegistry {
                 logger.error("OrphanPathFinder queue was not empty?!");
                 queue.clear();
             }
-            queue.push(startPoint.coord());
+            queue.push(Coord4D.get(startPoint));
             while (queue.peek() != null) {
                 iterate(queue.removeFirst());
             }
@@ -260,7 +260,7 @@ public class TransmitterNetworkRegistry {
         }
 
         public void addNetworkToIterated(Coord4D from) {
-            NETWORK net = startPoint.getExternalNetwork(from);
+            NETWORK net = startPoint.getExternalNetwork(from.getPos());
             //Make sure that there is an external network and that it is compatible with this buffer
             if (net != null && net.compatibleWithBuffer(startPoint.getShare())) {
                 if (networksFound.isEmpty() || networksFound.iterator().next().isCompatibleWith(net)) {

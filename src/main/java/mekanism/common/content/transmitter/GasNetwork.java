@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -37,6 +36,7 @@ import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.MinecraftForge;
@@ -174,15 +174,15 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    protected void onLastTransmitterRemoved(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void onLastTransmitterRemoved(@Nonnull TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
         disperse(triggerTransmitter, gasTank.getStack());
     }
 
-    private void disperse(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter, GasStack gasType) {
+    private void disperse(@Nonnull TileEntityTransmitter<?, ?, ?> triggerTransmitter, GasStack gasType) {
         if (gasType.has(GasAttributes.Radiation.class)) {
             // Handle radiation leakage
             double radioactivity = gasType.get(GasAttributes.Radiation.class).getRadioactivity();
-            Mekanism.radiationManager.radiate(triggerTransmitter.coord(), gasType.getAmount() * radioactivity);
+            Mekanism.radiationManager.radiate(Coord4D.get(triggerTransmitter), gasType.getAmount() * radioactivity);
         }
     }
 
@@ -190,12 +190,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         Set<ChemicalHandlerTarget<Gas, GasStack, IGasHandler>> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
         Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
-        for (Coord4D coord : possibleAcceptors) {
-            EnumSet<Direction> sides = acceptorDirections.get(coord);
+        for (BlockPos pos : possibleAcceptors) {
+            Set<Direction> sides = acceptorDirections.get(pos);
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, coord);
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, pos);
             if (tile == null) {
                 continue;
             }

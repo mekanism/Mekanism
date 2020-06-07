@@ -22,6 +22,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -90,11 +91,12 @@ public class PacketPortableTeleporterGui {
                                     player.closeScreen();
                                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.getPosition()), player.world, coords.getPos());
                                     TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
+                                    BlockPos coordsPos = coords.getPos();
                                     if (player instanceof ServerPlayerEntity) {
-                                        TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coords);
+                                        TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coordsPos);
                                     }
                                     player.world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), teleWorld, coords.getPos());
+                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), teleWorld, coordsPos);
                                 } catch (Exception ignored) {
                                 }
                             }

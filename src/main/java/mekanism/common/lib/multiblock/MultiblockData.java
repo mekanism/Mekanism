@@ -182,7 +182,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     public void readUpdateTag(CompoundNBT tag) {
-        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> setVolume(value));
+        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> renderLocation = value);
         bounds = new VoxelCuboid(NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MIN)),
                                  NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MAX)));

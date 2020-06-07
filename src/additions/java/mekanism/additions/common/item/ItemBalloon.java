@@ -3,7 +3,6 @@ package mekanism.additions.common.item;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.entity.EntityBalloon;
-import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.lib.math.Pos3D;
@@ -125,11 +124,11 @@ public class ItemBalloon extends Item {
 
         @Nonnull
         @Override
-        public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
-            Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(), source.getWorld().getDimension().getType());
+        public ItemStack dispenseStack(IBlockSource source, @Nonnull ItemStack stack) {
             Direction side = source.getBlockState().get(DispenserBlock.FACING);
-
-            List<LivingEntity> entities = source.getWorld().getEntitiesWithinAABB(LivingEntity.class, coord.offset(side).getBoundingBox());
+            BlockPos sourcePos = source.getBlockPos();
+            BlockPos offsetPos = sourcePos.offset(side);
+            List<LivingEntity> entities = source.getWorld().getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(offsetPos, offsetPos.add(1, 1, 1)));
             boolean latched = false;
 
             for (LivingEntity entity : entities) {
@@ -149,7 +148,7 @@ public class ItemBalloon extends Item {
                 }
             }
             if (!latched) {
-                Pos3D pos = new Pos3D(coord).translate(0, -0.5, 0);
+                Pos3D pos = new Pos3D(sourcePos).translate(0, -0.5, 0);
                 switch (side) {
                     case DOWN:
                         pos = pos.translate(0, -2.5, 0);

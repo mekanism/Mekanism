@@ -227,9 +227,7 @@ public interface QuadTransformation {
         @Override
         public void transform(Quad quad) {
             if (verifier.test(quad.getTexture().getName())) {
-                quad.transform(v -> {
-                    original.transform(quad);
-                });
+                quad.transform(v -> original.transform(quad));
             }
         }
 

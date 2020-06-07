@@ -188,6 +188,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         return TransporterUtils.isValidAcceptorOnSide(tile, getOppositeDirection());
     }
 
+    @Nonnull
     public TransitResponse sendHome(TransitRequest request) {
         TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
         return request.addToInventory(back, getOppositeDirection(), true);

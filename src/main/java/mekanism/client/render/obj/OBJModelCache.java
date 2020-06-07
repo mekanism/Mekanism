@@ -21,7 +21,7 @@ public class OBJModelCache {
     public static OBJModelData MEKASUIT = register(Mekanism.rl("models/entity/mekasuit.obj"));
 
     public static void onBake(ModelBakeEvent evt) {
-        modelMap.values().forEach(data -> data.reload());
+        modelMap.values().forEach(OBJModelData::reload);
     }
 
     private static OBJModelData register(ResourceLocation rl) {

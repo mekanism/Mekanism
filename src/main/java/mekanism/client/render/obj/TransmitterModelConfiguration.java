@@ -1,13 +1,14 @@
 package mekanism.client.render.obj;
 
 import java.util.List;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.base.Predicate;
 import mekanism.client.model.data.TransmitterModelData;
+import mekanism.client.model.data.TransmitterModelData.Diversion;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -16,7 +17,7 @@ import net.minecraftforge.client.model.data.IModelData;
 public class TransmitterModelConfiguration extends VisibleModelConfiguration {
 
     @Nonnull
-    private TransmitterModelData modelData;
+    private final TransmitterModelData modelData;
 
     public TransmitterModelConfiguration(IModelConfiguration internal, List<String> visibleGroups, @Nonnull IModelData modelData) {
         super(internal, visibleGroups);
@@ -64,23 +65,23 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
     }
 
     public IconStatus getIconStatus(Direction side) {
-        if (modelData instanceof TransmitterModelData.Diversion) {
+        if (modelData instanceof Diversion) {
             return IconStatus.NO_SHOW;
         }
         boolean hasConnection = modelData.getConnectionType(side) != ConnectionType.NONE;
         Predicate<Direction> has = (dir) -> modelData.getConnectionType(dir) != ConnectionType.NONE;
         if (!hasConnection) {
             //If we don't have a connection coming out of this side
-            boolean hasUpDown = has.apply(Direction.DOWN) || has.apply(Direction.UP);
-            boolean hasNorthSouth = has.apply(Direction.NORTH) || has.apply(Direction.SOUTH);
-            boolean hasEastWest = has.apply(Direction.EAST) || has.apply(Direction.WEST);
+            boolean hasUpDown = has.test(Direction.DOWN) || has.test(Direction.UP);
+            boolean hasNorthSouth = has.test(Direction.NORTH) || has.test(Direction.SOUTH);
+            boolean hasEastWest = has.test(Direction.EAST) || has.test(Direction.WEST);
             switch (side) {
                 case DOWN:
                 case UP:
                     if (hasNorthSouth && !hasEastWest || !hasNorthSouth && hasEastWest) {
-                        if (has.apply(Direction.NORTH) && has.apply(Direction.SOUTH)) {
+                        if (has.test(Direction.NORTH) && has.test(Direction.SOUTH)) {
                             return IconStatus.NO_ROTATION;
-                        } else if (has.apply(Direction.EAST) && has.apply(Direction.WEST)) {
+                        } else if (has.test(Direction.EAST) && has.test(Direction.WEST)) {
                             return IconStatus.ROTATE_270;
                         }
                     }
@@ -88,9 +89,9 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
                 case NORTH:
                 case SOUTH:
                     if (hasUpDown && !hasEastWest || !hasUpDown && hasEastWest) {
-                        if (has.apply(Direction.UP) && has.apply(Direction.DOWN)) {
+                        if (has.test(Direction.UP) && has.test(Direction.DOWN)) {
                             return IconStatus.NO_ROTATION;
-                        } else if (has.apply(Direction.EAST) && has.apply(Direction.WEST)) {
+                        } else if (has.test(Direction.EAST) && has.test(Direction.WEST)) {
                             return IconStatus.ROTATE_270;
                         }
                     }
@@ -98,9 +99,9 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
                 case WEST:
                 case EAST:
                     if (hasUpDown && !hasNorthSouth || !hasUpDown && hasNorthSouth) {
-                        if (has.apply(Direction.UP) && has.apply(Direction.DOWN)) {
+                        if (has.test(Direction.UP) && has.test(Direction.DOWN)) {
                             return IconStatus.NO_ROTATION;
-                        } else if (has.apply(Direction.NORTH) && has.apply(Direction.SOUTH)) {
+                        } else if (has.test(Direction.NORTH) && has.test(Direction.SOUTH)) {
                             return IconStatus.ROTATE_270;
                         }
                     }
@@ -126,7 +127,7 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
         ROTATE_270(270),
         NO_SHOW(0);
 
-        private float angle;
+        private final float angle;
 
         IconStatus(float angle) {
             this.angle = angle;

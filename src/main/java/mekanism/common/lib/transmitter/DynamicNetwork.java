@@ -9,13 +9,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.Range3D;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
@@ -25,8 +26,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected final Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectLinkedOpenHashSet<>();
     protected final Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectOpenHashSet<>();
 
-    protected final Set<Coord4D> possibleAcceptors = new ObjectOpenHashSet<>();
-    protected final Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
+    protected final Set<BlockPos> possibleAcceptors = new ObjectOpenHashSet<>();
+    protected final Map<BlockPos, Set<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
     protected final Map<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
     protected Range3D packetRange = null;
     protected final Set<ChunkPos> chunks = new ObjectOpenHashSet<>();
@@ -111,7 +112,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public void updateTransmitterOnSide(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
         ACCEPTOR acceptor = transmitter.getAcceptor(side);
-        Coord4D acceptorCoord = transmitter.coord().offset(side);
+        BlockPos acceptorCoord = transmitter.getPos().offset(side);
         Set<Direction> directions = acceptorDirections.get(acceptorCoord);
 
         if (acceptor != null) {
@@ -150,7 +151,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected void forceScaleUpdate() {
     }
 
-    protected void onLastTransmitterRemoved(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void onLastTransmitterRemoved(@Nonnull TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
     }
 
     public void invalidate(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
@@ -186,7 +187,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void acceptorChanged(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
-        EnumSet<Direction> directions = changedAcceptors.get(transmitter);
+        Set<Direction> directions = changedAcceptors.get(transmitter);
         if (directions == null) {
             changedAcceptors.put(transmitter, EnumSet.of(side));
         } else {
@@ -204,8 +205,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         transmittersToAdd.addAll(net.transmittersToAdd);
         possibleAcceptors.addAll(net.possibleAcceptors);
 
-        for (Entry<Coord4D, EnumSet<Direction>> entry : net.acceptorDirections.entrySet()) {
-            Coord4D coord = entry.getKey();
+        for (Entry<BlockPos, Set<Direction>> entry : net.acceptorDirections.entrySet()) {
+            BlockPos coord = entry.getKey();
             if (acceptorDirections.containsKey(coord)) {
                 acceptorDirections.get(coord).addAll(entry.getValue());
             } else {
@@ -227,22 +228,22 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
             return null;
         }
         TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> initTransmitter = firstTransmitter();
-        Coord4D initCoord = initTransmitter.coord();
-        int minX = initCoord.x;
-        int minZ = initCoord.z;
-        int maxX = initCoord.x;
-        int maxZ = initCoord.z;
+        BlockPos initPos = initTransmitter.getPos();
+        int minX = initPos.getX();
+        int minZ = initPos.getZ();
+        int maxX = minX;
+        int maxZ = minZ;
         for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
-            Coord4D coord = transmitter.coord();
-            if (coord.x < minX) {
-                minX = coord.x;
-            } else if (coord.x > maxX) {
-                maxX = coord.x;
+            BlockPos pos = transmitter.getPos();
+            if (pos.getX() < minX) {
+                minX = pos.getX();
+            } else if (pos.getX() > maxX) {
+                maxX = pos.getX();
             }
-            if (coord.z < minZ) {
-                minZ = coord.z;
-            } else if (coord.z > maxZ) {
-                maxZ = coord.z;
+            if (pos.getZ() < minZ) {
+                minZ = pos.getZ();
+            } else if (pos.getZ() > maxZ) {
+                maxZ = pos.getZ();
             }
         }
         return new Range3D(minX, minZ, maxX, maxZ, initTransmitter.getWorld().getDimension().getType());
@@ -367,11 +368,11 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return transmitters.size();
     }
 
-    public Set<Coord4D> getPossibleAcceptors() {
+    public Set<BlockPos> getPossibleAcceptors() {
         return possibleAcceptors;
     }
 
-    public Map<Coord4D, EnumSet<Direction>> getAcceptorDirections() {
+    public Map<BlockPos, Set<Direction>> getAcceptorDirections() {
         return acceptorDirections;
     }
 

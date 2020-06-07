@@ -205,7 +205,7 @@ public class BoltEffect {
         }
     }
 
-    public class BoltQuads {
+    public static class BoltQuads {
 
         private final List<Vec3d> vecs = new ArrayList<>();
 

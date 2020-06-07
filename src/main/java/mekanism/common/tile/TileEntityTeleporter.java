@@ -86,10 +86,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return builder.build();
     }
 
-    public static void alignPlayer(ServerPlayerEntity player, Coord4D coord) {
+    public static void alignPlayer(ServerPlayerEntity player, BlockPos position) {
         Direction side = null;
         float yaw = player.rotationYaw;
-        BlockPos upperPos = coord.getPos().up();
+        BlockPos upperPos = position.up();
         for (Direction iterSide : MekanismUtils.SIDE_DIRS) {
             if (player.world.isAirBlock(upperPos.offset(iterSide))) {
                 side = iterSide;
@@ -197,17 +197,19 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         }
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
         World teleWorld = currentServer.getWorld(closestCoords.dimension);
-        TileEntityTeleporter teleporter = MekanismUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestCoords.getPos());
+        BlockPos closestPos = closestCoords.getPos();
+        TileEntityTeleporter teleporter = MekanismUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestPos);
         if (teleporter != null) {
             for (Entity entity : getToTeleport()) {
                 teleporter.didTeleport.add(entity.getUniqueID());
                 teleporter.teleDelay = 5;
                 teleportEntityTo(entity, closestCoords, teleporter);
                 if (entity instanceof ServerPlayerEntity) {
-                    alignPlayer((ServerPlayerEntity) entity, closestCoords);
+                    alignPlayer((ServerPlayerEntity) entity, closestPos);
                 }
                 for (Coord4D coords : getFrequency(FrequencyType.TELEPORTER).getActiveCoords()) {
-                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), currentServer.getWorld(coords.dimension), coords.getPos());
+                    BlockPos coordsPos = coords.getPos();
+                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), currentServer.getWorld(coords.dimension), coordsPos);
                 }
                 energyContainer.extract(calculateEnergyCost(entity, closestCoords), Action.EXECUTE, AutomationType.INTERNAL);
                 world.playSound(entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
@@ -216,17 +218,17 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     public static void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter) {
-        if (entity.dimension != coord.dimension) {
+        if (entity.dimension == coord.dimension) {
+            entity.setPositionAndUpdate(coord.getX() + 0.5, coord.getY() + 1, coord.getZ() + 0.5);
+        } else {
             entity.changeDimension(coord.dimension, new ITeleporter() {
                 @Override
                 public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
                     Entity repositionedEntity = repositionEntity.apply(false);
-                    repositionedEntity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
+                    repositionedEntity.setPositionAndUpdate(coord.getX() + 0.5, coord.getY() + 1, coord.getZ() + 0.5);
                     return repositionedEntity;
                 }
             });
-        } else {
-            entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
         }
     }
 
@@ -239,7 +241,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public static FloatingLong calculateEnergyCost(Entity entity, Coord4D coords) {
         FloatingLong energyCost = MekanismConfig.usage.teleporterBase.get();
         if (entity.world.getDimension().getType().equals(coords.dimension)) {
-            energyCost = energyCost.add(MekanismConfig.usage.teleporterDistance.get().multiply(Math.sqrt(entity.getDistanceSq(coords.x, coords.y, coords.z))));
+            energyCost = energyCost.add(MekanismConfig.usage.teleporterDistance.get().multiply(Math.sqrt(entity.getDistanceSq(coords.getX(), coords.getY(), coords.getZ()))));
         } else {
             energyCost = energyCost.add(MekanismConfig.usage.teleporterDimensionPenalty.get());
         }

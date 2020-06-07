@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TeleporterFrequency extends Frequency {
 
-    private Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
+    private final Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
 
     public TeleporterFrequency(String n, UUID uuid) {
         super(FrequencyType.TELEPORTER, n, uuid);

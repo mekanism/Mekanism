@@ -113,11 +113,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     }
 
     @Override
-    public Coord4D coord() {
-        return Coord4D.get(this);
-    }
-
-    @Override
     public NETWORK getTransmitterNetwork() {
         return theNetwork;
     }
@@ -361,14 +356,14 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
 
     @Override
     public Coord4D getAdjacentConnectableTransmitterCoord(Direction side) {
-        Coord4D sideCoord = coord().offset(side);
-        TileEntity potentialTransmitterTile = MekanismUtils.getTileEntity(world, sideCoord.getPos());
+        BlockPos sidePos = pos.offset(side);
+        TileEntity potentialTransmitterTile = MekanismUtils.getTileEntity(world, sidePos);
         if (!canConnectMutual(side, potentialTransmitterTile)) {
             return null;
         }
         if (potentialTransmitterTile instanceof TileEntityTransmitter &&
             getTransmissionType().checkTransmissionType((TileEntityTransmitter<?, ?, ?>) potentialTransmitterTile) && isValidTransmitter(potentialTransmitterTile)) {
-            return sideCoord;
+            return new Coord4D(sidePos, world);
         }
         return null;
     }
@@ -386,8 +381,8 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     }
 
     @Override
-    public NETWORK getExternalNetwork(Coord4D from) {
-        TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, from.getPos());
+    public NETWORK getExternalNetwork(BlockPos from) {
+        TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, from);
         if (transmitter != null && getTransmissionType().checkTransmissionType(transmitter)) {
             return transmitter.getTransmitterNetwork();
         }

@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
@@ -283,7 +282,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                     energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
                     player.setPositionAndUpdate(pos.getPos().getX() + 0.5, pos.getPos().getY() + 1.5, pos.getPos().getZ() + 0.5);
                     player.fallDistance = 0.0F;
-                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(new Coord4D(pos.getPos().add(0, 1, 0), world)), world, pos.getPos());
+                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(pos.getPos().add(0, 1, 0)), world, pos.getPos());
                     world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                     return new ActionResult<>(ActionResultType.SUCCESS, stack);
                 }

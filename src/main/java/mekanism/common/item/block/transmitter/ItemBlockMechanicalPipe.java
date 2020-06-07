@@ -24,6 +24,7 @@ public class ItemBlockMechanicalPipe extends ItemBlockMultipartAble<BlockMechani
     }
 
     @Nonnull
+    @Override
     public PipeTier getTier() {
         return Attribute.getTier(getBlock(), PipeTier.class);
     }

@@ -135,7 +135,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        NBTUtils.setDoubleIfPresent(tag, NBTConstants.TEMPERATURE, heat -> buffer.setHeat(heat));
+        NBTUtils.setDoubleIfPresent(tag, NBTConstants.TEMPERATURE, buffer::setHeat);
     }
 
     public Color getBaseColor() {

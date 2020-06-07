@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.IWorldReader;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -35,13 +36,13 @@ public class TransporterManager {
         flowingStacks.clear();
     }
 
-    public static void add(TransporterStack stack) {
-        flowingStacks.computeIfAbsent(stack.getDest(), k -> new ObjectOpenHashSet<>()).add(stack);
+    public static void add(IWorldReader world, TransporterStack stack) {
+        flowingStacks.computeIfAbsent(new Coord4D(stack.getDest(), world), k -> new ObjectOpenHashSet<>()).add(stack);
     }
 
-    public static void remove(TransporterStack stack) {
+    public static void remove(IWorldReader world, TransporterStack stack) {
         if (stack.hasPath() && stack.getPathType() != Path.NONE) {
-            flowingStacks.get(stack.getDest()).remove(stack);
+            flowingStacks.get(new Coord4D(stack.getDest(), world)).remove(stack);
         }
     }
 

@@ -68,7 +68,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
 
     @Override
     public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull LivingEntity placer, @Nonnull ItemStack stack) {
-        TileEntityTransmitter tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
+        TileEntityTransmitter<?, ?, ?> tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
             tile.onAdded();
         }
@@ -78,7 +78,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     @Deprecated
     public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
           boolean isMoving) {
-        TileEntityTransmitter tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
+        TileEntityTransmitter<?, ?, ?> tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
             Direction side = Direction.getFacingFromVector(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
             tile.onNeighborBlockChange(side);
@@ -87,7 +87,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
 
     @Override
     public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
-        TileEntityTransmitter tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
+        TileEntityTransmitter<?, ?, ?> tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
             Direction side = Direction.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
             tile.onNeighborTileChange(side);
@@ -106,7 +106,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
             //If we don't have an entity get the full VoxelShape
             return getRealShape(world, pos);
         }
-        TileEntityTransmitter tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
+        TileEntityTransmitter<?, ?, ?> tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile == null) {
             //If we failed to get the tile, just give the center shape
             return getCenter();
@@ -142,7 +142,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     protected abstract VoxelShape getSide(ConnectionType type, Direction side);
 
     private VoxelShape getRealShape(IBlockReader world, BlockPos pos) {
-        TileEntityTransmitter tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
+        TileEntityTransmitter<?, ?, ?> tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile == null) {
             //If we failed to get the tile, just give the center shape
             return getCenter();

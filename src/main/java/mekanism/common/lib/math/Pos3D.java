@@ -30,7 +30,7 @@ public class Pos3D extends Vec3d {
     }
 
     public Pos3D(Coord4D coord) {
-        super(coord.x, coord.y, coord.z);
+        super(coord.getX(), coord.getY(), coord.getZ());
     }
 
     public Pos3D(Vec3i vec) {

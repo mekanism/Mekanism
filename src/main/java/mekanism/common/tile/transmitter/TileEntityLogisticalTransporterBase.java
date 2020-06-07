@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.UUID;
 import java.util.function.IntConsumer;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -32,6 +31,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -142,7 +142,6 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
             }
             //Update stack positions
             IntSet deletes = new IntOpenHashSet();
-            Coord4D coord = coord();
             //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
             // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
             // collection to occur actually causing the tick time to go up slightly.
@@ -158,18 +157,17 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
 
                 stack.progress += tier.getSpeed();
                 if (stack.progress >= 100) {
-                    Coord4D prevSet = null;
+                    BlockPos prevSet = null;
                     if (stack.hasPath()) {
-                        int currentIndex = stack.getPath().indexOf(coord);
+                        int currentIndex = stack.getPath().indexOf(pos);
                         if (currentIndex == 0) { //Necessary for transition reasons, not sure why
                             deletes.add(stackId);
                             continue;
                         }
-
-                        Coord4D next = stack.getPath().get(currentIndex - 1);
+                        BlockPos next = stack.getPath().get(currentIndex - 1);
                         if (next != null) {
                             if (!stack.isFinal(this)) {
-                                TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, next.getPos());
+                                TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, next);
                                 if (stack.canInsertToTransporter(tile, stack.getSide(this), this)) {
                                     tile.entityEntering(stack, stack.progress % 100);
                                     deletes.add(stackId);
@@ -177,7 +175,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                                 }
                                 prevSet = next;
                             } else if (stack.getPathType() != Path.NONE) {
-                                TileEntity tile = MekanismUtils.getTileEntity(world, next.getPos());
+                                TileEntity tile = MekanismUtils.getTileEntity(world, next);
                                 if (tile != null) {
                                     TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this),
                                           stack.getPathType() == Path.HOME);
@@ -185,7 +183,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                                     // schedule this stack for deletion. Continue the loop thereafter
                                     ItemStack rejected = response.getRejected();
                                     if (rejected.isEmpty()) {
-                                        TransporterManager.remove(stack);
+                                        TransporterManager.remove(world, stack);
                                         deletes.add(stackId);
                                         continue;
                                     }
@@ -211,14 +209,14 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                         if (pathType == Path.DEST || pathType == Path.HOME) {
                             ConnectionType connectionType = getConnectionType(stack.getSide(this));
                             tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH ||
-                                             !TransporterUtils.canInsert(MekanismUtils.getTileEntity(world, stack.getDest().getPos()), stack.color, stack.itemStack,
+                                             !TransporterUtils.canInsert(MekanismUtils.getTileEntity(world, stack.getDest()), stack.color, stack.itemStack,
                                                    stack.getSide(this), pathType == Path.HOME);
                         } else {
                             tryRecalculate = pathType == Path.NONE;
                         }
                     } else {
                         tryRecalculate = !stack.canInsertToTransporter(MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world,
-                              stack.getNext(this).getPos()), stack.getSide(this), this);
+                              stack.getNext(this)), stack.getSide(this), this);
                     }
                     if (tryRecalculate && !recalculate(stackId, stack, null)) {
                         deletes.add(stackId);
@@ -376,7 +374,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
         transit.put(id, s);
     }
 
-    private boolean recalculate(int stackId, TransporterStack stack, Coord4D from) {
+    private boolean recalculate(int stackId, TransporterStack stack, BlockPos from) {
         boolean noPath = stack.getPathType() == Path.NONE;
         if (!noPath) {
             noPath = stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
@@ -395,9 +393,9 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     }
 
     public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        Coord4D outputterCoord = Coord4D.get(outputter);
-        Direction from = coord().sideDifference(outputterCoord).getOpposite();
-        TransporterStack stack = insertStack(outputterCoord, color);
+        BlockPos outputterPos = outputter.getPos();
+        Direction from = MekanismUtils.sideDifference(pos, outputterPos).getOpposite();
+        TransporterStack stack = insertStack(outputterPos, color);
         if (!stack.canInsertToTransporterNN(this, from, outputter)) {
             return request.getEmptyResponse();
         }
@@ -405,16 +403,16 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     }
 
     public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        Coord4D outputterCoord = Coord4D.get(outputter);
-        Direction from = coord().sideDifference(outputterCoord).getOpposite();
-        TransporterStack stack = insertStack(outputterCoord, color);
+        BlockPos outputterPos = outputter.getPos();
+        Direction from = MekanismUtils.sideDifference(pos, outputterPos).getOpposite();
+        TransporterStack stack = insertStack(outputterPos, color);
         if (!canReceiveFrom(from) || !stack.canInsertToTransporterNN(this, from, outputter)) {
             return request.getEmptyResponse();
         }
         return updateTransit(doEmit, stack, stack.recalculateRRPath(request, outputter, this, min));
     }
 
-    private TransporterStack insertStack(Coord4D outputterCoord, EnumColor color) {
+    private TransporterStack insertStack(BlockPos outputterCoord, EnumColor color) {
         TransporterStack stack = new TransporterStack();
         stack.originalLocation = outputterCoord;
         stack.homeLocation = outputterCoord;

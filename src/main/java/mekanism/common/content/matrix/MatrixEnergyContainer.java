@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
@@ -62,8 +61,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     // currently I think it may just be rechecking the entire structure when something changes internally
     // We need to validate that does properly happen even if the cell is floating in the middle and not touching any walls
     // We may also want to make cells and providers extend TileEntityInternalMultiblock
-    public void removeInternal(Coord4D coord) {
-        BlockPos pos = coord.getPos();
+    public void removeInternal(BlockPos pos) {
         if (!invalidPositions.contains(pos)) {
             if (providers.containsKey(pos)) {
                 //It is a provider

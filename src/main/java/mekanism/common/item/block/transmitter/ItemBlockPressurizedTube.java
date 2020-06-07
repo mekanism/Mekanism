@@ -24,6 +24,7 @@ public class ItemBlockPressurizedTube extends ItemBlockMultipartAble<BlockPressu
     }
 
     @Nonnull
+    @Override
     public TubeTier getTier() {
         return Attribute.getTier(getBlock(), TubeTier.class);
     }

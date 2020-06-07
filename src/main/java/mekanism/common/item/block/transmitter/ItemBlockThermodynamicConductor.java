@@ -24,6 +24,7 @@ public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble<Bloc
     }
 
     @Nonnull
+    @Override
     public ConductorTier getTier() {
         return Attribute.getTier(getBlock(), ConductorTier.class);
     }

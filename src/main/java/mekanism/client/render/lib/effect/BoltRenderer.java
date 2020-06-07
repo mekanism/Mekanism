@@ -85,11 +85,11 @@ public class BoltRenderer {
         }
     }
 
-    public class BoltInstance {
+    public static class BoltInstance {
 
         private final BoltEffect bolt;
         private final List<BoltQuads> renderQuads;
-        private Timestamp createdTimestamp;
+        private final Timestamp createdTimestamp;
 
         public BoltInstance(BoltEffect bolt, Timestamp timestamp) {
             this.bolt = bolt;
@@ -112,10 +112,10 @@ public class BoltRenderer {
         }
     }
 
-    public class Timestamp {
+    public static class Timestamp {
 
-        private long ticks;
-        private float partial;
+        private final long ticks;
+        private final float partial;
 
         public Timestamp() {
             this(0, 0);

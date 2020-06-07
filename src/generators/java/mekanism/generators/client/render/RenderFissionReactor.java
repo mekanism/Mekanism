@@ -1,9 +1,8 @@
 package mekanism.generators.client.render;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import mekanism.api.Coord4D;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -57,13 +56,13 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                 int height = tile.getMultiblock().height() - 2;
                 if (height >= 1) {
                     FluidRenderData data = new FluidRenderData(tile.getMultiblock().fluidCoolantTank.getFluid());
-                    data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
+                    data.location = tile.getMultiblock().renderLocation;
                     data.height = height;
                     data.length = tile.getMultiblock().length();
                     data.width = tile.getMultiblock().width();
                     int glow = data.calculateGlowLight(light);
                     matrix.push();
-                    matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
+                    matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                     MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.getMultiblock().prevCoolantScale), matrix, buffer, data.getColorARGB(tile.getMultiblock().prevCoolantScale), glow);
                     matrix.pop();
                     MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, data, pos, glow);
@@ -73,13 +72,13 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                 int height = tile.getMultiblock().height() - 2;
                 if (height >= 1) {
                     GasRenderData data = new GasRenderData(tile.getMultiblock().heatedCoolantTank.getStack());
-                    data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
+                    data.location = tile.getMultiblock().renderLocation;
                     data.height = height;
                     data.length = tile.getMultiblock().length();
                     data.width = tile.getMultiblock().width();
                     matrix.push();
                     matrix.scale(0.998F, 0.998F, 0.998F);
-                    matrix.translate(data.location.x - pos.getX() + 0.001, data.location.y - pos.getY() + 0.001, data.location.z - pos.getZ() + 0.001);
+                    matrix.translate(data.location.getX() - pos.getX() + 0.001, data.location.getY() - pos.getY() + 0.001, data.location.getZ() - pos.getZ() + 0.001);
                     Model3D gasModel = ModelRenderer.getModel(data, 1);
                     MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevHeatedCoolantScale), data.calculateGlowLight(light));
                     matrix.pop();

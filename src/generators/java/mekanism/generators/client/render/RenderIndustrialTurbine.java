@@ -1,9 +1,8 @@
 package mekanism.generators.client.render;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import mekanism.api.Coord4D;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -49,12 +48,12 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                 int height = tile.getMultiblock().lowerVolume / (tile.getMultiblock().length() * tile.getMultiblock().width());
                 if (height >= 1) {
                     GasRenderData data = new GasRenderData(tile.getMultiblock().gasTank.getStack());
-                    data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
+                    data.location = tile.getMultiblock().renderLocation;
                     data.height = height;
                     data.length = tile.getMultiblock().length();
                     data.width = tile.getMultiblock().width();
                     matrix.push();
-                    matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
+                    matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                     Model3D gasModel = ModelRenderer.getModel(data, 1);
                     MekanismRenderer.renderObject(gasModel, matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()), data.getColorARGB(tile.getMultiblock().prevSteamScale),
                           data.calculateGlowLight(light));

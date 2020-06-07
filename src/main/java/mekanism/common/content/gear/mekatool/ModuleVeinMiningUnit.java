@@ -8,6 +8,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -50,7 +51,7 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
             }
             for (BlockPos pos : BlockPos.getAllInBoxMutable(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
                 //We can check contains as mutable
-                if (!found.contains(pos) && (maxRange == -1 || Math.sqrt(location.distanceSq(pos)) <= maxRange)) {
+                if (!found.contains(pos) && (maxRange == -1 || MekanismUtils.distanceBetween(location, pos) <= maxRange)) {
                     if (world.isBlockPresent(pos) && startBlock == world.getBlockState(pos).getBlock()) {
                         //Make sure to add it as immutable
                         //not checking if we've already added found pos before adding

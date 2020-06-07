@@ -65,7 +65,7 @@ public final class TransporterUtils {
             float[] pos = TransporterUtils.getStackPosition(tile, stack, 0);
             blockPos = blockPos.add(pos[0], pos[1], pos[2]);
         }
-        TransporterManager.remove(stack);
+        TransporterManager.remove(tile.getWorld(), stack);
         Block.spawnAsEntity(tile.getWorld(), blockPos, stack.itemStack);
     }
 

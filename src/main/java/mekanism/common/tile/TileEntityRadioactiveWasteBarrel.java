@@ -76,7 +76,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
     @Override
     public void remove() {
         super.remove();
-        if (!getWorld().isRemote && gasTank.getStored() > 0) {
+        if (!isRemote() && gasTank.getStored() > 0) {
             // should always be true
             if (gasTank.getStack().has(GasAttributes.Radiation.class)) {
                 double radioactivity = gasTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();

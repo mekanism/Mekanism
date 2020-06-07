@@ -8,6 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 
 public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> {
@@ -57,9 +58,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     long getCapacity();
 
-    //TODO: Remove the need for this?
-    Coord4D coord();
-
+    //TODO: Change to BlockPos?
     Coord4D getAdjacentConnectableTransmitterCoord(Direction side);
 
     ACCEPTOR getAcceptor(Direction side);
@@ -76,7 +75,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     NETWORK createNetworkByMerging(Collection<NETWORK> toMerge);
 
-    NETWORK getExternalNetwork(Coord4D from);
+    NETWORK getExternalNetwork(BlockPos from);
 
     void takeShare();
 

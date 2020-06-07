@@ -7,7 +7,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.Coord4D;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
@@ -19,6 +18,7 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.chunk.IChunk;
 
@@ -43,15 +43,15 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
         List<AcceptorData> toReturn = new ArrayList<>();
-        for (Coord4D coord : possibleAcceptors) {
-            if (coord == null || coord.equals(stack.homeLocation)) {
+        for (BlockPos pos : possibleAcceptors) {
+            if (pos == null || pos.equals(stack.homeLocation)) {
                 continue;
             }
-            EnumSet<Direction> sides = acceptorDirections.get(coord);
+            Set<Direction> sides = acceptorDirections.get(pos);
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
-            TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), chunkMap, coord);
+            TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), chunkMap, pos);
             if (acceptor == null) {
                 continue;
             }
@@ -62,7 +62,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
                 TransitResponse response = TransporterManager.getPredictedInsert(acceptor, stack.color, request, opposite);
                 if (!response.isEmpty()) {
                     if (data == null) {
-                        toReturn.add(data = new AcceptorData(coord, response, opposite));
+                        toReturn.add(data = new AcceptorData(pos, response, opposite));
                     } else {
                         data.sides.add(opposite);
                     }
@@ -131,12 +131,12 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
     public static class AcceptorData {
 
-        private final Coord4D location;
+        private final BlockPos location;
         private final TransitResponse response;
         private final Set<Direction> sides;
 
-        public AcceptorData(Coord4D coord, TransitResponse ret, Direction side) {
-            location = coord;
+        public AcceptorData(BlockPos pos, TransitResponse ret, Direction side) {
+            location = pos;
             response = ret;
             sides = EnumSet.of(side);
         }
@@ -145,7 +145,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
             return response;
         }
 
-        public Coord4D getLocation() {
+        public BlockPos getLocation() {
             return location;
         }
 

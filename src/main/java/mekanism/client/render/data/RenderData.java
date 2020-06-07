@@ -1,11 +1,11 @@
 package mekanism.client.render.data;
 
-import mekanism.api.Coord4D;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.math.BlockPos;
 
 public abstract class RenderData {
 
-    public Coord4D location;
+    public BlockPos location;
 
     public int height;
     public int length;

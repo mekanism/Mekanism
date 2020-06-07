@@ -1,10 +1,9 @@
 package mekanism.client.render.tileentity;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import mekanism.api.Coord4D;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -35,7 +34,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
         if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null) {
             RenderData data = getRenderData(tile.getMultiblock());
             if (data != null) {
-                data.location = new Coord4D(tile.getMultiblock().renderLocation, tile.getWorld());
+                data.location = tile.getMultiblock().renderLocation;
                 data.height = tile.getMultiblock().height() - 2;
                 data.length = tile.getMultiblock().length();
                 data.width = tile.getMultiblock().width();
@@ -43,7 +42,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
                 IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
                 BlockPos pos = tile.getPos();
-                matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
+                matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                 int glow = data.calculateGlowLight(light);
                 Model3D model = ModelRenderer.getModel(data, tile.getMultiblock().prevScale);
                 MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevScale), glow);

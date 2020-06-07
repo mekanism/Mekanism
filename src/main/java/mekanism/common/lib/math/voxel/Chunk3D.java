@@ -16,7 +16,7 @@ public class Chunk3D extends ChunkPos {
     }
 
     public Chunk3D(Coord4D coord) {
-        this(coord.x >> 4, coord.z >> 4, coord.dimension);
+        this(coord.getX() >> 4, coord.getZ() >> 4, coord.dimension);
     }
 
     public Set<Chunk3D> expand(int chunkRadius) {

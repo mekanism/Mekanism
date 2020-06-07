@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.heat.IHeatHandler;
@@ -90,18 +89,17 @@ public class ItemNetworkReader extends ItemEnergized {
                         player.sendMessage(MekanismLang.NETWORK_READER_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, temp));
                         player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
                     } else {
-                        Coord4D tileCoord = Coord4D.get(tileEntity);
                         Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new ObjectOpenHashSet<>();
                         for (Direction side : EnumUtils.DIRECTIONS) {
                             TileEntity tile = MekanismUtils.getTileEntity(world, pos.offset(side));
                             if (tile instanceof TileEntityTransmitter) {
                                 TileEntityTransmitter<?, ?, ?> transmitter = (TileEntityTransmitter<?, ?, ?>) tile;
                                 DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
-                                if (transmitterNetwork.getPossibleAcceptors().contains(tileCoord) && !iteratedNetworks.contains(transmitterNetwork)) {
+                                if (transmitterNetwork.getPossibleAcceptors().contains(pos) && !iteratedNetworks.contains(transmitterNetwork)) {
                                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
                                           MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, transmitter.getTransmissionType())));
                                     player.sendMessage(MekanismLang.NETWORK_READER_CONNECTED_SIDES.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
-                                          getDirections(transmitterNetwork.getAcceptorDirections().get(tileCoord))));
+                                          getDirections(transmitterNetwork.getAcceptorDirections().get(pos))));
                                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
                                     iteratedNetworks.add(transmitterNetwork);
                                 }

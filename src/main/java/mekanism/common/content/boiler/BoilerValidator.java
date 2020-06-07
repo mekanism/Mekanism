@@ -1,8 +1,7 @@
 package mekanism.common.content.boiler;
 
-import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import mekanism.api.Coord4D;
+import java.util.Set;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
@@ -121,7 +120,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
 
         int steamHeight = (structure.renderLocation.getY() + structure.height() - 2) - initDisperser.getY();
         structure.setSteamVolume(structure.width() * structure.length() * steamHeight);
-        structure.upperRenderLocation = new Coord4D(structure.renderLocation.getX(), initDisperser.getY() + 1, structure.renderLocation.getZ(), world.getDimension().getType());
+        structure.upperRenderLocation = new BlockPos(structure.renderLocation.getX(), initDisperser.getY() + 1, structure.renderLocation.getZ());
         return FormationResult.SUCCESS;
     }
 }

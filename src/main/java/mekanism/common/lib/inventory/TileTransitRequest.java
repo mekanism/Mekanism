@@ -66,8 +66,9 @@ public class TileTransitRequest extends TransitRequest {
                     if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
                         Mekanism.logger.warn("An inventory's returned content {} does not line up with InvStack's prediction.", !stackable ? "type" : "count");
                         Mekanism.logger.warn("InvStack item: {}, ret: {}", getItemType().getStack(), ret);
-                        Mekanism.logger.warn("Tile: {} {}", tile, tile.getPos());
+                        Mekanism.logger.warn("Tile: {} {}", tile.getType().getRegistryName(), tile.getPos());
                     }
+                    //TODO - V10: Re-evaluate, should this be minus toUse? Though in general these numbers seem rather screwy
                     amount -= toUse;
                     totalCount -= amount;
                     entry.setValue(totalCount - toUse);

@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import mekanism.api.Coord4D;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.progress.GuiProgress;
@@ -32,14 +31,13 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     @Override
     public void init() {
         super.init();
-
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 154, 40));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 34, getGuiTop() + 96, 108, 17, MekanismLang.BUTTON_REMOVE,
-              () -> Mekanism.packetHandler.sendToServer(new PacketRemoveModule(Coord4D.get(getTileEntity()), selectedModule.getData()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketRemoveModule(tile.getPos(), selectedModule.getData()))));
         removeButton.active = false;
 
         addButton(new GuiModuleScrollList(this, 34, 20, 108, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));
