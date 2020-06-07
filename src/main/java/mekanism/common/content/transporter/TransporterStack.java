@@ -2,6 +2,7 @@ package mekanism.common.content.transporter;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -20,6 +21,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Contract;
 
 public class TransporterStack {
 
@@ -242,15 +244,19 @@ public class TransporterStack {
         return side == null ? Direction.DOWN : side;
     }
 
+    @Contract("null, _, _ -> false")
     public boolean canInsertToTransporter(TileEntity tile, Direction from, @Nullable TileEntity tileFrom) {
-        if (tile instanceof TileEntityLogisticalTransporterBase) {
-            TileEntityLogisticalTransporterBase transporter = (TileEntityLogisticalTransporterBase) tile;
-            if (transporter.getColor() == null || transporter.getColor() == color) {
-                //If the color is valid, make sure that the connection is valid
-                return transporter.canConnectMutual(from.getOpposite(), tileFrom);
-            }
-        }
-        return false;
+        return tile instanceof TileEntityLogisticalTransporterBase && canInsertToTransporterNN((TileEntityLogisticalTransporterBase) tile, from, tileFrom);
+    }
+
+    @Contract("null, _, _ -> false")
+    public boolean canInsertToTransporter(@Nullable TileEntityLogisticalTransporterBase transporter, Direction from, @Nullable TileEntity tileFrom) {
+        return transporter != null && canInsertToTransporterNN(transporter, from, tileFrom);
+    }
+
+    public boolean canInsertToTransporterNN(@Nonnull TileEntityLogisticalTransporterBase transporter, Direction from, @Nullable TileEntity tileFrom) {
+        //If the color is valid, make sure that the connection is valid
+        return (transporter.getColor() == null || transporter.getColor() == color) && transporter.canConnectMutual(from.getOpposite(), tileFrom);
     }
 
     public Coord4D getDest() {

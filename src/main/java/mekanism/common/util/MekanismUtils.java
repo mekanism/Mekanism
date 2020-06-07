@@ -797,6 +797,19 @@ public final class MekanismUtils {
         return getTileEntity(world, chunkMap, coord.getPos());
     }
 
+    @Nullable
+    @Contract("_, null, _, _ -> null")
+    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull Coord4D coord) {
+        return getTileEntity(clazz, world, chunkMap, coord.getPos());
+    }
+
+    @Nullable
+    @Contract("_, null, _, _, _ -> null")
+    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull Coord4D coord,
+          boolean logWrongType) {
+        return getTileEntity(clazz, world, chunkMap, coord.getPos(), logWrongType);
+    }
+
     /**
      * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
      * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
@@ -810,6 +823,27 @@ public final class MekanismUtils {
     @Nullable
     @Contract("null, _, _ -> null")
     public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
+        //Get the tile entity using the chunk we found/had cached
+        return getTileEntity(getChunkForTile(world, chunkMap, pos), pos);
+    }
+
+    @Nullable
+    @Contract("_, null, _, _ -> null")
+    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
+        return getTileEntity(clazz, world, chunkMap, pos, false);
+    }
+
+    @Nullable
+    @Contract("_, null, _, _, _ -> null")
+    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos,
+          boolean logWrongType) {
+        //Get the tile entity using the chunk we found/had cached
+        return getTileEntity(clazz, getChunkForTile(world, chunkMap, pos), pos, logWrongType);
+    }
+
+    @Nullable
+    @Contract("null, _, _ -> null")
+    private static IChunk getChunkForTile(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
         if (world == null) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
             return null;
@@ -827,8 +861,7 @@ public final class MekanismUtils {
                 chunkMap.put(combinedChunk, chunk);
             }
         }
-        //Get the tile entity using the chunk we found/had cached
-        return getTileEntity(chunk, pos);
+        return chunk;
     }
 
     /**

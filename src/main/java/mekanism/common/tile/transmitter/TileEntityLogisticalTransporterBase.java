@@ -114,8 +114,37 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                 stack.progress = Math.min(100, stack.progress + tier.getSpeed());
             }
         } else if (getTransmitterNetwork() != null) {
+            //Pull items into the transporter
+            if (delay > 0) {
+                //If a delay has been imposed, wait a bit
+                delay--;
+            } else {
+                //Reset delay to 3 ticks; if nothing is available to insert OR inserted, we'll try again in 3 ticks
+                delay = 3;
+                //Attempt to pull
+                for (Direction side : getConnections(ConnectionType.PULL)) {
+                    TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+                    if (tile != null) {
+                        TransitRequest request = TransitRequest.anyItem(tile, side, tier.getPullAmount());
+                        //There's a stack available to insert into the network...
+                        if (!request.isEmpty()) {
+                            TransitResponse response = insert(tile, request, getColor(), true, 0);
+                            if (response.isEmpty()) {
+                                //Insert failed; increment the backoff and calculate delay. Note that we cap retries
+                                // at a max of 40 ticks (2 seocnds), which would be 4 consecutive retries
+                                delayCount++;
+                                delay = Math.min(40, (int) Math.exp(delayCount));
+                            } else {
+                                //If the insert succeeded, remove the inserted count and try again for another 10 ticks
+                                response.useAll();
+                                delay = 10;
+                            }
+                        }
+                    }
+                }
+            }
+            //Update stack positions
             IntSet deletes = new IntOpenHashSet();
-            pullItems();
             Coord4D coord = coord();
             //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
             // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
@@ -143,11 +172,9 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                         Coord4D next = stack.getPath().get(currentIndex - 1);
                         if (next != null) {
                             if (!stack.isFinal(this)) {
-                                TileEntity tile = MekanismUtils.getTileEntity(world, next.getPos());
+                                TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, next.getPos());
                                 if (stack.canInsertToTransporter(tile, stack.getSide(this), this)) {
-                                    if (tile instanceof TileEntityLogisticalTransporterBase) {
-                                        ((TileEntityLogisticalTransporterBase) tile).entityEntering(stack, stack.progress % 100);
-                                    }
+                                    tile.entityEntering(stack, stack.progress % 100);
                                     deletes.add(stackId);
                                     continue;
                                 }
@@ -175,17 +202,26 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                     }
                     if (!recalculate(stackId, stack, prevSet)) {
                         deletes.add(stackId);
-                    } else if (prevSet != null) {
-                        stack.progress = 0;
-                    } else {
+                    } else if (prevSet == null) {
                         stack.progress = 50;
+                    } else {
+                        stack.progress = 0;
                     }
                 } else if (stack.progress == 50) {
                     boolean tryRecalculate;
                     if (stack.isFinal(this)) {
-                        tryRecalculate = checkPath(stack, Path.DEST, false) || checkPath(stack, Path.HOME, true) || stack.getPathType() == Path.NONE;
+                        Path pathType = stack.getPathType();
+                        if (pathType == Path.DEST || pathType == Path.HOME) {
+                            ConnectionType connectionType = getConnectionType(stack.getSide(this));
+                            tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH ||
+                                             !TransporterUtils.canInsert(MekanismUtils.getTileEntity(world, stack.getDest().getPos()), stack.color, stack.itemStack,
+                                                   stack.getSide(this), pathType == Path.HOME);
+                        } else {
+                            tryRecalculate = pathType == Path.NONE;
+                        }
                     } else {
-                        tryRecalculate = !stack.canInsertToTransporter(MekanismUtils.getTileEntity(world, stack.getNext(this).getPos()), stack.getSide(this), this);
+                        tryRecalculate = !stack.canInsertToTransporter(MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world,
+                              stack.getNext(this).getPos()), stack.getSide(this), this);
                     }
                     if (tryRecalculate && !recalculate(stackId, stack, null)) {
                         deletes.add(stackId);
@@ -195,7 +231,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
 
             if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                 //Notify clients, so that we send the information before we start clearing our lists
-                Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), world, getPos());
+                Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), this);
                 // Now remove any entries from transit that have been deleted
                 deletes.forEach((IntConsumer) (this::deleteStack));
 
@@ -204,42 +240,6 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
 
                 // Finally, mark chunk for save
                 MekanismUtils.saveChunk(this);
-            }
-        }
-    }
-
-    private void pullItems() {
-        // If a delay has been imposed, wait a bit
-        if (delay > 0) {
-            delay--;
-            return;
-        }
-
-        // Reset delay to 3 ticks; if nothing is available to insert OR inserted, we'll try again
-        // in 3 ticks
-        delay = 3;
-
-        // Attempt to pull
-        for (Direction side : getConnections(ConnectionType.PULL)) {
-            final TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-            if (tile != null) {
-                TransitRequest request = TransitRequest.anyItem(tile, side, tier.getPullAmount());
-
-                // There's a stack available to insert into the network...
-                if (!request.isEmpty()) {
-                    TransitResponse response = insert(tile, request, getColor(), true, 0);
-
-                    // If the insert succeeded, remove the inserted count and try again for another 10 ticks
-                    if (!response.isEmpty()) {
-                        response.useAll();
-                        delay = 10;
-                    } else {
-                        // Insert failed; increment the backoff and calculate delay. Note that we cap retries
-                        // at a max of 40 ticks (2 seocnds), which would be 4 consecutive retries
-                        delayCount++;
-                        delay = Math.min(40, (int) Math.exp(delayCount));
-                    }
-                }
             }
         }
     }
@@ -371,17 +371,6 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
         transit.put(id, s);
     }
 
-    private boolean checkPath(TransporterStack stack, Path dest, boolean home) {
-        return stack.getPathType() == dest && (!checkSideForInsert(stack) || !TransporterUtils.canInsert(MekanismUtils.getTileEntity(world, stack.getDest().getPos()),
-              stack.color, stack.itemStack, stack.getSide(this), home));
-    }
-
-    private boolean checkSideForInsert(TransporterStack stack) {
-        Direction side = stack.getSide(this);
-        ConnectionType connectionType = getConnectionType(side);
-        return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PUSH;
-    }
-
     private boolean recalculate(int stackId, TransporterStack stack, Coord4D from) {
         boolean noPath = stack.getPathType() == Path.NONE;
         if (!noPath) {
@@ -401,17 +390,31 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     }
 
     public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        Coord4D original = Coord4D.get(outputter);
-        Direction from = coord().sideDifference(original).getOpposite();
-        TransporterStack stack = new TransporterStack();
-        stack.originalLocation = original;
-        stack.homeLocation = original;
-        stack.color = color;
-        if (!stack.canInsertToTransporter(this, from, outputter)) {
+        Coord4D outputterCoord = Coord4D.get(outputter);
+        Direction from = coord().sideDifference(outputterCoord).getOpposite();
+        TransporterStack stack = insertStack(outputterCoord, color);
+        if (!stack.canInsertToTransporterNN(this, from, outputter)) {
             return request.getEmptyResponse();
         }
-        TransitResponse response = stack.recalculatePath(request, this, min);
-        return updateTransit(doEmit, stack, response);
+        return updateTransit(doEmit, stack, stack.recalculatePath(request, this, min));
+    }
+
+    public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
+        Coord4D outputterCoord = Coord4D.get(outputter);
+        Direction from = coord().sideDifference(outputterCoord).getOpposite();
+        TransporterStack stack = insertStack(outputterCoord, color);
+        if (!canReceiveFrom(from) || !stack.canInsertToTransporterNN(this, from, outputter)) {
+            return request.getEmptyResponse();
+        }
+        return updateTransit(doEmit, stack, stack.recalculateRRPath(request, outputter, this, min));
+    }
+
+    private TransporterStack insertStack(Coord4D outputterCoord, EnumColor color) {
+        TransporterStack stack = new TransporterStack();
+        stack.originalLocation = outputterCoord;
+        stack.homeLocation = outputterCoord;
+        stack.color = color;
+        return stack;
     }
 
     @Nonnull
@@ -428,21 +431,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
         return response;
     }
 
-    public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        Coord4D outputterCoord = Coord4D.get(outputter);
-        Direction from = coord().sideDifference(outputterCoord).getOpposite();
-        TransporterStack stack = new TransporterStack();
-        stack.originalLocation = outputterCoord;
-        stack.homeLocation = outputterCoord;
-        stack.color = color;
-        if (!canReceiveFrom(from) || !stack.canInsertToTransporter(this, from, outputter)) {
-            return request.getEmptyResponse();
-        }
-        TransitResponse response = stack.recalculateRRPath(request, outputter, this, min);
-        return updateTransit(doEmit, stack, response);
-    }
-
-    public void entityEntering(TransporterStack stack, int progress) {
+    private void entityEntering(TransporterStack stack, int progress) {
         // Update the progress of the stack and add it as something that's both
         // in transit and needs sync down to the client.
         //

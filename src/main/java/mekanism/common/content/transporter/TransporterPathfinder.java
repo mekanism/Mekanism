@@ -181,7 +181,8 @@ public final class TransporterPathfinder {
                 loopSide(chunkMap, ret, newSide, startTile);
                 return new Destination(ret, true, null, 0).setPathType(Path.NONE);
             }
-            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, start.offset(transportStack.idleDir));
+            TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap,
+                  start.offset(transportStack.idleDir));
             if (transportStack.canInsertToTransporter(tile, transportStack.idleDir, startTile)) {
                 loopSide(chunkMap, ret, transportStack.idleDir, startTile);
                 return new Destination(ret, true, null, 0).setPathType(Path.NONE);
@@ -221,7 +222,7 @@ public final class TransporterPathfinder {
             TileEntity startTile = MekanismUtils.getTileEntity(world, chunkMap, startPos);
             if (transportStack.idleDir == null) {
                 for (Direction side : EnumUtils.DIRECTIONS) {
-                    TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, startPos.offset(side));
+                    TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, startPos.offset(side));
                     if (transportStack.canInsertToTransporter(tile, side, startTile)) {
                         return side;
                     }
@@ -229,12 +230,12 @@ public final class TransporterPathfinder {
             } else {
                 Direction opposite = transportStack.idleDir.getOpposite();
                 for (Direction side : EnumSet.complementOf(EnumSet.of(opposite))) {
-                    TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, startPos.offset(side));
+                    TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, startPos.offset(side));
                     if (transportStack.canInsertToTransporter(tile, side, startTile)) {
                         return side;
                     }
                 }
-                TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, startPos.offset(opposite));
+                TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, startPos.offset(opposite));
                 if (transportStack.canInsertToTransporter(tile, opposite, startTile)) {
                     return opposite;
                 }
@@ -389,10 +390,7 @@ public final class TransporterPathfinder {
                     TileEntity neighborEntity = MekanismUtils.getTileEntity(world, chunkMap, neighbor);
                     if (transportStack.canInsertToTransporter(neighborEntity, direction, currentNodeTile)) {
                         //If the neighbor is a transporter and the stack is valid for it
-                        double tentativeG = currentScore;
-                        if (neighborEntity instanceof TileEntityLogisticalTransporterBase) {
-                            tentativeG += ((TileEntityLogisticalTransporterBase) neighborEntity).getCost();
-                        }
+                        double tentativeG = currentScore + ((TileEntityLogisticalTransporterBase) neighborEntity).getCost();
                         if (closedSet.contains(neighbor) && tentativeG >= gScore.getDouble(neighbor)) {
                             continue;
                         }
