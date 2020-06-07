@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
-import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.lib.transmitter.DynamicNetwork;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -87,7 +87,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<TileEntity, InventoryNetwork, Void> transmitter) {
+    public void absorbBuffer(TileEntityTransmitter<TileEntity, InventoryNetwork, Void> transmitter) {
     }
 
     @Override
@@ -95,7 +95,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     }
 
     @Override
-    protected synchronized void updateCapacity(IGridTransmitter<TileEntity, InventoryNetwork, Void> transmitter) {
+    protected synchronized void updateCapacity(TileEntityTransmitter<TileEntity, InventoryNetwork, Void> transmitter) {
         //The capacity is always zero so no point in doing calculations.
     }
 
@@ -131,9 +131,9 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
     public static class AcceptorData {
 
-        private Coord4D location;
-        private TransitResponse response;
-        private Set<Direction> sides;
+        private final Coord4D location;
+        private final TransitResponse response;
+        private final Set<Direction> sides;
 
         public AcceptorData(Coord4D coord, TransitResponse ret, Direction side) {
             location = coord;

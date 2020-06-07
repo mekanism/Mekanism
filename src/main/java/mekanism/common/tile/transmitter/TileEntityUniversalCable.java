@@ -25,7 +25,6 @@ import mekanism.common.capabilities.resolver.advanced.AdvancedEnergyCapabilityRe
 import mekanism.common.content.transmitter.EnergyNetwork;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.CableTier;
@@ -160,7 +159,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        if (tile instanceof IGridTransmitter && TransmissionType.ENERGY.checkTransmissionType(((IGridTransmitter<?, ?, ?>) tile))) {
+        if (tile instanceof TileEntityTransmitter && TransmissionType.ENERGY.checkTransmissionType(((TileEntityTransmitter<?, ?, ?>) tile))) {
             return false;
         }
         return EnergyCompatUtils.hasStrictEnergyHandlerAndListen(tile, side.getOpposite(), getRefreshListener(side));

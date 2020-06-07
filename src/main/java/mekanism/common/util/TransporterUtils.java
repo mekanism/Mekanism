@@ -8,11 +8,11 @@ import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -36,7 +36,7 @@ public final class TransporterUtils {
     }
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (tile instanceof IGridTransmitter && TransmissionType.ITEM.checkTransmissionType(((IGridTransmitter<?, ?, ?>) tile))) {
+        if (tile instanceof TileEntityTransmitter && TransmissionType.ITEM.checkTransmissionType(((TileEntityTransmitter<?, ?, ?>) tile))) {
             return false;
         }
         return InventoryUtils.isItemHandler(tile, side.getOpposite());
@@ -60,7 +60,7 @@ public final class TransporterUtils {
         return colors.get(colors.indexOf(color) - 1);
     }
 
-    public static void drop(ILogisticalTransporter tile, TransporterStack stack) {
+    public static void drop(TileEntityLogisticalTransporter tile, TransporterStack stack) {
         float[] pos;
         if (stack.hasPath()) {
             pos = TransporterUtils.getStackPosition(tile, stack, 0);
@@ -72,13 +72,13 @@ public final class TransporterUtils {
         Block.spawnAsEntity(tile.world(), blockPos, stack.itemStack);
     }
 
-    public static float[] getStackPosition(ILogisticalTransporter tile, TransporterStack stack, float partial) {
+    public static float[] getStackPosition(TileEntityLogisticalTransporter tile, TransporterStack stack, float partial) {
         Direction side = stack.getSide(tile);
         float progress = ((stack.progress + partial) / 100F) - 0.5F;
         return new float[]{0.5F + side.getXOffset() * progress, 0.25F + side.getYOffset() * progress, 0.5F + side.getZOffset() * progress};
     }
 
-    public static void incrementColor(ILogisticalTransporter tile) {
+    public static void incrementColor(TileEntityLogisticalTransporter tile) {
         if (tile.getColor() == null) {
             tile.setColor(colors.get(0));
         } else if (colors.indexOf(tile.getColor()) == colors.size() - 1) {

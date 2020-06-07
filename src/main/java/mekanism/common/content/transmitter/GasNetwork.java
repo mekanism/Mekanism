@@ -23,14 +23,14 @@ import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityGasTank;
 import mekanism.common.distribution.target.ChemicalHandlerTarget;
 import mekanism.common.distribution.target.GasTransmitterSaveTarget;
+import mekanism.common.lib.transmitter.DynamicNetwork;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
@@ -126,7 +126,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
+    public void absorbBuffer(TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
         GasStack gas = transmitter.releaseShare();
         if (gas.isEmpty()) {
             return;
@@ -150,7 +150,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void updateSaveShares(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
@@ -158,7 +158,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
             Set<GasTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter : transmitters) {
+            for (TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> transmitter : transmitters) {
                 GasTransmitterSaveTarget saveTarget = new GasTransmitterSaveTarget(gasType);
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);
@@ -174,11 +174,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    protected void onLastTransmitterRemoved(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void onLastTransmitterRemoved(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
         disperse(triggerTransmitter, gasTank.getStack());
     }
 
-    private void disperse(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter, GasStack gasType) {
+    private void disperse(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter, GasStack gasType) {
         if (gasType.has(GasAttributes.Radiation.class)) {
             // Handle radiation leakage
             double radioactivity = gasType.get(GasAttributes.Radiation.class).getRadioactivity();

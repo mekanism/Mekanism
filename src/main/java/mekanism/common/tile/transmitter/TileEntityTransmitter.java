@@ -250,8 +250,8 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
             TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-            if (canConnectMutual(side, tile) && tile instanceof IGridTransmitter &&
-                getTransmitterType().getTransmission().checkTransmissionType((IGridTransmitter<?, ?, ?>) tile) && isValidTransmitter(tile)) {
+            if (canConnectMutual(side, tile) && tile instanceof TileEntityTransmitter &&
+                getTransmitterType().getTransmission().checkTransmissionType((TileEntityTransmitter<?, ?, ?>) tile) && isValidTransmitter(tile)) {
                 connections |= 1 << side.ordinal();
             }
         }
@@ -282,8 +282,8 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
             return false;
         }
         TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-        if (canConnectMutual(side, tile) && tile instanceof IGridTransmitter) {
-            return getTransmitterType().getTransmission().checkTransmissionType((IGridTransmitter<?, ?, ?>) tile) && isValidTransmitter(tile);
+        if (canConnectMutual(side, tile) && tile instanceof TileEntityTransmitter) {
+            return getTransmitterType().getTransmission().checkTransmissionType((TileEntityTransmitter<?, ?, ?>) tile) && isValidTransmitter(tile);
         }
         return false;
     }
@@ -375,20 +375,16 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         if (!canConnectMutual(side, potentialTransmitterTile)) {
             return null;
         }
-        if (potentialTransmitterTile instanceof IGridTransmitter && getTransmissionType().checkTransmissionType((IGridTransmitter<?, ?, ?>) potentialTransmitterTile) &&
-            isValidTransmitter(potentialTransmitterTile)) {
+        if (potentialTransmitterTile instanceof TileEntityTransmitter &&
+            getTransmissionType().checkTransmissionType((TileEntityTransmitter<?, ?, ?>) potentialTransmitterTile) && isValidTransmitter(potentialTransmitterTile)) {
             return sideCoord;
         }
         return null;
     }
 
     @Override
-    public boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> other) {
-        //TODO - V10: Make it so that we know the implementation instead of it being in IGridTransmitter?
-        if (other instanceof TileEntityTransmitter) {
-            return isValidTransmitter(((TileEntityTransmitter<?, ?, ?>) other).getTileEntity());
-        }
-        return true;//allow non-TileEntityTransmitter impls to connect?
+    public boolean isCompatibleWith(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> other) {
+        return isValidTransmitter(other);
     }
 
     @Override
@@ -400,12 +396,9 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
 
     @Override
     public NETWORK getExternalNetwork(Coord4D from) {
-        TileEntity tile = MekanismUtils.getTileEntity(world, from.getPos());
-        if (tile instanceof IGridTransmitter) {
-            IGridTransmitter<?, ?, ?> transmitter = (IGridTransmitter<?, ?, ?>) tile;
-            if (getTransmissionType().checkTransmissionType(transmitter)) {
-                return ((IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>) transmitter).getTransmitterNetwork();
-            }
+        TileEntityTransmitter<?, ?, ?> transmitter = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, from.getPos());
+        if (transmitter != null && getTransmissionType().checkTransmissionType(transmitter)) {
+            return ((TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>) transmitter).getTransmitterNetwork();
         }
         return null;
     }
@@ -488,7 +481,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     public void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, @Nonnull AlloyTier tier) {
         if (getWorld() != null && hasTransmitterNetwork()) {
             NETWORK transmitterNetwork = getTransmitterNetwork();
-            List<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> list = new ArrayList<>(transmitterNetwork.getTransmitters());
+            List<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> list = new ArrayList<>(transmitterNetwork.getTransmitters());
             list.sort((o1, o2) -> {
                 if (o1 != null && o2 != null) {
                     BlockPos o1Pos = o1.coord().getPos();
@@ -498,33 +491,30 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
                 return 0;
             });
             int upgraded = 0;
-            for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> iter : list) {
-                if (iter instanceof TileEntityTransmitter) {
-                    TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>) iter;
-                    if (transmitter.canUpgrade(tier)) {
-                        BlockState state = transmitter.getBlockState();
-                        BlockState upgradeState = transmitter.upgradeResult(state, tier.getBaseTier());
-                        if (state == upgradeState) {
-                            //Skip if it would not actually upgrade anything
-                            continue;
-                        }
-                        transmitter.takeShare();
-                        transmitter.setTransmitterNetwork(null);
-                        TransmitterUpgradeData upgradeData = transmitter.getUpgradeData();
-                        if (upgradeData == null) {
-                            Mekanism.logger.warn("Got no upgrade data for transmitter at position: {} in {} but it said it would be able to provide some.",
-                                  transmitter.getPos(), transmitter.getWorld());
+            for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : list) {
+                if (transmitter.canUpgrade(tier)) {
+                    BlockState state = transmitter.getBlockState();
+                    BlockState upgradeState = transmitter.upgradeResult(state, tier.getBaseTier());
+                    if (state == upgradeState) {
+                        //Skip if it would not actually upgrade anything
+                        continue;
+                    }
+                    transmitter.takeShare();
+                    transmitter.setTransmitterNetwork(null);
+                    TransmitterUpgradeData upgradeData = transmitter.getUpgradeData();
+                    if (upgradeData == null) {
+                        Mekanism.logger.warn("Got no upgrade data for transmitter at position: {} in {} but it said it would be able to provide some.",
+                              transmitter.getPos(), transmitter.getWorld());
+                    } else {
+                        transmitter.getWorld().setBlockState(transmitter.getPos(), upgradeState);
+                        TileEntityTransmitter<?, ?, ?> upgradedTile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, transmitter.getWorld(), transmitter.getPos());
+                        if (upgradedTile == null) {
+                            Mekanism.logger.warn("Error upgrading transmitter at position: {} in {}.", transmitter.getPos(), transmitter.getWorld());
                         } else {
-                            transmitter.getWorld().setBlockState(transmitter.getPos(), upgradeState);
-                            TileEntityTransmitter<?, ?, ?> upgradedTile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, transmitter.getWorld(), transmitter.getPos());
-                            if (upgradedTile == null) {
-                                Mekanism.logger.warn("Error upgrading transmitter at position: {} in {}.", transmitter.getPos(), transmitter.getWorld());
-                            } else {
-                                upgradedTile.parseUpgradeData(upgradeData);
-                                upgraded++;
-                                if (upgraded == 8) {
-                                    break;
-                                }
+                            upgradedTile.parseUpgradeData(upgradeData);
+                            upgraded++;
+                            if (upgraded == 8) {
+                                break;
                             }
                         }
                     }
@@ -826,7 +816,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
                     // valid to merge them when otherwise people may try to merge things when they shouldn't
                     // be merged causing unexpected bugs.
                     network.adoptTransmittersAndAcceptorsFrom(otherNetwork);
-                    List<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> otherTransmitters = new ArrayList<>(otherNetwork.getTransmitters());
+                    List<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> otherTransmitters = new ArrayList<>(otherNetwork.getTransmitters());
 
                     //Unregister the other network
                     otherNetwork.deregister();
@@ -840,7 +830,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
                     other.refreshConnections(side.getOpposite());
                     //Force all the newly merged transmitters to send a sync update to the client
                     // to ensure that they now have the proper network id on the client
-                    for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> otherTransmitter : otherTransmitters) {
+                    for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> otherTransmitter : otherTransmitters) {
                         otherTransmitter.requestsUpdate();
                     }
                 }

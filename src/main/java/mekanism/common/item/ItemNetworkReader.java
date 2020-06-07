@@ -1,9 +1,9 @@
 package mekanism.common.item;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
@@ -13,13 +13,13 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.lib.transmitter.IGridTransmitter;
-import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.transmitter.EnergyNetwork;
+import mekanism.common.lib.transmitter.DynamicNetwork;
+import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -61,8 +61,8 @@ public class ItemNetworkReader extends ItemEnergized {
                     energyContainer.extract(energyPerUse, Action.EXECUTE, AutomationType.MANUAL);
                 }
                 Direction opposite = context.getFace().getOpposite();
-                if (tileEntity instanceof IGridTransmitter) {
-                    IGridTransmitter<?, ?, ?> transmitter = (IGridTransmitter<?, ?, ?>) tileEntity;
+                if (tileEntity instanceof TileEntityTransmitter) {
+                    TileEntityTransmitter<?, ?, ?> transmitter = (TileEntityTransmitter<?, ?, ?>) tileEntity;
                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
                           MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)));
                     player.sendMessage(MekanismLang.NETWORK_READER_TRANSMITTERS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkSize()));
@@ -94,8 +94,8 @@ public class ItemNetworkReader extends ItemEnergized {
                         Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new ObjectOpenHashSet<>();
                         for (Direction side : EnumUtils.DIRECTIONS) {
                             TileEntity tile = MekanismUtils.getTileEntity(world, pos.offset(side));
-                            if (tile instanceof IGridTransmitter) {
-                                IGridTransmitter<?, ?, ?> transmitter = (IGridTransmitter<?, ?, ?>) tile;
+                            if (tile instanceof TileEntityTransmitter) {
+                                TileEntityTransmitter<?, ?, ?> transmitter = (TileEntityTransmitter<?, ?, ?>) tile;
                                 DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
                                 if (transmitterNetwork.getPossibleAcceptors().contains(tileCoord) && !iteratedNetworks.contains(transmitterNetwork)) {
                                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",

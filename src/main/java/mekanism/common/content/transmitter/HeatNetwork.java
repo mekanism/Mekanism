@@ -8,7 +8,7 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.lib.transmitter.IGridTransmitter;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.util.text.ITextComponent;
@@ -56,7 +56,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IHeatHandler, HeatNetwork, Void> transmitter) {
+    public void absorbBuffer(TileEntityTransmitter<IHeatHandler, HeatNetwork, Void> transmitter) {
     }
 
     @Override
@@ -64,7 +64,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
     }
 
     @Override
-    protected synchronized void updateCapacity(IGridTransmitter<IHeatHandler, HeatNetwork, Void> transmitter) {
+    protected synchronized void updateCapacity(TileEntityTransmitter<IHeatHandler, HeatNetwork, Void> transmitter) {
         //The capacity is always zero so no point in doing calculations.
     }
 
@@ -78,7 +78,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
         super.onUpdate();
         if (!isRemote()) {
             double newSumTemp = 0, newHeatLost = 0, newHeatTransferred = 0;
-            for (IGridTransmitter<IHeatHandler, HeatNetwork, Void> transmitter : transmitters) {
+            for (TileEntityTransmitter<IHeatHandler, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof ITileHeatHandler) {
                     // change this when we re-integrate with multipart
                     ITileHeatHandler heatTile = (ITileHeatHandler) transmitter;

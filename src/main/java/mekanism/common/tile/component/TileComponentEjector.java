@@ -29,7 +29,7 @@ import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.interfaces.ILogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
@@ -126,8 +126,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             continue;
                         }
                         TransitResponse response;
-                        if (tile instanceof ILogisticalTransporter) {
-                            response = ((ILogisticalTransporter) tile).insert(this.tile, ejectMap, outputColor, true, 0);
+                        if (tile instanceof TileEntityLogisticalTransporter) {
+                            response = ((TileEntityLogisticalTransporter) tile).insert(this.tile, ejectMap, outputColor, true, 0);
                         } else {
                             response = ejectMap.addToInventory(tile, side, false);
                         }

@@ -28,7 +28,6 @@ import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyGasHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.content.transmitter.GasNetwork;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TubeTier;
@@ -155,7 +154,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        if (tile instanceof IGridTransmitter && TransmissionType.GAS.checkTransmissionType(((IGridTransmitter<?, ?, ?>) tile))) {
+        if (tile instanceof TileEntityTransmitter && TransmissionType.GAS.checkTransmissionType(((TileEntityTransmitter<?, ?, ?>) tile))) {
             return false;
         }
         return isAcceptorAndListen(tile, side, Capabilities.GAS_HANDLER_CAPABILITY);

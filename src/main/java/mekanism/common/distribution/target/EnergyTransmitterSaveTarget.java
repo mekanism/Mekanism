@@ -4,28 +4,28 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.content.transmitter.EnergyNetwork;
 import mekanism.common.distribution.SplitInfo;
-import mekanism.common.lib.transmitter.IGridTransmitter;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.util.Direction;
 
-public class EnergyTransmitterSaveTarget extends Target<IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong>, FloatingLong, FloatingLong> {
+public class EnergyTransmitterSaveTarget extends Target<TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong>, FloatingLong, FloatingLong> {
 
     private FloatingLong currentStored = FloatingLong.ZERO;
 
     @Override
-    protected void acceptAmount(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
+    protected void acceptAmount(TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
         amount = amount.min(transmitter.getCapacityAsFloatingLong().subtract(currentStored));
         currentStored = currentStored.plusEqual(amount);
         splitInfo.send(amount);
     }
 
     @Override
-    protected FloatingLong simulate(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter, FloatingLong energyToSend) {
+    protected FloatingLong simulate(TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter, FloatingLong energyToSend) {
         return energyToSend.copy().min(transmitter.getCapacityAsFloatingLong().subtract(currentStored));
     }
 
     public void saveShare(Direction handlerDirection) {
-        IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter = handlers.get(handlerDirection);
+        TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter = handlers.get(handlerDirection);
         if (transmitter instanceof TileEntityUniversalCable) {
             TileEntityUniversalCable cable = (TileEntityUniversalCable) transmitter;
             if (!currentStored.isZero() || !cable.lastWrite.isZero()) {

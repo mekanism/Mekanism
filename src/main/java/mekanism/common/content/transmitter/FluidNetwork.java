@@ -1,5 +1,8 @@
 package mekanism.common.content.transmitter;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -8,21 +11,18 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.math.MathUtils;
-import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.distribution.target.FluidHandlerTarget;
 import mekanism.common.distribution.target.FluidTransmitterSaveTarget;
+import mekanism.common.lib.transmitter.DynamicNetwork;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.FluidUtils;
@@ -118,7 +118,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
+    public void absorbBuffer(TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
         FluidStack fluid = transmitter.releaseShare();
         if (fluid.isEmpty()) {
             return;
@@ -142,7 +142,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Override
-    protected synchronized void updateCapacity(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
+    protected synchronized void updateCapacity(TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
         super.updateCapacity(transmitter);
         intCapacity = MathUtils.clampToInt(getCapacity());
     }
@@ -158,7 +158,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Override
-    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void updateSaveShares(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
@@ -166,7 +166,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
             Set<FluidTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter : transmitters) {
+            for (TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter : transmitters) {
                 FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType);
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);

@@ -8,8 +8,8 @@ import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.IMekanismHeatHandler;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 
@@ -69,7 +69,7 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
                 double tempToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
                 handleHeat(-tempToTransfer * heatCapacity, side);
                 sink.handleHeat(tempToTransfer * heatCapacity);
-                if (!(sink instanceof IGridTransmitter) || !TransmissionType.HEAT.checkTransmissionType((IGridTransmitter<?, ?, ?>) sink)) {
+                if (!(sink instanceof TileEntityTransmitter) || !TransmissionType.HEAT.checkTransmissionType((TileEntityTransmitter<?, ?, ?>) sink)) {
                     adjacentTransfer += tempToTransfer;
                 }
             }

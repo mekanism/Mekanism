@@ -1,24 +1,25 @@
 package mekanism.common.lib.transmitter;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import mekanism.common.util.EnumUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TransmitterNetworkRegistry {
 
@@ -27,11 +28,10 @@ public class TransmitterNetworkRegistry {
     private static final Logger logger = LogManager.getLogger("MekanismTransmitters");
     private final Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
     private final Set<DynamicNetwork<?, ?, ?>> networksToChange = new ObjectOpenHashSet<>();
-    private final Set<IGridTransmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
-    private Map<Coord4D, IGridTransmitter<?, ?, ?>> orphanTransmitters = new Object2ObjectOpenHashMap<>();
-    private final Map<Coord4D, IGridTransmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
-
-    private Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
+    private final Set<TileEntityTransmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
+    private Map<Coord4D, TileEntityTransmitter<?, ?, ?>> orphanTransmitters = new Object2ObjectOpenHashMap<>();
+    private final Map<Coord4D, TileEntityTransmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
+    private final Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
 
     public void addClientNetwork(UUID networkID, DynamicNetwork<?, ?, ?> network) {
         if (!clientNetworks.containsKey(networkID)) {
@@ -67,13 +67,13 @@ public class TransmitterNetworkRegistry {
         getInstance().newOrphanTransmitters.clear();
     }
 
-    public static void invalidateTransmitter(IGridTransmitter<?, ?, ?> transmitter) {
+    public static void invalidateTransmitter(TileEntityTransmitter<?, ?, ?> transmitter) {
         getInstance().invalidTransmitters.add(transmitter);
     }
 
-    public static void registerOrphanTransmitter(IGridTransmitter<?, ?, ?> transmitter) {
+    public static void registerOrphanTransmitter(TileEntityTransmitter<?, ?, ?> transmitter) {
         Coord4D coord = transmitter.coord();
-        IGridTransmitter<?, ?, ?> previous = getInstance().newOrphanTransmitters.put(coord, transmitter);
+        TileEntityTransmitter<?, ?, ?> previous = getInstance().newOrphanTransmitters.put(coord, transmitter);
         if (previous != null && previous != transmitter) {
             logger.error("Different orphan transmitter was already registered at location! {}", coord.toString());
         }
@@ -117,7 +117,7 @@ public class TransmitterNetworkRegistry {
             logger.info("Dealing with {} invalid Transmitters", invalidTransmitters.size());
         }
 
-        for (IGridTransmitter<?, ?, ?> invalid : invalidTransmitters) {
+        for (TileEntityTransmitter<?, ?, ?> invalid : invalidTransmitters) {
             if (!(invalid.isOrphan() && invalid.isValid())) {
                 DynamicNetwork<?, ?, ?> n = invalid.getTransmitterNetwork();
                 if (n != null) {
@@ -137,7 +137,7 @@ public class TransmitterNetworkRegistry {
             logger.info("Dealing with {} orphan Transmitters", orphanTransmitters.size());
         }
 
-        for (IGridTransmitter<?, ?, ?> orphanTransmitter : new Object2ObjectOpenHashMap<>(orphanTransmitters).values()) {
+        for (TileEntityTransmitter<?, ?, ?> orphanTransmitter : new Object2ObjectOpenHashMap<>(orphanTransmitters).values()) {
             DynamicNetwork<?, ?, ?> network = getNetworkFromOrphan(orphanTransmitter);
             if (network != null) {
                 networksToChange.add(network);
@@ -148,7 +148,7 @@ public class TransmitterNetworkRegistry {
         orphanTransmitters.clear();
     }
 
-    public <A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> DynamicNetwork<A, N, BUFFER> getNetworkFromOrphan(IGridTransmitter<A, N, BUFFER> startOrphan) {
+    public <A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> DynamicNetwork<A, N, BUFFER> getNetworkFromOrphan(TileEntityTransmitter<A, N, BUFFER> startOrphan) {
         if (startOrphan.isValid() && startOrphan.isOrphan()) {
             OrphanPathFinder<A, N, BUFFER> finder = new OrphanPathFinder<>(startOrphan);
             finder.start();
@@ -203,18 +203,18 @@ public class TransmitterNetworkRegistry {
         return components;
     }
 
-    public class OrphanPathFinder<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> {
+    public class OrphanPathFinder<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> {
 
-        public IGridTransmitter<A, N, BUFFER> startPoint;
+        public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> startPoint;
 
         public Set<Coord4D> iterated = new ObjectOpenHashSet<>();
 
-        public Set<IGridTransmitter<A, N, BUFFER>> connectedTransmitters = new ObjectOpenHashSet<>();
-        public Set<N> networksFound = new ObjectOpenHashSet<>();
+        public Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> connectedTransmitters = new ObjectOpenHashSet<>();
+        public Set<NETWORK> networksFound = new ObjectOpenHashSet<>();
 
         private Deque<Coord4D> queue = new LinkedList<>();
 
-        public OrphanPathFinder(IGridTransmitter<A, N, BUFFER> start) {
+        public OrphanPathFinder(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> start) {
             startPoint = start;
         }
 
@@ -237,7 +237,7 @@ public class TransmitterNetworkRegistry {
             iterated.add(from);
 
             if (orphanTransmitters.containsKey(from)) {
-                IGridTransmitter<A, N, BUFFER> transmitter = (IGridTransmitter<A, N, BUFFER>) orphanTransmitters.get(from);
+                TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>) orphanTransmitters.get(from);
 
                 if (transmitter.isValid() && transmitter.isOrphan() &&
                     (connectedTransmitters.isEmpty() || connectedTransmitters.stream().anyMatch(existing -> existing.isCompatibleWith(transmitter)))) {
@@ -260,7 +260,7 @@ public class TransmitterNetworkRegistry {
         }
 
         public void addNetworkToIterated(Coord4D from) {
-            N net = startPoint.getExternalNetwork(from);
+            NETWORK net = startPoint.getExternalNetwork(from);
             //Make sure that there is an external network and that it is compatible with this buffer
             if (net != null && net.compatibleWithBuffer(startPoint.getShare())) {
                 if (networksFound.isEmpty() || networksFound.iterator().next().isCompatibleWith(net)) {

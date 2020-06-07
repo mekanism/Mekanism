@@ -58,8 +58,8 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IAdvancedBoundingBlock;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
-import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
@@ -283,8 +283,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 TransitRequest ejectMap = getEjectItemMap(ejectTile, getOppositeDirection());
                 if (!ejectMap.isEmpty()) {
                     TransitResponse response;
-                    if (ejectInv instanceof ILogisticalTransporter) {
-                        response = ((ILogisticalTransporter) ejectInv).insert(ejectTile, ejectMap, null, true, 0);
+                    if (ejectInv instanceof TileEntityLogisticalTransporter) {
+                        response = ((TileEntityLogisticalTransporter) ejectInv).insert(ejectTile, ejectMap, null, true, 0);
                     } else {
                         response = ejectMap.addToInventory(ejectInv, getOppositeDirection(), false);
                     }

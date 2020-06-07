@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.function.Supplier;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.EnumUtils;
@@ -23,7 +22,7 @@ public class PacketTransporterUpdate {
     private final boolean isSync;
     private final BlockPos pos;
 
-    private ILogisticalTransporter transporter;
+    private TileEntityLogisticalTransporter transporter;
     private int[] modes;
 
     //Sync

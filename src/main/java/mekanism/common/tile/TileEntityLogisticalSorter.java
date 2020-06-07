@@ -29,8 +29,8 @@ import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
-import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -122,8 +122,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     private TransitResponse emitItemToTransporter(TileEntity front, TransitRequest request, EnumColor filterColor, int min) {
-        if (front instanceof ILogisticalTransporter) {
-            ILogisticalTransporter transporter = (ILogisticalTransporter) front;
+        if (front instanceof TileEntityLogisticalTransporter) {
+            TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter) front;
             if (roundRobin) {
                 return transporter.insertRR(this, request, filterColor, true, min);
             }

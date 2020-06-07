@@ -31,13 +31,11 @@ import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketTransporterUpdate;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.upgrade.transmitter.LogisticalTransporterUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.MekanismUtils;
@@ -56,7 +54,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 //TODO: Validate that the sub classes of this still work properly
-public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> implements ILogisticalTransporter {
+public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
 
     private final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
@@ -92,17 +90,14 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         return TransmissionType.ITEM;
     }
 
-    @Override
     public EnumColor getColor() {
         return color;
     }
 
-    @Override
     public void setColor(EnumColor c) {
         color = c;
     }
 
-    @Override
     public boolean canEmitTo(TileEntity tile, Direction side) {
         if (!canConnect(side)) {
             return false;
@@ -111,7 +106,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PUSH;
     }
 
-    @Override
     public boolean canReceiveFrom(TileEntity tile, Direction side) {
         if (!canConnect(side)) {
             return false;
@@ -126,8 +120,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public boolean isValidTransmitter(TileEntity tile) {
-        if (tile instanceof ILogisticalTransporter) {
-            ILogisticalTransporter transporter = (ILogisticalTransporter) tile;
+        if (tile instanceof TileEntityLogisticalTransporter) {
+            TileEntityLogisticalTransporter transporter = (TileEntityLogisticalTransporter) tile;
             if (getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor()) {
                 return super.isValidTransmitter(tile);
             }
@@ -139,7 +133,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
         //TODO: Maybe merge this back with TransporterUtils.isValidAcceptorOnSide
         //return TransporterUtils.isValidAcceptorOnSide(tile, side);
-        if (tile instanceof IGridTransmitter && TransmissionType.ITEM.checkTransmissionType(((IGridTransmitter<?, ?, ?>) tile))) {
+        if (tile instanceof TileEntityTransmitter && TransmissionType.ITEM.checkTransmissionType(((TileEntityTransmitter<?, ?, ?>) tile))) {
             return false;
         }
         return isAcceptorAndListen(tile, side, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
@@ -184,8 +178,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
                             if (!stack.isFinal(this)) {
                                 TileEntity tile = MekanismUtils.getTileEntity(world, next.getPos());
                                 if (stack.canInsertToTransporter(tile, stack.getSide(this), this)) {
-                                    if (tile instanceof ILogisticalTransporter) {
-                                        ((ILogisticalTransporter) tile).entityEntering(stack, stack.progress % 100);
+                                    if (tile instanceof TileEntityLogisticalTransporter) {
+                                        ((TileEntityLogisticalTransporter) tile).entityEntering(stack, stack.progress % 100);
                                     }
                                     deletes.add(stackId);
                                     continue;
@@ -418,7 +412,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public void takeShare() {
     }
 
-    @Override
     public double getCost() {
         return TransporterTier.ULTIMATE.getSpeed() / (double) tier.getSpeed();
     }
@@ -509,7 +502,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         return true;
     }
 
-    @Override
     public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
         Coord4D original = Coord4D.get(outputter);
         Direction from = coord().sideDifference(original).getOpposite();
@@ -538,7 +530,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         return response;
     }
 
-    @Override
     public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
         Direction from = coord().sideDifference(Coord4D.get(outputter)).getOpposite();
         TransporterStack stack = new TransporterStack();
@@ -552,7 +543,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         return updateTransit(doEmit, stack, response);
     }
 
-    @Override
     public void entityEntering(TransporterStack stack, int progress) {
         // Update the progress of the stack and add it as something that's both
         // in transit and needs sync down to the client.

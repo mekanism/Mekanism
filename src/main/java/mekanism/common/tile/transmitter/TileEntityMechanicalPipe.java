@@ -24,7 +24,6 @@ import mekanism.common.capabilities.proxy.ProxyFluidHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.content.transmitter.FluidNetwork;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.PipeTier;
@@ -154,7 +153,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        if (tile instanceof IGridTransmitter && TransmissionType.FLUID.checkTransmissionType(((IGridTransmitter<?, ?, ?>) tile))) {
+        if (tile instanceof TileEntityTransmitter && TransmissionType.FLUID.checkTransmissionType(((TileEntityTransmitter<?, ?, ?>) tile))) {
             return false;
         }
         return isAcceptorAndListen(tile, side, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);

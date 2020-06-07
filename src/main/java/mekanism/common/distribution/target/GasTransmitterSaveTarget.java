@@ -6,11 +6,11 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.common.content.transmitter.GasNetwork;
 import mekanism.common.distribution.SplitInfo;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.util.Direction;
 
-public class GasTransmitterSaveTarget extends Target<IGridTransmitter<IGasHandler, GasNetwork, GasStack>, Long, @NonNull GasStack> {
+public class GasTransmitterSaveTarget extends Target<TileEntityTransmitter<IGasHandler, GasNetwork, GasStack>, Long, @NonNull GasStack> {
 
     private GasStack currentStored = GasStack.EMPTY;
 
@@ -19,7 +19,7 @@ public class GasTransmitterSaveTarget extends Target<IGridTransmitter<IGasHandle
     }
 
     @Override
-    protected void acceptAmount(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter, SplitInfo<Long> splitInfo, Long amount) {
+    protected void acceptAmount(TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> transmitter, SplitInfo<Long> splitInfo, Long amount) {
         amount = Math.min(amount, transmitter.getCapacity() - currentStored.getAmount());
         GasStack newGas = new GasStack(extra, amount);
         if (currentStored.isEmpty()) {
@@ -31,7 +31,7 @@ public class GasTransmitterSaveTarget extends Target<IGridTransmitter<IGasHandle
     }
 
     @Override
-    protected Long simulate(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter, @Nonnull GasStack gasStack) {
+    protected Long simulate(TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> transmitter, @Nonnull GasStack gasStack) {
         if (!currentStored.isEmpty() && !currentStored.isTypeEqual(gasStack)) {
             return 0L;
         }
@@ -39,7 +39,7 @@ public class GasTransmitterSaveTarget extends Target<IGridTransmitter<IGasHandle
     }
 
     public void saveShare(Direction handlerDirection) {
-        IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter = handlers.get(handlerDirection);
+        TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> transmitter = handlers.get(handlerDirection);
         if (transmitter instanceof TileEntityPressurizedTube) {
             TileEntityPressurizedTube tube = (TileEntityPressurizedTube) transmitter;
             if (currentStored.isEmpty() != tube.saveShare.isEmpty() || (!currentStored.isEmpty() && !currentStored.isStackIdentical(tube.saveShare))) {

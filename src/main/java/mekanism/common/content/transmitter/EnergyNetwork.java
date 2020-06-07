@@ -1,5 +1,8 @@
 package mekanism.common.content.transmitter;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -8,9 +11,6 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
@@ -18,14 +18,14 @@ import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.lib.transmitter.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.distribution.target.EnergyAcceptorTarget;
 import mekanism.common.distribution.target.EnergyTransmitterSaveTarget;
 import mekanism.common.integration.energy.EnergyCompatUtils;
+import mekanism.common.lib.transmitter.DynamicNetwork;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
@@ -98,7 +98,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
+    public void absorbBuffer(TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
         FloatingLong energy = transmitter.releaseShare();
         if (!energy.isZero()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(energy));
@@ -116,7 +116,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     }
 
     @Override
-    protected synchronized void updateCapacity(IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
+    protected synchronized void updateCapacity(TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
         floatingLongCapacity = floatingLongCapacity.plusEqual(transmitter.getCapacityAsFloatingLong());
         capacity = floatingLongCapacity.longValue();
     }
@@ -124,7 +124,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     @Override
     public synchronized void updateCapacity() {
         FloatingLong sum = FloatingLong.ZERO;
-        for (IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter : transmitters) {
+        for (TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter : transmitters) {
             sum = sum.plusEqual(transmitter.getCapacityAsFloatingLong());
         }
         if (!floatingLongCapacity.equals(sum)) {
@@ -139,14 +139,14 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     }
 
     @Override
-    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void updateSaveShares(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
             Set<EnergyTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (IGridTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter : transmitters) {
+            for (TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter : transmitters) {
                 EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget();
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);

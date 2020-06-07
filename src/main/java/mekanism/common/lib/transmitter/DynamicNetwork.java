@@ -1,5 +1,8 @@
 package mekanism.common.lib.transmitter;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;
@@ -7,12 +10,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.Range3D;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
@@ -21,12 +22,12 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements INetworkDataHandler, IHasTextComponent {
 
-    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectLinkedOpenHashSet<>();
-    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectOpenHashSet<>();
+    protected Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectLinkedOpenHashSet<>();
+    protected Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectOpenHashSet<>();
 
     protected Set<Coord4D> possibleAcceptors = new ObjectOpenHashSet<>();
     protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
-    protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
+    protected Map<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
     protected Range3D packetRange = null;
     protected Set<ChunkPos> chunks = new ObjectOpenHashSet<>();
     protected long capacity;
@@ -47,7 +48,11 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         this.uuid = networkID;
     }
 
-    public void addNewTransmitters(Collection<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> newTransmitters) {
+    protected NETWORK getNetwork() {
+        return (NETWORK) this;
+    }
+
+    public void addNewTransmitters(Collection<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> newTransmitters) {
         transmittersToAdd.addAll(newTransmitters);
         if (!forceScaleUpdate) {
             //If we currently have no transmitters, mark that we want to force our scale to update to the target after the initial adding
@@ -58,7 +63,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     public void commit() {
         if (!transmittersToAdd.isEmpty()) {
             boolean addedValidTransmitters = false;
-            for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmittersToAdd) {
+            for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmittersToAdd) {
                 //Note: Transmitter should not be able to be null here, but I ran into a null pointer
                 // pointing to it being null that I could not reproduce, so just added this as a safety check
                 if (transmitter != null && transmitter.isValid()) {
@@ -71,7 +76,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                         updateTransmitterOnSide(transmitter, side);
                     }
 
-                    transmitter.setTransmitterNetwork((NETWORK) this);
+                    transmitter.setTransmitterNetwork(getNetwork());
                     //Update the capacity here, to make sure that we can actually absorb the buffer properly
                     updateCapacity(transmitter);
                     absorbBuffer(transmitter);
@@ -91,8 +96,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
 
         if (!changedAcceptors.isEmpty()) {
-            for (Entry<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> entry : changedAcceptors.entrySet()) {
-                IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = entry.getKey();
+            for (Entry<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> entry : changedAcceptors.entrySet()) {
+                TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = entry.getKey();
                 if (transmitter.isValid()) {
                     //Update all the changed directions
                     for (Direction side : entry.getValue()) {
@@ -104,7 +109,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
     }
 
-    public void updateTransmitterOnSide(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
+    public void updateTransmitterOnSide(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
         ACCEPTOR acceptor = transmitter.getAcceptor(side);
         Coord4D acceptorCoord = transmitter.coord().offset(side);
         EnumSet<Direction> directions = acceptorDirections.get(acceptorCoord);
@@ -138,17 +143,17 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return world == null ? EffectiveSide.get().isClient() : world.isRemote;
     }
 
-    public abstract void absorbBuffer(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter);
+    public abstract void absorbBuffer(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter);
 
     public abstract void clampBuffer();
 
     protected void forceScaleUpdate() {
     }
 
-    protected void onLastTransmitterRemoved(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void onLastTransmitterRemoved(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
     }
 
-    public void invalidate(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    public void invalidate(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
         if (transmitters.size() == 1 && triggerTransmitter != null) {
             //We're destroying the last transmitter in the network
             onLastTransmitterRemoved(triggerTransmitter);
@@ -164,7 +169,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         updateSaveShares(triggerTransmitter);
 
         //Now invalidate the transmitters
-        for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
+        for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
             invalidateTransmitter(transmitter);
         }
 
@@ -172,7 +177,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         deregister();
     }
 
-    public void invalidateTransmitter(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
+    public void invalidateTransmitter(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
         if (!isRemote() && transmitter.isValid()) {
             transmitter.takeShare();
             transmitter.setTransmitterNetwork(null);
@@ -180,7 +185,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
     }
 
-    public void acceptorChanged(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
+    public void acceptorChanged(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
         EnumSet<Direction> directions = changedAcceptors.get(transmitter);
         if (directions == null) {
             changedAcceptors.put(transmitter, EnumSet.of(side));
@@ -191,8 +196,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void adoptTransmittersAndAcceptorsFrom(NETWORK net) {
-        for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : net.transmitters) {
-            transmitter.setTransmitterNetwork((NETWORK) this);
+        for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : net.transmitters) {
+            transmitter.setTransmitterNetwork(getNetwork());
             transmitters.add(transmitter);
         }
 
@@ -220,13 +225,13 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
             deregister();
             return null;
         }
-        IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> initTransmitter = firstTransmitter();
+        TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> initTransmitter = firstTransmitter();
         Coord4D initCoord = initTransmitter.coord();
         int minX = initCoord.x;
         int minZ = initCoord.z;
         int maxX = initCoord.x;
         int maxZ = initCoord.z;
-        for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
+        for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
             Coord4D coord = transmitter.coord();
             if (coord.x < minX) {
                 minX = coord.x;
@@ -271,7 +276,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     /**
      * @param transmitter The transmitter that was added
      */
-    protected synchronized void updateCapacity(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
+    protected synchronized void updateCapacity(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
         long transmitterCapacity = transmitter.getCapacity();
         if (transmitterCapacity > Long.MAX_VALUE - capacity) {
             //Ensure we don't overflow
@@ -283,7 +288,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public synchronized void updateCapacity() {
         long sum = 0;
-        for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
+        for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
             long transmitterCapacity = transmitter.getCapacity();
             if (transmitterCapacity > Long.MAX_VALUE - capacity) {
                 //Ensure we don't overflow
@@ -313,9 +318,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public void onUpdate() {}
 
-    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {}
+    protected void updateSaveShares(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {}
 
-    public final void validateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    public final void validateSaveShares(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
         if (world.getGameTime() != lastSaveShareWriteTime) {
             lastSaveShareWriteTime = world.getGameTime();
             updateSaveShares(triggerTransmitter);
@@ -337,15 +342,15 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return true;
     }
 
-    public Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> getTransmitters() {
+    public Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> getTransmitters() {
         return transmitters;
     }
 
-    public boolean addTransmitter(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
+    public boolean addTransmitter(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
         return transmitters.add(transmitter);
     }
 
-    public boolean removeTransmitter(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
+    public boolean removeTransmitter(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
         boolean removed = transmitters.remove(transmitter);
         if (transmitters.isEmpty()) {
             deregister();
@@ -353,16 +358,12 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return removed;
     }
 
-    public IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> firstTransmitter() {
+    public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> firstTransmitter() {
         return transmitters.iterator().next();
     }
 
     public int transmittersSize() {
         return transmitters.size();
-    }
-
-    public Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> getTransmittersToAdd() {
-        return transmittersToAdd;
     }
 
     public Set<Coord4D> getPossibleAcceptors() {
@@ -371,10 +372,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public Map<Coord4D, EnumSet<Direction>> getAcceptorDirections() {
         return acceptorDirections;
-    }
-
-    public Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> getChangedAcceptors() {
-        return changedAcceptors;
     }
 
     public UUID getUUID() {

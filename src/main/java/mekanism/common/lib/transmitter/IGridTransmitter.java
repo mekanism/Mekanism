@@ -6,11 +6,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> extends ITransmitter {
+public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> {
+
+    /**
+     * Get the transmitter's transmission type
+     *
+     * @return TransmissionType this transmitter uses
+     */
+    TransmissionType getTransmissionType();
 
     boolean hasTransmitterNetwork();
 
@@ -105,7 +113,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return buffer;
     }
 
-    default boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> other) {
+    default boolean isCompatibleWith(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> other) {
         return true;
     }
 }
