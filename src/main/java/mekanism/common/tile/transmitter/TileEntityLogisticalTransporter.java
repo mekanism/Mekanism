@@ -96,7 +96,7 @@ public class TileEntityLogisticalTransporter extends TileEntityLogisticalTranspo
     @Nullable
     @Override
     protected LogisticalTransporterUpgradeData getUpgradeData() {
-        return new LogisticalTransporterUpgradeData(redstoneReactive, connectionTypes, this);
+        return new LogisticalTransporterUpgradeData(redstoneReactive, connectionTypes, getColor(), writeStackToNBT());
     }
 
     @Override
@@ -105,7 +105,8 @@ public class TileEntityLogisticalTransporter extends TileEntityLogisticalTranspo
             LogisticalTransporterUpgradeData data = (LogisticalTransporterUpgradeData) upgradeData;
             redstoneReactive = data.redstoneReactive;
             connectionTypes = data.connectionTypes;
-            readFromNBT(data.nbt);
+            color = data.color;
+            readStacksFromNBT(data.stacks);
         } else {
             super.parseUpgradeData(upgradeData);
         }

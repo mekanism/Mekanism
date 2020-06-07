@@ -66,18 +66,15 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     }
 
     public boolean canEmitTo(Direction side) {
-        if (!canConnect(side)) {
-            return false;
+        if (canConnect(side)) {
+            ConnectionType connectionType = getConnectionType(side);
+            return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PUSH;
         }
-        ConnectionType connectionType = getConnectionType(side);
-        return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PUSH;
+        return false;
     }
 
     public boolean canReceiveFrom(Direction side) {
-        if (!canConnect(side)) {
-            return false;
-        }
-        return getConnectionType(side) == ConnectionType.NORMAL;
+        return canConnect(side) && getConnectionType(side) == ConnectionType.NORMAL;
     }
 
     @Override
@@ -298,11 +295,14 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
 
     protected void readFromNBT(CompoundNBT nbtTags) {
         if (nbtTags.contains(NBTConstants.ITEMS, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompound(i));
-                addStack(nextId++, stack);
-            }
+            readStacksFromNBT(nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
+        }
+    }
+
+    protected void readStacksFromNBT(ListNBT tagList) {
+        for (int i = 0; i < tagList.size(); i++) {
+            TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompound(i));
+            addStack(nextId++, stack);
         }
     }
 
@@ -315,15 +315,20 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     }
 
     public void writeToNBT(CompoundNBT nbtTags) {
+        ListNBT stacks = writeStackToNBT();
+        if (!stacks.isEmpty()) {
+            nbtTags.put(NBTConstants.ITEMS, stacks);
+        }
+    }
+
+    protected ListNBT writeStackToNBT() {
         ListNBT stacks = new ListNBT();
         for (TransporterStack stack : getTransit()) {
             CompoundNBT tagCompound = new CompoundNBT();
             stack.write(tagCompound);
             stacks.add(tagCompound);
         }
-        if (!stacks.isEmpty()) {
-            nbtTags.put(NBTConstants.ITEMS, stacks);
-        }
+        return stacks;
     }
 
     @Override
