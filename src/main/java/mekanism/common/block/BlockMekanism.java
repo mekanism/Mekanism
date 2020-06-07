@@ -95,12 +95,12 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     public boolean hasTileEntity(BlockState state) {
-        return this instanceof IHasTileEntity<?>;
+        return this instanceof IHasTileEntity;
     }
 
     @Override
     public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        if (this instanceof IHasTileEntity<?>) {
+        if (this instanceof IHasTileEntity) {
             return ((IHasTileEntity<?>) this).getTileType().create();
         }
         return null;

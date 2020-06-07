@@ -95,7 +95,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             boolean hasData = false;
             @Nullable
             TileEntity tile = null;
-            if (block instanceof IHasTileEntity<?>) {
+            if (block instanceof IHasTileEntity) {
                 tile = ((IHasTileEntity<?>) block).getTileType().create();
             }
             if (Attribute.has(block, AttributeSecurity.class)) {

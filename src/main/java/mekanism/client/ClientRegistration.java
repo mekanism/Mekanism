@@ -419,7 +419,7 @@ public class ClientRegistration {
         //Note: This includes any modded mobs that have vanilla's BipedArmorLayer added to them
         for (Entry<EntityType<?>, EntityRenderer<?>> entry : entityRenderManager.renderers.entrySet()) {
             EntityRenderer<?> renderer = entry.getValue();
-            if (renderer instanceof LivingRenderer<?, ?>) {
+            if (renderer instanceof LivingRenderer) {
                 addCustomArmorLayer((LivingRenderer) renderer);
             }
         }

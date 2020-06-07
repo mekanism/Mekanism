@@ -53,7 +53,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         TileEntityMekanism tile = null;
         if (item instanceof BlockItem) {
             Block block = ((BlockItem) item).getBlock();
-            if (block instanceof IHasTileEntity<?>) {
+            if (block instanceof IHasTileEntity) {
                 TileEntity tileEntity = ((IHasTileEntity<?>) block).getTileType().create();
                 if (tileEntity instanceof TileEntityMekanism) {
                     tile = (TileEntityMekanism) tileEntity;

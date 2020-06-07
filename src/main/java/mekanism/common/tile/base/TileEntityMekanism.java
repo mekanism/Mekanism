@@ -651,7 +651,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
                 container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
-                if (energyContainer instanceof MachineEnergyContainer<?>) {
+                if (energyContainer instanceof MachineEnergyContainer) {
                     MachineEnergyContainer<?> machineEnergy = (MachineEnergyContainer<?>) energyContainer;
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
                         container.track(SyncableFloatingLong.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
@@ -798,13 +798,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public void recalculateUpgrades(Upgrade upgrade) {
         if (upgrade == Upgrade.SPEED) {
             for (IEnergyContainer energyContainer : getEnergyContainers(null)) {
-                if (energyContainer instanceof MachineEnergyContainer<?>) {
+                if (energyContainer instanceof MachineEnergyContainer) {
                     ((MachineEnergyContainer<?>) energyContainer).updateEnergyPerTick();
                 }
             }
         } else if (upgrade == Upgrade.ENERGY) {
             for (IEnergyContainer energyContainer : getEnergyContainers(null)) {
-                if (energyContainer instanceof MachineEnergyContainer<?>) {
+                if (energyContainer instanceof MachineEnergyContainer) {
                     MachineEnergyContainer<?> machineEnergy = (MachineEnergyContainer<?>) energyContainer;
                     machineEnergy.updateMaxEnergy();
                     machineEnergy.updateEnergyPerTick();

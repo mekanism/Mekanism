@@ -359,7 +359,7 @@ public abstract class MekanismContainer extends Container {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableLong) {
             ((SyncableLong) data).set(value);
-        } else if (data instanceof SyncableChemicalStack<?, ?>) {
+        } else if (data instanceof SyncableChemicalStack) {
             ((SyncableChemicalStack<?, ?>) data).set(value);
         }
     }
@@ -407,7 +407,7 @@ public abstract class MekanismContainer extends Container {
 
     public <FREQUENCY extends Frequency> void handleWindowProperty(short property, @Nullable FREQUENCY value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableFrequency<?>) {
+        if (data instanceof SyncableFrequency) {
             ((SyncableFrequency<FREQUENCY>) data).set(value);
         }
     }
@@ -421,7 +421,7 @@ public abstract class MekanismContainer extends Container {
 
     public <TYPE> void handleWindowProperty(short property, @Nonnull List<TYPE> value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableList<?>) {
+        if (data instanceof SyncableList) {
             ((SyncableList<TYPE>) data).set(value);
         }
     }
