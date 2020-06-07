@@ -104,7 +104,7 @@ public abstract class TransitRequest {
 
     public TransitResponse createSimpleResponse() {
         ItemData data = getItemData().stream().findFirst().orElse(null);
-        return data != null ? createResponse(data.itemType.createStack(data.totalCount), data) : null;
+        return data == null ? getEmptyResponse() : createResponse(data.itemType.createStack(data.totalCount), data);
     }
 
     @Nonnull

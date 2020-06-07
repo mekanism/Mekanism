@@ -139,7 +139,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         fluidAutoEjectRate = CachedIntValue.wrap(this, builder.comment("Rate at which fluid gets auto ejected from tiles.")
               .define("fluid", 1_024));
         chemicalAutoEjectRate = CachedLongValue.wrap(this, builder.comment("Rate at which chemicals gets auto ejected from tiles.")
-              .define("chemical", 1_024L));
+              .defineInRange("chemical", 1_024L, 1, Long.MAX_VALUE));
         builder.pop();
 
         builder.comment("Prefilled Chemical Tanks").push(PREFILLED_CATEGORY);

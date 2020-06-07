@@ -153,12 +153,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         // shuffle the order we look at our slots to avoid ejection patterns
         List<IInventorySlot> shuffled = new ArrayList<>(slots);
         Collections.shuffle(shuffled);
-        for (int index = 0; index < shuffled.size(); index++) {
-            IInventorySlot slot = shuffled.get(index);
+        for (IInventorySlot slot : shuffled) {
             //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
             ItemStack simulatedExtraction = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.EXTERNAL);
             if (!simulatedExtraction.isEmpty()) {
-                request.addItem(simulatedExtraction, index);
+                request.addItem(simulatedExtraction, slots.indexOf(slot));
             }
         }
         return request;

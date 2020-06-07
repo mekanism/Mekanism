@@ -1,10 +1,11 @@
 package mekanism.common.lib.inventory;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
@@ -57,23 +58,29 @@ public class TileTransitRequest extends TransitRequest {
 
         @Override
         public ItemStack use(int amount) {
-            IItemHandler handler = InventoryUtils.assertItemHandler("InvStack", tile, side);
+            IItemHandler handler = InventoryUtils.assertItemHandler("TileTransitRequest", tile, side);
             if (handler != null) {
-                for (Int2IntMap.Entry entry : slotMap.int2IntEntrySet()) {
-                    int toUse = Math.min(amount, entry.getIntValue());
+                ObjectIterator<Int2IntMap.Entry> iterator = slotMap.int2IntEntrySet().iterator();
+                while (iterator.hasNext()) {
+                    Int2IntMap.Entry entry = iterator.next();
+                    int currentCount = entry.getIntValue();
+                    int toUse = Math.min(amount, currentCount);
                     ItemStack ret = handler.extractItem(entry.getIntKey(), toUse, false);
                     boolean stackable = InventoryUtils.areItemsStackable(getItemType().getStack(), ret);
                     if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
-                        Mekanism.logger.warn("An inventory's returned content {} does not line up with InvStack's prediction.", !stackable ? "type" : "count");
-                        Mekanism.logger.warn("InvStack item: {}, ret: {}", getItemType().getStack(), ret);
+                        Mekanism.logger.warn("An inventory's returned content {} does not line up with TileTransitRequest's prediction.", !stackable ? "type" : "count");
+                        Mekanism.logger.warn("TileTransitRequest item: {}, toUse: {}, ret: {}", getItemType().getStack(), toUse, ret);
                         Mekanism.logger.warn("Tile: {} {}", tile.getType().getRegistryName(), tile.getPos());
                     }
-                    //TODO - V10: Re-evaluate, should this be minus toUse? Though in general these numbers seem rather screwy
                     amount -= toUse;
-                    totalCount -= amount;
-                    entry.setValue(totalCount - toUse);
+                    totalCount -= toUse;
                     if (totalCount == 0) {
                         itemMap.remove(getItemType());
+                    }
+                    entry.setValue(currentCount = currentCount - toUse);
+                    if (currentCount == 0) {
+                        //If we removed all items from this slot, remove the slot
+                        iterator.remove();
                     }
                     if (amount == 0) {
                         break;

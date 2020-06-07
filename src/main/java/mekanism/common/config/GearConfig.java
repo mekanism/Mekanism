@@ -237,7 +237,7 @@ public class GearConfig extends BaseMekanismConfig {
 
         builder.comment("Canteen Settings").push(CANTEEN_CATEGORY);
         canteenMaxStorage = CachedLongValue.wrap(this, builder.comment("Maximum amount of Nutritional Paste storable by the Canteen.")
-              .defineInRange("maxStorage", 64_000L, 0, Long.MAX_VALUE));
+              .defineInRange("maxStorage", 64_000L, 1, Long.MAX_VALUE));
         builder.pop();
 
         builder.comment("Meka-Tool Settings").push(MEKATOOL_CATEGORY);
