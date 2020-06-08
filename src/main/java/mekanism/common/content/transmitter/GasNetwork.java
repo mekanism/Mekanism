@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -190,17 +191,13 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
         Set<ChemicalHandlerTarget<Gas, GasStack, IGasHandler>> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
         Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
-        for (BlockPos pos : acceptorCache.possibleAcceptors) {
-            Set<Direction> sides = acceptorCache.acceptorDirections.get(pos);
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, pos);
+        for (Entry<BlockPos, Set<Direction>> entry : acceptorCache.acceptorDirections.entrySet()) {
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, entry.getKey());
             if (tile == null) {
                 continue;
             }
             ChemicalHandlerTarget<Gas, GasStack, IGasHandler> target = new ChemicalHandlerTarget<>(stack);
-            for (Direction side : sides) {
+            for (Direction side : entry.getValue()) {
                 CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side).ifPresent(acceptor -> {
                     if (ChemicalUtil.canInsert(acceptor, stack)) {
                         target.addHandler(side, acceptor);
@@ -253,7 +250,7 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
 
     @Override
     public String toString() {
-        return "[GasNetwork] " + transmitters.size() + " transmitters, " + acceptorCache.possibleAcceptors.size() + " acceptors.";
+        return "[GasNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
@@ -286,7 +283,7 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.GAS_NETWORK, transmitters.size(), acceptorCache.possibleAcceptors.size());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.GAS_NETWORK, transmitters.size(), getAcceptorCount());
     }
 
     @Nonnull

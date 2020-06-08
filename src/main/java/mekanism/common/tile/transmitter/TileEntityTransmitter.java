@@ -55,6 +55,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 
 //TODO - V10: Re-order various methods that are in this class
@@ -153,7 +154,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     }
 
     public int getTransmitterNetworkAcceptorSize() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().getAcceptorSize() : 0;
+        return hasTransmitterNetwork() ? getTransmitterNetwork().getAcceptorCount() : 0;
     }
 
     public ITextComponent getTransmitterNetworkNeeded() {
@@ -189,6 +190,9 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return true;
     }
 
+    /**
+     * @apiNote Only call this from the server side
+     */
     public byte getPossibleTransmitterConnections() {
         byte connections = 0x00;
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
@@ -206,19 +210,24 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return connections;
     }
 
+    /**
+     * @apiNote Only call this from the server side
+     */
     private boolean getPossibleAcceptorConnection(Direction side) {
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return false;
         }
         TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         if (canConnectMutual(side, tile) && isValidAcceptor(tile, side)) {
-            acceptorCache.updateCachedAcceptor(side, tile);
             return true;
         }
-        acceptorCache.updateCachedAcceptor(side, null);
+        acceptorCache.invalidateCachedAcceptor(side);
         return false;
     }
 
+    /**
+     * @apiNote Only call this from the server side
+     */
     private boolean getPossibleTransmitterConnection(Direction side) {
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return false;
@@ -231,6 +240,9 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return false;
     }
 
+    /**
+     * @apiNote Only call this from the server side
+     */
     public byte getPossibleAcceptorConnections() {
         byte connections = 0x00;
 
@@ -247,13 +259,12 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
                     continue;
                 }
                 if (isValidAcceptor(tile, side)) {
-                    acceptorCache.updateCachedAcceptor(side, tile);
                     connections |= 1 << side.ordinal();
                     continue;
                 }
             }
             //TODO: Re-evaluate this, why is it clearing the cached acceptors?
-            acceptorCache.updateCachedAcceptor(side, null);
+            acceptorCache.invalidateCachedAcceptor(side);
         }
         return connections;
     }
@@ -267,12 +278,9 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return true;
     }
 
-    protected TileEntity getCachedTile(Direction side) {
+    public boolean canConnectToAcceptor(Direction side) {
         ConnectionType type = connectionTypes[side.ordinal()];
-        if (type == ConnectionType.PULL || type == ConnectionType.NONE) {
-            return null;
-        }
-        return acceptorCache.getCachedAcceptor(side);
+        return type == ConnectionType.NORMAL || type == ConnectionType.PUSH;
     }
 
     public List<VoxelShape> getCollisionBoxes() {
@@ -324,7 +332,11 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
 
     public abstract TransmitterType getTransmitterType();
 
+    /**
+     * @apiNote Only call this from the server side
+     */
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
+        //TODO: Rename this method better to make it more apparent that it caches and also listens to the acceptor
         //If it isn't a transmitter or the transmission type is different than the one the transmitter has
         return !(tile instanceof TileEntityTransmitter) || !getTransmissionType().checkTransmissionType(((TileEntityTransmitter<?, ?, ?>) tile));
     }
@@ -605,9 +617,9 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     }
 
     /**
-     * Only call this from server side
-     *
      * @param newlyEnabledTransmitters The transmitters that are now enabled and were not before.
+     *
+     * @apiNote Only call this from the server side
      */
     protected void recheckConnections(byte newlyEnabledTransmitters) {
         if (!hasTransmitterNetwork()) {
@@ -627,9 +639,9 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     }
 
     /**
-     * Only call this from server side
-     *
      * @param side The side that a transmitter is now enabled on after having been disabled.
+     *
+     * @apiNote Only call this from the server side
      */
     protected void recheckConnection(Direction side) {
     }
@@ -818,7 +830,8 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
      */
     public abstract TransmissionType getTransmissionType();
 
-    public abstract ACCEPTOR getAcceptor(Direction side);
+    @Nonnull
+    public abstract LazyOptional<ACCEPTOR> getAcceptor(Direction side);
 
     public abstract NETWORK createEmptyNetwork();
 

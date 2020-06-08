@@ -24,7 +24,6 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketTransporterUpdate;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
@@ -34,6 +33,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -79,9 +79,10 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
         return canConnect(side) && getConnectionType(side) == ConnectionType.NORMAL;
     }
 
+    @Nonnull
     @Override
-    public IItemHandler getAcceptor(Direction side) {
-        return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
+    public LazyOptional<IItemHandler> getAcceptor(Direction side) {
+        return acceptorCache.getCachedAcceptor(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
     }
 
     @Override

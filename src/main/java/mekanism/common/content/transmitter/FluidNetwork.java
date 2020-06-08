@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -181,17 +182,13 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         Set<FluidHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
         Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
-        for (BlockPos pos : acceptorCache.possibleAcceptors) {
-            Set<Direction> sides = acceptorCache.acceptorDirections.get(pos);
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, pos);
+        for (Entry<BlockPos, Set<Direction>> entry : acceptorCache.acceptorDirections.entrySet()) {
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, entry.getKey());
             if (tile == null) {
                 continue;
             }
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
-            for (Direction side : sides) {
+            for (Direction side : entry.getValue()) {
                 CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side).ifPresent(acceptor -> {
                     if (FluidUtils.canFill(acceptor, fluidToSend)) {
                         target.addHandler(side, acceptor);
@@ -244,7 +241,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
 
     @Override
     public String toString() {
-        return "[FluidNetwork] " + transmitters.size() + " transmitters, " + acceptorCache.possibleAcceptors.size() + " acceptors.";
+        return "[FluidNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
@@ -277,7 +274,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmitters.size(), acceptorCache.possibleAcceptors.size());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmitters.size(), getAcceptorCount());
     }
 
     @Nonnull

@@ -33,7 +33,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -42,6 +41,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
 
 //TODO - V10: Figure out how to make this work for multiple chemical types
 public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGasHandler, GasNetwork, GasStack, TileEntityPressurizedTube> implements IMekanismGasHandler {
@@ -266,9 +266,10 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
         markDirty(false);
     }
 
+    @Nonnull
     @Override
-    public IGasHandler getAcceptor(Direction side) {
-        return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
+    public LazyOptional<IGasHandler> getAcceptor(Direction side) {
+        return acceptorCache.getCachedAcceptor(Capabilities.GAS_HANDLER_CAPABILITY, side);
     }
 
     @Override

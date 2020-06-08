@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -161,17 +162,13 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
         Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
-        for (BlockPos pos : acceptorCache.possibleAcceptors) {
-            Set<Direction> sides = acceptorCache.acceptorDirections.get(pos);
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, pos);
+        for (Entry<BlockPos, Set<Direction>> entry : acceptorCache.acceptorDirections.entrySet()) {
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, entry.getKey());
             if (tile == null) {
                 continue;
             }
             EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-            for (Direction side : sides) {
+            for (Direction side : entry.getValue()) {
                 IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(tile, side);
                 if (handler != null && handler.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {
                     target.addHandler(side, handler);
@@ -188,7 +185,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     public String toString() {
-        return "[EnergyNetwork] " + transmitters.size() + " transmitters, " + acceptorCache.possibleAcceptors.size() + " acceptors.";
+        return "[EnergyNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
@@ -239,7 +236,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmitters.size(), acceptorCache.possibleAcceptors.size());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmitters.size(), getAcceptorCount());
     }
 
     @Nonnull

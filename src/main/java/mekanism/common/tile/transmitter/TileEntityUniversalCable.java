@@ -37,6 +37,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong, TileEntityUniversalCable> implements
       IMekanismStrictEnergyHandler {
@@ -235,9 +236,15 @@ public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStr
         return buffer.insert(amount, action, AutomationType.INTERNAL);
     }
 
+    @Nonnull
     @Override
-    public IStrictEnergyHandler getAcceptor(Direction side) {
-        return EnergyCompatUtils.getStrictEnergyHandler(getCachedTile(side), side.getOpposite());
+    public LazyOptional<IStrictEnergyHandler> getAcceptor(Direction side) {
+        //TODO - V10: Re-evaluate, could at the very least make it be getStrictEnergyHandlerLazy type thing
+        IStrictEnergyHandler energyHandler = EnergyCompatUtils.getStrictEnergyHandler(acceptorCache.getCachedAcceptorTile(side), side.getOpposite());
+        if (energyHandler == null) {
+            return LazyOptional.empty();
+        }
+        return LazyOptional.of(() -> energyHandler);
     }
 
     @Override

@@ -37,6 +37,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatHandler, HeatNetwork, TileEntityThermodynamicConductor> implements ITileHeatHandler {
 
@@ -90,9 +91,10 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         return TransmissionType.HEAT;
     }
 
+    @Nonnull
     @Override
-    public IHeatHandler getAcceptor(Direction side) {
-        return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
+    public LazyOptional<IHeatHandler> getAcceptor(Direction side) {
+        return acceptorCache.getCachedAcceptor(Capabilities.HEAT_HANDLER_CAPABILITY, side);
     }
 
     @Nonnull

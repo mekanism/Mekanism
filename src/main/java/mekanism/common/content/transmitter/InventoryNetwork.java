@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.common.MekanismLang;
@@ -44,21 +45,17 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
 
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
         List<AcceptorData> toReturn = new ArrayList<>();
-        for (BlockPos pos : acceptorCache.possibleAcceptors) {
+        for (Entry<BlockPos, Set<Direction>> entry : acceptorCache.acceptorDirections.entrySet()) {
+            BlockPos pos = entry.getKey();
             if (pos == null || pos.equals(stack.homeLocation)) {
-                continue;
-            }
-            Set<Direction> sides = acceptorCache.acceptorDirections.get(pos);
-            if (sides == null || sides.isEmpty()) {
                 continue;
             }
             TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), chunkMap, pos);
             if (acceptor == null) {
                 continue;
             }
-
             AcceptorData data = null;
-            for (Direction side : sides) {
+            for (Direction side : entry.getValue()) {
                 Direction opposite = side.getOpposite();
                 TransitResponse response = TransporterManager.getPredictedInsert(acceptor, stack.color, request, opposite);
                 if (!response.isEmpty()) {
@@ -89,7 +86,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
 
     @Override
     public String toString() {
-        return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + acceptorCache.possibleAcceptors.size() + " acceptors.";
+        return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
@@ -109,7 +106,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.INVENTORY_NETWORK, transmitters.size(), acceptorCache.possibleAcceptors.size());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.INVENTORY_NETWORK, transmitters.size(), getAcceptorCount());
     }
 
     public static class AcceptorData {

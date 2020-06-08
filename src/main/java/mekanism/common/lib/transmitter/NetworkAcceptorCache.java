@@ -1,60 +1,46 @@
 package mekanism.common.lib.transmitter;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraftforge.common.util.LazyOptional;
 
 public class NetworkAcceptorCache<ACCEPTOR> {
 
     //TODO: Move these to being private
-    public final Set<BlockPos> possibleAcceptors = new ObjectOpenHashSet<>();
+    //TODO: Replace acceptorDirections with cachedAcceptors?
     public final Map<BlockPos, Set<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
+    public final Map<BlockPos, Map<Direction, LazyOptional<ACCEPTOR>>> cachedAcceptors = new Object2ObjectOpenHashMap<>();
+    private final Map<TileEntityTransmitter<ACCEPTOR, ?, ?>, Set<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
 
     public boolean hasAcceptor(BlockPos acceptorPos) {
-        return possibleAcceptors.contains(acceptorPos);
+        return acceptorDirections.containsKey(acceptorPos);
     }
 
     public void updateTransmitterOnSide(TileEntityTransmitter<ACCEPTOR, ?, ?> transmitter, Direction side) {
-        //TODO: Rework transmitter.getAcceptor to do it via this cache class
-        ACCEPTOR acceptor = transmitter.getAcceptor(side);
-        BlockPos acceptorCoord = transmitter.getPos().offset(side);
-        Set<Direction> directions = acceptorDirections.get(acceptorCoord);
-
-        if (acceptor != null) {
-            possibleAcceptors.add(acceptorCoord);
-            if (directions != null) {
-                directions.add(side.getOpposite());
-            } else {
-                acceptorDirections.put(acceptorCoord, EnumSet.of(side.getOpposite()));
-            }
-        } else if (directions != null) {
+        //Note: getAcceptor does not cache the LazyOptional so that we can force re-retrieve it when necessary
+        // (Aka it got changed, and marked as changed via changedAcceptors)
+        LazyOptional<ACCEPTOR> acceptor = transmitter.canConnectToAcceptor(side) ? transmitter.getAcceptor(side) : LazyOptional.empty();
+        BlockPos acceptorPos = transmitter.getPos().offset(side);
+        if (acceptor.isPresent()) {
+            acceptorDirections.computeIfAbsent(acceptorPos, pos -> EnumSet.noneOf(Direction.class)).add(side.getOpposite());
+        } else if (acceptorDirections.containsKey(acceptorPos)) {
+            Set<Direction> directions = acceptorDirections.get(acceptorPos);
             directions.remove(side.getOpposite());
-
             if (directions.isEmpty()) {
-                possibleAcceptors.remove(acceptorCoord);
-                acceptorDirections.remove(acceptorCoord);
+                acceptorDirections.remove(acceptorPos);
             }
         } else {
-            possibleAcceptors.remove(acceptorCoord);
-            acceptorDirections.remove(acceptorCoord);
+            acceptorDirections.remove(acceptorPos);
         }
     }
 
     public void adoptAcceptors(NetworkAcceptorCache<ACCEPTOR> other) {
-        possibleAcceptors.addAll(other.possibleAcceptors);
         for (Entry<BlockPos, Set<Direction>> entry : other.acceptorDirections.entrySet()) {
             BlockPos pos = entry.getKey();
             if (acceptorDirections.containsKey(pos)) {
@@ -65,27 +51,22 @@ public class NetworkAcceptorCache<ACCEPTOR> {
         }
     }
 
-    public List<ACCEPTOR> calculateAcceptors(IWorld world, Long2ObjectMap<IChunk> chunkMap) {
-        List<ACCEPTOR> acceptors = new ArrayList<>();
-        for (BlockPos pos : possibleAcceptors) {
-            //TODO: Don't allow null in possibleAcceptors??
-            if (pos == null) {
-                continue;
+    public void acceptorChanged(TileEntityTransmitter<ACCEPTOR, ?, ?> transmitter, Direction side) {
+        changedAcceptors.computeIfAbsent(transmitter, t -> EnumSet.noneOf(Direction.class)).add(side);
+    }
+
+    public void commit() {
+        if (!changedAcceptors.isEmpty()) {
+            for (Entry<TileEntityTransmitter<ACCEPTOR, ?, ?>, Set<Direction>> entry : changedAcceptors.entrySet()) {
+                TileEntityTransmitter<ACCEPTOR, ?, ?> transmitter = entry.getKey();
+                if (transmitter.isValid()) {
+                    //Update all the changed directions
+                    for (Direction side : entry.getValue()) {
+                        updateTransmitterOnSide(transmitter, side);
+                    }
+                }
             }
-            Set<Direction> sides = acceptorDirections.get(pos);
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-            //TODO: Use and lookup from a cache
-            TileEntity acceptor = MekanismUtils.getTileEntity(world, chunkMap, pos);
-            if (acceptor == null) {
-                continue;
-            }
-            for (Direction side : sides) {
-                Direction opposite = side.getOpposite();
-                //TODO: Add to acceptors??
-            }
+            changedAcceptors.clear();
         }
-        return acceptors;
     }
 }

@@ -1,12 +1,8 @@
 package mekanism.common.lib.transmitter;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -24,8 +20,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     protected final Set<TRANSMITTER> transmitters = new ObjectLinkedOpenHashSet<>();
     protected final Set<TRANSMITTER> transmittersToAdd = new ObjectOpenHashSet<>();
-    //TODO: Should changed acceptors be moved into AcceptorCache
-    private final Map<TRANSMITTER, Set<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
     protected final NetworkAcceptorCache<ACCEPTOR> acceptorCache = new NetworkAcceptorCache<>();
     @Nullable
     protected World world;
@@ -74,19 +68,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 validTransmittersAdded();
             }
         }
-
-        if (!changedAcceptors.isEmpty()) {
-            for (Entry<TRANSMITTER, Set<Direction>> entry : changedAcceptors.entrySet()) {
-                TRANSMITTER transmitter = entry.getKey();
-                if (transmitter.isValid()) {
-                    //Update all the changed directions
-                    for (Direction side : entry.getValue()) {
-                        acceptorCache.updateTransmitterOnSide(transmitter, side);
-                    }
-                }
-            }
-            changedAcceptors.clear();
-        }
+        acceptorCache.commit();
     }
 
     protected void addTransmitterFromCommit(TRANSMITTER transmitter) {
@@ -129,12 +111,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void acceptorChanged(TRANSMITTER transmitter, Direction side) {
-        Set<Direction> directions = changedAcceptors.get(transmitter);
-        if (directions == null) {
-            changedAcceptors.put(transmitter, EnumSet.of(side));
-        } else {
-            directions.add(side);
-        }
+        acceptorCache.acceptorChanged(transmitter, side);
+        //TODO: Decide if we want to move the register changed network into the acceptor changed
         TransmitterNetworkRegistry.registerChangedNetwork(this);
     }
 
@@ -169,8 +147,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return transmitters.isEmpty();
     }
 
-    public int getAcceptorSize() {
-        return acceptorCache.possibleAcceptors.size();
+    public int getAcceptorCount() {
+        return acceptorCache.acceptorDirections.size();
     }
 
     @Nullable
