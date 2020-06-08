@@ -22,7 +22,8 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements 
     public ItemStackToEnergyRecipe(ResourceLocation id, ItemStackIngredient input, FloatingLong output) {
         super(id);
         this.input = input;
-        this.output = output;
+        //Ensure that the floating long we are storing is immutable
+        this.output = output.copyAsConst();
     }
 
     @Override

@@ -77,7 +77,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(gasTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
+        builder.addTank(gasTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getChemicalInput().testType(gas)), this));
         return builder.build();
     }
 

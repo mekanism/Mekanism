@@ -86,7 +86,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @Override
     public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
         ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurryWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputTank = BasicSlurryTank.input(MAX_SLURRY, slurry -> containsRecipe(recipe -> recipe.getSlurryInput().testType(slurry)), this));
+        builder.addTank(inputTank = BasicSlurryTank.input(MAX_SLURRY, slurry -> containsRecipe(recipe -> recipe.getChemicalInput().testType(slurry)), this));
         builder.addTank(outputTank = BasicSlurryTank.output(MAX_SLURRY, this));
         return builder.build();
     }

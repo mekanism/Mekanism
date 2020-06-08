@@ -13,6 +13,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.Contract;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -39,6 +40,7 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
         return this.input.test(stack);
     }
 
+    @Contract(value = "_ -> new")
     public ChanceOutput getOutput(ItemStack input) {
         return new ChanceOutput(RANDOM.nextDouble());
     }

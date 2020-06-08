@@ -8,8 +8,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.item.ItemStack;
+import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.Contract;
@@ -17,33 +16,33 @@ import org.jetbrains.annotations.Contract;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends MekanismRecipe implements
-      Predicate<@NonNull ItemStack> {
+public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
+      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements Predicate<@NonNull STACK> {
 
-    protected final ItemStackIngredient input;
+    private final INGREDIENT input;
     protected final STACK output;
 
-    public ItemStackToChemicalRecipe(ResourceLocation id, ItemStackIngredient input, STACK output) {
+    public ChemicalToChemicalRecipe(ResourceLocation id, INGREDIENT input, STACK output) {
         super(id);
         this.input = input;
         this.output = output;
     }
 
     @Override
-    public boolean test(ItemStack itemStack) {
-        return input.test(itemStack);
+    public boolean test(STACK chemicalStack) {
+        return input.test(chemicalStack);
     }
 
-    public ItemStackIngredient getInput() {
+    public INGREDIENT getInput() {
         return input;
     }
 
-    @Contract(value = "_ -> new", pure = true)
-    public abstract STACK getOutput(ItemStack input);
-
-    public STACK getOutputDefinition() {
+    public STACK getOutputRepresentation() {
         return output;
     }
+
+    @Contract(value = "_ -> new", pure = true)
+    public abstract STACK getOutput(STACK input);
 
     @Override
     public void write(PacketBuffer buffer) {

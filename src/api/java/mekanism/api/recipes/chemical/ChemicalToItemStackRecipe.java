@@ -1,4 +1,4 @@
-package mekanism.api.recipes;
+package mekanism.api.recipes.chemical;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,50 +7,46 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
-/**
- * Inputs: ItemStack (item) Output: ItemStack (transformed)
- */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implements Predicate<@NonNull ItemStack> {
+public abstract class ChemicalToItemStackRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
+      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements Predicate<@NonNull STACK> {
 
-    private final ItemStackIngredient input;
+    private final INGREDIENT input;
     private final ItemStack output;
 
-    public ItemStackToItemStackRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
+    public ChemicalToItemStackRecipe(ResourceLocation id, INGREDIENT input, ItemStack output) {
         super(id);
         this.input = input;
         this.output = output.copy();
     }
 
-    @Override
-    public boolean test(ItemStack input) {
-        return this.input.test(input);
-    }
-
-    public ItemStackIngredient getInput() {
-        return input;
-    }
-
     @Contract(value = "_ -> new", pure = true)
-    public ItemStack getOutput(ItemStack input) {
+    public ItemStack getOutput(STACK input) {
         return output.copy();
     }
 
-    /**
-     * For JEI, gets a display stack
-     *
-     * @return Representation of output, MUST NOT be modified
-     */
     public List<ItemStack> getOutputDefinition() {
         return output.isEmpty() ? Collections.emptyList() : Collections.singletonList(output);
+    }
+
+    @Override
+    public boolean test(STACK chemicalStack) {
+        return input.test(chemicalStack);
+    }
+
+    public INGREDIENT getInput() {
+        return input;
     }
 
     @Override

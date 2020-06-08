@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
@@ -29,7 +28,7 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
     private final GasStack gasOutput;
 
     protected RotaryRecipeBuilder(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput, RecipeDirection direction) {
-        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "rotary"));
+        super(mekSerializer("rotary"));
         this.direction = direction;
         this.gasInput = gasInput;
         this.fluidInput = fluidInput;

@@ -51,7 +51,7 @@ public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStac
     @Override
     public void setIngredients(ItemStackGasToGasRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
-        List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
+        List<@NonNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
         int scale = TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, scale)).collect(Collectors.toList());
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(scaledGases));
@@ -64,7 +64,7 @@ public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStac
         itemStacks.init(0, true, 27 - xOffset, 35 - yOffset);
         itemStacks.set(0, recipe.getItemInput().getRepresentations());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
+        List<@NonNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
         int scale = TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, scale)).collect(Collectors.toList());
         initChemical(gasStacks, 0, true, 8 - xOffset, 5 - yOffset, 16, 58, scaledGases, true);

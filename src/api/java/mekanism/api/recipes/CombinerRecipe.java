@@ -12,6 +12,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Inputs: ItemStack (main item) + ItemStack (material to combine with) Output: ItemStack (combined)
@@ -45,6 +46,7 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
         return extraInput;
     }
 
+    @Contract(value = "_, _ -> new", pure = true)
     public ItemStack getOutput(@Nonnull ItemStack input, @Nonnull ItemStack extra) {
         return output.copy();
     }

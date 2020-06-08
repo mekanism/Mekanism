@@ -1,7 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import java.util.function.Consumer;
-import mekanism.api.datagen.recipe.builder.GasToItemStackRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ChemicalToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
@@ -15,12 +15,12 @@ class ChemicalCrystallizerRecipeProvider implements ISubRecipeProvider {
     public void addRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "crystallizing/";
         //Salt
-        GasToItemStackRecipeBuilder.crystallizing(
+        ChemicalToItemStackRecipeBuilder.crystallizing(
               GasStackIngredient.from(MekanismGases.BRINE, 15),
               MekanismItems.SALT.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "salt"));
         //Lithium
-        GasToItemStackRecipeBuilder.crystallizing(
+        ChemicalToItemStackRecipeBuilder.crystallizing(
               GasStackIngredient.from(MekanismGases.LITHIUM, 100),
               MekanismItems.LITHIUM_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "lithium"));

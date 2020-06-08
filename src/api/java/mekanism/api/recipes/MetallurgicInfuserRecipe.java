@@ -8,15 +8,13 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.Contract;
 
-/**
- * Created by Thiakil on 14/07/2019.
- */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -42,8 +40,9 @@ public abstract class MetallurgicInfuserRecipe extends MekanismRecipe implements
         return output.isEmpty() ? Collections.emptyList() : Collections.singletonList(output);
     }
 
+    @Contract(value = "_, _ -> new", pure = true)
     public ItemStack getOutput(InfusionStack inputInfuse, ItemStack inputItem) {
-        return this.output.copy();
+        return output.copy();
     }
 
     public InfusionStackIngredient getInfusionInput() {

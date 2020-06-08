@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.math.FloatingLong;
@@ -30,7 +29,7 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
         if (output.isZero()) {
             throw new IllegalArgumentException("This energy conversion recipe requires an energy output greater than zero");
         }
-        return new ItemStackToEnergyRecipeBuilder(input, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "energy_conversion"));
+        return new ItemStackToEnergyRecipeBuilder(input, output, mekSerializer("energy_conversion"));
     }
 
     @Override

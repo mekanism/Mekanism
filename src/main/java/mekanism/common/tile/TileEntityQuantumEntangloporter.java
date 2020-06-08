@@ -29,10 +29,7 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.holder.chemical.entangloporter.QuantumEntangloporterGasTankHolder;
-import mekanism.common.capabilities.holder.chemical.entangloporter.QuantumEntangloporterInfusionTankHolder;
-import mekanism.common.capabilities.holder.chemical.entangloporter.QuantumEntangloporterPigmentTankHolder;
-import mekanism.common.capabilities.holder.chemical.entangloporter.QuantumEntangloporterSlurryTankHolder;
+import mekanism.common.capabilities.holder.chemical.QuantumEntangloporterChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.QuantumEntangloporterEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -88,7 +85,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     public TileEntityQuantumEntangloporter() {
         super(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
-        //TODO - V10: Allow for Transferring other chemical types as well
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.INFUSION,
               TransmissionType.PIGMENT, TransmissionType.SLURRY, TransmissionType.ENERGY, TransmissionType.HEAT);
 
@@ -132,25 +128,25 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Nonnull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        return new QuantumEntangloporterGasTankHolder(this);
+        return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.GAS, InventoryFrequency::getGasTanks);
     }
 
     @Nonnull
     @Override
     public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
-        return new QuantumEntangloporterInfusionTankHolder(this);
+        return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.INFUSION, InventoryFrequency::getInfusionTanks);
     }
 
     @Nonnull
     @Override
     public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
-        return new QuantumEntangloporterPigmentTankHolder(this);
+        return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.PIGMENT, InventoryFrequency::getPigmentTanks);
     }
 
     @Nonnull
     @Override
     public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
-        return new QuantumEntangloporterSlurryTankHolder(this);
+        return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.SLURRY, InventoryFrequency::getSlurryTanks);
     }
 
     @Nonnull

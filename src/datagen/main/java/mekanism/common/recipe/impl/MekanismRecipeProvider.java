@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.GasToItemStackRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.ItemStackToGasRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ChemicalToItemStackRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -1412,13 +1412,13 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "polonium_pellet/from_reaction"));
 
         //antimatter pellet
-        GasToItemStackRecipeBuilder.crystallizing(
+        ChemicalToItemStackRecipeBuilder.crystallizing(
               GasStackIngredient.from(MekanismGases.ANTIMATTER, 1000),
               MekanismItems.ANTIMATTER_PELLET.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
 
         //back to antimatter
-        ItemStackToGasRecipeBuilder.oxidizing(
+        ItemStackToChemicalRecipeBuilder.oxidizing(
               ItemStackIngredient.from(MekanismTags.Items.PELLETS_ANTIMATTER),
               MekanismGases.ANTIMATTER.getStack(1000)
         ).build(consumer, Mekanism.rl(basePath + "antimatter/from_pellet"));

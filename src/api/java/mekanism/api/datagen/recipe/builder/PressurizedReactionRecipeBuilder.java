@@ -5,15 +5,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -32,7 +31,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
 
     protected PressurizedReactionRecipeBuilder(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
           ItemStack outputItem, GasStack outputGas) {
-        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "reaction"));
+        super(mekSerializer("reaction"));
         this.inputSolid = inputSolid;
         this.inputFluid = inputFluid;
         this.inputGas = inputGas;

@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -28,6 +29,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilder<BUILDER>> {
+
+    protected static ResourceLocation mekSerializer(String name) {
+        return new ResourceLocation(MekanismAPI.MEKANISM_MODID, name);
+    }
 
     protected final List<ICondition> conditions = new ArrayList<>();
     protected final Advancement.Builder advancementBuilder = Advancement.Builder.builder();

@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -24,7 +23,7 @@ public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<Flui
     private final SlurryStack output;
 
     protected FluidSlurryToSlurryRecipeBuilder(FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
-        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "washing"));
+        super(mekSerializer("washing"));
         this.fluidInput = fluidInput;
         this.slurryInput = slurryInput;
         this.output = output;

@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
@@ -31,14 +30,14 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This solar neutron activator recipe requires a non empty gas output.");
         }
-        return new GasToGasRecipeBuilder(input, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "activating"));
+        return new GasToGasRecipeBuilder(input, output, mekSerializer("activating"));
     }
 
     public static GasToGasRecipeBuilder centrifuging(GasStackIngredient input, GasStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This Isotopic Centrifuge recipe requires a non empty gas output.");
         }
-        return new GasToGasRecipeBuilder(input, output, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "centrifuging"));
+        return new GasToGasRecipeBuilder(input, output, mekSerializer("centrifuging"));
     }
 
     @Override

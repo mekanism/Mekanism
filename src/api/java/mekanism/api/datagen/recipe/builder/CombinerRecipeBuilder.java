@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
@@ -25,7 +24,7 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
     private final ItemStack output;
 
     protected CombinerRecipeBuilder(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output) {
-        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "combining"));
+        super(mekSerializer("combining"));
         this.mainInput = mainInput;
         this.extraInput = extraInput;
         this.output = output;
