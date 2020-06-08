@@ -138,6 +138,11 @@ public class Modules {
         return SUPPORTED_CONTAINERS.getOrDefault(type, new HashSet<>());
     }
 
+    public static boolean isEnabled(ItemStack container, ModuleData<?> type) {
+        Module m = load(container, type);
+        return m != null && m.isEnabled();
+    }
+
     public static <MODULE extends Module> MODULE load(ItemStack container, ModuleData<MODULE> type) {
         if (!(container.getItem() instanceof IModuleContainerItem)) {
             return null;

@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.model.ModelScubaMask;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
 public class ScubaMaskArmor extends CustomArmor {
@@ -16,7 +17,7 @@ public class ScubaMaskArmor extends CustomArmor {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, ItemStack stack) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity, ItemStack stack) {
         if (!bipedHead.showModel) {
             //If the head model shouldn't show don't bother displaying it
             return;
