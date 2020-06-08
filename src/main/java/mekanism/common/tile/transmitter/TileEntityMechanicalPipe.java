@@ -154,10 +154,7 @@ public class TileEntityMechanicalPipe extends TileEntityBufferedTransmitter<IFlu
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        if (tile instanceof TileEntityTransmitter && TransmissionType.FLUID.checkTransmissionType(((TileEntityTransmitter<?, ?, ?>) tile))) {
-            return false;
-        }
-        return isAcceptorAndListen(tile, side, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+        return super.isValidAcceptor(tile, side) && acceptorCache.isAcceptorAndListen(tile, side, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
     }
 
     @Override

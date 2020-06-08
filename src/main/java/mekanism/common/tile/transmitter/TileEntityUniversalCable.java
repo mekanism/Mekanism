@@ -160,10 +160,7 @@ public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStr
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        if (tile instanceof TileEntityTransmitter && TransmissionType.ENERGY.checkTransmissionType(((TileEntityTransmitter<?, ?, ?>) tile))) {
-            return false;
-        }
-        return EnergyCompatUtils.hasStrictEnergyHandlerAndListen(tile, side.getOpposite(), getRefreshListener(side));
+        return super.isValidAcceptor(tile, side) && acceptorCache.hasStrictEnergyHandlerAndListen(tile, side);
     }
 
     @Override

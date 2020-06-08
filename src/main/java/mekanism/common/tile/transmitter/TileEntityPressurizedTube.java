@@ -154,10 +154,7 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        if (tile instanceof TileEntityTransmitter && TransmissionType.GAS.checkTransmissionType(((TileEntityTransmitter<?, ?, ?>) tile))) {
-            return false;
-        }
-        return isAcceptorAndListen(tile, side, Capabilities.GAS_HANDLER_CAPABILITY);
+        return super.isValidAcceptor(tile, side) && acceptorCache.isAcceptorAndListen(tile, side, Capabilities.GAS_HANDLER_CAPABILITY);
     }
 
     @Override

@@ -81,7 +81,8 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER_CAPABILITY);
+        //TODO - V10: Evaluate all the other ones don't allow for other transmitters to be acceptors, but this one seems to. Is that intended
+        return acceptorCache.isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER_CAPABILITY);
     }
 
     @Override

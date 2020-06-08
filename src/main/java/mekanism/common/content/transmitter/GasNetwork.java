@@ -190,8 +190,8 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
         Set<ChemicalHandlerTarget<Gas, GasStack, IGasHandler>> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
         Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
-        for (BlockPos pos : possibleAcceptors) {
-            Set<Direction> sides = acceptorDirections.get(pos);
+        for (BlockPos pos : acceptorCache.possibleAcceptors) {
+            Set<Direction> sides = acceptorCache.acceptorDirections.get(pos);
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
@@ -253,7 +253,7 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
 
     @Override
     public String toString() {
-        return "[GasNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+        return "[GasNetwork] " + transmitters.size() + " transmitters, " + acceptorCache.possibleAcceptors.size() + " acceptors.";
     }
 
     @Override
@@ -286,7 +286,7 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.GAS_NETWORK, transmitters.size(), possibleAcceptors.size());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.GAS_NETWORK, transmitters.size(), acceptorCache.possibleAcceptors.size());
     }
 
     @Nonnull

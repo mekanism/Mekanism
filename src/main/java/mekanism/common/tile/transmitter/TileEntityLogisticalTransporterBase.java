@@ -24,6 +24,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketTransporterUpdate;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
@@ -34,9 +35,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 //TODO: Validate that the sub classes of this still work properly
-public abstract class TileEntityLogisticalTransporterBase extends TileEntityTransmitter<TileEntity, InventoryNetwork, TileEntityLogisticalTransporterBase> {
+public abstract class TileEntityLogisticalTransporterBase extends TileEntityTransmitter<IItemHandler, InventoryNetwork, TileEntityLogisticalTransporterBase> {
 
     private final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
@@ -78,8 +80,8 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     }
 
     @Override
-    public TileEntity getAcceptor(Direction side) {
-        return getCachedTile(side);
+    public IItemHandler getAcceptor(Direction side) {
+        return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 
     @Override
@@ -95,12 +97,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        //TODO: Maybe merge this back with TransporterUtils.isValidAcceptorOnSide
-        //return TransporterUtils.isValidAcceptorOnSide(tile, side);
-        if (tile instanceof TileEntityTransmitter && TransmissionType.ITEM.checkTransmissionType(((TileEntityTransmitter<?, ?, ?>) tile))) {
-            return false;
-        }
-        return isAcceptorAndListen(tile, side, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        return super.isValidAcceptor(tile, side) && acceptorCache.isAcceptorAndListen(tile, side, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
     @Override

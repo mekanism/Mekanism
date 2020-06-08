@@ -161,8 +161,8 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
         Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
-        for (BlockPos pos : possibleAcceptors) {
-            Set<Direction> sides = acceptorDirections.get(pos);
+        for (BlockPos pos : acceptorCache.possibleAcceptors) {
+            Set<Direction> sides = acceptorCache.acceptorDirections.get(pos);
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
@@ -188,7 +188,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     public String toString() {
-        return "[EnergyNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+        return "[EnergyNetwork] " + transmitters.size() + " transmitters, " + acceptorCache.possibleAcceptors.size() + " acceptors.";
     }
 
     @Override
@@ -239,7 +239,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmitters.size(), possibleAcceptors.size());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmitters.size(), acceptorCache.possibleAcceptors.size());
     }
 
     @Nonnull

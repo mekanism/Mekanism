@@ -78,7 +78,7 @@ public class EnergyCompatUtils {
      * @apiNote This is a helper specifically for universal cables and is likely to be removed/changed in V10.
      */
     @Deprecated//TODO - V10: Re-evaluate this
-    public static boolean hasStrictEnergyHandlerAndListen(TileEntity tile, Direction side, NonNullConsumer<LazyOptional<?>> listener) {
+    public static <ACCEPTOR> boolean hasStrictEnergyHandlerAndListen(TileEntity tile, Direction side, NonNullConsumer<LazyOptional<ACCEPTOR>> listener) {
         if (tile != null && tile.getWorld() != null) {
             if (tile.getWorld().isRemote()) {
                 //If we are on the client we don't end up adding any invalidation listeners

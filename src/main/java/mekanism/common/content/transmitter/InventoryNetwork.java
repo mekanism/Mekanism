@@ -21,8 +21,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraftforge.items.IItemHandler;
 
-public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork, TileEntityLogisticalTransporterBase> {
+public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetwork, TileEntityLogisticalTransporterBase> {
 
     public InventoryNetwork() {
     }
@@ -43,11 +44,11 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
         List<AcceptorData> toReturn = new ArrayList<>();
-        for (BlockPos pos : possibleAcceptors) {
+        for (BlockPos pos : acceptorCache.possibleAcceptors) {
             if (pos == null || pos.equals(stack.homeLocation)) {
                 continue;
             }
-            Set<Direction> sides = acceptorDirections.get(pos);
+            Set<Direction> sides = acceptorCache.acceptorDirections.get(pos);
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
@@ -88,7 +89,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
     @Override
     public String toString() {
-        return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+        return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + acceptorCache.possibleAcceptors.size() + " acceptors.";
     }
 
     @Override
@@ -108,7 +109,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.INVENTORY_NETWORK, transmitters.size(), possibleAcceptors.size());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.INVENTORY_NETWORK, transmitters.size(), acceptorCache.possibleAcceptors.size());
     }
 
     public static class AcceptorData {

@@ -2,10 +2,8 @@ package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -27,13 +25,13 @@ import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
+import mekanism.common.lib.transmitter.AcceptorCache;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
@@ -57,9 +55,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullConsumer;
 import org.apache.commons.lang3.tuple.Pair;
 
 //TODO - V10: Re-order various methods that are in this class
@@ -87,27 +82,20 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return types[side.ordinal()];
     }
 
-    private final Map<Direction, NonNullConsumer<LazyOptional<?>>> cachedListeners = new EnumMap<>(Direction.class);
-    public byte currentAcceptorConnections = 0x00;
+    public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
+                                               ConnectionType.NORMAL};
+    protected final AcceptorCache<ACCEPTOR> acceptorCache;
     public byte currentTransmitterConnections = 0x00;
-
-    private boolean redstonePowered = false;
-
-    protected boolean redstoneReactive = false;
-
-    public boolean forceUpdate = true;
-
-    private boolean redstoneSet = false;
-
-    public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
-                                               ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
-    public final TileEntity[] cachedAcceptors = new TileEntity[6];
-
-    public NETWORK theNetwork = null;
-    public boolean orphaned = true;
+    protected boolean redstoneReactive;
+    private boolean redstonePowered;
+    private boolean redstoneSet;
+    private boolean forceUpdate = true;
+    private NETWORK theNetwork = null;
+    private boolean orphaned = true;
 
     public TileEntityTransmitter(IBlockProvider blockProvider) {
         super(((IHasTileEntity<? extends TileEntityTransmitter<?, ?, ?>>) blockProvider.getBlock()).getTileType());
+        acceptorCache = new AcceptorCache<>(this);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION_CAPABILITY, this));
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
@@ -218,26 +206,20 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return connections;
     }
 
-    public boolean getPossibleAcceptorConnection(Direction side) {
+    private boolean getPossibleAcceptorConnection(Direction side) {
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return false;
         }
         TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         if (canConnectMutual(side, tile) && isValidAcceptor(tile, side)) {
-            if (cachedAcceptors[side.ordinal()] != tile) {
-                cachedAcceptors[side.ordinal()] = tile;
-                markDirtyAcceptor(side);
-            }
+            acceptorCache.updateCachedAcceptor(side, tile);
             return true;
         }
-        if (cachedAcceptors[side.ordinal()] != null) {
-            cachedAcceptors[side.ordinal()] = null;
-            markDirtyAcceptor(side);
-        }
+        acceptorCache.updateCachedAcceptor(side, null);
         return false;
     }
 
-    public boolean getPossibleTransmitterConnection(Direction side) {
+    private boolean getPossibleTransmitterConnection(Direction side) {
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return false;
         }
@@ -265,24 +247,19 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
                     continue;
                 }
                 if (isValidAcceptor(tile, side)) {
-                    if (cachedAcceptors[side.ordinal()] != tile) {
-                        cachedAcceptors[side.ordinal()] = tile;
-                        markDirtyAcceptor(side);
-                    }
+                    acceptorCache.updateCachedAcceptor(side, tile);
                     connections |= 1 << side.ordinal();
                     continue;
                 }
             }
-            if (cachedAcceptors[side.ordinal()] != null) {
-                cachedAcceptors[side.ordinal()] = null;
-                markDirtyAcceptor(side);
-            }
+            //TODO: Re-evaluate this, why is it clearing the cached acceptors?
+            acceptorCache.updateCachedAcceptor(side, null);
         }
         return connections;
     }
 
     public byte getAllCurrentConnections() {
-        return (byte) (currentTransmitterConnections | currentAcceptorConnections);
+        return (byte) (currentTransmitterConnections | acceptorCache.currentAcceptorConnections);
     }
 
     //TODO: Do we want to narrow this to TileEntityTransmitter
@@ -295,7 +272,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         if (type == ConnectionType.PULL || type == ConnectionType.NONE) {
             return null;
         }
-        return connectionMapContainsSide(currentAcceptorConnections, side) ? cachedAcceptors[side.ordinal()] : null;
+        return acceptorCache.getCachedAcceptor(side);
     }
 
     public List<VoxelShape> getCollisionBoxes() {
@@ -334,9 +311,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     }
 
     public boolean isValid() {
-        //TODO - V10: Re-evaluate the second part where we check the tile in the location is actually this
-        // I don't believe that is needed anymore, though if something goes wrong maybe we do need to add it back
-        return !isRemoved();// && MekanismUtils.getTileEntity(world(), getPos()) == this;
+        return !isRemoved();
     }
 
     public NETWORK getExternalNetwork(BlockPos from) {
@@ -349,38 +324,9 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
 
     public abstract TransmitterType getTransmitterType();
 
-    public abstract boolean isValidAcceptor(TileEntity tile, Direction side);
-
-    //TODO - V10: Rewrite this to not be as "directly" needed/be less of a "patch".
-    // Ideally we will end up instead having it so that all targets are fully cached rather than
-    // just registering a listener and "forgetting" about it
-    protected boolean isAcceptorAndListen(TileEntity tile, Direction side, Capability<?> capability) {
-        LazyOptional<?> lazyOptional = CapabilityUtils.getCapability(tile, capability, side.getOpposite());
-        if (lazyOptional.isPresent()) {
-            //If the capability is present
-            if (!isRemote()) {
-                //And we are on the server, add a listener so that once it gets invalidated we recheck that side
-                // assuming that the world and position is still loaded and our tile has not been removed
-                CapabilityUtils.addListener(lazyOptional, getRefreshListener(side));
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Gets the listener that will refresh connections on a given side.
-     */
-    protected NonNullConsumer<LazyOptional<?>> getRefreshListener(@Nonnull Direction side) {
-        return cachedListeners.computeIfAbsent(side, this::getUncachedRefreshListener);
-    }
-
-    private NonNullConsumer<LazyOptional<?>> getUncachedRefreshListener(@Nonnull Direction side) {
-        return ignored -> {
-            if (!isRemoved() && world != null && world.isBlockPresent(pos.offset(side))) {
-                refreshConnections(side);
-            }
-        };
+    public boolean isValidAcceptor(TileEntity tile, Direction side) {
+        //If it isn't a transmitter or the transmission type is different than the one the transmitter has
+        return !(tile instanceof TileEntityTransmitter) || !getTransmissionType().checkTransmissionType(((TileEntityTransmitter<?, ?, ?>) tile));
     }
 
     public boolean canConnectMutual(Direction side, @Nullable TileEntity cachedTile) {
@@ -503,7 +449,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
-        updateTag.putByte(NBTConstants.CURRENT_ACCEPTORS, currentAcceptorConnections);
+        updateTag.putByte(NBTConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
             updateTag.putInt(NBTConstants.SIDE + i, connectionTypes[i].ordinal());
         }
@@ -518,7 +464,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
-        NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_ACCEPTORS, acceptors -> currentAcceptorConnections = acceptors);
+        NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
             int index = i;
             NBTUtils.setEnumIfPresent(tag, NBTConstants.SIDE + index, ConnectionType::byIndexStatic, type -> connectionTypes[index] = type);
@@ -621,7 +567,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
             }
 
             currentTransmitterConnections = possibleTransmitters;
-            currentAcceptorConnections = possibleAcceptors;
+            acceptorCache.currentAcceptorConnections = possibleAcceptors;
             if (newlyEnabledTransmitters != 0) {
                 //If any sides are now valid transmitters that were not before recheck the connection
                 recheckConnections(newlyEnabledTransmitters);
@@ -647,7 +593,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
             }
 
             currentTransmitterConnections = setConnectionBit(currentTransmitterConnections, possibleTransmitter, side);
-            currentAcceptorConnections = setConnectionBit(currentAcceptorConnections, possibleAcceptor, side);
+            acceptorCache.currentAcceptorConnections = setConnectionBit(acceptorCache.currentAcceptorConnections, possibleAcceptor, side);
             if (transmitterChanged) {
                 //If this side is now a valid transmitter and it wasn't before recheck the connection
                 recheckConnection(side);
@@ -703,7 +649,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         }
     }
 
-    protected void markDirtyAcceptor(Direction side) {
+    public void markDirtyAcceptor(Direction side) {
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().acceptorChanged(getTransmitter(), side);
         }
@@ -728,7 +674,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         onWorldSeparate();
         super.remove();
         //Clear our cached listeners
-        cachedListeners.clear();
+        acceptorCache.clear();
     }
 
     @Override

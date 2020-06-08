@@ -73,11 +73,11 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, TileE
 
     @Override
     public String toString() {
-        return "[HeatNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+        return "[HeatNetwork] " + transmitters.size() + " transmitters, " + acceptorCache.possibleAcceptors.size() + " acceptors.";
     }
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.HEAT_NETWORK, transmitters.size(), possibleAcceptors.size());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.HEAT_NETWORK, transmitters.size(), acceptorCache.possibleAcceptors.size());
     }
 }

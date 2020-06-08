@@ -24,9 +24,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     protected final Set<TRANSMITTER> transmitters = new ObjectLinkedOpenHashSet<>();
     protected final Set<TRANSMITTER> transmittersToAdd = new ObjectOpenHashSet<>();
-    protected final Set<BlockPos> possibleAcceptors = new ObjectOpenHashSet<>();
-    protected final Map<BlockPos, Set<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
-    protected final Map<TRANSMITTER, Set<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
+    //TODO: Should changed acceptors be moved into AcceptorCache
+    private final Map<TRANSMITTER, Set<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
+    protected final NetworkAcceptorCache<ACCEPTOR> acceptorCache = new NetworkAcceptorCache<>();
     @Nullable
     protected World world;
     private final UUID uuid;
@@ -63,7 +63,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                         world = transmitter.getWorld();
                     }
                     for (Direction side : EnumUtils.DIRECTIONS) {
-                        updateTransmitterOnSide(transmitter, side);
+                        acceptorCache.updateTransmitterOnSide(transmitter, side);
                     }
                     transmitter.setTransmitterNetwork(getNetwork());
                     addTransmitterFromCommit(transmitter);
@@ -81,7 +81,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 if (transmitter.isValid()) {
                     //Update all the changed directions
                     for (Direction side : entry.getValue()) {
-                        updateTransmitterOnSide(transmitter, side);
+                        acceptorCache.updateTransmitterOnSide(transmitter, side);
                     }
                 }
             }
@@ -94,31 +94,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     protected void validTransmittersAdded() {
-    }
-
-    private void updateTransmitterOnSide(TRANSMITTER transmitter, Direction side) {
-        ACCEPTOR acceptor = transmitter.getAcceptor(side);
-        BlockPos acceptorCoord = transmitter.getPos().offset(side);
-        Set<Direction> directions = acceptorDirections.get(acceptorCoord);
-
-        if (acceptor != null) {
-            possibleAcceptors.add(acceptorCoord);
-            if (directions != null) {
-                directions.add(side.getOpposite());
-            } else {
-                acceptorDirections.put(acceptorCoord, EnumSet.of(side.getOpposite()));
-            }
-        } else if (directions != null) {
-            directions.remove(side.getOpposite());
-
-            if (directions.isEmpty()) {
-                possibleAcceptors.remove(acceptorCoord);
-                acceptorDirections.remove(acceptorCoord);
-            }
-        } else {
-            possibleAcceptors.remove(acceptorCoord);
-            acceptorDirections.remove(acceptorCoord);
-        }
     }
 
     public boolean isRemote() {
@@ -168,18 +143,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
             transmitter.setTransmitterNetwork(getNetwork());
             transmitters.add(transmitter);
         }
-
         transmittersToAdd.addAll(net.transmittersToAdd);
-        possibleAcceptors.addAll(net.possibleAcceptors);
-
-        for (Entry<BlockPos, Set<Direction>> entry : net.acceptorDirections.entrySet()) {
-            BlockPos pos = entry.getKey();
-            if (acceptorDirections.containsKey(pos)) {
-                acceptorDirections.get(pos).addAll(entry.getValue());
-            } else {
-                acceptorDirections.put(pos, entry.getValue());
-            }
-        }
+        acceptorCache.adoptAcceptors(net.acceptorCache);
     }
 
     public void register() {
@@ -205,7 +170,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public int getAcceptorSize() {
-        return possibleAcceptors.size();
+        return acceptorCache.possibleAcceptors.size();
     }
 
     @Nullable
@@ -239,10 +204,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public boolean hasAcceptor(BlockPos acceptorPos) {
-        return possibleAcceptors.contains(acceptorPos);
+        return acceptorCache.hasAcceptor(acceptorPos);
     }
 
     public Set<Direction> getAcceptorDirections(BlockPos pos) {
-        return acceptorDirections.get(pos);
+        return acceptorCache.acceptorDirections.get(pos);
     }
 }

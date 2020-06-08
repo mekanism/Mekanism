@@ -23,7 +23,7 @@ public final class CapabilityUtils {
      * without having to deal with the fact that one is "capture of ?" and the listener is "?".
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static void addListener(@Nonnull LazyOptional lazyOptional, @Nonnull NonNullConsumer<LazyOptional<?>> listener) {
+    public static void addListener(@Nonnull LazyOptional<?> lazyOptional, @Nonnull NonNullConsumer listener) {
         lazyOptional.addListener(listener);
     }
 }
