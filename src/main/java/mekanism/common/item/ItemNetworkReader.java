@@ -18,6 +18,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.transmitter.EnergyNetwork;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
+import mekanism.common.tile.transmitter.TileEntityBufferedTransmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
@@ -72,8 +73,9 @@ public class ItemNetworkReader extends ItemEnergized {
                     DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
                     if (transmitterNetwork instanceof EnergyNetwork) {
                         player.sendMessage(MekanismLang.NETWORK_READER_CAPACITY.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, ((EnergyNetwork) transmitterNetwork).getCapacityAsFloatingLong()));
-                    } else {
-                        player.sendMessage(MekanismLang.NETWORK_READER_CAPACITY.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkCapacity()));
+                    } else if (transmitter instanceof TileEntityBufferedTransmitter) {
+                        player.sendMessage(MekanismLang.NETWORK_READER_CAPACITY.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
+                              ((TileEntityBufferedTransmitter<?, ?, ?, ?>) transmitter).getTransmitterNetworkCapacity()));
                     }
                     CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_HANDLER_CAPABILITY, opposite).ifPresent(heatHandler ->
                           player.sendMessage(MekanismLang.NETWORK_READER_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
@@ -95,11 +97,11 @@ public class ItemNetworkReader extends ItemEnergized {
                             if (tile instanceof TileEntityTransmitter) {
                                 TileEntityTransmitter<?, ?, ?> transmitter = (TileEntityTransmitter<?, ?, ?>) tile;
                                 DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
-                                if (transmitterNetwork.getPossibleAcceptors().contains(pos) && !iteratedNetworks.contains(transmitterNetwork)) {
+                                if (transmitterNetwork.hasAcceptor(pos) && !iteratedNetworks.contains(transmitterNetwork)) {
                                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
                                           MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, transmitter.getTransmissionType())));
                                     player.sendMessage(MekanismLang.NETWORK_READER_CONNECTED_SIDES.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
-                                          getDirections(transmitterNetwork.getAcceptorDirections().get(pos))));
+                                          getDirections(transmitterNetwork.getAcceptorDirections(pos))));
                                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
                                     iteratedNetworks.add(transmitterNetwork);
                                 }

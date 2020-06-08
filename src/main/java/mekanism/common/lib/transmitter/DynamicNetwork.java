@@ -11,60 +11,50 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Range3D;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
-public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements INetworkDataHandler, IHasTextComponent {
+public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
+      TRANSMITTER extends TileEntityTransmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements INetworkDataHandler, IHasTextComponent {
 
-    protected final Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectLinkedOpenHashSet<>();
-    protected final Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectOpenHashSet<>();
-
+    protected final Set<TRANSMITTER> transmitters = new ObjectLinkedOpenHashSet<>();
+    protected final Set<TRANSMITTER> transmittersToAdd = new ObjectOpenHashSet<>();
     protected final Set<BlockPos> possibleAcceptors = new ObjectOpenHashSet<>();
     protected final Map<BlockPos, Set<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
-    protected final Map<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
-    protected Range3D packetRange = null;
-    protected final Set<ChunkPos> chunks = new ObjectOpenHashSet<>();
-    protected long capacity;
-    protected boolean needsUpdate = false;
+    protected final Map<TRANSMITTER, Set<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
     @Nullable
-    protected World world = null;
-    private boolean forceScaleUpdate = false;
-    private long lastSaveShareWriteTime;
-    private long lastMarkDirtyTime;
-
+    protected World world;
     private final UUID uuid;
 
-    public DynamicNetwork() {
+    protected DynamicNetwork() {
         this(UUID.randomUUID());
     }
 
-    public DynamicNetwork(UUID networkID) {
+    protected DynamicNetwork(UUID networkID) {
         this.uuid = networkID;
+    }
+
+    public UUID getUUID() {
+        return uuid;
     }
 
     protected NETWORK getNetwork() {
         return (NETWORK) this;
     }
 
-    public void addNewTransmitters(Collection<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> newTransmitters) {
+    public void addNewTransmitters(Collection<TRANSMITTER> newTransmitters) {
         transmittersToAdd.addAll(newTransmitters);
-        if (!forceScaleUpdate) {
-            //If we currently have no transmitters, mark that we want to force our scale to update to the target after the initial adding
-            forceScaleUpdate = isEmpty();
-        }
     }
 
     public void commit() {
         if (!transmittersToAdd.isEmpty()) {
             boolean addedValidTransmitters = false;
-            for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmittersToAdd) {
+            for (TRANSMITTER transmitter : transmittersToAdd) {
                 //Note: Transmitter should not be able to be null here, but I ran into a null pointer
                 // pointing to it being null that I could not reproduce, so just added this as a safety check
                 if (transmitter != null && transmitter.isValid()) {
@@ -72,33 +62,22 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                     if (world == null) {
                         world = transmitter.getWorld();
                     }
-
                     for (Direction side : EnumUtils.DIRECTIONS) {
                         updateTransmitterOnSide(transmitter, side);
                     }
-
                     transmitter.setTransmitterNetwork(getNetwork());
-                    //Update the capacity here, to make sure that we can actually absorb the buffer properly
-                    updateCapacity(transmitter);
-                    absorbBuffer(transmitter);
-                    transmitters.add(transmitter);
-                    chunks.add(new ChunkPos(transmitter.getPos()));
+                    addTransmitterFromCommit(transmitter);
                 }
             }
             transmittersToAdd.clear();
             if (addedValidTransmitters) {
-                clampBuffer();
-                if (forceScaleUpdate) {
-                    forceScaleUpdate = false;
-                    forceScaleUpdate();
-                }
-                needsUpdate = true;
+                validTransmittersAdded();
             }
         }
 
         if (!changedAcceptors.isEmpty()) {
-            for (Entry<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> entry : changedAcceptors.entrySet()) {
-                TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = entry.getKey();
+            for (Entry<TRANSMITTER, Set<Direction>> entry : changedAcceptors.entrySet()) {
+                TRANSMITTER transmitter = entry.getKey();
                 if (transmitter.isValid()) {
                     //Update all the changed directions
                     for (Direction side : entry.getValue()) {
@@ -110,7 +89,14 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
     }
 
-    public void updateTransmitterOnSide(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
+    protected void addTransmitterFromCommit(TRANSMITTER transmitter) {
+        transmitters.add(transmitter);
+    }
+
+    protected void validTransmittersAdded() {
+    }
+
+    private void updateTransmitterOnSide(TRANSMITTER transmitter, Direction side) {
         ACCEPTOR acceptor = transmitter.getAcceptor(side);
         BlockPos acceptorCoord = transmitter.getPos().offset(side);
         Set<Direction> directions = acceptorDirections.get(acceptorCoord);
@@ -135,58 +121,39 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
     }
 
-    @Nullable
-    public BUFFER getBuffer() {
-        return null;
-    }
-
     public boolean isRemote() {
         return world == null ? EffectiveSide.get().isClient() : world.isRemote;
     }
 
-    public abstract void absorbBuffer(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter);
-
-    public abstract void clampBuffer();
-
-    protected void forceScaleUpdate() {
+    protected void onLastTransmitterRemoved(@Nonnull TRANSMITTER triggerTransmitter) {
     }
 
-    protected void onLastTransmitterRemoved(@Nonnull TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
-    }
-
-    public void invalidate(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
+    public void invalidate(@Nullable TRANSMITTER triggerTransmitter) {
         if (transmitters.size() == 1 && triggerTransmitter != null) {
             //We're destroying the last transmitter in the network
             onLastTransmitterRemoved(triggerTransmitter);
         }
-
-        //Remove invalid transmitters first for share calculations
-        transmitters.removeIf(transmitter -> !transmitter.isValid());
-
-        //Clamp the new buffer
-        clampBuffer();
-
-        //Update all shares
-        updateSaveShares(triggerTransmitter);
-
+        removeInvalid(triggerTransmitter);
         //Now invalidate the transmitters
-        for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
-            invalidateTransmitter(transmitter);
+        if (!isRemote()) {
+            for (TRANSMITTER transmitter : transmitters) {
+                if (transmitter.isValid()) {
+                    transmitter.takeShare();
+                    transmitter.setTransmitterNetwork(null);
+                    TransmitterNetworkRegistry.registerOrphanTransmitter(transmitter);
+                }
+            }
         }
-
         transmitters.clear();
         deregister();
     }
 
-    public void invalidateTransmitter(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
-        if (!isRemote() && transmitter.isValid()) {
-            transmitter.takeShare();
-            transmitter.setTransmitterNetwork(null);
-            TransmitterNetworkRegistry.registerOrphanTransmitter(transmitter);
-        }
+    protected void removeInvalid(@Nullable TRANSMITTER triggerTransmitter) {
+        //Remove invalid transmitters first for share calculations
+        transmitters.removeIf(transmitter -> !transmitter.isValid());
     }
 
-    public void acceptorChanged(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter, Direction side) {
+    public void acceptorChanged(TRANSMITTER transmitter, Direction side) {
         Set<Direction> directions = changedAcceptors.get(transmitter);
         if (directions == null) {
             changedAcceptors.put(transmitter, EnumSet.of(side));
@@ -197,7 +164,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void adoptTransmittersAndAcceptorsFrom(NETWORK net) {
-        for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : net.transmitters) {
+        for (TRANSMITTER transmitter : net.transmitters) {
             transmitter.setTransmitterNetwork(getNetwork());
             transmitters.add(transmitter);
         }
@@ -206,47 +173,13 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         possibleAcceptors.addAll(net.possibleAcceptors);
 
         for (Entry<BlockPos, Set<Direction>> entry : net.acceptorDirections.entrySet()) {
-            BlockPos coord = entry.getKey();
-            if (acceptorDirections.containsKey(coord)) {
-                acceptorDirections.get(coord).addAll(entry.getValue());
+            BlockPos pos = entry.getKey();
+            if (acceptorDirections.containsKey(pos)) {
+                acceptorDirections.get(pos).addAll(entry.getValue());
             } else {
-                acceptorDirections.put(coord, entry.getValue());
+                acceptorDirections.put(pos, entry.getValue());
             }
         }
-        //Update the capacity
-        updateCapacity();
-    }
-
-    public Range3D getPacketRange() {
-        //TODO: FIXME? It never updates the value of packetRange
-        return packetRange == null ? genPacketRange() : packetRange;
-    }
-
-    private Range3D genPacketRange() {
-        if (isEmpty()) {
-            deregister();
-            return null;
-        }
-        TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> initTransmitter = firstTransmitter();
-        BlockPos initPos = initTransmitter.getPos();
-        int minX = initPos.getX();
-        int minZ = initPos.getZ();
-        int maxX = minX;
-        int maxZ = minZ;
-        for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
-            BlockPos pos = transmitter.getPos();
-            if (pos.getX() < minX) {
-                minX = pos.getX();
-            } else if (pos.getX() > maxX) {
-                maxX = pos.getX();
-            }
-            if (pos.getZ() < minZ) {
-                minZ = pos.getZ();
-            } else if (pos.getZ() > maxZ) {
-                maxZ = pos.getZ();
-            }
-        }
-        return new Range3D(minX, minZ, maxX, maxZ, initTransmitter.getWorld().getDimension().getType());
     }
 
     public void register() {
@@ -275,108 +208,41 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return possibleAcceptors.size();
     }
 
-    /**
-     * @param transmitter The transmitter that was added
-     */
-    protected synchronized void updateCapacity(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
-        long transmitterCapacity = transmitter.getCapacity();
-        if (transmitterCapacity > Long.MAX_VALUE - capacity) {
-            //Ensure we don't overflow
-            capacity = Long.MAX_VALUE;
-        } else {
-            capacity += transmitterCapacity;
-        }
-    }
-
-    public synchronized void updateCapacity() {
-        long sum = 0;
-        for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
-            long transmitterCapacity = transmitter.getCapacity();
-            if (transmitterCapacity > Long.MAX_VALUE - capacity) {
-                //Ensure we don't overflow
-                sum = Long.MAX_VALUE;
-                break;
-            } else {
-                sum += transmitterCapacity;
-            }
-        }
-        if (capacity != sum) {
-            capacity = sum;
-        }
-    }
-
-    public long getCapacity() {
-        return capacity;
-    }
-
     @Nullable
     public World getWorld() {
         return world;
     }
 
-    public void tick() {
-        onUpdate();
+    /**
+     * @apiNote Only called on the server
+     */
+    public void onUpdate() {
     }
 
-    public void onUpdate() {}
-
-    protected void updateSaveShares(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {}
-
-    public final void validateSaveShares(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
-        if (world.getGameTime() != lastSaveShareWriteTime) {
-            lastSaveShareWriteTime = world.getGameTime();
-            updateSaveShares(triggerTransmitter);
-        }
-    }
-
-    public void markDirty() {
-        if (world != null && !world.isRemote && world.getGameTime() != lastMarkDirtyTime) {
-            lastMarkDirtyTime = world.getGameTime();
-            chunks.forEach(chunk -> world.markChunkDirty(chunk.asBlockPos(), null));
-        }
-    }
-
-    public boolean isCompatibleWith(NETWORK other) {
-        return true;
-    }
-
-    public boolean compatibleWithBuffer(BUFFER buffer) {
-        return true;
-    }
-
-    public Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> getTransmitters() {
+    public Set<TRANSMITTER> getTransmitters() {
         return transmitters;
     }
 
-    public boolean addTransmitter(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
-        return transmitters.add(transmitter);
+    public void addTransmitter(TRANSMITTER transmitter) {
+        transmitters.add(transmitter);
     }
 
-    public boolean removeTransmitter(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
-        boolean removed = transmitters.remove(transmitter);
+    public void removeTransmitter(TRANSMITTER transmitter) {
+        transmitters.remove(transmitter);
         if (transmitters.isEmpty()) {
             deregister();
         }
-        return removed;
-    }
-
-    public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> firstTransmitter() {
-        return transmitters.iterator().next();
     }
 
     public int transmittersSize() {
         return transmitters.size();
     }
 
-    public Set<BlockPos> getPossibleAcceptors() {
-        return possibleAcceptors;
+    public boolean hasAcceptor(BlockPos acceptorPos) {
+        return possibleAcceptors.contains(acceptorPos);
     }
 
-    public Map<BlockPos, Set<Direction>> getAcceptorDirections() {
-        return acceptorDirections;
-    }
-
-    public UUID getUUID() {
-        return uuid;
+    public Set<Direction> getAcceptorDirections(BlockPos pos) {
+        return acceptorDirections.get(pos);
     }
 }

@@ -6,14 +6,13 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.util.text.ITextComponent;
 
-public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void> {
+public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, TileEntityThermodynamicConductor> {
 
     private double meanTemp = HeatAPI.AMBIENT_TEMP;
     private double heatLost;
@@ -56,43 +55,20 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Void>
     }
 
     @Override
-    public void absorbBuffer(TileEntityTransmitter<IHeatHandler, HeatNetwork, Void> transmitter) {
-    }
-
-    @Override
-    public void clampBuffer() {
-    }
-
-    @Override
-    protected synchronized void updateCapacity(TileEntityTransmitter<IHeatHandler, HeatNetwork, Void> transmitter) {
-        //The capacity is always zero so no point in doing calculations.
-    }
-
-    @Override
-    public synchronized void updateCapacity() {
-        //The capacity is always zero so no point in doing calculations.
-    }
-
-    @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!isRemote()) {
-            double newSumTemp = 0, newHeatLost = 0, newHeatTransferred = 0;
-            for (TileEntityTransmitter<IHeatHandler, HeatNetwork, Void> transmitter : transmitters) {
-                if (transmitter instanceof ITileHeatHandler) {
-                    // change this when we re-integrate with multipart
-                    ITileHeatHandler heatTile = (ITileHeatHandler) transmitter;
-                    HeatTransfer transfer = heatTile.simulate();
-                    heatTile.updateHeatCapacitors(null);
-                    newHeatTransferred += transfer.getAdjacentTransfer();
-                    newHeatLost += transfer.getEnvironmentTransfer();
-                    newSumTemp += heatTile.getTotalTemperature();
-                }
-            }
-            heatLost = newHeatLost;
-            heatTransferred = newHeatTransferred;
-            meanTemp = newSumTemp / transmitters.size();
+        double newSumTemp = 0, newHeatLost = 0, newHeatTransferred = 0;
+        for (TileEntityThermodynamicConductor transmitter : transmitters) {
+            // change this when we re-integrate with multipart
+            HeatTransfer transfer = transmitter.simulate();
+            transmitter.updateHeatCapacitors(null);
+            newHeatTransferred += transfer.getAdjacentTransfer();
+            newHeatLost += transfer.getEnvironmentTransfer();
+            newSumTemp += transmitter.getTotalTemperature();
         }
+        heatLost = newHeatLost;
+        heatTransferred = newHeatTransferred;
+        meanTemp = newSumTemp / transmitters.size();
     }
 
     @Override

@@ -42,7 +42,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements IMekanismFluidHandler {
+public class TileEntityMechanicalPipe extends TileEntityBufferedTransmitter<IFluidHandler, FluidNetwork, FluidStack, TileEntityMechanicalPipe> implements
+      IMekanismFluidHandler {
 
     public final PipeTier tier;
 
@@ -160,23 +161,20 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public boolean isValidTransmitter(TileEntity tile) {
-        if (!super.isValidTransmitter(tile)) {
-            return false;
+    public boolean isValidTransmitter(TileEntityTransmitter<?, ?, ?> tile) {
+        if (super.isValidTransmitter(tile) && tile instanceof TileEntityMechanicalPipe) {
+            FluidStack buffer = getBufferWithFallback();
+            if (buffer.isEmpty() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
+                buffer = getTransmitterNetwork().lastFluid;
+            }
+            TileEntityMechanicalPipe other = (TileEntityMechanicalPipe) tile;
+            FluidStack otherBuffer = other.getBufferWithFallback();
+            if (otherBuffer.isEmpty() && other.hasTransmitterNetwork() && other.getTransmitterNetwork().getPrevTransferAmount() > 0) {
+                otherBuffer = other.getTransmitterNetwork().lastFluid;
+            }
+            return buffer.isEmpty() || otherBuffer.isEmpty() || buffer.isFluidEqual(otherBuffer);
         }
-        if (!(tile instanceof TileEntityMechanicalPipe)) {
-            return true;
-        }
-        FluidStack buffer = getBufferWithFallback();
-        if (buffer.isEmpty() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
-            buffer = getTransmitterNetwork().lastFluid;
-        }
-        TileEntityMechanicalPipe other = (TileEntityMechanicalPipe) tile;
-        FluidStack otherBuffer = other.getBufferWithFallback();
-        if (otherBuffer.isEmpty() && other.hasTransmitterNetwork() && other.getTransmitterNetwork().getPrevTransferAmount() > 0) {
-            otherBuffer = other.getTransmitterNetwork().lastFluid;
-        }
-        return buffer.isEmpty() || otherBuffer.isEmpty() || buffer.isFluidEqual(otherBuffer);
+        return false;
     }
 
     @Override
@@ -228,6 +226,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         return buffer;
     }
 
+    @Nonnull
     @Override
     public FluidStack getShare() {
         return buffer.getFluid();
@@ -328,6 +327,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     protected void handleContentsUpdateTag(@Nonnull FluidNetwork network, @Nonnull CompoundNBT tag) {
+        super.handleContentsUpdateTag(network, tag);
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, network::setLastFluid);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.fluidScale = scale);
     }

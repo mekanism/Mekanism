@@ -38,7 +38,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> implements IMekanismStrictEnergyHandler {
+public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong, TileEntityUniversalCable> implements
+      IMekanismStrictEnergyHandler {
 
     public final CableTier tier;
 
@@ -183,6 +184,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
         return energy;
     }
 
+    @Nonnull
     @Override
     public FloatingLong getShare() {
         return buffer.getEnergy();
@@ -294,6 +296,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<IStrictEnerg
 
     @Override
     protected void handleContentsUpdateTag(@Nonnull EnergyNetwork network, @Nonnull CompoundNBT tag) {
+        super.handleContentsUpdateTag(network, tag);
         NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.ENERGY_STORED, network.energyContainer::setEnergy);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.energyScale = scale);
     }

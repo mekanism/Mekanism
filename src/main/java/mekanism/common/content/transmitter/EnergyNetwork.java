@@ -22,8 +22,8 @@ import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.distribution.target.EnergyAcceptorTarget;
 import mekanism.common.distribution.target.EnergyTransmitterSaveTarget;
 import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
+import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
@@ -35,7 +35,7 @@ import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 
-public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNetwork, FloatingLong> implements IMekanismStrictEnergyHandler {
+public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, EnergyNetwork, FloatingLong, TileEntityUniversalCable> implements IMekanismStrictEnergyHandler {
 
     private final List<IEnergyContainer> energyContainers;
     public final VariableCapacityEnergyContainer energyContainer;
@@ -97,7 +97,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     }
 
     @Override
-    public void absorbBuffer(TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
+    public void absorbBuffer(TileEntityUniversalCable transmitter) {
         FloatingLong energy = transmitter.releaseShare();
         if (!energy.isZero()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(energy));
@@ -115,7 +115,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     }
 
     @Override
-    protected synchronized void updateCapacity(TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter) {
+    protected synchronized void updateCapacity(TileEntityUniversalCable transmitter) {
         floatingLongCapacity = floatingLongCapacity.plusEqual(transmitter.getCapacityAsFloatingLong());
         capacity = floatingLongCapacity.longValue();
     }
@@ -123,7 +123,7 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     @Override
     public synchronized void updateCapacity() {
         FloatingLong sum = FloatingLong.ZERO;
-        for (TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter : transmitters) {
+        for (TileEntityUniversalCable transmitter : transmitters) {
             sum = sum.plusEqual(transmitter.getCapacityAsFloatingLong());
         }
         if (!floatingLongCapacity.equals(sum)) {
@@ -138,14 +138,14 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     }
 
     @Override
-    protected void updateSaveShares(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void updateSaveShares(@Nullable TileEntityUniversalCable triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
             Set<EnergyTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (TileEntityTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong> transmitter : transmitters) {
+            for (TileEntityUniversalCable transmitter : transmitters) {
                 EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget();
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);
@@ -194,22 +194,20 @@ public class EnergyNetwork extends DynamicNetwork<IStrictEnergyHandler, EnergyNe
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!isRemote()) {
-            float scale = computeContentScale();
-            if (scale != energyScale) {
-                energyScale = scale;
-                needsUpdate = true;
-            }
-            if (needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, energyScale));
-                needsUpdate = false;
-            }
-            if (energyContainer.isEmpty()) {
-                prevTransferAmount = FloatingLong.ZERO;
-            } else {
-                prevTransferAmount = tickEmit(energyContainer.getEnergy());
-                energyContainer.extract(prevTransferAmount, Action.EXECUTE, AutomationType.INTERNAL);
-            }
+        float scale = computeContentScale();
+        if (scale != energyScale) {
+            energyScale = scale;
+            needsUpdate = true;
+        }
+        if (needsUpdate) {
+            MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, energyScale));
+            needsUpdate = false;
+        }
+        if (energyContainer.isEmpty()) {
+            prevTransferAmount = FloatingLong.ZERO;
+        } else {
+            prevTransferAmount = tickEmit(energyContainer.getEnergy());
+            energyContainer.extract(prevTransferAmount, Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 

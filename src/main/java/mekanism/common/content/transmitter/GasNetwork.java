@@ -28,8 +28,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityGasTank;
 import mekanism.common.distribution.target.ChemicalHandlerTarget;
 import mekanism.common.distribution.target.GasTransmitterSaveTarget;
-import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
@@ -48,7 +48,7 @@ import net.minecraftforge.eventbus.api.Event;
  *
  * @author aidancbrady
  */
-public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack> implements IMekanismGasHandler {
+public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, GasStack, TileEntityPressurizedTube> implements IMekanismGasHandler {
 
     private final List<IGasTank> gasTanks;
     public final VariableCapacityGasTank gasTank;
@@ -126,7 +126,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    public void absorbBuffer(TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
+    public void absorbBuffer(TileEntityPressurizedTube transmitter) {
         GasStack gas = transmitter.releaseShare();
         if (gas.isEmpty()) {
             return;
@@ -150,7 +150,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    protected void updateSaveShares(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void updateSaveShares(@Nullable TileEntityPressurizedTube triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
@@ -158,7 +158,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
             Set<GasTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> transmitter : transmitters) {
+            for (TileEntityPressurizedTube transmitter : transmitters) {
                 GasTransmitterSaveTarget saveTarget = new GasTransmitterSaveTarget(gasType);
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);
@@ -174,11 +174,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    protected void onLastTransmitterRemoved(@Nonnull TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void onLastTransmitterRemoved(@Nonnull TileEntityPressurizedTube triggerTransmitter) {
         disperse(triggerTransmitter, gasTank.getStack());
     }
 
-    private void disperse(@Nonnull TileEntityTransmitter<?, ?, ?> triggerTransmitter, GasStack gasType) {
+    private void disperse(@Nonnull TileEntityPressurizedTube triggerTransmitter, GasStack gasType) {
         if (gasType.has(GasAttributes.Radiation.class)) {
             // Handle radiation leakage
             double radioactivity = gasType.get(GasAttributes.Radiation.class).getRadioactivity();
@@ -219,22 +219,20 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!isRemote()) {
-            float scale = computeContentScale();
-            if (scale != gasScale) {
-                gasScale = scale;
-                needsUpdate = true;
-            }
-            if (needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, lastGas, gasScale));
-                needsUpdate = false;
-            }
-            if (gasTank.isEmpty()) {
-                prevTransferAmount = 0;
-            } else {
-                prevTransferAmount = tickEmit(gasTank.getStack());
-                MekanismUtils.logMismatchedStackSize(gasTank.shrinkStack(prevTransferAmount, Action.EXECUTE), prevTransferAmount);
-            }
+        float scale = computeContentScale();
+        if (scale != gasScale) {
+            gasScale = scale;
+            needsUpdate = true;
+        }
+        if (needsUpdate) {
+            MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, lastGas, gasScale));
+            needsUpdate = false;
+        }
+        if (gasTank.isEmpty()) {
+            prevTransferAmount = 0;
+        } else {
+            prevTransferAmount = tickEmit(gasTank.getStack());
+            MekanismUtils.logMismatchedStackSize(gasTank.shrinkStack(prevTransferAmount, Action.EXECUTE), prevTransferAmount);
         }
     }
 

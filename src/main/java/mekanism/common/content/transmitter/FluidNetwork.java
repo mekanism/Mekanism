@@ -19,8 +19,8 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.distribution.target.FluidHandlerTarget;
 import mekanism.common.distribution.target.FluidTransmitterSaveTarget;
-import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.FluidUtils;
@@ -36,7 +36,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, FluidStack> implements IMekanismFluidHandler {
+public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNetwork, FluidStack, TileEntityMechanicalPipe> implements IMekanismFluidHandler {
 
     private final List<IExtendedFluidTank> fluidTanks;
     public final VariableCapacityFluidTank fluidTank;
@@ -117,7 +117,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Override
-    public void absorbBuffer(TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
+    public void absorbBuffer(TileEntityMechanicalPipe transmitter) {
         FluidStack fluid = transmitter.releaseShare();
         if (fluid.isEmpty()) {
             return;
@@ -141,7 +141,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Override
-    protected synchronized void updateCapacity(TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
+    protected synchronized void updateCapacity(TileEntityMechanicalPipe transmitter) {
         super.updateCapacity(transmitter);
         intCapacity = MathUtils.clampToInt(getCapacity());
     }
@@ -157,7 +157,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Override
-    protected void updateSaveShares(@Nullable TileEntityTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void updateSaveShares(@Nullable TileEntityMechanicalPipe triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
@@ -165,7 +165,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
             Set<FluidTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter : transmitters) {
+            for (TileEntityMechanicalPipe transmitter : transmitters) {
                 FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType);
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);
@@ -210,22 +210,20 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!isRemote()) {
-            float scale = computeContentScale();
-            if (scale != fluidScale) {
-                fluidScale = scale;
-                needsUpdate = true;
-            }
-            if (needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, lastFluid, fluidScale));
-                needsUpdate = false;
-            }
-            if (fluidTank.isEmpty()) {
-                prevTransferAmount = 0;
-            } else {
-                prevTransferAmount = tickEmit(fluidTank.getFluid());
-                MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(prevTransferAmount, Action.EXECUTE), prevTransferAmount);
-            }
+        float scale = computeContentScale();
+        if (scale != fluidScale) {
+            fluidScale = scale;
+            needsUpdate = true;
+        }
+        if (needsUpdate) {
+            MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, lastFluid, fluidScale));
+            needsUpdate = false;
+        }
+        if (fluidTank.isEmpty()) {
+            prevTransferAmount = 0;
+        } else {
+            prevTransferAmount = tickEmit(fluidTank.getFluid());
+            MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(prevTransferAmount, Action.EXECUTE), prevTransferAmount);
         }
     }
 

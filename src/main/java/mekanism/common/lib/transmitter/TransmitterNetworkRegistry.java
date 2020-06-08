@@ -10,10 +10,13 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
+import mekanism.common.tile.transmitter.TileEntityBufferedTransmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
@@ -99,37 +102,36 @@ public class TransmitterNetworkRegistry {
     @SubscribeEvent
     public void onTick(ServerTickEvent event) {
         if (event.phase == Phase.END && event.side.isServer()) {
-            tickEnd();
+            removeInvalidTransmitters();
+            assignOrphans();
+            commitChanges();
+            for (DynamicNetwork<?, ?, ?> net : networks) {
+                net.onUpdate();
+            }
         }
     }
 
-    public void tickEnd() {
-        removeInvalidTransmitters();
-        assignOrphans();
-        commitChanges();
-        for (DynamicNetwork<?, ?, ?> net : networks) {
-            net.tick();
-        }
-    }
-
-    public void removeInvalidTransmitters() {
+    private void removeInvalidTransmitters() {
         if (MekanismAPI.debug && !invalidTransmitters.isEmpty()) {
             logger.info("Dealing with {} invalid Transmitters", invalidTransmitters.size());
         }
-
         for (TileEntityTransmitter<?, ?, ?> invalid : invalidTransmitters) {
-            if (!(invalid.isOrphan() && invalid.isValid())) {
-                DynamicNetwork<?, ?, ?> n = invalid.getTransmitterNetwork();
-                if (n != null) {
-                    n.invalidate(invalid);
-                }
-            }
+            removeInvalidTransmitter(invalid);
         }
-
         invalidTransmitters.clear();
     }
 
-    public void assignOrphans() {
+    private <NETWORK extends DynamicNetwork<?, NETWORK, TRANSMITTER>, TRANSMITTER extends TileEntityTransmitter<?, NETWORK, TRANSMITTER>>
+    void removeInvalidTransmitter(TileEntityTransmitter<?, NETWORK, TRANSMITTER> invalid) {
+        if (!(invalid.isOrphan() && invalid.isValid())) {
+            NETWORK n = invalid.getTransmitterNetwork();
+            if (n != null) {
+                n.invalidate((TRANSMITTER) invalid);
+            }
+        }
+    }
+
+    private void assignOrphans() {
         orphanTransmitters = new Object2ObjectOpenHashMap<>(newOrphanTransmitters);
         newOrphanTransmitters.clear();
 
@@ -138,8 +140,14 @@ public class TransmitterNetworkRegistry {
         }
 
         for (TileEntityTransmitter<?, ?, ?> orphanTransmitter : new Object2ObjectOpenHashMap<>(orphanTransmitters).values()) {
-            DynamicNetwork<?, ?, ?> network = getNetworkFromOrphan(orphanTransmitter);
-            if (network != null) {
+            if (orphanTransmitter.isValid() && orphanTransmitter.isOrphan()) {
+                OrphanPathFinder<?, ?, ?> finder;
+                if (orphanTransmitter instanceof TileEntityBufferedTransmitter) {
+                    finder = new BufferedOrphanPathFinder<>((TileEntityBufferedTransmitter<?, ?, ?, ?>) orphanTransmitter);
+                } else {
+                    finder = new OrphanPathFinder<>(orphanTransmitter);
+                }
+                DynamicNetwork<?, ?, ?> network = getNetworkFromOrphan(finder);
                 networksToChange.add(network);
                 network.register();
             }
@@ -148,40 +156,34 @@ public class TransmitterNetworkRegistry {
         orphanTransmitters.clear();
     }
 
-    public <A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> DynamicNetwork<A, N, BUFFER> getNetworkFromOrphan(TileEntityTransmitter<A, N, BUFFER> startOrphan) {
-        if (startOrphan.isValid() && startOrphan.isOrphan()) {
-            OrphanPathFinder<A, N, BUFFER> finder = new OrphanPathFinder<>(startOrphan);
-            finder.start();
-            N network;
-
-            switch (finder.networksFound.size()) {
-                case 0:
-                    if (MekanismAPI.debug) {
-                        logger.info("No networks found. Creating new network for {} transmitters", finder.connectedTransmitters.size());
-                    }
-                    network = startOrphan.createEmptyNetwork();
-                    break;
-                case 1:
-                    if (MekanismAPI.debug) {
-                        logger.info("Adding {} transmitters to single found network", finder.connectedTransmitters.size());
-                    }
-                    network = finder.networksFound.iterator().next();
-                    break;
-                default:
-                    if (MekanismAPI.debug) {
-                        logger.info("Merging {} networks with {} new transmitters", finder.networksFound.size(), finder.connectedTransmitters.size());
-                    }
-                    //TODO: Should we take one of the existing network's uuids?
-                    network = startOrphan.createNetworkByMerging(finder.networksFound);
-            }
-
-            network.addNewTransmitters(finder.connectedTransmitters);
-            return network;
+    private <ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>, TRANSMITTER extends TileEntityTransmitter<ACCEPTOR, NETWORK, TRANSMITTER>>
+    DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER> getNetworkFromOrphan(OrphanPathFinder<ACCEPTOR, NETWORK, TRANSMITTER> finder) {
+        finder.start();
+        NETWORK network;
+        switch (finder.networksFound.size()) {
+            case 0:
+                if (MekanismAPI.debug) {
+                    logger.info("No networks found. Creating new network for {} transmitters", finder.connectedTransmitters.size());
+                }
+                network = finder.createEmptyNetwork();
+                break;
+            case 1:
+                if (MekanismAPI.debug) {
+                    logger.info("Adding {} transmitters to single found network", finder.connectedTransmitters.size());
+                }
+                network = finder.networksFound.iterator().next();
+                break;
+            default:
+                if (MekanismAPI.debug) {
+                    logger.info("Merging {} networks with {} new transmitters", finder.networksFound.size(), finder.connectedTransmitters.size());
+                }
+                network = finder.createNetworkByMerging();
         }
-        return null;
+        network.addNewTransmitters(finder.connectedTransmitters);
+        return network;
     }
 
-    public void commitChanges() {
+    private void commitChanges() {
         for (DynamicNetwork<?, ?, ?> network : networksToChange) {
             network.commit();
         }
@@ -196,26 +198,25 @@ public class TransmitterNetworkRegistry {
     public ITextComponent[] toComponents() {
         ITextComponent[] components = new ITextComponent[networks.size()];
         int i = 0;
-
         for (DynamicNetwork<?, ?, ?> network : networks) {
             components[i++] = network.getTextComponent();
         }
         return components;
     }
 
-    public class OrphanPathFinder<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> {
+    public class OrphanPathFinder<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
+          TRANSMITTER extends TileEntityTransmitter<ACCEPTOR, NETWORK, TRANSMITTER>> {
 
-        public final TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> startPoint;
-
-        public final Set<Coord4D> iterated = new ObjectOpenHashSet<>();
-
-        public final Set<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> connectedTransmitters = new ObjectOpenHashSet<>();
+        public final Set<TRANSMITTER> connectedTransmitters = new ObjectOpenHashSet<>();
         public final Set<NETWORK> networksFound = new ObjectOpenHashSet<>();
+        public final Set<BlockPos> iterated = new ObjectOpenHashSet<>();
+        private final Deque<BlockPos> queue = new LinkedList<>();
+        public final TRANSMITTER startPoint;
+        private final World world;
 
-        private final Deque<Coord4D> queue = new LinkedList<>();
-
-        public OrphanPathFinder(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> start) {
-            startPoint = start;
+        protected OrphanPathFinder(TileEntityTransmitter<ACCEPTOR, NETWORK, TRANSMITTER> start) {
+            startPoint = (TRANSMITTER) start;
+            world = startPoint.getWorld();
         }
 
         public void start() {
@@ -223,44 +224,67 @@ public class TransmitterNetworkRegistry {
                 logger.error("OrphanPathFinder queue was not empty?!");
                 queue.clear();
             }
-            queue.push(Coord4D.get(startPoint));
+            queue.push(startPoint.getPos());
             while (queue.peek() != null) {
                 iterate(queue.removeFirst());
             }
         }
 
-        public void iterate(Coord4D from) {
-            if (iterated.contains(from)) {
-                return;
-            }
-
-            iterated.add(from);
-
-            if (orphanTransmitters.containsKey(from)) {
-                TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>) orphanTransmitters.get(from);
-
-                if (transmitter.isValid() && transmitter.isOrphan() &&
-                    (connectedTransmitters.isEmpty() || connectedTransmitters.stream().anyMatch(existing -> existing.isCompatibleWith(transmitter)))) {
-                    connectedTransmitters.add(transmitter);
-                    transmitter.setOrphan(false);
-
-                    for (Direction direction : EnumUtils.DIRECTIONS) {
-                        if (direction.getAxis().isHorizontal() && !transmitter.getWorld().isBlockPresent(from.getPos().offset(direction))) {
-                            continue;
-                        }
-                        Coord4D directionCoord = transmitter.getAdjacentConnectableTransmitterCoord(direction);
-                        if (directionCoord != null && !iterated.contains(directionCoord)) {
-                            queue.addLast(directionCoord);
+        public void iterate(BlockPos from) {
+            if (!iterated.contains(from)) {
+                iterated.add(from);
+                Coord4D fromCoord = new Coord4D(from, world);
+                if (orphanTransmitters.containsKey(fromCoord)) {
+                    TileEntityTransmitter<?, ?, ?> transmitter = orphanTransmitters.get(fromCoord);
+                    if (transmitter.isValid() && transmitter.isOrphan()) {
+                        if (connectedTransmitters.isEmpty() || connectedTransmitters.stream().anyMatch(existing -> existing.isValidTransmitter(transmitter))) {
+                            connectedTransmitters.add((TRANSMITTER) transmitter);
+                            transmitter.setOrphan(false);
+                            for (Direction direction : EnumUtils.DIRECTIONS) {
+                                if (direction.getAxis().isHorizontal() && !world.isBlockPresent(from.offset(direction))) {
+                                    continue;
+                                }
+                                BlockPos directionPos = transmitter.getAdjacentConnectableTransmitterPos(direction);
+                                if (directionPos != null && !iterated.contains(directionPos)) {
+                                    queue.addLast(directionPos);
+                                }
+                            }
                         }
                     }
+                } else {
+                    addNetworkToIterated(from);
                 }
-            } else {
-                addNetworkToIterated(from);
             }
         }
 
-        public void addNetworkToIterated(Coord4D from) {
-            NETWORK net = startPoint.getExternalNetwork(from.getPos());
+        public void addNetworkToIterated(BlockPos from) {
+            //Make sure that there is an external network
+            NETWORK net = startPoint.getExternalNetwork(from);
+            if (net != null) {
+                networksFound.add(net);
+            }
+        }
+
+        public NETWORK createEmptyNetwork() {
+            return startPoint.createEmptyNetwork();
+        }
+
+        public NETWORK createNetworkByMerging() {
+            //TODO: Should we take one of the existing network's uuids?
+            return startPoint.createNetworkByMerging(networksFound);
+        }
+    }
+
+    public class BufferedOrphanPathFinder<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
+          TRANSMITTER extends TileEntityBufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends OrphanPathFinder<ACCEPTOR, NETWORK, TRANSMITTER> {
+
+        protected BufferedOrphanPathFinder(TileEntityBufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER> start) {
+            super(start);
+        }
+
+        @Override
+        public void addNetworkToIterated(BlockPos from) {
+            NETWORK net = startPoint.getExternalNetwork(from);
             //Make sure that there is an external network and that it is compatible with this buffer
             if (net != null && net.compatibleWithBuffer(startPoint.getShare())) {
                 if (networksFound.isEmpty() || networksFound.iterator().next().isCompatibleWith(net)) {

@@ -38,7 +38,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatHandler, HeatNetwork, Void> implements ITileHeatHandler {
+public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatHandler, HeatNetwork, TileEntityThermodynamicConductor> implements ITileHeatHandler {
 
     public final ConductorTier tier;
 
@@ -71,22 +71,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public long getCapacity() {
-        return 0;
-    }
-
-    @Override
-    public Void releaseShare() {
-        return null;
-    }
-
-    @Override
     public void takeShare() {
-    }
-
-    @Override
-    public Void getShare() {
-        return null;
     }
 
     @Override

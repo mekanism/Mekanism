@@ -44,7 +44,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
 //TODO - V10: Figure out how to make this work for multiple chemical types
-public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IMekanismGasHandler {
+public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGasHandler, GasNetwork, GasStack, TileEntityPressurizedTube> implements IMekanismGasHandler {
 
     public final TubeTier tier;
     @Nonnull
@@ -161,23 +161,20 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
-    public boolean isValidTransmitter(TileEntity tile) {
-        if (!super.isValidTransmitter(tile)) {
-            return false;
+    public boolean isValidTransmitter(TileEntityTransmitter<?, ?, ?> tile) {
+        if (super.isValidTransmitter(tile) && tile instanceof TileEntityPressurizedTube) {
+            Gas buffer = getBufferWithFallback().getType();
+            if (buffer.isEmptyType() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
+                buffer = getTransmitterNetwork().lastGas;
+            }
+            TileEntityPressurizedTube other = (TileEntityPressurizedTube) tile;
+            Gas otherBuffer = other.getBufferWithFallback().getType();
+            if (otherBuffer.isEmptyType() && other.hasTransmitterNetwork() && other.getTransmitterNetwork().getPrevTransferAmount() > 0) {
+                otherBuffer = other.getTransmitterNetwork().lastGas;
+            }
+            return buffer.isEmptyType() || otherBuffer.isEmptyType() || buffer == otherBuffer;
         }
-        if (!(tile instanceof TileEntityPressurizedTube)) {
-            return true;
-        }
-        Gas buffer = getBufferWithFallback().getType();
-        if (buffer.isEmptyType() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
-            buffer = getTransmitterNetwork().lastGas;
-        }
-        TileEntityPressurizedTube other = (TileEntityPressurizedTube) tile;
-        Gas otherBuffer = other.getBufferWithFallback().getType();
-        if (otherBuffer.isEmptyType() && other.hasTransmitterNetwork() && other.getTransmitterNetwork().getPrevTransferAmount() > 0) {
-            otherBuffer = other.getTransmitterNetwork().lastGas;
-        }
-        return buffer.isEmptyType() || otherBuffer.isEmptyType() || buffer == otherBuffer;
+        return false;
     }
 
     @Override
@@ -213,6 +210,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         return ret;
     }
 
+    @Nonnull
     @Override
     public GasStack getShare() {
         return buffer.getStack();
@@ -329,6 +327,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     protected void handleContentsUpdateTag(@Nonnull GasNetwork network, @Nonnull CompoundNBT tag) {
+        super.handleContentsUpdateTag(network, tag);
         NBTUtils.setGasIfPresent(tag, NBTConstants.GAS_STORED, network::setLastGas);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.gasScale = scale);
     }

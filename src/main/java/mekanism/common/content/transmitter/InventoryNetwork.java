@@ -14,7 +14,7 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -22,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.chunk.IChunk;
 
-public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork, Void> {
+public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork, TileEntityLogisticalTransporterBase> {
 
     public InventoryNetwork() {
     }
@@ -87,24 +87,6 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     }
 
     @Override
-    public void absorbBuffer(TileEntityTransmitter<TileEntity, InventoryNetwork, Void> transmitter) {
-    }
-
-    @Override
-    public void clampBuffer() {
-    }
-
-    @Override
-    protected synchronized void updateCapacity(TileEntityTransmitter<TileEntity, InventoryNetwork, Void> transmitter) {
-        //The capacity is always zero so no point in doing calculations.
-    }
-
-    @Override
-    public synchronized void updateCapacity() {
-        //The capacity is always zero so no point in doing calculations.
-    }
-
-    @Override
     public String toString() {
         return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
     }
@@ -135,7 +117,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
         private final TransitResponse response;
         private final Set<Direction> sides;
 
-        public AcceptorData(BlockPos pos, TransitResponse ret, Direction side) {
+        protected AcceptorData(BlockPos pos, TransitResponse ret, Direction side) {
             location = pos;
             response = ret;
             sides = EnumSet.of(side);

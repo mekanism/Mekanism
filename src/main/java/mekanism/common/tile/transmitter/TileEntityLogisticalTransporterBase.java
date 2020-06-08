@@ -36,7 +36,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 //TODO: Validate that the sub classes of this still work properly
-public abstract class TileEntityLogisticalTransporterBase extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
+public abstract class TileEntityLogisticalTransporterBase extends TileEntityTransmitter<TileEntity, InventoryNetwork, TileEntityLogisticalTransporterBase> {
 
     private final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
@@ -83,11 +83,11 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     }
 
     @Override
-    public boolean isValidTransmitter(TileEntity tile) {
+    public boolean isValidTransmitter(TileEntityTransmitter<?, ?, ?> tile) {
         if (tile instanceof TileEntityLogisticalTransporterBase) {
             TileEntityLogisticalTransporterBase transporter = (TileEntityLogisticalTransporterBase) tile;
             if (getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor()) {
-                return super.isValidTransmitter(tile);
+                return super.isValidTransmitter(transporter);
             }
         }
         return false;
@@ -337,21 +337,6 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                 TransporterUtils.drop(this, stack);
             }
         }
-    }
-
-    @Override
-    public long getCapacity() {
-        return 0;
-    }
-
-    @Override
-    public Void releaseShare() {
-        return null;
-    }
-
-    @Override
-    public Void getShare() {
-        return null;
     }
 
     @Override

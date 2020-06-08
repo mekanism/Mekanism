@@ -1,6 +1,7 @@
 package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
@@ -9,12 +10,10 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
@@ -30,7 +29,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.lib.transmitter.IGridTransmitter;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
@@ -64,8 +63,9 @@ import net.minecraftforge.common.util.NonNullConsumer;
 import org.apache.commons.lang3.tuple.Pair;
 
 //TODO - V10: Re-order various methods that are in this class
-public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> extends CapabilityTileEntity implements
-      IConfigurable, ITickableTileEntity, IAlloyInteraction, IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> {
+public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
+      TRANSMITTER extends TileEntityTransmitter<ACCEPTOR, NETWORK, TRANSMITTER>>
+      extends CapabilityTileEntity implements IConfigurable, ITickableTileEntity, IAlloyInteraction {
 
     public static final ModelProperty<TransmitterModelData> TRANSMITTER_PROPERTY = new ModelProperty<>();
 
@@ -112,60 +112,62 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
-    @Override
+    protected TRANSMITTER getTransmitter() {
+        return (TRANSMITTER) this;
+    }
+
+    /**
+     * Gets the network currently in use by this transmitter segment.
+     *
+     * @return network this transmitter is using
+     */
     public NETWORK getTransmitterNetwork() {
         return theNetwork;
     }
 
-    @Override
+    /**
+     * Sets this transmitter segment's network to a new value.
+     *
+     * @param network - network to set to
+     */
     public void setTransmitterNetwork(NETWORK network) {
         if (theNetwork == network) {
             return;
         }
         if (isRemote() && theNetwork != null) {
-            theNetwork.removeTransmitter(this);
+            theNetwork.removeTransmitter(getTransmitter());
         }
         theNetwork = network;
         orphaned = theNetwork == null;
         if (isRemote()) {
             if (theNetwork != null) {
-                theNetwork.addTransmitter(this);
+                theNetwork.addTransmitter(getTransmitter());
             }
         } else {
-            this.requestsUpdate();
+            requestsUpdate();
         }
     }
 
-    protected boolean canHaveIncompatibleNetworks() {
-        return false;
-    }
-
-    @Override
     public boolean isOrphan() {
         return orphaned;
     }
 
-    @Override
     public void setOrphan(boolean nowOrphaned) {
         orphaned = nowOrphaned;
     }
 
-    @Override
     public boolean hasTransmitterNetwork() {
         return !isOrphan() && getTransmitterNetwork() != null;
     }
 
-    @Override
     public int getTransmitterNetworkSize() {
         return hasTransmitterNetwork() ? getTransmitterNetwork().transmittersSize() : 0;
     }
 
-    @Override
     public int getTransmitterNetworkAcceptorSize() {
         return hasTransmitterNetwork() ? getTransmitterNetwork().getAcceptorSize() : 0;
     }
 
-    @Override
     public ITextComponent getTransmitterNetworkNeeded() {
         if (hasTransmitterNetwork()) {
             return getTransmitterNetwork().getNeededInfo();
@@ -173,7 +175,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return MekanismLang.NO_NETWORK.translate();
     }
 
-    @Override
     public ITextComponent getTransmitterNetworkFlow() {
         if (hasTransmitterNetwork()) {
             return getTransmitterNetwork().getFlowInfo();
@@ -181,42 +182,11 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return MekanismLang.NO_NETWORK.translate();
     }
 
-    @Override
     public ITextComponent getTransmitterNetworkBuffer() {
         if (hasTransmitterNetwork()) {
             return getTransmitterNetwork().getStoredInfo();
         }
         return MekanismLang.NO_NETWORK.translate();
-    }
-
-    @Override
-    public long getTransmitterNetworkCapacity() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().getCapacity() : getCapacity();
-    }
-
-    @Nonnull
-    @Override
-    public FloatingLong getCapacityAsFloatingLong() {
-        //Note: If you plan on actually using this, override it in your tile
-        return FloatingLong.create(getCapacity());
-    }
-
-    /**
-     * @return True if the buffer with fallback is null (or empty)
-     */
-    public boolean noBufferOrFallback() {
-        return getBufferWithFallback() == null;
-    }
-
-    @Nullable
-    @Override
-    public BUFFER getBufferWithFallback() {
-        BUFFER buffer = getShare();
-        //If we don't have a buffer try falling back to the network's buffer
-        if (buffer == null && hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getBuffer();
-        }
-        return buffer;
     }
 
     @Override
@@ -238,9 +208,11 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
             TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-            if (canConnectMutual(side, tile) && tile instanceof TileEntityTransmitter &&
-                getTransmitterType().getTransmission().checkTransmissionType((TileEntityTransmitter<?, ?, ?>) tile) && isValidTransmitter(tile)) {
-                connections |= 1 << side.ordinal();
+            if (canConnectMutual(side, tile) && tile instanceof TileEntityTransmitter) {
+                TileEntityTransmitter<?, ?, ?> transmitter = (TileEntityTransmitter<?, ?, ?>) tile;
+                if (getTransmitterType().getTransmission().checkTransmissionType(transmitter) && isValidTransmitter(transmitter)) {
+                    connections |= 1 << side.ordinal();
+                }
             }
         }
         return connections;
@@ -271,7 +243,8 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         }
         TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
         if (canConnectMutual(side, tile) && tile instanceof TileEntityTransmitter) {
-            return getTransmitterType().getTransmission().checkTransmissionType((TileEntityTransmitter<?, ?, ?>) tile) && isValidTransmitter(tile);
+            TileEntityTransmitter<?, ?, ?> transmitter = (TileEntityTransmitter<?, ?, ?>) tile;
+            return getTransmitterType().getTransmission().checkTransmissionType(transmitter) && isValidTransmitter(transmitter);
         }
         return false;
     }
@@ -312,18 +285,8 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return (byte) (currentTransmitterConnections | currentAcceptorConnections);
     }
 
-    public boolean isValidTransmitter(TileEntity tile) {
-        if (tile instanceof TileEntityTransmitter && canHaveIncompatibleNetworks()) {
-            TileEntityTransmitter<?, ?, ?> other = (TileEntityTransmitter<?, ?, ?>) tile;
-            if (other.canHaveIncompatibleNetworks()) {
-                //If it is a transmitter, only allow declare it as valid, if we don't have a combination
-                // of a transmitter with a network and an orphaned transmitter, but only bother if
-                // we can have incompatible networks
-                if (hasTransmitterNetwork() && other.isOrphan() || other.hasTransmitterNetwork() && isOrphan()) {
-                    return false;
-                }
-            }
-        }
+    //TODO: Do we want to narrow this to TileEntityTransmitter
+    public boolean isValidTransmitter(TileEntityTransmitter<?, ?, ?> tile) {
         return true;
     }
 
@@ -354,35 +317,30 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return list;
     }
 
-    @Override
-    public Coord4D getAdjacentConnectableTransmitterCoord(Direction side) {
+    @Nullable
+    public BlockPos getAdjacentConnectableTransmitterPos(Direction side) {
         BlockPos sidePos = pos.offset(side);
         TileEntity potentialTransmitterTile = MekanismUtils.getTileEntity(world, sidePos);
         if (!canConnectMutual(side, potentialTransmitterTile)) {
             return null;
         }
-        if (potentialTransmitterTile instanceof TileEntityTransmitter &&
-            getTransmissionType().checkTransmissionType((TileEntityTransmitter<?, ?, ?>) potentialTransmitterTile) && isValidTransmitter(potentialTransmitterTile)) {
-            return new Coord4D(sidePos, world);
+        if (potentialTransmitterTile instanceof TileEntityTransmitter) {
+            TileEntityTransmitter<?, ?, ?> transmitter = (TileEntityTransmitter<?, ?, ?>) potentialTransmitterTile;
+            if (getTransmissionType().checkTransmissionType(transmitter) && isValidTransmitter(transmitter)) {
+                return sidePos;
+            }
         }
         return null;
     }
 
-    @Override
-    public boolean isCompatibleWith(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> other) {
-        return isValidTransmitter(other);
-    }
-
-    @Override
     public boolean isValid() {
         //TODO - V10: Re-evaluate the second part where we check the tile in the location is actually this
         // I don't believe that is needed anymore, though if something goes wrong maybe we do need to add it back
         return !isRemoved();// && MekanismUtils.getTileEntity(world(), getPos()) == this;
     }
 
-    @Override
     public NETWORK getExternalNetwork(BlockPos from) {
-        TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, from);
+        TileEntityTransmitter<?, NETWORK, ?> transmitter = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, from);
         if (transmitter != null && getTransmissionType().checkTransmissionType(transmitter)) {
             return transmitter.getTransmitterNetwork();
         }
@@ -465,7 +423,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     public void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, @Nonnull AlloyTier tier) {
         if (getWorld() != null && hasTransmitterNetwork()) {
             NETWORK transmitterNetwork = getTransmitterNetwork();
-            List<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> list = new ArrayList<>(transmitterNetwork.getTransmitters());
+            List<TRANSMITTER> list = new ArrayList<>(transmitterNetwork.getTransmitters());
             list.sort((o1, o2) -> {
                 if (o1 != null && o2 != null) {
                     return Double.compare(o1.getPos().distanceSq(pos), o2.getPos().distanceSq(pos));
@@ -473,7 +431,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
                 return 0;
             });
             int upgraded = 0;
-            for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : list) {
+            for (TRANSMITTER transmitter : list) {
                 if (transmitter.canUpgrade(tier)) {
                     BlockState state = transmitter.getBlockState();
                     BlockState upgradeState = transmitter.upgradeResult(state, tier.getBaseTier());
@@ -533,36 +491,10 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
     }
 
-    @Override
+    /**
+     * Only call on the server
+     */
     public void requestsUpdate() {
-        if (canHaveIncompatibleNetworks()) {
-            //If we can have incompatible networks, we need to update our connections
-            // and potentially inform our neighbors we are connecting to, to also update their connections
-            //Note: This is not needed if we cannot have incompatible networks as then we
-            // are able to just directly connect to orphans
-            byte possibleTransmitters = getPossibleTransmitterConnections();
-            byte possibleAcceptors = getPossibleAcceptorConnections();
-            byte allPossibleConnections = (byte) (possibleTransmitters | possibleAcceptors);
-            byte allCurrentConnections = getAllCurrentConnections();
-            //Update our connections in case they changed
-            //Note: We cannot just do this in the if statement in case one changed from transmitter to acceptor
-            currentTransmitterConnections = possibleTransmitters;
-            currentAcceptorConnections = possibleAcceptors;
-            if (allPossibleConnections != allCurrentConnections) {
-                //If they don't match get the difference
-                byte changedTransmitters = (byte) (allPossibleConnections ^ allCurrentConnections);
-                //Inform the neighboring tiles that they should refresh their connection on the side we changed
-                // This happens because we are no longer an orphan and want to tell the neighboring tiles about it
-                for (Direction side : EnumUtils.DIRECTIONS) {
-                    if (connectionMapContainsSide(changedTransmitters, side)) {
-                        TileEntityTransmitter<?, ?, ?> tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, getWorld(), getPos().offset(side));
-                        if (tile != null) {
-                            tile.refreshConnections(side.getOpposite());
-                        }
-                    }
-                }
-            }
-        }
         sendUpdatePacket();
     }
 
@@ -598,23 +530,24 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
                 //Nothing needs to be done
                 return;
             }
-            TransmitterNetworkRegistry networkRegistry = TransmitterNetworkRegistry.getInstance();
-            DynamicNetwork<?, ?, ?> clientNetwork = networkRegistry.getClientNetwork(networkID);
+            DynamicNetwork<?, ?, ?> clientNetwork = TransmitterNetworkRegistry.getInstance().getClientNetwork(networkID);
             if (clientNetwork == null) {
                 NETWORK network = createEmptyNetworkWithID(networkID);
                 network.register();
                 setTransmitterNetwork(network);
-                network.updateCapacity();
                 handleContentsUpdateTag(network, tag);
             } else {
-                clientNetwork.register();
                 //TODO: Validate network type?
-                setTransmitterNetwork((NETWORK) clientNetwork);
-                clientNetwork.updateCapacity();
+                updateClientNetwork((NETWORK) clientNetwork);
             }
         } else {
             setTransmitterNetwork(null);
         }
+    }
+
+    protected void updateClientNetwork(@Nonnull NETWORK network) {
+        network.register();
+        setTransmitterNetwork(network);
     }
 
     protected void handleContentsUpdateTag(@Nonnull NETWORK network, @Nonnull CompoundNBT tag) {
@@ -731,18 +664,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
      * @param newlyEnabledTransmitters The transmitters that are now enabled and were not before.
      */
     protected void recheckConnections(byte newlyEnabledTransmitters) {
-        if (hasTransmitterNetwork()) {
-            if (canHaveIncompatibleNetworks()) {
-                //We only need to check if we can have incompatible networks and if we actually have a network
-                for (Direction side : EnumUtils.DIRECTIONS) {
-                    if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
-                        //Recheck the side that is now enabled, as we manually merge this
-                        // cannot be simplified to a first match is good enough
-                        recheckConnectionPrechecked(side);
-                    }
-                }
-            }
-        } else {
+        if (!hasTransmitterNetwork()) {
             //If we don't have a transmitter network then recheck connection status both ways
             //TODO: Update this comment to flow better between the old one and the new one
             //If our connectivity changed on a side and it is also a sided pipe, inform it to recheck its connections
@@ -764,60 +686,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
      * @param side The side that a transmitter is now enabled on after having been disabled.
      */
     protected void recheckConnection(Direction side) {
-        if (canHaveIncompatibleNetworks() && hasTransmitterNetwork()) {
-            //We only need to check if we can have incompatible networks and if we actually have a network
-            recheckConnectionPrechecked(side);
-        }
-    }
-
-    private void recheckConnectionPrechecked(Direction side) {
-        TileEntityTransmitter<?, ?, ?> other = MekanismUtils.getTileEntity(TileEntityTransmitter.class, getWorld(), getPos().offset(side));
-        if (other != null) {
-            NETWORK network = getTransmitterNetwork();
-            //The other one should always have the same incompatible networks state as us
-            // But just in case it doesn't just check the boolean
-            if (other.canHaveIncompatibleNetworks() && other.hasTransmitterNetwork()) {
-                NETWORK otherNetwork = (NETWORK) other.getTransmitterNetwork();
-                if (network != otherNetwork && network.isCompatibleWith(otherNetwork)) {
-                    //We have two networks that are now compatible and they are not the same source network
-                    // The most common cause they would be same source network is that they would merge
-                    // from the first pipe checking when it attempts to reconnect, and then the second
-                    // pipe still is going to be checking the connection.
-
-                    if (noBufferOrFallback()) {
-                        //If we don't have any use them as primary network
-                        NETWORK tempNetwork = network;
-                        network = otherNetwork;
-                        otherNetwork = tempNetwork;
-                    }
-
-                    // Manually merge the networks.
-                    // This code is not in network registry as there is special handling needed to ensure
-                    // it visually updates properly. There also were above checks that get us to a certain
-                    // point where we can make some assumptions about the networks and if it is actually
-                    // valid to merge them when otherwise people may try to merge things when they shouldn't
-                    // be merged causing unexpected bugs.
-                    network.adoptTransmittersAndAcceptorsFrom(otherNetwork);
-                    List<TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER>> otherTransmitters = new ArrayList<>(otherNetwork.getTransmitters());
-
-                    //Unregister the other network
-                    otherNetwork.deregister();
-                    //Commit the changes of the new network
-                    network.commit();
-
-                    //We did not have these as part of the update because they got directly added
-                    // This means that we have to update the buffer and queue client updates ourselves
-                    network.clampBuffer();
-                    //Recheck the connections
-                    other.refreshConnections(side.getOpposite());
-                    //Force all the newly merged transmitters to send a sync update to the client
-                    // to ensure that they now have the proper network id on the client
-                    for (TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> otherTransmitter : otherTransmitters) {
-                        otherTransmitter.requestsUpdate();
-                    }
-                }
-            }
-        }
     }
 
     protected void onModeChange(Direction side) {
@@ -837,7 +705,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
 
     protected void markDirtyAcceptor(Direction side) {
         if (hasTransmitterNetwork()) {
-            getTransmitterNetwork().acceptorChanged(this, side);
+            getTransmitterNetwork().acceptorChanged(getTransmitter(), side);
         }
     }
 
@@ -996,4 +864,21 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
     public void notifyTileChange() {
         MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
     }
+
+    /**
+     * Get the transmitter's transmission type
+     *
+     * @return TransmissionType this transmitter uses
+     */
+    public abstract TransmissionType getTransmissionType();
+
+    public abstract ACCEPTOR getAcceptor(Direction side);
+
+    public abstract NETWORK createEmptyNetwork();
+
+    public abstract NETWORK createEmptyNetworkWithID(UUID networkID);
+
+    public abstract NETWORK createNetworkByMerging(Collection<NETWORK> toMerge);
+
+    public abstract void takeShare();
 }
