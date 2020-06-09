@@ -13,7 +13,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
@@ -38,6 +37,7 @@ import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -392,14 +392,7 @@ public class RenderTickHandler {
 
         Model3D toReturn = new Model3D();
         toReturn.setTexture(MekanismRenderer.overlays.get(type));
-
-        if (cachedOverlays.containsKey(side)) {
-            cachedOverlays.get(side).put(type, toReturn);
-        } else {
-            Map<TransmissionType, Model3D> map = new EnumMap<>(TransmissionType.class);
-            map.put(type, toReturn);
-            cachedOverlays.put(side, map);
-        }
+        cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class)).putIfAbsent(type, toReturn);
 
         switch (side) {
             case DOWN:

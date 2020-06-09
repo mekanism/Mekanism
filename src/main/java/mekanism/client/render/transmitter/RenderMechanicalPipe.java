@@ -16,8 +16,8 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.transmitter.FluidNetwork;
-import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -179,13 +179,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 model.maxZ = 0.75 - offset;
                 break;
         }
-        if (cachedFluids.containsKey(fluid)) {
-            cachedFluids.get(fluid).put(stage, model);
-        } else {
-            Int2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
-            map.put(stage, model);
-            cachedFluids.put(fluid, map);
-        }
+        cachedFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>()).putIfAbsent(stage, model);
         return model;
     }
 }

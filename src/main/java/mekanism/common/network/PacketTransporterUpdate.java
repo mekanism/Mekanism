@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.function.Supplier;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter.DiversionControl;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -23,7 +24,7 @@ public class PacketTransporterUpdate {
     private final BlockPos pos;
 
     private TileEntityLogisticalTransporterBase transporter;
-    private int[] modes;
+    private DiversionControl[] modes;
 
     //Sync
     private int stackId;
@@ -109,7 +110,7 @@ public class PacketTransporterUpdate {
         }
         if (pkt.isDiversion) {
             for (int i = 0; i < pkt.modes.length; i++) {
-                buf.writeVarInt(pkt.modes[i]);
+                buf.writeEnumValue(pkt.modes[i]);
             }
         }
     }
@@ -134,9 +135,9 @@ public class PacketTransporterUpdate {
             }
         }
         if (packet.isDiversion) {
-            packet.modes = new int[EnumUtils.DIRECTIONS.length];
+            packet.modes = new DiversionControl[EnumUtils.DIRECTIONS.length];
             for (int i = 0; i < packet.modes.length; i++) {
-                packet.modes[i] = buf.readVarInt();
+                packet.modes[i] = buf.readEnumValue(DiversionControl.class);
             }
         }
         return packet;

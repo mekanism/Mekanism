@@ -101,13 +101,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         }
         model.minY = 0.4375 + 0.001;  //prevent z fighting at low fuel levels
         model.maxY = 0.4375 + ((float) stage / stages) * 0.4375 + 0.001;
-        if (energyDisplays.containsKey(side)) {
-            energyDisplays.get(side).put(stage, model);
-        } else {
-            Int2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
-            map.put(stage, model);
-            energyDisplays.put(side, map);
-        }
+        energyDisplays.computeIfAbsent(side, s -> new Int2ObjectOpenHashMap<>()).putIfAbsent(stage, model);
         return model;
     }
 }
