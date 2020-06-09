@@ -61,13 +61,14 @@ public interface IEnergyCompat {
     LazyOptional<?> getHandlerAs(IStrictEnergyHandler handler);
 
     /**
-     * Wraps the capability implemented in the provider into an {@link IStrictEnergyHandler}, or returns {@code null} if the capability is not implemented.
+     * Wraps the capability implemented in the provider into a lazy optional {@link IStrictEnergyHandler}, or returns {@code LazyOptional.empty()} if the capability is
+     * not implemented.
      *
      * @param provider Capability provider
      * @param side     Side
      *
      * @return The capability implemented in the provider into an {@link IStrictEnergyHandler}, or {@code null} if the capability is not implemented.
      */
-    @Nullable
-    IStrictEnergyHandler getStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side);
+    @Nonnull
+    LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side);
 }

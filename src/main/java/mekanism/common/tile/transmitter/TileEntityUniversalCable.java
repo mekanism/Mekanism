@@ -30,7 +30,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.CableTier;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
-import mekanism.common.util.CableUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -61,14 +60,14 @@ public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStr
         if (!isRemote()) {
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
-                for (IStrictEnergyHandler connectedAcceptor : CableUtils.getConnectedAcceptors(getPos(), getWorld(), connections)) {
-                    if (connectedAcceptor != null) {
-                        FloatingLong received = connectedAcceptor.extractEnergy(getAvailablePull(), Action.SIMULATE);
-                        if (!received.isZero() && takeEnergy(received, Action.SIMULATE).isZero()) {
-                            //If we received some energy and are able to insert it all
-                            FloatingLong remainder = takeEnergy(received, Action.EXECUTE);
-                            connectedAcceptor.extractEnergy(received.subtract(remainder), Action.EXECUTE);
-                        }
+                List<IStrictEnergyHandler> acceptors = acceptorCache.getConnectedAcceptors(connections,
+                      (tile, side) -> EnergyCompatUtils.getLazyStrictEnergyHandler(tile, side.getOpposite()));
+                for (IStrictEnergyHandler connectedAcceptor : acceptors) {
+                    FloatingLong received = connectedAcceptor.extractEnergy(getAvailablePull(), Action.SIMULATE);
+                    if (!received.isZero() && takeEnergy(received, Action.SIMULATE).isZero()) {
+                        //If we received some energy and are able to insert it all
+                        FloatingLong remainder = takeEnergy(received, Action.EXECUTE);
+                        connectedAcceptor.extractEnergy(received.subtract(remainder), Action.EXECUTE);
                     }
                 }
             }
@@ -239,12 +238,7 @@ public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStr
     @Nonnull
     @Override
     public LazyOptional<IStrictEnergyHandler> getAcceptor(Direction side) {
-        //TODO - V10: Re-evaluate, could at the very least make it be getStrictEnergyHandlerLazy type thing
-        IStrictEnergyHandler energyHandler = EnergyCompatUtils.getStrictEnergyHandler(acceptorCache.getCachedAcceptorTile(side), side.getOpposite());
-        if (energyHandler == null) {
-            return LazyOptional.empty();
-        }
-        return LazyOptional.of(() -> energyHandler);
+        return EnergyCompatUtils.getLazyStrictEnergyHandler(acceptorCache.getCachedAcceptorTile(side), side.getOpposite());
     }
 
     @Override

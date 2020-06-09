@@ -13,6 +13,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -77,7 +78,7 @@ public class EnergyCompatUtils {
      *
      * @apiNote This is a helper specifically for universal cables and is likely to be removed/changed in V10.
      */
-    @Deprecated//TODO - V10: Re-evaluate this
+    @Deprecated//TODO - V10: Re-evaluate this (and include better caching??)
     public static <ACCEPTOR> boolean hasStrictEnergyHandlerAndListen(TileEntity tile, Direction side, NonNullConsumer<LazyOptional<ACCEPTOR>> listener) {
         if (tile != null && tile.getWorld() != null) {
             if (tile.getWorld().isRemote()) {
@@ -100,29 +101,34 @@ public class EnergyCompatUtils {
         return false;
     }
 
-    @Nullable
+    @Nullable//TODO: Transition usages of this to getLazyStrictEnergyHandler?
     public static IStrictEnergyHandler getStrictEnergyHandler(@Nonnull ItemStack stack) {
-        return stack.isEmpty() ? null : getStrictEnergyHandler(stack, null);
+        return MekanismUtils.toOptional(getLazyStrictEnergyHandler(stack)).orElse(null);
     }
 
-    @Nullable
-    public static IStrictEnergyHandler getStrictEnergyHandler(TileEntity tile, Direction side) {
-        return tile == null || tile.getWorld() == null ? null : getStrictEnergyHandler((ICapabilityProvider) tile, side);
+    @Nonnull
+    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@Nonnull ItemStack stack) {
+        return stack.isEmpty() ? LazyOptional.empty() : getLazyStrictEnergyHandler(stack, null);
     }
 
-    @Nullable
-    private static IStrictEnergyHandler getStrictEnergyHandler(ICapabilityProvider provider, Direction side) {
+    @Nonnull
+    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@Nullable TileEntity tile, Direction side) {
+        return tile == null || tile.getWorld() == null || tile.isRemoved() ? LazyOptional.empty() : getLazyStrictEnergyHandler((ICapabilityProvider) tile, side);
+    }
+
+    @Nonnull
+    private static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, Direction side) {
         //TODO: Eventually look into making it so that we cache the handler we get back. Maybe by passing a listener
         // to this that we can give to the capability as we wrap the result into
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.isUsable()) {
-                IStrictEnergyHandler handler = energyCompat.getStrictEnergyHandler(provider, side);
-                if (handler != null) {
+                LazyOptional<IStrictEnergyHandler> handler = energyCompat.getLazyStrictEnergyHandler(provider, side);
+                if (handler.isPresent()) {
                     return handler;
                 }
             }
         }
-        return null;
+        return LazyOptional.empty();
     }
 
     /**

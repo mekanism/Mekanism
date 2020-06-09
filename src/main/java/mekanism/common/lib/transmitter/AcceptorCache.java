@@ -1,7 +1,12 @@
 package mekanism.common.lib.transmitter;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -9,8 +14,11 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EmitUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
@@ -89,6 +97,27 @@ public class AcceptorCache<ACCEPTOR> {
             return true;
         }
         return false;
+    }
+
+    public List<ACCEPTOR> getConnectedAcceptors(Set<Direction> sides, Capability<ACCEPTOR> capability) {
+        return getConnectedAcceptors(sides, (tile, side) -> CapabilityUtils.getCapability(tile, capability, side.getOpposite()));
+    }
+
+    /**
+     * Similar to {@link EmitUtils#forEachSide(World, BlockPos, Iterable, BiConsumer)} except queries our cached acceptors.
+     */
+    public List<ACCEPTOR> getConnectedAcceptors(Set<Direction> sides, BiFunction<TileEntity, Direction, LazyOptional<ACCEPTOR>> resolver) {
+        //TODO: Test performance of this, and improve this further by also caching the LazyOptional?
+        // And then we can add a more "concrete" method to have a way to "force refresh from tile"
+        // Also decide if we should change this to return lazy optionals, or if we should continue resolving it in here
+        List<ACCEPTOR> acceptors = new ArrayList<>(sides.size());
+        for (Direction side : sides) {
+            TileEntity tile = cachedTiles[side.ordinal()];
+            if (tile != null && !tile.isRemoved()) {
+                resolver.apply(tile, side.getOpposite()).ifPresent(acceptors::add);
+            }
+        }
+        return acceptors;
     }
 
     /**

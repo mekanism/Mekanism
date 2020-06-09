@@ -33,7 +33,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
@@ -65,26 +64,24 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
         if (!isRemote()) {
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
-                for (IGasHandler connectedAcceptor : ChemicalUtil.getConnectedAcceptors(getPos(), getWorld(), connections, Capabilities.GAS_HANDLER_CAPABILITY)) {
-                    if (connectedAcceptor != null) {
-                        GasStack received;
-                        //Note: We recheck the buffer each time in case we ended up accepting gas somewhere
-                        // and our buffer changed and is no longer empty
-                        GasStack bufferWithFallback = getBufferWithFallback();
-                        if (bufferWithFallback.isEmpty()) {
-                            //If we don't have a gas stored try pulling as much as we are able to
-                            received = connectedAcceptor.extractChemical(getAvailablePull(), Action.SIMULATE);
-                        } else {
-                            //Otherwise try draining the same type of gas we have stored requesting up to as much as we are able to pull
-                            // We do this to better support multiple tanks in case the gas we have stored we could pull out of a block's
-                            // second tank but just asking to drain a specific amount
-                            received = connectedAcceptor.extractChemical(new GasStack(bufferWithFallback, getAvailablePull()), Action.SIMULATE);
-                        }
-                        if (!received.isEmpty() && takeGas(received, Action.SIMULATE).isEmpty()) {
-                            //If we received some gas and are able to insert it all
-                            GasStack remainder = takeGas(received, Action.EXECUTE);
-                            connectedAcceptor.extractChemical(new GasStack(received, received.getAmount() - remainder.getAmount()), Action.EXECUTE);
-                        }
+                for (IGasHandler connectedAcceptor : acceptorCache.getConnectedAcceptors(connections, Capabilities.GAS_HANDLER_CAPABILITY)) {
+                    GasStack received;
+                    //Note: We recheck the buffer each time in case we ended up accepting gas somewhere
+                    // and our buffer changed and is no longer empty
+                    GasStack bufferWithFallback = getBufferWithFallback();
+                    if (bufferWithFallback.isEmpty()) {
+                        //If we don't have a gas stored try pulling as much as we are able to
+                        received = connectedAcceptor.extractChemical(getAvailablePull(), Action.SIMULATE);
+                    } else {
+                        //Otherwise try draining the same type of gas we have stored requesting up to as much as we are able to pull
+                        // We do this to better support multiple tanks in case the gas we have stored we could pull out of a block's
+                        // second tank but just asking to drain a specific amount
+                        received = connectedAcceptor.extractChemical(new GasStack(bufferWithFallback, getAvailablePull()), Action.SIMULATE);
+                    }
+                    if (!received.isEmpty() && takeGas(received, Action.SIMULATE).isEmpty()) {
+                        //If we received some gas and are able to insert it all
+                        GasStack remainder = takeGas(received, Action.EXECUTE);
+                        connectedAcceptor.extractChemical(new GasStack(received, received.getAmount() - remainder.getAmount()), Action.EXECUTE);
                     }
                 }
             }

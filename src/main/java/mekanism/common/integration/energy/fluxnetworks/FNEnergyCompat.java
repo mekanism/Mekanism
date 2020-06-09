@@ -8,7 +8,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -49,9 +48,9 @@ public class FNEnergyCompat implements IEnergyCompat {
         return LazyOptional.of(() -> new FNIntegration(handler));
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public IStrictEnergyHandler getStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side) {
-        return MekanismUtils.toOptional(CapabilityUtils.getCapability(provider, FNEnergyCapability.FN_ENERGY_STORAGE, side)).map(FNStrictEnergyHandler::new).orElse(null);
+    public LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side) {
+        return CapabilityUtils.getCapability(provider, FNEnergyCapability.FN_ENERGY_STORAGE, side).map(FNStrictEnergyHandler::new);
     }
 }

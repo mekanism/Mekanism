@@ -42,7 +42,6 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
 
     private final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
-    //TODO: Move tier to TileEntityLogisticalTransporter?
     public final TransporterTier tier;
     private int nextId = 0;
     private int delay = 0;

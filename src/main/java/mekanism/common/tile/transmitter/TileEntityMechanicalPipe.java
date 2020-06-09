@@ -29,7 +29,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
@@ -66,25 +65,23 @@ public class TileEntityMechanicalPipe extends TileEntityBufferedTransmitter<IFlu
         if (!isRemote()) {
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
-                for (IFluidHandler connectedAcceptor : FluidUtils.getConnectedAcceptors(getPos(), getWorld(), connections)) {
-                    if (connectedAcceptor != null) {
-                        FluidStack received;
-                        //Note: We recheck the buffer each time in case we ended up accepting fluid somewhere
-                        // and our buffer changed and is no longer empty
-                        FluidStack bufferWithFallback = getBufferWithFallback();
-                        if (bufferWithFallback.isEmpty()) {
-                            //If we don't have a fluid stored try pulling as much as we are able to
-                            received = connectedAcceptor.drain(getAvailablePull(), FluidAction.SIMULATE);
-                        } else {
-                            //Otherwise try draining the same type of fluid we have stored requesting up to as much as we are able to pull
-                            // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
-                            // second tank but just asking to drain a specific amount
-                            received = connectedAcceptor.drain(new FluidStack(bufferWithFallback, getAvailablePull()), FluidAction.SIMULATE);
-                        }
-                        if (!received.isEmpty() && takeFluid(received, Action.SIMULATE).isEmpty()) {
-                            FluidStack remainder = takeFluid(received, Action.EXECUTE);
-                            connectedAcceptor.drain(new FluidStack(received, received.getAmount() - remainder.getAmount()), FluidAction.EXECUTE);
-                        }
+                for (IFluidHandler connectedAcceptor : acceptorCache.getConnectedAcceptors(connections, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)) {
+                    FluidStack received;
+                    //Note: We recheck the buffer each time in case we ended up accepting fluid somewhere
+                    // and our buffer changed and is no longer empty
+                    FluidStack bufferWithFallback = getBufferWithFallback();
+                    if (bufferWithFallback.isEmpty()) {
+                        //If we don't have a fluid stored try pulling as much as we are able to
+                        received = connectedAcceptor.drain(getAvailablePull(), FluidAction.SIMULATE);
+                    } else {
+                        //Otherwise try draining the same type of fluid we have stored requesting up to as much as we are able to pull
+                        // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
+                        // second tank but just asking to drain a specific amount
+                        received = connectedAcceptor.drain(new FluidStack(bufferWithFallback, getAvailablePull()), FluidAction.SIMULATE);
+                    }
+                    if (!received.isEmpty() && takeFluid(received, Action.SIMULATE).isEmpty()) {
+                        FluidStack remainder = takeFluid(received, Action.EXECUTE);
+                        connectedAcceptor.drain(new FluidStack(received, received.getAmount() - remainder.getAmount()), FluidAction.EXECUTE);
                     }
                 }
             }
