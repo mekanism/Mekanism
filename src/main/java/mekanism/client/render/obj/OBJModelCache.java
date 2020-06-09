@@ -1,6 +1,8 @@
 package mekanism.client.render.obj;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -17,11 +19,18 @@ import net.minecraftforge.client.model.obj.OBJModel.ModelSettings;
 public class OBJModelCache {
 
     private static Map<ResourceLocation, OBJModelData> modelMap = new Object2ObjectOpenHashMap<>();
+    private static Set<Runnable> callbacks = new HashSet<>();
 
     public static OBJModelData MEKASUIT = register(Mekanism.rl("models/entity/mekasuit.obj"));
+    public static OBJModelData MEKASUIT_MODULES = register(Mekanism.rl("models/entity/mekasuit_modules.obj"));
 
     public static void onBake(ModelBakeEvent evt) {
         modelMap.values().forEach(data -> data.reload());
+        callbacks.forEach(c -> c.run());
+    }
+
+    public static void reloadCallback(Runnable callback) {
+        callbacks.add(callback);
     }
 
     private static OBJModelData register(ResourceLocation rl) {
@@ -47,6 +56,10 @@ public class OBJModelCache {
 
         public IBakedModel getBakedModel(IModelConfiguration config) {
             return bakedMap.computeIfAbsent(config, c -> model.bake(c, ModelLoader.instance(), ModelLoader.defaultTextureGetter(), SimpleModelTransform.IDENTITY, ItemOverrideList.EMPTY, rl));
+        }
+
+        public OBJModel getModel() {
+            return model;
         }
     }
 }

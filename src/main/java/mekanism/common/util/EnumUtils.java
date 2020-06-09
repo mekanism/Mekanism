@@ -6,11 +6,11 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
+import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
@@ -19,6 +19,7 @@ import mekanism.common.tier.TubeTier;
 import mekanism.common.util.UnitDisplayUtils.FloatingLongMeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.AxisDirection;
 
@@ -135,4 +136,9 @@ public class EnumUtils {
      * Cached value of {@link Upgrade#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final Upgrade[] UPGRADES = Upgrade.values();
+
+    /**
+     * Cached collection of armor slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
+     */
+    public static final EquipmentSlotType[] ARMOR_SLOTS = new EquipmentSlotType[] { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
 }
