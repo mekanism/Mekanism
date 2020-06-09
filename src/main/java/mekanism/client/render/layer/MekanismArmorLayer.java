@@ -34,7 +34,7 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
                 model.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTick);
                 setModelSlotVisible((A) model, slot);
                 model.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                model.render(matrix, renderer, light, OverlayTexture.NO_OVERLAY, stack.hasEffect(), stack);
+                model.render(matrix, renderer, light, OverlayTexture.NO_OVERLAY, stack.hasEffect(), entity, stack);
             }
         }
     }
