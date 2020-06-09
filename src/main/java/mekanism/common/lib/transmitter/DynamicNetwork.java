@@ -148,7 +148,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public int getAcceptorCount() {
-        return acceptorCache.acceptorDirections.size();
+        return acceptorCache.cachedAcceptors.size();
     }
 
     @Nullable
@@ -186,6 +186,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public Set<Direction> getAcceptorDirections(BlockPos pos) {
-        return acceptorCache.acceptorDirections.get(pos);
+        //TODO: Do this better?
+        return acceptorCache.cachedAcceptors.get(pos).keySet();
     }
 }

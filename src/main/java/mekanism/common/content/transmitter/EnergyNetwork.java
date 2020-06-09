@@ -1,11 +1,10 @@
 package mekanism.common.content.transmitter;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
@@ -22,18 +21,15 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.distribution.target.EnergyAcceptorTarget;
 import mekanism.common.distribution.target.EnergyTransmitterSaveTarget;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EmitUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.Event;
 
 public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, EnergyNetwork, FloatingLong, TileEntityUniversalCable> implements IMekanismStrictEnergyHandler {
@@ -161,19 +157,13 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     private FloatingLong tickEmit(FloatingLong energyToSend) {
         Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
-        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
-        for (Entry<BlockPos, Set<Direction>> entry : acceptorCache.acceptorDirections.entrySet()) {
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, entry.getKey());
-            if (tile == null) {
-                continue;
-            }
+        for (Entry<BlockPos, Map<Direction, LazyOptional<IStrictEnergyHandler>>> entry : acceptorCache.cachedAcceptors.entrySet()) {
             EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-            for (Direction side : entry.getValue()) {
-                IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(tile, side);
-                if (handler != null && handler.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {
-                    target.addHandler(side, handler);
+            entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
+                if (acceptor.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {
+                    target.addHandler(side, acceptor);
                 }
-            }
+            }));
             int curHandlers = target.getHandlers().size();
             if (curHandlers > 0) {
                 targets.add(target);

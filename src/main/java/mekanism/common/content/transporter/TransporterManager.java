@@ -5,27 +5,22 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.ItemData;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.IWorldReader;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 public class TransporterManager {
@@ -154,28 +149,19 @@ public class TransporterManager {
     /**
      * @return TransitResponse of expected items to use
      */
-    public static TransitResponse getPredictedInsert(TileEntity tile, EnumColor color, TransitRequest request, Direction side) {
+    public static TransitResponse getPredictedInsert(TileEntity tile, Coord4D position, IItemHandler handler, EnumColor color, TransitRequest request, Direction side) {
         // If the TE in question implements the mekanism interface, check that the color matches and bail
         // fast if it doesn't
         if (tile instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tile;
             if (config.getEjector().hasStrictInput()) {
                 Direction tileSide = config.getOrientation();
-                EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(tileSide, side.getOpposite()));
+                EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(tileSide, side));
                 if (configColor != null && configColor != color) {
                     return request.getEmptyResponse();
                 }
             }
         }
-
-        // Get the item handler for the TE; fail if it's not an item handler (and log for good measure --
-        // there shouldn't be anything that's not an IItemHandler anymore)
-        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
-        if (!capability.isPresent()) {
-            Mekanism.logger.error("Failed to predict insert; not an IItemHandler: {}", tile);
-            return request.getEmptyResponse();
-        }
-        IItemHandler handler = capability.get();
 
         // Before we see if this item can fit in the destination, we must first check the stacks that are
         // en-route. Note that we also have to simulate the current inventory after each stack; we'll keep
@@ -190,7 +176,7 @@ public class TransporterManager {
 
         //For each of the in-flight stacks, simulate their insert into the tile entity. Note that stackSizes
         // for inventoryInfo is updated each time
-        Set<TransporterStack> transporterStacks = flowingStacks.get(Coord4D.get(tile));
+        Set<TransporterStack> transporterStacks = flowingStacks.get(position);
         if (transporterStacks != null) {
             for (TransporterStack stack : transporterStacks) {
                 if (stack != null && stack.getPathType() != Path.NONE) {

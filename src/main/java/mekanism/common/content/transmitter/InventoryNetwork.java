@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import mekanism.api.Coord4D;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
@@ -22,6 +25,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
 public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetwork, TileEntityLogisticalTransporterBase> {
@@ -45,24 +49,30 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
 
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
         List<AcceptorData> toReturn = new ArrayList<>();
-        for (Entry<BlockPos, Set<Direction>> entry : acceptorCache.acceptorDirections.entrySet()) {
+        for (Entry<BlockPos, Map<Direction, LazyOptional<IItemHandler>>> entry : acceptorCache.cachedAcceptors.entrySet()) {
             BlockPos pos = entry.getKey();
-            if (pos == null || pos.equals(stack.homeLocation)) {
-                continue;
-            }
-            TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), chunkMap, pos);
-            if (acceptor == null) {
-                continue;
-            }
-            AcceptorData data = null;
-            for (Direction side : entry.getValue()) {
-                Direction opposite = side.getOpposite();
-                TransitResponse response = TransporterManager.getPredictedInsert(acceptor, stack.color, request, opposite);
-                if (!response.isEmpty()) {
-                    if (data == null) {
-                        toReturn.add(data = new AcceptorData(pos, response, opposite));
-                    } else {
-                        data.sides.add(opposite);
+            if (!pos.equals(stack.homeLocation)) {
+                TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), chunkMap, pos);
+                if (acceptor == null) {
+                    continue;
+                }
+                AcceptorData data = null;
+                Coord4D position = Coord4D.get(acceptor);
+                for (Entry<Direction, LazyOptional<IItemHandler>> acceptorEntry : entry.getValue().entrySet()) {
+                    Optional<IItemHandler> handler = MekanismUtils.toOptional(acceptorEntry.getValue());
+                    if (handler.isPresent()) {
+                        Direction side = acceptorEntry.getKey();
+                        //TODO: Figure out how we want to best handle the color check, as without doing it here we don't
+                        // actually need to even query the TE
+                        TransitResponse response = TransporterManager.getPredictedInsert(acceptor, position, handler.get(), stack.color, request, side);
+                        if (!response.isEmpty()) {
+                            Direction opposite = side.getOpposite();
+                            if (data == null) {
+                                toReturn.add(data = new AcceptorData(pos, response, opposite));
+                            } else {
+                                data.sides.add(opposite);
+                            }
+                        }
                     }
                 }
             }

@@ -1,11 +1,10 @@
 package mekanism.common.content.transmitter;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
@@ -22,19 +21,16 @@ import mekanism.common.distribution.target.FluidHandlerTarget;
 import mekanism.common.distribution.target.FluidTransmitterSaveTarget;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNetwork, FluidStack, TileEntityMechanicalPipe> implements IMekanismFluidHandler {
@@ -181,20 +177,13 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     private int tickEmit(@Nonnull FluidStack fluidToSend) {
         Set<FluidHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
-        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
-        for (Entry<BlockPos, Set<Direction>> entry : acceptorCache.acceptorDirections.entrySet()) {
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, entry.getKey());
-            if (tile == null) {
-                continue;
-            }
+        for (Entry<BlockPos, Map<Direction, LazyOptional<IFluidHandler>>> entry : acceptorCache.cachedAcceptors.entrySet()) {
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
-            for (Direction side : entry.getValue()) {
-                CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side).ifPresent(acceptor -> {
-                    if (FluidUtils.canFill(acceptor, fluidToSend)) {
-                        target.addHandler(side, acceptor);
-                    }
-                });
-            }
+            entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
+                if (FluidUtils.canFill(acceptor, fluidToSend)) {
+                    target.addHandler(side, acceptor);
+                }
+            }));
             int curHandlers = target.getHandlers().size();
             if (curHandlers > 0) {
                 availableAcceptors.add(target);

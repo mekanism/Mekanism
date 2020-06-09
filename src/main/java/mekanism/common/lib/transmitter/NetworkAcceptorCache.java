@@ -1,6 +1,7 @@
 package mekanism.common.lib.transmitter;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,14 +13,13 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class NetworkAcceptorCache<ACCEPTOR> {
 
-    //TODO: Move these to being private
-    //TODO: Replace acceptorDirections with cachedAcceptors?
-    public final Map<BlockPos, Set<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
+    //TODO: Move this to being private??
+    //TODO: Validate that we are properly redoing the lazy optional if it becomes invalid
     public final Map<BlockPos, Map<Direction, LazyOptional<ACCEPTOR>>> cachedAcceptors = new Object2ObjectOpenHashMap<>();
     private final Map<TileEntityTransmitter<ACCEPTOR, ?, ?>, Set<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
 
     public boolean hasAcceptor(BlockPos acceptorPos) {
-        return acceptorDirections.containsKey(acceptorPos);
+        return cachedAcceptors.containsKey(acceptorPos);
     }
 
     public void updateTransmitterOnSide(TileEntityTransmitter<ACCEPTOR, ?, ?> transmitter, Direction side) {
@@ -28,25 +28,26 @@ public class NetworkAcceptorCache<ACCEPTOR> {
         LazyOptional<ACCEPTOR> acceptor = transmitter.canConnectToAcceptor(side) ? transmitter.getAcceptor(side) : LazyOptional.empty();
         BlockPos acceptorPos = transmitter.getPos().offset(side);
         if (acceptor.isPresent()) {
-            acceptorDirections.computeIfAbsent(acceptorPos, pos -> EnumSet.noneOf(Direction.class)).add(side.getOpposite());
-        } else if (acceptorDirections.containsKey(acceptorPos)) {
-            Set<Direction> directions = acceptorDirections.get(acceptorPos);
-            directions.remove(side.getOpposite());
-            if (directions.isEmpty()) {
-                acceptorDirections.remove(acceptorPos);
+            cachedAcceptors.computeIfAbsent(acceptorPos, pos -> new EnumMap<>(Direction.class)).put(side.getOpposite(), acceptor);
+        } else if (cachedAcceptors.containsKey(acceptorPos)) {
+            Map<Direction, LazyOptional<ACCEPTOR>> cached = cachedAcceptors.get(acceptorPos);
+            cached.remove(side.getOpposite());
+            if (cached.isEmpty()) {
+                cachedAcceptors.remove(acceptorPos);
             }
         } else {
-            acceptorDirections.remove(acceptorPos);
+            cachedAcceptors.remove(acceptorPos);
         }
     }
 
     public void adoptAcceptors(NetworkAcceptorCache<ACCEPTOR> other) {
-        for (Entry<BlockPos, Set<Direction>> entry : other.acceptorDirections.entrySet()) {
+        for (Entry<BlockPos, Map<Direction, LazyOptional<ACCEPTOR>>> entry : other.cachedAcceptors.entrySet()) {
             BlockPos pos = entry.getKey();
-            if (acceptorDirections.containsKey(pos)) {
-                acceptorDirections.get(pos).addAll(entry.getValue());
+            if (cachedAcceptors.containsKey(pos)) {
+                Map<Direction, LazyOptional<ACCEPTOR>> cached = cachedAcceptors.get(pos);
+                entry.getValue().forEach(cached::put);
             } else {
-                acceptorDirections.put(pos, entry.getValue());
+                cachedAcceptors.put(pos, entry.getValue());
             }
         }
     }
