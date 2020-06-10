@@ -37,7 +37,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.eventbus.api.Event;
 
 /**
  * A DynamicNetwork extension created specifically for the transfer of Gases. By default this is server-only, but if ticked on the client side and if it's posted events
@@ -49,10 +48,8 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
 
     private final List<IGasTank> gasTanks;
     public final VariableCapacityGasTank gasTank;
-
     @Nonnull
     public Gas lastGas = MekanismAPI.EMPTY_GAS;
-    public float gasScale;
     private long prevTransferAmount;
 
     public GasNetwork() {
@@ -80,20 +77,20 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
     @Override
     protected void forceScaleUpdate() {
         if (!gasTank.isEmpty() && gasTank.getCapacity() > 0) {
-            gasScale = (float) Math.min(1, gasTank.getStored() / (double) gasTank.getCapacity());
+            currentScale = (float) Math.min(1, gasTank.getStored() / (double) gasTank.getCapacity());
         } else {
-            gasScale = 0;
+            currentScale = 0;
         }
     }
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
-        float oldScale = gasScale;
+        float oldScale = currentScale;
         long oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the gas scales
         long capacity = getCapacity();
-        gasScale = Math.min(1, capacity == 0 ? 0 : (gasScale * oldCapacity + net.gasScale * net.capacity) / capacity);
+        currentScale = Math.min(1, capacity == 0 ? 0 : (currentScale * oldCapacity + net.currentScale * net.capacity) / capacity);
         if (isRemote()) {
             if (gasTank.isEmpty() && !net.gasTank.isEmpty()) {
                 gasTank.setStack(net.getBuffer());
@@ -109,7 +106,7 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
                 }
                 net.gasTank.setEmpty();
             }
-            if (oldScale != gasScale) {
+            if (oldScale != currentScale) {
                 //We want to make sure we update to the scale change
                 needsUpdate = true;
             }
@@ -125,14 +122,13 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
     @Override
     public void absorbBuffer(TileEntityPressurizedTube transmitter) {
         GasStack gas = transmitter.releaseShare();
-        if (gas.isEmpty()) {
-            return;
-        }
-        if (gasTank.isEmpty()) {
-            gasTank.setStack(gas.copy());
-        } else if (gas.isTypeEqual(gasTank.getType())) {
-            long amount = gas.getAmount();
-            MekanismUtils.logMismatchedStackSize(gasTank.growStack(amount, Action.EXECUTE), amount);
+        if (!gas.isEmpty()) {
+            if (gasTank.isEmpty()) {
+                gasTank.setStack(gas.copy());
+            } else if (gas.isTypeEqual(gasTank.getType())) {
+                long amount = gas.getAmount();
+                MekanismUtils.logMismatchedStackSize(gasTank.growStack(amount, Action.EXECUTE), amount);
+            }
         }
     }
 
@@ -161,8 +157,8 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
                 saveTargets.add(saveTarget);
             }
             long sent = EmitUtils.sendToAcceptors(saveTargets, size, gasType.getAmount(), gasType);
-            if (sent < gasType.getAmount() && triggerTransmitter != null) {
-                disperse(triggerTransmitter, new GasStack(gasType.getType(), gasType.getAmount() - sent));
+            if (triggerTransmitter != null && sent < gasType.getAmount()) {
+                disperse(triggerTransmitter, new GasStack(gasType, gasType.getAmount() - sent));
             }
             for (GasTransmitterSaveTarget saveTarget : saveTargets) {
                 saveTarget.saveShare(side);
@@ -205,13 +201,8 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
     @Override
     public void onUpdate() {
         super.onUpdate();
-        float scale = computeContentScale();
-        if (scale != gasScale) {
-            gasScale = scale;
-            needsUpdate = true;
-        }
         if (needsUpdate) {
-            MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, lastGas, gasScale));
+            MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, lastGas));
             needsUpdate = false;
         }
         if (gasTank.isEmpty()) {
@@ -222,9 +213,10 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
         }
     }
 
-    public float computeContentScale() {
+    @Override
+    protected float computeContentScale() {
         float scale = (float) (gasTank.getStored() / (double) gasTank.getCapacity());
-        float ret = Math.max(gasScale, scale);
+        float ret = Math.max(currentScale, scale);
         if (prevTransferAmount > 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);
         } else if (prevTransferAmount <= 0 && ret > 0) {
@@ -303,16 +295,13 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
         }
     }
 
-    public static class GasTransferEvent extends Event {
+    public static class GasTransferEvent extends TransferEvent<GasNetwork> {
 
-        public final GasNetwork gasNetwork;
         public final Gas transferType;
-        public final float gasScale;
 
-        public GasTransferEvent(GasNetwork network, Gas type, float scale) {
-            gasNetwork = network;
+        public GasTransferEvent(GasNetwork network, Gas type) {
+            super(network);
             transferType = type;
-            gasScale = scale;
         }
     }
 }

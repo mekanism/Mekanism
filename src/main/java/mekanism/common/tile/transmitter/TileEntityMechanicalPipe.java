@@ -302,7 +302,7 @@ public class TileEntityMechanicalPipe extends TileEntityBufferedTransmitter<IFlu
         CompoundNBT updateTag = super.getUpdateTag();
         if (hasTransmitterNetwork()) {
             updateTag.put(NBTConstants.FLUID_STORED, getTransmitterNetwork().lastFluid.writeToNBT(new CompoundNBT()));
-            updateTag.putFloat(NBTConstants.SCALE, getTransmitterNetwork().fluidScale);
+            updateTag.putFloat(NBTConstants.SCALE, getTransmitterNetwork().currentScale);
         }
         return updateTag;
     }
@@ -311,6 +311,6 @@ public class TileEntityMechanicalPipe extends TileEntityBufferedTransmitter<IFlu
     protected void handleContentsUpdateTag(@Nonnull FluidNetwork network, @Nonnull CompoundNBT tag) {
         super.handleContentsUpdateTag(network, tag);
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, network::setLastFluid);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.fluidScale = scale);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
     }
 }

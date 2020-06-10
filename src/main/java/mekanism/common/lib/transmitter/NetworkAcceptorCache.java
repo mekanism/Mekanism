@@ -46,6 +46,7 @@ public class NetworkAcceptorCache<ACCEPTOR> {
 
     public void acceptorChanged(TileEntityTransmitter<ACCEPTOR, ?, ?> transmitter, Direction side) {
         changedAcceptors.computeIfAbsent(transmitter, t -> EnumSet.noneOf(Direction.class)).add(side);
+        TransmitterNetworkRegistry.registerChangedNetwork(transmitter.getTransmitterNetwork());
     }
 
     public void commit() {

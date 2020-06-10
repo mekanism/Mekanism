@@ -48,9 +48,9 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
           IProfiler profiler) {
         if (pipe.hasTransmitterNetwork()) {
             FluidNetwork network = pipe.getTransmitterNetwork();
-            if (!network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.fluidScale > 0) {
+            if (!network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.currentScale > 0) {
                 FluidStack fluidStack = network.lastFluid;
-                float fluidScale = network.fluidScale;
+                float fluidScale = network.currentScale;
                 int stage;
                 if (fluidStack.getFluid().getAttributes().isGaseous(fluidStack)) {
                     stage = stages - 1;

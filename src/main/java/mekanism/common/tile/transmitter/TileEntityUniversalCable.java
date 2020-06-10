@@ -270,7 +270,7 @@ public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStr
         CompoundNBT updateTag = super.getUpdateTag();
         if (hasTransmitterNetwork()) {
             updateTag.putString(NBTConstants.ENERGY_STORED, getTransmitterNetwork().energyContainer.getEnergy().toString());
-            updateTag.putFloat(NBTConstants.SCALE, getTransmitterNetwork().energyScale);
+            updateTag.putFloat(NBTConstants.SCALE, getTransmitterNetwork().currentScale);
         }
         return updateTag;
     }
@@ -279,6 +279,6 @@ public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStr
     protected void handleContentsUpdateTag(@Nonnull EnergyNetwork network, @Nonnull CompoundNBT tag) {
         super.handleContentsUpdateTag(network, tag);
         NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.ENERGY_STORED, network.energyContainer::setEnergy);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.energyScale = scale);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
     }
 }

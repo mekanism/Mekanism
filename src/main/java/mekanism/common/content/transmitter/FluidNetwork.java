@@ -29,7 +29,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -37,10 +36,8 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
 
     private final List<IExtendedFluidTank> fluidTanks;
     public final VariableCapacityFluidTank fluidTank;
-
     @Nonnull
     public FluidStack lastFluid = FluidStack.EMPTY;
-    public float fluidScale;
     private int prevTransferAmount;
 
     //TODO: Make fluid storage support storing as longs?
@@ -71,20 +68,20 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     @Override
     protected void forceScaleUpdate() {
         if (!fluidTank.isEmpty() && fluidTank.getCapacity() > 0) {
-            fluidScale = Math.min(1, (float) fluidTank.getFluidAmount() / fluidTank.getCapacity());
+            currentScale = Math.min(1, (float) fluidTank.getFluidAmount() / fluidTank.getCapacity());
         } else {
-            fluidScale = 0;
+            currentScale = 0;
         }
     }
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(FluidNetwork net) {
-        float oldScale = fluidScale;
+        float oldScale = currentScale;
         long oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the fluid scales
         long capacity = getCapacity();
-        fluidScale = Math.min(1, capacity == 0 ? 0 : (fluidScale * oldCapacity + net.fluidScale * net.capacity) / capacity);
+        currentScale = Math.min(1, capacity == 0 ? 0 : (currentScale * oldCapacity + net.currentScale * net.capacity) / capacity);
         if (isRemote()) {
             if (fluidTank.isEmpty() && !net.fluidTank.isEmpty()) {
                 fluidTank.setStack(net.getBuffer());
@@ -100,7 +97,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
                 }
                 net.fluidTank.setEmpty();
             }
-            if (oldScale != fluidScale) {
+            if (oldScale != currentScale) {
                 //We want to make sure we update to the scale change
                 needsUpdate = true;
             }
@@ -116,14 +113,13 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     @Override
     public void absorbBuffer(TileEntityMechanicalPipe transmitter) {
         FluidStack fluid = transmitter.releaseShare();
-        if (fluid.isEmpty()) {
-            return;
-        }
-        if (fluidTank.isEmpty()) {
-            fluidTank.setStack(fluid.copy());
-        } else if (fluidTank.isFluidEqual(fluid)) {
-            int amount = fluid.getAmount();
-            MekanismUtils.logMismatchedStackSize(fluidTank.growStack(amount, Action.EXECUTE), amount);
+        if (!fluid.isEmpty()) {
+            if (fluidTank.isEmpty()) {
+                fluidTank.setStack(fluid.copy());
+            } else if (fluidTank.isFluidEqual(fluid)) {
+                int amount = fluid.getAmount();
+                MekanismUtils.logMismatchedStackSize(fluidTank.growStack(amount, Action.EXECUTE), amount);
+            }
         }
     }
 
@@ -196,13 +192,8 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     @Override
     public void onUpdate() {
         super.onUpdate();
-        float scale = computeContentScale();
-        if (scale != fluidScale) {
-            fluidScale = scale;
-            needsUpdate = true;
-        }
         if (needsUpdate) {
-            MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, lastFluid, fluidScale));
+            MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, lastFluid));
             needsUpdate = false;
         }
         if (fluidTank.isEmpty()) {
@@ -213,9 +204,10 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         }
     }
 
-    public float computeContentScale() {
+    @Override
+    protected float computeContentScale() {
         float scale = fluidTank.getFluidAmount() / (float) fluidTank.getCapacity();
-        float ret = Math.max(fluidScale, scale);
+        float ret = Math.max(currentScale, scale);
         if (prevTransferAmount > 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);
         } else if (prevTransferAmount <= 0 && ret > 0) {
@@ -294,17 +286,13 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         }
     }
 
-    public static class FluidTransferEvent extends Event {
-
-        public final FluidNetwork fluidNetwork;
+    public static class FluidTransferEvent extends TransferEvent<FluidNetwork> {
 
         public final FluidStack fluidType;
-        public final float fluidScale;
 
-        public FluidTransferEvent(FluidNetwork network, @Nonnull FluidStack type, float scale) {
-            fluidNetwork = network;
+        public FluidTransferEvent(FluidNetwork network, @Nonnull FluidStack type) {
+            super(network);
             fluidType = type;
-            fluidScale = scale;
         }
     }
 }

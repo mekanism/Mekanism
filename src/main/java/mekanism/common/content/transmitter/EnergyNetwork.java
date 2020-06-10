@@ -30,14 +30,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.eventbus.api.Event;
 
 public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, EnergyNetwork, FloatingLong, TileEntityUniversalCable> implements IMekanismStrictEnergyHandler {
 
     private final List<IEnergyContainer> energyContainers;
     public final VariableCapacityEnergyContainer energyContainer;
-
-    public float energyScale;
     private FloatingLong prevTransferAmount = FloatingLong.ZERO;
     private FloatingLong floatingLongCapacity = FloatingLong.ZERO;
 
@@ -66,9 +63,9 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     @Override
     protected void forceScaleUpdate() {
         if (!energyContainer.isEmpty() && !energyContainer.getMaxEnergy().isZero()) {
-            energyScale = Math.min(1, energyContainer.getEnergy().divide(energyContainer.getMaxEnergy()).floatValue());
+            currentScale = Math.min(1, energyContainer.getEnergy().divide(energyContainer.getMaxEnergy()).floatValue());
         } else {
-            energyScale = 0;
+            currentScale = 0;
         }
     }
 
@@ -77,10 +74,10 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         FloatingLong oldCapacity = getCapacityAsFloatingLong();
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the energy scales
-        FloatingLong ourScale = energyScale == 0 ? FloatingLong.ZERO : oldCapacity.multiply(energyScale);
-        FloatingLong theirScale = net.energyScale == 0 ? FloatingLong.ZERO : net.getCapacityAsFloatingLong().multiply(net.energyScale);
+        FloatingLong ourScale = currentScale == 0 ? FloatingLong.ZERO : oldCapacity.multiply(currentScale);
+        FloatingLong theirScale = net.currentScale == 0 ? FloatingLong.ZERO : net.getCapacityAsFloatingLong().multiply(net.currentScale);
         FloatingLong capacity = getCapacityAsFloatingLong();
-        energyScale = Math.min(1, capacity.isZero() ? 0 : ourScale.add(theirScale).divide(getCapacityAsFloatingLong()).floatValue());
+        currentScale = Math.min(1, capacity.isZero() ? 0 : ourScale.add(theirScale).divide(getCapacityAsFloatingLong()).floatValue());
         if (!isRemote() && !net.energyContainer.isEmpty()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(net.getBuffer()));
             net.energyContainer.setEmpty();
@@ -181,13 +178,8 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     @Override
     public void onUpdate() {
         super.onUpdate();
-        float scale = computeContentScale();
-        if (scale != energyScale) {
-            energyScale = scale;
-            needsUpdate = true;
-        }
         if (needsUpdate) {
-            MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, energyScale));
+            MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this));
             needsUpdate = false;
         }
         if (energyContainer.isEmpty()) {
@@ -198,9 +190,10 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         }
     }
 
-    public float computeContentScale() {
+    @Override
+    protected float computeContentScale() {
         float scale = (float) energyContainer.getEnergy().divideToLevel(energyContainer.getMaxEnergy());
-        float ret = Math.max(energyScale, scale);
+        float ret = Math.max(currentScale, scale);
         if (!prevTransferAmount.isZero() && ret < 1) {
             ret = Math.min(1, ret + 0.02F);
         } else if (prevTransferAmount.isZero() && ret > 0) {
@@ -240,14 +233,10 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         markDirty();
     }
 
-    public static class EnergyTransferEvent extends Event {
+    public static class EnergyTransferEvent extends TransferEvent<EnergyNetwork> {
 
-        public final EnergyNetwork energyNetwork;
-        public final float energyScale;
-
-        public EnergyTransferEvent(EnergyNetwork network, float scale) {
-            energyNetwork = network;
-            energyScale = scale;
+        public EnergyTransferEvent(EnergyNetwork network) {
+            super(network);
         }
     }
 }

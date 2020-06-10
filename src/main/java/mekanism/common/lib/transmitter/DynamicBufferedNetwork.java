@@ -10,6 +10,7 @@ import mekanism.api.Range3D;
 import mekanism.common.tile.transmitter.TileEntityBufferedTransmitter;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraftforge.eventbus.api.Event;
 
 public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
       TRANSMITTER extends TileEntityBufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER> {
@@ -22,12 +23,25 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     private boolean forceScaleUpdate;
     private long lastSaveShareWriteTime;
     private long lastMarkDirtyTime;
+    public float currentScale;
 
     protected DynamicBufferedNetwork() {
     }
 
     protected DynamicBufferedNetwork(UUID networkID) {
         super(networkID);
+    }
+
+    protected abstract float computeContentScale();
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+        float scale = computeContentScale();
+        if (scale != currentScale) {
+            currentScale = scale;
+            needsUpdate = true;
+        }
     }
 
     @Override
@@ -57,6 +71,8 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
             forceScaleUpdate();
         }
         needsUpdate = true;
+        //Flush the cached packet range. Eventually we may want to improve how it is cached some
+        packetRange = null;
     }
 
     @Override
@@ -144,8 +160,10 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     }
 
     public Range3D getPacketRange() {
-        //TODO: FIXME? It never updates the value of packetRange
-        return packetRange == null ? genPacketRange() : packetRange;
+        if (packetRange == null) {
+            packetRange = genPacketRange();
+        }
+        return packetRange;
     }
 
     private Range3D genPacketRange() {
@@ -180,5 +198,14 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
             }
         }
         return new Range3D(minX, minZ, maxX, maxZ, world.getDimension().getType());
+    }
+
+    public static class TransferEvent<NETWORK extends DynamicBufferedNetwork<?, NETWORK, ?, ?>> extends Event {
+
+        public final NETWORK network;
+
+        public TransferEvent(NETWORK network) {
+            this.network = network;
+        }
     }
 }

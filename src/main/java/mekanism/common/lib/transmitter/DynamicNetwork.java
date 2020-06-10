@@ -82,9 +82,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return world == null ? EffectiveSide.get().isClient() : world.isRemote;
     }
 
-    protected void onLastTransmitterRemoved(@Nonnull TRANSMITTER triggerTransmitter) {
-    }
-
     public void invalidate(@Nullable TRANSMITTER triggerTransmitter) {
         if (transmitters.size() == 1 && triggerTransmitter != null) {
             //We're destroying the last transmitter in the network
@@ -105,6 +102,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         deregister();
     }
 
+    protected void onLastTransmitterRemoved(@Nonnull TRANSMITTER triggerTransmitter) {
+    }
+
     protected void removeInvalid(@Nullable TRANSMITTER triggerTransmitter) {
         //Remove invalid transmitters first for share calculations
         transmitters.removeIf(transmitter -> !transmitter.isValid());
@@ -112,8 +112,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public void acceptorChanged(TRANSMITTER transmitter, Direction side) {
         acceptorCache.acceptorChanged(transmitter, side);
-        //TODO: Decide if we want to move the register changed network into the acceptor changed
-        TransmitterNetworkRegistry.registerChangedNetwork(this);
     }
 
     public void adoptTransmittersAndAcceptorsFrom(NETWORK net) {

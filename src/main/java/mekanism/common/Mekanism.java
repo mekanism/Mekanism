@@ -346,21 +346,21 @@ public class Mekanism {
 
     private void onEnergyTransferred(EnergyTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.energyNetwork, event.energyScale), event.energyNetwork);
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network), event.network);
         } catch (Exception ignored) {
         }
     }
 
     private void onGasTransferred(GasTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.gasNetwork, event.transferType, event.gasScale), event.gasNetwork);
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
         } catch (Exception ignored) {
         }
     }
 
     private void onLiquidTransferred(FluidTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.fluidNetwork, event.fluidType, event.fluidScale), event.fluidNetwork);
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.fluidType), event.network);
         } catch (Exception ignored) {
         }
     }
