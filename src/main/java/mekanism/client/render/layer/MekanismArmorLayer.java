@@ -1,7 +1,8 @@
 package mekanism.client.render.layer;
 
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.common.item.interfaces.ISpecialGear;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -15,6 +16,7 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+@ParametersAreNonnullByDefault
 public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> extends BipedArmorLayer<T, M, A> {
 
     public MekanismArmorLayer(IEntityRenderer<T, M> entityRenderer, A modelLeggings, A modelArmor) {
@@ -22,8 +24,16 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
     }
 
     @Override
-    protected void renderArmorPart(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, T entity, float limbSwing, float limbSwingAmount, float partialTick,
-          float ageInTicks, float netHeadYaw, float headPitch, @Nonnull EquipmentSlotType slot, int light) {
+    public void render(MatrixStack matrix, IRenderTypeBuffer renderer, int packedLightIn, T entity, float limbSwing, float limbSwingAmount, float partialTick,
+          float ageInTicks, float netHeadYaw, float headPitch) {
+        renderArmorPart(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.CHEST, packedLightIn);
+        renderArmorPart(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.LEGS, packedLightIn);
+        renderArmorPart(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.FEET, packedLightIn);
+        renderArmorPart(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.HEAD, packedLightIn);
+    }
+
+    private void renderArmorPart(MatrixStack matrix, IRenderTypeBuffer renderer, T entity, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks,
+          float netHeadYaw, float headPitch, EquipmentSlotType slot, int light) {
         ItemStack stack = entity.getItemStackFromSlot(slot);
         Item item = stack.getItem();
         if (item instanceof ISpecialGear && item instanceof ArmorItem) {
