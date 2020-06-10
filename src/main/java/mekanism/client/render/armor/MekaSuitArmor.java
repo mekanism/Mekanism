@@ -1,17 +1,33 @@
 package mekanism.client.render.armor;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.obj.OBJModelCache;
 import mekanism.client.render.obj.OBJModelCache.OBJModelData;
+import mekanism.client.render.obj.TransmitterBakedModel.QuickHash;
+import mekanism.common.Mekanism;
 import mekanism.common.content.gear.Modules;
+import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -32,125 +48,53 @@ import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 
 public class MekaSuitArmor extends CustomArmor {
 
-    public static MekaSuitArmor HELMET = new MekaSuitArmor(0.5F, EquipmentSlotType.HEAD);
-    public static MekaSuitArmor BODYARMOR = new MekaSuitArmor(0.5F, EquipmentSlotType.CHEST);
-    public static MekaSuitArmor PANTS = new MekaSuitArmor(0.5F, EquipmentSlotType.LEGS);
-    public static MekaSuitArmor BOOTS = new MekaSuitArmor(0.5F, EquipmentSlotType.FEET);
+    private static final String LED_TAG = "led";
+    private static final String OVERRIDDEN_TAG = "overridden_";
+    private static final String EXCLUSIVE_TAG = "excl_";
+    private static final String SHARED_TAG = "shared_";
 
-    private static boolean initialized;
+    public static MekaSuitArmor HELMET = new MekaSuitArmor(0.5F, EquipmentSlotType.HEAD, EquipmentSlotType.CHEST);
+    public static MekaSuitArmor BODYARMOR = new MekaSuitArmor(0.5F, EquipmentSlotType.CHEST, EquipmentSlotType.HEAD);
+    public static MekaSuitArmor PANTS = new MekaSuitArmor(0.5F, EquipmentSlotType.LEGS, EquipmentSlotType.FEET);
+    public static MekaSuitArmor BOOTS = new MekaSuitArmor(0.5F, EquipmentSlotType.FEET, EquipmentSlotType.LEGS);
 
-    private static List<BakedQuad> helmetQuads;
-    private static List<BakedQuad> chestQuads;
-    private static List<BakedQuad> leftArmQuads;
-    private static List<BakedQuad> rightArmQuads;
-    private static List<BakedQuad> leftLegQuads;
-    private static List<BakedQuad> rightLegQuads;
-    private static List<BakedQuad> leftBootQuads;
-    private static List<BakedQuad> rightBootQuads;
+    private static Table<EquipmentSlotType, ModuleData<?>, ModuleModelSpec> moduleModelSpec = HashBasedTable.create();
 
-    private static List<BakedQuad> sharedChestLegsQuads;
-    private static List<BakedQuad> leftBootExclQuads;
-    private static List<BakedQuad> rightBootExclQuads;
-    private static List<BakedQuad> sharedLeftBootLegQuads;
-    private static List<BakedQuad> sharedRightBootLegQuads;
-
-    private static List<BakedQuad> solarHelmetQuads;
-    private static List<BakedQuad> jetpackQuads;
-    private static List<BakedQuad> modulatorQuads;
+    static {
+        registerModule("solar_helmet", Modules.SOLAR_RECHARGING_UNIT, EquipmentSlotType.HEAD);
+        registerModule("jetpack", Modules.JETPACK_UNIT, EquipmentSlotType.CHEST);
+        registerModule("modulating", Modules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlotType.CHEST);
+        // TODO make sure these are correct
+    }
 
     private static QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vec3d(-1, 0.5, 0)));
 
-    private static QuadTransformation LEFT_ARM_TRANSFORM = BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(-0.3125, -0.125, 0)));
-    private static QuadTransformation RIGHT_ARM_TRANSFORM = BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(0.3125, -0.125, 0)));
-
-    private static QuadTransformation LEFT_LEG_TRANSFORM = BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(-0.125, -0.75, 0)));
-    private static QuadTransformation RIGHT_LEG_TRANSFORM = BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(0.125, -0.75, 0)));
+    private LoadingCache<QuickHash, ArmorQuads> cache = CacheBuilder.newBuilder().build(new CacheLoader<QuickHash, ArmorQuads>() {
+        @Override
+        @SuppressWarnings("unchecked")
+        public ArmorQuads load(QuickHash key) throws Exception {
+            return createQuads((Set<ModuleModelSpec>) key.get()[0], (Set<EquipmentSlotType>) key.get()[1]);
+        }
+    });
 
     private EquipmentSlotType type;
+    private EquipmentSlotType adjacentType;
 
-    private MekaSuitArmor(float size, EquipmentSlotType type) {
+    private MekaSuitArmor(float size, EquipmentSlotType type, EquipmentSlotType adjacentType) {
         super(size);
         this.type = type;
+        this.adjacentType = adjacentType;
+        OBJModelCache.reloadCallback(cache::invalidateAll);
     }
 
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity, ItemStack stack) {
-        if (!initialized) {
-            initModels();
-        }
-
-        if (type == EquipmentSlotType.HEAD) {
+        cache.getUnchecked(key(entity)).getMap().forEach((modelPos, quads) -> {
             matrix.push();
-            bipedHead.translateRotate(matrix);
-            render(renderer, matrix, light, overlayLight, helmetQuads);
-            // modules
-            if (Modules.isEnabled(stack, Modules.SOLAR_RECHARGING_UNIT)) {
-                render(renderer, matrix, light, overlayLight, solarHelmetQuads);
-            }
+            modelPos.translate(this, matrix);
+            render(renderer, matrix, light, overlayLight, quads);
             matrix.pop();
-        } else if (type == EquipmentSlotType.CHEST) {
-            // body
-            matrix.push();
-            bipedBody.translateRotate(matrix);
-            render(renderer, matrix, light, overlayLight, chestQuads);
-            render(renderer, matrix, light, overlayLight, sharedChestLegsQuads);
-            // modules
-            if (Modules.isEnabled(stack, Modules.GRAVITATIONAL_MODULATING_UNIT)) {
-                render(renderer, matrix, light, overlayLight, modulatorQuads);
-            } else if (Modules.isEnabled(stack, Modules.JETPACK_UNIT)) {
-                render(renderer, matrix, light, overlayLight, jetpackQuads);
-            }
-            matrix.pop();
-            // left arm
-            matrix.push();
-            bipedLeftArm.translateRotate(matrix);
-            render(renderer, matrix, light, overlayLight, leftArmQuads);
-            matrix.pop();
-            // right arm
-            matrix.push();
-            bipedRightArm.translateRotate(matrix);
-            render(renderer, matrix, light, overlayLight, rightArmQuads);
-            matrix.pop();
-        } else if (type == EquipmentSlotType.LEGS) {
-            // upper leg portion
-            if (!(entity.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof ItemMekaSuitArmor)) {
-                matrix.push();
-                bipedBody.translateRotate(matrix);
-                render(renderer, matrix, light, overlayLight, sharedChestLegsQuads);
-                matrix.pop();
-            }
-            // left leg
-            matrix.push();
-            bipedLeftLeg.translateRotate(matrix);
-            render(renderer, matrix, light, overlayLight, leftLegQuads);
-            render(renderer, matrix, light, overlayLight, sharedLeftBootLegQuads);
-            matrix.pop();
-            // right leg
-            matrix.push();
-            bipedRightLeg.translateRotate(matrix);
-            render(renderer, matrix, light, overlayLight, rightLegQuads);
-            render(renderer, matrix, light, overlayLight, sharedRightBootLegQuads);
-            matrix.pop();
-        } else if (type == EquipmentSlotType.FEET) {
-            // left boot
-            matrix.push();
-            bipedLeftLeg.translateRotate(matrix);
-            render(renderer, matrix, light, overlayLight, leftBootQuads);
-            if (!(entity.getItemStackFromSlot(EquipmentSlotType.LEGS).getItem() instanceof ItemMekaSuitArmor)) {
-                render(renderer, matrix, light, overlayLight, leftBootExclQuads);
-                render(renderer, matrix, light, overlayLight, sharedLeftBootLegQuads);
-            }
-            matrix.pop();
-            // right boot
-            matrix.push();
-            bipedRightLeg.translateRotate(matrix);
-            render(renderer, matrix, light, overlayLight, rightBootQuads);
-            if (!(entity.getItemStackFromSlot(EquipmentSlotType.LEGS).getItem() instanceof ItemMekaSuitArmor)) {
-                render(renderer, matrix, light, overlayLight, rightBootExclQuads);
-                render(renderer, matrix, light, overlayLight, sharedRightBootLegQuads);
-            }
-            matrix.pop();
-        }
+        });
     }
 
     private void render(IRenderTypeBuffer renderer, MatrixStack matrix, int light, int overlayLight, List<BakedQuad> quads) {
@@ -161,10 +105,10 @@ public class MekaSuitArmor extends CustomArmor {
         }
     }
 
-    private static List<BakedQuad> getQuads(OBJModelData data, Predicate<String> parts, QuadTransformation transform) {
-        List<BakedQuad> quads = data.getBakedModel(new MekaSuitModelConfiguration(parts.and(s -> !s.contains("led"))))
+    private static List<BakedQuad> getQuads(OBJModelData data, Set<String> parts, Set<String> ledParts, QuadTransformation transform) {
+        List<BakedQuad> quads = data.getBakedModel(new MekaSuitModelConfiguration(parts))
               .getQuads(null, null, Minecraft.getInstance().world.getRandom(), EmptyModelData.INSTANCE);
-        List<BakedQuad> ledQuads =  data.getBakedModel(new MekaSuitModelConfiguration(parts.and(s -> s.contains("led"))))
+        List<BakedQuad> ledQuads =  data.getBakedModel(new MekaSuitModelConfiguration(ledParts))
               .getQuads(null, null, Minecraft.getInstance().world.getRandom(), EmptyModelData.INSTANCE);
         quads.addAll(QuadUtils.transformBakedQuads(ledQuads, QuadTransformation.fullbright));
         if (transform != null) {
@@ -173,35 +117,224 @@ public class MekaSuitArmor extends CustomArmor {
         return quads;
     }
 
-    private static List<BakedQuad> getArmorQuads(Predicate<String> parts, QuadTransformation transform) {
-        return getQuads(OBJModelCache.MEKASUIT, parts, transform);
+    public enum ModelPos {
+        HEAD(BASE_TRANSFORM, s -> s.contains("head")),
+        BODY(BASE_TRANSFORM, s -> s.contains("body")),
+        LEFT_ARM(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(-0.3125, -0.125, 0))), s -> s.contains("left_arm")),
+        RIGHT_ARM(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(0.3125, -0.125, 0))), s -> s.contains("right_arm")),
+        LEFT_LEG(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(-0.125, -0.75, 0))), s -> s.contains("left_leg")),
+        RIGHT_LEG(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(0.125, -0.75, 0))), s -> s.contains("right_leg"));
+
+        public static final ModelPos[] VALUES = values();
+
+        private QuadTransformation transform;
+        private Predicate<String> modelSpec;
+
+        private ModelPos(QuadTransformation transform, Predicate<String> modelSpec) {
+            this.transform = transform;
+            this.modelSpec = modelSpec;
+        }
+
+        public QuadTransformation getTransform() {
+            return transform;
+        }
+
+        public boolean contains(String s) {
+            return modelSpec.test(s);
+        }
+
+        public static ModelPos get(String name) {
+            for (ModelPos pos : VALUES) {
+                if (pos.contains(name.toLowerCase())) {
+                    return pos;
+                }
+            }
+            return null;
+        }
+
+        public void translate(MekaSuitArmor armor, MatrixStack matrix) {
+            switch (this) {
+                case HEAD:
+                    armor.bipedHead.translateRotate(matrix);
+                    break;
+                case BODY:
+                    armor.bipedBody.translateRotate(matrix);
+                    break;
+                case LEFT_ARM:
+                    armor.bipedLeftArm.translateRotate(matrix);
+                    break;
+                case RIGHT_ARM:
+                    armor.bipedRightArm.translateRotate(matrix);
+                    break;
+                case LEFT_LEG:
+                    armor.bipedLeftLeg.translateRotate(matrix);
+                    break;
+                case RIGHT_LEG:
+                    armor.bipedRightLeg.translateRotate(matrix);
+                    break;
+            }
+        }
     }
 
-    private static void initModels() {
-        initialized = true;
+    public ArmorQuads createQuads(Set<ModuleModelSpec> modules, Set<EquipmentSlotType> wornParts) {
+        System.out.println("recreate");
+        Map<ModelPos, Set<String>> moduleQuadsToRender = new Object2ObjectOpenHashMap<>();
+        Map<ModelPos, Set<String>> moduleLEDQuadsToRender = new Object2ObjectOpenHashMap<>();
+        // map of normal model part name to overwritten model part name (i.e. chest_body_box1 -> jetpack_chest_body_overridden_box1
+        Map<String, String> overrides = new Object2ObjectOpenHashMap<>();
 
-        helmetQuads = getArmorQuads(s -> s.startsWith("helmet"), BASE_TRANSFORM);
-        chestQuads = getArmorQuads(s -> s.startsWith("chest") || s.startsWith("shoulder") || s.startsWith("back") || s.startsWith("body"), BASE_TRANSFORM);
-        leftArmQuads = getArmorQuads(s -> s.startsWith("left_arm"), LEFT_ARM_TRANSFORM);
-        rightArmQuads = getArmorQuads(s -> s.startsWith("right_arm"), RIGHT_ARM_TRANSFORM);
-        leftLegQuads = getArmorQuads(s -> s.startsWith("left_leg"), LEFT_LEG_TRANSFORM);
-        rightLegQuads = getArmorQuads(s -> s.startsWith("right_leg"), RIGHT_LEG_TRANSFORM);
-        leftBootQuads = getArmorQuads(s -> s.startsWith("left_boot"), LEFT_LEG_TRANSFORM);
-        rightBootQuads = getArmorQuads(s -> s.startsWith("right_boot"), RIGHT_LEG_TRANSFORM);
+        for (IModelGeometryPart part : OBJModelCache.MEKASUIT_MODULES.getModel().getParts()) {
+            String name = part.name();
+            ModuleModelSpec matchingSpec = modules.stream().filter(m -> m.contains(name)).findFirst().orElse(null);
+            if (matchingSpec == null) {
+                Mekanism.logger.error("MekaSuit module part '" + name + "' doesn't correspond to any supported module model. Ignoring.");
+                continue;
+            }
+            if (name.contains(OVERRIDDEN_TAG)) {
+                overrides.put(matchingSpec.processOverrideName(name), name);
+            }
+            // if this armor unit controls rendering of this module
+            if (type == matchingSpec.slotType) {
+                ModelPos pos = ModelPos.get(name);
+                if (pos == null) {
+                    Mekanism.logger.warn("MekaSuit part '" + name + "' is invalid. Ignoring.");
+                }
+                if (name.contains(LED_TAG)) {
+                    moduleLEDQuadsToRender.computeIfAbsent(pos, p -> new HashSet<>()).add(name);
+                } else {
+                    moduleQuadsToRender.computeIfAbsent(pos, p -> new HashSet<>()).add(name);
+                }
+            }
+        }
 
-        sharedChestLegsQuads = getArmorQuads(s -> s.startsWith("shared_legs_chest"), BASE_TRANSFORM);
-        leftBootExclQuads = getArmorQuads(s -> s.startsWith("excl_left_boot"), LEFT_LEG_TRANSFORM);
-        rightBootExclQuads = getArmorQuads(s -> s.startsWith("excl_right_boot"), RIGHT_LEG_TRANSFORM);
-        sharedLeftBootLegQuads = getArmorQuads(s -> s.startsWith("shared_left_leg_boot"), LEFT_LEG_TRANSFORM);
-        sharedRightBootLegQuads = getArmorQuads(s -> s.startsWith("shared_right_leg_boot"), RIGHT_LEG_TRANSFORM);
+        Map<ModelPos, Set<String>> armorQuadsToRender = new Object2ObjectOpenHashMap<>();
+        Map<ModelPos, Set<String>> armorLEDQuadsToRender = new Object2ObjectOpenHashMap<>();
+
+        for (IModelGeometryPart part : OBJModelCache.MEKASUIT.getModel().getParts()) {
+            String name = part.name();
+            // skip if it's the wrong equipment type
+            if (!checkEquipment(type, name)) {
+                continue;
+            }
+            // skip if the part is exclusive and the adjacent part is present
+            if (name.startsWith(EXCLUSIVE_TAG) && wornParts.contains(adjacentType)) {
+                continue;
+            }
+            // skip if the part is shared and the shared part already rendered
+            if (name.startsWith(SHARED_TAG) && wornParts.contains(adjacentType) && adjacentType.ordinal() > type.ordinal()) {
+                continue;
+            }
+
+            ModelPos pos = ModelPos.get(name);
+            if (pos == null) {
+                Mekanism.logger.warn("MekaSuit part '" + name + "' is invalid. Ignoring.");
+            }
+
+            String override = overrides.get(name);
+            if (override != null) {
+                if (override.contains(LED_TAG)) {
+                    moduleLEDQuadsToRender.computeIfAbsent(pos, p -> new HashSet<>()).add(override);
+                } else {
+                    moduleQuadsToRender.computeIfAbsent(pos, p -> new HashSet<>()).add(override);
+                }
+            } else {
+                if (name.contains(LED_TAG)) {
+                    armorLEDQuadsToRender.computeIfAbsent(pos, p -> new HashSet<>()).add(name);
+                } else {
+                    armorQuadsToRender.computeIfAbsent(pos, p -> new HashSet<>()).add(name);
+                }
+            }
+        }
+
+        Map<ModelPos, List<BakedQuad>> map = new Object2ObjectOpenHashMap<>();
+        for (ModelPos pos : ModelPos.VALUES) {
+            map.computeIfAbsent(pos, p -> new ArrayList<>()).addAll(getQuads(OBJModelCache.MEKASUIT_MODULES,
+                  moduleQuadsToRender.getOrDefault(pos, new HashSet<>()),
+                  moduleLEDQuadsToRender.getOrDefault(pos, new HashSet<>()),
+                  pos.getTransform()));
+            map.get(pos).addAll(getQuads(OBJModelCache.MEKASUIT,
+                  armorQuadsToRender.getOrDefault(pos, new HashSet<>()),
+                  armorLEDQuadsToRender.getOrDefault(pos, new HashSet<>()),
+                  pos.getTransform()));
+        }
+        return new ArmorQuads(map);
+    }
+
+    public static boolean checkEquipment(EquipmentSlotType type, String text) {
+        if (type == EquipmentSlotType.HEAD && text.contains("helmet")) {
+            return true;
+        } else if (type == EquipmentSlotType.CHEST && text.contains("chest")) {
+            return true;
+        } else if (type == EquipmentSlotType.LEGS && text.contains("leggings")) {
+            return true;
+        } else if (type == EquipmentSlotType.FEET && text.contains("boots")) {
+            return true;
+        }
+        return false;
+    }
+
+    public static class ArmorQuads {
+
+        private Map<ModelPos, List<BakedQuad>> quads = new Object2ObjectOpenHashMap<>();
+
+        public ArmorQuads(Map<ModelPos, List<BakedQuad>> quads) {
+            this.quads = quads;
+        }
+
+        public Map<ModelPos, List<BakedQuad>> getMap() {
+            return quads;
+        }
+    }
+
+    public static class ModuleModelSpec {
+
+        private ModuleData<?> module;
+        private EquipmentSlotType slotType;
+        private String name;
+        private Predicate<String> modelSpec;
+
+        public ModuleModelSpec(ModuleData<?> module, EquipmentSlotType slotType, String name) {
+            this.module = module;
+            this.slotType = slotType;
+            this.name = name;
+            this.modelSpec = (s) -> s.contains(name + "_");
+        }
+
+        public boolean contains(String s) {
+            return modelSpec.test(s);
+        }
+
+        public String processOverrideName(String part) {
+            return part.replace(OVERRIDDEN_TAG, "").replace(name + "_", "");
+        }
+    }
+
+    private static void registerModule(String name, ModuleData<?> module, EquipmentSlotType slotType) {
+        moduleModelSpec.put(slotType, module, new ModuleModelSpec(module, slotType, name));
+    }
+
+    public QuickHash key(LivingEntity player) {
+        Set<ModuleModelSpec> modules = new ObjectOpenHashSet<>();
+        Set<EquipmentSlotType> wornParts = EnumSet.noneOf(EquipmentSlotType.class);
+        for (EquipmentSlotType slotType : EnumUtils.ARMOR_SLOTS) {
+            if (player.getItemStackFromSlot(slotType).getItem() instanceof ItemMekaSuitArmor) {
+                wornParts.add(slotType);
+            }
+            for (ModuleData<?> module : moduleModelSpec.row(slotType).keySet()) {
+                if (Modules.load(player.getItemStackFromSlot(slotType), module) != null) {
+                    modules.add(moduleModelSpec.get(slotType, module));
+                }
+            }
+        }
+        return new QuickHash(modules, wornParts);
     }
 
     private static class MekaSuitModelConfiguration implements IModelConfiguration {
 
-        private Predicate<String> canShow;
+        private Set<String> parts;
 
-        public MekaSuitModelConfiguration(Predicate<String> canShow) {
-            this.canShow = canShow;
+        public MekaSuitModelConfiguration(Set<String> parts) {
+            this.parts = parts;
         }
 
         @Nullable
@@ -263,7 +396,7 @@ public class MekaSuitArmor extends CustomArmor {
 
         @Override
         public boolean getPartVisibility(@Nonnull IModelGeometryPart part) {
-            return canShow.test(part.name());
+            return parts.contains(part.name());
         }
     }
 }

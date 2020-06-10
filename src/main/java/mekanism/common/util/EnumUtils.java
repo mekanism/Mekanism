@@ -25,6 +25,8 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.UnitDisplayUtils.FloatingLongMeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
 import net.minecraft.inventory.EquipmentSlotType;
+import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.Direction;
 
 public class EnumUtils {
@@ -130,6 +132,11 @@ public class EnumUtils {
      * Cached value of {@link Upgrade#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final Upgrade[] UPGRADES = Upgrade.values();
+
+    /**
+     * Cached collection of armor slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
+     */
+    public static final EquipmentSlotType[] ARMOR_SLOTS = new EquipmentSlotType[] { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
 
     /**
      * Cached value of {@link RadiationScale#values()}. DO NOT MODIFY THIS LIST.

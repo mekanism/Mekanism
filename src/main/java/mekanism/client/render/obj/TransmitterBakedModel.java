@@ -220,6 +220,10 @@ public class TransmitterBakedModel implements IBakedModel {
             return Arrays.hashCode(objs);
         }
 
+        public Object[] get() {
+            return objs;
+        }
+
         @Override
         public boolean equals(Object obj) {
             if (obj == this)
