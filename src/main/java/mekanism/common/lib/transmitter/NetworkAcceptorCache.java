@@ -13,17 +13,10 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class NetworkAcceptorCache<ACCEPTOR> {
 
-    //TODO: Move this to being private??
-    public final Map<BlockPos, Map<Direction, LazyOptional<ACCEPTOR>>> cachedAcceptors = new Object2ObjectOpenHashMap<>();
+    private final Map<BlockPos, Map<Direction, LazyOptional<ACCEPTOR>>> cachedAcceptors = new Object2ObjectOpenHashMap<>();
     private final Map<TileEntityTransmitter<ACCEPTOR, ?, ?>, Set<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
 
-    public boolean hasAcceptor(BlockPos acceptorPos) {
-        return cachedAcceptors.containsKey(acceptorPos);
-    }
-
     public void updateTransmitterOnSide(TileEntityTransmitter<ACCEPTOR, ?, ?> transmitter, Direction side) {
-        //Note: getAcceptor does not cache the LazyOptional so that we can force re-retrieve it when necessary
-        // (Aka it got changed, and marked as changed via changedAcceptors)
         LazyOptional<ACCEPTOR> acceptor = transmitter.canConnectToAcceptor(side) ? transmitter.getAcceptor(side) : LazyOptional.empty();
         BlockPos acceptorPos = transmitter.getPos().offset(side);
         if (acceptor.isPresent()) {
@@ -68,5 +61,22 @@ public class NetworkAcceptorCache<ACCEPTOR> {
             }
             changedAcceptors.clear();
         }
+    }
+
+    public Set<Map.Entry<BlockPos, Map<Direction, LazyOptional<ACCEPTOR>>>> getAcceptorEntrySet() {
+        return cachedAcceptors.entrySet();
+    }
+
+    public int getAcceptorCount() {
+        return cachedAcceptors.size();
+    }
+
+    public boolean hasAcceptor(BlockPos acceptorPos) {
+        return cachedAcceptors.containsKey(acceptorPos);
+    }
+
+    public Set<Direction> getAcceptorDirections(BlockPos pos) {
+        //TODO: Do this better?
+        return cachedAcceptors.get(pos).keySet();
     }
 }

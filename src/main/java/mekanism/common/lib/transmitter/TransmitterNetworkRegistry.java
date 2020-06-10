@@ -241,12 +241,11 @@ public class TransmitterNetworkRegistry {
                             connectedTransmitters.add((TRANSMITTER) transmitter);
                             transmitter.setOrphan(false);
                             for (Direction direction : EnumUtils.DIRECTIONS) {
-                                if (direction.getAxis().isHorizontal() && !world.isBlockPresent(from.offset(direction))) {
-                                    continue;
-                                }
-                                BlockPos directionPos = transmitter.getAdjacentConnectableTransmitterPos(direction);
-                                if (directionPos != null && !iterated.contains(directionPos)) {
-                                    queue.addLast(directionPos);
+                                if (!direction.getAxis().isHorizontal() || world.isBlockPresent(from.offset(direction))) {
+                                    BlockPos directionPos = transmitter.getAdjacentConnectableTransmitterPos(direction);
+                                    if (directionPos != null && !iterated.contains(directionPos)) {
+                                        queue.addLast(directionPos);
+                                    }
                                 }
                             }
                         }

@@ -24,7 +24,6 @@ import mekanism.common.capabilities.proxy.ProxyFluidHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.content.transmitter.FluidNetwork;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
@@ -36,7 +35,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -137,11 +135,6 @@ public class TileEntityMechanicalPipe extends TileEntityBufferedTransmitter<IFlu
             nbtTags.put(NBTConstants.FLUID_STORED, saveShare.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
-    }
-
-    @Override
-    public TransmissionType getTransmissionType() {
-        return TransmissionType.FLUID;
     }
 
     @Override
@@ -250,12 +243,6 @@ public class TileEntityMechanicalPipe extends TileEntityBufferedTransmitter<IFlu
     @Override
     public void onContentsChanged() {
         markDirty(false);
-    }
-
-    @Nonnull
-    @Override
-    public LazyOptional<IFluidHandler> getAcceptor(Direction side) {
-        return acceptorCache.getCachedAcceptor(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
     }
 
     /**

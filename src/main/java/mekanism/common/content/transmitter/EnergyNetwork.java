@@ -157,7 +157,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     private FloatingLong tickEmit(FloatingLong energyToSend) {
         Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
-        for (Entry<BlockPos, Map<Direction, LazyOptional<IStrictEnergyHandler>>> entry : acceptorCache.cachedAcceptors.entrySet()) {
+        for (Entry<BlockPos, Map<Direction, LazyOptional<IStrictEnergyHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
             EnergyAcceptorTarget target = new EnergyAcceptorTarget();
             entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
                 if (acceptor.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {

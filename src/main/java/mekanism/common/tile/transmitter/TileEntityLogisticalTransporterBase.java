@@ -20,7 +20,6 @@ import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketTransporterUpdate;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -33,7 +32,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -56,11 +54,6 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
         return false;
     }
 
-    @Override
-    public TransmissionType getTransmissionType() {
-        return TransmissionType.ITEM;
-    }
-
     public EnumColor getColor() {
         return null;
     }
@@ -75,12 +68,6 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
 
     public boolean canReceiveFrom(Direction side) {
         return canConnect(side) && getConnectionType(side) == ConnectionType.NORMAL;
-    }
-
-    @Nonnull
-    @Override
-    public LazyOptional<IItemHandler> getAcceptor(Direction side) {
-        return acceptorCache.getCachedAcceptor(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
     }
 
     @Override

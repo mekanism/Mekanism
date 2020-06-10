@@ -186,7 +186,7 @@ public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, 
     private long tickEmit(@Nonnull GasStack stack) {
         Set<ChemicalHandlerTarget<Gas, GasStack, IGasHandler>> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
-        for (Entry<BlockPos, Map<Direction, LazyOptional<IGasHandler>>> entry : acceptorCache.cachedAcceptors.entrySet()) {
+        for (Entry<BlockPos, Map<Direction, LazyOptional<IGasHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
             ChemicalHandlerTarget<Gas, GasStack, IGasHandler> target = new ChemicalHandlerTarget<>(stack);
             entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
                 if (ChemicalUtil.canInsert(acceptor, stack)) {

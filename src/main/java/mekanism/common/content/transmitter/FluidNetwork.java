@@ -177,7 +177,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     private int tickEmit(@Nonnull FluidStack fluidToSend) {
         Set<FluidHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
-        for (Entry<BlockPos, Map<Direction, LazyOptional<IFluidHandler>>> entry : acceptorCache.cachedAcceptors.entrySet()) {
+        for (Entry<BlockPos, Map<Direction, LazyOptional<IFluidHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
             entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
                 if (FluidUtils.canFill(acceptor, fluidToSend)) {

@@ -3,7 +3,6 @@ package mekanism.common.tile.transmitter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.util.EnumUtils;
@@ -24,25 +23,6 @@ public abstract class TileEntityBufferedTransmitter<ACCEPTOR, NETWORK extends Dy
 
     public abstract long getCapacity();
 
-    @Nonnull
-    public FloatingLong getCapacityAsFloatingLong() {
-        //Note: If you plan on actually using this, override it in your tile
-        return FloatingLong.create(getCapacity());
-    }
-
-    /**
-     * @return Gets and releases the transmitter's buffer.
-     *
-     * @apiNote Should only be {@code null}, if the buffer type supports null. So things like fluid's should use the empty variant.
-     */
-    public abstract BUFFER releaseShare();
-
-    /**
-     * @return Gets the transmitter's buffer.
-     */
-    @Nonnull
-    public abstract BUFFER getShare();
-
     /**
      * If the transmitter does not have a buffer this will try to fallback on the network's buffer.
      *
@@ -56,9 +36,13 @@ public abstract class TileEntityBufferedTransmitter<ACCEPTOR, NETWORK extends Dy
      */
     public abstract boolean noBufferOrFallback();
 
+    protected boolean canHaveIncompatibleNetworks() {
+        return false;
+    }
+
     @Override
     public boolean isValidTransmitter(TileEntityTransmitter<?, ?, ?> tile) {
-        if (tile instanceof TileEntityBufferedTransmitter && canHaveIncompatibleNetworks()) {
+        if (canHaveIncompatibleNetworks() && tile instanceof TileEntityBufferedTransmitter) {
             TileEntityBufferedTransmitter<?, ?, ?, ?> other = (TileEntityBufferedTransmitter<?, ?, ?, ?>) tile;
             if (other.canHaveIncompatibleNetworks()) {
                 //If it is a transmitter, only allow declare it as valid, if we don't have a combination
@@ -70,10 +54,6 @@ public abstract class TileEntityBufferedTransmitter<ACCEPTOR, NETWORK extends Dy
             }
         }
         return super.isValidTransmitter(tile);
-    }
-
-    protected boolean canHaveIncompatibleNetworks() {
-        return false;
     }
 
     @Override
@@ -195,4 +175,17 @@ public abstract class TileEntityBufferedTransmitter<ACCEPTOR, NETWORK extends Dy
         super.updateClientNetwork(network);
         network.updateCapacity();
     }
+
+    /**
+     * @return Gets and releases the transmitter's buffer.
+     *
+     * @apiNote Should only be {@code null}, if the buffer type supports null. So things like fluid's should use the empty variant.
+     */
+    public abstract BUFFER releaseShare();
+
+    /**
+     * @return Gets the transmitter's buffer.
+     */
+    @Nonnull
+    public abstract BUFFER getShare();
 }

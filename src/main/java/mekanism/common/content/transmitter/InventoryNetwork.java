@@ -49,7 +49,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
 
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
         List<AcceptorData> toReturn = new ArrayList<>();
-        for (Entry<BlockPos, Map<Direction, LazyOptional<IItemHandler>>> entry : acceptorCache.cachedAcceptors.entrySet()) {
+        for (Entry<BlockPos, Map<Direction, LazyOptional<IItemHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
             BlockPos pos = entry.getKey();
             if (!pos.equals(stack.homeLocation)) {
                 TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), chunkMap, pos);
@@ -101,17 +101,17 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
 
     @Override
     public ITextComponent getNeededInfo() {
-        return null;
+        return MekanismLang.NOT_APPLICABLE.translate();
     }
 
     @Override
     public ITextComponent getStoredInfo() {
-        return null;
+        return MekanismLang.NOT_APPLICABLE.translate();
     }
 
     @Override
     public ITextComponent getFlowInfo() {
-        return null;
+        return MekanismLang.NOT_APPLICABLE.translate();
     }
 
     @Override

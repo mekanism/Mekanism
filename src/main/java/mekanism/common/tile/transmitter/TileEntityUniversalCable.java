@@ -23,9 +23,7 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.resolver.advanced.AdvancedEnergyCapabilityResolver;
 import mekanism.common.content.transmitter.EnergyNetwork;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.CableTier;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
@@ -36,7 +34,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong, TileEntityUniversalCable>
       implements IMekanismStrictEnergyHandler {
@@ -147,11 +144,6 @@ public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStr
     }
 
     @Override
-    public TransmissionType getTransmissionType() {
-        return TransmissionType.ENERGY;
-    }
-
-    @Override
     public EnergyNetwork createNetworkByMerging(Collection<EnergyNetwork> networks) {
         return new EnergyNetwork(networks);
     }
@@ -213,7 +205,6 @@ public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStr
     }
 
     @Nonnull
-    @Override
     public FloatingLong getCapacityAsFloatingLong() {
         return tier.getCableCapacity();
     }
@@ -231,12 +222,6 @@ public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStr
             return getTransmitterNetwork().energyContainer.insert(amount, action, AutomationType.INTERNAL);
         }
         return buffer.insert(amount, action, AutomationType.INTERNAL);
-    }
-
-    @Nonnull
-    @Override
-    public LazyOptional<IStrictEnergyHandler> getAcceptor(Direction side) {
-        return EnergyCompatUtils.getLazyStrictEnergyHandler(acceptorCache.getCachedAcceptorTile(side), side.getOpposite());
     }
 
     @Override

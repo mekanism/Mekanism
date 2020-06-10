@@ -34,7 +34,6 @@ public class AcceptorCache<ACCEPTOR> {
     private final Map<Direction, NonNullConsumer<LazyOptional<ACCEPTOR>>> cachedListeners = new EnumMap<>(Direction.class);
     private final Map<Direction, AcceptorInfo<ACCEPTOR>> cachedAcceptors = new EnumMap<>(Direction.class);
     private final TileEntityTransmitter<ACCEPTOR, ?, ?> transmitter;
-    //TODO: Move this to being private?
     public byte currentAcceptorConnections = 0x00;
 
     public AcceptorCache(TileEntityTransmitter<ACCEPTOR, ?, ?> transmitter) {
@@ -58,97 +57,50 @@ public class AcceptorCache<ACCEPTOR> {
         }
     }
 
-    private void updateCachedAcceptorAndListen(Direction side, TileEntity acceptorTile, LazyOptional<ACCEPTOR> acceptor, boolean addListener) {
+    private void updateCachedAcceptorAndListen(Direction side, TileEntity acceptorTile, LazyOptional<ACCEPTOR> acceptor) {
+        updateCachedAcceptorAndListen(side, acceptorTile, acceptor, acceptor, true);
+    }
+
+    private void updateCachedAcceptorAndListen(Direction side, TileEntity acceptorTile, LazyOptional<ACCEPTOR> acceptor, LazyOptional<?> sourceAcceptor,
+          boolean sourceIsSame) {
         boolean dirtyAcceptor = false;
         if (cachedAcceptors.containsKey(side)) {
             AcceptorInfo<ACCEPTOR> acceptorInfo = cachedAcceptors.get(side);
             if (acceptorTile != acceptorInfo.tile) {
                 //The tile changed, fully invalidate it
-                cachedAcceptors.put(side, new AcceptorInfo<>(acceptorTile, acceptor));
+                cachedAcceptors.put(side, new AcceptorInfo<>(acceptorTile, sourceAcceptor, acceptor));
                 dirtyAcceptor = true;
-            } else if (acceptor != acceptorInfo.acceptor) {
-                //The acceptor is different, make sure we update it
-                acceptorInfo.updateAcceptor(acceptor);
+            } else if (sourceAcceptor != acceptorInfo.sourceAcceptor) {
+                //The source acceptor is different, make sure we update it and the actual acceptor
+                // This allows us to make sure we only mark the acceptor as dirty if it actually changed
+                // Use case: Wrapped energy acceptors
+                acceptorInfo.updateAcceptor(sourceAcceptor, acceptor);
                 dirtyAcceptor = true;
             }
         } else {
-            cachedAcceptors.put(side, new AcceptorInfo<>(acceptorTile, acceptor));
+            cachedAcceptors.put(side, new AcceptorInfo<>(acceptorTile, sourceAcceptor, acceptor));
             dirtyAcceptor = true;
         }
         if (dirtyAcceptor) {
             transmitter.markDirtyAcceptor(side);
-            if (addListener) {
-                //If the capability is present and we want to add the listener, add a listener so that once it gets invalidated
-                // we recheck that side assuming that the world and position is still loaded and our tile has not been removed
-                acceptor.addListener(getRefreshListener(side));
+            //If the capability is present and we want to add the listener, add a listener so that once it gets invalidated
+            // we recheck that side assuming that the world and position is still loaded and our tile has not been removed
+            NonNullConsumer<LazyOptional<ACCEPTOR>> refreshListener = cachedListeners.computeIfAbsent(side, this::getUncachedRefreshListener);
+            if (sourceIsSame) {
+                //Add it to the actual acceptor as it is the same as the source and we can do so without any unchecked warnings
+                acceptor.addListener(refreshListener);
+            } else {
+                //Otherwise use unchecked generics to add the listener to the source acceptor
+                CapabilityUtils.addListener(sourceAcceptor, refreshListener);
             }
         }
     }
 
     /**
-     * @implNote Gets the acceptor from the cached tile rather than the cached acceptor
+     * @implNote Grabs the acceptors from cache, ensuring that the connection map contains the side
      */
-    public LazyOptional<ACCEPTOR> getCachedAcceptor(Capability<ACCEPTOR> capability, Direction side) {
-        //TODO: Should this query the cached acceptor instead?
-        return CapabilityUtils.getCapability(getCachedAcceptorTile(side), capability, side.getOpposite());
-    }
-
-    @Nullable
-    public TileEntity getCachedAcceptorTile(Direction side) {
-        //TODO: Do we need to also invalidate if the connection map doesn't contain it
-        if (TileEntityTransmitter.connectionMapContainsSide(currentAcceptorConnections, side)) {
-            if (cachedAcceptors.containsKey(side)) {
-                return cachedAcceptors.get(side).tile;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @apiNote Only call this from the server side
-     */
-    public boolean hasStrictEnergyHandlerAndListen(@Nullable TileEntity tile, Direction side) {
-        if (tile != null && !tile.isRemoved() && tile.hasWorld()) {
-            Direction opposite = side.getOpposite();
-            for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {
-                if (energyCompat.isUsable()) {
-                    //Note: Capability should not be null due to us validating the compat is usable
-                    LazyOptional<?> acceptor = CapabilityUtils.getCapability(tile, energyCompat.getCapability(), opposite);
-                    if (acceptor.isPresent()) {
-                        if (energyCompat instanceof StrictEnergyCompat) {
-                            //Our lazy optional is already the proper type
-                            updateCachedAcceptorAndListen(side, tile, (LazyOptional<ACCEPTOR>) acceptor, true);
-                        } else {
-                            //Update the cache with the strict energy lazy optional as that is the one we interact with
-                            LazyOptional<IStrictEnergyHandler> wrappedAcceptor = energyCompat.getLazyStrictEnergyHandler(tile, opposite);
-                            //Note: The wrapped acceptor should always be present, but double check just in case
-                            if (wrappedAcceptor.isPresent()) {
-                                //If the capability is present add a listener to the actual lazy optional so that once it gets invalidated we recheck that side
-                                CapabilityUtils.addListener(acceptor, getRefreshListener(side));
-                                //TODO: The acceptor will be different due to how it maps them, we should compare the acceptor
-                                // with the acceptor info for the "true" lazy optional instead of the wrapped one
-                                updateCachedAcceptorAndListen(side, tile, (LazyOptional<ACCEPTOR>) wrappedAcceptor, false);
-                            }
-                        }
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * @apiNote Only call this from the server side
-     */
-    public boolean isAcceptorAndListen(@Nullable TileEntity tile, Direction side, Capability<ACCEPTOR> capability) {
-        LazyOptional<ACCEPTOR> acceptor = CapabilityUtils.getCapability(tile, capability, side.getOpposite());
-        if (acceptor.isPresent()) {
-            //Update the cached acceptor and if it changed, add a listener to it to listen for invalidation
-            updateCachedAcceptorAndListen(side, tile, acceptor, true);
-            return true;
-        }
-        return false;
+    public LazyOptional<ACCEPTOR> getCachedAcceptor(Direction side) {
+        return TileEntityTransmitter.connectionMapContainsSide(currentAcceptorConnections, side) ? getConnectedAcceptor(side) : LazyOptional.empty();
     }
 
     /**
@@ -179,12 +131,51 @@ public class AcceptorCache<ACCEPTOR> {
     }
 
     /**
-     * Gets the listener that will refresh connections on a given side.
+     * @apiNote Only call this from the server side
      */
-    private NonNullConsumer<LazyOptional<ACCEPTOR>> getRefreshListener(Direction side) {
-        return cachedListeners.computeIfAbsent(side, this::getUncachedRefreshListener);
+    public boolean hasStrictEnergyHandlerAndListen(@Nullable TileEntity tile, Direction side) {
+        if (tile != null && !tile.isRemoved() && tile.hasWorld()) {
+            Direction opposite = side.getOpposite();
+            for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {
+                if (energyCompat.isUsable()) {
+                    //Note: Capability should not be null due to us validating the compat is usable
+                    LazyOptional<?> acceptor = CapabilityUtils.getCapability(tile, energyCompat.getCapability(), opposite);
+                    if (acceptor.isPresent()) {
+                        if (energyCompat instanceof StrictEnergyCompat) {
+                            //Our lazy optional is already the proper type
+                            updateCachedAcceptorAndListen(side, tile, (LazyOptional<ACCEPTOR>) acceptor);
+                        } else {
+                            //Update the cache with the strict energy lazy optional as that is the one we interact with
+                            LazyOptional<IStrictEnergyHandler> wrappedAcceptor = energyCompat.getLazyStrictEnergyHandler(tile, opposite);
+                            //Note: The wrapped acceptor should always be present, but double check just in case
+                            if (wrappedAcceptor.isPresent()) {
+                                updateCachedAcceptorAndListen(side, tile, (LazyOptional<ACCEPTOR>) wrappedAcceptor, acceptor, false);
+                            }
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
+    /**
+     * @apiNote Only call this from the server side
+     */
+    public boolean isAcceptorAndListen(@Nullable TileEntity tile, Direction side, Capability<ACCEPTOR> capability) {
+        LazyOptional<ACCEPTOR> acceptor = CapabilityUtils.getCapability(tile, capability, side.getOpposite());
+        if (acceptor.isPresent()) {
+            //Update the cached acceptor and if it changed, add a listener to it to listen for invalidation
+            updateCachedAcceptorAndListen(side, tile, acceptor);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Computes the listener that will refresh connections on a given side.
+     */
     private NonNullConsumer<LazyOptional<ACCEPTOR>> getUncachedRefreshListener(Direction side) {
         return ignored -> {
             //Check to make sure the transmitter is still valid and that the position we are going to check is actually still loaded
@@ -198,14 +189,17 @@ public class AcceptorCache<ACCEPTOR> {
     private static class AcceptorInfo<ACCEPTOR> {
 
         private final TileEntity tile;
+        private LazyOptional<?> sourceAcceptor;
         private LazyOptional<ACCEPTOR> acceptor;
 
-        private AcceptorInfo(TileEntity tile, LazyOptional<ACCEPTOR> acceptor) {
+        private AcceptorInfo(TileEntity tile, LazyOptional<?> sourceAcceptor, LazyOptional<ACCEPTOR> acceptor) {
             this.tile = tile;
             this.acceptor = acceptor;
+            this.sourceAcceptor = sourceAcceptor;
         }
 
-        private void updateAcceptor(LazyOptional<ACCEPTOR> acceptor) {
+        private void updateAcceptor(LazyOptional<?> sourceAcceptor, LazyOptional<ACCEPTOR> acceptor) {
+            this.sourceAcceptor = sourceAcceptor;
             this.acceptor = acceptor;
         }
 
@@ -216,14 +210,14 @@ public class AcceptorCache<ACCEPTOR> {
             }
             if (o instanceof AcceptorInfo) {
                 AcceptorInfo<?> other = (AcceptorInfo<?>) o;
-                return tile.equals(other.tile) && acceptor.equals(other.acceptor);
+                return tile.equals(other.tile) && sourceAcceptor.equals(other.sourceAcceptor) && acceptor.equals(other.acceptor);
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(tile, acceptor);
+            return Objects.hash(tile, sourceAcceptor, acceptor);
         }
     }
 }

@@ -70,7 +70,7 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return (connections & tester) > 0;
     }
 
-    public static byte setConnectionBit(byte connections, boolean toSet, Direction side) {
+    private static byte setConnectionBit(byte connections, boolean toSet, Direction side) {
         return (byte) ((connections & ~(byte) (1 << side.ordinal())) | (byte) ((toSet ? 1 : 0) << side.ordinal()));
     }
 
@@ -137,6 +137,29 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         }
     }
 
+    public boolean hasTransmitterNetwork() {
+        return !isOrphan() && getTransmitterNetwork() != null;
+    }
+
+    public abstract NETWORK createEmptyNetwork();
+
+    public abstract NETWORK createEmptyNetworkWithID(UUID networkID);
+
+    public abstract NETWORK createNetworkByMerging(Collection<NETWORK> toMerge);
+
+    public NETWORK getExternalNetwork(BlockPos from) {
+        TileEntityTransmitter<?, NETWORK, ?> transmitter = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, from);
+        if (transmitter != null && getTransmissionType().checkTransmissionType(transmitter)) {
+            return transmitter.getTransmitterNetwork();
+        }
+        return null;
+    }
+
+    public boolean isValid() {
+        return !isRemoved();
+    }
+
+
     public boolean isOrphan() {
         return orphaned;
     }
@@ -145,37 +168,20 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         orphaned = nowOrphaned;
     }
 
-    public boolean hasTransmitterNetwork() {
-        return !isOrphan() && getTransmitterNetwork() != null;
+    public abstract TransmitterType getTransmitterType();
+
+    /**
+     * Get the transmitter's transmission type
+     *
+     * @return TransmissionType this transmitter uses
+     */
+    public TransmissionType getTransmissionType() {
+        return getTransmitterType().getTransmission();
     }
 
-    public int getTransmitterNetworkSize() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().transmittersSize() : 0;
-    }
-
-    public int getTransmitterNetworkAcceptorSize() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().getAcceptorCount() : 0;
-    }
-
-    public ITextComponent getTransmitterNetworkNeeded() {
-        if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getNeededInfo();
-        }
-        return MekanismLang.NO_NETWORK.translate();
-    }
-
-    public ITextComponent getTransmitterNetworkFlow() {
-        if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getFlowInfo();
-        }
-        return MekanismLang.NO_NETWORK.translate();
-    }
-
-    public ITextComponent getTransmitterNetworkBuffer() {
-        if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getStoredInfo();
-        }
-        return MekanismLang.NO_NETWORK.translate();
+    @Nonnull
+    public LazyOptional<ACCEPTOR> getAcceptor(Direction side) {
+        return acceptorCache.getCachedAcceptor(side);
     }
 
     @Override
@@ -245,11 +251,9 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
      */
     public byte getPossibleAcceptorConnections() {
         byte connections = 0x00;
-
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return connections;
         }
-
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos offset = getPos().offset(side);
             TileEntity tile = MekanismUtils.getTileEntity(getWorld(), offset);
@@ -263,7 +267,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
                     continue;
                 }
             }
-            //TODO: Re-evaluate this, why is it clearing the cached acceptors?
             acceptorCache.invalidateCachedAcceptor(side);
         }
         return connections;
@@ -273,7 +276,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return (byte) (currentTransmitterConnections | acceptorCache.currentAcceptorConnections);
     }
 
-    //TODO: Do we want to narrow this to TileEntityTransmitter
     public boolean isValidTransmitter(TileEntityTransmitter<?, ?, ?> tile) {
         return true;
     }
@@ -283,33 +285,11 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return type == ConnectionType.NORMAL || type == ConnectionType.PUSH;
     }
 
-    public List<VoxelShape> getCollisionBoxes() {
-        List<VoxelShape> list = new ArrayList<>();
-        byte connections = getAllCurrentConnections();
-        boolean isSmall = getTransmitterType().getSize() == Size.SMALL;
-        for (Direction side : EnumUtils.DIRECTIONS) {
-            ConnectionType connectionType = getConnectionType(side, connections, currentTransmitterConnections, connectionTypes);
-            if (connectionType != ConnectionType.NONE) {
-                if (isSmall) {
-                    list.add(BlockSmallTransmitter.getSideForType(connectionType, side));
-                } else {
-                    list.add(BlockLargeTransmitter.getSideForType(connectionType, side));
-                }
-            }
-        }
-        //Center position
-        list.add(isSmall ? BlockSmallTransmitter.center : BlockLargeTransmitter.center);
-        return list;
-    }
-
     @Nullable
     public BlockPos getAdjacentConnectableTransmitterPos(Direction side) {
         BlockPos sidePos = pos.offset(side);
         TileEntity potentialTransmitterTile = MekanismUtils.getTileEntity(world, sidePos);
-        if (!canConnectMutual(side, potentialTransmitterTile)) {
-            return null;
-        }
-        if (potentialTransmitterTile instanceof TileEntityTransmitter) {
+        if (canConnectMutual(side, potentialTransmitterTile) && potentialTransmitterTile instanceof TileEntityTransmitter) {
             TileEntityTransmitter<?, ?, ?> transmitter = (TileEntityTransmitter<?, ?, ?>) potentialTransmitterTile;
             if (getTransmissionType().checkTransmissionType(transmitter) && isValidTransmitter(transmitter)) {
                 return sidePos;
@@ -317,20 +297,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         }
         return null;
     }
-
-    public boolean isValid() {
-        return !isRemoved();
-    }
-
-    public NETWORK getExternalNetwork(BlockPos from) {
-        TileEntityTransmitter<?, NETWORK, ?> transmitter = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, from);
-        if (transmitter != null && getTransmissionType().checkTransmissionType(transmitter)) {
-            return transmitter.getTransmitterNetwork();
-        }
-        return null;
-    }
-
-    public abstract TransmitterType getTransmitterType();
 
     /**
      * @apiNote Only call this from the server side
@@ -370,11 +336,8 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return true;
     }
 
-    @Nonnull
-    @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        //If any of the block is in view, then allow rendering the contents
-        return new AxisAlignedBB(pos, pos.add(1, 1, 1));
+    protected boolean canUpgrade(AlloyTier tier) {
+        return false;
     }
 
     @Override
@@ -429,10 +392,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
                 }
             }
         }
-    }
-
-    protected boolean canUpgrade(AlloyTier tier) {
-        return false;
     }
 
     @Nonnull
@@ -654,6 +613,21 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         markDirty(false);
     }
 
+    public void onNeighborTileChange(Direction side) {
+        refreshConnections(side);
+    }
+
+    public void onNeighborBlockChange(Direction side) {
+        if (handlesRedstone() && redstoneReactive) {
+            //If our tile can handle redstone and we are redstone reactive we need to recheck all connections
+            // as the power might have changed and we may have to update our own visuals
+            refreshConnections();
+        } else {
+            //Otherwise we can just get away with checking the single side
+            refreshConnections(side);
+        }
+    }
+
     protected void markDirtyTransmitters() {
         notifyTileChange();
         if (hasTransmitterNetwork()) {
@@ -665,28 +639,6 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().acceptorChanged(getTransmitter(), side);
         }
-    }
-
-    public void onWorldJoin() {
-        if (!isRemote()) {
-            TransmitterNetworkRegistry.registerOrphanTransmitter(this);
-        }
-    }
-
-    public void onWorldSeparate() {
-        if (isRemote()) {
-            setTransmitterNetwork(null);
-        } else {
-            TransmitterNetworkRegistry.invalidateTransmitter(this);
-        }
-    }
-
-    @Override
-    public void remove() {
-        onWorldSeparate();
-        super.remove();
-        //Clear our cached listeners
-        acceptorCache.clear();
     }
 
     @Override
@@ -704,9 +656,12 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         super.onChunkUnloaded();
     }
 
-    public void onAdded() {
-        onWorldJoin();
-        refreshConnections();
+    @Override
+    public void remove() {
+        onWorldSeparate();
+        super.remove();
+        //Clear our cached listeners
+        acceptorCache.clear();
     }
 
     @Override
@@ -715,18 +670,22 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         super.onLoad();
     }
 
-    public void onNeighborTileChange(Direction side) {
-        refreshConnections(side);
+    public void onAdded() {
+        onWorldJoin();
+        refreshConnections();
     }
 
-    public void onNeighborBlockChange(Direction side) {
-        if (handlesRedstone() && redstoneReactive) {
-            //If our tile can handle redstone and we are redstone reactive we need to recheck all connections
-            // as the power might have changed and we may have to update our own visuals
-            refreshConnections();
+    public void onWorldJoin() {
+        if (!isRemote()) {
+            TransmitterNetworkRegistry.registerOrphanTransmitter(this);
+        }
+    }
+
+    public void onWorldSeparate() {
+        if (isRemote()) {
+            setTransmitterNetwork(null);
         } else {
-            //Otherwise we can just get away with checking the single side
-            refreshConnections(side);
+            TransmitterNetworkRegistry.invalidateTransmitter(this);
         }
     }
 
@@ -799,6 +758,32 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         return ActionResultType.SUCCESS;
     }
 
+    public List<VoxelShape> getCollisionBoxes() {
+        List<VoxelShape> list = new ArrayList<>();
+        byte connections = getAllCurrentConnections();
+        boolean isSmall = getTransmitterType().getSize() == Size.SMALL;
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            ConnectionType connectionType = getConnectionType(side, connections, currentTransmitterConnections, connectionTypes);
+            if (connectionType != ConnectionType.NONE) {
+                if (isSmall) {
+                    list.add(BlockSmallTransmitter.getSideForType(connectionType, side));
+                } else {
+                    list.add(BlockLargeTransmitter.getSideForType(connectionType, side));
+                }
+            }
+        }
+        //Center position
+        list.add(isSmall ? BlockSmallTransmitter.center : BlockLargeTransmitter.center);
+        return list;
+    }
+
+    @Nonnull
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        //If any of the block is in view, then allow rendering the contents
+        return new AxisAlignedBB(pos, pos.add(1, 1, 1));
+    }
+
     @Nonnull
     @Override
     public IModelData getModelData() {
@@ -823,21 +808,34 @@ public abstract class TileEntityTransmitter<ACCEPTOR, NETWORK extends DynamicNet
         MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), getPos());
     }
 
-    /**
-     * Get the transmitter's transmission type
-     *
-     * @return TransmissionType this transmitter uses
-     */
-    public abstract TransmissionType getTransmissionType();
-
-    @Nonnull
-    public abstract LazyOptional<ACCEPTOR> getAcceptor(Direction side);
-
-    public abstract NETWORK createEmptyNetwork();
-
-    public abstract NETWORK createEmptyNetworkWithID(UUID networkID);
-
-    public abstract NETWORK createNetworkByMerging(Collection<NETWORK> toMerge);
-
     public abstract void takeShare();
+
+    public int getTransmitterNetworkSize() {
+        return hasTransmitterNetwork() ? getTransmitterNetwork().transmittersSize() : 0;
+    }
+
+    public int getTransmitterNetworkAcceptorSize() {
+        return hasTransmitterNetwork() ? getTransmitterNetwork().getAcceptorCount() : 0;
+    }
+
+    public ITextComponent getTransmitterNetworkNeeded() {
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getNeededInfo();
+        }
+        return MekanismLang.NO_NETWORK.translate();
+    }
+
+    public ITextComponent getTransmitterNetworkFlow() {
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getFlowInfo();
+        }
+        return MekanismLang.NO_NETWORK.translate();
+    }
+
+    public ITextComponent getTransmitterNetworkBuffer() {
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getStoredInfo();
+        }
+        return MekanismLang.NO_NETWORK.translate();
+    }
 }

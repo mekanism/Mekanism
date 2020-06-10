@@ -24,7 +24,6 @@ import mekanism.common.capabilities.proxy.ProxyHeatHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.content.transmitter.HeatNetwork;
 import mekanism.common.lib.Color;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
@@ -36,7 +35,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatHandler, HeatNetwork, TileEntityThermodynamicConductor> implements ITileHeatHandler {
 
@@ -82,17 +80,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
         return acceptorCache.isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER_CAPABILITY);
-    }
-
-    @Override
-    public TransmissionType getTransmissionType() {
-        return TransmissionType.HEAT;
-    }
-
-    @Nonnull
-    @Override
-    public LazyOptional<IHeatHandler> getAcceptor(Direction side) {
-        return acceptorCache.getCachedAcceptor(Capabilities.HEAT_HANDLER_CAPABILITY, side);
     }
 
     @Nonnull
