@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import org.lwjgl.glfw.GLFW;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -19,7 +20,6 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import org.lwjgl.glfw.GLFW;
 
 public class MekanismKeyHandler extends MekKeyHandler {
 
@@ -78,7 +78,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
             return;
         }
         if (kb == handModeSwitchKey) {
-            if (IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND)) {
+            if (IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND, false)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, player.isSneaking()));
             } else if (IModeItem.isModeItem(player, EquipmentSlotType.OFFHAND)) {
                 //Otherwise try their offhand

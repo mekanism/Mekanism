@@ -28,7 +28,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemHUDProvider;
-import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.item.interfaces.IRadialModeItem;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -36,6 +36,7 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.block.Block;
@@ -49,6 +50,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IWorldReader;
@@ -56,7 +58,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IModeItem, IItemHUDProvider {
+public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadialModeItem, IItemHUDProvider {
 
     public ItemConfigurator(Properties properties) {
         super(MekanismConfig.gear.configuratorChargeRate, MekanismConfig.gear.configuratorMaxEnergy, properties.rarity(Rarity.UNCOMMON));
@@ -229,34 +231,55 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
         return getState(stack).getTextComponent();
     }
 
+    @Override
+    public void setMode(ItemStack stack, PlayerEntity player, IRadialSelectorEnum selection) {
+        setState(stack, (ConfiguratorMode) selection);
+    }
+
+    @Override
+    public IRadialSelectorEnum getMode(ItemStack stack) {
+        return getState(stack);
+    }
+
+    @Override
+    public Class<? extends IRadialSelectorEnum> getModeClass() {
+        return ConfiguratorMode.class;
+    }
+
     @FieldsAreNonnullByDefault
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasTextComponent {
-        CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_GASES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_INFUSE_TYPES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.INFUSION, EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_PIGMENTS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.PIGMENT, EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_SLURRIES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.SLURRY, EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_ENERGY(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ENERGY, EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_HEAT(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.HEAT, EnumColor.BRIGHT_GREEN, true),
-        EMPTY(MekanismLang.CONFIGURATOR_EMPTY, null, EnumColor.DARK_RED, false),
-        ROTATE(MekanismLang.CONFIGURATOR_ROTATE, null, EnumColor.YELLOW, false),
-        WRENCH(MekanismLang.CONFIGURATOR_WRENCH, null, EnumColor.PINK, false);
+    public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasTextComponent, IRadialSelectorEnum {
+        CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true, null),
+        CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true, null),
+        CONFIGURATE_GASES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true, null),
+        CONFIGURATE_INFUSE_TYPES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.INFUSION, EnumColor.BRIGHT_GREEN, true, null),
+        CONFIGURATE_PIGMENTS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.PIGMENT, EnumColor.BRIGHT_GREEN, true, null),
+        CONFIGURATE_SLURRIES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.SLURRY, EnumColor.BRIGHT_GREEN, true, null),
+        CONFIGURATE_ENERGY(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ENERGY, EnumColor.BRIGHT_GREEN, true, null),
+        CONFIGURATE_HEAT(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.HEAT, EnumColor.BRIGHT_GREEN, true, null),
+        EMPTY(MekanismLang.CONFIGURATOR_EMPTY, null, EnumColor.DARK_RED, false, MekanismUtils.getResource(ResourceType.GUI, "items.png")),
+        ROTATE(MekanismLang.CONFIGURATOR_ROTATE, null, EnumColor.YELLOW, false, MekanismUtils.getResource(ResourceType.GUI, "items.png")),
+        WRENCH(MekanismLang.CONFIGURATOR_WRENCH, null, EnumColor.PINK, false, MekanismUtils.getResource(ResourceType.GUI, "items.png"));
 
-        private static final ConfiguratorMode[] MODES = values();
+        public static final ConfiguratorMode[] MODES = values();
         private final ILangEntry langEntry;
         @Nullable
         private final TransmissionType transmissionType;
         private final EnumColor color;
         private final boolean configurating;
+        private final ResourceLocation icon;
 
-        ConfiguratorMode(ILangEntry langEntry, @Nullable TransmissionType transmissionType, EnumColor color, boolean configurating) {
+        ConfiguratorMode(ILangEntry langEntry, @Nullable TransmissionType transmissionType, EnumColor color, boolean configurating, @Nullable ResourceLocation icon) {
             this.langEntry = langEntry;
             this.transmissionType = transmissionType;
             this.color = color;
             this.configurating = configurating;
+            if (transmissionType != null) {
+                this.icon = MekanismUtils.getResource(ResourceType.GUI, transmissionType.getTransmission() + ".png");
+            } else {
+                this.icon = icon;
+            }
         }
 
         @Override
@@ -307,6 +330,16 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IMode
 
         public static ConfiguratorMode byIndexStatic(int index) {
             return MathUtils.getByIndexMod(MODES, index);
+        }
+
+        @Override
+        public ITextComponent getShortText() {
+            return configurating ? transmissionType.getLangEntry().translateColored(color) : getTextComponent();
+        }
+
+        @Override
+        public ResourceLocation getIcon() {
+            return icon;
         }
     }
 }

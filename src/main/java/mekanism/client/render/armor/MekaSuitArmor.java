@@ -177,7 +177,6 @@ public class MekaSuitArmor extends CustomArmor {
     }
 
     public ArmorQuads createQuads(Set<ModuleModelSpec> modules, Set<EquipmentSlotType> wornParts) {
-        System.out.println("recreate");
         Map<ModelPos, Set<String>> moduleQuadsToRender = new Object2ObjectOpenHashMap<>();
         Map<ModelPos, Set<String>> moduleLEDQuadsToRender = new Object2ObjectOpenHashMap<>();
         // map of normal model part name to overwritten model part name (i.e. chest_body_box1 -> jetpack_chest_body_overridden_box1

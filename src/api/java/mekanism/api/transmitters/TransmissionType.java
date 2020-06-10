@@ -2,6 +2,7 @@ package mekanism.api.transmitters;
 
 import mekanism.api.text.APILang;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.ILangEntry;
 import net.minecraft.tileentity.TileEntity;
 
 public enum TransmissionType implements IHasTranslationKey {
@@ -42,6 +43,10 @@ public enum TransmissionType implements IHasTranslationKey {
 
     public String getTransmission() {
         return transmission;
+    }
+
+    public ILangEntry getLangEntry() {
+        return langEntry;
     }
 
     @Override

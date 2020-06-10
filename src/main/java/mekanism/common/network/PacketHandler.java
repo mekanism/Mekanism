@@ -11,13 +11,13 @@ import mekanism.common.network.container.PacketUpdateContainerFloat;
 import mekanism.common.network.container.PacketUpdateContainerFloatingLong;
 import mekanism.common.network.container.PacketUpdateContainerFluidStack;
 import mekanism.common.network.container.PacketUpdateContainerFrequency;
-import mekanism.common.network.container.chemical.PacketUpdateContainerGasStack;
-import mekanism.common.network.container.chemical.PacketUpdateContainerInfusionStack;
 import mekanism.common.network.container.PacketUpdateContainerInt;
 import mekanism.common.network.container.PacketUpdateContainerItemStack;
 import mekanism.common.network.container.PacketUpdateContainerLong;
-import mekanism.common.network.container.chemical.PacketUpdateContainerPigmentStack;
 import mekanism.common.network.container.PacketUpdateContainerShort;
+import mekanism.common.network.container.chemical.PacketUpdateContainerGasStack;
+import mekanism.common.network.container.chemical.PacketUpdateContainerInfusionStack;
+import mekanism.common.network.container.chemical.PacketUpdateContainerPigmentStack;
 import mekanism.common.network.container.chemical.PacketUpdateContainerSlurryStack;
 import mekanism.common.network.container.list.PacketUpdateContainerFilterList;
 import mekanism.common.network.container.list.PacketUpdateContainerFrequencyList;
@@ -39,6 +39,7 @@ public class PacketHandler extends BasePacketHandler {
         //Client to server messages
         registerClientToServer(PacketRobit.class, PacketRobit::encode, PacketRobit::decode, PacketRobit::handle);
         registerClientToServer(PacketModeChange.class, PacketModeChange::encode, PacketModeChange::decode, PacketModeChange::handle);
+        registerClientToServer(PacketRadialModeChange.class, PacketRadialModeChange::encode, PacketRadialModeChange::decode, PacketRadialModeChange::handle);
         registerClientToServer(PacketNewFilter.class, PacketNewFilter::encode, PacketNewFilter::decode, PacketNewFilter::handle);
         registerClientToServer(PacketEditFilter.class, PacketEditFilter::encode, PacketEditFilter::decode, PacketEditFilter::handle);
         registerClientToServer(PacketConfigurationUpdate.class, PacketConfigurationUpdate::encode, PacketConfigurationUpdate::decode, PacketConfigurationUpdate::handle);
