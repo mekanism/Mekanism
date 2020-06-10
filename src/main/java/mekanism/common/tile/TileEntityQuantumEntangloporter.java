@@ -26,7 +26,7 @@ import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.chemical.QuantumEntangloporterChemicalTankHolder;

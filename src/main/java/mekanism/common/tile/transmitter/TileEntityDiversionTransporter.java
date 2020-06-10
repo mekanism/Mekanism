@@ -1,14 +1,18 @@
 package mekanism.common.tile.transmitter;
 
+import java.util.Arrays;
 import javax.annotation.Nonnull;
+import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
-import mekanism.api.tier.AlloyTier;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tier.TransporterTier;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -16,13 +20,16 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 
-public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporter {
+public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporterBase {
 
-    public int[] modes = {0, 0, 0, 0, 0, 0};
+    public DiversionControl[] modes;
 
     public TileEntityDiversionTransporter() {
-        super(MekanismBlocks.DIVERSION_TRANSPORTER);
+        super(MekanismBlocks.DIVERSION_TRANSPORTER, TransporterTier.BASIC);
+        modes = new DiversionControl[EnumUtils.DIRECTIONS.length];
+        Arrays.fill(modes, DiversionControl.DISABLED);
     }
 
     @Override
@@ -44,88 +51,107 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         }
     }
 
+    private void readModes(@Nonnull CompoundNBT tag) {
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            int index = i;
+            NBTUtils.setEnumIfPresent(tag, NBTConstants.MODE + index, DiversionControl::byIndexStatic, mode -> modes[index] = mode);
+        }
+    }
+
+    @Nonnull
+    private CompoundNBT writeModes(@Nonnull CompoundNBT nbtTags) {
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            nbtTags.putInt(NBTConstants.MODE + i, modes[i].ordinal());
+        }
+        return nbtTags;
+    }
+
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setIntArrayIfPresent(nbtTags, NBTConstants.MODES, modes -> this.modes = modes);
+        readModes(nbtTags);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putIntArray(NBTConstants.MODES, modes);
-        return nbtTags;
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
+        return writeModes(super.write(nbtTags));
     }
 
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            updateTag.putInt(NBTConstants.MODE + i, modes[i]);
-        }
-        return updateTag;
+        return writeModes(super.getReducedUpdateTag());
     }
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            int index = i;
-            NBTUtils.setIntIfPresent(tag, NBTConstants.MODE + index, mode -> modes[index] = mode);
-        }
+        readModes(tag);
     }
 
     @Override
-    protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
-        int newMode = (modes[side.ordinal()] + 1) % 3;
-        ILangEntry langEntry;
-        modes[side.ordinal()] = newMode;
-        switch (newMode) {
-            case 0:
-                langEntry = MekanismLang.DIVERSION_CONTROL_DISABLED;
-                break;
-            case 1:
-                langEntry = MekanismLang.DIVERSION_CONTROL_HIGH;
-                break;
-            case 2:
-                langEntry = MekanismLang.DIVERSION_CONTROL_LOW;
-                break;
-            default:
-                langEntry = MekanismLang.NONE;
-                break;
-        }
+    protected ActionResultType onConfigure(PlayerEntity player, Direction side) {
+        int index = side.ordinal();
+        DiversionControl newMode = modes[index].getNext();
+        modes[index] = newMode;
         refreshConnections();
         notifyTileChange();
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-              MekanismLang.TOGGLE_DIVERTER.translateColored(EnumColor.GRAY, EnumColor.RED, langEntry)));
+              MekanismLang.TOGGLE_DIVERTER.translateColored(EnumColor.GRAY, EnumColor.RED, newMode)));
         sendUpdatePacket();
         return ActionResultType.SUCCESS;
     }
 
     @Override
     public boolean canConnect(Direction side) {
-        if (!super.canConnect(side)) {
-            return false;
+        if (super.canConnect(side)) {
+            DiversionControl mode = modes[side.ordinal()];
+            if (mode == DiversionControl.HIGH) {
+                return isGettingPowered();
+            } else if (mode == DiversionControl.LOW) {
+                return !isGettingPowered();
+            }
+            return true;
         }
-        int mode = modes[side.ordinal()];
-        boolean redstone = MekanismUtils.isGettingPowered(getWorld(), getPos());
-        return (mode != 2 || !redstone) && (mode != 1 || redstone);
+        return false;
     }
 
+    private boolean isGettingPowered() {
+        return MekanismUtils.isGettingPowered(getWorld(), getPos());
+    }
+
+    @Nonnull
     @Override
     protected TransmitterModelData initModelData() {
         return new TransmitterModelData.Diversion();
     }
 
-    @Override
-    public EnumColor getRenderColor() {
-        return null;
-    }
+    public enum DiversionControl implements IIncrementalEnum<DiversionControl>, IHasTextComponent {
+        DISABLED(MekanismLang.DIVERSION_CONTROL_DISABLED),
+        HIGH(MekanismLang.DIVERSION_CONTROL_HIGH),
+        LOW(MekanismLang.DIVERSION_CONTROL_LOW);
 
-    @Override
-    protected boolean canUpgrade(AlloyTier tier) {
-        return false;
+        private static final DiversionControl[] MODES = values();
+        private final ILangEntry langEntry;
+
+        DiversionControl(ILangEntry langEntry) {
+            this.langEntry = langEntry;
+        }
+
+        @Override
+        public ITextComponent getTextComponent() {
+            return langEntry.translate();
+        }
+
+        @Nonnull
+        @Override
+        public DiversionControl byIndex(int index) {
+            return byIndexStatic(index);
+        }
+
+        public static DiversionControl byIndexStatic(int index) {
+            return MathUtils.getByIndexMod(MODES, index);
+        }
     }
 }

@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
@@ -44,9 +43,7 @@ import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -93,14 +90,6 @@ public class ChemicalUtil {
         STACK copy = (STACK) stack.copy();
         copy.setAmount(amount);
         return copy;
-    }
-
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    HANDLER[] getConnectedAcceptors(BlockPos pos, @Nullable World world, Set<Direction> sides, Capability<HANDLER> capability) {
-        HANDLER[] acceptors = (HANDLER[]) new IChemicalHandler[EnumUtils.DIRECTIONS.length];
-        EmitUtils.forEachSide(world, pos, sides,
-              (tile, side) -> CapabilityUtils.getCapability(tile, capability, side.getOpposite()).ifPresent(handler -> acceptors[side.ordinal()] = handler));
-        return acceptors;
     }
 
     /**

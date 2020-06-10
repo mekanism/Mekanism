@@ -65,7 +65,7 @@ public class DataHandlerUtils {
             return NBTConstants.CONTAINER;
         }
         INBTSerializable<CompoundNBT> obj = containers.get(0);
-        if (obj instanceof IChemicalTank<?, ?> || obj instanceof IFluidTank) {
+        if (obj instanceof IChemicalTank || obj instanceof IFluidTank) {
             return NBTConstants.TANK;
         } else if (obj instanceof IHeatCapacitor || obj instanceof IEnergyContainer) {
             return NBTConstants.CONTAINER;

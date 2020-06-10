@@ -15,10 +15,9 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
+import mekanism.common.content.transmitter.FluidNetwork;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
-import mekanism.common.transmitters.TransmitterImpl;
-import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -26,7 +25,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 @ParametersAreNonnullByDefault
 public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe> {
@@ -48,12 +46,11 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     @Override
     protected void render(TileEntityMechanicalPipe pipe, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        TransmitterImpl<IFluidHandler, FluidNetwork, FluidStack> transmitter = pipe.getTransmitter();
-        if (transmitter.hasTransmitterNetwork()) {
-            FluidNetwork network = transmitter.getTransmitterNetwork();
-            if (!network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.fluidScale > 0) {
+        if (pipe.hasTransmitterNetwork()) {
+            FluidNetwork network = pipe.getTransmitterNetwork();
+            if (!network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.currentScale > 0) {
                 FluidStack fluidStack = network.lastFluid;
-                float fluidScale = network.fluidScale;
+                float fluidScale = network.currentScale;
                 int stage;
                 if (fluidStack.getFluid().getAttributes().isGaseous(fluidStack)) {
                     stage = stages - 1;
@@ -182,13 +179,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 model.maxZ = 0.75 - offset;
                 break;
         }
-        if (cachedFluids.containsKey(fluid)) {
-            cachedFluids.get(fluid).put(stage, model);
-        } else {
-            Int2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
-            map.put(stage, model);
-            cachedFluids.put(fluid, map);
-        }
+        cachedFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>()).putIfAbsent(stage, model);
         return model;
     }
 }

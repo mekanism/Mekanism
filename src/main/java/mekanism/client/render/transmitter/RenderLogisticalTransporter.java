@@ -1,8 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +19,8 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter.DiversionControl;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
@@ -41,9 +40,9 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 
 @ParametersAreNonnullByDefault
-public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
+public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
 
-    private static Map<Direction, Int2ObjectMap<Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
+    private static Map<Direction, Map<DiversionControl, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static TextureAtlasSprite gunpowderIcon;
     private static TextureAtlasSprite torchOffIcon;
     private static TextureAtlasSprite torchOnIcon;
@@ -64,9 +63,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     }
 
     @Override
-    protected void render(TileEntityLogisticalTransporter transporter, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+    protected void render(TileEntityLogisticalTransporterBase transporter, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        Collection<TransporterStack> inTransit = transporter.getTransmitter().getTransit();
+        Collection<TransporterStack> inTransit = transporter.getTransit();
         BlockPos pos = transporter.getPos();
         if (!inTransit.isEmpty()) {
             matrix.push();
@@ -77,7 +76,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
             for (TransporterStack stack : reducedTransit) {
                 entityItem.setItem(stack.itemStack);
-                float[] stackPos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partial);
+                float[] stackPos = TransporterUtils.getStackPosition(transporter, stack, partial);
                 matrix.push();
                 matrix.translate(stackPos[0], stackPos[1], stackPos[2]);
                 matrix.scale(0.75F, 0.75F, 0.75F);
@@ -97,7 +96,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     matrix.push();
                     matrix.scale(0.5F, 0.5F, 0.5F);
                     matrix.translate(0.5, 0.5, 0.5);
-                    int mode = ((TileEntityDiversionTransporter) transporter).modes[rayTraceResult.getFace().ordinal()];
+                    DiversionControl mode = ((TileEntityDiversionTransporter) transporter).modes[rayTraceResult.getFace().ordinal()];
                     MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getFace(), mode), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
                           MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT);
                     matrix.pop();
@@ -127,19 +126,19 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         return reducedTransit;
     }
 
-    private Model3D getOverlayModel(Direction side, int mode) {
+    private Model3D getOverlayModel(Direction side, DiversionControl mode) {
         if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(mode)) {
             return cachedOverlays.get(side).get(mode);
         }
         TextureAtlasSprite icon = null;
         switch (mode) {
-            case 0:
+            case DISABLED:
                 icon = gunpowderIcon;
                 break;
-            case 1:
+            case HIGH:
                 icon = torchOnIcon;
                 break;
-            case 2:
+            case LOW:
                 icon = torchOffIcon;
                 break;
         }
@@ -203,13 +202,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             default:
                 break;
         }
-        if (cachedOverlays.containsKey(side)) {
-            cachedOverlays.get(side).put(mode, model);
-        } else {
-            Int2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
-            map.put(mode, model);
-            cachedOverlays.put(side, map);
-        }
+        cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(DiversionControl.class)).put(mode, model);
         return model;
     }
 

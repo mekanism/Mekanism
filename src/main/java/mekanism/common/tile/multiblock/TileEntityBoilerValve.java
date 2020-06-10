@@ -73,8 +73,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
-            BoilerValveMode mode = getMode();
-            mode = BoilerValveMode.values()[(mode.ordinal() + 1) % BoilerValveMode.values().length];
+            BoilerValveMode mode = getMode().getNext();
             world.setBlockState(pos, getBlockState().with(AttributeStateBoilerValveMode.modeProperty, mode));
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                   MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode)));
@@ -82,8 +81,9 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         return ActionResultType.SUCCESS;
     }
 
+    @Nonnull
     @Override
-    public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
+    public FluidStack insertFluid(@Nonnull FluidStack stack, Direction side, @Nonnull Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
         if (ret.getAmount() < stack.getAmount() && action.execute()) {
             getMultiblock().triggerValveTransfer(this);

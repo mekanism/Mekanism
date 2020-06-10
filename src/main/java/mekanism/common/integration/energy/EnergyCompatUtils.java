@@ -1,6 +1,7 @@
 package mekanism.common.integration.energy;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -12,24 +13,27 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
-import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullConsumer;
 
 public class EnergyCompatUtils {
 
-    private static final List<IEnergyCompat> energyCompats = Arrays.asList(
+    private static final List<IEnergyCompat> energyCompats = Collections.unmodifiableList(Arrays.asList(
           //We always have our own energy capability as the first one we check
           new StrictEnergyCompat(),
           //Note: We check the Flux Networks capability above Forge's so that we allow it to use the higher throughput amount supported by Flux Networks
           new FNEnergyCompat(),
           new ForgeEnergyCompat()
-    );
+    ));
+
+    public static List<IEnergyCompat> getCompats() {
+        return energyCompats;
+    }
 
     /**
      * Checks if it is a known and enabled energy capability
@@ -54,12 +58,16 @@ public class EnergyCompatUtils {
         return energyCompats.stream().filter(IEnergyCompat::isUsable).map(IEnergyCompat::getCapability).collect(Collectors.toList());
     }
 
+    private static boolean isTileValid(@Nullable TileEntity tile) {
+        return tile != null && !tile.isRemoved() && tile.hasWorld();
+    }
+
     public static boolean hasStrictEnergyHandler(@Nonnull ItemStack stack) {
         return !stack.isEmpty() && hasStrictEnergyHandler(stack, null);
     }
 
-    public static boolean hasStrictEnergyHandler(TileEntity tile, Direction side) {
-        return tile != null && tile.getWorld() != null && hasStrictEnergyHandler((ICapabilityProvider) tile, side);
+    public static boolean hasStrictEnergyHandler(@Nullable TileEntity tile, Direction side) {
+        return isTileValid(tile) && hasStrictEnergyHandler((ICapabilityProvider) tile, side);
     }
 
     private static boolean hasStrictEnergyHandler(ICapabilityProvider provider, Direction side) {
@@ -72,57 +80,34 @@ public class EnergyCompatUtils {
         return false;
     }
 
-    /**
-     * Utility method for universal cables to perform a similar function to TileEntitySidedPipe#isAcceptorAndListen
-     *
-     * @apiNote This is a helper specifically for universal cables and is likely to be removed/changed in V10.
-     */
-    @Deprecated//TODO - V10: Re-evaluate this
-    public static boolean hasStrictEnergyHandlerAndListen(TileEntity tile, Direction side, NonNullConsumer<LazyOptional<?>> listener) {
-        if (tile != null && tile.getWorld() != null) {
-            if (tile.getWorld().isRemote()) {
-                //If we are on the client we don't end up adding any invalidation listeners
-                // so just fallback to the normal checks
-                return hasStrictEnergyHandler((ICapabilityProvider) tile, side);
-            }
-            for (IEnergyCompat energyCompat : energyCompats) {
-                if (energyCompat.isUsable()) {
-                    //Note: Capability should not be null due to us validating the compat is usable
-                    LazyOptional<?> lazyOptional = CapabilityUtils.getCapability(tile, energyCompat.getCapability(), side);
-                    if (lazyOptional.isPresent()) {
-                        //If the capability is present add a listener so that once it gets invalidated we recheck that side
-                        CapabilityUtils.addListener(lazyOptional, listener);
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    @Nullable
+    @Nullable//TODO: Transition usages of this to getLazyStrictEnergyHandler?
     public static IStrictEnergyHandler getStrictEnergyHandler(@Nonnull ItemStack stack) {
-        return stack.isEmpty() ? null : getStrictEnergyHandler(stack, null);
+        return MekanismUtils.toOptional(getLazyStrictEnergyHandler(stack)).orElse(null);
     }
 
-    @Nullable
-    public static IStrictEnergyHandler getStrictEnergyHandler(TileEntity tile, Direction side) {
-        return tile == null || tile.getWorld() == null ? null : getStrictEnergyHandler((ICapabilityProvider) tile, side);
+    @Nonnull
+    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@Nonnull ItemStack stack) {
+        return stack.isEmpty() ? LazyOptional.empty() : getLazyStrictEnergyHandler(stack, null);
     }
 
-    @Nullable
-    private static IStrictEnergyHandler getStrictEnergyHandler(ICapabilityProvider provider, Direction side) {
+    @Nonnull
+    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@Nullable TileEntity tile, Direction side) {
+        return isTileValid(tile) ? getLazyStrictEnergyHandler((ICapabilityProvider) tile, side) : LazyOptional.empty();
+    }
+
+    @Nonnull
+    private static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, Direction side) {
         //TODO: Eventually look into making it so that we cache the handler we get back. Maybe by passing a listener
         // to this that we can give to the capability as we wrap the result into
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.isUsable()) {
-                IStrictEnergyHandler handler = energyCompat.getStrictEnergyHandler(provider, side);
-                if (handler != null) {
+                LazyOptional<IStrictEnergyHandler> handler = energyCompat.getLazyStrictEnergyHandler(provider, side);
+                if (handler.isPresent()) {
                     return handler;
                 }
             }
         }
-        return null;
+        return LazyOptional.empty();
     }
 
     /**

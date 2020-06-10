@@ -73,7 +73,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
         } else if (item instanceof BlockItem) {
             TileEntityMekanism tile = null;
             Block block = ((BlockItem) item).getBlock();
-            if (block instanceof IHasTileEntity<?>) {
+            if (block instanceof IHasTileEntity) {
                 TileEntity tileEntity = ((IHasTileEntity<?>) block).getTileType().create();
                 if (tileEntity instanceof TileEntityMekanism) {
                     tile = (TileEntityMekanism) tileEntity;

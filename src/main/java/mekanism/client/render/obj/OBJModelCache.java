@@ -18,15 +18,15 @@ import net.minecraftforge.client.model.obj.OBJModel.ModelSettings;
 
 public class OBJModelCache {
 
-    private static Map<ResourceLocation, OBJModelData> modelMap = new Object2ObjectOpenHashMap<>();
-    private static Set<Runnable> callbacks = new HashSet<>();
+    private static final Map<ResourceLocation, OBJModelData> modelMap = new Object2ObjectOpenHashMap<>();
+    private static final Set<Runnable> callbacks = new HashSet<>();
 
     public static OBJModelData MEKASUIT = register(Mekanism.rl("models/entity/mekasuit.obj"));
     public static OBJModelData MEKASUIT_MODULES = register(Mekanism.rl("models/entity/mekasuit_modules.obj"));
 
     public static void onBake(ModelBakeEvent evt) {
-        modelMap.values().forEach(data -> data.reload());
-        callbacks.forEach(c -> c.run());
+        modelMap.values().forEach(OBJModelData::reload);
+        callbacks.forEach(Runnable::run);
     }
 
     public static void reloadCallback(Runnable callback) {
@@ -41,9 +41,9 @@ public class OBJModelCache {
 
     public static class OBJModelData {
 
-        private ResourceLocation rl;
+        private final ResourceLocation rl;
         private OBJModel model;
-        private Map<IModelConfiguration, IBakedModel> bakedMap = new Object2ObjectOpenHashMap<>();
+        private final Map<IModelConfiguration, IBakedModel> bakedMap = new Object2ObjectOpenHashMap<>();
 
         private OBJModelData(ResourceLocation rl) {
             this.rl = rl;

@@ -57,7 +57,7 @@ public class PacketDropperUse {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.pos);
                 if (tile != null) {
-                    if (tile instanceof TileEntityMultiblock<?>) {
+                    if (tile instanceof TileEntityMultiblock) {
                         MultiblockData structure = ((TileEntityMultiblock<?>) tile).getMultiblock();
                         if (structure.isFormed()) {
                             handleTankType(structure, message, player, stack);

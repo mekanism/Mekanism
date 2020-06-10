@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.SlurryDeferredRegister;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.resource.PrimaryResource;
+import mekanism.common.util.EnumUtils;
 
 public class MekanismSlurries {
 
@@ -15,7 +16,7 @@ public class MekanismSlurries {
     public static final Map<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> PROCESSED_RESOURCES = new LinkedHashMap<>();
 
     static {
-        for (PrimaryResource resource : PrimaryResource.values()) {
+        for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
             PROCESSED_RESOURCES.put(resource, SLURRIES.register(resource));
         }
     }

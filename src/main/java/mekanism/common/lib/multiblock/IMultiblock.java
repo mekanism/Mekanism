@@ -54,6 +54,6 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
     }
 
     default FormationProtocol<T> createFormationProtocol() {
-        return new FormationProtocol<T>(this, getStructure());
+        return new FormationProtocol<>(this, getStructure());
     }
 }

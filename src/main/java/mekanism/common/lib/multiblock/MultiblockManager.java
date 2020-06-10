@@ -111,7 +111,7 @@ public class MultiblockManager<T extends MultiblockData> {
     private class CacheWrapper {
 
         private MultiblockCache<T> cache;
-        private Set<Coord4D> locations = new ObjectOpenHashSet<>();
+        private final Set<Coord4D> locations = new ObjectOpenHashSet<>();
 
         public MultiblockCache<T> getCache() {
             return cache;

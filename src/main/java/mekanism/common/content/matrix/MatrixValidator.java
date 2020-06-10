@@ -48,8 +48,8 @@ public class MatrixValidator extends CuboidStructureValidator<MatrixMultiblockDa
 
     @Override
     public FormationResult postcheck(MatrixMultiblockData structure, Set<BlockPos> innerNodes) {
-        cells.forEach(cell -> structure.addCell(cell));
-        providers.forEach(provider -> structure.addProvider(provider));
+        cells.forEach(structure::addCell);
+        providers.forEach(structure::addProvider);
         return FormationResult.SUCCESS;
     }
 }

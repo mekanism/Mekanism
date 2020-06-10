@@ -4,7 +4,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;

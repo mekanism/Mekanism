@@ -14,7 +14,6 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -23,13 +22,12 @@ import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.proxy.ProxyHeatHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
+import mekanism.common.content.transmitter.HeatNetwork;
 import mekanism.common.lib.Color;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
-import mekanism.common.transmitters.grid.HeatNetwork;
 import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
@@ -38,14 +36,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatHandler, HeatNetwork, Void> implements ITileHeatHandler {
+public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatHandler, HeatNetwork, TileEntityThermodynamicConductor> implements ITileHeatHandler {
 
     public final ConductorTier tier;
 
-    public double clientTemperature = HeatAPI.AMBIENT_TEMP;
+    private double clientTemperature = HeatAPI.AMBIENT_TEMP;
 
     private final List<IHeatCapacitor> capacitors;
-    public BasicHeatCapacitor buffer;
+    public final BasicHeatCapacitor buffer;
 
     public TileEntityThermodynamicConductor(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -56,12 +54,12 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public HeatNetwork createNewNetwork() {
+    public HeatNetwork createEmptyNetwork() {
         return new HeatNetwork();
     }
 
     @Override
-    public HeatNetwork createNewNetworkWithID(UUID networkID) {
+    public HeatNetwork createEmptyNetworkWithID(UUID networkID) {
         return new HeatNetwork(networkID);
     }
 
@@ -71,22 +69,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public long getCapacity() {
-        return 0;
-    }
-
-    @Override
-    public Void releaseShare() {
-        return null;
-    }
-
-    @Override
     public void takeShare() {
-    }
-
-    @Override
-    public Void getShare() {
-        return null;
     }
 
     @Override
@@ -96,30 +79,19 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER_CAPABILITY);
-    }
-
-    @Override
-    public TransmissionType getTransmissionType() {
-        return TransmissionType.HEAT;
-    }
-
-    @Override
-    public IHeatHandler getCachedAcceptor(Direction side) {
-        return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
+        return acceptorCache.isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER_CAPABILITY);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT write(@Nonnull CompoundNBT tag) {
         super.write(tag);
-        buffer.serializeNBT();
         tag.put(NBTConstants.HEAT_CAPACITORS, DataHandlerUtils.writeContainers(getHeatCapacitors(null)));
         return tag;
     }
 
     @Override
-    public void read(CompoundNBT tag) {
+    public void read(@Nonnull CompoundNBT tag) {
         super.read(tag);
         DataHandlerUtils.readContainers(getHeatCapacitors(null), tag.getList(NBTConstants.HEAT_CAPACITORS, NBT.TAG_COMPOUND));
     }
@@ -135,7 +107,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        NBTUtils.setDoubleIfPresent(tag, NBTConstants.TEMPERATURE, heat -> buffer.setHeat(heat));
+        NBTUtils.setDoubleIfPresent(tag, NBTConstants.TEMPERATURE, buffer::setHeat);
     }
 
     public Color getBaseColor() {
@@ -150,7 +122,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public void onContentsChanged() {
-        if (!world.isRemote()) {
+        if (!isRemote()) {
             if (Math.abs(buffer.getTemperature() - clientTemperature) > (buffer.getTemperature() / 20)) {
                 clientTemperature = buffer.getTemperature();
                 sendUpdatePacket();
@@ -163,8 +135,9 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public IHeatHandler getAdjacent(Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
-            TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-            return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
+            //Note: We use the acceptor cache as the heat network is different and the transmitters count the other transmitters in the
+            // network as valid acceptors
+            return MekanismUtils.toOptional(acceptorCache.getConnectedAcceptor(side)).orElse(null);
         }
         return null;
     }

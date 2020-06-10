@@ -5,6 +5,7 @@ import mekanism.common.inventory.container.slot.ArmorSlot;
 import mekanism.common.inventory.container.slot.OffhandSlot;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityModificationStation;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.network.PacketBuffer;
@@ -24,7 +25,7 @@ public class ModificationStationContainer extends MekanismTileContainer<TileEnti
         super.addInventorySlots(inv);
 
         for (int index = 0; index < inv.armorInventory.size(); index++) {
-            final EquipmentSlotType slotType = EquipmentSlotType.values()[2 + inv.armorInventory.size() - index - 1];
+            final EquipmentSlotType slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + inv.armorInventory.size() - index - 1];
             addSlot(new ArmorSlot(inv, 36 + inv.armorInventory.size() - index - 1, 8, 8 + index * 18, slotType));
         }
         // offhand

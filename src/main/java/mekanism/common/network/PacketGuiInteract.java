@@ -170,7 +170,7 @@ public class PacketGuiInteract {
             }
         }),
         AUTO_SORT_BUTTON((tile, player, extra) -> {
-            if (tile instanceof TileEntityFactory<?>) {
+            if (tile instanceof TileEntityFactory) {
                 ((TileEntityFactory<?>) tile).toggleSorting();
             }
         }),

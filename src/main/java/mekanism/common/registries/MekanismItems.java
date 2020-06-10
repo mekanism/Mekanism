@@ -53,6 +53,7 @@ import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.QIODriveTier;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
@@ -185,8 +186,8 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> STEEL_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.STEEL);
 
     static {
-        for (ResourceType type : ResourceType.values()) {
-            for (PrimaryResource resource : PrimaryResource.values()) {
+        for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
+            for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
                 if (resource.has(type)) {
                     PROCESSED_RESOURCES.put(type, resource, ITEMS.register(type.getRegistryPrefix() + "_" + resource.getName(), props -> new ItemProcessedResource(props, type, resource)));
                 }

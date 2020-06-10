@@ -2,8 +2,13 @@ package mekanism.common.util;
 
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
+import mekanism.common.content.blocktype.FactoryType;
+import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
+import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.resource.OreType;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ChemicalTankTier;
@@ -16,14 +21,19 @@ import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
+import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.UnitDisplayUtils.FloatingLongMeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
-import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.AxisDirection;
 
 public class EnumUtils {
+
+    /**
+     * Cached collection of armor slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
+     */
+    public static final EquipmentSlotType[] ARMOR_SLOTS = new EquipmentSlotType[]{EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS,
+                                                                                  EquipmentSlotType.FEET};
 
     /**
      * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
@@ -41,16 +51,6 @@ public class EnumUtils {
      * Cached value of {@link RelativeSide#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final RelativeSide[] SIDES = RelativeSide.values();
-
-    /**
-     * Cached value of {@link AxisDirection#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final AxisDirection[] AXIS_DIRECTIONS = AxisDirection.values();
-
-    /**
-     * Cached value of {@link TemperatureUnit#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final TemperatureUnit[] TEMPERATURE_UNITS = TemperatureUnit.values();
 
     /**
      * Cached value of {@link MeasurementUnit#values()}. DO NOT MODIFY THIS LIST.
@@ -128,9 +128,9 @@ public class EnumUtils {
     public static final FactoryTier[] FACTORY_TIERS = FactoryTier.values();
 
     /**
-     * Cached value of {@link ConfiguratorMode#values()}. DO NOT MODIFY THIS LIST.
+     * Cached value of {@link FactoryType#values()}. DO NOT MODIFY THIS LIST.
      */
-    public static final ConfiguratorMode[] CONFIGURATOR_MODES = ConfiguratorMode.values();
+    public static final FactoryType[] FACTORY_TYPES = FactoryType.values();
 
     /**
      * Cached value of {@link Upgrade#values()}. DO NOT MODIFY THIS LIST.
@@ -138,7 +138,37 @@ public class EnumUtils {
     public static final Upgrade[] UPGRADES = Upgrade.values();
 
     /**
-     * Cached collection of armor slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
+     * Cached value of {@link RadiationScale#values()}. DO NOT MODIFY THIS LIST.
      */
-    public static final EquipmentSlotType[] ARMOR_SLOTS = new EquipmentSlotType[] { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
+    public static final RadiationScale[] RADIATION_SCALES = RadiationScale.values();
+
+    /**
+     * Cached value of {@link SubstanceType#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final SubstanceType[] SUBSTANCES = SubstanceType.values();
+
+    /**
+     * Cached value of {@link CacheSubstance#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final CacheSubstance[] CACHE_SUBSTANCES = CacheSubstance.values();
+
+    /**
+     * Cached value of {@link OreType#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final OreType[] ORE_TYPES = OreType.values();
+
+    /**
+     * Cached value of {@link PrimaryResource#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final PrimaryResource[] PRIMARY_RESOURCES = PrimaryResource.values();
+
+    /**
+     * Cached value of {@link ResourceType#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final ResourceType[] RESOURCE_TYPES = ResourceType.values();
+
+    /**
+     * Cached value of {@link EquipmentSlotType#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final EquipmentSlotType[] EQUIPMENT_SLOT_TYPES = EquipmentSlotType.values();
 }

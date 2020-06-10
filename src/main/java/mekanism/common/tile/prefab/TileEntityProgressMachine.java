@@ -51,7 +51,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
         return nbtTags;

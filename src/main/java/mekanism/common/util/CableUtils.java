@@ -5,23 +5,14 @@ import java.util.EnumSet;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.distribution.target.EnergyAcceptorTarget;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public final class CableUtils {
-
-    public static IStrictEnergyHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<Direction> sides) {
-        IStrictEnergyHandler[] acceptors = new IStrictEnergyHandler[EnumUtils.DIRECTIONS.length];
-        EmitUtils.forEachSide(world, pos, sides, (tile, side) -> acceptors[side.ordinal()] = EnergyCompatUtils.getStrictEnergyHandler(tile, side.getOpposite()));
-        return acceptors;
-    }
 
     public static void emit(IEnergyContainer energyContainer, TileEntity from) {
         emit(EnumSet.allOf(Direction.class), energyContainer, from);
@@ -54,12 +45,9 @@ public final class CableUtils {
         EnergyAcceptorTarget target = new EnergyAcceptorTarget();
         EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
             //Insert to access side
-            final Direction accessSide = side.getOpposite();
+            Direction accessSide = side.getOpposite();
             //Collect cap
-            IStrictEnergyHandler strictEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(acceptor, accessSide);
-            if (strictEnergyHandler != null) {
-                target.addHandler(accessSide, strictEnergyHandler);
-            }
+            EnergyCompatUtils.getLazyStrictEnergyHandler(acceptor, accessSide).ifPresent(strictEnergyHandler -> target.addHandler(accessSide, strictEnergyHandler));
         });
 
         int curHandlers = target.getHandlers().size();

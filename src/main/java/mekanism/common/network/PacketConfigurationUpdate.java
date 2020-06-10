@@ -3,7 +3,7 @@ package mekanism.common.network;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;

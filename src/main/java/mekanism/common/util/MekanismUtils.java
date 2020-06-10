@@ -10,7 +10,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
@@ -733,7 +732,7 @@ public final class MekanismUtils {
      * @return if the chunk is being vibrated
      */
     public static boolean isChunkVibrated(ChunkPos chunk, DimensionType dimension) {
-        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == dimension && coord.x >> 4 == chunk.x && coord.z >> 4 == chunk.z);
+        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == dimension && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
     }
 
     /**
@@ -782,19 +781,27 @@ public final class MekanismUtils {
     }
 
     /**
-     * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+     * A method used to find the Direction represented by the distance of the defined Coord4D. Most likely won't have many applicable uses.
      *
-     * @param world    - world
-     * @param chunkMap - cached chunk map
-     * @param coord    - coordinates
-     *
-     * @return tile entity if found, null if either not found or not loaded
+     * @return Direction representing the side the defined relative Coord4D is on to this
      */
-    @Nullable
-    @Contract("null, _, _ -> null")
-    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull Coord4D coord) {
-        return getTileEntity(world, chunkMap, coord.getPos());
+    public static Direction sideDifference(BlockPos pos, BlockPos other) {
+        BlockPos diff = pos.subtract(other);
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            if (side.getXOffset() == diff.getX() && side.getYOffset() == diff.getY() && side.getZOffset() == diff.getZ()) {
+                return side;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the distance to a defined Coord4D.
+     *
+     * @return the distance to the defined Coord4D
+     */
+    public static double distanceBetween(BlockPos start, BlockPos end) {
+        return MathHelper.sqrt(start.distanceSq(end));
     }
 
     /**
@@ -810,6 +817,27 @@ public final class MekanismUtils {
     @Nullable
     @Contract("null, _, _ -> null")
     public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
+        //Get the tile entity using the chunk we found/had cached
+        return getTileEntity(getChunkForTile(world, chunkMap, pos), pos);
+    }
+
+    @Nullable
+    @Contract("_, null, _, _ -> null")
+    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
+        return getTileEntity(clazz, world, chunkMap, pos, false);
+    }
+
+    @Nullable
+    @Contract("_, null, _, _, _ -> null")
+    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos,
+          boolean logWrongType) {
+        //Get the tile entity using the chunk we found/had cached
+        return getTileEntity(clazz, getChunkForTile(world, chunkMap, pos), pos, logWrongType);
+    }
+
+    @Nullable
+    @Contract("null, _, _ -> null")
+    private static IChunk getChunkForTile(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
         if (world == null) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
             return null;
@@ -827,8 +855,7 @@ public final class MekanismUtils {
                 chunkMap.put(combinedChunk, chunk);
             }
         }
-        //Get the tile entity using the chunk we found/had cached
-        return getTileEntity(chunk, pos);
+        return chunk;
     }
 
     /**

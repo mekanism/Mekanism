@@ -6,10 +6,9 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.function.Supplier;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.tile.interfaces.ILogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
-import mekanism.common.transmitters.TransporterImpl;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter.DiversionControl;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,8 +23,8 @@ public class PacketTransporterUpdate {
     private final boolean isSync;
     private final BlockPos pos;
 
-    private ILogisticalTransporter transporter;
-    private int[] modes;
+    private TileEntityLogisticalTransporterBase transporter;
+    private DiversionControl[] modes;
 
     //Sync
     private int stackId;
@@ -34,26 +33,26 @@ public class PacketTransporterUpdate {
     private Int2ObjectMap<TransporterStack> updates;
     private IntSet deletes;
 
-    public PacketTransporterUpdate(TileEntityLogisticalTransporter tile, int stackId, TransporterStack stack) {
+    public PacketTransporterUpdate(TileEntityLogisticalTransporterBase tile, int stackId, TransporterStack stack) {
         this(tile, true);
         this.stackId = stackId;
         this.stack = stack;
     }
 
-    public PacketTransporterUpdate(TileEntityLogisticalTransporter tile, Int2ObjectMap<TransporterStack> updates, IntSet deletes) {
+    public PacketTransporterUpdate(TileEntityLogisticalTransporterBase tile, Int2ObjectMap<TransporterStack> updates, IntSet deletes) {
         this(tile, false);
         this.updates = updates;
         this.deletes = deletes;
     }
 
-    private PacketTransporterUpdate(TileEntityLogisticalTransporter tile, boolean isSync) {
+    private PacketTransporterUpdate(TileEntityLogisticalTransporterBase transporter, boolean isSync) {
         this.isSync = isSync;
-        pos = tile.getPos();
-        isDiversion = tile instanceof TileEntityDiversionTransporter;
-        if (isDiversion) {
-            modes = ((TileEntityDiversionTransporter) tile).modes;
+        this.pos = transporter.getPos();
+        this.isDiversion = transporter instanceof TileEntityDiversionTransporter;
+        if (this.isDiversion) {
+            this.modes = ((TileEntityDiversionTransporter) transporter).modes;
         }
-        transporter = tile.getTransmitter();
+        this.transporter = transporter;
     }
 
     private PacketTransporterUpdate(BlockPos pos, boolean isSync, boolean isDiversion) {
@@ -68,17 +67,16 @@ public class PacketTransporterUpdate {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntityLogisticalTransporter tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporter.class, player.world, message.pos);
+            TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, player.world, message.pos);
             if (tile != null) {
-                TransporterImpl transmitter = tile.getTransmitter();
                 if (message.isSync) {
-                    transmitter.addStack(message.stackId, message.stack);
+                    tile.addStack(message.stackId, message.stack);
                 } else {
                     for (Int2ObjectMap.Entry<TransporterStack> entry : message.updates.int2ObjectEntrySet()) {
-                        transmitter.addStack(entry.getIntKey(), entry.getValue());
+                        tile.addStack(entry.getIntKey(), entry.getValue());
                     }
                     for (int toDelete : message.deletes) {
-                        transmitter.deleteStack(toDelete);
+                        tile.deleteStack(toDelete);
                     }
                 }
                 if (message.isDiversion && tile instanceof TileEntityDiversionTransporter) {
@@ -112,7 +110,7 @@ public class PacketTransporterUpdate {
         }
         if (pkt.isDiversion) {
             for (int i = 0; i < pkt.modes.length; i++) {
-                buf.writeVarInt(pkt.modes[i]);
+                buf.writeEnumValue(pkt.modes[i]);
             }
         }
     }
@@ -137,9 +135,9 @@ public class PacketTransporterUpdate {
             }
         }
         if (packet.isDiversion) {
-            packet.modes = new int[EnumUtils.DIRECTIONS.length];
+            packet.modes = new DiversionControl[EnumUtils.DIRECTIONS.length];
             for (int i = 0; i < packet.modes.length; i++) {
-                packet.modes[i] = buf.readVarInt();
+                packet.modes[i] = buf.readEnumValue(DiversionControl.class);
             }
         }
         return packet;

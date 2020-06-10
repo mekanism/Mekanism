@@ -1,9 +1,8 @@
 package mekanism.client.render.tileentity;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import mekanism.api.Coord4D;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
@@ -27,14 +26,14 @@ public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<Ti
           IProfiler profiler) {
         if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && !tile.getMultiblock().inputTank.isEmpty()) {
             FluidRenderData data = new FluidRenderData(tile.getMultiblock().inputTank.getFluid());
-            data.location = new Coord4D(tile.getMultiblock().renderLocation.add(1, 0, 1), tile.getWorld());
+            data.location = tile.getMultiblock().renderLocation.add(1, 0, 1);
             data.height = tile.getMultiblock().height() - 2;
             data.length = 2;
             data.width = 2;
             matrix.push();
             BlockPos pos = tile.getPos();
             int glow = data.calculateGlowLight(light);
-            matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
+            matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
             IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
             MekanismRenderer.renderObject(ModelRenderer.getModel(data, Math.min(1, tile.getMultiblock().prevScale)), matrix, buffer,
                   data.getColorARGB(tile.getMultiblock().prevScale), glow);

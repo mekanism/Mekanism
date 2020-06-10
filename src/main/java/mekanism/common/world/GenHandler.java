@@ -1,7 +1,7 @@
 package mekanism.common.world;
 
 import com.google.common.collect.Lists;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 import javax.annotation.Nullable;
@@ -13,6 +13,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.registries.MekanismPlacements;
 import mekanism.common.resource.OreType;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -32,31 +33,29 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class GenHandler {
 
-    private static final Map<OreType, ConfiguredFeature<?, ?>> ORES = new Object2ObjectOpenHashMap<>();
-    private static final Map<OreType, ConfiguredFeature<?, ?>> ORE_RETROGENS = new Object2ObjectOpenHashMap<>();
+    private static final Map<OreType, ConfiguredFeature<?, ?>> ORES = new EnumMap<>(OreType.class);
+    private static final Map<OreType, ConfiguredFeature<?, ?>> ORE_RETROGENS = new EnumMap<>(OreType.class);
 
     private static ConfiguredFeature<?, ?> SALT_FEATURE;
     private static ConfiguredFeature<?, ?> SALT_RETROGEN_FEATURE;
 
     public static void setupWorldGeneration() {
-        for (OreType type : OreType.values()) {
+        for (OreType type : EnumUtils.ORE_TYPES) {
             ORES.put(type, getOreFeature(MekanismBlocks.ORES.get(type), MekanismConfig.world.ores.get(type), Feature.ORE));
         }
-
         SALT_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt, Placement.COUNT_TOP_SOLID);
         //Retrogen features
         if (MekanismConfig.world.enableRegeneration.get()) {
-            for (OreType type : OreType.values()) {
+            for (OreType type : EnumUtils.ORE_TYPES) {
                 ORE_RETROGENS.put(type, getOreFeature(MekanismBlocks.ORES.get(type), MekanismConfig.world.ores.get(type), MekanismFeatures.ORE_RETROGEN.getFeature()));
             }
-
             SALT_RETROGEN_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt, MekanismPlacements.TOP_SOLID_RETROGEN.getPlacement());
         }
         ForgeRegistries.BIOMES.forEach(biome -> {
             if (isValidBiome(biome)) {
                 //Add ores
-                for (OreType type : OreType.values()) {
-                    addFeature(biome, ORES.get(type));
+                for (ConfiguredFeature<?, ?> feature : ORES.values()) {
+                    addFeature(biome, feature);
                 }
                 //Add salt
                 addFeature(biome, SALT_FEATURE);
@@ -104,8 +103,8 @@ public class GenHandler {
         Biome biome = world.getBiome(blockPos);
         boolean generated = false;
         if (isValidBiome(biome) && world.chunkExists(chunkX, chunkZ)) {
-            for (OreType type : OreType.values()) {
-                generated |= placeFeature(ORE_RETROGENS.get(type), world, random, blockPos);
+            for (ConfiguredFeature<?, ?> feature : ORE_RETROGENS.values()) {
+                generated |= placeFeature(feature, world, random, blockPos);
             }
             generated |= placeFeature(SALT_RETROGEN_FEATURE, world, random, blockPos);
         }

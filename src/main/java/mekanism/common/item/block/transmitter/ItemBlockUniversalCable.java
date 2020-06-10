@@ -25,6 +25,7 @@ public class ItemBlockUniversalCable extends ItemBlockMultipartAble<BlockUnivers
     }
 
     @Nonnull
+    @Override
     public CableTier getTier() {
         return Attribute.getTier(getBlock(), CableTier.class);
     }

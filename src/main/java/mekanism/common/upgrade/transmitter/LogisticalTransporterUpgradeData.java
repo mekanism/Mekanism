@@ -1,15 +1,20 @@
 package mekanism.common.upgrade.transmitter;
 
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
-import mekanism.common.transmitters.TransporterImpl;
-import net.minecraft.nbt.CompoundNBT;
+import javax.annotation.Nullable;
+import mekanism.api.text.EnumColor;
+import mekanism.common.lib.transmitter.ConnectionType;
+import net.minecraft.nbt.ListNBT;
 
 public class LogisticalTransporterUpgradeData extends TransmitterUpgradeData {
 
-    public final CompoundNBT nbt;
+    @Nullable
+    public final EnumColor color;
+    public final ListNBT stacks;
 
-    public LogisticalTransporterUpgradeData(boolean redstoneReactive, ConnectionType[] connectionTypes, TransporterImpl transmitter) {
+    //Note: Currently redstone reactive is always false here
+    public LogisticalTransporterUpgradeData(boolean redstoneReactive, ConnectionType[] connectionTypes, @Nullable EnumColor color, ListNBT stacks) {
         super(redstoneReactive, connectionTypes);
-        transmitter.writeToNBT(this.nbt = new CompoundNBT());
+        this.color = color;
+        this.stacks = stacks;
     }
 }

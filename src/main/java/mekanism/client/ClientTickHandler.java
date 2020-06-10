@@ -35,6 +35,7 @@ import mekanism.common.network.PacketPortableTeleporterGui;
 import mekanism.common.network.PacketPortableTeleporterGui.PortableTeleporterPacketType;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -304,7 +305,7 @@ public class ClientTickHandler {
             }
 
             if (MekanismConfig.client.enablePlayerSounds.get() && SoundHandler.radiationSoundMap.isEmpty()) {
-                for (RadiationScale scale : RadiationScale.values()) {
+                for (RadiationScale scale : EnumUtils.RADIATION_SCALES) {
                     if (scale != RadiationScale.NONE) {
                         GeigerSound sound = GeigerSound.create(minecraft.player, scale);
                         SoundHandler.radiationSoundMap.put(scale, sound);

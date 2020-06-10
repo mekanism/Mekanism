@@ -123,7 +123,7 @@ public final class ModelRenderer {
     }
 
     private static int getValveFluidHeight(ValveRenderData data) {
-        return data.valveLocation.getY() - data.location.y;
+        return data.valveLocation.getY() - data.location.getY();
     }
 
     public static void resetCachedModels() {

@@ -80,7 +80,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
         if (kb == handModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND, false)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, player.isSneaking()));
-            } else if (IModeItem.isModeItem(player, EquipmentSlotType.OFFHAND)) {
+            } else if (!IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND) && IModeItem.isModeItem(player, EquipmentSlotType.OFFHAND)) {
                 //Otherwise try their offhand
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.OFFHAND, player.isSneaking()));
             }

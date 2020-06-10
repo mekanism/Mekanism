@@ -1,50 +1,43 @@
-package mekanism.common.transmitters.grid;
+package mekanism.common.content.transmitter;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.math.MathUtils;
-import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.distribution.target.FluidHandlerTarget;
 import mekanism.common.distribution.target.FluidTransmitterSaveTarget;
-import mekanism.common.util.CapabilityUtils;
+import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, FluidStack> implements IMekanismFluidHandler {
+public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNetwork, FluidStack, TileEntityMechanicalPipe> implements IMekanismFluidHandler {
 
     private final List<IExtendedFluidTank> fluidTanks;
     public final VariableCapacityFluidTank fluidTank;
-
     @Nonnull
     public FluidStack lastFluid = FluidStack.EMPTY;
-    public float fluidScale;
     private int prevTransferAmount;
 
     //TODO: Make fluid storage support storing as longs?
@@ -75,20 +68,20 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     protected void forceScaleUpdate() {
         if (!fluidTank.isEmpty() && fluidTank.getCapacity() > 0) {
-            fluidScale = Math.min(1, (float) fluidTank.getFluidAmount() / fluidTank.getCapacity());
+            currentScale = Math.min(1, (float) fluidTank.getFluidAmount() / fluidTank.getCapacity());
         } else {
-            fluidScale = 0;
+            currentScale = 0;
         }
     }
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(FluidNetwork net) {
-        float oldScale = fluidScale;
+        float oldScale = currentScale;
         long oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the fluid scales
         long capacity = getCapacity();
-        fluidScale = Math.min(1, capacity == 0 ? 0 : (fluidScale * oldCapacity + net.fluidScale * net.capacity) / capacity);
+        currentScale = Math.min(1, capacity == 0 ? 0 : (currentScale * oldCapacity + net.currentScale * net.capacity) / capacity);
         if (isRemote()) {
             if (fluidTank.isEmpty() && !net.fluidTank.isEmpty()) {
                 fluidTank.setStack(net.getBuffer());
@@ -104,7 +97,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 }
                 net.fluidTank.setEmpty();
             }
-            if (oldScale != fluidScale) {
+            if (oldScale != currentScale) {
                 //We want to make sure we update to the scale change
                 needsUpdate = true;
             }
@@ -118,16 +111,15 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
+    public void absorbBuffer(TileEntityMechanicalPipe transmitter) {
         FluidStack fluid = transmitter.releaseShare();
-        if (fluid.isEmpty()) {
-            return;
-        }
-        if (fluidTank.isEmpty()) {
-            fluidTank.setStack(fluid.copy());
-        } else if (fluidTank.isFluidEqual(fluid)) {
-            int amount = fluid.getAmount();
-            MekanismUtils.logMismatchedStackSize(fluidTank.growStack(amount, Action.EXECUTE), amount);
+        if (!fluid.isEmpty()) {
+            if (fluidTank.isEmpty()) {
+                fluidTank.setStack(fluid.copy());
+            } else if (fluidTank.isFluidEqual(fluid)) {
+                int amount = fluid.getAmount();
+                MekanismUtils.logMismatchedStackSize(fluidTank.growStack(amount, Action.EXECUTE), amount);
+            }
         }
     }
 
@@ -142,7 +134,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Override
-    protected synchronized void updateCapacity(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
+    protected synchronized void updateCapacity(TileEntityMechanicalPipe transmitter) {
         super.updateCapacity(transmitter);
         intCapacity = MathUtils.clampToInt(getCapacity());
     }
@@ -158,7 +150,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     @Override
-    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void updateSaveShares(@Nullable TileEntityMechanicalPipe triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
@@ -166,7 +158,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
             Set<FluidTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter : transmitters) {
+            for (TileEntityMechanicalPipe transmitter : transmitters) {
                 FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType);
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);
@@ -181,24 +173,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     private int tickEmit(@Nonnull FluidStack fluidToSend) {
         Set<FluidHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
-        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
-        for (Coord4D coord : possibleAcceptors) {
-            EnumSet<Direction> sides = acceptorDirections.get(coord);
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, coord);
-            if (tile == null) {
-                continue;
-            }
+        for (Entry<BlockPos, Map<Direction, LazyOptional<IFluidHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
-            for (Direction side : sides) {
-                CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side).ifPresent(acceptor -> {
-                    if (FluidUtils.canFill(acceptor, fluidToSend)) {
-                        target.addHandler(side, acceptor);
-                    }
-                });
-            }
+            entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
+                if (FluidUtils.canFill(acceptor, fluidToSend)) {
+                    target.addHandler(side, acceptor);
+                }
+            }));
             int curHandlers = target.getHandlers().size();
             if (curHandlers > 0) {
                 availableAcceptors.add(target);
@@ -211,28 +192,22 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!isRemote()) {
-            float scale = computeContentScale();
-            if (scale != fluidScale) {
-                fluidScale = scale;
-                needsUpdate = true;
-            }
-            if (needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, lastFluid, fluidScale));
-                needsUpdate = false;
-            }
-            if (fluidTank.isEmpty()) {
-                prevTransferAmount = 0;
-            } else {
-                prevTransferAmount = tickEmit(fluidTank.getFluid());
-                MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(prevTransferAmount, Action.EXECUTE), prevTransferAmount);
-            }
+        if (needsUpdate) {
+            MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, lastFluid));
+            needsUpdate = false;
+        }
+        if (fluidTank.isEmpty()) {
+            prevTransferAmount = 0;
+        } else {
+            prevTransferAmount = tickEmit(fluidTank.getFluid());
+            MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(prevTransferAmount, Action.EXECUTE), prevTransferAmount);
         }
     }
 
-    public float computeContentScale() {
+    @Override
+    protected float computeContentScale() {
         float scale = fluidTank.getFluidAmount() / (float) fluidTank.getCapacity();
-        float ret = Math.max(fluidScale, scale);
+        float ret = Math.max(currentScale, scale);
         if (prevTransferAmount > 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);
         } else if (prevTransferAmount <= 0 && ret > 0) {
@@ -247,7 +222,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public String toString() {
-        return "[FluidNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+        return "[FluidNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
@@ -280,7 +255,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmitters.size(), possibleAcceptors.size());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmitters.size(), getAcceptorCount());
     }
 
     @Nonnull
@@ -311,17 +286,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         }
     }
 
-    public static class FluidTransferEvent extends Event {
-
-        public final FluidNetwork fluidNetwork;
+    public static class FluidTransferEvent extends TransferEvent<FluidNetwork> {
 
         public final FluidStack fluidType;
-        public final float fluidScale;
 
-        public FluidTransferEvent(FluidNetwork network, @Nonnull FluidStack type, float scale) {
-            fluidNetwork = network;
+        public FluidTransferEvent(FluidNetwork network, @Nonnull FluidStack type) {
+            super(network);
             fluidType = type;
-            fluidScale = scale;
         }
     }
 }

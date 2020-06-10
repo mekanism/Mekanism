@@ -5,7 +5,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.Range3D;
-import mekanism.api.transmitters.DynamicNetwork;
+import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.entity.Entity;
@@ -134,7 +134,7 @@ public abstract class BasePacketHandler {
         }
     }
 
-    public <MSG> void sendToReceivers(MSG message, DynamicNetwork<?, ?, ?> network) {
+    public <MSG> void sendToReceivers(MSG message, DynamicBufferedNetwork<?, ?, ?, ?> network) {
         //TODO: Create a method in DynamicNetwork to get all players that are "tracking" the network
         // Also evaluate moving various network packet things over to using this at that point
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();

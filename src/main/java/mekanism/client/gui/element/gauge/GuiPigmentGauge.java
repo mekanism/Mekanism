@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.network.PacketDropperUse.TankType;
 import net.minecraft.util.text.ITextComponent;

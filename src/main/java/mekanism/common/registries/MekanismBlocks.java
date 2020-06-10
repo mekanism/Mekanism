@@ -154,6 +154,7 @@ import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -172,19 +173,19 @@ public class MekanismBlocks {
 
     static {
         // factories
-        for (FactoryTier tier : FactoryTier.values()) {
-            for (FactoryType type : FactoryType.values()) {
+        for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
+            for (FactoryType type : EnumUtils.FACTORY_TYPES) {
                 FACTORIES.put(tier, type, registerFactory(MekanismBlockTypes.getFactory(tier, type)));
             }
         }
         // resource blocks
-        for (PrimaryResource resource : PrimaryResource.values()) {
+        for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
             if (resource.getResourceBlockInfo() != null) {
                 PROCESSED_RESOURCE_BLOCKS.put(resource, registerResourceBlock(resource.getResourceBlockInfo()));
             }
         }
         // ores
-        for (OreType ore : OreType.values()) {
+        for (OreType ore : EnumUtils.ORE_TYPES) {
             ORES.put(ore, registerOre(ore));
         }
     }

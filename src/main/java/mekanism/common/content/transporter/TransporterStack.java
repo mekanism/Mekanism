@@ -2,29 +2,29 @@ package mekanism.common.content.transporter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
-import mekanism.api.transmitters.IBlockableConnection;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.interfaces.ILogisticalTransporter;
-import mekanism.common.util.CapabilityUtils;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Contract;
 
 public class TransporterStack {
 
@@ -37,12 +37,12 @@ public class TransporterStack {
     public boolean initiatedPath = false;
 
     public Direction idleDir = null;
-    public Coord4D originalLocation;
-    public Coord4D homeLocation;
-    private Coord4D clientNext;
-    private Coord4D clientPrev;
+    public BlockPos originalLocation;
+    public BlockPos homeLocation;
+    private BlockPos clientNext;
+    private BlockPos clientPrev;
     private Path pathType;
-    private List<Coord4D> pathToTarget = new ArrayList<>();
+    private List<BlockPos> pathToTarget = new ArrayList<>();
 
     public static TransporterStack readFromNBT(CompoundNBT nbtTags) {
         TransporterStack stack = new TransporterStack();
@@ -65,53 +65,52 @@ public class TransporterStack {
         return stack;
     }
 
-    public void write(ILogisticalTransporter transporter, PacketBuffer buf) {
+    public void write(TileEntityLogisticalTransporterBase transporter, PacketBuffer buf) {
         buf.writeVarInt(TransporterUtils.getColorIndex(color));
         buf.writeVarInt(progress);
-        originalLocation.write(buf);
+        buf.writeBlockPos(originalLocation);
         buf.writeEnumValue(pathType);
-        if (pathToTarget.indexOf(transporter.coord()) > 0) {
+        if (pathToTarget.indexOf(transporter.getPos()) > 0) {
             buf.writeBoolean(true);
-            getNext(transporter).write(buf);
+            buf.writeBlockPos(getNext(transporter));
         } else {
             buf.writeBoolean(false);
         }
-        getPrev(transporter).write(buf);
+        buf.writeBlockPos(getPrev(transporter));
         buf.writeItemStack(itemStack);
     }
 
     public void read(PacketBuffer dataStream) {
         color = TransporterUtils.readColor(dataStream.readVarInt());
         progress = dataStream.readVarInt();
-        originalLocation = Coord4D.read(dataStream);
+        originalLocation = dataStream.readBlockPos();
         pathType = dataStream.readEnumValue(Path.class);
-
         if (dataStream.readBoolean()) {
-            clientNext = Coord4D.read(dataStream);
+            clientNext = dataStream.readBlockPos();
         }
-        clientPrev = Coord4D.read(dataStream);
+        clientPrev = dataStream.readBlockPos();
         itemStack = dataStream.readItemStack();
     }
 
-    public void writeToUpdateTag(ILogisticalTransporter transporter, CompoundNBT updateTag) {
+    public void writeToUpdateTag(TileEntityLogisticalTransporterBase transporter, CompoundNBT updateTag) {
         updateTag.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
         updateTag.putInt(NBTConstants.PROGRESS, progress);
-        updateTag.put(NBTConstants.ORIGINAL_LOCATION, originalLocation.write(new CompoundNBT()));
+        updateTag.put(NBTConstants.ORIGINAL_LOCATION, NBTUtil.writeBlockPos(originalLocation));
         updateTag.putInt(NBTConstants.PATH_TYPE, pathType.ordinal());
-        if (pathToTarget.indexOf(transporter.coord()) > 0) {
-            updateTag.put(NBTConstants.CLIENT_NEXT, getNext(transporter).write(new CompoundNBT()));
+        if (pathToTarget.indexOf(transporter.getPos()) > 0) {
+            updateTag.put(NBTConstants.CLIENT_NEXT, NBTUtil.writeBlockPos(getNext(transporter)));
         }
-        updateTag.put(NBTConstants.CLIENT_PREVIOUS, getPrev(transporter).write(new CompoundNBT()));
+        updateTag.put(NBTConstants.CLIENT_PREVIOUS, NBTUtil.writeBlockPos(getPrev(transporter)));
         itemStack.write(updateTag);
     }
 
     public void readFromUpdateTag(CompoundNBT updateTag) {
         NBTUtils.setEnumIfPresent(updateTag, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
         progress = updateTag.getInt(NBTConstants.PROGRESS);
-        NBTUtils.setCoord4DIfPresent(updateTag, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
+        NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(updateTag, NBTConstants.PATH_TYPE, Path::byIndexStatic, type -> pathType = type);
-        NBTUtils.setCoord4DIfPresent(updateTag, NBTConstants.CLIENT_NEXT, coord -> clientNext = coord);
-        NBTUtils.setCoord4DIfPresent(updateTag, NBTConstants.CLIENT_PREVIOUS, coord -> clientPrev = coord);
+        NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.CLIENT_NEXT, coord -> clientNext = coord);
+        NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.CLIENT_PREVIOUS, coord -> clientPrev = coord);
         itemStack = ItemStack.read(updateTag);
     }
 
@@ -119,13 +118,13 @@ public class TransporterStack {
         nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
 
         nbtTags.putInt(NBTConstants.PROGRESS, progress);
-        nbtTags.put(NBTConstants.ORIGINAL_LOCATION, originalLocation.write(new CompoundNBT()));
+        nbtTags.put(NBTConstants.ORIGINAL_LOCATION, NBTUtil.writeBlockPos(originalLocation));
 
         if (idleDir != null) {
             nbtTags.putInt(NBTConstants.IDLE_DIR, idleDir.ordinal());
         }
         if (homeLocation != null) {
-            nbtTags.put(NBTConstants.HOME_LOCATION, homeLocation.write(new CompoundNBT()));
+            nbtTags.put(NBTConstants.HOME_LOCATION, NBTUtil.writeBlockPos(homeLocation));
         }
         nbtTags.putInt(NBTConstants.PATH_TYPE, pathType.ordinal());
         itemStack.write(nbtTags);
@@ -134,22 +133,22 @@ public class TransporterStack {
     public void read(CompoundNBT nbtTags) {
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
-        NBTUtils.setCoord4DIfPresent(nbtTags, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
+        NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.IDLE_DIR, Direction::byIndex, dir -> idleDir = dir);
-        NBTUtils.setCoord4DIfPresent(nbtTags, NBTConstants.HOME_LOCATION, coord -> homeLocation = coord);
+        NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.HOME_LOCATION, coord -> homeLocation = coord);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.PATH_TYPE, Path::byIndexStatic, type -> pathType = type);
         itemStack = ItemStack.read(nbtTags);
     }
 
-    public void setPath(List<Coord4D> path, Path type) {
+    private void setPath(IWorldReader world, List<BlockPos> path, Path type) {
         //Make sure old path isn't null
         if (pathType != Path.NONE) {
-            TransporterManager.remove(this);
+            TransporterManager.remove(world, this);
         }
         pathToTarget = path;
         pathType = type;
         if (pathType != Path.NONE) {
-            TransporterManager.add(this);
+            TransporterManager.add(world, this);
         }
     }
 
@@ -157,7 +156,7 @@ public class TransporterStack {
         return pathToTarget != null && pathToTarget.size() >= 2;
     }
 
-    public List<Coord4D> getPath() {
+    public List<BlockPos> getPath() {
         return pathToTarget;
     }
 
@@ -165,49 +164,49 @@ public class TransporterStack {
         return pathType;
     }
 
-    public TransitResponse recalculatePath(TransitRequest request, ILogisticalTransporter transporter, int min) {
+    public TransitResponse recalculatePath(TransitRequest request, TileEntityLogisticalTransporterBase transporter, int min) {
         Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min);
         if (newPath == null) {
             return request.getEmptyResponse();
         }
         idleDir = null;
-        setPath(newPath.getPath(), Path.DEST);
+        setPath(transporter.getWorld(), newPath.getPath(), Path.DEST);
         initiatedPath = true;
         return newPath.getResponse();
     }
 
-    public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, int min) {
+    public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, TileEntityLogisticalTransporterBase transporter, int min) {
         Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min);
         if (newPath == null) {
             return request.getEmptyResponse();
         }
         idleDir = null;
-        setPath(newPath.getPath(), Path.DEST);
+        setPath(transporter.getWorld(), newPath.getPath(), Path.DEST);
         initiatedPath = true;
         return newPath.getResponse();
     }
 
-    public boolean calculateIdle(ILogisticalTransporter transporter) {
-        Pair<List<Coord4D>, Path> newPath = TransporterPathfinder.getIdlePath(transporter, this);
+    public boolean calculateIdle(TileEntityLogisticalTransporterBase transporter) {
+        Pair<List<BlockPos>, Path> newPath = TransporterPathfinder.getIdlePath(transporter, this);
         if (newPath == null) {
             return false;
         }
         if (newPath.getRight() == Path.HOME) {
             idleDir = null;
         }
-        setPath(newPath.getLeft(), newPath.getRight());
-        originalLocation = transporter.coord();
+        setPath(transporter.getWorld(), newPath.getLeft(), newPath.getRight());
+        originalLocation = transporter.getPos();
         initiatedPath = true;
         return true;
     }
 
-    public boolean isFinal(ILogisticalTransporter transporter) {
-        return pathToTarget.indexOf(transporter.coord()) == (pathType == Path.NONE ? 0 : 1);
+    public boolean isFinal(TileEntityLogisticalTransporterBase transporter) {
+        return pathToTarget.indexOf(transporter.getPos()) == (pathType == Path.NONE ? 0 : 1);
     }
 
-    public Coord4D getNext(ILogisticalTransporter transporter) {
-        if (!transporter.world().isRemote) {
-            int index = pathToTarget.indexOf(transporter.coord()) - 1;
+    public BlockPos getNext(TileEntityLogisticalTransporterBase transporter) {
+        if (!transporter.isRemote()) {
+            int index = pathToTarget.indexOf(transporter.getPos()) - 1;
             if (index < 0) {
                 return null;
             }
@@ -216,9 +215,9 @@ public class TransporterStack {
         return clientNext;
     }
 
-    public Coord4D getPrev(ILogisticalTransporter transporter) {
-        if (!transporter.world().isRemote) {
-            int index = pathToTarget.indexOf(transporter.coord()) + 1;
+    public BlockPos getPrev(TileEntityLogisticalTransporterBase transporter) {
+        if (!transporter.isRemote()) {
+            int index = pathToTarget.indexOf(transporter.getPos()) + 1;
             if (index < pathToTarget.size()) {
                 return pathToTarget.get(index);
             }
@@ -227,17 +226,17 @@ public class TransporterStack {
         return clientPrev;
     }
 
-    public Direction getSide(ILogisticalTransporter transporter) {
+    public Direction getSide(TileEntityLogisticalTransporterBase transporter) {
         Direction side = null;
         if (progress < 50) {
-            Coord4D prev = getPrev(transporter);
+            BlockPos prev = getPrev(transporter);
             if (prev != null) {
-                side = transporter.coord().sideDifference(prev);
+                side = MekanismUtils.sideDifference(transporter.getPos(), prev);
             }
         } else {
-            Coord4D next = getNext(transporter);
+            BlockPos next = getNext(transporter);
             if (next != null) {
-                side = next.sideDifference(transporter.coord());
+                side = MekanismUtils.sideDifference(next, transporter.getPos());
             }
         }
         //sideDifference can return null
@@ -247,27 +246,22 @@ public class TransporterStack {
         return side == null ? Direction.DOWN : side;
     }
 
+    @Contract("null, _, _ -> false")
     public boolean canInsertToTransporter(TileEntity tile, Direction from, @Nullable TileEntity tileFrom) {
-        Direction opposite = from.getOpposite();
-        Optional<ILogisticalTransporter> transporterCap = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, opposite));
-        if (transporterCap.isPresent()) {
-            ILogisticalTransporter transporter = transporterCap.get();
-            if (transporter.getColor() == null || transporter.getColor() == color) {
-                //If the color is valid, make sure that the connection is not blocked
-                Optional<IBlockableConnection> blockableConnection = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, opposite));
-                if (blockableConnection.isPresent()) {
-                    return blockableConnection.get().canConnectMutual(opposite, tileFrom);
-                }
-            }
-        }
-        return false;
+        return tile instanceof TileEntityLogisticalTransporterBase && canInsertToTransporterNN((TileEntityLogisticalTransporterBase) tile, from, tileFrom);
     }
 
-    public boolean canInsertToTransporter(ILogisticalTransporter transporter, Direction side, @Nullable TileEntity tileFrom) {
-        return (transporter.getColor() == color || transporter.getColor() == null) && transporter.canConnectMutual(side, tileFrom);
+    @Contract("null, _, _ -> false")
+    public boolean canInsertToTransporter(@Nullable TileEntityLogisticalTransporterBase transporter, Direction from, @Nullable TileEntity tileFrom) {
+        return transporter != null && canInsertToTransporterNN(transporter, from, tileFrom);
     }
 
-    public Coord4D getDest() {
+    public boolean canInsertToTransporterNN(@Nonnull TileEntityLogisticalTransporterBase transporter, Direction from, @Nullable TileEntity tileFrom) {
+        //If the color is valid, make sure that the connection is valid
+        return (transporter.getColor() == null || transporter.getColor() == color) && transporter.canConnectMutual(from.getOpposite(), tileFrom);
+    }
+
+    public BlockPos getDest() {
         return pathToTarget.get(0);
     }
 

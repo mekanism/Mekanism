@@ -11,27 +11,27 @@ public class QuadUtils {
     private static final float eps = 1F / 0x100;
 
     public static List<Quad> unpack(List<BakedQuad> quads) {
-        return quads.stream().map(quad -> new Quad(quad)).collect(Collectors.toList());
+        return quads.stream().map(Quad::new).collect(Collectors.toList());
     }
 
     public static List<BakedQuad> bake(List<Quad> quads) {
-        return quads.stream().map(quad -> quad.bake()).collect(Collectors.toList());
+        return quads.stream().map(Quad::bake).collect(Collectors.toList());
     }
 
     public static List<Quad> flip(List<Quad> quads) {
-        return quads.stream().map(quad -> quad.flip()).collect(Collectors.toList());
+        return quads.stream().map(Quad::flip).collect(Collectors.toList());
     }
 
     public static List<Quad> transformQuads(List<Quad> orig, QuadTransformation transformation) {
-        return orig.stream().peek(q -> transformation.transform(q)).collect(Collectors.toList());
+        return orig.stream().peek(transformation::transform).collect(Collectors.toList());
     }
 
     public static List<BakedQuad> transformBakedQuads(List<BakedQuad> orig, QuadTransformation transformation) {
-        return orig.stream().map(q -> new Quad(q)).peek(q -> transformation.transform(q)).map(q -> q.bake()).collect(Collectors.toList());
+        return orig.stream().map(Quad::new).peek(transformation::transform).map(Quad::bake).collect(Collectors.toList());
     }
 
     public static List<BakedQuad> transformAndBake(List<Quad> orig, QuadTransformation transformation) {
-        return orig.stream().peek(q -> transformation.transform(q)).map(q -> q.bake()).collect(Collectors.toList());
+        return orig.stream().peek(transformation::transform).map(Quad::bake).collect(Collectors.toList());
     }
 
     // this is an adaptation of fry's original UV contractor (pulled from BakedQuadBuilder).
@@ -41,8 +41,8 @@ public class QuadUtils {
         float sizeX = texture.getWidth() / (texture.getMaxU() - texture.getMinU());
         float sizeY = texture.getHeight() / (texture.getMaxV() - texture.getMinV());
         float ep = 1F / (Math.max(sizeX, sizeY) * 0x100);
-        float[] newUs = contract(quad, v -> v.getTexU(), ep);
-        float[] newVs = contract(quad, v -> v.getTexV(), ep);
+        float[] newUs = contract(quad, Vertex::getTexU, ep);
+        float[] newVs = contract(quad, Vertex::getTexV, ep);
         for (int i = 0; i < quad.getVertices().length; i++) {
             quad.getVertices()[i].texRaw(newUs[i], newVs[i]);
         }

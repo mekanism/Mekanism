@@ -14,8 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -24,18 +22,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public final class FluidUtils {
-
-    /**
-     * Gets all the acceptors around a tile entity.
-     *
-     * @return array of IFluidHandlers
-     */
-    public static IFluidHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<Direction> sides) {
-        final IFluidHandler[] acceptors = new IFluidHandler[EnumUtils.DIRECTIONS.length];
-        EmitUtils.forEachSide(world, pos, sides, (tile, side) ->
-              CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> acceptors[side.ordinal()] = handler));
-        return acceptors;
-    }
 
     public static void emit(IExtendedFluidTank tank, TileEntity from) {
         emit(EnumSet.allOf(Direction.class), tank, from);

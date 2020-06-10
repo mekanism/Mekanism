@@ -82,7 +82,7 @@ public class MovableFilterButton extends FilterButton {
         } else if (filter instanceof IModIDFilter) {
             drawTextScaledBound(MekanismLang.MODID_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
         }
-        if (filter instanceof TransporterFilter<?>) {
+        if (filter instanceof TransporterFilter) {
             TransporterFilter<?> sorterFilter = (TransporterFilter<?>) filter;
             drawString(sorterFilter.color == null ? MekanismLang.NONE.translate() : sorterFilter.color.getColoredName(), x + 22, y + 11, titleTextColor());
         }

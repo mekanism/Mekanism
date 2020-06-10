@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
@@ -28,7 +27,9 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
@@ -73,7 +74,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     private int waterTankCapacity;
     private long superheatedCoolantCapacity, steamTankCapacity, cooledCoolantCapacity;
 
-    public Coord4D upperRenderLocation;
+    public BlockPos upperRenderLocation;
 
     public float prevWaterScale;
     public float prevSteamScale;
@@ -175,11 +176,11 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         super.readUpdateTag(tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevSteamScale = scale);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> setWaterVolume(value));
-        NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> setSteamVolume(value));
+        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setWaterVolume);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, this::setSteamVolume);
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> waterTank.setStack(value));
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> steamTank.setStack(value));
-        NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_Y, value -> upperRenderLocation = value);
+        NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_Y, value -> upperRenderLocation = value);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HOT, value -> clientHot = value);
         readValves(tag);
     }
@@ -193,7 +194,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         tag.putInt(NBTConstants.LOWER_VOLUME, getSteamVolume());
         tag.put(NBTConstants.FLUID_STORED, waterTank.getFluid().writeToNBT(new CompoundNBT()));
         tag.put(NBTConstants.GAS_STORED, steamTank.getStack().write(new CompoundNBT()));
-        tag.put(NBTConstants.RENDER_Y, upperRenderLocation.write(new CompoundNBT()));
+        tag.put(NBTConstants.RENDER_Y, NBTUtil.writeBlockPos(upperRenderLocation));
         tag.putBoolean(NBTConstants.HOT, clientHot);
         writeValves(tag);
     }

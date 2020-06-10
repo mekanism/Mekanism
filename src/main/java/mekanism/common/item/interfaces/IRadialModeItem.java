@@ -1,5 +1,6 @@
 package mekanism.common.item.interfaces;
 
+import mekanism.api.text.EnumColor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -18,6 +19,10 @@ public interface IRadialModeItem extends IModeItem {
         ITextComponent getShortText();
 
         ResourceLocation getIcon();
+
+        default EnumColor getColor() {
+            return null;
+        }
 
         int ordinal();
     }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -59,6 +60,7 @@ public abstract class TransitRequest {
 
     public abstract Collection<? extends ItemData> getItemData();
 
+    @Nonnull
     public TransitResponse addToInventory(TileEntity tile, Direction side, boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tile).sendHome(this);
@@ -95,15 +97,17 @@ public abstract class TransitRequest {
         return getItemData().isEmpty();
     }
 
+    @Nonnull
     public TransitResponse createResponse(ItemStack inserted, ItemData data) {
         return new TransitResponse(inserted, data);
     }
 
     public TransitResponse createSimpleResponse() {
         ItemData data = getItemData().stream().findFirst().orElse(null);
-        return data != null ? createResponse(data.itemType.createStack(data.totalCount), data) : null;
+        return data == null ? getEmptyResponse() : createResponse(data.itemType.createStack(data.totalCount), data);
     }
 
+    @Nonnull
     public TransitResponse getEmptyResponse() {
         return EMPTY;
     }
@@ -113,7 +117,7 @@ public abstract class TransitRequest {
         private final ItemStack inserted;
         private final ItemData slotData;
 
-        public TransitResponse(ItemStack inserted, ItemData slotData) {
+        public TransitResponse(@Nonnull ItemStack inserted, ItemData slotData) {
             this.inserted = inserted;
             this.slotData = slotData;
         }
@@ -135,6 +139,9 @@ public abstract class TransitRequest {
         }
 
         public ItemStack getRejected() {
+            if (isEmpty()) {
+                return ItemStack.EMPTY;
+            }
             return StackUtils.size(slotData.getStack(), slotData.getStack().getCount() - getSendingAmount());
         }
 

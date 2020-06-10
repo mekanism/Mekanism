@@ -6,7 +6,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
@@ -21,15 +20,10 @@ import net.minecraft.world.dimension.DimensionType;
  */
 public class Coord4D {//TODO - V10: Continue working on replacing uses of this with BlockPos/GlobalPos where appropriate
 
-    /**
-     * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
-     */
-    private static final Direction[] DIRECTIONS = Direction.values();
-
-    public int x;
-    public int y;
-    public int z;
-    public DimensionType dimension;
+    private final int x;
+    private final int y;
+    private final int z;
+    public final DimensionType dimension;
 
     /**
      * Creates a Coord4D from an entity's position, rounded down.
@@ -105,6 +99,27 @@ public class Coord4D {//TODO - V10: Continue working on replacing uses of this w
         return new Coord4D(dataStream.readBlockPos(), DimensionType.byName(dataStream.readResourceLocation()));
     }
 
+    /**
+     * Gets the X coordinate.
+     */
+    public int getX() {
+        return this.x;
+    }
+
+    /**
+     * Gets the Y coordinate.
+     */
+    public int getY() {
+        return this.y;
+    }
+
+    /**
+     * Gets the Z coordinate.
+     */
+    public int getZ() {
+        return this.z;
+    }
+
     public BlockPos getPos() {
         return new BlockPos(x, y, z);
     }
@@ -175,23 +190,6 @@ public class Coord4D {//TODO - V10: Continue working on replacing uses of this w
     }
 
     /**
-     * A method used to find the Direction represented by the distance of the defined Coord4D. Most likely won't have many applicable uses.
-     *
-     * @param other - Coord4D to find the side difference of
-     *
-     * @return Direction representing the side the defined relative Coord4D is on to this
-     */
-    public Direction sideDifference(Coord4D other) {
-        Coord4D diff = new Coord4D(x - other.x, y - other.y, z - other.z, dimension);
-        for (Direction side : DIRECTIONS) {
-            if (side.getXOffset() == diff.x && side.getYOffset() == diff.y && side.getZOffset() == diff.z) {
-                return side;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Gets the distance to a defined Coord4D.
      *
      * @param obj - the Coord4D to find the distance to
@@ -203,15 +201,6 @@ public class Coord4D {//TODO - V10: Continue working on replacing uses of this w
         int subY = y - obj.y;
         int subZ = z - obj.z;
         return MathHelper.sqrt(subX * subX + subY * subY + subZ * subZ);
-    }
-
-    /**
-     * Gets a bounding box that contains the area this Coord4D would take up in a world.
-     *
-     * @return this Coord4D's bounding box
-     */
-    public AxisAlignedBB getBoundingBox() {
-        return new AxisAlignedBB(x, y, z, x + 1, y + 1, z + 1);
     }
 
     @Override

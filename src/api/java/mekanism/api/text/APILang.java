@@ -32,15 +32,6 @@ public enum APILang implements ILangEntry {
     SOUTH("direction", "south"),
     WEST("direction", "west"),
     EAST("direction", "east"),
-    //Transmission types
-    TRANSMISSION_TYPE_ENERGY("transmission", "energy"),
-    TRANSMISSION_TYPE_FLUID("transmission", "fluids"),
-    TRANSMISSION_TYPE_GAS("transmission", "gases"),
-    TRANSMISSION_TYPE_INFUSION("transmission", "infuse_types"),
-    TRANSMISSION_TYPE_PIGMENT("transmission", "pigments"),
-    TRANSMISSION_TYPE_SLURRY("transmission", "slurries"),
-    TRANSMISSION_TYPE_ITEM("transmission", "items"),
-    TRANSMISSION_TYPE_HEAT("transmission", "heat"),
     //Colors
     COLOR_BLACK("color", "black"),
     COLOR_DARK_BLUE("color", "dark_blue"),

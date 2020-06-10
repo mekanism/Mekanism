@@ -2,7 +2,7 @@ package mekanism.client.model.data;
 
 import java.util.EnumMap;
 import java.util.Map;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 

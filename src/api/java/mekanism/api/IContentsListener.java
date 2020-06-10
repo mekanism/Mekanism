@@ -3,6 +3,7 @@ package mekanism.api;
 /**
  * Helper class to reduce generic duplicate code between various handler types
  */
+@FunctionalInterface
 public interface IContentsListener {
 
     /**

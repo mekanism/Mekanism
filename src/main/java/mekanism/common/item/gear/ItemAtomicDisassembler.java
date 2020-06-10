@@ -190,7 +190,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             for (BlockPos pos : BlockPos.getAllInBoxMutable(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
                 //We can check contains as mutable
                 if (!checked.contains(pos)) {
-                    if (maxRange == -1 || Math.sqrt(location.distanceSq(pos)) <= maxRange) {
+                    if (maxRange == -1 || MekanismUtils.distanceBetween(location, pos) <= maxRange) {
                         if (world.isBlockPresent(pos) && startBlock == world.getBlockState(pos).getBlock()) {
                             //Make sure to add it as immutable
                             found.add(pos.toImmutable());

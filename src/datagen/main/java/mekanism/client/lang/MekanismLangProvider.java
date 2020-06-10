@@ -26,6 +26,7 @@ import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.data.DataGenerator;
 
 public class MekanismLangProvider extends BaseLanguageProvider {
@@ -265,7 +266,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         add(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, "Advanced Bounding Block");
         //Ores
-        for (OreType ore : OreType.values()) {
+        for (OreType ore : EnumUtils.ORE_TYPES) {
             add(MekanismBlocks.ORES.get(ore), formatAndCapitalize(ore.getResource().getRegistrySuffix()) + " Ore");
         }
         //Storage blocks
@@ -287,8 +288,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTiered(MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK, "Fluid Tank");
         addTiered(MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ULTIMATE_CHEMICAL_TANK, MekanismBlocks.CREATIVE_CHEMICAL_TANK, "Chemical Tank");
         //Factories
-        for (FactoryTier tier : FactoryTier.values()) {
-            for (FactoryType type : FactoryType.values()) {
+        for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
+            for (FactoryType type : EnumUtils.FACTORY_TYPES) {
                 add(MekanismBlocks.getFactory(tier, type), tier.getBaseTier().getSimpleName() + " " + capitalize(type.getRegistryNameComponent()) + " Factory");
             }
         }
@@ -400,14 +401,14 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.UPGRADE_ANCHOR, "Anchor");
         add(APILang.UPGRADE_ANCHOR_DESCRIPTION, "Keeps a machine's chunk loaded.");
         //Transmission types
-        add(APILang.TRANSMISSION_TYPE_ENERGY, "Energy");
-        add(APILang.TRANSMISSION_TYPE_FLUID, "Fluids");
-        add(APILang.TRANSMISSION_TYPE_GAS, "Gases");
-        add(APILang.TRANSMISSION_TYPE_INFUSION, "Infuse Types");
-        add(APILang.TRANSMISSION_TYPE_PIGMENT, "Pigments");
-        add(APILang.TRANSMISSION_TYPE_SLURRY, "Slurries");
-        add(APILang.TRANSMISSION_TYPE_ITEM, "Items");
-        add(APILang.TRANSMISSION_TYPE_HEAT, "Heat");
+        add(MekanismLang.TRANSMISSION_TYPE_ENERGY, "Energy");
+        add(MekanismLang.TRANSMISSION_TYPE_FLUID, "Fluids");
+        add(MekanismLang.TRANSMISSION_TYPE_GAS, "Gases");
+        add(MekanismLang.TRANSMISSION_TYPE_INFUSION, "Infuse Types");
+        add(MekanismLang.TRANSMISSION_TYPE_PIGMENT, "Pigments");
+        add(MekanismLang.TRANSMISSION_TYPE_SLURRY, "Slurries");
+        add(MekanismLang.TRANSMISSION_TYPE_ITEM, "Items");
+        add(MekanismLang.TRANSMISSION_TYPE_HEAT, "Heat");
         //Chemical Attributes
         add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, " - Radioactivity: %s sV/h");
         add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY, " - Coolant Efficiency: %s");

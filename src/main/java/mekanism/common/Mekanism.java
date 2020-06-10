@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
-import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.client.ClientProxy;
 import mekanism.client.ModelLoaderRegisterHelper;
 import mekanism.common.base.IModule;
@@ -69,9 +69,9 @@ import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTagManager;
-import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
-import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
-import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
+import mekanism.common.content.transmitter.EnergyNetwork.EnergyTransferEvent;
+import mekanism.common.content.transmitter.FluidNetwork.FluidTransferEvent;
+import mekanism.common.content.transmitter.GasNetwork.GasTransferEvent;
 import mekanism.common.world.GenHandler;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
@@ -346,21 +346,21 @@ public class Mekanism {
 
     private void onEnergyTransferred(EnergyTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.energyNetwork, event.energyScale), event.energyNetwork);
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network), event.network);
         } catch (Exception ignored) {
         }
     }
 
     private void onGasTransferred(GasTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.gasNetwork, event.transferType, event.gasScale), event.gasNetwork);
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
         } catch (Exception ignored) {
         }
     }
 
     private void onLiquidTransferred(FluidTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.fluidNetwork, event.fluidType, event.fluidScale), event.fluidNetwork);
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.fluidType), event.network);
         } catch (Exception ignored) {
         }
     }

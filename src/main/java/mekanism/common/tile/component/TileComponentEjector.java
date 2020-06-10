@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
@@ -13,8 +12,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
@@ -24,6 +21,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -31,8 +29,7 @@ import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.interfaces.ILogisticalTransporter;
-import mekanism.common.util.CapabilityUtils;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
@@ -129,9 +126,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             continue;
                         }
                         TransitResponse response;
-                        Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()));
-                        if (capability.isPresent()) {
-                            response = capability.get().insert(this.tile, ejectMap, outputColor, true, 0);
+                        if (tile instanceof TileEntityLogisticalTransporterBase) {
+                            response = ((TileEntityLogisticalTransporterBase) tile).insert(this.tile, ejectMap, outputColor, true, 0);
                         } else {
                             response = ejectMap.addToInventory(tile, side, false);
                         }
@@ -157,12 +153,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         // shuffle the order we look at our slots to avoid ejection patterns
         List<IInventorySlot> shuffled = new ArrayList<>(slots);
         Collections.shuffle(shuffled);
-        for (int index = 0; index < shuffled.size(); index++) {
-            IInventorySlot slot = shuffled.get(index);
+        for (IInventorySlot slot : shuffled) {
             //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
             ItemStack simulatedExtraction = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.EXTERNAL);
             if (!simulatedExtraction.isEmpty()) {
-                request.addItem(simulatedExtraction, index);
+                request.addItem(simulatedExtraction, slots.indexOf(slot));
             }
         }
         return request;

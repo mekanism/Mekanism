@@ -51,8 +51,12 @@ public class RadialSelectorRenderer {
         IRadialSelectorEnum cur = curSupplier.get();
         if (cur != null) {
             // draw current selected
-            RenderSystem.color4f(0.4F, 0.4F, 0.4F, 0.7F);
-            drawTorus(-90F + 360F * (-0.5F + curSupplier.get().ordinal()) / types.length, 360F / types.length);
+            if (cur.getColor() == null) {
+                RenderSystem.color4f(0.4F, 0.4F, 0.4F, 0.7F);
+            } else {
+                MekanismRenderer.color(cur.getColor(), 0.3F);
+            }
+            drawTorus(-90F + 360F * (-0.5F + cur.ordinal()) / types.length, 360F / types.length);
 
             double xDiff = mouseX - centerX;
             double yDiff = mouseY - centerY;

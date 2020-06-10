@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundNBT;
 
 public class RadiationSource {
 
-    private Coord4D pos;
+    private final Coord4D pos;
     /** In Sv/h */
     private double magnitude;
 

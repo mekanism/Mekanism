@@ -161,7 +161,7 @@ public class Color {
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
-        if (!(this instanceof Color))
+        if (!(obj instanceof Color))
             return false;
         Color other = (Color) obj;
         return r == other.r && g == other.g && b == other.b && a == other.a;

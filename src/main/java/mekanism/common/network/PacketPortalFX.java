@@ -2,7 +2,6 @@ package mekanism.common.network;
 
 import java.util.Random;
 import java.util.function.Supplier;
-import mekanism.api.Coord4D;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
@@ -11,11 +10,7 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketPortalFX {
 
-    private BlockPos pos;
-
-    public PacketPortalFX(Coord4D coord) {
-        this(coord.getPos());
-    }
+    private final BlockPos pos;
 
     public PacketPortalFX(BlockPos pos) {
         this.pos = pos;

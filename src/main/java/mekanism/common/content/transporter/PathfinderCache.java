@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.Coord4D;
-import mekanism.common.tile.interfaces.ILogisticalTransporter;
-import mekanism.common.transmitters.grid.InventoryNetwork;
+import mekanism.common.content.transmitter.InventoryNetwork;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 
 public class PathfinderCache {
 
-    private static Map<UUID, Map<PathData, CachedPath>> cachedPaths = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, Map<PathData, CachedPath>> cachedPaths = new Object2ObjectOpenHashMap<>();
 
     public static void onChanged(InventoryNetwork... networks) {
         for (InventoryNetwork network : networks) {
@@ -20,17 +20,17 @@ public class PathfinderCache {
         }
     }
 
-    public static void addCachedPath(ILogisticalTransporter start, PathData data, List<Coord4D> coords, double cost) {
-        cachedPaths.computeIfAbsent(start.getTransmitterNetwork().getUUID(), uuid -> new Object2ObjectOpenHashMap<>()).put(data, new CachedPath(coords, cost));
+    public static void addCachedPath(TileEntityLogisticalTransporterBase start, PathData data, List<BlockPos> positions, double cost) {
+        cachedPaths.computeIfAbsent(start.getTransmitterNetwork().getUUID(), uuid -> new Object2ObjectOpenHashMap<>()).put(data, new CachedPath(positions, cost));
     }
 
-    public static CachedPath getCache(ILogisticalTransporter start, Coord4D end, Set<Direction> sides) {
+    public static CachedPath getCache(TileEntityLogisticalTransporterBase start, BlockPos end, Set<Direction> sides) {
         CachedPath ret = null;
         UUID uuid = start.getTransmitterNetwork().getUUID();
         if (cachedPaths.containsKey(uuid)) {
             Map<PathData, CachedPath> pathMap = cachedPaths.get(uuid);
             for (Direction side : sides) {
-                CachedPath test = pathMap.get(new PathData(start.coord(), end, side));
+                CachedPath test = pathMap.get(new PathData(start.getPos(), end, side));
                 if (ret == null || (test != null && test.getCost() < ret.getCost())) {
                     ret = test;
                 }
@@ -45,15 +45,15 @@ public class PathfinderCache {
 
     public static class CachedPath {
 
-        private List<Coord4D> path;
-        private double cost;
+        private final List<BlockPos> path;
+        private final double cost;
 
-        public CachedPath(List<Coord4D> path, double cost) {
+        public CachedPath(List<BlockPos> path, double cost) {
             this.path = path;
             this.cost = cost;
         }
 
-        public List<Coord4D> getPath() {
+        public List<BlockPos> getPath() {
             return path;
         }
 
@@ -64,12 +64,12 @@ public class PathfinderCache {
 
     public static class PathData {
 
-        private final Coord4D startTransporter;
-        private final Coord4D end;
+        private final BlockPos startTransporter;
+        private final BlockPos end;
         private final Direction endSide;
         private final int hash;
 
-        public PathData(Coord4D s, Coord4D e, Direction es) {
+        public PathData(BlockPos s, BlockPos e, Direction es) {
             startTransporter = s;
             end = e;
             endSide = es;

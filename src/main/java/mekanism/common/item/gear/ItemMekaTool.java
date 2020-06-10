@@ -1,16 +1,14 @@
 package mekanism.common.item.gear;
 
+import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.Multimap;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -284,7 +282,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                     energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
                     player.setPositionAndUpdate(pos.getPos().getX() + 0.5, pos.getPos().getY() + 1.5, pos.getPos().getZ() + 0.5);
                     player.fallDistance = 0.0F;
-                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(new Coord4D(pos.getPos().add(0, 1, 0), world)), world, pos.getPos());
+                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(pos.getPos().add(0, 1, 0)), world, pos.getPos());
                     world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                     return new ActionResult<>(ActionResultType.SUCCESS, stack);
                 }
@@ -305,7 +303,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         list.add(MekanismLang.GENERIC_PRE_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, stack.getItem(),
-              EnumColor.GRAY, APILang.TRANSMISSION_TYPE_ENERGY, StorageUtils.getEnergyPercent(stack)));
+              EnumColor.GRAY, MekanismLang.TRANSMISSION_TYPE_ENERGY, StorageUtils.getEnergyPercent(stack)));
         for (Module module : Modules.loadAll(stack)) {
             if (module.renderHUD()) {
                 module.addHUDStrings(list);

@@ -37,6 +37,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.DimensionSavedDataManager;
@@ -133,8 +134,9 @@ public class RadiationManager {
         }
     }
 
-    public void createMeltdown(World world, Coord4D minPos, Coord4D maxPos, double magnitude, double chance) {
-        meltdowns.computeIfAbsent(minPos.dimension.getId(), (id) -> new ArrayList<>()).add(new Meltdown(world, minPos, maxPos, magnitude, chance));
+    public void createMeltdown(World world, BlockPos minPos, BlockPos maxPos, double magnitude, double chance) {
+        //TODO - V10: FIXME, this should probably use the registry name not the integer id as the key
+        meltdowns.computeIfAbsent(world.getDimension().getType().getId(), (id) -> new ArrayList<>()).add(new Meltdown(world, minPos, maxPos, magnitude, chance));
     }
 
     public void clearSources() {

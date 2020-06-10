@@ -284,17 +284,17 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     public void goHome() {
         setFollowing(false);
-        if (dimension != homeLocation.dimension) {
+        if (dimension == homeLocation.dimension) {
+            setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
+        } else {
             changeDimension(homeLocation.dimension, new ITeleporter() {
                 @Override
                 public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
                     Entity repositionedEntity = repositionEntity.apply(false);
-                    repositionedEntity.setPositionAndUpdate(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5);
+                    repositionedEntity.setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
                     return repositionedEntity;
                 }
             });
-        } else {
-            setPositionAndUpdate(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5);
         }
         setMotion(0, 0, 0);
     }

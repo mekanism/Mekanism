@@ -25,9 +25,9 @@ public class FormationProtocol<T extends MultiblockData> {
     /**
      * The original block the calculation is getting run from.
      */
-    private IMultiblock<T> pointer;
-    private Structure structure;
-    private MultiblockManager<T> manager;
+    private final IMultiblock<T> pointer;
+    private final Structure structure;
+    private final MultiblockManager<T> manager;
 
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
     public Set<BlockPos> innerNodes = new ObjectOpenHashSet<>();

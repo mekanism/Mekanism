@@ -100,7 +100,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (ownerUUID != null) {
             nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);

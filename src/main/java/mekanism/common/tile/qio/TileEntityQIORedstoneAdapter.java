@@ -69,7 +69,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (itemType != null) {
             nbtTags.put(NBTConstants.SINGLE_ITEM, itemType.getStack().write(new CompoundNBT()));

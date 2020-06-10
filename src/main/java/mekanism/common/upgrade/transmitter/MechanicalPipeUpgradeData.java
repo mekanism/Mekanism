@@ -1,6 +1,6 @@
 package mekanism.common.upgrade.transmitter;
 
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.lib.transmitter.ConnectionType;
 import net.minecraftforge.fluids.FluidStack;
 
 public class MechanicalPipeUpgradeData extends TransmitterUpgradeData {

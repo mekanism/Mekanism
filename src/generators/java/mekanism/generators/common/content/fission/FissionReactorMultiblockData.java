@@ -181,7 +181,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevFuelScale = scale);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_2, scale -> prevHeatedCoolantScale = scale);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> setVolume(value));
+        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> fluidCoolantTank.setStack(value));
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> fuelTank.setStack(value));
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> heatedCoolantTank.setStack(value));
@@ -233,7 +233,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 }
                 radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
                 Mekanism.radiationManager.radiate(new Coord4D(getBounds().getCenter(), world), radiation);
-                Mekanism.radiationManager.createMeltdown(world, new Coord4D(getMinPos(), world), new Coord4D(getMaxPos(), world), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
+                Mekanism.radiationManager.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
             }
         }
     }

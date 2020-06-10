@@ -80,13 +80,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
             model.maxY = 0.9375 - .01;
             model.maxZ = 0.6875 - .01;
         }
-        if (cachedValveFluids.containsKey(fluid)) {
-            cachedValveFluids.get(fluid).put(stage, model);
-        } else {
-            Int2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
-            map.put(stage, model);
-            cachedValveFluids.put(fluid, map);
-        }
+        cachedValveFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>()).put(stage, model);
         return model;
     }
 
@@ -105,13 +99,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
             model.maxY = 0.0625 + ((float) stage / (float) stages) * 0.875 - .01;
             model.maxZ = 0.875 - .01;
         }
-        if (cachedCenterFluids.containsKey(fluid)) {
-            cachedCenterFluids.get(fluid).put(stage, model);
-        } else {
-            Int2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
-            map.put(stage, model);
-            cachedCenterFluids.put(fluid, map);
-        }
+        cachedCenterFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>()).put(stage, model);
         return model;
     }
 }

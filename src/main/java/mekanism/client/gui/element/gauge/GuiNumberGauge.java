@@ -2,7 +2,7 @@ package mekanism.client.gui.element.gauge;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;

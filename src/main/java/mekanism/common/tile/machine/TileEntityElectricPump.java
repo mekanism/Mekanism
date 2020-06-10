@@ -177,7 +177,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             //Add all the blocks surrounding this recurring node to the recurring node list
             for (Direction orientation : EnumUtils.DIRECTIONS) {
                 BlockPos side = tempPumpPos.offset(orientation);
-                if (Math.sqrt(pos.distanceSq(side)) <= MekanismConfig.general.maxPumpRange.get()) {
+                if (MekanismUtils.distanceBetween(pos, side) <= MekanismConfig.general.maxPumpRange.get()) {
                     if (suck(side, hasFilter, true)) {
                         return true;
                     }
@@ -271,7 +271,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         nbtTags.putBoolean(NBTConstants.SUCKED_LAST_OPERATION, suckedLastOperation);

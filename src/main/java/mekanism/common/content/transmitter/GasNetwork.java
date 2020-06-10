@@ -1,12 +1,11 @@
-package mekanism.common.transmitters.grid;
+package mekanism.common.content.transmitter;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -23,24 +22,21 @@ import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityGasTank;
 import mekanism.common.distribution.target.ChemicalHandlerTarget;
 import mekanism.common.distribution.target.GasTransmitterSaveTarget;
-import mekanism.common.util.CapabilityUtils;
+import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.common.util.LazyOptional;
 
 /**
  * A DynamicNetwork extension created specifically for the transfer of Gases. By default this is server-only, but if ticked on the client side and if it's posted events
@@ -48,14 +44,12 @@ import net.minecraftforge.eventbus.api.Event;
  *
  * @author aidancbrady
  */
-public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack> implements IMekanismGasHandler {
+public class GasNetwork extends DynamicBufferedNetwork<IGasHandler, GasNetwork, GasStack, TileEntityPressurizedTube> implements IMekanismGasHandler {
 
     private final List<IGasTank> gasTanks;
     public final VariableCapacityGasTank gasTank;
-
     @Nonnull
     public Gas lastGas = MekanismAPI.EMPTY_GAS;
-    public float gasScale;
     private long prevTransferAmount;
 
     public GasNetwork() {
@@ -83,20 +77,20 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     protected void forceScaleUpdate() {
         if (!gasTank.isEmpty() && gasTank.getCapacity() > 0) {
-            gasScale = (float) Math.min(1, gasTank.getStored() / (double) gasTank.getCapacity());
+            currentScale = (float) Math.min(1, gasTank.getStored() / (double) gasTank.getCapacity());
         } else {
-            gasScale = 0;
+            currentScale = 0;
         }
     }
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
-        float oldScale = gasScale;
+        float oldScale = currentScale;
         long oldCapacity = getCapacity();
         super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the gas scales
         long capacity = getCapacity();
-        gasScale = Math.min(1, capacity == 0 ? 0 : (gasScale * oldCapacity + net.gasScale * net.capacity) / capacity);
+        currentScale = Math.min(1, capacity == 0 ? 0 : (currentScale * oldCapacity + net.currentScale * net.capacity) / capacity);
         if (isRemote()) {
             if (gasTank.isEmpty() && !net.gasTank.isEmpty()) {
                 gasTank.setStack(net.getBuffer());
@@ -112,7 +106,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 }
                 net.gasTank.setEmpty();
             }
-            if (oldScale != gasScale) {
+            if (oldScale != currentScale) {
                 //We want to make sure we update to the scale change
                 needsUpdate = true;
             }
@@ -126,16 +120,15 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
+    public void absorbBuffer(TileEntityPressurizedTube transmitter) {
         GasStack gas = transmitter.releaseShare();
-        if (gas.isEmpty()) {
-            return;
-        }
-        if (gasTank.isEmpty()) {
-            gasTank.setStack(gas.copy());
-        } else if (gas.isTypeEqual(gasTank.getType())) {
-            long amount = gas.getAmount();
-            MekanismUtils.logMismatchedStackSize(gasTank.growStack(amount, Action.EXECUTE), amount);
+        if (!gas.isEmpty()) {
+            if (gasTank.isEmpty()) {
+                gasTank.setStack(gas.copy());
+            } else if (gas.isTypeEqual(gasTank.getType())) {
+                long amount = gas.getAmount();
+                MekanismUtils.logMismatchedStackSize(gasTank.growStack(amount, Action.EXECUTE), amount);
+            }
         }
     }
 
@@ -150,7 +143,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    protected void updateSaveShares(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void updateSaveShares(@Nullable TileEntityPressurizedTube triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
@@ -158,14 +151,14 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
             Set<GasTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter : transmitters) {
+            for (TileEntityPressurizedTube transmitter : transmitters) {
                 GasTransmitterSaveTarget saveTarget = new GasTransmitterSaveTarget(gasType);
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);
             }
             long sent = EmitUtils.sendToAcceptors(saveTargets, size, gasType.getAmount(), gasType);
-            if (sent < gasType.getAmount() && triggerTransmitter != null) {
-                disperse(triggerTransmitter, new GasStack(gasType.getType(), gasType.getAmount() - sent));
+            if (triggerTransmitter != null && sent < gasType.getAmount()) {
+                disperse(triggerTransmitter, new GasStack(gasType, gasType.getAmount() - sent));
             }
             for (GasTransmitterSaveTarget saveTarget : saveTargets) {
                 saveTarget.saveShare(side);
@@ -174,39 +167,28 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     @Override
-    protected void onLastTransmitterRemoved(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter) {
+    protected void onLastTransmitterRemoved(@Nonnull TileEntityPressurizedTube triggerTransmitter) {
         disperse(triggerTransmitter, gasTank.getStack());
     }
 
-    private void disperse(@Nullable IGridTransmitter<?, ?, ?> triggerTransmitter, GasStack gasType) {
+    private void disperse(@Nonnull TileEntityPressurizedTube triggerTransmitter, GasStack gasType) {
         if (gasType.has(GasAttributes.Radiation.class)) {
             // Handle radiation leakage
             double radioactivity = gasType.get(GasAttributes.Radiation.class).getRadioactivity();
-            Mekanism.radiationManager.radiate(triggerTransmitter.coord(), gasType.getAmount() * radioactivity);
+            Mekanism.radiationManager.radiate(Coord4D.get(triggerTransmitter), gasType.getAmount() * radioactivity);
         }
     }
 
     private long tickEmit(@Nonnull GasStack stack) {
         Set<ChemicalHandlerTarget<Gas, GasStack, IGasHandler>> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
-        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
-        for (Coord4D coord : possibleAcceptors) {
-            EnumSet<Direction> sides = acceptorDirections.get(coord);
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, coord);
-            if (tile == null) {
-                continue;
-            }
+        for (Entry<BlockPos, Map<Direction, LazyOptional<IGasHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
             ChemicalHandlerTarget<Gas, GasStack, IGasHandler> target = new ChemicalHandlerTarget<>(stack);
-            for (Direction side : sides) {
-                CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side).ifPresent(acceptor -> {
-                    if (ChemicalUtil.canInsert(acceptor, stack)) {
-                        target.addHandler(side, acceptor);
-                    }
-                });
-            }
+            entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
+                if (ChemicalUtil.canInsert(acceptor, stack)) {
+                    target.addHandler(side, acceptor);
+                }
+            }));
             int curHandlers = target.getHandlers().size();
             if (curHandlers > 0) {
                 availableAcceptors.add(target);
@@ -219,28 +201,22 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!isRemote()) {
-            float scale = computeContentScale();
-            if (scale != gasScale) {
-                gasScale = scale;
-                needsUpdate = true;
-            }
-            if (needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, lastGas, gasScale));
-                needsUpdate = false;
-            }
-            if (gasTank.isEmpty()) {
-                prevTransferAmount = 0;
-            } else {
-                prevTransferAmount = tickEmit(gasTank.getStack());
-                MekanismUtils.logMismatchedStackSize(gasTank.shrinkStack(prevTransferAmount, Action.EXECUTE), prevTransferAmount);
-            }
+        if (needsUpdate) {
+            MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, lastGas));
+            needsUpdate = false;
+        }
+        if (gasTank.isEmpty()) {
+            prevTransferAmount = 0;
+        } else {
+            prevTransferAmount = tickEmit(gasTank.getStack());
+            MekanismUtils.logMismatchedStackSize(gasTank.shrinkStack(prevTransferAmount, Action.EXECUTE), prevTransferAmount);
         }
     }
 
-    public float computeContentScale() {
+    @Override
+    protected float computeContentScale() {
         float scale = (float) (gasTank.getStored() / (double) gasTank.getCapacity());
-        float ret = Math.max(gasScale, scale);
+        float ret = Math.max(currentScale, scale);
         if (prevTransferAmount > 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);
         } else if (prevTransferAmount <= 0 && ret > 0) {
@@ -255,7 +231,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public String toString() {
-        return "[GasNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+        return "[GasNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
@@ -288,7 +264,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.GAS_NETWORK, transmitters.size(), possibleAcceptors.size());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.GAS_NETWORK, transmitters.size(), getAcceptorCount());
     }
 
     @Nonnull
@@ -319,16 +295,13 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         }
     }
 
-    public static class GasTransferEvent extends Event {
+    public static class GasTransferEvent extends TransferEvent<GasNetwork> {
 
-        public final GasNetwork gasNetwork;
         public final Gas transferType;
-        public final float gasScale;
 
-        public GasTransferEvent(GasNetwork network, Gas type, float scale) {
-            gasNetwork = network;
+        public GasTransferEvent(GasNetwork network, Gas type) {
+            super(network);
             transferType = type;
-            gasScale = scale;
         }
     }
 }

@@ -1,22 +1,22 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
-import mekanism.api.Coord4D;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketRemoveModule {
 
-    private Coord4D coord4D;
-    private ModuleData<?> moduleType;
+    private final BlockPos pos;
+    private final ModuleData<?> moduleType;
 
-    public PacketRemoveModule(Coord4D coord, ModuleData<?> type) {
-        coord4D = coord;
+    public PacketRemoveModule(BlockPos pos, ModuleData<?> type) {
+        this.pos = pos;
         moduleType = type;
     }
 
@@ -26,7 +26,7 @@ public class PacketRemoveModule {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntityModificationStation tile = MekanismUtils.getTileEntity(TileEntityModificationStation.class, player.world, message.coord4D.getPos());
+            TileEntityModificationStation tile = MekanismUtils.getTileEntity(TileEntityModificationStation.class, player.world, message.pos);
             if (tile != null) {
                 tile.removeModule(player, message.moduleType);
             }
@@ -35,11 +35,11 @@ public class PacketRemoveModule {
     }
 
     public static void encode(PacketRemoveModule pkt, PacketBuffer buf) {
-        pkt.coord4D.write(buf);
+        buf.writeBlockPos(pkt.pos);
         buf.writeString(pkt.moduleType.getName());
     }
 
     public static PacketRemoveModule decode(PacketBuffer buf) {
-        return new PacketRemoveModule(Coord4D.read(buf), Modules.get(buf.readString()));
+        return new PacketRemoveModule(buf.readBlockPos(), Modules.get(buf.readString()));
     }
 }
