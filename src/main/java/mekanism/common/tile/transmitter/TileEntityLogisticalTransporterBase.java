@@ -37,7 +37,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-//TODO: Validate that the sub classes of this still work properly
 public abstract class TileEntityLogisticalTransporterBase extends TileEntityTransmitter<IItemHandler, InventoryNetwork, TileEntityLogisticalTransporterBase> {
 
     private final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();

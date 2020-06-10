@@ -64,7 +64,7 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
         if (!isRemote()) {
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
-                for (IGasHandler connectedAcceptor : acceptorCache.getConnectedAcceptors(connections, Capabilities.GAS_HANDLER_CAPABILITY)) {
+                for (IGasHandler connectedAcceptor : acceptorCache.getConnectedAcceptors(connections)) {
                     GasStack received;
                     //Note: We recheck the buffer each time in case we ended up accepting gas somewhere
                     // and our buffer changed and is no longer empty

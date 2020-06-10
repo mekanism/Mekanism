@@ -65,7 +65,7 @@ public class TileEntityMechanicalPipe extends TileEntityBufferedTransmitter<IFlu
         if (!isRemote()) {
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
-                for (IFluidHandler connectedAcceptor : acceptorCache.getConnectedAcceptors(connections, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)) {
+                for (IFluidHandler connectedAcceptor : acceptorCache.getConnectedAcceptors(connections)) {
                     FluidStack received;
                     //Note: We recheck the buffer each time in case we ended up accepting fluid somewhere
                     // and our buffer changed and is no longer empty

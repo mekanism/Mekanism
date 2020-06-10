@@ -14,7 +14,6 @@ import net.minecraftforge.common.util.LazyOptional;
 public class NetworkAcceptorCache<ACCEPTOR> {
 
     //TODO: Move this to being private??
-    //TODO: Validate that we are properly redoing the lazy optional if it becomes invalid
     public final Map<BlockPos, Map<Direction, LazyOptional<ACCEPTOR>>> cachedAcceptors = new Object2ObjectOpenHashMap<>();
     private final Map<TileEntityTransmitter<ACCEPTOR, ?, ?>, Set<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
 

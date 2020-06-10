@@ -38,8 +38,8 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong, TileEntityUniversalCable> implements
-      IMekanismStrictEnergyHandler {
+public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong, TileEntityUniversalCable>
+      implements IMekanismStrictEnergyHandler {
 
     public final CableTier tier;
 
@@ -60,9 +60,7 @@ public class TileEntityUniversalCable extends TileEntityBufferedTransmitter<IStr
         if (!isRemote()) {
             Set<Direction> connections = getConnections(ConnectionType.PULL);
             if (!connections.isEmpty()) {
-                List<IStrictEnergyHandler> acceptors = acceptorCache.getConnectedAcceptors(connections,
-                      (tile, side) -> EnergyCompatUtils.getLazyStrictEnergyHandler(tile, side.getOpposite()));
-                for (IStrictEnergyHandler connectedAcceptor : acceptors) {
+                for (IStrictEnergyHandler connectedAcceptor : acceptorCache.getConnectedAcceptors(connections)) {
                     FloatingLong received = connectedAcceptor.extractEnergy(getAvailablePull(), Action.SIMULATE);
                     if (!received.isZero() && takeEnergy(received, Action.SIMULATE).isZero()) {
                         //If we received some energy and are able to insert it all

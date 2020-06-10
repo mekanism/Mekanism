@@ -29,7 +29,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
@@ -43,7 +42,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     public final ConductorTier tier;
 
-    public double clientTemperature = HeatAPI.AMBIENT_TEMP;
+    private double clientTemperature = HeatAPI.AMBIENT_TEMP;
 
     private final List<IHeatCapacitor> capacitors;
     public final BasicHeatCapacitor buffer;
@@ -82,7 +81,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        //TODO - V10: Evaluate all the other ones don't allow for other transmitters to be acceptors, but this one seems to. Is that intended
         return acceptorCache.isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER_CAPABILITY);
     }
 
@@ -101,7 +99,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public CompoundNBT write(@Nonnull CompoundNBT tag) {
         super.write(tag);
-        buffer.serializeNBT();
         tag.put(NBTConstants.HEAT_CAPACITORS, DataHandlerUtils.writeContainers(getHeatCapacitors(null)));
         return tag;
     }
@@ -151,8 +148,9 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public IHeatHandler getAdjacent(Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
-            TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-            return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
+            //Note: We use the acceptor cache as the heat network is different and the transmitters count the other transmitters in the
+            // network as valid acceptors
+            return MekanismUtils.toOptional(acceptorCache.getConnectedAcceptor(side)).orElse(null);
         }
         return null;
     }
