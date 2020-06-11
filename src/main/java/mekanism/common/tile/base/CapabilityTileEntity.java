@@ -1,11 +1,13 @@
 package mekanism.common.tile.base;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
+import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -18,6 +20,15 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
 
     public CapabilityTileEntity(TileEntityType<?> type) {
         super(type);
+    }
+
+    protected final void addCapabilityResolvers(List<ICapabilityHandlerManager<?>> capabilityHandlerManagers) {
+        for (ICapabilityHandlerManager<?> capabilityHandlerManager : capabilityHandlerManagers) {
+            //Add all managers that we support in our tile, as capability resolvers
+            if (capabilityHandlerManager.canHandle()) {
+                addCapabilityResolver(capabilityHandlerManager);
+            }
+        }
     }
 
     protected final void addCapabilityResolver(ICapabilityResolver resolver) {

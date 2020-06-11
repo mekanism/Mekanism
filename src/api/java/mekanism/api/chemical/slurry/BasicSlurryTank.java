@@ -17,6 +17,7 @@ import mekanism.api.inventory.AutomationType;
 public class BasicSlurryTank extends BasicChemicalTank<Slurry, SlurryStack> implements ISlurryHandler, ISlurryTank {
 
     public static final Predicate<@NonNull Slurry> alwaysTrue = stack -> true;
+    public static final Predicate<@NonNull Slurry> alwaysFalse = stack -> false;
     public static final BiPredicate<@NonNull Slurry, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
     public static final BiPredicate<@NonNull Slurry, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
     public static final BiPredicate<@NonNull Slurry, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;

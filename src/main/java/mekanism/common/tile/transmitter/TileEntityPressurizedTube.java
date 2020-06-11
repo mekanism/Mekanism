@@ -14,8 +14,14 @@ import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.infuse.BasicInfusionTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.merged.MergedChemicalTank;
+import mekanism.api.chemical.pigment.BasicPigmentTank;
+import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.BasicSlurryTank;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
@@ -24,6 +30,10 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
+import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
+import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
+import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyGasHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.content.transmitter.GasNetwork;
@@ -41,20 +51,37 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
 //TODO - V10: Figure out how to make this work for multiple chemical types
-public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGasHandler, GasNetwork, GasStack, TileEntityPressurizedTube> implements IMekanismGasHandler {
+//Note: We just implement the trackers instead of the corresponding tile interfaces as we handle sidedness in a more simple way than the managers do
+public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGasHandler, GasNetwork, GasStack, TileEntityPressurizedTube>
+      implements IGasTracker, IInfusionTracker, IPigmentTracker, ISlurryTracker {
 
     public final TubeTier tier;
+    private final MergedChemicalTank chemicalTank;
+    private final List<IGasTank> gasTanks;
+    private final List<IInfusionTank> infusionTanks;
+    private final List<IPigmentTank> pigmentTanks;
+    private final List<ISlurryTank> slurryTanks;
+    @Deprecated
+    public final BasicGasTank buffer;
     @Nonnull
     public GasStack saveShare = GasStack.EMPTY;
-    private final List<IGasTank> tanks;
-    public final BasicGasTank buffer;
 
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
         super(blockProvider);
         this.tier = Attribute.getTier(blockProvider.getBlock(), TubeTier.class);
-        buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this);
-        tanks = Collections.singletonList(buffer);
-        addCapabilityResolver(AdvancedCapabilityResolver.readOnly(Capabilities.GAS_HANDLER_CAPABILITY, this, () -> new ProxyGasHandler(this, null, null)));
+        chemicalTank = MergedChemicalTank.create(
+              buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this),
+              BasicInfusionTank.create(getCapacity(), BasicInfusionTank.alwaysFalse, BasicInfusionTank.alwaysTrue, BasicInfusionTank.alwaysTrue, this),
+              BasicPigmentTank.create(getCapacity(), BasicPigmentTank.alwaysFalse, BasicPigmentTank.alwaysTrue, BasicPigmentTank.alwaysTrue, this),
+              BasicSlurryTank.create(getCapacity(), BasicSlurryTank.alwaysFalse, BasicSlurryTank.alwaysTrue, BasicSlurryTank.alwaysTrue, this)
+        );
+        gasTanks = Collections.singletonList(chemicalTank.getGasTank());
+        infusionTanks = Collections.singletonList(chemicalTank.getInfusionTank());
+        pigmentTanks = Collections.singletonList(chemicalTank.getPigmentTank());
+        slurryTanks = Collections.singletonList(chemicalTank.getSlurryTank());
+        //TODO: FIXME
+        addCapabilityResolver(AdvancedCapabilityResolver.readOnly(Capabilities.GAS_HANDLER_CAPABILITY, this,
+              () -> new ProxyGasHandler(this, null, null)));
     }
 
     @Override
@@ -109,6 +136,17 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
             return gasTank.insert(stack, action, AutomationType.EXTERNAL);
         }
         return stack;
+    }
+
+    private boolean insertChemicalCheck(@Nullable Direction side) {
+        if (side == null) {
+            //If we have no side then we are read only
+            //TODO: Is this true? Previously we allowed it sort of
+            return false;
+        }
+        //If we have a side only allow inserting if our connection allows it
+        ConnectionType connectionType = getConnectionType(side);
+        return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL;
     }
 
     @Override
@@ -244,11 +282,38 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
 
     @Nonnull
     @Override
-    public List<IGasTank> getChemicalTanks(@Nullable Direction side) {
+    public List<IGasTank> getGasTanks(@Nullable Direction side) {
         if (hasTransmitterNetwork()) {
             return getTransmitterNetwork().getChemicalTanks(side);
         }
-        return tanks;
+        return gasTanks;
+    }
+
+    @Nonnull
+    @Override
+    public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getChemicalTanks(side);
+        }
+        return infusionTanks;
+    }
+
+    @Nonnull
+    @Override
+    public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getChemicalTanks(side);
+        }
+        return pigmentTanks ;
+    }
+
+    @Nonnull
+    @Override
+    public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
+        if (hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getChemicalTanks(side);
+        }
+        return slurryTanks;
     }
 
     @Override

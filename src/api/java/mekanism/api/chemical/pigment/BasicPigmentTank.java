@@ -17,6 +17,7 @@ import mekanism.api.inventory.AutomationType;
 public class BasicPigmentTank extends BasicChemicalTank<Pigment, PigmentStack> implements IPigmentHandler, IPigmentTank {
 
     public static final Predicate<@NonNull Pigment> alwaysTrue = stack -> true;
+    public static final Predicate<@NonNull Pigment> alwaysFalse = stack -> false;
     public static final BiPredicate<@NonNull Pigment, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
     public static final BiPredicate<@NonNull Pigment, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
     public static final BiPredicate<@NonNull Pigment, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;

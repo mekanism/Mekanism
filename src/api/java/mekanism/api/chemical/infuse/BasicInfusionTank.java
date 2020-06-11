@@ -17,6 +17,7 @@ import mekanism.api.inventory.AutomationType;
 public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionStack> implements IInfusionHandler, IInfusionTank {
 
     public static final Predicate<@NonNull InfuseType> alwaysTrue = stack -> true;
+    public static final Predicate<@NonNull InfuseType> alwaysFalse = stack -> false;
     public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
     public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
     public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
