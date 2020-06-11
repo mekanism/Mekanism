@@ -3,11 +3,11 @@ package mekanism.client;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.client.settings.KeyModifier;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class MekKeyHandler {
 
@@ -47,6 +47,10 @@ public abstract class MekKeyHandler {
         }
         //If we failed, due to us being a key modifier as our key, check the old way
         return KeyModifier.isKeyCodeModifier(keyBinding.getKey()) && isKeyPressed(keyBinding);
+    }
+
+    public static boolean isKeyDown(KeyBinding keyBinding) {
+        return InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), keyBinding.getKey().getKeyCode());
     }
 
     private static boolean isKeyPressed(KeyBinding keyBinding) {

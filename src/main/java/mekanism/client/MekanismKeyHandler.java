@@ -23,8 +23,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public class MekanismKeyHandler extends MekKeyHandler {
 
-    public static boolean MODE_KEY_DOWN = false;
-
     public static KeyBinding handModeSwitchKey = new KeyBinding(MekanismLang.KEY_HAND_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_N, MekanismLang.MEKANISM.getTranslationKey());
     public static KeyBinding headModeSwitchKey = new KeyBinding(MekanismLang.KEY_HEAD_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
@@ -80,7 +78,6 @@ public class MekanismKeyHandler extends MekKeyHandler {
             return;
         }
         if (kb == handModeSwitchKey) {
-            MODE_KEY_DOWN = true;
             if (IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND, false)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, player.isSneaking()));
             } else if (!IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND) && IModeItem.isModeItem(player, EquipmentSlotType.OFFHAND)) {
@@ -115,8 +112,6 @@ public class MekanismKeyHandler extends MekKeyHandler {
     public void keyUp(KeyBinding kb) {
         if (kb == boostKey) {
             MekanismClient.updateKey(kb, KeySync.BOOST);
-        } else if (kb == handModeSwitchKey) {
-            MODE_KEY_DOWN = false;
         }
     }
 }

@@ -1,9 +1,10 @@
-package mekanism.client.render;
+package mekanism.client.gui;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -45,6 +46,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         RenderSystem.defaultBlendFunc();
         RenderSystem.defaultAlphaFunc();
         RenderSystem.translatef(centerX, centerY, 0);
+        RenderSystem.disableTexture();
 
         // draw base
         RenderSystem.color4f(0.3F, 0.3F, 0.3F, 0.5F);
@@ -82,6 +84,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
 
         MekanismRenderer.resetColor();
 
+        RenderSystem.enableTexture();
         for (int i = 0; i < types.length; i++) {
             double angle = Math.toRadians(270 + 360 * ((float) i / types.length));
             float x = (float) Math.cos(angle) * (INNER + OUTER) / 2F;
@@ -115,8 +118,13 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        minecraft.displayGuiScreen(null);
+        updateSelection();
         return true;
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 
     private void drawTorus(float startAngle, float sizeAngle) {

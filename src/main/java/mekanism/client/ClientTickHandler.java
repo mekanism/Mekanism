@@ -9,6 +9,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.GeigerSound;
 import mekanism.client.sound.SoundHandler;
@@ -29,10 +30,13 @@ import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.item.interfaces.IRadialModeItem;
+import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketPortableTeleporterGui;
 import mekanism.common.network.PacketPortableTeleporterGui.PortableTeleporterPacketType;
+import mekanism.common.network.PacketRadialModeChange;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
@@ -48,10 +52,12 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
@@ -304,6 +310,17 @@ public class ClientTickHandler {
                 minecraft.player.removePotionEffect(Effects.NIGHT_VISION);
             }
 
+            if (minecraft.world != null) {
+                ItemStack stack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+                if (MekanismKeyHandler.isKeyDown(MekanismKeyHandler.handModeSwitchKey) && stack.getItem() instanceof IRadialModeItem) {
+                    updateSelectorRenderer((IRadialModeItem<?>) stack.getItem());
+                } else {
+                    if (minecraft.currentScreen instanceof GuiRadialSelector) {
+                        minecraft.displayGuiScreen(null);
+                    }
+                }
+            }
+
             if (MekanismConfig.client.enablePlayerSounds.get() && SoundHandler.radiationSoundMap.isEmpty()) {
                 for (RadiationScale scale : EnumUtils.RADIATION_SCALES) {
                     if (scale != RadiationScale.NONE) {
@@ -316,20 +333,50 @@ public class ClientTickHandler {
         }
     }
 
+    private <TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> void updateSelectorRenderer(IRadialModeItem<TYPE> modeItem) {
+        Class<TYPE> modeClass = modeItem.getModeClass();
+        if (!(minecraft.currentScreen instanceof GuiRadialSelector) || ((GuiRadialSelector<?>) minecraft.currentScreen).getEnumClass() != modeClass) {
+            minecraft.displayGuiScreen(new GuiRadialSelector<>(modeClass, () -> {
+                if (minecraft.player != null) {
+                    ItemStack s = minecraft.player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+                    if (s.getItem() instanceof IRadialModeItem) {
+                        return ((IRadialModeItem<TYPE>) s.getItem()).getMode(s);
+                    }
+                }
+                return modeClass.getEnumConstants()[0];
+            }, type -> {
+                if (minecraft.player != null) {
+                    Mekanism.packetHandler.sendToServer(new PacketRadialModeChange(EquipmentSlotType.MAINHAND, type.ordinal()));
+                }
+            }));
+        }
+    }
+
     @SubscribeEvent
     public void onMouseEvent(MouseScrollEvent event) {
         if (MekanismConfig.client.allowModeScroll.get() && minecraft.player != null && minecraft.player.isSneaking()) {
-            if (event.getScrollDelta() != 0 && IModeItem.isModeItem(minecraft.player, EquipmentSlotType.MAINHAND)) {
-                lastScrollTime = minecraft.world.getGameTime();
-                scrollDelta += event.getScrollDelta();
-                int shift = (int) scrollDelta;
-                scrollDelta %= 1;
-                if (shift != 0) {
-                    RenderTickHandler.modeSwitchTimer = 100;
-                    Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, shift));
-                }
-                event.setCanceled(true);
+            handleModeScroll(event, event.getScrollDelta());
+        }
+    }
+
+    @SubscribeEvent
+    public void onGuiMouseEvent(GuiScreenEvent.MouseScrollEvent.Pre event) {
+        if (event.getGui() instanceof GuiRadialSelector) {
+            handleModeScroll(event, event.getScrollDelta());
+        }
+    }
+
+    private void handleModeScroll(Event event, double delta) {
+        if (delta != 0 && IModeItem.isModeItem(minecraft.player, EquipmentSlotType.MAINHAND)) {
+            lastScrollTime = minecraft.world.getGameTime();
+            scrollDelta += delta;
+            int shift = (int) scrollDelta;
+            scrollDelta %= 1;
+            if (shift != 0) {
+                RenderTickHandler.modeSwitchTimer = 100;
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, shift));
             }
+            event.setCanceled(true);
         }
     }
 
