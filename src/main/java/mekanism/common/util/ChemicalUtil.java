@@ -77,6 +77,19 @@ public class ChemicalUtil {
     }
 
     /**
+     * Helper to copy a chemical stack when we don't know what implementation it is.
+     *
+     * @param stack Stack to copy
+     *
+     * @return Copy of the input stack with the desired size
+     *
+     * @apiNote Should only be called if we know that copy returns STACK
+     */
+    public static <STACK extends ChemicalStack<?>> STACK copy(STACK stack) {
+        return (STACK) stack.copy();
+    }
+
+    /**
      * Helper to resize a chemical stack when we don't know what implementation it is.
      *
      * @param stack  Stack to copy
@@ -87,7 +100,7 @@ public class ChemicalUtil {
      * @apiNote Should only be called if we know that copy returns STACK
      */
     public static <STACK extends ChemicalStack<?>> STACK copyWithAmount(STACK stack, long amount) {
-        STACK copy = (STACK) stack.copy();
+        STACK copy = copy(stack);
         copy.setAmount(amount);
         return copy;
     }
@@ -243,7 +256,7 @@ public class ChemicalUtil {
         if (curHandlers > 0) {
             Set<ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>>> targets = new ObjectOpenHashSet<>();
             targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), (STACK) stack.copy());
+            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), ChemicalUtil.copy(stack));
         }
         return 0;
     }

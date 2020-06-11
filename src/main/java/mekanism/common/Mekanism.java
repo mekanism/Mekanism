@@ -1,18 +1,15 @@
 package mekanism.common;
 
+import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
-import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.client.ClientProxy;
 import mekanism.client.ModelLoaderRegisterHelper;
 import mekanism.common.base.IModule;
@@ -41,6 +38,12 @@ import mekanism.common.content.sps.SPSValidator;
 import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.content.tank.TankValidator;
+import mekanism.common.content.transmitter.EnergyNetwork.EnergyTransferEvent;
+import mekanism.common.content.transmitter.FluidNetwork.FluidTransferEvent;
+import mekanism.common.content.transmitter.GasNetwork.GasTransferEvent;
+import mekanism.common.content.transmitter.InfusionNetwork.InfusionTransferEvent;
+import mekanism.common.content.transmitter.PigmentNetwork.PigmentTransferEvent;
+import mekanism.common.content.transmitter.SlurryNetwork.SlurryTransferEvent;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
@@ -50,6 +53,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketHandler;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.recipe.bin.BinInsertRecipe;
@@ -69,9 +73,6 @@ import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTagManager;
-import mekanism.common.content.transmitter.EnergyNetwork.EnergyTransferEvent;
-import mekanism.common.content.transmitter.FluidNetwork.FluidTransferEvent;
-import mekanism.common.content.transmitter.GasNetwork.GasTransferEvent;
 import mekanism.common.world.GenHandler;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
@@ -96,6 +97,8 @@ import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(Mekanism.MODID)
 public class Mekanism {
@@ -181,6 +184,9 @@ public class Mekanism {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.addListener(this::onEnergyTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onGasTransferred);
+        MinecraftForge.EVENT_BUS.addListener(this::onInfusionTransferred);
+        MinecraftForge.EVENT_BUS.addListener(this::onPigmentTransferred);
+        MinecraftForge.EVENT_BUS.addListener(this::onSlurryTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onLiquidTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::chunkSave);
         MinecraftForge.EVENT_BUS.addListener(this::onChunkDataLoad);
@@ -345,24 +351,27 @@ public class Mekanism {
     }
 
     private void onEnergyTransferred(EnergyTransferEvent event) {
-        try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network), event.network);
-        } catch (Exception ignored) {
-        }
+        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network), event.network);
     }
 
     private void onGasTransferred(GasTransferEvent event) {
-        try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
-        } catch (Exception ignored) {
-        }
+        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
+    }
+
+    private void onInfusionTransferred(InfusionTransferEvent event) {
+        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
+    }
+
+    private void onPigmentTransferred(PigmentTransferEvent event) {
+        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
+    }
+
+    private void onSlurryTransferred(SlurryTransferEvent event) {
+        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
     }
 
     private void onLiquidTransferred(FluidTransferEvent event) {
-        try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.fluidType), event.network);
-        } catch (Exception ignored) {
-        }
+        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.fluidType), event.network);
     }
 
     private void chunkSave(ChunkDataEvent.Save event) {

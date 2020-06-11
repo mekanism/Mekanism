@@ -89,7 +89,7 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
 
     private long getAvailablePull() {
         if (hasTransmitterNetwork()) {
-            return Math.min(tier.getTubePullAmount(), getTransmitterNetwork().gasTank.getNeeded());
+            return Math.min(tier.getTubePullAmount(), getTransmitterNetwork().tank.getNeeded());
         }
         return Math.min(tier.getTubePullAmount(), buffer.getNeeded());
     }
@@ -152,12 +152,12 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
         if (super.isValidTransmitter(tile) && tile instanceof TileEntityPressurizedTube) {
             Gas buffer = getBufferWithFallback().getType();
             if (buffer.isEmptyType() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
-                buffer = getTransmitterNetwork().lastGas;
+                buffer = getTransmitterNetwork().lastChemical;
             }
             TileEntityPressurizedTube other = (TileEntityPressurizedTube) tile;
             Gas otherBuffer = other.getBufferWithFallback().getType();
             if (otherBuffer.isEmptyType() && other.hasTransmitterNetwork() && other.getTransmitterNetwork().getPrevTransferAmount() > 0) {
-                otherBuffer = other.getTransmitterNetwork().lastGas;
+                otherBuffer = other.getTransmitterNetwork().lastChemical;
             }
             return buffer.isEmptyType() || otherBuffer.isEmptyType() || buffer == otherBuffer;
         }
@@ -223,9 +223,9 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
     public void takeShare() {
         if (hasTransmitterNetwork()) {
             GasNetwork transmitterNetwork = getTransmitterNetwork();
-            if (!transmitterNetwork.gasTank.isEmpty() && !saveShare.isEmpty()) {
+            if (!transmitterNetwork.tank.isEmpty() && !saveShare.isEmpty()) {
                 long amount = saveShare.getAmount();
-                MekanismUtils.logMismatchedStackSize(transmitterNetwork.gasTank.shrinkStack(amount, Action.EXECUTE), amount);
+                MekanismUtils.logMismatchedStackSize(transmitterNetwork.tank.shrinkStack(amount, Action.EXECUTE), amount);
                 buffer.setStack(saveShare);
             }
         }
@@ -237,7 +237,7 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
     @Nonnull
     private GasStack takeGas(GasStack gasStack, Action action) {
         if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().gasTank.insert(gasStack, action, AutomationType.INTERNAL);
+            return getTransmitterNetwork().tank.insert(gasStack, action, AutomationType.INTERNAL);
         }
         return buffer.insert(gasStack, action, AutomationType.INTERNAL);
     }
@@ -301,7 +301,7 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
         CompoundNBT updateTag = super.getUpdateTag();
         if (hasTransmitterNetwork()) {
-            updateTag.put(NBTConstants.GAS_STORED, getTransmitterNetwork().lastGas.write(new CompoundNBT()));
+            updateTag.put(NBTConstants.GAS_STORED, getTransmitterNetwork().lastChemical.write(new CompoundNBT()));
             updateTag.putFloat(NBTConstants.SCALE, getTransmitterNetwork().currentScale);
         }
         return updateTag;
@@ -310,7 +310,7 @@ public class TileEntityPressurizedTube extends TileEntityBufferedTransmitter<IGa
     @Override
     protected void handleContentsUpdateTag(@Nonnull GasNetwork network, @Nonnull CompoundNBT tag) {
         super.handleContentsUpdateTag(network, tag);
-        NBTUtils.setGasIfPresent(tag, NBTConstants.GAS_STORED, network::setLastGas);
+        NBTUtils.setGasIfPresent(tag, NBTConstants.GAS_STORED, network::setLastChemical);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
     }
 }

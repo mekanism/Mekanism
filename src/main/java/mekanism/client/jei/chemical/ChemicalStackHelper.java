@@ -88,7 +88,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public STACK copyIngredient(STACK ingredient) {
-        return (STACK) ingredient.copy();
+        return ChemicalUtil.copy(ingredient);
     }
 
     @Override

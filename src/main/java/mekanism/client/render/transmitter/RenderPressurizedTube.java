@@ -24,11 +24,11 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
           IProfiler profiler) {
         if (tube.hasTransmitterNetwork()) {
             GasNetwork network = tube.getTransmitterNetwork();
-            if (!network.lastGas.isEmptyType() && !network.gasTank.isEmpty() && network.currentScale > 0) {
+            if (!network.lastChemical.isEmptyType() && !network.tank.isEmpty() && network.currentScale > 0) {
                 matrix.push();
                 matrix.translate(0.5, 0.5, 0.5);
-                renderModel(tube, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), network.lastGas.getTint(),
-                      network.currentScale, MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.getChemicalTexture(network.lastGas));
+                renderModel(tube, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), network.lastChemical.getTint(),
+                      network.currentScale, MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.getChemicalTexture(network.lastChemical));
                 matrix.pop();
             }
         }
