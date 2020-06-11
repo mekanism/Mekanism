@@ -34,7 +34,7 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IRadialModeItem;
-import mekanism.common.item.interfaces.IRadialModeItem.IRadialSelectorEnum;
+import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.math.Pos3D;
@@ -99,7 +99,7 @@ public class RenderTickHandler {
 
     private static HUDRenderer hudRenderer = new HUDRenderer();
 
-    private RadialSelectorRenderer selectorRenderer;
+    private RadialSelectorRenderer<?> selectorRenderer;
 
     public static int modeSwitchTimer = 0;
     public static double prevRadiation = 0;
@@ -193,24 +193,9 @@ public class RenderTickHandler {
             if (minecraft.world != null && minecraft.currentScreen == null) {
                 ItemStack stack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
                 if (MekanismKeyHandler.handModeSwitchKey.isKeyDown() && stack.getItem() instanceof IRadialModeItem) {
-                    Class<? extends IRadialSelectorEnum> modeClass = ((IRadialModeItem) stack.getItem()).getModeClass();
-                    if (selectorRenderer == null || selectorRenderer.getEnumClass() != modeClass) {
-                        selectorRenderer = new RadialSelectorRenderer(modeClass, () -> {
-                            if (minecraft.player != null) {
-                                ItemStack s = minecraft.player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
-                                if (s.getItem() instanceof IRadialModeItem) {
-                                    return ((IRadialModeItem) s.getItem()).getMode(s);
-                                }
-                            }
-                            return modeClass.getEnumConstants()[0];
-                        }, type -> {
-                            if (minecraft.player != null) {
-                                Mekanism.packetHandler.sendToServer(new PacketRadialModeChange(EquipmentSlotType.MAINHAND, type.ordinal()));
-                            }
-                        });
-                    }
+                    updateSelectorRenderer((IRadialModeItem<?>) stack.getItem());
                     minecraft.mouseHelper.ungrabMouse();
-                    selectorRenderer.render(event.getPartialTicks());
+                    selectorRenderer.render(event.getWindow(), event.getPartialTicks());
                 } else {
                     if (selectorRenderer != null) {
                         selectorRenderer.updateSelection();
@@ -220,6 +205,29 @@ public class RenderTickHandler {
                 }
             }
         }
+    }
+
+    private <TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> void updateSelectorRenderer(IRadialModeItem<TYPE> modeItem) {
+        Class<TYPE> modeClass = modeItem.getModeClass();
+        if (selectorRenderer == null || selectorRenderer.getEnumClass() != modeClass) {
+            selectorRenderer = getRadialSelectorRenderer(modeClass);
+        }
+    }
+
+    private <TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> RadialSelectorRenderer<TYPE> getRadialSelectorRenderer(Class<TYPE> modeClass) {
+        return new RadialSelectorRenderer<>(modeClass, () -> {
+            if (minecraft.player != null) {
+                ItemStack s = minecraft.player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+                if (s.getItem() instanceof IRadialModeItem) {
+                    return ((IRadialModeItem<TYPE>) s.getItem()).getMode(s);
+                }
+            }
+            return modeClass.getEnumConstants()[0];
+        }, type -> {
+            if (minecraft.player != null) {
+                Mekanism.packetHandler.sendToServer(new PacketRadialModeChange(EquipmentSlotType.MAINHAND, type.ordinal()));
+            }
+        });
     }
 
     @SubscribeEvent
@@ -362,7 +370,7 @@ public class RenderTickHandler {
                 }
             }
             profiler.startSection(ProfilerConstants.CONFIGURABLE_MACHINE);
-            ConfiguratorMode state = ((ItemConfigurator) stack.getItem()).getState(stack);
+            ConfiguratorMode state = ((ItemConfigurator) stack.getItem()).getMode(stack);
             if (state.isConfigurating()) {
                 TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);

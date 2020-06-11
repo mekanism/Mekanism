@@ -2,6 +2,7 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import mekanism.common.item.interfaces.IRadialModeItem;
+import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -11,7 +12,7 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 public class PacketRadialModeChange {
 
     private final EquipmentSlotType slot;
-    private int change;
+    private final int change;
 
     public PacketRadialModeChange(EquipmentSlotType slot, int change) {
         this.slot = slot;
@@ -26,11 +27,14 @@ public class PacketRadialModeChange {
         context.get().enqueueWork(() -> {
             ItemStack stack = player.getItemStackFromSlot(message.slot);
             if (!stack.isEmpty() && stack.getItem() instanceof IRadialModeItem) {
-                IRadialModeItem item = (IRadialModeItem) stack.getItem();
-                item.setMode(stack, player, item.getModeClass().getEnumConstants()[message.change]);
+                setMode(stack, (IRadialModeItem<?>) stack.getItem(), player, message.change);
             }
         });
         context.get().setPacketHandled(true);
+    }
+
+    public static <TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> void setMode(ItemStack stack, IRadialModeItem<TYPE> item, PlayerEntity player, int index) {
+        item.setMode(stack, player, item.getModeByIndex(index));
     }
 
     public static void encode(PacketRadialModeChange pkt, PacketBuffer buf) {

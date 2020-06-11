@@ -1,14 +1,15 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.lwjgl.opengl.GL11;
-import com.mojang.blaze3d.systems.RenderSystem;
-import mekanism.common.item.interfaces.IRadialModeItem.IRadialSelectorEnum;
+import mekanism.common.item.interfaces.IRadialSelectorEnum;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
+import org.lwjgl.opengl.GL11;
 
-public class RadialSelectorRenderer {
+public class RadialSelectorRenderer<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> {
 
     private static final float DRAWS = 300;
 
@@ -16,27 +17,27 @@ public class RadialSelectorRenderer {
     private static final float SELECT_RADIUS = 10;
 
     private final Minecraft minecraft = Minecraft.getInstance();
-    private final Class<? extends IRadialSelectorEnum> enumClass;
-    private final IRadialSelectorEnum[] types;
-    private final Supplier<IRadialSelectorEnum> curSupplier;
-    private final Consumer<IRadialSelectorEnum> changeHandler;
+    private final Class<TYPE> enumClass;
+    private final TYPE[] types;
+    private final Supplier<TYPE> curSupplier;
+    private final Consumer<TYPE> changeHandler;
 
-    private IRadialSelectorEnum selection = null;
+    private TYPE selection = null;
 
-    public RadialSelectorRenderer(Class<? extends IRadialSelectorEnum> enumClass, Supplier<IRadialSelectorEnum> curSupplier, Consumer<IRadialSelectorEnum> changeHandler) {
+    public RadialSelectorRenderer(Class<TYPE> enumClass, Supplier<TYPE> curSupplier, Consumer<TYPE> changeHandler) {
         this.enumClass = enumClass;
         this.curSupplier = curSupplier;
         this.changeHandler = changeHandler;
         types = enumClass.getEnumConstants();
     }
 
-    public void render(float partialTick) {
+    public void render(MainWindow window, float partialTick) {
         // center of screen
-        float centerX = minecraft.getMainWindow().getScaledWidth() / 2F;
-        float centerY = minecraft.getMainWindow().getScaledHeight() / 2F;
+        float centerX = window.getScaledWidth() / 2F;
+        float centerY = window.getScaledHeight() / 2F;
         // scaled mouse position
-        double mouseX = (minecraft.mouseHelper.getMouseX() * minecraft.getMainWindow().getScaledWidth() / minecraft.getMainWindow().getWidth());
-        double mouseY = (minecraft.mouseHelper.getMouseY() * minecraft.getMainWindow().getScaledHeight() / minecraft.getMainWindow().getHeight());
+        double mouseX = (minecraft.mouseHelper.getMouseX() * window.getScaledWidth() / window.getWidth());
+        double mouseY = (minecraft.mouseHelper.getMouseY() * window.getScaledHeight() / window.getHeight());
 
         RenderSystem.pushMatrix();
         RenderSystem.enableBlend();
@@ -48,7 +49,7 @@ public class RadialSelectorRenderer {
         RenderSystem.color4f(0.3F, 0.3F, 0.3F, 0.5F);
         drawTorus(0, 360);
 
-        IRadialSelectorEnum cur = curSupplier.get();
+        TYPE cur = curSupplier.get();
         if (cur != null) {
             // draw current selected
             if (cur.getColor() == null) {
@@ -118,7 +119,7 @@ public class RadialSelectorRenderer {
         }
     }
 
-    public Class<? extends IRadialSelectorEnum> getEnumClass() {
+    public Class<TYPE> getEnumClass() {
         return enumClass;
     }
 }

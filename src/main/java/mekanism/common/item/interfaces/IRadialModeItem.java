@@ -1,29 +1,15 @@
 package mekanism.common.item.interfaces;
 
-import mekanism.api.text.EnumColor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
 
-public interface IRadialModeItem extends IModeItem {
+public interface IRadialModeItem<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> extends IModeItem {
 
-    Class<? extends IRadialSelectorEnum> getModeClass();
+    Class<TYPE> getModeClass();
 
-    IRadialSelectorEnum getMode(ItemStack stack);
+    TYPE getModeByIndex(int ordinal);
 
-    void setMode(ItemStack stack, PlayerEntity player, IRadialSelectorEnum mode);
+    TYPE getMode(ItemStack stack);
 
-    public interface IRadialSelectorEnum {
-
-        ITextComponent getShortText();
-
-        ResourceLocation getIcon();
-
-        default EnumColor getColor() {
-            return null;
-        }
-
-        int ordinal();
-    }
+    void setMode(ItemStack stack, PlayerEntity player, TYPE mode);
 }

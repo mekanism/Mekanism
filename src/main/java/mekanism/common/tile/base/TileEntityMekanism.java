@@ -446,7 +446,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             ItemStack stack = player.getHeldItemMainhand();
             if (isDirectional() && !stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
                 ItemConfigurator configurator = (ItemConfigurator) stack.getItem();
-                if (configurator.getState(stack) == ItemConfigurator.ConfiguratorMode.ROTATE) {
+                if (configurator.getMode(stack) == ItemConfigurator.ConfiguratorMode.ROTATE) {
                     return ActionResultType.PASS;
                 }
             }

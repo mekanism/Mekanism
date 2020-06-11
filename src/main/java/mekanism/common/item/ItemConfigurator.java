@@ -9,7 +9,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
-import mekanism.api.IIncrementalEnum;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -26,8 +25,10 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IRadialModeItem;
+import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -58,7 +59,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadialModeItem, IItemHUDProvider {
+public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
 
     public ItemConfigurator(Properties properties) {
         super(MekanismConfig.gear.configuratorChargeRate, MekanismConfig.gear.configuratorMaxEnergy, properties.rarity(Rarity.UNCOMMON));
@@ -68,11 +69,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
-        tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getState(stack)));
+        tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
+    @Nonnull
     @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
+    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
     }
 
@@ -87,9 +89,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
             Hand hand = context.getHand();
             ItemStack stack = player.getHeldItem(hand);
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-
-            if (getState(stack).isConfigurating()) { //Configurate
-                TransmissionType transmissionType = Objects.requireNonNull(getState(stack).getTransmission(), "Configurating state requires transmission type");
+            ConfiguratorMode mode = getMode(stack);
+            if (mode.isConfigurating()) { //Configurate
+                TransmissionType transmissionType = Objects.requireNonNull(mode.getTransmission(), "Configurating state requires transmission type");
                 if (tile instanceof ISideConfiguration && ((ISideConfiguration) tile).getConfig().supports(transmissionType)) {
                     ISideConfiguration config = (ISideConfiguration) tile;
                     ConfigInfo info = config.getConfig().getConfig(transmissionType);
@@ -133,7 +135,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     SecurityUtils.displayNoAccess(player);
                     return ActionResultType.SUCCESS;
                 }
-            } else if (getState(stack) == ConfiguratorMode.EMPTY) { //Empty
+            } else if (mode == ConfiguratorMode.EMPTY) { //Empty
                 if (tile instanceof IMekanismInventory) {
                     IMekanismInventory inv = (IMekanismInventory) tile;
                     if (inv.hasInventory()) {
@@ -164,7 +166,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                         }
                     }
                 }
-            } else if (getState(stack) == ConfiguratorMode.ROTATE) { //Rotate
+            } else if (mode == ConfiguratorMode.ROTATE) { //Rotate
                 if (tile instanceof TileEntityMekanism) {
                     if (SecurityUtils.canAccess(player, tile)) {
                         TileEntityMekanism tileMekanism = (TileEntityMekanism) tile;
@@ -178,7 +180,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     }
                 }
                 return ActionResultType.SUCCESS;
-            } else if (getState(stack) == ConfiguratorMode.WRENCH) { //Wrench
+            } else if (mode == ConfiguratorMode.WRENCH) { //Wrench
                 return ActionResultType.PASS;
             }
         }
@@ -189,35 +191,27 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
         return mode.getColor();
     }
 
-    public void setState(ItemStack stack, ConfiguratorMode state) {
-        ItemDataUtils.setInt(stack, NBTConstants.STATE, state.ordinal());
-    }
-
-    public ConfiguratorMode getState(ItemStack stack) {
-        return ConfiguratorMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.STATE));
-    }
-
     @Override
     public boolean canUseWrench(ItemStack stack, PlayerEntity player, BlockPos pos) {
-        return getState(stack) == ConfiguratorMode.WRENCH;
+        return getMode(stack) == ConfiguratorMode.WRENCH;
     }
 
     @Override
     public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
-        return getState(stack) == ConfiguratorMode.WRENCH;
+        return getMode(stack) == ConfiguratorMode.WRENCH;
     }
 
     @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
-        list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getState(stack)));
+        list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
     @Override
     public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
-        ConfiguratorMode mode = getState(stack);
+        ConfiguratorMode mode = getMode(stack);
         ConfiguratorMode newMode = mode.adjust(shift);
         if (mode != newMode) {
-            setState(stack, newMode);
+            setMode(stack, player, newMode);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                       MekanismLang.CONFIGURE_STATE.translateColored(EnumColor.GRAY, newMode)));
@@ -228,28 +222,33 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
     @Nonnull
     @Override
     public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
-        return getState(stack).getTextComponent();
+        return getMode(stack).getTextComponent();
     }
 
     @Override
-    public void setMode(ItemStack stack, PlayerEntity player, IRadialSelectorEnum selection) {
-        setState(stack, (ConfiguratorMode) selection);
+    public void setMode(ItemStack stack, PlayerEntity player, ConfiguratorMode mode) {
+        ItemDataUtils.setInt(stack, NBTConstants.STATE, mode.ordinal());
     }
 
     @Override
-    public IRadialSelectorEnum getMode(ItemStack stack) {
-        return getState(stack);
+    public ConfiguratorMode getMode(ItemStack stack) {
+        return ConfiguratorMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.STATE));
     }
 
     @Override
-    public Class<? extends IRadialSelectorEnum> getModeClass() {
+    public Class<ConfiguratorMode> getModeClass() {
         return ConfiguratorMode.class;
+    }
+
+    @Override
+    public ConfiguratorMode getModeByIndex(int ordinal) {
+        return ConfiguratorMode.byIndexStatic(ordinal);
     }
 
     @FieldsAreNonnullByDefault
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasTextComponent, IRadialSelectorEnum {
+    public enum ConfiguratorMode implements IRadialSelectorEnum<ConfiguratorMode>, IHasTextComponent {
         CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_GASES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true, null),
