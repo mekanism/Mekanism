@@ -1,4 +1,4 @@
-package mekanism.common.distribution;
+package mekanism.common.lib.distribution;
 
 import mekanism.api.math.FloatingLong;
 

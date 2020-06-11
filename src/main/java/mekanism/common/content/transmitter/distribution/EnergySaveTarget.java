@@ -1,8 +1,9 @@
-package mekanism.common.distribution.target;
+package mekanism.common.content.transmitter.distribution;
 
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.distribution.SplitInfo;
+import mekanism.common.lib.distribution.SplitInfo;
+import mekanism.common.lib.distribution.Target;
 import net.minecraft.util.Direction;
 
 public class EnergySaveTarget extends Target<IEnergyContainer, FloatingLong, FloatingLong> {

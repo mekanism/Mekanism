@@ -1,8 +1,8 @@
 package mekanism.additions.common.block.plastic;
 
-import mekanism.api.block.IColoredBlock;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
+import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.StairsBlock;
 
 public class BlockPlasticStairs extends StairsBlock implements IColoredBlock {

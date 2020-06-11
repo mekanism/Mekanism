@@ -1,6 +1,7 @@
 package mekanism.common.distribution.target;
 
-import mekanism.common.distribution.SplitInfo;
+import mekanism.common.lib.distribution.SplitInfo;
+import mekanism.common.lib.distribution.Target;
 
 public class InfiniteIntegerTarget extends Target<Integer, Integer, Integer> {
 

@@ -1,19 +1,19 @@
-package mekanism.common.distribution;
+package mekanism.common.lib.distribution;
 
-public class IntegerSplitInfo extends SplitInfo<Integer> {
+public class LongSplitInfo extends SplitInfo<Long> {
 
-    private int amountToSplit;
-    private int amountPerTarget;
-    private int sentSoFar;
+    private long amountToSplit;
+    private long amountPerTarget;
+    private long sentSoFar;
 
-    public IntegerSplitInfo(int amountToSplit, int totalTargets) {
+    public LongSplitInfo(long amountToSplit, int totalTargets) {
         super(totalTargets);
         this.amountToSplit = amountToSplit;
         amountPerTarget = toSplitAmong == 0 ? 0 : amountToSplit / toSplitAmong;
     }
 
     @Override
-    public void send(Integer amountNeeded) {
+    public void send(Long amountNeeded) {
         //If we are giving it, then lower the amount we are checking/splitting
         amountToSplit -= amountNeeded;
         sentSoFar += amountNeeded;
@@ -21,7 +21,7 @@ public class IntegerSplitInfo extends SplitInfo<Integer> {
         //Only recalculate it if it is not willing to accept/doesn't want the
         // full per side split
         if (amountNeeded != amountPerTarget && toSplitAmong != 0) {
-            int amountPerLast = amountPerTarget;
+            long amountPerLast = amountPerTarget;
             amountPerTarget = amountToSplit / toSplitAmong;
             if (!amountPerChanged && amountPerTarget != amountPerLast) {
                 amountPerChanged = true;
@@ -30,12 +30,12 @@ public class IntegerSplitInfo extends SplitInfo<Integer> {
     }
 
     @Override
-    public Integer getShareAmount() {
+    public Long getShareAmount() {
         return amountPerTarget;
     }
 
     @Override
-    public Integer getRemainderAmount() {
+    public Long getRemainderAmount() {
         //Add to the remainder amount the entire remainder so that we try to use it up if we can
         // The remainder then if it cannot be fully accepted slowly shrinks across each target we are distributing to
         //TODO: Evaluate making a more even distribution of the remainder
@@ -43,7 +43,7 @@ public class IntegerSplitInfo extends SplitInfo<Integer> {
     }
 
     @Override
-    public Integer getTotalSent() {
+    public Long getTotalSent() {
         return sentSoFar;
     }
 }

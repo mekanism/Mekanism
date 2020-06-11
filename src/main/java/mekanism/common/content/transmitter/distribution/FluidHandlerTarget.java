@@ -1,8 +1,9 @@
-package mekanism.common.distribution.target;
+package mekanism.common.content.transmitter.distribution;
 
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
-import mekanism.common.distribution.SplitInfo;
+import mekanism.common.lib.distribution.SplitInfo;
+import mekanism.common.lib.distribution.Target;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;

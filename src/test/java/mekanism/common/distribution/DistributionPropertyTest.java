@@ -2,7 +2,7 @@ package mekanism.common.distribution;
 
 import com.mojang.datafixers.util.Pair;
 import java.util.Set;
-import mekanism.common.distribution.target.Target;
+import mekanism.common.lib.distribution.Target;
 import mekanism.common.util.EmitUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -3,7 +3,7 @@ package mekanism.common.block;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.api.block.IHasTileEntity;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateStorage;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.registries.MekanismBlocks;

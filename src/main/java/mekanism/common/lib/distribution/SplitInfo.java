@@ -1,4 +1,4 @@
-package mekanism.common.distribution;
+package mekanism.common.lib.distribution;
 
 public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
 

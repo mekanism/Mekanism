@@ -1,4 +1,4 @@
-package mekanism.api.sustained;
+package mekanism.common.tile.interfaces;
 
 import java.util.Map;
 import net.minecraft.item.ItemStack;

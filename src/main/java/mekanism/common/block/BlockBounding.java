@@ -2,8 +2,8 @@ package mekanism.common.block;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.registries.MekanismTileEntityTypes;

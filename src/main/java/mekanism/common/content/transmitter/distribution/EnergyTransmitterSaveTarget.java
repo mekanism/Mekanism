@@ -1,7 +1,8 @@
-package mekanism.common.distribution.target;
+package mekanism.common.content.transmitter.distribution;
 
 import mekanism.api.math.FloatingLong;
-import mekanism.common.distribution.SplitInfo;
+import mekanism.common.lib.distribution.SplitInfo;
+import mekanism.common.lib.distribution.Target;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.util.Direction;
 

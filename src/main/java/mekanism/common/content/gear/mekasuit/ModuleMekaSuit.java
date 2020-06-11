@@ -26,7 +26,7 @@ import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleLocomotiveBoostingUnit.SprintBoost;
-import mekanism.common.distribution.target.EnergySaveTarget;
+import mekanism.common.content.transmitter.distribution.EnergySaveTarget;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.effect.BoltEffect;
