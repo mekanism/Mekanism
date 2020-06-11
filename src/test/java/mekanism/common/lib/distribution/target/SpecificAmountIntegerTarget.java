@@ -1,4 +1,4 @@
-package mekanism.common.distribution.target;
+package mekanism.common.lib.distribution.target;
 
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
