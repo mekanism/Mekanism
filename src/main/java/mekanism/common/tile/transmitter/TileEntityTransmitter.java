@@ -79,13 +79,6 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         }
     }
 
-    /**
-     * Only call on the server
-     */
-    public void requestsUpdate() {
-        sendUpdatePacket();
-    }
-
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
