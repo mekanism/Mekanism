@@ -15,7 +15,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.content.transmitter.FluidNetwork;
+import mekanism.common.content.network.FluidNetwork;
+import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.EnumUtils;
@@ -44,8 +45,9 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     }
 
     @Override
-    protected void render(TileEntityMechanicalPipe pipe, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+    protected void render(TileEntityMechanicalPipe tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
+        MechanicalPipe pipe = tile.getTransmitter();
         if (pipe.hasTransmitterNetwork()) {
             FluidNetwork network = pipe.getTransmitterNetwork();
             if (!network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.currentScale > 0) {
@@ -77,7 +79,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 if (!connectionContents.isEmpty()) {
                     matrix.push();
                     matrix.translate(0.5, 0.5, 0.5);
-                    renderModel(pipe, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)),
+                    renderModel(tile, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)),
                           MekanismRenderer.getRed(color), MekanismRenderer.getGreen(color), MekanismRenderer.getBlue(color), MekanismRenderer.getAlpha(color), glow,
                           overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidType.STILL), connectionContents);
                     matrix.pop();

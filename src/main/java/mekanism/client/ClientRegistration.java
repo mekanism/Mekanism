@@ -387,7 +387,7 @@ public class ClientRegistration {
                   if (tintIndex == 1 && pos != null) {
                       TileEntityLogisticalTransporter transporter = MekanismUtils.getTileEntity(TileEntityLogisticalTransporter.class, world, pos);
                       if (transporter != null) {
-                          EnumColor renderColor = transporter.getColor();
+                          EnumColor renderColor = transporter.getTransmitter().getColor();
                           if (renderColor != null) {
                               return MekanismRenderer.getColorARGB(renderColor, 1);
                           }

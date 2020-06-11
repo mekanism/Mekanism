@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.common.content.transmitter.InventoryNetwork;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
+import mekanism.common.content.network.InventoryNetwork;
+import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
@@ -20,17 +20,17 @@ public class PathfinderCache {
         }
     }
 
-    public static void addCachedPath(TileEntityLogisticalTransporterBase start, PathData data, List<BlockPos> positions, double cost) {
+    public static void addCachedPath(LogisticalTransporterBase start, PathData data, List<BlockPos> positions, double cost) {
         cachedPaths.computeIfAbsent(start.getTransmitterNetwork().getUUID(), uuid -> new Object2ObjectOpenHashMap<>()).put(data, new CachedPath(positions, cost));
     }
 
-    public static CachedPath getCache(TileEntityLogisticalTransporterBase start, BlockPos end, Set<Direction> sides) {
+    public static CachedPath getCache(LogisticalTransporterBase start, BlockPos end, Set<Direction> sides) {
         CachedPath ret = null;
         UUID uuid = start.getTransmitterNetwork().getUUID();
         if (cachedPaths.containsKey(uuid)) {
             Map<PathData, CachedPath> pathMap = cachedPaths.get(uuid);
             for (Direction side : sides) {
-                CachedPath test = pathMap.get(new PathData(start.getPos(), end, side));
+                CachedPath test = pathMap.get(new PathData(start.getTilePos(), end, side));
                 if (ret == null || (test != null && test.getCost() < ret.getCost())) {
                     ret = test;
                 }

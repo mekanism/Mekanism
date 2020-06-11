@@ -1,4 +1,4 @@
-package mekanism.common.content.transmitter.distribution;
+package mekanism.common.content.network.distribution;
 
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;

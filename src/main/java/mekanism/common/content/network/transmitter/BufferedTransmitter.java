@@ -1,25 +1,30 @@
-package mekanism.common.tile.transmitter;
+package mekanism.common.content.network.transmitter;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 
-public abstract class TileEntityBufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
-      TRANSMITTER extends TileEntityBufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends TileEntityTransmitter<ACCEPTOR, NETWORK, TRANSMITTER> {
+public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
+      TRANSMITTER extends BufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER> {
 
-    public TileEntityBufferedTransmitter(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public BufferedTransmitter(TileEntityTransmitter tile) {
+        super(tile);
     }
 
     public long getTransmitterNetworkCapacity() {
         return hasTransmitterNetwork() ? getTransmitterNetwork().getCapacity() : getCapacity();
     }
+
+    /**
+     * @apiNote Only call from the server side
+     */
+    protected abstract void pullFromAcceptors();
 
     public abstract long getCapacity();
 
@@ -41,9 +46,9 @@ public abstract class TileEntityBufferedTransmitter<ACCEPTOR, NETWORK extends Dy
     }
 
     @Override
-    public boolean isValidTransmitter(TileEntityTransmitter<?, ?, ?> tile) {
-        if (canHaveIncompatibleNetworks() && tile instanceof TileEntityBufferedTransmitter) {
-            TileEntityBufferedTransmitter<?, ?, ?, ?> other = (TileEntityBufferedTransmitter<?, ?, ?, ?>) tile;
+    public boolean isValidTransmitter(Transmitter<?, ?, ?> transmitter) {
+        if (canHaveIncompatibleNetworks() && transmitter instanceof BufferedTransmitter) {
+            BufferedTransmitter<?, ?, ?, ?> other = (BufferedTransmitter<?, ?, ?, ?>) transmitter;
             if (other.canHaveIncompatibleNetworks()) {
                 //If it is a transmitter, only allow declare it as valid, if we don't have a combination
                 // of a transmitter with a network and an orphaned transmitter, but only bother if
@@ -53,7 +58,7 @@ public abstract class TileEntityBufferedTransmitter<ACCEPTOR, NETWORK extends Dy
                 }
             }
         }
-        return super.isValidTransmitter(tile);
+        return super.isValidTransmitter(transmitter);
     }
 
     @Override
@@ -78,9 +83,9 @@ public abstract class TileEntityBufferedTransmitter<ACCEPTOR, NETWORK extends Dy
                 // This happens because we are no longer an orphan and want to tell the neighboring tiles about it
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     if (connectionMapContainsSide(changedTransmitters, side)) {
-                        TileEntityTransmitter<?, ?, ?> tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, getWorld(), getPos().offset(side));
+                        TileEntityTransmitter tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().offset(side));
                         if (tile != null) {
-                            tile.refreshConnections(side.getOpposite());
+                            tile.getTransmitter().refreshConnections(side.getOpposite());
                         }
                     }
                 }
@@ -116,12 +121,13 @@ public abstract class TileEntityBufferedTransmitter<ACCEPTOR, NETWORK extends Dy
     }
 
     private void recheckConnectionPrechecked(Direction side) {
-        TileEntityBufferedTransmitter<?, ?, ?, ?> other = MekanismUtils.getTileEntity(TileEntityBufferedTransmitter.class, getWorld(), getPos().offset(side));
-        if (other != null) {
+        TileEntityTransmitter otherTile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().offset(side));
+        if (otherTile != null) {
             NETWORK network = getTransmitterNetwork();
             //The other one should always have the same incompatible networks state as us
             // But just in case it doesn't just check the boolean
-            if (other.canHaveIncompatibleNetworks() && other.hasTransmitterNetwork()) {
+            Transmitter<?, ?, ?> other = otherTile.getTransmitter();
+            if (other instanceof BufferedTransmitter && ((BufferedTransmitter<?, ?, ?, ?>) other).canHaveIncompatibleNetworks() && other.hasTransmitterNetwork()) {
                 NETWORK otherNetwork = (NETWORK) other.getTransmitterNetwork();
                 if (network != otherNetwork && network.isCompatibleWith(otherNetwork)) {
                     //We have two networks that are now compatible and they are not the same source network

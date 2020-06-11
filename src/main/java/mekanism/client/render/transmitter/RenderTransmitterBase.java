@@ -32,7 +32,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 @ParametersAreNonnullByDefault
-public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?, ?>> extends MekanismTileEntityRenderer<T> {
+public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransmitter> extends MekanismTileEntityRenderer<TRANSMITTER> {
 
     public static final ResourceLocation MODEL_LOCATION = MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj");
     private static final IModelConfiguration contentsConfiguration = new ContentsModelConfiguration();
@@ -53,12 +53,16 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
         super(renderer);
     }
 
-    protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, int rgb, float alpha, int light, int overlayLight, TextureAtlasSprite icon) {
-        renderModel(transmitter, matrix, builder, MekanismRenderer.getRed(rgb), MekanismRenderer.getGreen(rgb), MekanismRenderer.getBlue(rgb), alpha, light, overlayLight, icon,
-              Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName() + transmitter.getConnectionType(side).getName().toUpperCase()).collect(Collectors.toList()));
+    protected void renderModel(TRANSMITTER transmitter, MatrixStack matrix, IVertexBuilder builder, int rgb, float alpha, int light, int overlayLight,
+          TextureAtlasSprite icon) {
+        renderModel(transmitter, matrix, builder, MekanismRenderer.getRed(rgb), MekanismRenderer.getGreen(rgb), MekanismRenderer.getBlue(rgb), alpha, light,
+              overlayLight, icon, Arrays.stream(EnumUtils.DIRECTIONS)
+                    .map(side -> side.getName() + transmitter.getTransmitter().getConnectionType(side).getName().toUpperCase())
+                    .collect(Collectors.toList()));
     }
 
-    protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, float red, float green, float blue, float alpha, int light, int overlayLight,
+    protected void renderModel(TRANSMITTER transmitter, MatrixStack matrix, IVertexBuilder builder, float red, float green, float blue, float alpha, int light,
+          int overlayLight,
           TextureAtlasSprite icon, List<String> visible) {
         if (!visible.isEmpty()) {
             Entry entry = matrix.getLast();
@@ -70,7 +74,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
     }
 
     @Override
-    public void render(T transmitter, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight) {
+    public void render(TRANSMITTER transmitter, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight) {
         if (!MekanismConfig.client.opaqueTransmitters.get()) {
             super.render(transmitter, partialTick, matrix, renderer, light, overlayLight);
         }

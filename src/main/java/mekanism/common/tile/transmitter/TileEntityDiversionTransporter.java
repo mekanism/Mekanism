@@ -1,35 +1,26 @@
 package mekanism.common.tile.transmitter;
 
-import java.util.Arrays;
 import javax.annotation.Nonnull;
-import mekanism.api.IIncrementalEnum;
-import mekanism.api.NBTConstants;
-import mekanism.api.math.MathUtils;
-import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.ILangEntry;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.data.TransmitterModelData;
-import mekanism.common.MekanismLang;
 import mekanism.common.block.states.TransmitterType;
+import mekanism.common.content.network.transmitter.DiversionTransporter;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tier.TransporterTier;
-import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
 
 public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporterBase {
 
-    public DiversionControl[] modes;
-
     public TileEntityDiversionTransporter() {
-        super(MekanismBlocks.DIVERSION_TRANSPORTER, TransporterTier.BASIC);
-        modes = new DiversionControl[EnumUtils.DIRECTIONS.length];
-        Arrays.fill(modes, DiversionControl.DISABLED);
+        super(MekanismBlocks.DIVERSION_TRANSPORTER);
+    }
+
+    @Override
+    protected DiversionTransporter createTransmitter(IBlockProvider blockProvider) {
+        return new DiversionTransporter(this);
+    }
+
+    @Override
+    public DiversionTransporter getTransmitter() {
+        return (DiversionTransporter) super.getTransmitter();
     }
 
     @Override
@@ -37,121 +28,9 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         return TransmitterType.DIVERSION_TRANSPORTER;
     }
 
-    @Override
-    public void onNeighborBlockChange(Direction side) {
-        //Override onNeighborBlockChange to recheck all connections as our connections
-        // might have changed due to redstone
-        byte current = getAllCurrentConnections();
-        refreshConnections();
-        if (current != getAllCurrentConnections()) {
-            //Has to be markDirtyTransmitters instead of notify tile change
-            // or it will not properly tell the neighboring connections that
-            // it is no longer valid
-            markDirtyTransmitters();
-        }
-    }
-
-    private void readModes(@Nonnull CompoundNBT tag) {
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            int index = i;
-            NBTUtils.setEnumIfPresent(tag, NBTConstants.MODE + index, DiversionControl::byIndexStatic, mode -> modes[index] = mode);
-        }
-    }
-
-    @Nonnull
-    private CompoundNBT writeModes(@Nonnull CompoundNBT nbtTags) {
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            nbtTags.putInt(NBTConstants.MODE + i, modes[i].ordinal());
-        }
-        return nbtTags;
-    }
-
-    @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        readModes(nbtTags);
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        return writeModes(super.write(nbtTags));
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT getReducedUpdateTag() {
-        return writeModes(super.getReducedUpdateTag());
-    }
-
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
-        readModes(tag);
-    }
-
-    @Override
-    protected ActionResultType onConfigure(PlayerEntity player, Direction side) {
-        int index = side.ordinal();
-        DiversionControl newMode = modes[index].getNext();
-        modes[index] = newMode;
-        refreshConnections();
-        notifyTileChange();
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-              MekanismLang.TOGGLE_DIVERTER.translateColored(EnumColor.GRAY, EnumColor.RED, newMode)));
-        sendUpdatePacket();
-        return ActionResultType.SUCCESS;
-    }
-
-    @Override
-    public boolean canConnect(Direction side) {
-        if (super.canConnect(side)) {
-            DiversionControl mode = modes[side.ordinal()];
-            if (mode == DiversionControl.HIGH) {
-                return isGettingPowered();
-            } else if (mode == DiversionControl.LOW) {
-                return !isGettingPowered();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isGettingPowered() {
-        return MekanismUtils.isGettingPowered(getWorld(), getPos());
-    }
-
     @Nonnull
     @Override
     protected TransmitterModelData initModelData() {
         return new TransmitterModelData.Diversion();
-    }
-
-    public enum DiversionControl implements IIncrementalEnum<DiversionControl>, IHasTextComponent {
-        DISABLED(MekanismLang.DIVERSION_CONTROL_DISABLED),
-        HIGH(MekanismLang.DIVERSION_CONTROL_HIGH),
-        LOW(MekanismLang.DIVERSION_CONTROL_LOW);
-
-        private static final DiversionControl[] MODES = values();
-        private final ILangEntry langEntry;
-
-        DiversionControl(ILangEntry langEntry) {
-            this.langEntry = langEntry;
-        }
-
-        @Override
-        public ITextComponent getTextComponent() {
-            return langEntry.translate();
-        }
-
-        @Nonnull
-        @Override
-        public DiversionControl byIndex(int index) {
-            return byIndexStatic(index);
-        }
-
-        public static DiversionControl byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
-        }
     }
 }

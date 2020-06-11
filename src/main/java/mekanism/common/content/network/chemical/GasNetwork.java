@@ -1,4 +1,4 @@
-package mekanism.common.content.transmitter;
+package mekanism.common.content.network.chemical;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -16,10 +16,10 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityGasTank;
+import mekanism.common.content.network.transmitter.chemical.GasPressurizedTube;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 
-public class GasNetwork extends ChemicalNetwork<Gas, GasStack, IGasHandler, IGasTank, GasNetwork> implements IMekanismGasHandler {
+public class GasNetwork extends ChemicalNetwork<Gas, GasStack, IGasHandler, IGasTank, GasNetwork, GasPressurizedTube> implements IMekanismGasHandler {
 
     public GasNetwork() {
     }
@@ -38,11 +38,11 @@ public class GasNetwork extends ChemicalNetwork<Gas, GasStack, IGasHandler, IGas
     }
 
     @Override
-    protected void disperse(@Nonnull TileEntityPressurizedTube triggerTransmitter, GasStack gas) {
+    protected void disperse(@Nonnull GasPressurizedTube triggerTransmitter, GasStack gas) {
         if (gas.has(GasAttributes.Radiation.class)) {
             // Handle radiation leakage
             double radioactivity = gas.get(GasAttributes.Radiation.class).getRadioactivity();
-            Mekanism.radiationManager.radiate(Coord4D.get(triggerTransmitter), gas.getAmount() * radioactivity);
+            Mekanism.radiationManager.radiate(new Coord4D(triggerTransmitter.getTilePos(), triggerTransmitter.getTileWorld()), gas.getAmount() * radioactivity);
         }
     }
 

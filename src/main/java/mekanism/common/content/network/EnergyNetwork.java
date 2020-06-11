@@ -1,4 +1,4 @@
-package mekanism.common.content.transmitter;
+package mekanism.common.content.network;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
@@ -19,10 +19,10 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
-import mekanism.common.content.transmitter.distribution.EnergyAcceptorTarget;
-import mekanism.common.content.transmitter.distribution.EnergyTransmitterSaveTarget;
+import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
+import mekanism.common.content.network.distribution.EnergyTransmitterSaveTarget;
+import mekanism.common.content.network.transmitter.UniversalCable;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
-import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.util.Direction;
@@ -31,7 +31,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, EnergyNetwork, FloatingLong, TileEntityUniversalCable> implements IMekanismStrictEnergyHandler {
+public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, EnergyNetwork, FloatingLong, UniversalCable> implements IMekanismStrictEnergyHandler {
 
     private final List<IEnergyContainer> energyContainers;
     public final VariableCapacityEnergyContainer energyContainer;
@@ -91,7 +91,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     }
 
     @Override
-    public void absorbBuffer(TileEntityUniversalCable transmitter) {
+    public void absorbBuffer(UniversalCable transmitter) {
         FloatingLong energy = transmitter.releaseShare();
         if (!energy.isZero()) {
             energyContainer.setEnergy(energyContainer.getEnergy().add(energy));
@@ -109,7 +109,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     }
 
     @Override
-    protected synchronized void updateCapacity(TileEntityUniversalCable transmitter) {
+    protected synchronized void updateCapacity(UniversalCable transmitter) {
         floatingLongCapacity = floatingLongCapacity.plusEqual(transmitter.getCapacityAsFloatingLong());
         capacity = floatingLongCapacity.longValue();
     }
@@ -117,7 +117,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     @Override
     public synchronized void updateCapacity() {
         FloatingLong sum = FloatingLong.ZERO;
-        for (TileEntityUniversalCable transmitter : transmitters) {
+        for (UniversalCable transmitter : transmitters) {
             sum = sum.plusEqual(transmitter.getCapacityAsFloatingLong());
         }
         if (!floatingLongCapacity.equals(sum)) {
@@ -132,14 +132,14 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     }
 
     @Override
-    protected void updateSaveShares(@Nullable TileEntityUniversalCable triggerTransmitter) {
+    protected void updateSaveShares(@Nullable UniversalCable triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
             Set<EnergyTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (TileEntityUniversalCable transmitter : transmitters) {
+            for (UniversalCable transmitter : transmitters) {
                 EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget();
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);

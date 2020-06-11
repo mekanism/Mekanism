@@ -8,7 +8,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
-      TRANSMITTER extends TileEntityTransmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements INetworkDataHandler, IHasTextComponent {
+      TRANSMITTER extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements INetworkDataHandler, IHasTextComponent {
 
     protected final Set<TRANSMITTER> transmitters = new ObjectLinkedOpenHashSet<>();
     protected final Set<TRANSMITTER> transmittersToAdd = new ObjectOpenHashSet<>();
@@ -54,7 +54,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 if (transmitter != null && transmitter.isValid()) {
                     addedValidTransmitters = true;
                     if (world == null) {
-                        world = transmitter.getWorld();
+                        world = transmitter.getTileWorld();
                     }
                     for (Direction side : EnumUtils.DIRECTIONS) {
                         acceptorCache.updateTransmitterOnSide(transmitter, side);

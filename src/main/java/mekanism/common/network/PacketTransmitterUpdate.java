@@ -10,13 +10,13 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.common.content.transmitter.ChemicalNetwork;
-import mekanism.common.content.transmitter.EnergyNetwork;
-import mekanism.common.content.transmitter.FluidNetwork;
-import mekanism.common.content.transmitter.GasNetwork;
-import mekanism.common.content.transmitter.InfusionNetwork;
-import mekanism.common.content.transmitter.PigmentNetwork;
-import mekanism.common.content.transmitter.SlurryNetwork;
+import mekanism.common.content.network.chemical.ChemicalNetwork;
+import mekanism.common.content.network.EnergyNetwork;
+import mekanism.common.content.network.FluidNetwork;
+import mekanism.common.content.network.chemical.GasNetwork;
+import mekanism.common.content.network.chemical.InfusionNetwork;
+import mekanism.common.content.network.chemical.PigmentNetwork;
+import mekanism.common.content.network.chemical.SlurryNetwork;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
@@ -55,7 +55,7 @@ public class PacketTransmitterUpdate {
         this(network, PacketType.SLURRY, slurry);
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>> PacketTransmitterUpdate(ChemicalNetwork<CHEMICAL, ?, ?, ?, ?> network, PacketType type, @Nonnull CHEMICAL chemical) {
+    private <CHEMICAL extends Chemical<CHEMICAL>> PacketTransmitterUpdate(ChemicalNetwork<CHEMICAL, ?, ?, ?, ?, ?> network, PacketType type, @Nonnull CHEMICAL chemical) {
         this(network, type);
         this.chemical = chemical;
     }
@@ -86,7 +86,7 @@ public class PacketTransmitterUpdate {
                 //Note: We set the information even if opaque transmitters is true in case the client turns the config setting off
                 // so that they will have the proper information to then render
                 if (message.packetType.isChemical()) {
-                    ((ChemicalNetwork<?, ?, ?, ?, ?>) clientNetwork).setLastChemical(message.packetType.castChemical(message.chemical));
+                    ((ChemicalNetwork<?, ?, ?, ?, ?, ?>) clientNetwork).setLastChemical(message.packetType.castChemical(message.chemical));
                 } else if (message.packetType == PacketType.FLUID) {
                     ((FluidNetwork) clientNetwork).setLastFluid(message.fluidStack);
                 }
@@ -116,10 +116,16 @@ public class PacketTransmitterUpdate {
 
     public static PacketTransmitterUpdate decode(PacketBuffer buf) {
         PacketTransmitterUpdate packet = new PacketTransmitterUpdate(buf.readEnumValue(PacketType.class), buf.readUniqueId(), buf.readFloat());
-        if (packet.packetType.isChemical()) {
-            packet.chemical = buf.readRegistryId();
-        } else if (packet.packetType == PacketType.FLUID) {
+        if (packet.packetType == PacketType.FLUID) {
             packet.fluidStack = FluidStack.readFromPacket(buf);
+        } else if (packet.packetType == PacketType.GAS) {
+            buf.writeRegistryId((Gas) packet.chemical);
+        } else if (packet.packetType == PacketType.INFUSION) {
+            buf.writeRegistryId((InfuseType) packet.chemical);
+        } else if (packet.packetType == PacketType.PIGMENT) {
+            buf.writeRegistryId((Pigment) packet.chemical);
+        } else if (packet.packetType == PacketType.SLURRY) {
+            buf.writeRegistryId((Slurry) packet.chemical);
         }
         return packet;
     }

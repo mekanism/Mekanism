@@ -1,4 +1,4 @@
-package mekanism.common.content.transmitter.distribution;
+package mekanism.common.content.network.distribution;
 
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;

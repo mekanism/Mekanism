@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.content.transmitter.distribution.FluidHandlerTarget;
+import mekanism.common.content.network.distribution.FluidHandlerTarget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

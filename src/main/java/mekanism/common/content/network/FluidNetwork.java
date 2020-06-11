@@ -1,4 +1,4 @@
-package mekanism.common.content.transmitter;
+package mekanism.common.content.network;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
@@ -17,10 +17,10 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
-import mekanism.common.content.transmitter.distribution.FluidHandlerTarget;
-import mekanism.common.content.transmitter.distribution.FluidTransmitterSaveTarget;
+import mekanism.common.content.network.distribution.FluidHandlerTarget;
+import mekanism.common.content.network.distribution.FluidTransmitterSaveTarget;
+import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
-import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
@@ -32,7 +32,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNetwork, FluidStack, TileEntityMechanicalPipe> implements IMekanismFluidHandler {
+public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler {
 
     private final List<IExtendedFluidTank> fluidTanks;
     public final VariableCapacityFluidTank fluidTank;
@@ -111,7 +111,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     @Override
-    public void absorbBuffer(TileEntityMechanicalPipe transmitter) {
+    public void absorbBuffer(MechanicalPipe transmitter) {
         FluidStack fluid = transmitter.releaseShare();
         if (!fluid.isEmpty()) {
             if (fluidTank.isEmpty()) {
@@ -134,7 +134,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     @Override
-    protected synchronized void updateCapacity(TileEntityMechanicalPipe transmitter) {
+    protected synchronized void updateCapacity(MechanicalPipe transmitter) {
         super.updateCapacity(transmitter);
         intCapacity = MathUtils.clampToInt(getCapacity());
     }
@@ -150,7 +150,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     @Override
-    protected void updateSaveShares(@Nullable TileEntityMechanicalPipe triggerTransmitter) {
+    protected void updateSaveShares(@Nullable MechanicalPipe triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
@@ -158,7 +158,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
             Set<FluidTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
-            for (TileEntityMechanicalPipe transmitter : transmitters) {
+            for (MechanicalPipe transmitter : transmitters) {
                 FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType);
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);

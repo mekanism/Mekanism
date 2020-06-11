@@ -69,7 +69,7 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
                 double tempToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
                 handleHeat(-tempToTransfer * heatCapacity, side);
                 sink.handleHeat(tempToTransfer * heatCapacity);
-                if (!(sink instanceof TileEntityTransmitter) || !TransmissionType.HEAT.checkTransmissionType((TileEntityTransmitter<?, ?, ?>) sink)) {
+                if (!(sink instanceof TileEntityTransmitter) || !TransmissionType.HEAT.checkTransmissionType((TileEntityTransmitter) sink)) {
                     adjacentTransfer += tempToTransfer;
                 }
             }

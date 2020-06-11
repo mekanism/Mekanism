@@ -1,17 +1,17 @@
-package mekanism.common.content.transmitter.distribution;
+package mekanism.common.content.network.distribution;
 
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.common.content.network.transmitter.chemical.PressurizedTube;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
-import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.util.ChemicalUtil;
 import net.minecraft.util.Direction;
 
-public class ChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends
-      Target<TileEntityPressurizedTube, Long, @NonNull STACK> {
+public class ChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
+      TUBE extends PressurizedTube<CHEMICAL, STACK, ?, ?, ?, TUBE>> extends Target<TUBE, Long, @NonNull STACK> {
 
     private STACK currentStored;
 
@@ -21,7 +21,7 @@ public class ChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMICAL>, 
     }
 
     @Override
-    protected void acceptAmount(TileEntityPressurizedTube transmitter, SplitInfo<Long> splitInfo, Long amount) {
+    protected void acceptAmount(TUBE transmitter, SplitInfo<Long> splitInfo, Long amount) {
         amount = Math.min(amount, transmitter.getCapacity() - currentStored.getAmount());
         STACK newChemical = ChemicalUtil.copyWithAmount(extra, amount);
         if (currentStored.isEmpty()) {
@@ -33,7 +33,7 @@ public class ChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMICAL>, 
     }
 
     @Override
-    protected Long simulate(TileEntityPressurizedTube transmitter, @Nonnull STACK chemicalStack) {
+    protected Long simulate(TUBE transmitter, @Nonnull STACK chemicalStack) {
         if (!currentStored.isEmpty() && !currentStored.isTypeEqual(chemicalStack)) {
             return 0L;
         }
@@ -41,10 +41,10 @@ public class ChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMICAL>, 
     }
 
     public void saveShare(Direction handlerDirection) {
-        TileEntityPressurizedTube tube = handlers.get(handlerDirection);
+        TUBE tube = handlers.get(handlerDirection);
         if (currentStored.isEmpty() != tube.saveShare.isEmpty() || (!currentStored.isEmpty() && !currentStored.isStackIdentical(tube.saveShare))) {
             tube.saveShare = currentStored;
-            tube.markDirty(false);
+            tube.getTransmitterTile().markDirty(false);
         }
     }
 }

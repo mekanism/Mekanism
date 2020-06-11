@@ -7,13 +7,13 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Range3D;
-import mekanism.common.tile.transmitter.TileEntityBufferedTransmitter;
+import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.eventbus.api.Event;
 
 public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
-      TRANSMITTER extends TileEntityBufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER> {
+      TRANSMITTER extends BufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER> {
 
     protected final Set<ChunkPos> chunks = new ObjectOpenHashSet<>();
     @Nullable
@@ -59,7 +59,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         updateCapacity(transmitter);
         absorbBuffer(transmitter);
         super.addTransmitterFromCommit(transmitter);
-        chunks.add(new ChunkPos(transmitter.getPos()));
+        chunks.add(new ChunkPos(transmitter.getTilePos()));
     }
 
     @Override
@@ -177,7 +177,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         int maxX = 0;
         int maxZ = 0;
         for (TRANSMITTER transmitter : transmitters) {
-            BlockPos pos = transmitter.getPos();
+            BlockPos pos = transmitter.getTilePos();
             if (initialized) {
                 if (pos.getX() < minX) {
                     minX = pos.getX();

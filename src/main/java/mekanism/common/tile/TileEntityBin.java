@@ -81,7 +81,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 request.addItem(binSlot.getBottomStack(), 0);
                 TransitResponse response;
                 if (tile instanceof TileEntityLogisticalTransporterBase) {
-                    response = ((TileEntityLogisticalTransporterBase) tile).insert(this, request, null, true, 0);
+                    response = ((TileEntityLogisticalTransporterBase) tile).getTransmitter().insert(this, request, null, true, 0);
                 } else {
                     response = request.addToInventory(tile, Direction.DOWN, false);
                 }

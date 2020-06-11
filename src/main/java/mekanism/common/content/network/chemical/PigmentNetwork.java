@@ -1,4 +1,4 @@
-package mekanism.common.content.transmitter;
+package mekanism.common.content.network.chemical;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -11,9 +11,11 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityPigmentTank;
+import mekanism.common.content.network.transmitter.chemical.PigmentPressurizedTube;
 import mekanism.common.lib.transmitter.TransmissionType;
 
-public class PigmentNetwork extends ChemicalNetwork<Pigment, PigmentStack, IPigmentHandler, IPigmentTank, PigmentNetwork> implements IMekanismPigmentHandler {
+public class PigmentNetwork extends ChemicalNetwork<Pigment, PigmentStack, IPigmentHandler, IPigmentTank, PigmentNetwork, PigmentPressurizedTube>
+      implements IMekanismPigmentHandler {
 
     public PigmentNetwork() {
     }

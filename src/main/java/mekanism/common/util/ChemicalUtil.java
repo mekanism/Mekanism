@@ -37,7 +37,7 @@ import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.providers.ISlurryProvider;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.transmitter.distribution.ChemicalHandlerTarget;
+import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.item.ItemStack;

@@ -1,4 +1,4 @@
-package mekanism.common.content.transmitter;
+package mekanism.common.content.network;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -6,13 +6,13 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.network.transmitter.ThermodynamicConductor;
 import mekanism.common.lib.transmitter.DynamicNetwork;
-import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.util.text.ITextComponent;
 
-public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, TileEntityThermodynamicConductor> {
+public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, ThermodynamicConductor> {
 
     private double meanTemp = HeatAPI.AMBIENT_TEMP;
     private double heatLost;
@@ -58,7 +58,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, TileE
     public void onUpdate() {
         super.onUpdate();
         double newSumTemp = 0, newHeatLost = 0, newHeatTransferred = 0;
-        for (TileEntityThermodynamicConductor transmitter : transmitters) {
+        for (ThermodynamicConductor transmitter : transmitters) {
             // change this when we re-integrate with multipart
             HeatTransfer transfer = transmitter.simulate();
             transmitter.updateHeatCapacitors(null);

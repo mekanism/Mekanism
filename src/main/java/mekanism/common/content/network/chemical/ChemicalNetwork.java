@@ -1,4 +1,4 @@
-package mekanism.common.content.transmitter;
+package mekanism.common.content.network.chemical;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
@@ -19,10 +19,10 @@ import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import mekanism.common.content.transmitter.distribution.ChemicalHandlerTarget;
-import mekanism.common.content.transmitter.distribution.ChemicalTransmitterSaveTarget;
+import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
+import mekanism.common.content.network.distribution.ChemicalTransmitterSaveTarget;
+import mekanism.common.content.network.transmitter.chemical.PressurizedTube;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
-import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
@@ -35,9 +35,13 @@ import net.minecraftforge.common.util.LazyOptional;
 /**
  * A DynamicNetwork extension created specifically for the transfer of Chemicals.
  */
-public abstract class ChemicalNetwork<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>,
-      TANK extends IChemicalTank<CHEMICAL, STACK>, NETWORK extends ChemicalNetwork<CHEMICAL, STACK, HANDLER, TANK, NETWORK>>
-      extends DynamicBufferedNetwork<HANDLER, NETWORK, STACK, TileEntityPressurizedTube> implements IMekanismChemicalHandler<CHEMICAL, STACK, TANK> {
+public abstract class ChemicalNetwork<CHEMICAL extends Chemical<CHEMICAL>,
+      STACK extends ChemicalStack<CHEMICAL>,
+      HANDLER extends IChemicalHandler<CHEMICAL, STACK>,
+      TANK extends IChemicalTank<CHEMICAL, STACK>,
+      NETWORK extends ChemicalNetwork<CHEMICAL, STACK, HANDLER, TANK, NETWORK, TUBE>,
+      TUBE extends PressurizedTube<CHEMICAL, STACK, HANDLER, TANK, NETWORK, TUBE>>
+      extends DynamicBufferedNetwork<HANDLER, NETWORK, STACK, TUBE> implements IMekanismChemicalHandler<CHEMICAL, STACK, TANK> {
 
     private final List<TANK> tanks;
     public final TANK tank;
@@ -113,7 +117,7 @@ public abstract class ChemicalNetwork<CHEMICAL extends Chemical<CHEMICAL>, STACK
     }
 
     @Override
-    public void absorbBuffer(TileEntityPressurizedTube transmitter) {
+    public void absorbBuffer(TUBE transmitter) {
         STACK chemical = transmitter.releaseShare();
         if (!chemical.isEmpty()) {
             if (tank.isEmpty()) {
@@ -136,16 +140,16 @@ public abstract class ChemicalNetwork<CHEMICAL extends Chemical<CHEMICAL>, STACK
     }
 
     @Override
-    protected void updateSaveShares(@Nullable TileEntityPressurizedTube triggerTransmitter) {
+    protected void updateSaveShares(@Nullable TUBE triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
             STACK chemical = tank.getStack();
             //Just pretend we are always accessing it from the north
             Direction side = Direction.NORTH;
-            Set<ChemicalTransmitterSaveTarget<CHEMICAL, STACK>> saveTargets = new ObjectOpenHashSet<>(size);
-            for (TileEntityPressurizedTube transmitter : transmitters) {
-                ChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget = new ChemicalTransmitterSaveTarget<>(getEmptyStack(), chemical);
+            Set<ChemicalTransmitterSaveTarget<CHEMICAL, STACK, TUBE>> saveTargets = new ObjectOpenHashSet<>(size);
+            for (TUBE transmitter : transmitters) {
+                ChemicalTransmitterSaveTarget<CHEMICAL, STACK, TUBE> saveTarget = new ChemicalTransmitterSaveTarget<>(getEmptyStack(), chemical);
                 saveTarget.addHandler(side, transmitter);
                 saveTargets.add(saveTarget);
             }
@@ -153,18 +157,18 @@ public abstract class ChemicalNetwork<CHEMICAL extends Chemical<CHEMICAL>, STACK
             if (triggerTransmitter != null && sent < chemical.getAmount()) {
                 disperse(triggerTransmitter, ChemicalUtil.copyWithAmount(chemical, chemical.getAmount() - sent));
             }
-            for (ChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget : saveTargets) {
+            for (ChemicalTransmitterSaveTarget<CHEMICAL, STACK, TUBE> saveTarget : saveTargets) {
                 saveTarget.saveShare(side);
             }
         }
     }
 
     @Override
-    protected void onLastTransmitterRemoved(@Nonnull TileEntityPressurizedTube triggerTransmitter) {
+    protected void onLastTransmitterRemoved(@Nonnull TUBE triggerTransmitter) {
         disperse(triggerTransmitter, tank.getStack());
     }
 
-    protected void disperse(@Nonnull TileEntityPressurizedTube triggerTransmitter, STACK chemical) {
+    protected void disperse(@Nonnull TUBE triggerTransmitter, STACK chemical) {
     }
 
     private long tickEmit(@Nonnull STACK stack) {
@@ -290,7 +294,7 @@ public abstract class ChemicalNetwork<CHEMICAL extends Chemical<CHEMICAL>, STACK
 
     protected abstract ChemicalTransferEvent<CHEMICAL, NETWORK> getTransferEvent();
 
-    public static class ChemicalTransferEvent<CHEMICAL extends Chemical<CHEMICAL>, NETWORK extends ChemicalNetwork<CHEMICAL, ?, ?, ?, NETWORK>>
+    public static class ChemicalTransferEvent<CHEMICAL extends Chemical<CHEMICAL>, NETWORK extends ChemicalNetwork<CHEMICAL, ?, ?, ?, NETWORK, ?>>
           extends TransferEvent<NETWORK> {
 
         public final CHEMICAL transferType;

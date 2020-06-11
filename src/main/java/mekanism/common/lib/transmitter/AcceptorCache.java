@@ -12,6 +12,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.integration.energy.StrictEnergyCompat;
@@ -33,11 +34,13 @@ public class AcceptorCache<ACCEPTOR> {
 
     private final Map<Direction, NonNullConsumer<LazyOptional<ACCEPTOR>>> cachedListeners = new EnumMap<>(Direction.class);
     private final Map<Direction, AcceptorInfo<ACCEPTOR>> cachedAcceptors = new EnumMap<>(Direction.class);
-    private final TileEntityTransmitter<ACCEPTOR, ?, ?> transmitter;
+    private final Transmitter<ACCEPTOR, ?, ?> transmitter;
+    private final TileEntityTransmitter transmitterTile;
     public byte currentAcceptorConnections = 0x00;
 
-    public AcceptorCache(TileEntityTransmitter<ACCEPTOR, ?, ?> transmitter) {
+    public AcceptorCache(Transmitter<ACCEPTOR, ?, ?> transmitter, TileEntityTransmitter transmitterTile) {
         this.transmitter = transmitter;
+        this.transmitterTile = transmitterTile;
     }
 
     public void clear() {
@@ -100,7 +103,7 @@ public class AcceptorCache<ACCEPTOR> {
      * @implNote Grabs the acceptors from cache, ensuring that the connection map contains the side
      */
     public LazyOptional<ACCEPTOR> getCachedAcceptor(Direction side) {
-        return TileEntityTransmitter.connectionMapContainsSide(currentAcceptorConnections, side) ? getConnectedAcceptor(side) : LazyOptional.empty();
+        return Transmitter.connectionMapContainsSide(currentAcceptorConnections, side) ? getConnectedAcceptor(side) : LazyOptional.empty();
     }
 
     /**
@@ -179,7 +182,7 @@ public class AcceptorCache<ACCEPTOR> {
     private NonNullConsumer<LazyOptional<ACCEPTOR>> getUncachedRefreshListener(Direction side) {
         return ignored -> {
             //Check to make sure the transmitter is still valid and that the position we are going to check is actually still loaded
-            if (!transmitter.isRemoved() && transmitter.hasWorld() && transmitter.getWorld().isBlockPresent(transmitter.getPos().offset(side))) {
+            if (!transmitterTile.isRemoved() && transmitterTile.hasWorld() && transmitterTile.getWorld().isBlockPresent(transmitterTile.getPos().offset(side))) {
                 //If it is, then refresh the connection
                 transmitter.refreshConnections(side);
             }

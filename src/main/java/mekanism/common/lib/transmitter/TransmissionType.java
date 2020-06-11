@@ -3,6 +3,7 @@ package mekanism.common.lib.transmitter;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 
 public enum TransmissionType implements IHasTranslationKey {
@@ -46,7 +47,11 @@ public enum TransmissionType implements IHasTranslationKey {
         return this == GAS || this == INFUSION || this == PIGMENT || this == SLURRY;
     }
 
-    public boolean checkTransmissionType(TileEntityTransmitter<?, ?, ?> transmitter) {
+    public boolean checkTransmissionType(Transmitter<?, ?, ?> transmitter) {
         return transmitter.getTransmissionType() == this;
+    }
+
+    public boolean checkTransmissionType(TileEntityTransmitter transmitter) {
+        return checkTransmissionType(transmitter.getTransmitter());
     }
 }

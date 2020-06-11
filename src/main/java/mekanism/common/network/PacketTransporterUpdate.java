@@ -5,9 +5,10 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.function.Supplier;
+import mekanism.common.content.network.transmitter.DiversionTransporter;
+import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
+import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
-import mekanism.common.tile.transmitter.TileEntityDiversionTransporter.DiversionControl;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -23,7 +24,7 @@ public class PacketTransporterUpdate {
     private final boolean isSync;
     private final BlockPos pos;
 
-    private TileEntityLogisticalTransporterBase transporter;
+    private LogisticalTransporterBase transporter;
     private DiversionControl[] modes;
 
     //Sync
@@ -33,24 +34,24 @@ public class PacketTransporterUpdate {
     private Int2ObjectMap<TransporterStack> updates;
     private IntSet deletes;
 
-    public PacketTransporterUpdate(TileEntityLogisticalTransporterBase tile, int stackId, TransporterStack stack) {
+    public PacketTransporterUpdate(LogisticalTransporterBase tile, int stackId, TransporterStack stack) {
         this(tile, true);
         this.stackId = stackId;
         this.stack = stack;
     }
 
-    public PacketTransporterUpdate(TileEntityLogisticalTransporterBase tile, Int2ObjectMap<TransporterStack> updates, IntSet deletes) {
+    public PacketTransporterUpdate(LogisticalTransporterBase tile, Int2ObjectMap<TransporterStack> updates, IntSet deletes) {
         this(tile, false);
         this.updates = updates;
         this.deletes = deletes;
     }
 
-    private PacketTransporterUpdate(TileEntityLogisticalTransporterBase transporter, boolean isSync) {
+    private PacketTransporterUpdate(LogisticalTransporterBase transporter, boolean isSync) {
         this.isSync = isSync;
-        this.pos = transporter.getPos();
-        this.isDiversion = transporter instanceof TileEntityDiversionTransporter;
+        this.pos = transporter.getTilePos();
+        this.isDiversion = transporter instanceof DiversionTransporter;
         if (this.isDiversion) {
-            this.modes = ((TileEntityDiversionTransporter) transporter).modes;
+            this.modes = ((DiversionTransporter) transporter).modes;
         }
         this.transporter = transporter;
     }
@@ -69,19 +70,20 @@ public class PacketTransporterUpdate {
         context.get().enqueueWork(() -> {
             TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, player.world, message.pos);
             if (tile != null) {
+                LogisticalTransporterBase transporter = tile.getTransmitter();
                 if (message.isSync) {
-                    tile.addStack(message.stackId, message.stack);
+                    transporter.addStack(message.stackId, message.stack);
                 } else {
                     for (Int2ObjectMap.Entry<TransporterStack> entry : message.updates.int2ObjectEntrySet()) {
-                        tile.addStack(entry.getIntKey(), entry.getValue());
+                        transporter.addStack(entry.getIntKey(), entry.getValue());
                     }
                     for (int toDelete : message.deletes) {
-                        tile.deleteStack(toDelete);
+                        transporter.deleteStack(toDelete);
                     }
                 }
-                if (message.isDiversion && tile instanceof TileEntityDiversionTransporter) {
+                if (message.isDiversion && transporter instanceof DiversionTransporter) {
                     //Copy the values of modes, without replacing the actual array
-                    System.arraycopy(message.modes, 0, ((TileEntityDiversionTransporter) tile).modes, 0, message.modes.length);
+                    System.arraycopy(message.modes, 0, ((DiversionTransporter) transporter).modes, 0, message.modes.length);
                 }
             }
         });

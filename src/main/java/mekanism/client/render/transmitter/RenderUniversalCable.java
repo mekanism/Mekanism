@@ -5,7 +5,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.content.transmitter.EnergyNetwork;
+import mekanism.common.content.network.EnergyNetwork;
+import mekanism.common.content.network.transmitter.UniversalCable;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -20,15 +21,16 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
     }
 
     @Override
-    protected void render(TileEntityUniversalCable cable, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+    protected void render(TileEntityUniversalCable tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
+        UniversalCable cable = tile.getTransmitter();
         if (cable.hasTransmitterNetwork()) {
             EnergyNetwork network = cable.getTransmitterNetwork();
             //Note: We don't check if the network is empty as we don't actually ever sync the energy value to the client
             if (network.currentScale > 0) {
                 matrix.push();
                 matrix.translate(0.5, 0.5, 0.5);
-                renderModel(cable, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), 0xFFFFFF,
+                renderModel(tile, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), 0xFFFFFF,
                       network.currentScale, MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.energyIcon);
                 matrix.pop();
             }

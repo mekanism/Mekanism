@@ -1,4 +1,4 @@
-package mekanism.common.content.transmitter;
+package mekanism.common.content.network.chemical;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -11,9 +11,11 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityInfusionTank;
+import mekanism.common.content.network.transmitter.chemical.InfusionPressurizedTube;
 import mekanism.common.lib.transmitter.TransmissionType;
 
-public class InfusionNetwork extends ChemicalNetwork<InfuseType, InfusionStack, IInfusionHandler, IInfusionTank, InfusionNetwork> implements IMekanismInfusionHandler {
+public class InfusionNetwork extends ChemicalNetwork<InfuseType, InfusionStack, IInfusionHandler, IInfusionTank, InfusionNetwork, InfusionPressurizedTube>
+      implements IMekanismInfusionHandler {
 
     public InfusionNetwork() {
     }
