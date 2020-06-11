@@ -1,9 +1,10 @@
-package mekanism.common.distribution.target;
+package mekanism.common.content.transmitter.distribution;
 
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.distribution.SplitInfo;
+import mekanism.common.lib.distribution.SplitInfo;
+import mekanism.common.lib.distribution.Target;
 
 public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, FloatingLong, FloatingLong> {
 

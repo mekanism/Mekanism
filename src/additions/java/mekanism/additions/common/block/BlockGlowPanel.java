@@ -2,10 +2,10 @@ package mekanism.additions.common.block;
 
 import javax.annotation.Nonnull;
 import mekanism.additions.common.registries.AdditionsBlockTypes;
-import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateFacing;
+import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.prefab.BlockBase.BlockBaseModel;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.util.EnumUtils;

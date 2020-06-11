@@ -1,9 +1,9 @@
 package mekanism.common.item.block;
 
 import javax.annotation.Nonnull;
-import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;

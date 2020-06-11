@@ -1,9 +1,9 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
-import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.Machine;

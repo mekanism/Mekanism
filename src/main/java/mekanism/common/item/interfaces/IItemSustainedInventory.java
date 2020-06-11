@@ -1,7 +1,7 @@
 package mekanism.common.item.interfaces;
 
 import mekanism.api.NBTConstants;
-import mekanism.api.sustained.ISustainedInventory;
+import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;

@@ -25,7 +25,6 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.sustained.ISustainedData;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -65,6 +64,7 @@ import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.ProxySlotInfo
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.SlurryProxy;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;

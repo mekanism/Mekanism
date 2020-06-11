@@ -1,12 +1,11 @@
-package mekanism.common.distribution;
+package mekanism.common.lib.distribution;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.function.Supplier;
-import mekanism.common.distribution.target.InfiniteIntegerTarget;
-import mekanism.common.distribution.target.PartialIntegerTarget;
-import mekanism.common.distribution.target.SpecificAmountIntegerTarget;
-import mekanism.common.distribution.target.Target;
+import mekanism.common.lib.distribution.target.InfiniteIntegerTarget;
+import mekanism.common.lib.distribution.target.PartialIntegerTarget;
+import mekanism.common.lib.distribution.target.SpecificAmountIntegerTarget;
 import mekanism.common.util.EmitUtils;
 import net.minecraft.util.Direction;
 import org.junit.jupiter.api.Assertions;

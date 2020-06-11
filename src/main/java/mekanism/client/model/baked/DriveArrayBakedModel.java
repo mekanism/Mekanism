@@ -47,7 +47,7 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
             for (int i = 0; i < driveStatus.length; i++) {
                 DriveStatus status = DriveStatus.STATUSES[driveStatus[i]];
                 if (status != DriveStatus.NONE) {
-                    double x = 1 +  (i / 4) * 5;
+                    double x = 1 + (i / 4) * 5;
                     double y = 3 + (3 - (i % 4)) * 3;
                     driveQuads.add(new Quad.Builder(baseTex, key.getSide()).rect(new Vec3d(x, y, 16.01), 4, 1).uv(0, 0, 4, 1F).build());
                     int ledIndex = status.ledIndex();

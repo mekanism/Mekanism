@@ -1,9 +1,10 @@
-package mekanism.common.distribution.target;
+package mekanism.common.content.transmitter.distribution;
 
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.common.distribution.SplitInfo;
+import mekanism.common.lib.distribution.SplitInfo;
+import mekanism.common.lib.distribution.Target;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import net.minecraft.util.Direction;
 

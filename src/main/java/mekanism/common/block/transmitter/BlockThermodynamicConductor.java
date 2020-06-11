@@ -1,7 +1,7 @@
 package mekanism.common.block.transmitter;
 
-import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.attribute.AttributeTier;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.registries.MekanismTileEntityTypes;
