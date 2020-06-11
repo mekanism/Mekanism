@@ -99,8 +99,6 @@ public class RenderTickHandler {
 
     private static HUDRenderer hudRenderer = new HUDRenderer();
 
-    private RadialSelectorRenderer<?> selectorRenderer;
-
     public static int modeSwitchTimer = 0;
     public static double prevRadiation = 0;
 
@@ -190,18 +188,14 @@ public class RenderTickHandler {
                 }
             }
 
-            if (minecraft.world != null && minecraft.currentScreen == null) {
+            if (minecraft.world != null) {
                 ItemStack stack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
-                if (MekanismKeyHandler.handModeSwitchKey.isKeyDown() && stack.getItem() instanceof IRadialModeItem) {
+                if (MekanismKeyHandler.MODE_KEY_DOWN && stack.getItem() instanceof IRadialModeItem) {
                     updateSelectorRenderer((IRadialModeItem<?>) stack.getItem());
-                    minecraft.mouseHelper.ungrabMouse();
-                    selectorRenderer.render(event.getWindow(), event.getPartialTicks());
                 } else {
-                    if (selectorRenderer != null) {
-                        selectorRenderer.updateSelection();
-                        selectorRenderer = null;
+                    if (minecraft.currentScreen instanceof GuiRadialSelector) {
+                        minecraft.displayGuiScreen(null);
                     }
-                    minecraft.mouseHelper.grabMouse();
                 }
             }
         }
@@ -209,25 +203,21 @@ public class RenderTickHandler {
 
     private <TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> void updateSelectorRenderer(IRadialModeItem<TYPE> modeItem) {
         Class<TYPE> modeClass = modeItem.getModeClass();
-        if (selectorRenderer == null || selectorRenderer.getEnumClass() != modeClass) {
-            selectorRenderer = getRadialSelectorRenderer(modeClass);
-        }
-    }
-
-    private <TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> RadialSelectorRenderer<TYPE> getRadialSelectorRenderer(Class<TYPE> modeClass) {
-        return new RadialSelectorRenderer<>(modeClass, () -> {
-            if (minecraft.player != null) {
-                ItemStack s = minecraft.player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
-                if (s.getItem() instanceof IRadialModeItem) {
-                    return ((IRadialModeItem<TYPE>) s.getItem()).getMode(s);
+        if (!(minecraft.currentScreen instanceof GuiRadialSelector) || ((GuiRadialSelector<?>) minecraft.currentScreen).getEnumClass() != modeClass) {
+            minecraft.displayGuiScreen(new GuiRadialSelector<>(modeClass, () -> {
+                if (minecraft.player != null) {
+                    ItemStack s = minecraft.player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+                    if (s.getItem() instanceof IRadialModeItem) {
+                        return ((IRadialModeItem<TYPE>) s.getItem()).getMode(s);
+                    }
                 }
-            }
-            return modeClass.getEnumConstants()[0];
-        }, type -> {
-            if (minecraft.player != null) {
-                Mekanism.packetHandler.sendToServer(new PacketRadialModeChange(EquipmentSlotType.MAINHAND, type.ordinal()));
-            }
-        });
+                return modeClass.getEnumConstants()[0];
+            }, type -> {
+                if (minecraft.player != null) {
+                    Mekanism.packetHandler.sendToServer(new PacketRadialModeChange(EquipmentSlotType.MAINHAND, type.ordinal()));
+                }
+            }));
+        }
     }
 
     @SubscribeEvent
