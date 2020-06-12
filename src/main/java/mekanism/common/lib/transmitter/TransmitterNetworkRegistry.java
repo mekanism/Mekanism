@@ -10,6 +10,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
+import mekanism.common.Mekanism;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.util.EnumUtils;
@@ -21,14 +22,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class TransmitterNetworkRegistry {
 
     private static final TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
     private static boolean loaderRegistered = false;
-    private static final Logger logger = LogManager.getLogger("MekanismTransmitters");
     private final Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
     private final Set<DynamicNetwork<?, ?, ?>> networksToChange = new ObjectOpenHashSet<>();
     private final Set<Transmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
@@ -78,7 +76,7 @@ public class TransmitterNetworkRegistry {
         Coord4D coord = Coord4D.get(transmitter.getTransmitterTile());
         Transmitter<?, ?, ?> previous = getInstance().newOrphanTransmitters.put(coord, transmitter);
         if (previous != null && previous != transmitter) {
-            logger.error("Different orphan transmitter was already registered at location! {}", coord.toString());
+            Mekanism.logger.error("Different orphan transmitter was already registered at location! {}", coord.toString());
         }
     }
 
@@ -113,7 +111,7 @@ public class TransmitterNetworkRegistry {
 
     private void removeInvalidTransmitters() {
         if (MekanismAPI.debug && !invalidTransmitters.isEmpty()) {
-            logger.info("Dealing with {} invalid Transmitters", invalidTransmitters.size());
+            Mekanism.logger.info("Dealing with {} invalid Transmitters", invalidTransmitters.size());
         }
         for (Transmitter<?, ?, ?> invalid : invalidTransmitters) {
             removeInvalidTransmitter(invalid);
@@ -136,7 +134,7 @@ public class TransmitterNetworkRegistry {
         newOrphanTransmitters.clear();
 
         if (MekanismAPI.debug && !orphanTransmitters.isEmpty()) {
-            logger.info("Dealing with {} orphan Transmitters", orphanTransmitters.size());
+            Mekanism.logger.info("Dealing with {} orphan Transmitters", orphanTransmitters.size());
         }
 
         for (Transmitter<?, ?, ?> orphanTransmitter : new Object2ObjectOpenHashMap<>(orphanTransmitters).values()) {
@@ -163,19 +161,19 @@ public class TransmitterNetworkRegistry {
         switch (finder.networksFound.size()) {
             case 0:
                 if (MekanismAPI.debug) {
-                    logger.info("No networks found. Creating new network for {} transmitters", finder.connectedTransmitters.size());
+                    Mekanism.logger.info("No networks found. Creating new network for {} transmitters", finder.connectedTransmitters.size());
                 }
                 network = finder.createEmptyNetwork();
                 break;
             case 1:
                 if (MekanismAPI.debug) {
-                    logger.info("Adding {} transmitters to single found network", finder.connectedTransmitters.size());
+                    Mekanism.logger.info("Adding {} transmitters to single found network", finder.connectedTransmitters.size());
                 }
                 network = finder.networksFound.iterator().next();
                 break;
             default:
                 if (MekanismAPI.debug) {
-                    logger.info("Merging {} networks with {} new transmitters", finder.networksFound.size(), finder.connectedTransmitters.size());
+                    Mekanism.logger.info("Merging {} networks with {} new transmitters", finder.networksFound.size(), finder.connectedTransmitters.size());
                 }
                 network = finder.createNetworkByMerging();
         }
@@ -221,7 +219,7 @@ public class TransmitterNetworkRegistry {
 
         public void start() {
             if (queue.peek() != null) {
-                logger.error("OrphanPathFinder queue was not empty?!");
+                Mekanism.logger.error("OrphanPathFinder queue was not empty?!");
                 queue.clear();
             }
             queue.push(startPoint.getTilePos());

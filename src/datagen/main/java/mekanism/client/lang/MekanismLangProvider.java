@@ -786,10 +786,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.NETWORK_DESCRIPTION, "[%s] %s transmitters, %s acceptors.");
         add(MekanismLang.INVENTORY_NETWORK, "InventoryNetwork");
         add(MekanismLang.FLUID_NETWORK, "FluidNetwork");
-        add(MekanismLang.GAS_NETWORK, "GasNetwork");
-        add(MekanismLang.INFUSION_NETWORK, "InfusionNetwork");
-        add(MekanismLang.PIGMENT_NETWORK, "PigmentNetwork");
-        add(MekanismLang.SLURRY_NETWORK, "SlurryNetwork");
+        add(MekanismLang.CHEMICAL_NETWORK, "ChemicalNetwork");
         add(MekanismLang.HEAT_NETWORK, "HeatNetwork");
         add(MekanismLang.ENERGY_NETWORK, "EnergyNetwork");
         add(MekanismLang.NO_NETWORK, "No Network");

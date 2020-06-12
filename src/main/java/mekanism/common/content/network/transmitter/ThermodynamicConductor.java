@@ -18,6 +18,7 @@ import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.content.network.HeatNetwork;
 import mekanism.common.lib.Color;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
@@ -35,7 +36,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     public final BasicHeatCapacitor buffer;
 
     public ThermodynamicConductor(IBlockProvider blockProvider, TileEntityTransmitter tile) {
-        super(tile);
+        super(tile, TransmissionType.HEAT);
         this.tier = Attribute.getTier(blockProvider.getBlock(), ConductorTier.class);
         buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), this);
         capacitors = Collections.singletonList(buffer);

@@ -49,6 +49,7 @@ public final class NBTConstants {
     public static final String AUTO = "auto";
     public static final String BLADES = "blades";
     public static final String BLOCK_STATE = "blockState";
+    public static final String BOXED_CHEMICAL = "boxedChemical";
     public static final String BUCKET_MODE = "bucketMode";
     public static final String BURNING = "burning";
     public static final String BURN_TIME = "burnTime";

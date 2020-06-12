@@ -2,6 +2,7 @@ package mekanism.api.chemical.merged;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,23 @@ public class MergedChemicalTank {
                 throw new IllegalArgumentException("No chemical tank supplied for type: " + type);
             }
         }
+    }
+
+    public Collection<IChemicalTank<?, ?>> getAllTanks() {
+        return tankMap.values();
+    }
+
+    public IChemicalTank<?, ?> getTankForType(ChemicalType chemicalType) {
+        if (chemicalType == ChemicalType.GAS) {
+            return getGasTank();
+        } else if (chemicalType == ChemicalType.INFUSION) {
+            return getInfusionTank();
+        } else if (chemicalType == ChemicalType.PIGMENT) {
+            return getPigmentTank();
+        } else if (chemicalType == ChemicalType.SLURRY) {
+            return getSlurryTank();
+        }
+        throw new IllegalStateException("Unknown chemical type");
     }
 
     public final IGasTank getGasTank() {

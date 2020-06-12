@@ -48,7 +48,7 @@ public enum TransmissionType implements IHasTranslationKey {
     }
 
     public boolean checkTransmissionType(Transmitter<?, ?, ?> transmitter) {
-        return transmitter.getTransmissionType() == this;
+        return transmitter.getSupportedTransmissionTypes().contains(this);
     }
 
     public boolean checkTransmissionType(TileEntityTransmitter transmitter) {

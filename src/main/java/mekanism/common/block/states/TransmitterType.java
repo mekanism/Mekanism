@@ -1,33 +1,26 @@
 package mekanism.common.block.states;
 
 import mekanism.api.math.MathUtils;
-import mekanism.common.lib.transmitter.TransmissionType;
 
 public enum TransmitterType {
-    UNIVERSAL_CABLE(Size.SMALL, TransmissionType.ENERGY),
-    MECHANICAL_PIPE(Size.LARGE, TransmissionType.FLUID),
-    PRESSURIZED_TUBE(Size.SMALL, TransmissionType.GAS),//TODO - V10: Re-evaluate this, make pressurized tubes able to support multiple types
-    LOGISTICAL_TRANSPORTER(Size.LARGE, TransmissionType.ITEM),
-    RESTRICTIVE_TRANSPORTER(Size.LARGE, TransmissionType.ITEM),
-    DIVERSION_TRANSPORTER(Size.LARGE, TransmissionType.ITEM),
-    THERMODYNAMIC_CONDUCTOR(Size.SMALL, TransmissionType.HEAT);
+    UNIVERSAL_CABLE(Size.SMALL),
+    MECHANICAL_PIPE(Size.LARGE),
+    PRESSURIZED_TUBE(Size.SMALL),
+    LOGISTICAL_TRANSPORTER(Size.LARGE),
+    RESTRICTIVE_TRANSPORTER(Size.LARGE),
+    DIVERSION_TRANSPORTER(Size.LARGE),
+    THERMODYNAMIC_CONDUCTOR(Size.SMALL);
 
     private static final TransmitterType[] TYPES = values();
 
     private final Size size;
-    private final TransmissionType transmissionType;
 
-    TransmitterType(Size size, TransmissionType type) {
+    TransmitterType(Size size) {
         this.size = size;
-        transmissionType = type;
     }
 
     public Size getSize() {
         return size;
-    }
-
-    public TransmissionType getTransmission() {
-        return transmissionType;
     }
 
     public static TransmitterType byIndexStatic(int index) {

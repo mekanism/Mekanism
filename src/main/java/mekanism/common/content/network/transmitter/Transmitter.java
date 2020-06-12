@@ -1,5 +1,6 @@
 package mekanism.common.content.network.transmitter;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
@@ -58,6 +59,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public byte currentTransmitterConnections = 0x00;
 
     private final TileEntityTransmitter transmitterTile;
+    private final Set<TransmissionType> supportedTransmissionTypes;
     //TODO: Re-evaluate access levels
     public boolean redstoneReactive;
     private boolean redstonePowered;
@@ -65,8 +67,19 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     private NETWORK theNetwork = null;
     private boolean orphaned = true;
 
-    public Transmitter(TileEntityTransmitter transmitterTile) {
-        acceptorCache = new AcceptorCache<>(this, this.transmitterTile = transmitterTile);
+    public Transmitter(TileEntityTransmitter transmitterTile, TransmissionType... transmissionTypes) {
+        this.transmitterTile = transmitterTile;
+        acceptorCache = createAcceptorCache();
+        supportedTransmissionTypes = EnumSet.noneOf(TransmissionType.class);
+        supportedTransmissionTypes.addAll(Arrays.asList(transmissionTypes));
+    }
+
+    protected AcceptorCache<ACCEPTOR> createAcceptorCache() {
+        return new AcceptorCache<>(this, getTransmitterTile());
+    }
+
+    public AcceptorCache<ACCEPTOR> getAcceptorCache() {
+        return acceptorCache;
     }
 
     public TileEntityTransmitter getTransmitterTile() {
@@ -135,7 +148,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public NETWORK getExternalNetwork(BlockPos from) {
         TileEntityTransmitter transmitter = MekanismUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), from);
-        if (transmitter != null && getTransmissionType().checkTransmissionType(transmitter)) {
+        if (transmitter != null && supportsTransmissionType(transmitter)) {
             return (NETWORK) transmitter.getTransmitter().getTransmitterNetwork();
         }
         return null;
@@ -155,12 +168,20 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     /**
-     * Get the transmitter's transmission type
+     * Get the transmitter's transmission types
      *
      * @return TransmissionType this transmitter uses
      */
-    public TransmissionType getTransmissionType() {
-        return getTransmitterTile().getTransmitterType().getTransmission();
+    public Set<TransmissionType> getSupportedTransmissionTypes() {
+        return supportedTransmissionTypes;
+    }
+
+    public boolean supportsTransmissionType(Transmitter<?, ?, ?> transmitter) {
+        return transmitter.getSupportedTransmissionTypes().stream().anyMatch(supportedTransmissionTypes::contains);
+    }
+
+    public boolean supportsTransmissionType(TileEntityTransmitter transmitter) {
+        return supportsTransmissionType(transmitter.getTransmitter());
     }
 
     @Nonnull
@@ -184,7 +205,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             TileEntity tile = MekanismUtils.getTileEntity(getTileWorld(), getTilePos().offset(side));
             if (canConnectMutual(side, tile) && tile instanceof TileEntityTransmitter) {
                 Transmitter<?, ?, ?> transmitter = ((TileEntityTransmitter) tile).getTransmitter();
-                if (getTransmissionType().checkTransmissionType(transmitter) && isValidTransmitter(transmitter)) {
+                if (supportsTransmissionType(transmitter) && isValidTransmitter(transmitter)) {
                     connections |= 1 << side.ordinal();
                 }
             }
@@ -217,7 +238,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         TileEntity tile = MekanismUtils.getTileEntity(getTileWorld(), getTilePos().offset(side));
         if (canConnectMutual(side, tile) && tile instanceof TileEntityTransmitter) {
             Transmitter<?, ?, ?> transmitter =  ((TileEntityTransmitter) tile).getTransmitter();
-            return getTransmissionType().checkTransmissionType(transmitter) && isValidTransmitter(transmitter);
+            return supportsTransmissionType(transmitter) && isValidTransmitter(transmitter);
         }
         return false;
     }
@@ -267,7 +288,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         TileEntity potentialTransmitterTile = MekanismUtils.getTileEntity(getTileWorld(), sidePos);
         if (canConnectMutual(side, potentialTransmitterTile) && potentialTransmitterTile instanceof TileEntityTransmitter) {
             Transmitter<?, ?, ?> transmitter = ((TileEntityTransmitter) potentialTransmitterTile).getTransmitter();
-            if (getTransmissionType().checkTransmissionType(transmitter) && isValidTransmitter(transmitter)) {
+            if (supportsTransmissionType(transmitter) && isValidTransmitter(transmitter)) {
                 return sidePos;
             }
         }
@@ -280,7 +301,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
         //TODO: Rename this method better to make it more apparent that it caches and also listens to the acceptor
         //If it isn't a transmitter or the transmission type is different than the one the transmitter has
-        return !(tile instanceof TileEntityTransmitter) || !getTransmissionType().checkTransmissionType((TileEntityTransmitter) tile);
+        return !(tile instanceof TileEntityTransmitter) || !supportsTransmissionType((TileEntityTransmitter) tile);
     }
 
     public boolean canConnectMutual(Direction side, @Nullable TileEntity cachedTile) {

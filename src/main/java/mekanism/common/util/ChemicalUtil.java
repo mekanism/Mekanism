@@ -24,6 +24,8 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.merged.ChemicalType;
+import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -74,6 +76,34 @@ public class ChemicalUtil {
     public static <HANDLER extends IChemicalHandler<?, ?>> Capability<HANDLER> getCapabilityForChemical(IChemicalTank<?, ?> tank) {
         //Note: We just use getEmptyStack as it still has enough information
         return getCapabilityForChemical(tank.getEmptyStack());
+    }
+
+    public static <STACK extends ChemicalStack<?>> STACK getEmptyStack(STACK stack) {
+        if (stack instanceof GasStack) {
+            return (STACK) GasStack.EMPTY;
+        } else if (stack instanceof InfusionStack) {
+            return (STACK) InfusionStack.EMPTY;
+        } else if (stack instanceof PigmentStack) {
+            return (STACK) PigmentStack.EMPTY;
+        } else if (stack instanceof SlurryStack) {
+            return (STACK) SlurryStack.EMPTY;
+        } else {
+            throw new IllegalStateException("Unknown Chemical Type: " + stack.getType().getClass().getName());
+        }
+    }
+
+    public static boolean compareTypes(ChemicalType chemicalType, Current current) {
+        switch (chemicalType) {
+            case GAS:
+                return current == Current.GAS;
+            case INFUSION:
+                return current == Current.INFUSION;
+            case PIGMENT:
+                return current == Current.PIGMENT;
+            case SLURRY:
+                return current == Current.SLURRY;
+        }
+        throw new IllegalStateException("Unknown Chemical Type");
     }
 
     /**

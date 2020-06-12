@@ -19,6 +19,8 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.lib.transmitter.EnergyAcceptorCache;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.NBTUtils;
@@ -36,10 +38,20 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     public FloatingLong lastWrite = FloatingLong.ZERO;
 
     public UniversalCable(IBlockProvider blockProvider, TileEntityTransmitter tile) {
-        super(tile);
+        super(tile, TransmissionType.ENERGY);
         this.tier = Attribute.getTier(blockProvider.getBlock(), CableTier.class);
         buffer = BasicEnergyContainer.create(getCapacityAsFloatingLong(), BasicEnergyContainer.alwaysFalse, BasicEnergyContainer.alwaysTrue, this);
         energyContainers = Collections.singletonList(buffer);
+    }
+
+    @Override
+    protected EnergyAcceptorCache createAcceptorCache() {
+        return new EnergyAcceptorCache(this, getTransmitterTile());
+    }
+
+    @Override
+    public EnergyAcceptorCache getAcceptorCache() {
+        return (EnergyAcceptorCache) super.getAcceptorCache();
     }
 
     public CableTier getTier() {
@@ -136,7 +148,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return super.isValidAcceptor(tile, side) && acceptorCache.hasStrictEnergyHandlerAndListen(tile, side);
+        return super.isValidAcceptor(tile, side) && getAcceptorCache().hasStrictEnergyHandlerAndListen(tile, side);
     }
 
     @Override

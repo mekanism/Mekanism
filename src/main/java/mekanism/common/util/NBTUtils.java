@@ -16,6 +16,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.merged.BoxedChemical;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
@@ -133,6 +134,12 @@ public class NBTUtils {
     public static void setFluidStackIfPresent(CompoundNBT nbt, String key, Consumer<FluidStack> setter) {
         if (nbt.contains(key, NBT.TAG_COMPOUND)) {
             setter.accept(FluidStack.loadFluidStackFromNBT(nbt.getCompound(key)));
+        }
+    }
+
+    public static void setBoxedChemicalIfPresent(CompoundNBT nbt, String key, Consumer<BoxedChemical> setter) {
+        if (nbt.contains(key, NBT.TAG_COMPOUND)) {
+            setter.accept(BoxedChemical.read(nbt.getCompound(key)));
         }
     }
 

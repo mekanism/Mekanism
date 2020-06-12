@@ -19,6 +19,7 @@ import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketTransporterUpdate;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -46,7 +47,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     private int delayCount = 0;
 
     protected LogisticalTransporterBase(TileEntityTransmitter tile, TransporterTier tier) {
-        super(tile);
+        super(tile, TransmissionType.ITEM);
         this.tier = tier;
     }
 

@@ -11,11 +11,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.content.network.transmitter.Transmitter;
-import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.integration.energy.IEnergyCompat;
-import mekanism.common.integration.energy.StrictEnergyCompat;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
@@ -60,11 +56,11 @@ public class AcceptorCache<ACCEPTOR> {
         }
     }
 
-    private void updateCachedAcceptorAndListen(Direction side, TileEntity acceptorTile, LazyOptional<ACCEPTOR> acceptor) {
+    protected void updateCachedAcceptorAndListen(Direction side, TileEntity acceptorTile, LazyOptional<ACCEPTOR> acceptor) {
         updateCachedAcceptorAndListen(side, acceptorTile, acceptor, acceptor, true);
     }
 
-    private void updateCachedAcceptorAndListen(Direction side, TileEntity acceptorTile, LazyOptional<ACCEPTOR> acceptor, LazyOptional<?> sourceAcceptor,
+    protected void updateCachedAcceptorAndListen(Direction side, TileEntity acceptorTile, LazyOptional<ACCEPTOR> acceptor, LazyOptional<?> sourceAcceptor,
           boolean sourceIsSame) {
         boolean dirtyAcceptor = false;
         if (cachedAcceptors.containsKey(side)) {
@@ -131,36 +127,6 @@ public class AcceptorCache<ACCEPTOR> {
             //TODO: If the tile has been removed should we force an invalidation/recheck?
         }
         return LazyOptional.empty();
-    }
-
-    /**
-     * @apiNote Only call this from the server side
-     */
-    public boolean hasStrictEnergyHandlerAndListen(@Nullable TileEntity tile, Direction side) {
-        if (tile != null && !tile.isRemoved() && tile.hasWorld()) {
-            Direction opposite = side.getOpposite();
-            for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {
-                if (energyCompat.isUsable()) {
-                    //Note: Capability should not be null due to us validating the compat is usable
-                    LazyOptional<?> acceptor = CapabilityUtils.getCapability(tile, energyCompat.getCapability(), opposite);
-                    if (acceptor.isPresent()) {
-                        if (energyCompat instanceof StrictEnergyCompat) {
-                            //Our lazy optional is already the proper type
-                            updateCachedAcceptorAndListen(side, tile, (LazyOptional<ACCEPTOR>) acceptor);
-                        } else {
-                            //Update the cache with the strict energy lazy optional as that is the one we interact with
-                            LazyOptional<IStrictEnergyHandler> wrappedAcceptor = energyCompat.getLazyStrictEnergyHandler(tile, opposite);
-                            //Note: The wrapped acceptor should always be present, but double check just in case
-                            if (wrappedAcceptor.isPresent()) {
-                                updateCachedAcceptorAndListen(side, tile, (LazyOptional<ACCEPTOR>) wrappedAcceptor, acceptor, false);
-                            }
-                        }
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     /**

@@ -19,6 +19,7 @@ import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.lib.transmitter.DynamicNetwork;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.CapabilityUtils;
@@ -37,6 +38,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
+//TODO - V10: Rewrite this class as it is an absolute mess
 public class ItemNetworkReader extends ItemEnergized {
 
     public ItemNetworkReader(Properties properties) {
@@ -99,8 +101,10 @@ public class ItemNetworkReader extends ItemEnergized {
                                 Transmitter<?, ?, ?> transmitter = ((TileEntityTransmitter) tile).getTransmitter();
                                 DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
                                 if (transmitterNetwork.hasAcceptor(pos) && !iteratedNetworks.contains(transmitterNetwork)) {
+                                    //TODO: FIXME, this is rather messy
+                                    TransmissionType transmissionType = transmitter.getSupportedTransmissionTypes().stream().findFirst().orElse(null);
                                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
-                                          MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, transmitter.getTransmissionType())));
+                                          MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, transmissionType)));
                                     player.sendMessage(MekanismLang.NETWORK_READER_CONNECTED_SIDES.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
                                           getDirections(transmitterNetwork.getAcceptorDirections(pos))));
                                     player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));

@@ -32,18 +32,15 @@ import mekanism.common.content.evaporation.EvaporationValidator;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.content.matrix.MatrixValidator;
+import mekanism.common.content.network.BoxedChemicalNetwork.ChemicalTransferEvent;
+import mekanism.common.content.network.EnergyNetwork.EnergyTransferEvent;
+import mekanism.common.content.network.FluidNetwork.FluidTransferEvent;
 import mekanism.common.content.sps.SPSCache;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.content.sps.SPSValidator;
 import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.content.tank.TankValidator;
-import mekanism.common.content.network.EnergyNetwork.EnergyTransferEvent;
-import mekanism.common.content.network.FluidNetwork.FluidTransferEvent;
-import mekanism.common.content.network.chemical.GasNetwork.GasTransferEvent;
-import mekanism.common.content.network.chemical.InfusionNetwork.InfusionTransferEvent;
-import mekanism.common.content.network.chemical.PigmentNetwork.PigmentTransferEvent;
-import mekanism.common.content.network.chemical.SlurryNetwork.SlurryTransferEvent;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
@@ -183,10 +180,7 @@ public class Mekanism {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.addListener(this::onEnergyTransferred);
-        MinecraftForge.EVENT_BUS.addListener(this::onGasTransferred);
-        MinecraftForge.EVENT_BUS.addListener(this::onInfusionTransferred);
-        MinecraftForge.EVENT_BUS.addListener(this::onPigmentTransferred);
-        MinecraftForge.EVENT_BUS.addListener(this::onSlurryTransferred);
+        MinecraftForge.EVENT_BUS.addListener(this::onChemicalTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onLiquidTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::chunkSave);
         MinecraftForge.EVENT_BUS.addListener(this::onChunkDataLoad);
@@ -354,19 +348,7 @@ public class Mekanism {
         packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network), event.network);
     }
 
-    private void onGasTransferred(GasTransferEvent event) {
-        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
-    }
-
-    private void onInfusionTransferred(InfusionTransferEvent event) {
-        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
-    }
-
-    private void onPigmentTransferred(PigmentTransferEvent event) {
-        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
-    }
-
-    private void onSlurryTransferred(SlurryTransferEvent event) {
+    private void onChemicalTransferred(ChemicalTransferEvent event) {
         packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
     }
 

@@ -18,6 +18,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
@@ -39,7 +40,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     public final BasicFluidTank buffer;
 
     public MechanicalPipe(IBlockProvider blockProvider, TileEntityTransmitter tile) {
-        super(tile);
+        super(tile, TransmissionType.FLUID);
         this.tier = Attribute.getTier(blockProvider.getBlock(), PipeTier.class);
         //TODO: If we make fluids support longs then adjust this
         buffer = BasicFluidTank.create(MathUtils.clampToInt(getCapacity()), BasicFluidTank.alwaysFalse, BasicFluidTank.alwaysTrue, this);
