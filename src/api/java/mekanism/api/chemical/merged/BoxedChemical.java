@@ -14,7 +14,6 @@ import mekanism.api.chemical.slurry.Slurry;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-//TODO: Go through usages and ENSURE that things properly use equals instead of == when comparing boxed chemicals
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

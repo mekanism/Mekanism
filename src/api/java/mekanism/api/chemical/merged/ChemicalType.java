@@ -1,7 +1,11 @@
 package mekanism.api.chemical.merged;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -9,31 +13,50 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.IStringSerializable;
+import net.minecraftforge.common.util.Constants.NBT;
 
 //TODO: Make the chemicals know their own chemical type
-public enum ChemicalType {
-    GAS(c -> c instanceof Gas),
-    INFUSION(c -> c instanceof InfuseType),
-    PIGMENT(c -> c instanceof Pigment),
-    SLURRY(c -> c instanceof Slurry);
+public enum ChemicalType implements IStringSerializable {
+    GAS("gas", c -> c instanceof Gas),
+    INFUSION("infuse_type", c -> c instanceof InfuseType),
+    PIGMENT("pigment", c -> c instanceof Pigment),
+    SLURRY("slurry", c -> c instanceof Slurry);
+
+    private static final Map<String, ChemicalType> nameToType = new Object2ObjectOpenHashMap<>();
+    static {
+        for(ChemicalType type : values()) {
+            nameToType.put(type.getName(), type);
+        }
+    }
 
     private final Predicate<Chemical<?>> instanceCheck;
+    private final String name;
 
-    ChemicalType(Predicate<Chemical<?>> instanceCheck) {
+    ChemicalType(String name, Predicate<Chemical<?>> instanceCheck) {
+        this.name = name;
         this.instanceCheck = instanceCheck;
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return name;
     }
 
     public boolean isInstance(Chemical<?> chemical) {
         return instanceCheck.test(chemical);
    }
 
-   public void write(CompoundNBT nbt) {
-        //TODO: IMPLEMENT
+   public void write(@Nonnull CompoundNBT nbt) {
+       nbt.putString(NBTConstants.CHEMICAL_TYPE, getName());
    }
 
     @Nullable
-    public static ChemicalType fromNBT(CompoundNBT nbt) {
-        //TODO: IMPLEMENT
+    public static ChemicalType fromNBT(@Nullable CompoundNBT nbt) {
+        if (nbt != null && nbt.contains(NBTConstants.CHEMICAL_TYPE, NBT.TAG_STRING)) {
+            return nameToType.get(nbt.getString(NBTConstants.CHEMICAL_TYPE));
+        }
         return null;
     }
 

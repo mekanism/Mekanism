@@ -10,7 +10,8 @@ import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.lib.transmitter.AcceptorCache;
+import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
+import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -54,8 +55,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
                                                ConnectionType.NORMAL};
-    //TODO: Make the acceptor cache not be public
-    public final AcceptorCache<ACCEPTOR> acceptorCache;
+    private final AbstractAcceptorCache<ACCEPTOR, ?> acceptorCache;
     public byte currentTransmitterConnections = 0x00;
 
     private final TileEntityTransmitter transmitterTile;
@@ -74,11 +74,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         supportedTransmissionTypes.addAll(Arrays.asList(transmissionTypes));
     }
 
-    protected AcceptorCache<ACCEPTOR> createAcceptorCache() {
+    protected AbstractAcceptorCache<ACCEPTOR, ?> createAcceptorCache() {
         return new AcceptorCache<>(this, getTransmitterTile());
     }
 
-    public AcceptorCache<ACCEPTOR> getAcceptorCache() {
+    public AbstractAcceptorCache<ACCEPTOR, ?> getAcceptorCache() {
         return acceptorCache;
     }
 

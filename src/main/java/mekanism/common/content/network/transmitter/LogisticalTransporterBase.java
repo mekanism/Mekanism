@@ -20,6 +20,7 @@ import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.network.PacketTransporterUpdate;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -49,6 +50,12 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     protected LogisticalTransporterBase(TileEntityTransmitter tile, TransporterTier tier) {
         super(tile, TransmissionType.ITEM);
         this.tier = tier;
+    }
+
+    @Override
+    public AcceptorCache<IItemHandler> getAcceptorCache() {
+        //Cast it here to make things a bit easier, as we know the create is by default of type AcceptorCache
+        return (AcceptorCache<IItemHandler>) super.getAcceptorCache();
     }
 
     @Override
@@ -85,7 +92,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return super.isValidAcceptor(tile, side) && acceptorCache.isAcceptorAndListen(tile, side, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        return super.isValidAcceptor(tile, side) && getAcceptorCache().isAcceptorAndListen(tile, side, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
     public void tick() {

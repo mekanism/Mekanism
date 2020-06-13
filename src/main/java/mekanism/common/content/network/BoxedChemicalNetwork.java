@@ -296,7 +296,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
             ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack);
             entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
                 IChemicalHandler<CHEMICAL, STACK> handler = acceptor.getHandlerFor(chemicalType);
-                if (ChemicalUtil.canInsert(handler, stack)) {
+                if (handler != null && ChemicalUtil.canInsert(handler, stack)) {
                     target.addHandler(side, handler);
                 }
             }));

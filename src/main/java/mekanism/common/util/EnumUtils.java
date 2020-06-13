@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
+import mekanism.api.chemical.merged.ChemicalType;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
@@ -171,4 +172,9 @@ public class EnumUtils {
      * Cached value of {@link EquipmentSlotType#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final EquipmentSlotType[] EQUIPMENT_SLOT_TYPES = EquipmentSlotType.values();
+
+    /**
+     * Cached value of {@link ChemicalType#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final ChemicalType[] CHEMICAL_TYPES = ChemicalType.values();
 }

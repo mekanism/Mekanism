@@ -19,6 +19,7 @@ import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.content.network.HeatNetwork;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
@@ -40,6 +41,12 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
         this.tier = Attribute.getTier(blockProvider.getBlock(), ConductorTier.class);
         buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), this);
         capacitors = Collections.singletonList(buffer);
+    }
+
+    @Override
+    public AcceptorCache<IHeatHandler> getAcceptorCache() {
+        //Cast it here to make things a bit easier, as we know the create is by default of type AcceptorCache
+        return (AcceptorCache<IHeatHandler>) super.getAcceptorCache();
     }
 
     public ConductorTier getTier() {
@@ -67,7 +74,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return acceptorCache.isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER_CAPABILITY);
+        return getAcceptorCache().isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER_CAPABILITY);
     }
 
     @Nonnull
@@ -125,7 +132,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             //Note: We use the acceptor cache as the heat network is different and the transmitters count the other transmitters in the
             // network as valid acceptors
-            return MekanismUtils.toOptional(acceptorCache.getConnectedAcceptor(side)).orElse(null);
+            return MekanismUtils.toOptional(getAcceptorCache().getConnectedAcceptor(side)).orElse(null);
         }
         return null;
     }

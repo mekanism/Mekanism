@@ -1,4 +1,4 @@
-package mekanism.common.lib.transmitter;
+package mekanism.common.lib.transmitter.acceptor;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.EnumMap;
@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.common.content.network.transmitter.Transmitter;
+import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.LazyOptional;
@@ -64,6 +65,9 @@ public class NetworkAcceptorCache<ACCEPTOR> {
         }
     }
 
+    /**
+     * @apiNote Listeners should not be added to these LazyOptionals here as they may not correspond to an actual handler and may not get invalidated.
+     */
     public Set<Map.Entry<BlockPos, Map<Direction, LazyOptional<ACCEPTOR>>>> getAcceptorEntrySet() {
         return cachedAcceptors.entrySet();
     }

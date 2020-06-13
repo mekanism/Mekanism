@@ -76,7 +76,7 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
             //Update our connections in case they changed
             //Note: We cannot just do this in the if statement in case one changed from transmitter to acceptor
             currentTransmitterConnections = possibleTransmitters;
-            acceptorCache.currentAcceptorConnections = possibleAcceptors;
+            getAcceptorCache().currentAcceptorConnections = possibleAcceptors;
             if (allPossibleConnections != allCurrentConnections) {
                 //If they don't match get the difference
                 byte changedTransmitters = (byte) (allPossibleConnections ^ allCurrentConnections);

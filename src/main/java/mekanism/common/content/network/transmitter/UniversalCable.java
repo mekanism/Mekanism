@@ -19,7 +19,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.lib.transmitter.EnergyAcceptorCache;
+import mekanism.common.lib.transmitter.acceptor.EnergyAcceptorCache;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -62,7 +62,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     public void pullFromAcceptors() {
         Set<Direction> connections = getConnections(ConnectionType.PULL);
         if (!connections.isEmpty()) {
-            for (IStrictEnergyHandler connectedAcceptor : acceptorCache.getConnectedAcceptors(connections)) {
+            for (IStrictEnergyHandler connectedAcceptor : getAcceptorCache().getConnectedAcceptors(connections)) {
                 FloatingLong received = connectedAcceptor.extractEnergy(getAvailablePull(), Action.SIMULATE);
                 if (!received.isZero() && takeEnergy(received, Action.SIMULATE).isZero()) {
                     //If we received some energy and are able to insert it all

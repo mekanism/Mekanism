@@ -19,6 +19,7 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
@@ -47,6 +48,12 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         tanks = Collections.singletonList(buffer);
     }
 
+    @Override
+    public AcceptorCache<IFluidHandler> getAcceptorCache() {
+        //Cast it here to make things a bit easier, as we know the create is by default of type AcceptorCache
+        return (AcceptorCache<IFluidHandler>) super.getAcceptorCache();
+    }
+
     public PipeTier getTier() {
         return tier;
     }
@@ -55,7 +62,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     public void pullFromAcceptors() {
         Set<Direction> connections = getConnections(ConnectionType.PULL);
         if (!connections.isEmpty()) {
-            for (IFluidHandler connectedAcceptor : acceptorCache.getConnectedAcceptors(connections)) {
+            for (IFluidHandler connectedAcceptor : getAcceptorCache().getConnectedAcceptors(connections)) {
                 FluidStack received;
                 //Note: We recheck the buffer each time in case we ended up accepting fluid somewhere
                 // and our buffer changed and is no longer empty
@@ -129,7 +136,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return super.isValidAcceptor(tile, side) && acceptorCache.isAcceptorAndListen(tile, side, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+        return super.isValidAcceptor(tile, side) && getAcceptorCache().isAcceptorAndListen(tile, side, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
     }
 
     @Override

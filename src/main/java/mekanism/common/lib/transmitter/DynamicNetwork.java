@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.content.network.transmitter.Transmitter;
+import mekanism.common.lib.transmitter.acceptor.NetworkAcceptorCache;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;

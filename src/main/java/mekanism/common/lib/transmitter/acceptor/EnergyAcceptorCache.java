@@ -1,4 +1,4 @@
-package mekanism.common.lib.transmitter;
+package mekanism.common.lib.transmitter.acceptor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;

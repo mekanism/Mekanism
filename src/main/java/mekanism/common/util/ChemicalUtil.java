@@ -78,6 +78,9 @@ public class ChemicalUtil {
         return getCapabilityForChemical(tank.getEmptyStack());
     }
 
+    /**
+     * Gets the empty stack matching the type of the input stack type
+     */
     public static <STACK extends ChemicalStack<?>> STACK getEmptyStack(STACK stack) {
         if (stack instanceof GasStack) {
             return (STACK) GasStack.EMPTY;
@@ -92,6 +95,9 @@ public class ChemicalUtil {
         }
     }
 
+    /**
+     * Compares a {@link ChemicalType} with the current type of a merged chemical tank.
+     */
     public static boolean compareTypes(ChemicalType chemicalType, Current current) {
         switch (chemicalType) {
             case GAS:

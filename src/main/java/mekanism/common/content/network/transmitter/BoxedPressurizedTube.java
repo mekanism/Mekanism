@@ -36,12 +36,13 @@ import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.content.network.BoxedChemicalNetwork;
-import mekanism.common.lib.transmitter.BoxedChemicalAcceptorCache;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.lib.transmitter.acceptor.BoxedChemicalAcceptorCache;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -94,21 +95,46 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     public void pullFromAcceptors() {
         Set<Direction> connections = getConnections(ConnectionType.PULL);
         if (!connections.isEmpty()) {
-            for (BoxedChemicalHandler connectedAcceptor : acceptorCache.getConnectedAcceptors(connections)) {
-                pullFromAcceptor(connectedAcceptor);
+            for (BoxedChemicalHandler connectedAcceptor : getAcceptorCache().getConnectedAcceptors(connections)) {
+                //Note: We recheck the buffer each time in case we ended up accepting chemical somewhere
+                // and our buffer changed and is no longer empty
+                BoxedChemicalStack bufferWithFallback = getBufferWithFallback();
+                if (bufferWithFallback.isEmpty()) {
+                    //If the buffer is empty we need to try against each chemical type
+                    for (ChemicalType chemicalType : EnumUtils.CHEMICAL_TYPES) {
+                        if (pullFromAcceptor(connectedAcceptor, chemicalType, bufferWithFallback, true)) {
+                            //If we successfully pulled into this tube, don't bother checking the other chemical types
+                            break;
+                        }
+                    }
+                } else {
+                    pullFromAcceptor(connectedAcceptor, bufferWithFallback.getChemicalType(), bufferWithFallback, false);
+                }
             }
         }
     }
 
+    private boolean pullFromAcceptor(BoxedChemicalHandler acceptor, ChemicalType chemicalType, BoxedChemicalStack bufferWithFallback, boolean bufferIsEmpty) {
+        IChemicalHandler<?, ?> handler = acceptor.getHandlerFor(chemicalType);
+        if (handler != null) {
+            return pullFromAcceptor(handler, bufferWithFallback, chemicalType, bufferIsEmpty);
+        }
+        return false;
+    }
+
+    /**
+     * @param connectedAcceptor  The acceptor
+     * @param bufferWithFallback The buffer of the network
+     * @param chemicalType       The chemical type of the buffer
+     * @param bufferIsEmpty      {@code true} if the buffer is empty, {@code false} otherwise
+     *
+     * @return {@code true} if we successfully pulled a chemical, {@code false} if we were unable to pull a chemical.
+     */
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    void pullFromAcceptor(HANDLER connectedAcceptor) {
-        STACK received;
-        //Note: We recheck the buffer each time in case we ended up accepting chemical somewhere
-        // and our buffer changed and is no longer empty
-        BoxedChemicalStack bufferWithFallback = getBufferWithFallback();
-        ChemicalType chemicalType = bufferWithFallback.getChemicalType();
+    boolean pullFromAcceptor(HANDLER connectedAcceptor, BoxedChemicalStack bufferWithFallback, ChemicalType chemicalType, boolean bufferIsEmpty) {
         long availablePull = getAvailablePull(chemicalType);
-        if (bufferWithFallback.isEmpty()) {
+        STACK received;
+        if (bufferIsEmpty) {
             //If we don't have a chemical stored try pulling as much as we are able to
             received = connectedAcceptor.extractChemical(availablePull, Action.SIMULATE);
         } else {
@@ -121,7 +147,9 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
             //If we received some chemical and are able to insert it all
             STACK remainder = takeChemical(chemicalType, received, Action.EXECUTE);
             connectedAcceptor.extractChemical(ChemicalUtil.copyWithAmount(received, received.getAmount() - remainder.getAmount()), Action.EXECUTE);
+            return true;
         }
+        return false;
     }
 
     private long getAvailablePull(ChemicalType chemicalType) {
@@ -216,16 +244,26 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     @Nonnull
     @Override
     public BoxedChemicalStack releaseShare() {
-        IChemicalTank<?, ?> tank = getCurrentTank();
-        BoxedChemicalStack ret = BoxedChemicalStack.box(tank.getStack());
-        tank.setEmpty();
+        BoxedChemicalStack ret;
+        Current current = chemicalTank.getCurrent();
+        if (current == Current.EMPTY) {
+            ret = BoxedChemicalStack.EMPTY;
+        } else {
+            IChemicalTank<?, ?> tank = getTankFromCurrent(current);
+            ret = BoxedChemicalStack.box(tank.getStack());
+            tank.setEmpty();
+        }
         return ret;
     }
 
     @Nonnull
     @Override
     public BoxedChemicalStack getShare() {
-        return BoxedChemicalStack.box(getCurrentTank().getStack());
+        Current current = chemicalTank.getCurrent();
+        if (current == Current.EMPTY) {
+            return BoxedChemicalStack.EMPTY;
+        }
+        return BoxedChemicalStack.box(getTankFromCurrent(current).getStack());
     }
 
     @Override
@@ -253,7 +291,6 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
                 ChemicalStack<?> chemicalStack = saveShare.getChemicalStack();
                 long amount = chemicalStack.getAmount();
                 MekanismUtils.logMismatchedStackSize(transmitterNetwork.getTankFromCurrent(networkCurrent).shrinkStack(amount, Action.EXECUTE), amount);
-                //TODO: Do we need to validate that the type matches our current as well?
                 setStackClearOthers(chemicalStack, getTankFromCurrent(networkCurrent));
             }
         }
@@ -341,15 +378,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         return chemicalTank.getSlurryTank();
     }
 
-    /**
-     * @implNote Falls back to the gas tank if empty
-     */
-    public IChemicalTank<?, ?> getCurrentTank() {
-        Current current = chemicalTank.getCurrent();
-        return current == Current.EMPTY ? getGasTank() : getTankFromCurrent(current);
-    }
-
-    public IChemicalTank<?, ?> getTankFromCurrent(Current current) {
+    private IChemicalTank<?, ?> getTankFromCurrent(Current current) {
         switch (current) {
             case GAS:
                 return getGasTank();

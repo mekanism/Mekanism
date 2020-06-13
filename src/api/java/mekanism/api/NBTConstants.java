@@ -22,7 +22,6 @@ public final class NBTConstants {
     public static final String HEIGHT = "height";
     public static final String HOT = "hot";
     public static final String INVENTORY_ID = "inventoryID";
-    public static final String LENGTH = "length";
     public static final String LOWER_VOLUME = "lowerVolume";
     public static final String MUFFLING_COUNT = "muffling";
     public static final String NETWORK = "network";
@@ -38,7 +37,6 @@ public final class NBTConstants {
     public static final String SOUND_SCALE = "soundScale";
     public static final String VALVE = "valve";
     public static final String VOLUME = "volume";
-    public static final String WIDTH = "width";
 
     //Generic constants
     public static final String ACTIVE_COOLED = "activeCooled";
@@ -55,6 +53,7 @@ public final class NBTConstants {
     public static final String BURN_TIME = "burnTime";
     public static final String CACHE = "cache";
     public static final String CHANNEL = "channel";
+    public static final String CHEMICAL_TYPE = "chemicalType";
     public static final String CHUNK_SET = "chunkSet";
     public static final String COILS = "coils";
     public static final String COLOR = "color";
@@ -85,7 +84,6 @@ public final class NBTConstants {
     public static final String FLUID_STORED = "fluid";
     public static final String FLUID_TANKS = "FluidTanks";
     public static final String FOLLOW = "follow";
-    public static final String FORMED = "formed";
     public static final String FREQUENCY = "frequency";
     public static final String FREQUENCY_LIST = "freqList";
     public static final String FROM_RECIPE = "fromRecipe";
