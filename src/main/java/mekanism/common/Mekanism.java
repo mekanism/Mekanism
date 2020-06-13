@@ -302,14 +302,8 @@ public class Mekanism {
         //Initialization notification
         logger.info("Version " + versionNumber + " initializing...");
 
-        //Register to receive subscribed events
-        MinecraftForge.EVENT_BUS.register(this);
-
         //Register with TransmitterNetworkRegistry
         TransmitterNetworkRegistry.initiate();
-
-        //Load this module
-        hooks.hookCommonSetup();
 
         //Packet registrations
         packetHandler.initialize();
