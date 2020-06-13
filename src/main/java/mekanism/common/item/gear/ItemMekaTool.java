@@ -1,10 +1,10 @@
 package mekanism.common.item.gear;
 
-import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.Multimap;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
@@ -186,7 +186,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                 //If it is extended or should be treated as an ore
                 if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
-                    Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(state, pos, world, extended ? module.getExcavationRange() : -1);
+                    Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(player, state, pos, world, extended ? module.getExcavationRange() : -1);
                     for (BlockPos foundPos : found) {
                         if (pos.equals(foundPos)) {
                             continue;
