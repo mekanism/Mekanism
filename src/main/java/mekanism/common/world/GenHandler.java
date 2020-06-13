@@ -25,6 +25,7 @@ import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.FrequencyConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class GenHandler {
@@ -39,26 +40,29 @@ public class GenHandler {
     private static ConfiguredFeature<?, ?> SALT_RETROGEN_FEATURE;
 
     public static void setupWorldGeneration() {
-        COPPER_FEATURE = getOreFeature(MekanismBlocks.COPPER_ORE, MekanismConfig.world.copper, Feature.ORE);
-        TIN_FEATURE = getOreFeature(MekanismBlocks.TIN_ORE, MekanismConfig.world.tin, Feature.ORE);
-        OSMIUM_FEATURE = getOreFeature(MekanismBlocks.OSMIUM_ORE, MekanismConfig.world.osmium, Feature.ORE);
-        SALT_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt, Placement.COUNT_TOP_SOLID);
-        //Retrogen features
-        if (MekanismConfig.world.enableRegeneration.get()) {
-            COPPER_RETROGEN_FEATURE = getOreFeature(MekanismBlocks.COPPER_ORE, MekanismConfig.world.copper, MekanismFeatures.ORE_RETROGEN.getFeature());
-            TIN_RETROGEN_FEATURE = getOreFeature(MekanismBlocks.TIN_ORE, MekanismConfig.world.tin, MekanismFeatures.ORE_RETROGEN.getFeature());
-            OSMIUM_RETROGEN_FEATURE = getOreFeature(MekanismBlocks.OSMIUM_ORE, MekanismConfig.world.osmium, MekanismFeatures.ORE_RETROGEN.getFeature());
-            SALT_RETROGEN_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt, MekanismPlacements.TOP_SOLID_RETROGEN.getPlacement());
-        }
-        ForgeRegistries.BIOMES.forEach(biome -> {
-            if (isValidBiome(biome)) {
-                //Add ores
-                addFeature(biome, COPPER_FEATURE);
-                addFeature(biome, TIN_FEATURE);
-                addFeature(biome, OSMIUM_FEATURE);
-                //Add salt
-                addFeature(biome, SALT_FEATURE);
+        //noinspection deprecation
+        DeferredWorkQueue.runLater(() -> {
+            COPPER_FEATURE = getOreFeature(MekanismBlocks.COPPER_ORE, MekanismConfig.world.copper, Feature.ORE);
+            TIN_FEATURE = getOreFeature(MekanismBlocks.TIN_ORE, MekanismConfig.world.tin, Feature.ORE);
+            OSMIUM_FEATURE = getOreFeature(MekanismBlocks.OSMIUM_ORE, MekanismConfig.world.osmium, Feature.ORE);
+            SALT_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt, Placement.COUNT_TOP_SOLID);
+            //Retrogen features
+            if (MekanismConfig.world.enableRegeneration.get()) {
+                COPPER_RETROGEN_FEATURE = getOreFeature(MekanismBlocks.COPPER_ORE, MekanismConfig.world.copper, MekanismFeatures.ORE_RETROGEN.getFeature());
+                TIN_RETROGEN_FEATURE = getOreFeature(MekanismBlocks.TIN_ORE, MekanismConfig.world.tin, MekanismFeatures.ORE_RETROGEN.getFeature());
+                OSMIUM_RETROGEN_FEATURE = getOreFeature(MekanismBlocks.OSMIUM_ORE, MekanismConfig.world.osmium, MekanismFeatures.ORE_RETROGEN.getFeature());
+                SALT_RETROGEN_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt, MekanismPlacements.TOP_SOLID_RETROGEN.getPlacement());
             }
+            ForgeRegistries.BIOMES.forEach(biome -> {
+                if (isValidBiome(biome)) {
+                    //Add ores
+                    addFeature(biome, COPPER_FEATURE);
+                    addFeature(biome, TIN_FEATURE);
+                    addFeature(biome, OSMIUM_FEATURE);
+                    //Add salt
+                    addFeature(biome, SALT_FEATURE);
+                }
+            });
         });
     }
 
