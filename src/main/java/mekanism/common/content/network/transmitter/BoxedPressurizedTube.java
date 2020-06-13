@@ -38,7 +38,6 @@ import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.content.network.BoxedChemicalNetwork;
 import mekanism.common.lib.transmitter.BoxedChemicalAcceptorCache;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.lib.transmitter.EnergyAcceptorCache;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -324,10 +323,6 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         super.handleContentsUpdateTag(network, tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
         NBTUtils.setBoxedChemicalIfPresent(tag, NBTConstants.BOXED_CHEMICAL, network::setLastChemical);
-    }
-
-    public boolean isTankEmpty() {
-        return chemicalTank.getCurrent() == Current.EMPTY;
     }
 
     public IGasTank getGasTank() {

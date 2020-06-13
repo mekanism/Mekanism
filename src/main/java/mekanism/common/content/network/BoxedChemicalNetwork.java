@@ -161,25 +161,53 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
         long capacity = getCapacity();
         currentScale = Math.min(1, capacity == 0 ? 0 : (currentScale * oldCapacity + net.currentScale * net.capacity) / capacity);
         if (isRemote()) {
-            if (isTankEmpty() && !net.isTankEmpty()) {
-                tank.setStack(net.getBuffer());
-                net.tank.setEmpty();
+            if (isTankEmpty()) {
+                adoptBuffer(net);
             }
         } else {
             if (!net.isTankEmpty()) {
                 if (isTankEmpty()) {
-                    tank.setStack(net.getBuffer());
-                } else if (tank.isTypeEqual(net.tank.getType())) {
-                    long amount = net.tank.getStored();
-                    MekanismUtils.logMismatchedStackSize(tank.growStack(amount, Action.EXECUTE), amount);
+                    adoptBuffer(net);
+                } else {
+                    Current current = chemicalTank.getCurrent();
+                    Current netCurrent = net.chemicalTank.getCurrent();
+                    if (current == netCurrent) {
+                        //If the chemical types match (then compare the chemicals themselves)
+                        IChemicalTank<?, ?> tank = getTankFromCurrent(current);
+                        IChemicalTank<?, ?> netTank = net.getTankFromCurrent(current);
+                        if (tank.getType() == netTank.getType()) {
+                            long amount = netTank.getStored();
+                            MekanismUtils.logMismatchedStackSize(tank.growStack(amount, Action.EXECUTE), amount);
+                        }
+                        netTank.setEmpty();
+                    } else {
+                        Mekanism.logger.error("Incompatible chemical networks merged: {}, {}.", current, netCurrent);
+                    }
                 }
-                net.tank.setEmpty();
             }
             if (oldScale != currentScale) {
                 //We want to make sure we update to the scale change
                 needsUpdate = true;
             }
         }
+    }
+
+    private void adoptBuffer(BoxedChemicalNetwork net) {
+        Current netCurrent = net.chemicalTank.getCurrent();
+        if (netCurrent == Current.GAS) {
+            moveBuffer(getGasTank(), net.getGasTank());
+        } else if (netCurrent == Current.INFUSION) {
+            moveBuffer(getInfusionTank(), net.getInfusionTank());
+        } else if (netCurrent == Current.PIGMENT) {
+            moveBuffer(getPigmentTank(), net.getPigmentTank());
+        } else if (netCurrent == Current.SLURRY) {
+            moveBuffer(getSlurryTank(), net.getSlurryTank());
+        }
+    }
+
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void moveBuffer(TANK tank, TANK other) {
+        tank.setStack(ChemicalUtil.copy(other.getStack()));
+        other.setEmpty();
     }
 
     @Nonnull
@@ -195,10 +223,10 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
             Current current = chemicalTank.getCurrent();
             ChemicalStack<?> chemicalStack = chemical.getChemicalStack();
             if (current == Current.EMPTY) {
-                chemicalTank.getTankForType(chemical.getChemicalType()).setStack(ChemicalUtil.copy(chemicalStack));
+                setStack(chemicalStack.copy(), chemicalTank.getTankForType(chemical.getChemicalType()));
             } else if (ChemicalUtil.compareTypes(chemical.getChemicalType(), current)) {
                 IChemicalTank<?, ?> tank = getTankFromCurrent(current);
-                if (chemicalStack.isTypeEqual(tank.getType())) {
+                if (chemicalStack.getType() == tank.getType()) {
                     long amount = chemicalStack.getAmount();
                     MekanismUtils.logMismatchedStackSize(tank.growStack(amount, Action.EXECUTE), amount);
                 }
@@ -334,12 +362,27 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
 
     @Override
     public boolean isCompatibleWith(BoxedChemicalNetwork other) {
-        return super.isCompatibleWith(other) && (isTankEmpty() || other.isTankEmpty() || tank.isTypeEqual(other.tank.getType()));
+        if (super.isCompatibleWith(other)) {
+            Current current = chemicalTank.getCurrent();
+            if (current == Current.EMPTY) {
+                return true;
+            }
+            Current otherCurrent = other.chemicalTank.getCurrent();
+            return otherCurrent == Current.EMPTY || current == otherCurrent && getTankFromCurrent(current).getType() == other.getTankFromCurrent(otherCurrent).getType();
+        }
+        return false;
     }
 
     @Override
     public boolean compatibleWithBuffer(@Nonnull BoxedChemicalStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (isTankEmpty() || buffer.isEmpty() || tank.isTypeEqual(buffer));
+        if (super.compatibleWithBuffer(buffer)) {
+            Current current = chemicalTank.getCurrent();
+            if (current == Current.EMPTY || buffer.isEmpty()) {
+                return true;
+            }
+            return ChemicalUtil.compareTypes(buffer.getChemicalType(), current) && getTankFromCurrent(current).getType() == buffer.getChemicalStack().getType();
+        }
+        return false;
     }
 
     @Override
@@ -367,10 +410,10 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
 
     public void setLastChemical(@Nonnull BoxedChemical chemical) {
         if (chemical.isEmpty()) {
-            tank.setEmpty();
+            getCurrentTank().setEmpty();
         } else {
             lastChemical = chemical;
-            tank.setStack(lastChemical.getStack(1));
+            setStackClearOthers(lastChemical.getChemical().getStack(1), chemicalTank.getTankForType(lastChemical.getChemicalType()));
         }
     }
 
@@ -396,6 +439,19 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     @Override
     public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
         return slurryTanks;
+    }
+
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void setStack(STACK stack, IChemicalTank<?, ?> tank) {
+        ((IChemicalTank<CHEMICAL, STACK>) tank).setStack(stack);
+    }
+
+    private void setStackClearOthers(ChemicalStack<?> stack, IChemicalTank<?, ?> tank) {
+        setStack(stack, tank);
+        for (IChemicalTank<?, ?> tankToClear : chemicalTank.getAllTanks()) {
+            if (tank != tankToClear) {
+                tankToClear.setEmpty();
+            }
+        }
     }
 
     public static class ChemicalTransferEvent extends TransferEvent<BoxedChemicalNetwork> {
