@@ -24,7 +24,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.merged.ChemicalType;
+import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
@@ -132,13 +132,19 @@ public class ChemicalUtil {
      * @param amount Desired size
      *
      * @return Copy of the input stack with the desired size
-     *
-     * @apiNote Should only be called if we know that copy returns STACK
      */
     public static <STACK extends ChemicalStack<?>> STACK copyWithAmount(STACK stack, long amount) {
-        STACK copy = copy(stack);
-        copy.setAmount(amount);
-        return copy;
+        if (stack instanceof GasStack) {
+            return (STACK) new GasStack((GasStack) stack, amount);
+        } else if (stack instanceof InfusionStack) {
+            return (STACK) new InfusionStack((InfusionStack) stack, amount);
+        } else if (stack instanceof PigmentStack) {
+            return (STACK) new PigmentStack((PigmentStack) stack, amount);
+        } else if (stack instanceof SlurryStack) {
+            return (STACK) new SlurryStack((SlurryStack) stack, amount);
+        } else {
+            throw new IllegalStateException("Unknown Chemical Type: " + stack.getType().getClass().getName());
+        }
     }
 
     /**

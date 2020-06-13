@@ -2,7 +2,7 @@ package mekanism.common.util;
 
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.chemical.merged.ChemicalType;
+import mekanism.api.chemical.ChemicalType;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;

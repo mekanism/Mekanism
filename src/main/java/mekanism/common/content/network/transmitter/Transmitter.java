@@ -491,9 +491,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      */
     protected void recheckConnections(byte newlyEnabledTransmitters) {
         if (!hasTransmitterNetwork()) {
-            //If we don't have a transmitter network then recheck connection status both ways
-            //TODO: Update this comment to flow better between the old one and the new one
-            //If our connectivity changed on a side and it is also a sided pipe, inform it to recheck its connections
+            //If we don't have a transmitter network then recheck connection status both ways if the other tile is also a transmitter
             //This fixes pipes not reconnecting cross chunk
             for (Direction side : EnumUtils.DIRECTIONS) {
                 if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {

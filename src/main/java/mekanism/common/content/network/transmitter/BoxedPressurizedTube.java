@@ -20,7 +20,7 @@ import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.merged.BoxedChemical;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
-import mekanism.api.chemical.merged.ChemicalType;
+import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.BasicPigmentTank;

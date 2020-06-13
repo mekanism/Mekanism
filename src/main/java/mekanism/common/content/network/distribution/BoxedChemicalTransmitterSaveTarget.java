@@ -5,7 +5,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
-import mekanism.api.chemical.merged.ChemicalType;
+import mekanism.api.chemical.ChemicalType;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
@@ -52,7 +52,7 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
             shouldSave = chemicalType != tube.saveShare.getChemicalType() || !currentStored.isStackIdentical((STACK) tube.saveShare.getChemicalStack());
         }
         if (shouldSave) {
-            tube.saveShare = BoxedChemicalStack.box(currentStored);
+            tube.saveShare = currentStored.isEmpty() ? BoxedChemicalStack.EMPTY : BoxedChemicalStack.box(currentStored);
             tube.getTransmitterTile().markDirty(false);
         }
     }

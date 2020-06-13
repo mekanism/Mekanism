@@ -25,7 +25,7 @@ import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.merged.BoxedChemical;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
-import mekanism.api.chemical.merged.ChemicalType;
+import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.BasicPigmentTank;
@@ -124,7 +124,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     /**
      * @implNote Falls back to the gas tank if empty
      */
-    public IChemicalTank<?, ?> getCurrentTank() {
+    private IChemicalTank<?, ?> getCurrentTankWithFallback() {
         Current current = chemicalTank.getCurrent();
         return current == Current.EMPTY ? getGasTank() : getTankFromCurrent(current);
     }
@@ -146,7 +146,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     @Override
     protected void forceScaleUpdate() {
         if (!isTankEmpty() && getCapacity() > 0) {
-            currentScale = (float) Math.min(1, getCurrentTank().getStored() / (double) getCapacity());
+            currentScale = (float) Math.min(1, getCurrentTankWithFallback().getStored() / (double) getCapacity());
         } else {
             currentScale = 0;
         }
@@ -213,7 +213,11 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     @Nonnull
     @Override
     public BoxedChemicalStack getBuffer() {
-        return BoxedChemicalStack.box(getCurrentTank().getStack().copy());
+        Current current = chemicalTank.getCurrent();
+        if (current == Current.EMPTY) {
+            return BoxedChemicalStack.EMPTY;
+        }
+        return BoxedChemicalStack.box(getTankFromCurrent(current).getStack().copy());
     }
 
     @Override
@@ -236,9 +240,10 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
 
     @Override
     public void clampBuffer() {
-        if (!isTankEmpty()) {
+        Current current = chemicalTank.getCurrent();
+        if (current != Current.EMPTY) {
             long capacity = getCapacity();
-            IChemicalTank<?, ?> tank = getCurrentTank();
+            IChemicalTank<?, ?> tank = getTankFromCurrent(current);
             if (tank.getStored() > capacity) {
                 MekanismUtils.logMismatchedStackSize(tank.setStackSize(capacity, Action.EXECUTE), capacity);
             }
@@ -250,7 +255,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
-            updateSaveShares(triggerTransmitter, size, getCurrentTank().getStack());
+            updateSaveShares(triggerTransmitter, size, getCurrentTankWithFallback().getStack());
         }
     }
 
@@ -275,7 +280,10 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
 
     @Override
     protected void onLastTransmitterRemoved(@Nonnull BoxedPressurizedTube triggerTransmitter) {
-        disperse(triggerTransmitter, getCurrentTank().getStack());
+        Current current = chemicalTank.getCurrent();
+        if (current != Current.EMPTY) {
+            disperse(triggerTransmitter, getTankFromCurrent(current).getStack());
+        }
     }
 
     protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void disperse(@Nonnull BoxedPressurizedTube triggerTransmitter, STACK chemical) {
@@ -316,10 +324,11 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
             MinecraftForge.EVENT_BUS.post(new ChemicalTransferEvent(this, lastChemical));
             needsUpdate = false;
         }
-        if (isTankEmpty()) {
+        Current current = chemicalTank.getCurrent();
+        if (current == Current.EMPTY) {
             prevTransferAmount = 0;
         } else {
-            IChemicalTank<?, ?> tank = getCurrentTank();
+            IChemicalTank<?, ?> tank = getTankFromCurrent(current);
             prevTransferAmount = tickEmit(tank.getStack());
             MekanismUtils.logMismatchedStackSize(tank.shrinkStack(prevTransferAmount, Action.EXECUTE), prevTransferAmount);
         }
@@ -327,7 +336,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
 
     @Override
     protected float computeContentScale() {
-        float scale = (float) (getCurrentTank().getStored() / (double) getCapacity());
+        float scale = (float) (getCurrentTankWithFallback().getStored() / (double) getCapacity());
         float ret = Math.max(currentScale, scale);
         if (prevTransferAmount > 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);
@@ -343,7 +352,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
 
     @Override
     public ITextComponent getNeededInfo() {
-        return TextComponentUtil.build(getCurrentTank().getNeeded());
+        return TextComponentUtil.build(getCurrentTankWithFallback().getNeeded());
     }
 
     @Override
@@ -351,7 +360,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
         if (isTankEmpty()) {
             return MekanismLang.NONE.translate();
         }
-        IChemicalTank<?, ?> tank = getCurrentTank();
+        IChemicalTank<?, ?> tank = getCurrentTankWithFallback();
         return MekanismLang.NETWORK_MB_STORED.translate(tank.getStack(), tank.getStored());
     }
 
@@ -398,7 +407,8 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     @Override
     public void onContentsChanged() {
         markDirty();
-        BoxedChemical type = BoxedChemical.box(getCurrentTank().getType());
+        Current current = chemicalTank.getCurrent();
+        BoxedChemical type = current == Current.EMPTY ? BoxedChemical.EMPTY : BoxedChemical.box(getTankFromCurrent(current).getType());
         if (!lastChemical.equals(type)) {
             //If the chemical type does not match update it, and mark that we need an update
             if (!type.isEmpty()) {
@@ -410,7 +420,10 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
 
     public void setLastChemical(@Nonnull BoxedChemical chemical) {
         if (chemical.isEmpty()) {
-            getCurrentTank().setEmpty();
+            Current current = chemicalTank.getCurrent();
+            if (current != Current.EMPTY) {
+                getTankFromCurrent(current).setEmpty();
+            }
         } else {
             lastChemical = chemical;
             setStackClearOthers(lastChemical.getChemical().getStack(1), chemicalTank.getTankForType(lastChemical.getChemicalType()));

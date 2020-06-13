@@ -1,4 +1,4 @@
-package mekanism.api.chemical.merged;
+package mekanism.api.chemical;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
@@ -6,8 +6,6 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
@@ -24,8 +22,9 @@ public enum ChemicalType implements IStringSerializable {
     SLURRY("slurry", c -> c instanceof Slurry);
 
     private static final Map<String, ChemicalType> nameToType = new Object2ObjectOpenHashMap<>();
+
     static {
-        for(ChemicalType type : values()) {
+        for (ChemicalType type : values()) {
             nameToType.put(type.getName(), type);
         }
     }
@@ -46,11 +45,11 @@ public enum ChemicalType implements IStringSerializable {
 
     public boolean isInstance(Chemical<?> chemical) {
         return instanceCheck.test(chemical);
-   }
+    }
 
-   public void write(@Nonnull CompoundNBT nbt) {
-       nbt.putString(NBTConstants.CHEMICAL_TYPE, getName());
-   }
+    public void write(@Nonnull CompoundNBT nbt) {
+        nbt.putString(NBTConstants.CHEMICAL_TYPE, getName());
+    }
 
     @Nullable
     public static ChemicalType fromNBT(@Nullable CompoundNBT nbt) {
