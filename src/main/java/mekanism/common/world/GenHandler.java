@@ -25,7 +25,6 @@ import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.FrequencyConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class GenHandler {
