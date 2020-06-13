@@ -3,6 +3,7 @@ package mekanism.common;
 import java.lang.ref.WeakReference;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import mekanism.client.ClientProxy;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.lib.effect.BoltEffect;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,6 +23,10 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
  * @author AidanBrady
  */
 public class CommonProxy {
+
+    public static CommonProxy createClientProxy() {
+        return new ClientProxy();
+    }
 
     /**
      * Set up and load the utilities this mod uses.

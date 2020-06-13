@@ -29,7 +29,7 @@ public abstract class MekanismItemContainer extends MekanismContainer {
         if (buf == null) {
             return ItemStack.EMPTY;
         }
-        return DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
+        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> {
             ItemStack stack = buf.readItemStack();
             if (type.isInstance(stack.getItem())) {
                 return stack;

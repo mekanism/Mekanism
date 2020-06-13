@@ -36,7 +36,7 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
         if (buf == null) {
             return null;
         }
-        return DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
+        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> {
             Entity entity = Minecraft.getInstance().world.getEntityByID(buf.readVarInt());
             if (type.isInstance(entity)) {
                 return (ENTITY) entity;

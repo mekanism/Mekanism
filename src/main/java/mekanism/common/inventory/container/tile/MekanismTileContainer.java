@@ -96,6 +96,6 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         if (buf == null) {
             return null;
         }
-        return DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> MekanismUtils.getTileEntity(type, Minecraft.getInstance().world, buf.readBlockPos()));
+        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> MekanismUtils.getTileEntity(type, Minecraft.getInstance().world, buf.readBlockPos()));
     }
 }

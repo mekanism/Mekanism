@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -14,8 +13,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.client.ClientProxy;
-import mekanism.client.ModelLoaderRegisterHelper;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.IModule;
 import mekanism.common.base.KeySync;
 import mekanism.common.base.MekFakePlayer;
@@ -82,7 +80,6 @@ import net.minecraft.tags.NetworkTagManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
@@ -122,14 +119,7 @@ public class Mekanism {
      * Mekanism proxy instance
      */
     //TODO: Remove need for having a proxy as it is the legacy way of doing things
-    //Note: Do not replace with method reference: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a#gistcomment-2876130
-    public static CommonProxy proxy = DistExecutor.runForDist(() -> getClientProxy(), () -> () -> new CommonProxy());
-
-    @OnlyIn(Dist.CLIENT)
-    private static Supplier<CommonProxy> getClientProxy() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return ClientProxy::new;
-    }
+    public static CommonProxy proxy = DistExecutor.safeRunForDist(() -> CommonProxy::createClientProxy, () -> CommonProxy::new);
 
     /**
      * Mekanism mod instance
@@ -222,7 +212,7 @@ public class Mekanism {
         //Register our model loader as soon as we can to avoid it not existing when models are loaded
         // as there seems to be some odd race condition which allows for the model loader to sometimes not be loaded
         // when the client starts loading models. Even if we register our loader as early as ClientSetupEvent
-        DistExecutor.runWhenOn(Dist.CLIENT, ModelLoaderRegisterHelper::registerModelLoader);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> MekanismRenderer::registerModelLoader);
     }
 
     //Register the empty chemicals
