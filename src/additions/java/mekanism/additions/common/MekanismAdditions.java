@@ -31,6 +31,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -104,16 +105,20 @@ public class MekanismAdditions implements IModule {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        SpawnHelper.addSpawns();
-        registerSpawnEggDelayed(AdditionsItems.BABY_CREEPER_SPAWN_EGG, AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, AdditionsItems.BABY_SKELETON_SPAWN_EGG,
-              AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
-        //Add parrot sound imitations for baby mobs
-        //Note: There is no imitation sound for endermen
-        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_CREEPER.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_CREEPER);
-        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_SKELETON.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_SKELETON);
-        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_STRAY.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_STRAY);
-        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_WITHER_SKELETON.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_WITHER_SKELETON);
-        Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
+        //Note: This deprecation can be safely ignored - Forge hasn't added the proposed replacement for it yet.
+        //noinspection deprecation
+        DeferredWorkQueue.runLater(() -> {
+            SpawnHelper.addSpawns();
+            registerSpawnEggDelayed(AdditionsItems.BABY_CREEPER_SPAWN_EGG, AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, AdditionsItems.BABY_SKELETON_SPAWN_EGG,
+                  AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
+            //Add parrot sound imitations for baby mobs
+            //Note: There is no imitation sound for endermen
+            ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_CREEPER.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_CREEPER);
+            ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_SKELETON.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_SKELETON);
+            ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_STRAY.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_STRAY);
+            ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_WITHER_SKELETON.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_WITHER_SKELETON);
+            Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
+        });
     }
 
     @SafeVarargs

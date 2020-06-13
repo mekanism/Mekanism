@@ -67,6 +67,7 @@ import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -291,7 +292,8 @@ public class Mekanism {
         FuelHandler.addGas(MekanismGases.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
 
         //Register the mod's world generators
-        GenHandler.setupWorldGeneration();
+        //noinspection deprecation
+        DeferredWorkQueue.runLater(GenHandler::setupWorldGeneration);
 
         //Register player tracker
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTracker());
