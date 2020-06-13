@@ -186,10 +186,10 @@ public class MekanismJEI implements IModPlugin {
     @SuppressWarnings("RedundantTypeArguments")
     public void registerIngredients(IModIngredientRegistration registry) {
         //The types cannot properly be inferred at runtime
-        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.GAS_REGISTRY, TYPE_GAS, GAS_STACK_HELPER, GasStack::new);
-        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.INFUSE_TYPE_REGISTRY, TYPE_INFUSION, INFUSION_STACK_HELPER, InfusionStack::new);
-        this.<Pigment , PigmentStack > registerIngredientType(registry, MekanismAPI.PIGMENT_REGISTRY, TYPE_PIGMENT, PIGMENT_STACK_HELPER, PigmentStack::new);
-        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.SLURRY_REGISTRY, TYPE_SLURRY, SLURRY_STACK_HELPER, SlurryStack::new);
+        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.gasRegistry(), TYPE_GAS, GAS_STACK_HELPER, GasStack::new);
+        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.infuseTypeRegistry(), TYPE_INFUSION, INFUSION_STACK_HELPER, InfusionStack::new);
+        this.<Pigment , PigmentStack > registerIngredientType(registry, MekanismAPI.pigmentRegistry(), TYPE_PIGMENT, PIGMENT_STACK_HELPER, PigmentStack::new);
+        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.slurryRegistry(), TYPE_SLURRY, SLURRY_STACK_HELPER, SlurryStack::new);
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void registerIngredientType(IModIngredientRegistration registry,

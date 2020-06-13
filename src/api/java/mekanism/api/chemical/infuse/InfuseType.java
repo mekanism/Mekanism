@@ -26,7 +26,7 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
     }
 
     public static InfuseType getFromRegistry(@Nullable ResourceLocation name) {
-        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_INFUSE_TYPE, MekanismAPI.INFUSE_TYPE_REGISTRY);
+        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_INFUSE_TYPE, MekanismAPI.infuseTypeRegistry());
     }
 
     @Override

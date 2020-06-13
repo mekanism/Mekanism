@@ -35,7 +35,7 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
     }
 
     public static Slurry getFromRegistry(@Nullable ResourceLocation name) {
-        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_SLURRY, MekanismAPI.SLURRY_REGISTRY);
+        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_SLURRY, MekanismAPI.slurryRegistry());
     }
 
     @Override

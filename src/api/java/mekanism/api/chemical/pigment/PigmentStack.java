@@ -33,7 +33,7 @@ public class PigmentStack extends ChemicalStack<Pigment> {
 
     @Override
     protected IRegistryDelegate<Pigment> getDelegate(Pigment pigment) {
-        if (MekanismAPI.PIGMENT_REGISTRY.getKey(pigment) == null) {
+        if (MekanismAPI.pigmentRegistry().getKey(pigment) == null) {
             MekanismAPI.logger.fatal("Failed attempt to create a PigmentStack for an unregistered Pigment {} (type {})", pigment.getRegistryName(),
                   pigment.getClass().getName());
             throw new IllegalArgumentException("Cannot create a PigmentStack from an unregistered Pigment");

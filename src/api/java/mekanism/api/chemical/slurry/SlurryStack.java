@@ -33,7 +33,7 @@ public class SlurryStack extends ChemicalStack<Slurry> {
 
     @Override
     protected IRegistryDelegate<Slurry> getDelegate(Slurry slurry) {
-        if (MekanismAPI.SLURRY_REGISTRY.getKey(slurry) == null) {
+        if (MekanismAPI.slurryRegistry().getKey(slurry) == null) {
             MekanismAPI.logger.fatal("Failed attempt to create a SlurryStack for an unregistered Slurry {} (type {})", slurry.getRegistryName(),
                   slurry.getClass().getName());
             throw new IllegalArgumentException("Cannot create a SlurryStack from an unregistered Slurry");

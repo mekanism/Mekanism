@@ -17,6 +17,7 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @ParametersAreNonnullByDefault

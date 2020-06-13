@@ -38,7 +38,7 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     }
 
     public static Gas getFromRegistry(@Nullable ResourceLocation name) {
-        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_GAS, MekanismAPI.GAS_REGISTRY);
+        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_GAS, MekanismAPI.gasRegistry());
     }
 
     @Override

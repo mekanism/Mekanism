@@ -79,10 +79,10 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
             ChemicalTankTier tier = Attribute.getTier(getBlock(), ChemicalTankTier.class);
             if (tier == ChemicalTankTier.CREATIVE) {
                 long capacity = tier.getStorage();
-                fillItemGroup(MekanismConfig.general.prefilledGasTanks, MekanismAPI.GAS_REGISTRY, items, capacity);
-                fillItemGroup(MekanismConfig.general.prefilledInfusionTanks, MekanismAPI.INFUSE_TYPE_REGISTRY, items, capacity);
-                fillItemGroup(MekanismConfig.general.prefilledPigmentTanks, MekanismAPI.PIGMENT_REGISTRY, items, capacity);
-                fillItemGroup(MekanismConfig.general.prefilledSlurryTanks, MekanismAPI.SLURRY_REGISTRY, items, capacity);
+                fillItemGroup(MekanismConfig.general.prefilledGasTanks, MekanismAPI.gasRegistry(), items, capacity);
+                fillItemGroup(MekanismConfig.general.prefilledInfusionTanks, MekanismAPI.infuseTypeRegistry(), items, capacity);
+                fillItemGroup(MekanismConfig.general.prefilledPigmentTanks, MekanismAPI.pigmentRegistry(), items, capacity);
+                fillItemGroup(MekanismConfig.general.prefilledSlurryTanks, MekanismAPI.slurryRegistry(), items, capacity);
             }
         }
     }

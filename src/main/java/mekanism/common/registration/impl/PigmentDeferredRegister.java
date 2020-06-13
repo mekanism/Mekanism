@@ -1,7 +1,6 @@
 package mekanism.common.registration.impl;
 
 import java.util.function.Supplier;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentBuilder;
 import mekanism.common.registration.WrappedDeferredRegister;
@@ -10,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 public class PigmentDeferredRegister extends WrappedDeferredRegister<Pigment> {
 
     public PigmentDeferredRegister(String modid) {
-        super(modid, MekanismAPI.PIGMENT_REGISTRY);
+        super(modid, Pigment.class);
     }
 
     public PigmentRegistryObject<Pigment> register(String name, int tint) {

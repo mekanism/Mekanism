@@ -33,7 +33,7 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
 
     @Override
     protected IRegistryDelegate<InfuseType> getDelegate(InfuseType infuseType) {
-        if (MekanismAPI.INFUSE_TYPE_REGISTRY.getKey(infuseType) == null) {
+        if (MekanismAPI.infuseTypeRegistry().getKey(infuseType) == null) {
             MekanismAPI.logger.fatal("Failed attempt to create a InfusionStack for an unregistered InfuseType {} (type {})", infuseType.getRegistryName(),
                   infuseType.getClass().getName());
             throw new IllegalArgumentException("Cannot create a InfusionStack from an unregistered infusion type");

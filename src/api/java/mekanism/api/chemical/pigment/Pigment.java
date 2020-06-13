@@ -29,7 +29,7 @@ public class Pigment extends Chemical<Pigment> implements IPigmentProvider {
     }
 
     public static Pigment getFromRegistry(@Nullable ResourceLocation name) {
-        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_PIGMENT, MekanismAPI.PIGMENT_REGISTRY);
+        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_PIGMENT, MekanismAPI.pigmentRegistry());
     }
 
     @Override

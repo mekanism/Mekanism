@@ -38,7 +38,7 @@ public class GasStack extends ChemicalStack<Gas> {
 
     @Override
     protected IRegistryDelegate<Gas> getDelegate(Gas gas) {
-        if (MekanismAPI.GAS_REGISTRY.getKey(gas) == null) {
+        if (MekanismAPI.gasRegistry().getKey(gas) == null) {
             MekanismAPI.logger.fatal("Failed attempt to create a GasStack for an unregistered Gas {} (type {})", gas.getRegistryName(), gas.getClass().getName());
             throw new IllegalArgumentException("Cannot create a GasStack from an unregistered Gas");
         }

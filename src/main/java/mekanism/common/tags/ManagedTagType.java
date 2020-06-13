@@ -21,10 +21,10 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 public final class ManagedTagType<TYPE extends IForgeRegistryEntry<TYPE>> {
 
     private static final List<ManagedTagType<?>> managedTypes = new ArrayList<>();
-    private static final ManagedTagType<Gas> GAS = new ManagedTagType<>("gas", "gases", () -> MekanismAPI.GAS_REGISTRY, ChemicalTags.GAS::setCollection);
-    private static final ManagedTagType<InfuseType> INFUSE_TYPE = new ManagedTagType<>("infuse_type", "infuse_types", () -> MekanismAPI.INFUSE_TYPE_REGISTRY, ChemicalTags.INFUSE_TYPE::setCollection);
-    private static final ManagedTagType<Pigment> PIGMENT = new ManagedTagType<>("pigment", "pigments", () -> MekanismAPI.PIGMENT_REGISTRY, ChemicalTags.PIGMENT::setCollection);
-    private static final ManagedTagType<Slurry> SLURRY = new ManagedTagType<>("slurry", "slurries", () -> MekanismAPI.SLURRY_REGISTRY, ChemicalTags.SLURRY::setCollection);
+    private static final ManagedTagType<Gas> GAS = new ManagedTagType<>("gas", "gases", MekanismAPI::gasRegistry, ChemicalTags.GAS::setCollection);
+    private static final ManagedTagType<InfuseType> INFUSE_TYPE = new ManagedTagType<>("infuse_type", "infuse_types", MekanismAPI::infuseTypeRegistry, ChemicalTags.INFUSE_TYPE::setCollection);
+    private static final ManagedTagType<Pigment> PIGMENT = new ManagedTagType<>("pigment", "pigments", MekanismAPI::pigmentRegistry, ChemicalTags.PIGMENT::setCollection);
+    private static final ManagedTagType<Slurry> SLURRY = new ManagedTagType<>("slurry", "slurries", MekanismAPI::slurryRegistry, ChemicalTags.SLURRY::setCollection);
 
     public static List<ManagedTagType<?>> getManagedTypes() {
         return managedTypes;

@@ -1,25 +1,19 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.lwjgl.opengl.GL11;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.ValveRenderData;
@@ -33,6 +27,7 @@ import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -56,6 +51,8 @@ import net.minecraftforge.client.model.obj.OBJModel.ModelSettings;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.IForgeRegistry;
+import org.lwjgl.opengl.GL11;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
@@ -357,18 +354,10 @@ public class MekanismRenderer {
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_helmet"));
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_exoskeleton"));
 
-        for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
-            event.addSprite(gas.getIcon());
-        }
-        for (InfuseType type : MekanismAPI.INFUSE_TYPE_REGISTRY.getValues()) {
-            event.addSprite(type.getIcon());
-        }
-        for (Pigment pigment : MekanismAPI.PIGMENT_REGISTRY.getValues()) {
-            event.addSprite(pigment.getIcon());
-        }
-        for (Slurry slurry : MekanismAPI.SLURRY_REGISTRY.getValues()) {
-            event.addSprite(slurry.getIcon());
-        }
+        addChemicalSprites(event, MekanismAPI.gasRegistry());
+        addChemicalSprites(event, MekanismAPI.infuseTypeRegistry());
+        addChemicalSprites(event, MekanismAPI.pigmentRegistry());
+        addChemicalSprites(event, MekanismAPI.slurryRegistry());
 
         ModelRenderer.resetCachedModels();
         RenderFluidTank.resetCachedModels();
@@ -378,6 +367,12 @@ public class MekanismRenderer {
         RenderTeleporter.resetCachedModels();
 
         DriveArrayBakedModel.preStitch(event);
+    }
+
+    private static <CHEMICAL extends Chemical<CHEMICAL>> void addChemicalSprites(TextureStitchEvent.Pre event, IForgeRegistry<CHEMICAL> chemicalRegistry) {
+        for (Chemical<?> chemical : chemicalRegistry.getValues()) {
+            event.addSprite(chemical.getIcon());
+        }
     }
 
     @SubscribeEvent

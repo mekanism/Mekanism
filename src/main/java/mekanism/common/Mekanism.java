@@ -10,6 +10,10 @@ import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.client.ClientProxy;
 import mekanism.client.ModelLoaderRegisterHelper;
 import mekanism.common.base.IModule;
@@ -80,6 +84,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -175,11 +180,7 @@ public class Mekanism {
     public Mekanism() {
         instance = this;
         MekanismConfig.registerConfigs(ModLoadingContext.get());
-        //This line just force loads the MekanismAPI from here, to make sure empty chemicals are initialized
-        // via mekanism instead of say mekanism generators or some random addon
-        logger.debug("Mekanism Debug mode: {}", MekanismAPI.debug ? "enabled" : "disabled");
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.addListener(this::onEnergyTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onChemicalTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onLiquidTransferred);
@@ -187,16 +188,15 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::onChunkDataLoad);
         MinecraftForge.EVENT_BUS.addListener(this::onWorldLoad);
         MinecraftForge.EVENT_BUS.addListener(this::onWorldUnload);
-        modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
-        modEventBus.addListener(this::onConfigLoad);
-        modEventBus.addListener(this::imcQueue);
-
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::serverAboutToStartLowest);
         MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
-
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::onConfigLoad);
+        modEventBus.addListener(this::imcQueue);
         MekanismItems.ITEMS.register(modEventBus);
         MekanismBlocks.BLOCKS.register(modEventBus);
         MekanismFluids.FLUIDS.register(modEventBus);
@@ -208,10 +208,14 @@ public class Mekanism {
         MekanismPlacements.PLACEMENTS.register(modEventBus);
         MekanismFeatures.FEATURES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
-        MekanismInfuseTypes.INFUSE_TYPES.register(modEventBus);
-        MekanismPigments.PIGMENTS.register(modEventBus);
-        MekanismSlurries.SLURRIES.register(modEventBus);
-        MekanismGases.GASES.register(modEventBus);
+        MekanismGases.GASES.createAndRegister(modEventBus, "gas");
+        MekanismInfuseTypes.INFUSE_TYPES.createAndRegister(modEventBus, "infuse_type");
+        MekanismPigments.PIGMENTS.createAndRegister(modEventBus, "pigment");
+        MekanismSlurries.SLURRIES.createAndRegister(modEventBus, "slurry");
+        modEventBus.addGenericListener(Gas.class, this::registerGases);
+        modEventBus.addGenericListener(InfuseType.class, this::registerInfuseTypes);
+        modEventBus.addGenericListener(Pigment.class, this::registerPigments);
+        modEventBus.addGenericListener(Slurry.class, this::registerSlurries);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
 
@@ -221,6 +225,23 @@ public class Mekanism {
         DistExecutor.runWhenOn(Dist.CLIENT, ModelLoaderRegisterHelper::registerModelLoader);
     }
 
+    //Register the empty chemicals
+    private void registerGases(RegistryEvent.Register<Gas> event) {
+        event.getRegistry().register(MekanismAPI.EMPTY_GAS);
+    }
+
+    private void registerInfuseTypes(RegistryEvent.Register<InfuseType> event) {
+        event.getRegistry().register(MekanismAPI.EMPTY_INFUSE_TYPE);
+    }
+
+    private void registerPigments(RegistryEvent.Register<Pigment> event) {
+        event.getRegistry().register(MekanismAPI.EMPTY_PIGMENT);
+    }
+
+    private void registerSlurries(RegistryEvent.Register<Slurry> event) {
+        event.getRegistry().register(MekanismAPI.EMPTY_SLURRY);
+    }
+
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(Mekanism.MODID, path);
     }
@@ -228,8 +249,9 @@ public class Mekanism {
     public void setTagManager(MekanismTagManager manager) {
         if (mekanismTagManager == null) {
             mekanismTagManager = manager;
+        } else {
+            logger.warn("Mekanism Tag Manager has already been set.");
         }
-        //TODO: Else throw error
     }
 
     public MekanismTagManager getTagManager() {
@@ -239,8 +261,9 @@ public class Mekanism {
     public void setRecipeCacheManager(ReloadListener manager) {
         if (recipeCacheManager == null) {
             recipeCacheManager = manager;
+        } else {
+            logger.warn("Recipe cache manager has already been set.");
         }
-        //TODO: Else throw error
     }
 
     public ReloadListener getRecipeCacheManager() {

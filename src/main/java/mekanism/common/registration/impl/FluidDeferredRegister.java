@@ -36,9 +36,9 @@ public class FluidDeferredRegister {
 
     public FluidDeferredRegister(String modid) {
         this.modid = modid;
-        blockRegister = new DeferredRegister<>(ForgeRegistries.BLOCKS, modid);
-        fluidRegister = new DeferredRegister<>(ForgeRegistries.FLUIDS, modid);
-        itemRegister = new DeferredRegister<>(ForgeRegistries.ITEMS, modid);
+        blockRegister = DeferredRegister.create(ForgeRegistries.BLOCKS, modid);
+        fluidRegister = DeferredRegister.create(ForgeRegistries.FLUIDS, modid);
+        itemRegister = DeferredRegister.create(ForgeRegistries.ITEMS, modid);
     }
 
     public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(IChemicalConstant constants) {
