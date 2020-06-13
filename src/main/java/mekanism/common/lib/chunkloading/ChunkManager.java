@@ -1,14 +1,9 @@
 package mekanism.common.lib.chunkloading;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.Upgrade;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.tile.component.TileComponentChunkLoader;
-import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -68,26 +63,11 @@ public class ChunkManager extends WorldSavedData {
         ChunkManager savedData = getInstance(world);
         LOGGER.info("Loading {} chunks for dimension {}", savedData.chunks.size(), world.dimension.getType().getRegistryName());
         savedData.chunks.long2ObjectEntrySet().fastForEach(entry -> {
-            boolean shouldLoad = false;
-            //option 1 - for each position, find TE and get it to refresh chunks
-            for (Iterator<BlockPos> iterator = entry.getValue().iterator(); iterator.hasNext(); ) {
-                BlockPos blockPos = iterator.next();
-                //Note: We need to get the block from the world, as just getting it from the chunk may not work
-                // if the source block is in a different chunk (such as the digital miner)
-                Block block = world.getBlockState(blockPos).getBlock();
-                if (Attribute.has(block, AttributeUpgradeSupport.class) && Attribute.get(block, AttributeUpgradeSupport.class).getSupportedUpgrades().contains(Upgrade.ANCHOR)) {
-                    shouldLoad = true;
-                } else {
-                    LOGGER.warn("Block at {} was does not support Anchor Upgrades?! Block: {}", blockPos, block.getRegistryName());
-                    iterator.remove();
-                    savedData.markDirty();
-                }
-            }
-            if (shouldLoad) {
-                //option 2 - add a separate ticket (which has a timout) to let the chunk tick for a short while (chunkloader will refresh if it's able)
-                ChunkPos pos = new ChunkPos(entry.getLongKey());
-                world.getChunkProvider().registerTicket(INITIAL_LOAD_TICKET_TYPE, pos, TileComponentChunkLoader.TICKET_DISTANCE, pos);
-            }
+            //Add a separate ticket (which has a timout) to let the chunk tick for a short while (chunkloader will refresh if it's able)
+            // This is required as we cannot do any validation about tiles (or blocks) being valid still or not, due to the multithreading
+            // of world loading and some potential thread locking that exists from querying the world during load
+            ChunkPos pos = new ChunkPos(entry.getLongKey());
+            world.getChunkProvider().registerTicket(INITIAL_LOAD_TICKET_TYPE, pos, TileComponentChunkLoader.TICKET_DISTANCE, pos);
         });
     }
 
