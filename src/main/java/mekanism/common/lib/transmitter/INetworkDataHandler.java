@@ -1,12 +1,27 @@
 package mekanism.common.lib.transmitter;
 
+import javax.annotation.Nullable;
 import net.minecraft.util.text.ITextComponent;
 
 public interface INetworkDataHandler {
 
-    ITextComponent getNeededInfo();
+    @Nullable
+    default ITextComponent getNeededInfo() {
+        return null;
+    }
 
-    ITextComponent getStoredInfo();
+    @Nullable
+    default ITextComponent getStoredInfo() {
+        return null;
+    }
 
-    ITextComponent getFlowInfo();
+    @Nullable
+    default ITextComponent getFlowInfo() {
+        return null;
+    }
+
+    @Nullable
+    default Object getNetworkReaderCapacity() {
+        return null;
+    }
 }

@@ -36,11 +36,6 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
     }
 
     @Override
-    public ITextComponent getNeededInfo() {
-        return MekanismLang.NOT_APPLICABLE.translate();
-    }
-
-    @Override
     public ITextComponent getStoredInfo() {
         return MekanismLang.HEAT_NETWORK_STORED.translate(MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN, true));
     }

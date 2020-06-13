@@ -100,21 +100,6 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     }
 
     @Override
-    public ITextComponent getNeededInfo() {
-        return MekanismLang.NOT_APPLICABLE.translate();
-    }
-
-    @Override
-    public ITextComponent getStoredInfo() {
-        return MekanismLang.NOT_APPLICABLE.translate();
-    }
-
-    @Override
-    public ITextComponent getFlowInfo() {
-        return MekanismLang.NOT_APPLICABLE.translate();
-    }
-
-    @Override
     public ITextComponent getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.INVENTORY_NETWORK, transmitters.size(), getAcceptorCount());
     }

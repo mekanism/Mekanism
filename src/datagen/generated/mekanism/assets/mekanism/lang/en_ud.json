@@ -1036,7 +1036,6 @@
   "network.mekanism.mb_per_tick": "\u0287/\u15FA\u026F %s",
   "network.mekanism.mb_stored": "(\u15FA\u026F %2$s) %1$s",
   "network.mekanism.no_network": "\u029E\u0279o\u028D\u0287\u01DDN oN",
-  "network.mekanism.not_applicable": "\u01DD\uA781q\u0250\u0254\u1D09\uA781dd\u2C6F \u0287oN",
   "network_reader.mekanism.acceptors": "%s :s\u0279o\u0287d\u01DD\u0254\u0254\u2C6F* ",
   "network_reader.mekanism.border": "%s %s %1$s",
   "network_reader.mekanism.buffer": "%s :\u0279\u01DD\u025F\u025Fn\u15FA* ",

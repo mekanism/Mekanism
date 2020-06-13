@@ -10,12 +10,12 @@ import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
-import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
+import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
+import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
@@ -28,7 +28,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -60,7 +59,6 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     private final TileEntityTransmitter transmitterTile;
     private final Set<TransmissionType> supportedTransmissionTypes;
-    //TODO: Re-evaluate access levels
     public boolean redstoneReactive;
     private boolean redstonePowered;
     private boolean redstoneSet;
@@ -587,33 +585,4 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public abstract void takeShare();
-
-    public int getTransmitterNetworkSize() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().transmittersSize() : 0;
-    }
-
-    public int getTransmitterNetworkAcceptorSize() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().getAcceptorCount() : 0;
-    }
-
-    public ITextComponent getTransmitterNetworkNeeded() {
-        if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getNeededInfo();
-        }
-        return MekanismLang.NO_NETWORK.translate();
-    }
-
-    public ITextComponent getTransmitterNetworkFlow() {
-        if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getFlowInfo();
-        }
-        return MekanismLang.NO_NETWORK.translate();
-    }
-
-    public ITextComponent getTransmitterNetworkBuffer() {
-        if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getStoredInfo();
-        }
-        return MekanismLang.NO_NETWORK.translate();
-    }
 }

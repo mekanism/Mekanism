@@ -218,6 +218,11 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     }
 
     @Override
+    public Object getNetworkReaderCapacity() {
+        return getCapacityAsFloatingLong();
+    }
+
+    @Override
     public ITextComponent getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmitters.size(), getAcceptorCount());
     }

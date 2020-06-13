@@ -142,6 +142,11 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         return capacity;
     }
 
+    @Override
+    public Object getNetworkReaderCapacity() {
+        return getCapacity();
+    }
+
     protected void updateSaveShares(@Nullable TRANSMITTER triggerTransmitter) {
     }
 

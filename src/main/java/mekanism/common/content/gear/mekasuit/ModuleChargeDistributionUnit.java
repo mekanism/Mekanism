@@ -1,7 +1,7 @@
 package mekanism.common.content.gear.mekasuit;
 
-import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -10,7 +10,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
-import mekanism.common.content.transmitter.distribution.EnergySaveTarget;
+import mekanism.common.content.network.distribution.EnergySaveTarget;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.StorageUtils;

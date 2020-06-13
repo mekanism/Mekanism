@@ -375,7 +375,6 @@ public enum MekanismLang implements ILangEntry {
     HEAT_NETWORK("network", "heat"),
     ENERGY_NETWORK("network", "energy"),
     NO_NETWORK("network", "no_network"),
-    NOT_APPLICABLE("network", "not_applicable"),
     HEAT_NETWORK_STORED("network", "heat_stored"),
     HEAT_NETWORK_FLOW("network", "heat_flow"),
     HEAT_NETWORK_FLOW_EFFICIENCY("network", "heat_flow.efficiency"),

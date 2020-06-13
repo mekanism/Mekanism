@@ -790,7 +790,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.HEAT_NETWORK, "HeatNetwork");
         add(MekanismLang.ENERGY_NETWORK, "EnergyNetwork");
         add(MekanismLang.NO_NETWORK, "No Network");
-        add(MekanismLang.NOT_APPLICABLE, "Not Applicable");
         add(MekanismLang.HEAT_NETWORK_STORED, "%s above ambient");
         add(MekanismLang.HEAT_NETWORK_FLOW, "%s transferred to acceptors, %s lost to environment.");
         add(MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY, "%s transferred to acceptors, %s lost to environment, %s efficiency.");
