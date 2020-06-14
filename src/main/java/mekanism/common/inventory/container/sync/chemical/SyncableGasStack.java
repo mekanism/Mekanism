@@ -8,9 +8,9 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IEmptyGasProvider;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.common.network.container.property.chemical.GasStackPropertyData;
 import mekanism.common.network.container.property.LongPropertyData;
 import mekanism.common.network.container.property.PropertyData;
+import mekanism.common.network.container.property.chemical.GasStackPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling gas stacks

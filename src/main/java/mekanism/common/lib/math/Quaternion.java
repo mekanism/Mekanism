@@ -24,6 +24,7 @@ public class Quaternion {
         double sin = Math.sin(angle / 2.0F);
         set(axis.getX() * sin, axis.getY() * sin, axis.getZ() * sin, Math.cos(angle / 2.0F));
     }
+
     // roll, pitch, yaw
     public Quaternion(double xAngle, double yAngle, double zAngle, boolean degrees) {
         if (degrees) {

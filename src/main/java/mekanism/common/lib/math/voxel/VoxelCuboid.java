@@ -40,8 +40,8 @@ public class VoxelCuboid implements IShape {
 
     public BlockPos getCenter() {
         return new BlockPos((minPos.getX() + maxPos.getX()) / 2,
-                            (minPos.getY() + maxPos.getY()) / 2,
-                            (minPos.getZ() + maxPos.getZ()) / 2);
+              (minPos.getY() + maxPos.getY()) / 2,
+              (minPos.getZ() + maxPos.getZ()) / 2);
     }
 
     public Direction getSide(BlockPos pos) {
@@ -87,18 +87,24 @@ public class VoxelCuboid implements IShape {
 
     public int getMatches(BlockPos pos) {
         int matches = 0;
-        if (pos.getX() == minPos.getX())
+        if (pos.getX() == minPos.getX()) {
             matches++;
-        if (pos.getX() == maxPos.getX())
+        }
+        if (pos.getX() == maxPos.getX()) {
             matches++;
-        if (pos.getY() == minPos.getY())
+        }
+        if (pos.getY() == minPos.getY()) {
             matches++;
-        if (pos.getY() == maxPos.getY())
+        }
+        if (pos.getY() == maxPos.getY()) {
             matches++;
-        if (pos.getZ() == minPos.getZ())
+        }
+        if (pos.getZ() == minPos.getZ()) {
             matches++;
-        if (pos.getZ() == maxPos.getZ())
+        }
+        if (pos.getZ() == maxPos.getZ()) {
             matches++;
+        }
         return matches;
     }
 
@@ -162,9 +168,11 @@ public class VoxelCuboid implements IShape {
         public boolean isWall() {
             return this != INVALID;
         }
+
         public boolean isOnEdge() {
             return this == EDGE || this == CORNER;
         }
+
         public boolean isOnCorner() {
             return this == CORNER;
         }
@@ -190,8 +198,8 @@ public class VoxelCuboid implements IShape {
 
         public static final CuboidSide[] SIDES = values();
 
-        private static final CuboidSide[][] ORDERED = new CuboidSide[][] {{WEST, BOTTOM, NORTH}, {EAST, TOP, SOUTH}};
-        private static final CuboidSide[] OPPOSITES = new CuboidSide[] {TOP, BOTTOM, SOUTH, NORTH, EAST, WEST};
+        private static final CuboidSide[][] ORDERED = new CuboidSide[][]{{WEST, BOTTOM, NORTH}, {EAST, TOP, SOUTH}};
+        private static final CuboidSide[] OPPOSITES = new CuboidSide[]{TOP, BOTTOM, SOUTH, NORTH, EAST, WEST};
 
         private final Axis axis;
         private final Face face;
@@ -233,7 +241,7 @@ public class VoxelCuboid implements IShape {
 
     public static class CuboidBuilder {
 
-        private final BlockPosBuilder[] bounds = new BlockPosBuilder[] {new BlockPosBuilder(), new BlockPosBuilder()};
+        private final BlockPosBuilder[] bounds = new BlockPosBuilder[]{new BlockPosBuilder(), new BlockPosBuilder()};
 
         public boolean isSet(CuboidSide side) {
             return bounds[side.getFace().ordinal()].isSet(side.getAxis());

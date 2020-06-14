@@ -5,9 +5,9 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.IJEIIngredientHelper;
+import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 

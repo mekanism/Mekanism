@@ -8,9 +8,9 @@ import mekanism.api.chemical.infuse.IEmptyInfusionProvider;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.common.network.container.property.chemical.InfusionStackPropertyData;
 import mekanism.common.network.container.property.LongPropertyData;
 import mekanism.common.network.container.property.PropertyData;
+import mekanism.common.network.container.property.chemical.InfusionStackPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling infusion stacks

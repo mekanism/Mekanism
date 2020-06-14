@@ -5,8 +5,8 @@ import java.util.function.Supplier;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketDropperUse.TankType;
 
 public class GuiGasGauge extends GuiChemicalGauge<Gas, GasStack, IGasTank> {

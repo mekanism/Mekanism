@@ -250,9 +250,9 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Solar Recharging Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.SOLAR_RECHARGING_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR)

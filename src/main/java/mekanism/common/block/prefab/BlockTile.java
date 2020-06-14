@@ -105,7 +105,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
 
     @Override
     @Deprecated
-    public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull  BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
+    public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
           boolean isMoving) {
         if (!world.isRemote) {
             TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);

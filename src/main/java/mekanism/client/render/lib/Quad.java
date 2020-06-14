@@ -241,6 +241,7 @@ public class Quad {
         public Builder rect(Vec3d start, double width, double height) {
             return rect(start, width, height, 1F / 16F); // default to 1/16 scale
         }
+
         // start = bottom left
         public Builder rect(Vec3d start, double width, double height, double scale) {
             start = start.scale(scale);

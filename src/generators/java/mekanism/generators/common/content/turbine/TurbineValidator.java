@@ -1,7 +1,7 @@
 package mekanism.generators.common.content.turbine;
 
-import java.util.Set;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Set;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.math.voxel.VoxelCuboid;

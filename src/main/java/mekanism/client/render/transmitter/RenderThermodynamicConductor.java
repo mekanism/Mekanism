@@ -1,7 +1,7 @@
 package mekanism.client.render.transmitter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;

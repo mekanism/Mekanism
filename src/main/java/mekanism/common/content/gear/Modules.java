@@ -1,5 +1,6 @@
 package mekanism.common.content.gear;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -8,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;

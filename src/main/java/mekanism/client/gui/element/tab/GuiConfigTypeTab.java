@@ -2,11 +2,11 @@ package mekanism.client.gui.element.tab;
 
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.element.custom.GuiSideConfiguration;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;

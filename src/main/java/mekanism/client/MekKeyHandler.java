@@ -3,11 +3,11 @@ package mekanism.client;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.client.settings.KeyModifier;
+import org.lwjgl.glfw.GLFW;
 
 public abstract class MekKeyHandler {
 

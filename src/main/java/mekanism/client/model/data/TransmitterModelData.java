@@ -32,8 +32,9 @@ public class TransmitterModelData {
     }
 
     public boolean check(ConnectionType... types) {
-        if (types.length != 6)
+        if (types.length != 6) {
             return false;
+        }
         for (int i = 0; i < types.length; i++) {
             if (connections.get(EnumUtils.DIRECTIONS[i]) != types[i]) {
                 return false;

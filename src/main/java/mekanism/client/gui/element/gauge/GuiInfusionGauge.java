@@ -5,8 +5,8 @@ import java.util.function.Supplier;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketDropperUse.TankType;
 import net.minecraft.util.text.ITextComponent;
 

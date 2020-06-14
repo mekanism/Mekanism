@@ -1,8 +1,8 @@
 package mekanism.common.content.sps;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
 import java.util.Set;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
@@ -24,14 +24,14 @@ import net.minecraft.util.math.BlockPos;
 public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
 
     private static final VoxelCuboid BOUNDS = new VoxelCuboid(7, 7, 7);
-    private static final byte[][] ALLOWED_GRID = new byte[][] {
-        {0, 0, 1, 1, 1, 0, 0},
-        {0, 1, 2, 2, 2, 1, 0},
-        {1, 2, 2, 2, 2, 2, 1},
-        {1, 2, 2, 2, 2, 2, 1},
-        {1, 2, 2, 2, 2, 2, 1},
-        {0, 1, 2, 2, 2, 1, 0},
-        {0, 0, 1, 1, 1, 0, 0}
+    private static final byte[][] ALLOWED_GRID = new byte[][]{
+          {0, 0, 1, 1, 1, 0, 0},
+          {0, 1, 2, 2, 2, 1, 0},
+          {1, 2, 2, 2, 2, 2, 1},
+          {1, 2, 2, 2, 2, 2, 1},
+          {1, 2, 2, 2, 2, 2, 1},
+          {0, 1, 2, 2, 2, 1, 0},
+          {0, 0, 1, 1, 1, 0, 0}
     };
 
     @Override

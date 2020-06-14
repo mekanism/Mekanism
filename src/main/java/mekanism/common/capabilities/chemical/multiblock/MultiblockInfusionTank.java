@@ -38,15 +38,15 @@ public class MultiblockInfusionTank<MULTIBLOCK extends MultiblockData> extends M
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockInfusionTank<MULTIBLOCK> input(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
           LongSupplier capacity, Predicate<@NonNull InfuseType> validator) {
-      return create(multiblock, tile, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.isFormed(),
-            (stack, automationType) -> multiblock.isFormed(), validator, null);
-  }
+        return create(multiblock, tile, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.isFormed(),
+              (stack, automationType) -> multiblock.isFormed(), validator, null);
+    }
 
-  public static <MULTIBLOCK extends MultiblockData> MultiblockInfusionTank<MULTIBLOCK> output(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
-        LongSupplier capacity, Predicate<@NonNull InfuseType> validator) {
-      return create(multiblock, tile, capacity, (stack, automationType) -> multiblock.isFormed(),
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.isFormed(), validator, null);
-  }
+    public static <MULTIBLOCK extends MultiblockData> MultiblockInfusionTank<MULTIBLOCK> output(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
+          LongSupplier capacity, Predicate<@NonNull InfuseType> validator) {
+        return create(multiblock, tile, capacity, (stack, automationType) -> multiblock.isFormed(),
+              (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.isFormed(), validator, null);
+    }
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockInfusionTank<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
           LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,

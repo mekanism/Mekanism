@@ -9,8 +9,8 @@ import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.common.network.container.property.LongPropertyData;
-import mekanism.common.network.container.property.chemical.PigmentStackPropertyData;
 import mekanism.common.network.container.property.PropertyData;
+import mekanism.common.network.container.property.chemical.PigmentStackPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling pigment stacks

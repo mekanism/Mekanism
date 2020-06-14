@@ -2,6 +2,7 @@ package mekanism.common.content.blocktype;
 
 import static mekanism.common.util.VoxelShapeUtils.setShape;
 import static net.minecraft.block.Block.makeCuboidShape;
+
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.util.Direction;

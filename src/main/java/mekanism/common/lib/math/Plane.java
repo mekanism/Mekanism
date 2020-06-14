@@ -38,7 +38,7 @@ public class Plane {
 
     public Vec3d getRandomPoint(Random rand) {
         return new Vec3d(minPos.x + rand.nextDouble() * (maxPos.x - minPos.x),
-                         minPos.y + rand.nextDouble() * (maxPos.y - minPos.y),
-                         minPos.z + rand.nextDouble() * (maxPos.z - minPos.z));
+              minPos.y + rand.nextDouble() * (maxPos.y - minPos.y),
+              minPos.z + rand.nextDouble() * (maxPos.z - minPos.z));
     }
 }

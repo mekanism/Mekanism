@@ -18,6 +18,7 @@ public class StructureHelper {
      * @param structure structure to check
      * @param minBounds minimum size of the cuboid
      * @param maxBounds maximum size of the cuboid
+     *
      * @return found cuboid, or null if it doesn't exist
      */
     public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds) {
@@ -43,14 +44,15 @@ public class StructureHelper {
     }
 
     /**
-     * Fetch a cuboid with a defined amount of sides. At least two sides should be provided;
-     * otherwise it's impossible to discern the overall dimensions about the cuboid.
+     * Fetch a cuboid with a defined amount of sides. At least two sides should be provided; otherwise it's impossible to discern the overall dimensions about the
+     * cuboid.
      *
      * @param structure structure to check
      * @param minBounds minimum size of the cuboid
      * @param maxBounds maximum size of the cuboid
      * @param sides     sides to check
      * @param tolerance how many missing blocks are tolerated in the completed structure (will double count edges & triple count corners)
+     *
      * @return found cuboid, or null if it doesn't exist
      */
     public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds, EnumSet<CuboidSide> sides, int tolerance) {

@@ -1,13 +1,13 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;

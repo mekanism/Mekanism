@@ -59,9 +59,9 @@ public class QuadUtils {
             float orig = uvf.apply(quad.getVertices()[v]);
             float shifted = orig * (1 - eps) + center * eps;
             float delta = orig - shifted;
-            if(Math.abs(delta) < ep) { // not moving a fraction of a pixel
+            if (Math.abs(delta) < ep) { // not moving a fraction of a pixel
                 float centerDelta = Math.abs(orig - center);
-                if(centerDelta < 2 * ep)  { // center is closer than 2 fractions of a pixel, don't move too close
+                if (centerDelta < 2 * ep) { // center is closer than 2 fractions of a pixel, don't move too close
                     shifted = (orig + center) / 2;
                 } else { // move at least by a fraction
                     shifted = orig + (delta < 0 ? ep : -ep);

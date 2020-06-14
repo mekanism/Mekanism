@@ -1,7 +1,7 @@
 package mekanism.client.render.armor;
 
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.model.ModelScubaMask;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.LivingEntity;

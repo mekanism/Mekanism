@@ -26,8 +26,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT>, IContents
      *
      * <p>
      * <strong>IMPORTANT:</strong> This {@link ItemStack} <em>MUST NOT</em> be modified. This method is not for altering an inventory's contents. Any implementers who
-     * are
-     * able to detect modification through this method should throw an exception.
+     * are able to detect modification through this method should throw an exception.
      * </p>
      * <p>
      * <strong><em>SERIOUSLY: DO NOT MODIFY THE RETURNED ITEMSTACK</em></strong>

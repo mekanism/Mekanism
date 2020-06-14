@@ -1,9 +1,9 @@
 package mekanism.common.tile.prefab;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
@@ -102,8 +102,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (ticker >= 3)
+        if (ticker >= 3) {
             structure.tick(this);
+        }
         if (!getMultiblock().isFormed()) {
             playersUsing.forEach(PlayerEntity::closeScreen);
 

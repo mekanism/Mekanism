@@ -8,9 +8,9 @@ import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.capabilities.holder.QuantumEntangloporterConfigHolder;
 import mekanism.common.content.entangloporter.InventoryFrequency;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import net.minecraft.util.Direction;
 

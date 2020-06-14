@@ -61,8 +61,8 @@ public abstract class ChemicalTankRateLimitChemicalTank<CHEMICAL extends Chemica
     /**
      * {@inheritDoc}
      *
-     * Note: We are only patching {@link #setStackSize(long, Action)}, as both {@link #growStack(long, Action)} and {@link #shrinkStack(long, Action)} are wrapped
-     * through this method.
+     * Note: We are only patching {@link #setStackSize(long, Action)}, as both {@link #growStack(long, Action)} and {@link #shrinkStack(long, Action)} are wrapped through
+     * this method.
      */
     @Override
     public long setStackSize(long amount, Action action) {

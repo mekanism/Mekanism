@@ -32,7 +32,7 @@ public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlu
                                  JSONUtils.getJsonObject(json, JsonConstants.FLUID_INPUT);
         FluidStackIngredient fluidIngredient = FluidStackIngredient.deserialize(fluidInput);
         JsonElement slurryInput = JSONUtils.isJsonArray(json, JsonConstants.SLURRY_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.SLURRY_INPUT) :
-                               JSONUtils.getJsonObject(json, JsonConstants.SLURRY_INPUT);
+                                  JSONUtils.getJsonObject(json, JsonConstants.SLURRY_INPUT);
         SlurryStackIngredient slurryIngredient = SlurryStackIngredient.deserialize(slurryInput);
         SlurryStack output = SerializerHelper.getSlurryStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {

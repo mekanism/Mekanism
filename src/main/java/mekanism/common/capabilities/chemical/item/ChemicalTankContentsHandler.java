@@ -5,7 +5,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.merged.MergedChemicalTank;
-import mekanism.common.capabilities.merged.MergedTankContentsHandler;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicGasHandler;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicInfusionHandler;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicPigmentHandler;
@@ -15,6 +14,7 @@ import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalT
 import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalTank.InfusionTankRateLimitChemicalTank;
 import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalTank.PigmentTankRateLimitChemicalTank;
 import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalTank.SlurryTankRateLimitChemicalTank;
+import mekanism.common.capabilities.merged.MergedTankContentsHandler;
 import mekanism.common.tier.ChemicalTankTier;
 
 @ParametersAreNonnullByDefault
@@ -29,7 +29,7 @@ public class ChemicalTankContentsHandler extends MergedTankContentsHandler<Merge
     private ChemicalTankContentsHandler(ChemicalTankTier tier) {
         mergedTank = MergedChemicalTank.create(
               new GasTankRateLimitChemicalTank(tier, gasHandler = new DynamicGasHandler(side -> gasTanks, InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE,
-                          () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks))),
+                    () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks))),
               new InfusionTankRateLimitChemicalTank(tier, infusionHandler = new DynamicInfusionHandler(side -> infusionTanks, InteractPredicate.ALWAYS_TRUE,
                     InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.INFUSION_TANKS, infusionTanks))),
               new PigmentTankRateLimitChemicalTank(tier, pigmentHandler = new DynamicPigmentHandler(side -> pigmentTanks, InteractPredicate.ALWAYS_TRUE,

@@ -1,9 +1,9 @@
 package mekanism.common.command.builders;
 
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
-import com.mojang.brigadier.builder.ArgumentBuilder;
 import mekanism.common.Mekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -22,20 +22,20 @@ import net.minecraft.world.World;
 public class BuildCommand {
 
     public static final ArgumentBuilder<CommandSource, ?> COMMAND = Commands.literal("build")
-        .then(Commands.literal("remove")
-            .requires(cs -> cs.hasPermissionLevel(4))
-            .executes(ctx -> {
-                CommandSource source = ctx.getSource();
-                Entity entity = source.getEntity();
-                if (entity instanceof ServerPlayerEntity) {
-                    ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
-                    BlockRayTraceResult result = MekanismUtils.rayTrace(player, 100);
-                    if (result.getType() != RayTraceResult.Type.MISS) {
-                        destroy(player.getEntityWorld(), result.getPos());
+          .then(Commands.literal("remove")
+                .requires(cs -> cs.hasPermissionLevel(4))
+                .executes(ctx -> {
+                    CommandSource source = ctx.getSource();
+                    Entity entity = source.getEntity();
+                    if (entity instanceof ServerPlayerEntity) {
+                        ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
+                        BlockRayTraceResult result = MekanismUtils.rayTrace(player, 100);
+                        if (result.getType() != RayTraceResult.Type.MISS) {
+                            destroy(player.getEntityWorld(), result.getPos());
+                        }
                     }
-                }
-                return 0;
-            }));
+                    return 0;
+                }));
 
     public static void register(String name, StructureBuilder builder) {
         COMMAND.then(Commands.literal(name)

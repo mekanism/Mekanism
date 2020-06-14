@@ -2,11 +2,11 @@ package mekanism.client.gui;
 
 import java.util.Set;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;

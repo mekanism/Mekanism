@@ -235,7 +235,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         }
         TileEntity tile = MekanismUtils.getTileEntity(getTileWorld(), getTilePos().offset(side));
         if (canConnectMutual(side, tile) && tile instanceof TileEntityTransmitter) {
-            Transmitter<?, ?, ?> transmitter =  ((TileEntityTransmitter) tile).getTransmitter();
+            Transmitter<?, ?, ?> transmitter = ((TileEntityTransmitter) tile).getTransmitter();
             return supportsTransmissionType(transmitter) && isValidTransmitter(transmitter);
         }
         return false;

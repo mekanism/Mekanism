@@ -42,8 +42,9 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
     @Override
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         EnumColor color = getTextColor(stack);
-        if (color == null)
+        if (color == null) {
             return super.getDisplayName(stack);
+        }
         return super.getDisplayName(stack).applyTextStyle(color.textFormatting);
     }
 }

@@ -1,14 +1,5 @@
 package mekanism.client.render.armor;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -18,6 +9,15 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.obj.OBJModelCache;
@@ -108,7 +108,7 @@ public class MekaSuitArmor extends CustomArmor {
     private static List<BakedQuad> getQuads(OBJModelData data, Set<String> parts, Set<String> ledParts, QuadTransformation transform) {
         List<BakedQuad> quads = data.getBakedModel(new MekaSuitModelConfiguration(parts))
               .getQuads(null, null, Minecraft.getInstance().world.getRandom(), EmptyModelData.INSTANCE);
-        List<BakedQuad> ledQuads =  data.getBakedModel(new MekaSuitModelConfiguration(ledParts))
+        List<BakedQuad> ledQuads = data.getBakedModel(new MekaSuitModelConfiguration(ledParts))
               .getQuads(null, null, Minecraft.getInstance().world.getRandom(), EmptyModelData.INSTANCE);
         quads.addAll(QuadUtils.transformBakedQuads(ledQuads, QuadTransformation.fullbright));
         if (transform != null) {
@@ -266,8 +266,9 @@ public class MekaSuitArmor extends CustomArmor {
             return true;
         } else if (type == EquipmentSlotType.LEGS && text.contains("leggings")) {
             return true;
-        } else
+        } else {
             return type == EquipmentSlotType.FEET && text.contains("boots");
+        }
     }
 
     public static class ArmorQuads {

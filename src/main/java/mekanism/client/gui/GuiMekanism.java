@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,8 +9,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
@@ -41,6 +40,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import org.apache.commons.lang3.tuple.Pair;
 
 //TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {

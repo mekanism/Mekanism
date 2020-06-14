@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToItemStackRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
@@ -926,9 +926,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Hyper-Dense QIO Drive
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HYPER_DENSE_QIO_DRIVE)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
-                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT))
+                    TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
+                    TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.CONSTANT, Tags.Items.GEMS_DIAMOND)
               .key(Pattern.PREVIOUS, MekanismItems.BASE_QIO_DRIVE)
@@ -936,9 +936,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Time-Dilating QIO Drive
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.TIME_DILATING_QIO_DRIVE)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
-                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT))
+                    TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
+                    TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.CONSTANT, Tags.Items.GEMS_EMERALD)
               .key(Pattern.PREVIOUS, MekanismItems.HYPER_DENSE_QIO_DRIVE)
@@ -946,9 +946,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Supermassive QIO Drive
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SUPERMASSIVE_QIO_DRIVE)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
-                  TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT))
+                    TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
+                    TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.CONSTANT, MekanismTags.Items.PELLETS_ANTIMATTER)
               .key(Pattern.PREVIOUS, MekanismItems.TIME_DILATING_QIO_DRIVE)
@@ -956,9 +956,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //QIO Drive Array
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_DRIVE_ARRAY)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.GLASS, Pattern.INGOT),
-                  TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
-                  TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
+                    TripleLine.of(Pattern.INGOT, Pattern.GLASS, Pattern.INGOT),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
               ).key(Pattern.CONSTANT, MekanismBlocks.PERSONAL_CHEST)
               .key(Pattern.INGOT, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.GLASS, Tags.Items.GLASS_PANES)
@@ -968,9 +968,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //QIO Redstone Adapter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_REDSTONE_ADAPTER)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.WOOD, Pattern.INGOT),
-                  TripleLine.of(Pattern.CIRCUIT, Pattern.REDSTONE, Pattern.CIRCUIT),
-                  TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
+                    TripleLine.of(Pattern.INGOT, Pattern.WOOD, Pattern.INGOT),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.REDSTONE, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.WOOD, Blocks.REDSTONE_TORCH)
@@ -980,9 +980,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //QIO Exporter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_EXPORTER)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT),
-                  TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
-                  TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+                    TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.CONSTANT, Blocks.PISTON)
@@ -992,10 +992,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //QIO Importer
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_IMPORTER)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT),
-                  TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
-                  TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
-               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+                    TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.CONSTANT, Blocks.STICKY_PISTON)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
@@ -1004,9 +1004,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //QIO Dashboard
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QIO_DASHBOARD)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.ALLOY, Pattern.GLASS, Pattern.ALLOY),
-                  TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.GLASS, Pattern.ALLOY),
+                    TripleLine.of(Pattern.INGOT, TELEPORTATION_CORE_CHAR, Pattern.INGOT))
               ).key(Pattern.GLASS, Tags.Items.GLASS_PANES)
               .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
@@ -1015,9 +1015,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Portable QIO Dashboard
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.PORTABLE_QIO_DASHBOARD)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY),
-                  TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
-                  TripleLine.of(Pattern.ALLOY, TELEPORTATION_CORE_CHAR, Pattern.ALLOY))
+                    TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.ALLOY, TELEPORTATION_CORE_CHAR, Pattern.ALLOY))
               ).key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
               .key(Pattern.CONSTANT, MekanismBlocks.QIO_DASHBOARD)
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
@@ -1025,9 +1025,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Meka-Tool
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKA_TOOL)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.CIRCUIT, 'o', Pattern.CIRCUIT),
-                  TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
-                  TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
+                    TripleLine.of(Pattern.CIRCUIT, 'o', Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
+                    TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key('o', MekanismItems.CONFIGURATOR)
               .key(Pattern.CONSTANT, MekanismItems.ATOMIC_DISASSEMBLER)
@@ -1038,9 +1038,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //MekaSuit Helmet
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_HELMET)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
-                  TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
-                  TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
+                    TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
+                    TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
+                    TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.CONSTANT, Items.DIAMOND_HELMET)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
@@ -1050,9 +1050,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //MekaSuit Bodyarmor
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_BODYARMOR)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
-                  TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
-                  TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
+                    TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
+                    TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
+                    TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.CONSTANT, Items.DIAMOND_CHESTPLATE)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
@@ -1062,9 +1062,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //MekaSuit Pants
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_PANTS)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
-                  TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
-                  TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
+                    TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
+                    TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
+                    TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.CONSTANT, Items.DIAMOND_LEGGINGS)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
@@ -1074,9 +1074,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //MekaSuit Boots
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_BOOTS)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
-                  TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
-                  TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
+                    TripleLine.of(Pattern.PLASTIC, Pattern.CIRCUIT, Pattern.PLASTIC),
+                    TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
+                    TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.CONSTANT, Items.DIAMOND_BOOTS)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
@@ -1086,9 +1086,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //SPS Casing
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SPS_CASING)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.PLASTIC, Pattern.ALLOY, Pattern.PLASTIC),
-                  TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
-                  TripleLine.of(Pattern.PLASTIC, Pattern.ALLOY, Pattern.PLASTIC))
+                    TripleLine.of(Pattern.PLASTIC, Pattern.ALLOY, Pattern.PLASTIC),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.PLASTIC, Pattern.ALLOY, Pattern.PLASTIC))
               ).key(Pattern.CONSTANT, MekanismTags.Items.PELLETS_PLUTONIUM)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
@@ -1096,18 +1096,18 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //SPS Port
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SPS_PORT)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
-                  TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT),
-                  TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.CONSTANT, MekanismBlocks.SPS_CASING)
               .build(consumer);
         //Supercharged Coil
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SUPERCHARGED_COIL)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of('c', 'c', 'c'),
-                  TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
-                  TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY))
+                    TripleLine.of('c', 'c', 'c'),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER)
               .key('c', MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER))
@@ -1116,9 +1116,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Nutritional Liquifier
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.NUTRITIONAL_LIQUIFIER)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.REDSTONE, Pattern.CIRCUIT, Pattern.REDSTONE),
-                  TripleLine.of(Pattern.CONSTANT, Pattern.STEEL_CASING, Pattern.CONSTANT),
-                  TripleLine.of(Pattern.REDSTONE, Pattern.CIRCUIT, Pattern.REDSTONE))
+                    TripleLine.of(Pattern.REDSTONE, Pattern.CIRCUIT, Pattern.REDSTONE),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.STEEL_CASING, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.REDSTONE, Pattern.CIRCUIT, Pattern.REDSTONE))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
@@ -1127,9 +1127,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Modification Station
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.MODIFICATION_STATION)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.PLASTIC, Pattern.WOOD, Pattern.PLASTIC),
-                  TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
-                  TripleLine.of(Pattern.PLASTIC, Pattern.ALLOY, Pattern.PLASTIC))
+                    TripleLine.of(Pattern.PLASTIC, Pattern.WOOD, Pattern.PLASTIC),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.PLASTIC, Pattern.ALLOY, Pattern.PLASTIC))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.WOOD, Tags.Items.CHESTS)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
@@ -1139,9 +1139,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Antiprotonic Nucleosynthesizer
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER)
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT),
-                  TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
-                  TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT))
+                    TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_ANTIMATTER)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
@@ -1173,9 +1173,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Electrolytic Breathing Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.ELECTROLYTIC_BREATHING_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.ELECTROLYTIC_CORE)
@@ -1184,9 +1184,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Dosimeter Module
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.DOSIMETER_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.DOSIMETER)
@@ -1195,9 +1195,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Energy Module
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.ENERGY_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_INDUCTION_CELL)
@@ -1206,9 +1206,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Radiation Shielding Module
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.RADIATION_SHIELDING_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD))
@@ -1217,9 +1217,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Charge Distribution Module
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.CHARGE_DISTRIBUTION_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_INDUCTION_PROVIDER)
@@ -1228,9 +1228,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Teleportation Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.TELEPORTATION_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ULTIMATE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.TELEPORTATION_CORE)
@@ -1239,9 +1239,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Nutritional Injection Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.NUTRITIONAL_INJECTION_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.CANTEEN)
@@ -1250,9 +1250,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Silk Touch Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.SILK_TOUCH_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.WOOD, Pattern.ALLOY, Pattern.WOOD),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.WOOD, Pattern.ALLOY, Pattern.WOOD),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismBlocks.REFINED_GLOWSTONE_BLOCK)
@@ -1262,9 +1262,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Excavation Escalation Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.EXCAVATION_ESCALATION_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Items.IRON_PICKAXE)
@@ -1273,9 +1273,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Attack Amplification Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.ATTACK_AMPLIFICATION_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Items.IRON_SWORD)
@@ -1284,9 +1284,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Farming Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.FARMING_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Items.IRON_HOE)
@@ -1295,9 +1295,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Vein Mining Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.VEIN_MINING_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of('x', Pattern.ALLOY, 's'),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of('x', Pattern.ALLOY, 's'),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Items.DIAMOND_PICKAXE)
@@ -1308,9 +1308,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Vision Enhancement Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.VISION_ENHANCEMENT_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Items.EMERALD)
@@ -1319,9 +1319,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Inhalation Purification Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.INHALATION_PURIFICATION_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                  TripleLine.of(Pattern.PREVIOUS, 'o', Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+                    TripleLine.of(Pattern.PREVIOUS, 'o', Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.HAZMAT_MASK)
@@ -1331,9 +1331,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Magnetic Attraction Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.MAGNETIC_ATTRACTION_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.CIRCUIT, Pattern.ALLOY, Pattern.CIRCUIT),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.ALLOY, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Blocks.IRON_BARS)
@@ -1343,9 +1343,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Locomotive Boosting Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.LOCOMOTIVE_BOOSTING_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Items.DIAMOND_LEGGINGS)
@@ -1355,9 +1355,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Hydraulic Propulsion Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.HYDRAULIC_PROPULSION_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.FREE_RUNNERS)
@@ -1367,9 +1367,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Gravitational Modulating Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.GRAVITATIONAL_MODULATING_UNIT))
               .pattern(RecipePattern.createPattern(
-                  TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                  TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
-                  TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ULTIMATE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Items.NETHER_STAR)

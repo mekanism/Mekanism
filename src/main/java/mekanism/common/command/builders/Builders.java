@@ -57,7 +57,7 @@ public class Builders {
         public void build(World world, BlockPos start) {
             buildFrame(world, start);
             buildWalls(world, start);
-            for(int y = 1; y < 16; y++) {
+            for (int y = 1; y < 16; y++) {
                 buildInteriorLayer(world, start, y, MekanismBlocks.ULTIMATE_INDUCTION_CELL.getBlock());
             }
             buildInteriorLayer(world, start, 16, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER.getBlock());

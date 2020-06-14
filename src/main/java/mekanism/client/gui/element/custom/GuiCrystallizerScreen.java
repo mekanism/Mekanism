@@ -50,12 +50,12 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
             /*if (gasStack.getType() instanceof Slurry && !renderStack.isEmpty()) {
                 drawString(MekanismLang.GENERIC_PARENTHESIS.translate(renderStack), 33, 24, screenTextColor());
             } else {*/
-                GasToItemStackRecipe recipe = oreInfo.getRecipe();
-                if (recipe == null) {
-                    drawString(MekanismLang.NO_RECIPE.translate(), 33, 24, screenTextColor());
-                } else {
-                    drawString(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(gasStack)), 33, 24, screenTextColor());
-                }
+            GasToItemStackRecipe recipe = oreInfo.getRecipe();
+            if (recipe == null) {
+                drawString(MekanismLang.NO_RECIPE.translate(), 33, 24, screenTextColor());
+            } else {
+                drawString(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(gasStack)), 33, 24, screenTextColor());
+            }
             //}
         }
     }
@@ -80,7 +80,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
             /*if (!prevGas.isEmptyType() && prevGas instanceof Slurry && !prevGas.isIn(MekanismTags.Slurries.DIRTY)) {
                 updateStackList(((Slurry) prevGas).getOreTag());
             } else {*/
-                resetStacks();
+            resetStacks();
             //}
         }
 

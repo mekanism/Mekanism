@@ -101,11 +101,13 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData data) {
         List<BakedQuad> quads = original.getQuads(state, side, rand, data);
-        if (state == null)
+        if (state == null) {
             return quads;
+        }
         QuadsKey<T> key = createKey(new QuadsKey<>(state, side, rand, quads), data);
-        if (key == null)
+        if (key == null) {
             return quads;
+        }
         return cache.getUnchecked(key);
     }
 
@@ -140,12 +142,29 @@ public class ExtensionBakedModel<T> implements IBakedModel {
             return this;
         }
 
-        public BlockState getBlockState() { return state; }
-        public Direction getSide() { return side; }
-        public Random getRandom() { return random; }
-        public List<BakedQuad> getQuads() { return quads; }
-        public QuadTransformation getTransformation() { return transformation; }
-        public T getData() { return data; }
+        public BlockState getBlockState() {
+            return state;
+        }
+
+        public Direction getSide() {
+            return side;
+        }
+
+        public Random getRandom() {
+            return random;
+        }
+
+        public List<BakedQuad> getQuads() {
+            return quads;
+        }
+
+        public QuadTransformation getTransformation() {
+            return transformation;
+        }
+
+        public T getData() {
+            return data;
+        }
 
         @Override
         public int hashCode() {
@@ -154,15 +173,19 @@ public class ExtensionBakedModel<T> implements IBakedModel {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == this)
+            if (obj == this) {
                 return true;
-            if (!(obj instanceof QuadsKey))
+            }
+            if (!(obj instanceof QuadsKey)) {
                 return false;
+            }
             QuadsKey<?> other = (QuadsKey<?>) obj;
-            if (side != other.side || !state.equals(other.state))
+            if (side != other.side || !state.equals(other.state)) {
                 return false;
-            if (transformation != null && !transformation.equals(other.transformation))
+            }
+            if (transformation != null && !transformation.equals(other.transformation)) {
                 return false;
+            }
             return data == null || equality.test(data, (T) other.getData());
         }
     }

@@ -12,7 +12,7 @@ public class FluidRenderData extends RenderData {
     public final FluidStack fluidType;
 
     public FluidRenderData(@Nonnull FluidStack fluidType) {
-         this.fluidType = fluidType;
+        this.fluidType = fluidType;
     }
 
     @Override

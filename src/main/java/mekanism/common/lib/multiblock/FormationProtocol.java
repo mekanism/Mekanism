@@ -1,5 +1,6 @@
 package mekanism.common.lib.multiblock;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;

@@ -12,15 +12,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
 public interface QuadTransformation {
-    // down up north south west east
-    Direction[][] ROTATION_MATRIX = new Direction[][] {{ Direction.SOUTH, Direction.NORTH, Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.DOWN },
-                                                                    { Direction.NORTH, Direction.SOUTH, Direction.UP, Direction.UP, Direction.UP, Direction.UP },
-                                                                    { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST },
-                                                                    { Direction.UP, Direction.DOWN, Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST },
-                                                                    { Direction.WEST, Direction.WEST, Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH },
-                                                                    { Direction.EAST, Direction.EAST, Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH }};
 
-    QuadTransformation identity = q -> {};
+    // down up north south west east
+    Direction[][] ROTATION_MATRIX = new Direction[][]{{Direction.SOUTH, Direction.NORTH, Direction.DOWN, Direction.DOWN, Direction.DOWN, Direction.DOWN},
+                                                      {Direction.NORTH, Direction.SOUTH, Direction.UP, Direction.UP, Direction.UP, Direction.UP},
+                                                      {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST},
+                                                      {Direction.UP, Direction.DOWN, Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST},
+                                                      {Direction.WEST, Direction.WEST, Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH},
+                                                      {Direction.EAST, Direction.EAST, Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH}};
+
+    QuadTransformation identity = q -> {
+    };
 
     QuadTransformation fullbright = light(1);
 
@@ -37,14 +39,20 @@ public interface QuadTransformation {
     }
 
     static QuadTransformation rotate(Direction side) {
-        if (side == null)
+        if (side == null) {
             return identity;
+        }
         switch (side) {
-            case UP: return rotate(90, 0, 0);
-            case DOWN: return rotate(-90, 0, 0);
-            case WEST: return rotate(0, 90, 0);
-            case EAST: return rotate(0, -90, 0);
-            case SOUTH: return rotate(0, 180, 0);
+            case UP:
+                return rotate(90, 0, 0);
+            case DOWN:
+                return rotate(-90, 0, 0);
+            case WEST:
+                return rotate(0, 90, 0);
+            case EAST:
+                return rotate(0, -90, 0);
+            case SOUTH:
+                return rotate(0, 180, 0);
             default:
                 return identity;
         }
@@ -86,8 +94,9 @@ public interface QuadTransformation {
 
         @Override
         public void transform(Quad quad) {
-            if (side == null)
+            if (side == null) {
                 return;
+            }
             quad.setSide(ROTATION_MATRIX[quad.getSide().ordinal()][side.ordinal()]);
         }
 

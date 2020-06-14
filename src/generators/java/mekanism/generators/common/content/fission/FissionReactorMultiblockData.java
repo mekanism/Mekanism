@@ -1,9 +1,9 @@
 package mekanism.generators.common.content.fission;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;

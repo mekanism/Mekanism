@@ -30,14 +30,14 @@ public class BillboardingEffectRenderer {
         float spriteSize = 1F / gridSize;
         Quaternion quaternion = renderInfo.getRotation();
         new Vector3f(-1.0F, -1.0F, 0.0F).transform(quaternion);
-        Vector3f[] vertexPos = new Vector3f[] {new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),
-                                               new Vector3f(1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, -1.0F, 0.0F)};
+        Vector3f[] vertexPos = new Vector3f[]{new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),
+                                              new Vector3f(1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, -1.0F, 0.0F)};
         Vec3d pos = effect.getPos(partialTick).subtract(new Vec3d(renderPos));
-        for(int i = 0; i < 4; i++) {
-           Vector3f vector3f = vertexPos[i];
-           vector3f.transform(quaternion);
-           vector3f.mul(effect.getScale());
-           vector3f.add((float) pos.getX(), (float) pos.getY(), (float) pos.getZ());
+        for (int i = 0; i < 4; i++) {
+            Vector3f vector3f = vertexPos[i];
+            vector3f.transform(quaternion);
+            vector3f.mul(effect.getScale());
+            vector3f.add((float) pos.getX(), (float) pos.getY(), (float) pos.getZ());
         }
 
         int[] color = effect.getColor().rgbaArray();

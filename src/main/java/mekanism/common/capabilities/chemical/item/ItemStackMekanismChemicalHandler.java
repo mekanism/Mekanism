@@ -37,6 +37,7 @@ public abstract class ItemStackMekanismChemicalHandler<CHEMICAL extends Chemical
             DataHandlerUtils.readContainers(getChemicalTanks(null), ItemDataUtils.getList(stack, getNbtKey()));
         }
     }
+
     @Override
     public void onContentsChanged() {
         ItemStack stack = getStack();

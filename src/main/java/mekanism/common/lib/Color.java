@@ -20,20 +20,53 @@ public class Color {
         this((int) Math.round(r * 255D), (int) Math.round(g * 255D), (int) Math.round(b * 255D), (int) Math.round(a * 255D));
     }
 
-    public int r() { return r; }
-    public int g() { return g; }
-    public int b() { return b; }
-    public int a() { return a; }
+    public int r() {
+        return r;
+    }
 
-    public float rf() { return r / 255F; }
-    public float gf() { return g / 255F; }
-    public float bf() { return b / 255F; }
-    public float af() { return a / 255F; }
+    public int g() {
+        return g;
+    }
 
-    public double rd() { return r / 255D; }
-    public double gd() { return g / 255D; }
-    public double bd() { return b / 255D; }
-    public double ad() { return a / 255D; }
+    public int b() {
+        return b;
+    }
+
+    public int a() {
+        return a;
+    }
+
+    public float rf() {
+        return r / 255F;
+    }
+
+    public float gf() {
+        return g / 255F;
+    }
+
+    public float bf() {
+        return b / 255F;
+    }
+
+    public float af() {
+        return a / 255F;
+    }
+
+    public double rd() {
+        return r / 255D;
+    }
+
+    public double gd() {
+        return g / 255D;
+    }
+
+    public double bd() {
+        return b / 255D;
+    }
+
+    public double ad() {
+        return a / 255D;
+    }
 
     public int rgba() {
         return (r & 0xFF) << 24 | (g & 0xFF) << 16 | (b & 0xFF) << 8 | (a & 0xFF);
@@ -48,11 +81,11 @@ public class Color {
     }
 
     public int[] rgbaArray() {
-        return new int[] {r, g, b, a};
+        return new int[]{r, g, b, a};
     }
 
     public int[] argbArray() {
-        return new int[] {a, r, g, b};
+        return new int[]{a, r, g, b};
     }
 
     /**
@@ -65,9 +98,9 @@ public class Color {
      */
     public Color blend(Color to, double scale) {
         return rgbai((int) Math.round(r + (to.r - r) * scale),
-                    (int) Math.round(g + (to.g - g) * scale),
-                    (int) Math.round(b + (to.b - b) * scale),
-                    (int) Math.round(a + (to.a - a) * scale));
+              (int) Math.round(g + (to.g - g) * scale),
+              (int) Math.round(b + (to.b - b) * scale),
+              (int) Math.round(a + (to.a - a) * scale));
     }
 
     public Color blendOnto(Color baseColor) {
@@ -83,9 +116,9 @@ public class Color {
 
     public Color darken(double amount) {
         return rgbai((int) Math.round(r * (1 - amount)),
-                    (int) Math.round(g * (1 - amount)),
-                    (int) Math.round(b * (1 - amount)),
-                    a);
+              (int) Math.round(g * (1 - amount)),
+              (int) Math.round(b * (1 - amount)),
+              a);
     }
 
     public static Color blend(Color src, Color dest) {
@@ -159,10 +192,12 @@ public class Color {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        if (!(obj instanceof Color))
+        }
+        if (!(obj instanceof Color)) {
             return false;
+        }
         Color other = (Color) obj;
         return r == other.r && g == other.g && b == other.b && a == other.a;
     }

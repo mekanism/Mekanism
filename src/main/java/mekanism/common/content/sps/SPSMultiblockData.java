@@ -1,7 +1,7 @@
 package mekanism.common.content.sps;
 
-import java.util.Map;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -50,11 +50,11 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         super(tile);
 
         gasTanks.add(inputTank = MultiblockGasTank.create(this, tile, this::getMaxInputGas,
-            (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(), (stack, automationType) -> isFormed(),
-            gas -> gas == MekanismGases.POLONIUM.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
+              (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(), (stack, automationType) -> isFormed(),
+              gas -> gas == MekanismGases.POLONIUM.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
         gasTanks.add(outputTank = MultiblockGasTank.create(this, tile, () -> MAX_OUTPUT_GAS,
-            (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(),
-            gas -> gas == MekanismGases.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
+              (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(),
+              gas -> gas == MekanismGases.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
     }
 
     private long getMaxInputGas() {
@@ -107,8 +107,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     private void process(long operations) {
-        if (operations == 0)
+        if (operations == 0) {
             return;
+        }
         final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
         inputProcessed += operations;
         inputTank.shrinkStack(operations, Action.EXECUTE);
@@ -137,8 +138,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     public static int getCoilLevel(FloatingLong energy) {
-        if (energy.isZero())
+        if (energy.isZero()) {
             return 0;
+        }
         return 1 + Math.max(0, (int) ((Math.log10(energy.doubleValue()) - 3) * 1.8));
     }
 

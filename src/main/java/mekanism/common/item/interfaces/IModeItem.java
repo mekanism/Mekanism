@@ -40,7 +40,7 @@ public interface IModeItem {
 
     static boolean isModeItem(@Nonnull ItemStack stack, @Nonnull EquipmentSlotType slotType, boolean allowRadial) {
         return !stack.isEmpty() && stack.getItem() instanceof IModeItem &&
-            ((IModeItem) stack.getItem()).supportsSlotType(slotType) &&
-            (allowRadial || !(stack.getItem() instanceof IRadialModeItem));
+               ((IModeItem) stack.getItem()).supportsSlotType(slotType) &&
+               (allowRadial || !(stack.getItem() instanceof IRadialModeItem));
     }
 }

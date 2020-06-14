@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;

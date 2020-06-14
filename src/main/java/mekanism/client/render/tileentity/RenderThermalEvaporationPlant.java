@@ -50,6 +50,6 @@ public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<Ti
     @Override
     public boolean isGlobalRenderer(TileEntityThermalEvaporationBlock tile) {
         return tile.isMaster && tile.getMultiblock().isFormed() && !tile.getMultiblock().inputTank.isEmpty() &&
-              tile.getMultiblock().renderLocation != null;
+               tile.getMultiblock().renderLocation != null;
     }
 }

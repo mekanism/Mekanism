@@ -1,5 +1,7 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
@@ -8,8 +10,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;

@@ -34,7 +34,8 @@ public class Structure {
     private MultiblockData multiblockData;
     private IMultiblock<?> controller;
 
-    private Structure() {}
+    private Structure() {
+    }
 
     public Structure(IMultiblockBase node) {
         init(node);
@@ -176,8 +177,9 @@ public class Structure {
             node.resetStructure(null);
         }
         FormationProtocol.explore(node.getTilePos(), pos -> {
-            if (pos.equals(node.getTilePos()))
+            if (pos.equals(node.getTilePos())) {
                 return true;
+            }
             TileEntity tile = MekanismUtils.getTileEntity(node.getTileWorld(), pos);
             if (tile instanceof IMultiblockBase) {
                 IMultiblockBase adj = (IMultiblockBase) tile;
@@ -217,10 +219,12 @@ public class Structure {
 
     private static boolean mergeIfNecessary(IMultiblockBase node, IMultiblockBase adj, MultiblockManager<?> manager) {
         // reset the structures if they're invalid
-        if (!node.getStructure(manager).isValid())
+        if (!node.getStructure(manager).isValid()) {
             node.resetStructure(manager);
-        if (!adj.getStructure(manager).isValid())
+        }
+        if (!adj.getStructure(manager).isValid()) {
             adj.resetStructure(manager);
+        }
         // only merge if the structures are different
         if (!node.hasStructure(adj.getStructure(manager))) {
             mergeStructures(node, adj, manager);

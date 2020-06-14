@@ -64,8 +64,9 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
     @Override
     public QuadsKey<byte[]> createKey(QuadsKey<byte[]> key, IModelData data) {
         byte[] driveStatus = data.getData(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY);
-        if (driveStatus == null)
+        if (driveStatus == null) {
             return null;
+        }
         return key.data(driveStatus, Arrays.hashCode(driveStatus), Arrays::equals);
     }
 }

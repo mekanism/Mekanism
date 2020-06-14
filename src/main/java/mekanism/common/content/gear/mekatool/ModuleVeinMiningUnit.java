@@ -64,7 +64,7 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
                         if (!openSet.contains(pos)) {
                             openSet.add(pos.toImmutable());
                             BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3d(blockPos).add(0.5, 0.5, 0.5), new Vec3d(pos).add(0.5, 0.5, 0.5), 10)
-                                .size(0.015F).lifespan(12).spawn(SpawnFunction.NO_DELAY);
+                                  .size(0.015F).lifespan(12).spawn(SpawnFunction.NO_DELAY);
                             Mekanism.proxy.renderBolt(Objects.hash(blockPos, pos), bolt);
                         }
                     }

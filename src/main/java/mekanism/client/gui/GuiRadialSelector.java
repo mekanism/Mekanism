@@ -1,15 +1,15 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.lwjgl.opengl.GL11;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
+import org.lwjgl.opengl.GL11;
 
 public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> extends Screen {
 
@@ -71,8 +71,9 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
                 drawTorus(360F * (-0.5F / types.length) + angle, 360F / types.length);
 
                 float selectionAngle = angle + 90F + (360F * (0.5F / types.length));
-                while (selectionAngle < 0)
+                while (selectionAngle < 0) {
                     selectionAngle += 360F;
+                }
                 selection = types[(int) (selectionAngle * (types.length / 360F))];
                 // draw hovered selection
                 RenderSystem.color4f(0.6F, 0.6F, 0.6F, 0.7F);
@@ -130,7 +131,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     private void drawTorus(float startAngle, float sizeAngle) {
         GL11.glBegin(GL11.GL_QUAD_STRIP);
         float draws = DRAWS * (sizeAngle / 360F);
-        for(int i = 0; i <= draws; i++) {
+        for (int i = 0; i <= draws; i++) {
             double angle = Math.toRadians(startAngle + (i / DRAWS) * 360);
             GL11.glVertex2d(INNER * Math.cos(angle), INNER * Math.sin(angle));
             GL11.glVertex2d(OUTER * Math.cos(angle), OUTER * Math.sin(angle));

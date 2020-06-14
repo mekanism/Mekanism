@@ -1,5 +1,9 @@
 package mekanism.common.content.qio;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,10 +13,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;

@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.IJEIIngredientHelper;
-import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
+import mekanism.common.capabilities.merged.MergedTank;
+import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 

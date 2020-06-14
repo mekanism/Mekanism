@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.math.Vec3d;
 
 public class Vertex {
+
     // I'm not sure why Forge packs light this way but w/e
     private static final float LIGHT_PACK_FACTOR = 240F / Short.MAX_VALUE;
 
@@ -20,7 +21,8 @@ public class Vertex {
     // 0 to 1
     private float lightU, lightV;
 
-    public Vertex() {}
+    public Vertex() {
+    }
 
     public Vertex(Vec3d pos, Vec3d normal, Color color, float texU, float texV, float lightU, float lightV) {
         this.pos = pos;

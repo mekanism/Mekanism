@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
-import org.apache.commons.lang3.tuple.Pair;
 import mekanism.common.lib.Color;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class BoltEffect {
 
@@ -42,7 +42,9 @@ public class BoltEffect {
 
     /**
      * Set the amount of bolts to render for this single bolt instance.
+     *
      * @param count amount of bolts to render
+     *
      * @return this
      */
     public BoltEffect count(int count) {
@@ -52,7 +54,9 @@ public class BoltEffect {
 
     /**
      * Set the starting size (or width) of bolt segments.
+     *
      * @param size starting size of bolt segments
+     *
      * @return this
      */
     public BoltEffect size(float size) {
@@ -62,7 +66,9 @@ public class BoltEffect {
 
     /**
      * Define the {@link SpawnFunction} for this bolt effect.
+     *
      * @param spawnFunction spawn function to use
+     *
      * @return this
      */
     public BoltEffect spawn(SpawnFunction spawnFunction) {
@@ -72,7 +78,9 @@ public class BoltEffect {
 
     /**
      * Define the {@link FadeFunction} for this bolt effect.
+     *
      * @param fadeFunction fade function to use
+     *
      * @return this
      */
     public BoltEffect fade(FadeFunction fadeFunction) {
@@ -82,7 +90,9 @@ public class BoltEffect {
 
     /**
      * Define the lifespan (in ticks) of this bolt, at the end of which the bolt will expire.
+     *
      * @param lifespan lifespan to use in ticks
+     *
      * @return this
      */
     public BoltEffect lifespan(int lifespan) {
@@ -219,19 +229,16 @@ public class BoltEffect {
     }
 
     /**
-     * A SpreadFunction defines how far bolt segments can stray from the straight-line vector, based on
-     * parallel 'progress' from start to finish.
+     * A SpreadFunction defines how far bolt segments can stray from the straight-line vector, based on parallel 'progress' from start to finish.
      *
      * @author aidancbrady
-     *
      */
     public interface SpreadFunction {
 
         /** A steady linear increase in perpendicular noise. */
         SpreadFunction LINEAR_ASCENT = (progress) -> progress;
         /**
-         * A steady linear increase in perpendicular noise, followed by a steady decrease after the halfway
-         * point.
+         * A steady linear increase in perpendicular noise, followed by a steady decrease after the halfway point.
          */
         SpreadFunction LINEAR_ASCENT_DESCENT = (progress) -> (progress - Math.max(0, 2 * progress - 1)) / 0.5F;
         /** Represents a unit sine wave from 0 to PI, scaled by progress. */
@@ -244,9 +251,9 @@ public class BoltEffect {
      * A RandomFunction defines the behavior of the RNG used in various bolt generation calculations.
      *
      * @author aidancbrady
-     *
      */
     public interface RandomFunction {
+
         /** Uniform probability distribution. */
         RandomFunction UNIFORM = Random::nextFloat;
         /** Gaussian probability distribution. */
@@ -256,11 +263,9 @@ public class BoltEffect {
     }
 
     /**
-     * A SegmentSpreader defines how successive bolt segments are arranged in the bolt generation
-     * calculation, based on previous state.
+     * A SegmentSpreader defines how successive bolt segments are arranged in the bolt generation calculation, based on previous state.
      *
      * @author aidancbrady
-     *
      */
     public interface SegmentSpreader {
 
@@ -270,8 +275,7 @@ public class BoltEffect {
         SegmentSpreader NO_MEMORY = (perpendicularDist, randVec, maxDiff, scale, progress, rand) -> randVec.scale(maxDiff * rand);
 
         /**
-         * Move from where the previous segment ended by a certain memory factor. Higher memory will
-         * restrict perpendicular movement.
+         * Move from where the previous segment ended by a certain memory factor. Higher memory will restrict perpendicular movement.
          */
         static SegmentSpreader memory(float memoryFactor) {
             return (perpendicularDist, randVec, maxDiff, spreadScale, progress, rand) -> {
@@ -290,14 +294,11 @@ public class BoltEffect {
     }
 
     /**
-     * A bolt's spawn function defines its spawn behavior (handled by the renderer). A spawn function
-     * generates a lower and upper bound on a spawn delay (via getSpawnDelayBounds()), for which an
-     * intermediate value is chosen randomly from a uniform distribution (getSpawnDelay()). Spawn
-     * functions can also be defined as 'consecutive,' in which cases the Bolt Renderer will always
-     * begin rendering a new bolt instance when one expires.
+     * A bolt's spawn function defines its spawn behavior (handled by the renderer). A spawn function generates a lower and upper bound on a spawn delay (via
+     * getSpawnDelayBounds()), for which an intermediate value is chosen randomly from a uniform distribution (getSpawnDelay()). Spawn functions can also be defined as
+     * 'consecutive,' in which cases the Bolt Renderer will always begin rendering a new bolt instance when one expires.
      *
      * @author aidancbrady
-     *
      */
     public interface SpawnFunction {
 
@@ -322,8 +323,7 @@ public class BoltEffect {
         }
 
         /**
-         * Spawns bolts with a specified delay and specified noise value, which will be randomly applied at
-         * either end of the delay bounds.
+         * Spawns bolts with a specified delay and specified noise value, which will be randomly applied at either end of the delay bounds.
          */
         static SpawnFunction noise(float delay, float noise) {
             return (rand) -> Pair.of(delay - noise, delay + noise);
@@ -342,11 +342,10 @@ public class BoltEffect {
     }
 
     /**
-     * A bolt's fade function allows one to define lower and upper bounds on the bolt segments rendered
-     * based on lifespan. This allows for dynamic 'fade-in' and 'fade-out' effects.
+     * A bolt's fade function allows one to define lower and upper bounds on the bolt segments rendered based on lifespan. This allows for dynamic 'fade-in' and
+     * 'fade-out' effects.
      *
      * @author aidancbrady
-     *
      */
     public interface FadeFunction {
 
@@ -354,8 +353,7 @@ public class BoltEffect {
         FadeFunction NONE = (totalBolts, lifeScale) -> Pair.of(0, totalBolts);
 
         /**
-         * Remder bolts with a segment-by-segment 'fade' in and out, with a specified fade duration (applied
-         * to start and finish).
+         * Remder bolts with a segment-by-segment 'fade' in and out, with a specified fade duration (applied to start and finish).
          */
         static FadeFunction fade(float fade) {
             return (totalBolts, lifeScale) -> {
@@ -376,8 +374,7 @@ public class BoltEffect {
         /** How much variance is allowed in segment lengths (parallel to straight line). */
         private float parallelNoise = 0.1F;
         /**
-         * How much variance is allowed perpendicular to the straight line vector. Scaled by distance and
-         * spread function.
+         * How much variance is allowed perpendicular to the straight line vector. Scaled by distance and spread function.
          */
         private float spreadFactor = 0.1F;
 

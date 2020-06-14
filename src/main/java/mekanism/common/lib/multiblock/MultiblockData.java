@@ -185,7 +185,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> renderLocation = value);
         bounds = new VoxelCuboid(NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MIN)),
-                                 NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MAX)));
+              NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MAX)));
         if (tag.hasUniqueId(NBTConstants.INVENTORY_ID)) {
             inventoryID = tag.getUniqueId(NBTConstants.INVENTORY_ID);
         } else {
