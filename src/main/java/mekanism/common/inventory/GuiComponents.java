@@ -5,7 +5,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiComponents {
 
-    public interface IDropdownEnum {
+    public interface IDropdownEnum<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> {
 
         ITextComponent getShortName();
 
@@ -16,7 +16,7 @@ public class GuiComponents {
         }
     }
 
-    public interface IToggleEnum {
+    public interface IToggleEnum<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> {
 
         ITextComponent getTooltip();
 

@@ -1,11 +1,11 @@
 package mekanism.common.registries;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
@@ -28,7 +28,6 @@ import mekanism.common.item.ItemModule;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.item.ItemProcessedResource;
 import mekanism.common.item.ItemQIODrive;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemSeismicReader;
@@ -61,7 +60,7 @@ import net.minecraft.item.Rarity;
 public class MekanismItems {
 
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(Mekanism.MODID);
-    public static final Table<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> PROCESSED_RESOURCES = HashBasedTable.create();
+    public static final Table<ResourceType, PrimaryResource, ItemRegistryObject<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
     public static final Map<ModuleData<?>, ItemRegistryObject<? extends ItemModule>> MODULES = new LinkedHashMap<>();
 
     public static final ItemRegistryObject<ItemRobit> ROBIT = ITEMS.register("robit", ItemRobit::new);
@@ -189,7 +188,7 @@ public class MekanismItems {
         for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
             for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
                 if (resource.has(type)) {
-                    PROCESSED_RESOURCES.put(type, resource, ITEMS.register(type.getRegistryPrefix() + "_" + resource.getName(), props -> new ItemProcessedResource(props, type, resource)));
+                    PROCESSED_RESOURCES.put(type, resource, ITEMS.register(type.getRegistryPrefix() + "_" + resource.getName()));
                 }
             }
         }

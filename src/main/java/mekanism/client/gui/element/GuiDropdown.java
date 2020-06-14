@@ -10,7 +10,7 @@ import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum> extends GuiTexturedElement {
+public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends GuiTexturedElement {
 
     private final Consumer<TYPE> handler;
     private final Supplier<TYPE> curType;

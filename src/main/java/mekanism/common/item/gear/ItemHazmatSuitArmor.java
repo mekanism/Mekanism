@@ -2,6 +2,7 @@ package mekanism.common.item.gear;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -57,7 +58,7 @@ public class ItemHazmatSuitArmor extends ArmorItem {
 
         @Override
         public String getName() {
-            return "hazmat";
+            return Mekanism.MODID + ":hazmat";
         }
     }
 }

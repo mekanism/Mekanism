@@ -111,7 +111,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         container.track(SyncableBoolean.create(() -> prevOutputting, value -> prevOutputting = value));
     }
 
-    public enum FusionReactorLogic implements IReactorLogicMode, IHasTranslationKey {
+    public enum FusionReactorLogic implements IReactorLogicMode<FusionReactorLogic>, IHasTranslationKey {
         DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, new ItemStack(Items.GUNPOWDER)),
         READY(GeneratorsLang.REACTOR_LOGIC_READY, GeneratorsLang.DESCRIPTION_REACTOR_READY, new ItemStack(Items.REDSTONE)),
         CAPACITY(GeneratorsLang.REACTOR_LOGIC_CAPACITY, GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, new ItemStack(Items.REDSTONE)),

@@ -5,7 +5,6 @@ import java.util.Map;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.item.ItemProcessedResource;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
@@ -21,6 +20,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
@@ -60,7 +60,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addProcessedResources() {
-        for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<? extends ItemProcessedResource>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
+        for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             addToTag(item.getRowKey(), item.getColumnKey(), item.getValue());
 
             switch (item.getRowKey()) {

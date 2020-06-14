@@ -364,7 +364,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
     }
 
-    public enum SortDirection implements IToggleEnum {
+    public enum SortDirection implements IToggleEnum<SortDirection> {
         ASCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_up.png"), MekanismLang.LIST_SORT_ASCENDING_DESC),
         DESCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_down.png"), MekanismLang.LIST_SORT_DESCENDING_DESC);
 
@@ -391,7 +391,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
     }
 
-    public enum ListSortType implements IDropdownEnum {
+    public enum ListSortType implements IDropdownEnum<ListSortType> {
         NAME(MekanismLang.LIST_SORT_NAME, MekanismLang.LIST_SORT_NAME_DESC, (a, b) -> a.getDisplayName().compareTo(b.getDisplayName())),
         SIZE(MekanismLang.LIST_SORT_COUNT, MekanismLang.LIST_SORT_COUNT_DESC, (a, b) -> Long.compare(a.getCount(), b.getCount())),
         MOD(MekanismLang.LIST_SORT_MOD, MekanismLang.LIST_SORT_MOD_DESC, (a, b) -> a.getModID().compareTo(b.getModID()));
