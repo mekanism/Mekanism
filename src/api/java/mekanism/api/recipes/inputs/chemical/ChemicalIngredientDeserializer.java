@@ -193,7 +193,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
         return info.createStack(chemical, amount);
     }
 
-    public final JsonElement serializeStack(STACK stack) {
+    public final JsonObject serializeStack(STACK stack) {
         JsonObject json = new JsonObject();
         json.addProperty(info.getSerializationKey(), stack.getType().getRegistryName().toString());
         json.addProperty(JsonConstants.AMOUNT, stack.getAmount());

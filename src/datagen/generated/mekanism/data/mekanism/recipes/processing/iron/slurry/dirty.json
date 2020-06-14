@@ -2,7 +2,7 @@
   "type": "mekanism:dissolution",
   "itemInput": {
     "ingredient": {
-      "tag": "forge:gems/fluorite"
+      "tag": "forge:ores/iron"
     }
   },
   "gasInput": {
@@ -10,8 +10,8 @@
     "gas": "mekanism:sulfuric_acid"
   },
   "output": {
-    "gas": "mekanism:hydrofluoric_acid",
+    "slurry": "mekanism:dirty_iron",
     "amount": 1000,
-    "chemicalType": "gas"
+    "chemicalType": "slurry"
   }
 }

@@ -170,23 +170,37 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         }
         // Ore
         // from dust
-        CombinerRecipeBuilder.combining(ItemStackIngredient.from(dustTag, 8), ItemStackIngredient.from(Tags.Items.COBBLESTONE), new ItemStack(ore))
-              .build(consumer, Mekanism.rl(basePath + "ore/from_dust"));
+        CombinerRecipeBuilder.combining(
+              ItemStackIngredient.from(dustTag, 8),
+              ItemStackIngredient.from(Tags.Items.COBBLESTONE),
+              new ItemStack(ore)
+        ).build(consumer, Mekanism.rl(basePath + "ore/from_dust"));
         // Shard
         // from crystal
-        ItemStackGasToItemStackRecipeBuilder.injecting(ItemStackIngredient.from(crystalTag), GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1), shard.getItemStack())
-              .build(consumer, Mekanism.rl(basePath + "shard/from_crystal"));
+        ItemStackGasToItemStackRecipeBuilder.injecting(
+              ItemStackIngredient.from(crystalTag),
+              GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
+              shard.getItemStack()
+        ).build(consumer, Mekanism.rl(basePath + "shard/from_crystal"));
         // from ore
-        ItemStackGasToItemStackRecipeBuilder.injecting(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1), shard.getItemStack(4))
-              .build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
+        ItemStackGasToItemStackRecipeBuilder.injecting(
+              ItemStackIngredient.from(resource.getOreTag()),
+              GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
+              shard.getItemStack(4)
+        ).build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
         // Slurry
         // clean
-        FluidSlurryToSlurryRecipeBuilder.washing(FluidStackIngredient.from(FluidTags.WATER, 5), SlurryStackIngredient.from(slurry.getDirtySlurry(), 1), slurry.getCleanSlurry().getStack(1))
-              .build(consumer, Mekanism.rl(basePath + "slurry/clean"));
+        FluidSlurryToSlurryRecipeBuilder.washing(
+              FluidStackIngredient.from(FluidTags.WATER, 5),
+              SlurryStackIngredient.from(slurry.getDirtySlurry(), 1),
+              slurry.getCleanSlurry().getStack(1)
+        ).build(consumer, Mekanism.rl(basePath + "slurry/clean"));
         // dirty
-        //TODO - V10: Figure out how to handle slurries for recipes
-        /*ItemStackChemicalToChemicalRecipeBuilder.dissolution(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1), slurry.getDirtySlurry().getStack(1_000))
-              .build(consumer, Mekanism.rl(basePath + "slurry/dirty"));*/
+        ItemStackChemicalToChemicalRecipeBuilder.dissolution(
+              ItemStackIngredient.from(resource.getOreTag()),
+              GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
+              slurry.getDirtySlurry().getStack(1_000)
+        ).build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
     }
 
     private void addCoalOreProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {

@@ -9,9 +9,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
@@ -78,14 +80,31 @@ public class SerializerHelper {
         return ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, key));
     }
 
-    public static GasStack getGasStack(@Nonnull JsonObject json, @Nonnull String key) {
-        validateKey(json, key);
-        return deserializeGas(JSONUtils.getJsonObject(json, key));
-    }
-
     public static FluidStack getFluidStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
         return deserializeFluid(JSONUtils.getJsonObject(json, key));
+    }
+
+    public static ChemicalStack<?> getBoxedChemicalStack(@Nonnull JsonObject json, @Nonnull String key) {
+        validateKey(json, key);
+        JsonObject jsonObject = JSONUtils.getJsonObject(json, key);
+        ChemicalType chemicalType = getChemicalType(jsonObject);
+        if (chemicalType == ChemicalType.GAS) {
+            return deserializeGas(jsonObject);
+        } else if (chemicalType == ChemicalType.INFUSION) {
+            return deserializeInfuseType(jsonObject);
+        } else if (chemicalType == ChemicalType.PIGMENT) {
+            return deserializePigment(jsonObject);
+        } else if (chemicalType == ChemicalType.SLURRY) {
+            return deserializeSlurry(jsonObject);
+        } else {
+            throw new IllegalStateException("Unknown chemical type");
+        }
+    }
+
+    public static GasStack getGasStack(@Nonnull JsonObject json, @Nonnull String key) {
+        validateKey(json, key);
+        return deserializeGas(JSONUtils.getJsonObject(json, key));
     }
 
     public static InfusionStack getInfusionStack(@Nonnull JsonObject json, @Nonnull String key) {
@@ -164,10 +183,6 @@ public class SerializerHelper {
         return json;
     }
 
-    public static JsonElement serializeGasStack(@Nonnull GasStack stack) {
-        return ChemicalIngredientDeserializer.GAS.serializeStack(stack);
-    }
-
     public static JsonElement serializeFluidStack(@Nonnull FluidStack stack) {
         JsonObject json = new JsonObject();
         json.addProperty(JsonConstants.FLUID, stack.getFluid().getRegistryName().toString());
@@ -178,15 +193,37 @@ public class SerializerHelper {
         return json;
     }
 
-    public static JsonElement serializeInfusionStack(@Nonnull InfusionStack stack) {
+    public static JsonElement serializeBoxedChemicalStack(@Nonnull BoxedChemicalStack stack) {
+        JsonObject json;
+        ChemicalType chemicalType = stack.getChemicalType();
+        if (chemicalType == ChemicalType.GAS) {
+            json = serializeGasStack((GasStack) stack.getChemicalStack());
+        } else if (chemicalType == ChemicalType.INFUSION) {
+            json = serializeInfusionStack((InfusionStack) stack.getChemicalStack());
+        } else if (chemicalType == ChemicalType.PIGMENT) {
+            json = serializePigmentStack((PigmentStack) stack.getChemicalStack());
+        } else if (chemicalType == ChemicalType.SLURRY) {
+            json = serializeSlurryStack((SlurryStack) stack.getChemicalStack());
+        } else {
+            throw new IllegalStateException("Unknown chemical type");
+        }
+        json.addProperty(JsonConstants.CHEMICAL_TYPE, chemicalType.getName());
+        return json;
+    }
+
+    public static JsonObject serializeGasStack(@Nonnull GasStack stack) {
+        return ChemicalIngredientDeserializer.GAS.serializeStack(stack);
+    }
+
+    public static JsonObject serializeInfusionStack(@Nonnull InfusionStack stack) {
         return ChemicalIngredientDeserializer.INFUSION.serializeStack(stack);
     }
 
-    public static JsonElement serializePigmentStack(@Nonnull PigmentStack stack) {
+    public static JsonObject serializePigmentStack(@Nonnull PigmentStack stack) {
         return ChemicalIngredientDeserializer.PIGMENT.serializeStack(stack);
     }
 
-    public static JsonElement serializeSlurryStack(@Nonnull SlurryStack stack) {
+    public static JsonObject serializeSlurryStack(@Nonnull SlurryStack stack) {
         return ChemicalIngredientDeserializer.SLURRY.serializeStack(stack);
     }
 

@@ -5,44 +5,37 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import net.minecraft.util.ResourceLocation;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemStackChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipeBuilder<ItemStackChemicalToChemicalRecipeBuilder<CHEMICAL, STACK, INGREDIENT>> {
+public class ItemStackChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<ItemStackChemicalToChemicalRecipeBuilder> {
 
-    private final ChemicalIngredientDeserializer<CHEMICAL, STACK, INGREDIENT> outputSerializer;
     private final ItemStackIngredient itemInput;
-    private final INGREDIENT chemicalInput;
-    private final STACK output;
+    private final GasStackIngredient gasInput;
+    private final BoxedChemicalStack output;
 
-    protected ItemStackChemicalToChemicalRecipeBuilder(ResourceLocation serializerName, ItemStackIngredient itemInput, INGREDIENT chemicalInput, STACK output,
-          ChemicalIngredientDeserializer<CHEMICAL, STACK, INGREDIENT> outputSerializer) {
+    protected ItemStackChemicalToChemicalRecipeBuilder(ResourceLocation serializerName, ItemStackIngredient itemInput, GasStackIngredient gasInput,
+          ChemicalStack<?> output) {
         super(serializerName);
         this.itemInput = itemInput;
-        this.chemicalInput = chemicalInput;
-        this.output = output;
-        this.outputSerializer = outputSerializer;
+        this.gasInput = gasInput;
+        this.output = BoxedChemicalStack.box(output);
     }
 
-    public static ItemStackChemicalToChemicalRecipeBuilder<Gas, GasStack, GasStackIngredient> dissolution(ItemStackIngredient itemInput, GasStackIngredient gasInput,
-          GasStack output) {
+    public static ItemStackChemicalToChemicalRecipeBuilder dissolution(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
         if (output.isEmpty()) {
-            throw new IllegalArgumentException("This dissolution chamber recipe requires a non empty gas output.");
+            throw new IllegalArgumentException("This dissolution chamber recipe requires a non empty chemical output.");
         }
-        return new ItemStackChemicalToChemicalRecipeBuilder<>(mekSerializer("dissolution"), itemInput, gasInput, output, ChemicalIngredientDeserializer.GAS);
+        return new ItemStackChemicalToChemicalRecipeBuilder(mekSerializer("dissolution"), itemInput, gasInput, output);
     }
 
     @Override
@@ -59,9 +52,8 @@ public class ItemStackChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<
         @Override
         public void serialize(@Nonnull JsonObject json) {
             json.add(JsonConstants.ITEM_INPUT, itemInput.serialize());
-            //TODO - V10: Either make this a param, or change it to CHEMICAL_INPUT
-            json.add(JsonConstants.GAS_INPUT, chemicalInput.serialize());
-            json.add(JsonConstants.OUTPUT, outputSerializer.serializeStack(output));
+            json.add(JsonConstants.GAS_INPUT, gasInput.serialize());
+            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeBoxedChemicalStack(output));
         }
     }
 }

@@ -52,7 +52,7 @@ import mekanism.client.jei.machine.ElectrolysisRecipeCategory;
 import mekanism.client.jei.machine.FluidSlurryToSlurryRecipeCategory;
 import mekanism.client.jei.machine.FluidToFluidRecipeCategory;
 import mekanism.client.jei.machine.GasToGasRecipeCategory;
-import mekanism.client.jei.machine.ItemStackGasToGasRecipeCategory;
+import mekanism.client.jei.machine.ChemicalDissolutionRecipeCategory;
 import mekanism.client.jei.machine.ItemStackGasToItemStackRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToGasRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
@@ -207,7 +207,7 @@ public class MekanismJEI implements IModPlugin {
         IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
 
         registry.addRecipeCategories(new ChemicalCrystallizerRecipeCategory(guiHelper));
-        registry.addRecipeCategories(new ItemStackGasToGasRecipeCategory(guiHelper));
+        registry.addRecipeCategories(new ChemicalDissolutionRecipeCategory(guiHelper));
         registry.addRecipeCategories(new ChemicalInfuserRecipeCategory(guiHelper));
         registry.addRecipeCategories(new FluidSlurryToSlurryRecipeCategory(guiHelper));
         registry.addRecipeCategories(new ElectrolysisRecipeCategory(guiHelper));

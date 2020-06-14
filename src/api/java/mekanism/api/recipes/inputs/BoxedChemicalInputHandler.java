@@ -1,5 +1,7 @@
 package mekanism.api.recipes.inputs;
 
+import java.util.Objects;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalType;
@@ -17,12 +19,13 @@ import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 
+@ParametersAreNonnullByDefault
 public class BoxedChemicalInputHandler {
 
     private final MergedChemicalTank chemicalTank;
 
     public BoxedChemicalInputHandler(MergedChemicalTank chemicalTank) {
-        this.chemicalTank = chemicalTank;
+        this.chemicalTank = Objects.requireNonNull(chemicalTank);
     }
 
     public BoxedChemicalStack getInput() {

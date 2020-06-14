@@ -107,6 +107,19 @@ public class IngredientHelper {
         return addAsConversion(output, (int) outputAmount);
     }
 
+    public boolean addAsConversion(ChemicalStack<?> stack) {
+        if (stack instanceof GasStack) {
+            return addAsConversion((GasStack) stack);
+        } else if (stack instanceof InfusionStack) {
+            return addAsConversion((InfusionStack) stack);
+        } else if (stack instanceof PigmentStack) {
+            return addAsConversion((PigmentStack) stack);
+        } else if (stack instanceof SlurryStack) {
+            return addAsConversion((SlurryStack) stack);
+        }
+        return false;
+    }
+
     public boolean addAsConversion(GasStack stack) {
         return addAsConversion(NSSGas.createGas(stack), stack.getAmount());
     }

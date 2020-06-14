@@ -10,13 +10,14 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IgnoredIInventory;
+import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
@@ -28,7 +29,6 @@ import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
-import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.impl.SmeltingIRecipe;
@@ -68,7 +68,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
 
     public static final MekanismRecipeType<ChemicalCrystallizerRecipe> CRYSTALLIZING = create("crystallizing");
 
-    public static final MekanismRecipeType<ItemStackGasToGasRecipe> DISSOLUTION = create("dissolution");
+    public static final MekanismRecipeType<ChemicalDissolutionRecipe> DISSOLUTION = create("dissolution");
 
     public static final MekanismRecipeType<ItemStackGasToItemStackRecipe> COMPRESSING = create("compressing");
     public static final MekanismRecipeType<ItemStackGasToItemStackRecipe> PURIFYING = create("purifying");

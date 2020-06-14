@@ -1,8 +1,8 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.ItemStackGasToGasRecipe;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -13,21 +13,21 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 
-public class ItemStackGasToGasIRecipe extends ItemStackGasToGasRecipe {
+public class ChemicalDissolutionIRecipe extends ChemicalDissolutionRecipe {
 
-    public ItemStackGasToGasIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, GasStack output) {
+    public ChemicalDissolutionIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
         super(id, itemInput, gasInput, output);
     }
 
     @Nonnull
     @Override
-    public IRecipeType<ItemStackGasToGasRecipe> getType() {
+    public IRecipeType<ChemicalDissolutionRecipe> getType() {
         return MekanismRecipeType.DISSOLUTION;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ItemStackGasToGasRecipe> getSerializer() {
+    public IRecipeSerializer<ChemicalDissolutionRecipe> getSerializer() {
         return MekanismRecipeSerializers.DISSOLUTION.getRecipeSerializer();
     }
 

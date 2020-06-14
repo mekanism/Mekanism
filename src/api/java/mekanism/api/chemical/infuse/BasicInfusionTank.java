@@ -10,6 +10,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.inventory.AutomationType;
 
 @ParametersAreNonnullByDefault
@@ -49,6 +50,13 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
         }
         Objects.requireNonNull(validator, "Infuse type validity check cannot be null");
         return new BasicInfusionTank(capacity, notExternal, alwaysTrueBi, validator, listener);
+    }
+
+    public static BasicInfusionTank ejectOutput(long capacity, @Nullable IContentsListener listener) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
+        return new BasicInfusionTank(capacity, internalOnly, internalOnly, alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
     }
 
     public static BasicInfusionTank create(long capacity, Predicate<@NonNull InfuseType> canExtract, Predicate<@NonNull InfuseType> canInsert,

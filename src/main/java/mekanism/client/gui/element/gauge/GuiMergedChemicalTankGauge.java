@@ -27,6 +27,10 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
 
     private ITextComponent label;
 
+    public GuiMergedChemicalTankGauge(Supplier<MergedChemicalTank> mergedTankSupplier, Supplier<HANDLER> handlerSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
+        this(mergedTankSupplier, handlerSupplier, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
+    }
+
     public GuiMergedChemicalTankGauge(Supplier<MergedChemicalTank> mergedTankSupplier, Supplier<HANDLER> handlerSupplier, GaugeType type, IGuiWrapper gui, int x, int y,
           int width, int height) {
         super(type, gui, x, y, width, height);

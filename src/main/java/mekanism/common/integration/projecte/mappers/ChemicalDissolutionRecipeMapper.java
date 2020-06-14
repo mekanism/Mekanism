@@ -3,7 +3,8 @@ package mekanism.common.integration.projecte.mappers;
 import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.ItemStackGasToGasRecipe;
+import mekanism.api.chemical.merged.BoxedChemicalStack;
+import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -17,11 +18,11 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 
 @RecipeTypeMapper
-public class ItemStackGasToGasRecipeMapper implements IRecipeTypeMapper {
+public class ChemicalDissolutionRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public String getName() {
-        return "MekItemStackGasToGas";
+        return "MekDissolution";
     }
 
     @Override
@@ -36,25 +37,25 @@ public class ItemStackGasToGasRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-        if (!(iRecipe instanceof ItemStackGasToGasRecipe)) {
+        if (!(iRecipe instanceof ChemicalDissolutionRecipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        ItemStackGasToGasRecipe recipe = (ItemStackGasToGasRecipe) iRecipe;
+        ChemicalDissolutionRecipe recipe = (ChemicalDissolutionRecipe) iRecipe;
         List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
-        List<@NonNull GasStack> gasRepresentations = recipe.getChemicalInput().getRepresentations();
+        List<@NonNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
         long gasMultiplier = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
         for (GasStack gasRepresentation : gasRepresentations) {
             NSSGas nssGas = NSSGas.createGas(gasRepresentation);
             long gasAmount = gasRepresentation.getAmount() * gasMultiplier;
             for (ItemStack itemRepresentation : itemRepresentations) {
-                GasStack output = recipe.getOutput(itemRepresentation, gasRepresentation);
+                BoxedChemicalStack output = recipe.getOutput(itemRepresentation, gasRepresentation);
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(itemRepresentation);
                     ingredientHelper.put(nssGas, gasAmount);
-                    if (ingredientHelper.addAsConversion(output)) {
+                    if (ingredientHelper.addAsConversion(output.getChemicalStack())) {
                         handled = true;
                     }
                 }

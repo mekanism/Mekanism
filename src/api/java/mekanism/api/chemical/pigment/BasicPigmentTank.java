@@ -10,6 +10,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.inventory.AutomationType;
 
 @ParametersAreNonnullByDefault
@@ -49,6 +50,13 @@ public class BasicPigmentTank extends BasicChemicalTank<Pigment, PigmentStack> i
         }
         Objects.requireNonNull(validator, "Pigment validity check cannot be null");
         return new BasicPigmentTank(capacity, notExternal, alwaysTrueBi, validator, listener);
+    }
+
+    public static BasicPigmentTank ejectOutput(long capacity, @Nullable IContentsListener listener) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
+        return new BasicPigmentTank(capacity, internalOnly, internalOnly, alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
     }
 
     public static BasicPigmentTank create(long capacity, Predicate<@NonNull Pigment> canExtract, Predicate<@NonNull Pigment> canInsert,

@@ -39,7 +39,6 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         return new ChemicalTankHelper<CHEMICAL, STACK, TANK>(new ChemicalTankHolder<>(facingSupplier));
     }
 
-    //TODO - V10: Go through all of these and make sure we have side configs setup
     public static ChemicalTankHelper<Gas, GasStack, IGasTank> forSideGasWithConfig(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
         return new ChemicalTankHelper<>(new ConfigGasTankHolder(facingSupplier, configSupplier));
     }

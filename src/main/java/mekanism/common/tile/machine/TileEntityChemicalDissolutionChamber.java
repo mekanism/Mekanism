@@ -9,14 +9,26 @@ import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.recipes.ItemStackGasToGasRecipe;
+import mekanism.api.chemical.infuse.BasicInfusionTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.merged.MergedChemicalTank;
+import mekanism.api.chemical.pigment.BasicPigmentTank;
+import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.BasicSlurryTank;
+import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ItemStackGasToGasCachedRecipe;
+import mekanism.api.recipes.cache.ChemicalDissolutionCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
-import mekanism.api.recipes.outputs.IOutputHandler;
-import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.recipes.outputs.BoxedChemicalOutputHandler;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -28,6 +40,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
@@ -39,32 +52,35 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMachine<ItemStackGasToGasRecipe> {
+public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMachine<ChemicalDissolutionRecipe> {
 
     public static final long MAX_GAS = 10_000;
     public static final int BASE_INJECT_USAGE = 1;
     public static final int BASE_TICKS_REQUIRED = 100;
     public BasicGasTank injectTank;
-    public BasicGasTank outputTank;
+    public MergedChemicalTank outputTank;
     public double injectUsage = BASE_INJECT_USAGE;
     public long injectUsageThisTick;
 
-    private final IOutputHandler<@NonNull GasStack> outputHandler;
+    private final BoxedChemicalOutputHandler outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
     private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer;
     private GasInventorySlot gasInputSlot;
     private InputInventorySlot inputSlot;
-    private GasInventorySlot outputSlot;
+    private MergedChemicalInventorySlot<MergedChemicalTank> outputSlot;
     private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalDissolutionChamber() {
         super(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, BASE_TICKS_REQUIRED);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT,
+              TransmissionType.SLURRY, TransmissionType.ENERGY);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, gasInputSlot, energySlot);
-        configComponent.setupIOConfig(TransmissionType.GAS, injectTank, outputTank, RelativeSide.RIGHT)
-              .setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.GAS, injectTank, outputTank.getGasTank(), RelativeSide.RIGHT).setEjecting(true);
+        configComponent.setupOutputConfig(TransmissionType.INFUSION, outputTank.getInfusionTank(), RelativeSide.RIGHT);
+        configComponent.setupOutputConfig(TransmissionType.PIGMENT, outputTank.getPigmentTank(), RelativeSide.RIGHT);
+        configComponent.setupOutputConfig(TransmissionType.SLURRY, outputTank.getSlurryTank(), RelativeSide.RIGHT);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
@@ -72,15 +88,49 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
         gasInputHandler = InputHelper.getInputHandler(injectTank);
-        outputHandler = OutputHelper.getOutputHandler(outputTank);
+        outputHandler = new BoxedChemicalOutputHandler(outputTank);
+    }
+
+    @Override
+    protected void presetVariables() {
+        outputTank = MergedChemicalTank.create(
+              BasicGasTank.ejectOutput(MAX_GAS, this),
+              BasicInfusionTank.ejectOutput(MAX_GAS, this),
+              BasicPigmentTank.ejectOutput(MAX_GAS, this),
+              BasicSlurryTank.ejectOutput(MAX_GAS, this)
+        );
     }
 
     @Nonnull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(injectTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getChemicalInput().testType(gas)), this));
-        builder.addTank(outputTank = BasicGasTank.ejectOutput(MAX_GAS, this));
+        builder.addTank(injectTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
+        builder.addTank(outputTank.getGasTank());
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
+        ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(outputTank.getInfusionTank());
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
+        ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(outputTank.getPigmentTank());
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
+        ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurryWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(outputTank.getSlurryTank());
         return builder.build();
     }
 
@@ -98,7 +148,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(injectTank, this::getWorld, this, 8, 65));
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 28, 36));
-        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 152, 25));
+        builder.addSlot(outputSlot = MergedChemicalInventorySlot.drain(outputTank, this, 152, 25));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 152, 5));
         gasInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
@@ -110,7 +160,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         gasInputSlot.fillTankOrConvert();
-        outputSlot.drainTank();
+        outputSlot.drainChemicalTanks();
         injectUsageThisTick = StatUtils.inversePoisson(injectUsage);
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
@@ -120,13 +170,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     @Nonnull
     @Override
-    public MekanismRecipeType<ItemStackGasToGasRecipe> getRecipeType() {
+    public MekanismRecipeType<ChemicalDissolutionRecipe> getRecipeType() {
         return MekanismRecipeType.DISSOLUTION;
     }
 
     @Nullable
     @Override
-    public ItemStackGasToGasRecipe getRecipe(int cacheIndex) {
+    public ChemicalDissolutionRecipe getRecipe(int cacheIndex) {
         ItemStack stack = itemInputHandler.getInput();
         if (stack.isEmpty()) {
             return null;
@@ -140,8 +190,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     @Nullable
     @Override
-    public CachedRecipe<ItemStackGasToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToGasRecipe recipe, int cacheIndex) {
-        return new ItemStackGasToGasCachedRecipe(recipe, itemInputHandler, gasInputHandler, () -> injectUsageThisTick, outputHandler)
+    public CachedRecipe<ChemicalDissolutionRecipe> createNewCachedRecipe(@Nonnull ChemicalDissolutionRecipe recipe, int cacheIndex) {
+        return new ChemicalDissolutionCachedRecipe(recipe, itemInputHandler, gasInputHandler, () -> injectUsageThisTick, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

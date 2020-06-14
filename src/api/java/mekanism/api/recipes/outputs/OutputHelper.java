@@ -123,7 +123,7 @@ public class OutputHelper {
         };
     }
 
-    private static <STACK extends ChemicalStack<?>> void handleOutput(IChemicalTank<?, STACK> tank, STACK toOutput,
+    public static <STACK extends ChemicalStack<?>> void handleOutput(IChemicalTank<?, STACK> tank, STACK toOutput,
           int operations) {
         if (operations == 0) {
             //This should not happen
@@ -154,7 +154,7 @@ public class OutputHelper {
         inventorySlot.insertItem(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static <STACK extends ChemicalStack<?>> int operationsRoomFor(IChemicalTank<?, STACK> tank, STACK toOutput, int currentMax) {
+    public static <STACK extends ChemicalStack<?>> int operationsRoomFor(IChemicalTank<?, STACK> tank, STACK toOutput, int currentMax) {
         if (currentMax <= 0 || toOutput.isEmpty()) {
             //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;
