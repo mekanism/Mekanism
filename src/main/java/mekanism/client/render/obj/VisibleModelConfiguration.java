@@ -15,7 +15,7 @@ public class VisibleModelConfiguration extends WrapperModelConfiguration {
     }
 
     @Override
-    public boolean getPartVisibility(IModelGeometryPart part, boolean fallback) {
+    public boolean getPartVisibility(@Nonnull IModelGeometryPart part, boolean fallback) {
         //Ignore fallback as we always have a true or false answer
         return getPartVisibility(part);
     }

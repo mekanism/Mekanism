@@ -512,7 +512,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         autoMode = nbtTags.getBoolean(NBTConstants.AUTO);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);

@@ -26,7 +26,7 @@ public class GuiTextField extends GuiRelativeElement {
     public static final IntSupplier SCREEN_COLOR = () -> Color.packOpaque(MekanismConfig.client.guiScreenTextColor.get());
     public static final IntSupplier DARK_SCREEN_COLOR = () -> Color.argb(SCREEN_COLOR.getAsInt()).darken(0.4).argb();
 
-    private TextFieldWidget textField;
+    private final TextFieldWidget textField;
     private Runnable enterHandler;
     private CharPredicate inputValidator;
     private Consumer<String> responder;

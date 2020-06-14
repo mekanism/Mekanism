@@ -8,10 +8,10 @@ import net.minecraft.nbt.CompoundNBT;
 
 public class ModuleConfigItem<TYPE> {
 
-    private Module module;
-    private String name;
-    private ILangEntry description;
-    private ConfigData<TYPE> data;
+    private final Module module;
+    private final String name;
+    private final ILangEntry description;
+    private final ConfigData<TYPE> data;
 
     public ModuleConfigItem(Module module, String name, ILangEntry description, ConfigData<TYPE> data, TYPE def) {
         this.module = module;
@@ -114,9 +114,9 @@ public class ModuleConfigItem<TYPE> {
 
     public static class EnumData<TYPE extends Enum<TYPE> & IHasTextComponent> implements ConfigData<TYPE> {
 
-        private Class<TYPE> enumClass;
+        private final Class<TYPE> enumClass;
         private TYPE value;
-        private int selectableCount;
+        private final int selectableCount;
 
         public EnumData(Class<TYPE> enumClass) {
             this(enumClass, enumClass.getEnumConstants().length);

@@ -43,13 +43,13 @@ import net.minecraft.util.math.RayTraceResult.Type;
 @ParametersAreNonnullByDefault
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
 
-    private static Map<Direction, Map<DiversionControl, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
+    private static final Map<Direction, Map<DiversionControl, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static TextureAtlasSprite gunpowderIcon;
     private static TextureAtlasSprite torchOffIcon;
     private static TextureAtlasSprite torchOnIcon;
-    private ModelTransporterBox modelBox = new ModelTransporterBox();
-    private ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
-    private EntityRenderer<? super ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getRenderer(entityItem);
+    private final ModelTransporterBox modelBox = new ModelTransporterBox();
+    private final ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
+    private final EntityRenderer<? super ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getRenderer(entityItem);
 
     public RenderLogisticalTransporter(TileEntityRendererDispatcher renderer) {
         super(renderer);

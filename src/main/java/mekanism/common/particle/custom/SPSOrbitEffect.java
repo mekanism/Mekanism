@@ -14,14 +14,14 @@ public class SPSOrbitEffect extends CustomEffect {
 
     private static final ResourceLocation TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "sps_orbit_effect.png");
 
-    private SPSMultiblockData multiblock;
+    private final SPSMultiblockData multiblock;
 
-    private Vec3d center;
-    private Vec3d start;
-    private Pos3D axis;
+    private final Vec3d center;
+    private final Vec3d start;
+    private final Pos3D axis;
 
     private float speed = 0.5F;
-    private float radius = 2F;
+    private final float radius;
 
     public SPSOrbitEffect(SPSMultiblockData multiblock, Vec3d center) {
         super(TEXTURE, 1);

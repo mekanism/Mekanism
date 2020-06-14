@@ -35,7 +35,7 @@ public class ItemSeismicReader extends ItemEnergized {
     }
 
     @Override
-    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.descriptionKey)) {
             tooltip.add(MekanismLang.DESCRIPTION_SEISMIC_READER.translate());
         } else if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {

@@ -14,11 +14,11 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketFrequencyItemGuiUpdate<FREQ extends Frequency> {
 
-    private List<FREQ> publicCache;
-    private List<FREQ> privateCache;
-    private FrequencyType<FREQ> frequencyType;
-    private FREQ frequency;
-    private Hand currentHand;
+    private final List<FREQ> publicCache;
+    private final List<FREQ> privateCache;
+    private final FrequencyType<FREQ> frequencyType;
+    private final FREQ frequency;
+    private final Hand currentHand;
 
     private PacketFrequencyItemGuiUpdate(Hand hand, FrequencyType<FREQ> type, FREQ freq, List<FREQ> publicFreqs, List<FREQ> privateFreqs) {
         currentHand = hand;

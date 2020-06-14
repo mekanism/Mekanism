@@ -545,7 +545,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         redstone = nbtTags.getBoolean(NBTConstants.REDSTONE);
         for (ITileComponent component : components) {

@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 public class QIODashboardContainer extends QIOItemViewerContainer {
 
-    private TileEntityQIODashboard tile;
+    private final TileEntityQIODashboard tile;
 
     public QIODashboardContainer(int id, PlayerInventory inv, TileEntityQIODashboard tile) {
         super(MekanismContainerTypes.QIO_DASHBOARD, id, inv);

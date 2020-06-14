@@ -56,7 +56,7 @@ public class EntityBabyCreeper extends CreeperEntity {
     }
 
     @Override
-    protected int getExperiencePoints(PlayerEntity player) {
+    protected int getExperiencePoints(@Nonnull PlayerEntity player) {
         if (isChild()) {
             experienceValue = (int) (experienceValue * 2.5F);
         }
@@ -64,7 +64,7 @@ public class EntityBabyCreeper extends CreeperEntity {
     }
 
     @Override
-    protected float getStandingEyeHeight(Pose pose, EntitySize size) {
+    protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntitySize size) {
         return isChild() ? 0.77F : super.getStandingEyeHeight(pose, size);
     }
 

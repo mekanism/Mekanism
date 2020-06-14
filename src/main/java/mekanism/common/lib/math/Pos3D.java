@@ -364,6 +364,7 @@ public class Pos3D extends Vec3d {
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Pos3D clone() {
         return new Pos3D(x, y, z);
     }

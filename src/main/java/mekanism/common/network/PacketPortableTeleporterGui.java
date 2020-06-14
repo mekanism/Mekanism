@@ -29,9 +29,9 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PacketPortableTeleporterGui {
 
-    private PortableTeleporterPacketType packetType;
-    private TeleporterFrequency frequency;
-    private Hand currentHand;
+    private final PortableTeleporterPacketType packetType;
+    private final TeleporterFrequency frequency;
+    private final Hand currentHand;
 
     public PacketPortableTeleporterGui(PortableTeleporterPacketType type, Hand hand, TeleporterFrequency freq) {
         packetType = type;

@@ -22,7 +22,7 @@ public class SecurityFrequency extends Frequency {
 
     private boolean override = false;
 
-    private List<UUID> trusted = new HashList<>();
+    private final List<UUID> trusted = new HashList<>();
     private List<String> trustedCache = new HashList<>();
     private int trustedCacheHash;
 

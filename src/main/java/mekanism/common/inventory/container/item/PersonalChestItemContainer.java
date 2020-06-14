@@ -57,7 +57,7 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
 
     @Nonnull
     @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickType, PlayerEntity player) {
+    public ItemStack slotClick(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
         //TODO: Re-evaluate
         int hotbarSlotId = slotId - 81;
         //Disallow moving Personal Chest if held and accessed directly from inventory (not from a placed block)

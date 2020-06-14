@@ -29,9 +29,9 @@ public class GuiModuleScrollList extends GuiScrollList {
 
     private int selectIndex = -1;
 
-    private Consumer<Module> callback;
-    private List<ModuleData<?>> currentList = new ArrayList<>();
-    private Supplier<ItemStack> itemSupplier;
+    private final Consumer<Module> callback;
+    private final List<ModuleData<?>> currentList = new ArrayList<>();
+    private final Supplier<ItemStack> itemSupplier;
     private ItemStack currentItem;
 
     public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<Module> callback) {

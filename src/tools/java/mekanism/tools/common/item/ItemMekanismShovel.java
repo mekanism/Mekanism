@@ -36,7 +36,7 @@ public class ItemMekanismShovel extends ShovelItem implements IHasRepairType {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
     }
 
@@ -85,7 +85,7 @@ public class ItemMekanismShovel extends ShovelItem implements IHasRepairType {
     }
 
     @Override
-    public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState) {
+    public int getHarvestLevel(@Nonnull ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState) {
         return tool == ToolType.SHOVEL ? getHarvestLevel() : super.getHarvestLevel(stack, tool, player, blockState);
     }
 

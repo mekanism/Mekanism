@@ -19,7 +19,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class VoiceConnection extends Thread {
 
-    private MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+    private final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
     private DataOutputStream output;
     private DataInputStream input;
     private boolean open = true;

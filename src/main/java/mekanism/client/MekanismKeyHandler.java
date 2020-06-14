@@ -42,7 +42,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
     public static KeyBinding hudKey = new KeyBinding(MekanismLang.KEY_HUD.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_H, MekanismLang.MEKANISM.getTranslationKey());
 
-    private static Builder BINDINGS = new Builder(9)
+    private static final Builder BINDINGS = new Builder(9)
           .addBinding(handModeSwitchKey, false)
           .addBinding(headModeSwitchKey, false)
           .addBinding(chestModeSwitchKey, false)

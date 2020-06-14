@@ -24,7 +24,6 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     private final EntityRobit robit;
-
     private GuiTextField nameChangeField;
     private MekanismButton confirmName;
 
@@ -54,6 +53,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         addButton(new GuiSideHolder(this, 176, 6, 106, false));
         addButton(new GuiRobitScreen(this, 27, 16, 122, 56, () -> nameChangeField.visible));
         addButton(new GuiHorizontalPowerBar(this, robit.getEnergyContainer(), 27, 74, 120));
+        //TODO - V10: The button displays the text regardless of if it is visible or not. We should just make a custom popup window for renaming the robit
         addButton(confirmName = new TranslationButton(this, getGuiLeft() + 58, getGuiTop() + 47, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
         confirmName.visible = false;
 

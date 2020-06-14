@@ -20,10 +20,10 @@ public class ReactorLogicButton<TYPE extends Enum<?> & IReactorLogicMode> extend
     private static final ResourceLocation TEXTURE = MekanismGenerators.rl(ResourceType.GUI_BUTTON.getPrefix() + "reactor_logic.png");
     @Nonnull
     private final IReactorLogic<TYPE> tile;
-    private int index;
-    private IntSupplier indexSupplier;
-    private Supplier<TYPE[]> modeList;
-    private Consumer<TYPE> onPress;
+    private final int index;
+    private final IntSupplier indexSupplier;
+    private final Supplier<TYPE[]> modeList;
+    private final Consumer<TYPE> onPress;
 
     public ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, @Nonnull IReactorLogic<TYPE> tile, IntSupplier indexSupplier,
           Supplier<TYPE[]> listSupplier, Consumer<TYPE> onPress) {

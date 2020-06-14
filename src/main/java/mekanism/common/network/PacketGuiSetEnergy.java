@@ -14,9 +14,9 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketGuiSetEnergy {
 
-    private GuiEnergyValue interaction;
-    private BlockPos tilePosition;
-    private FloatingLong value;
+    private final GuiEnergyValue interaction;
+    private final BlockPos tilePosition;
+    private final FloatingLong value;
 
     public PacketGuiSetEnergy(GuiEnergyValue interaction, BlockPos tilePosition, FloatingLong value) {
         this.interaction = interaction;
@@ -65,7 +65,7 @@ public class PacketGuiSetEnergy {
             }
         });
 
-        private BiConsumer<TileEntityMekanism, FloatingLong> consumerForTile;
+        private final BiConsumer<TileEntityMekanism, FloatingLong> consumerForTile;
 
         GuiEnergyValue(BiConsumer<TileEntityMekanism, FloatingLong> consumerForTile) {
             this.consumerForTile = consumerForTile;

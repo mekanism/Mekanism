@@ -18,7 +18,7 @@ public class HUDRenderer {
     private long lastTick = -1;
     private float prevRotationPitch; // must track manually, for some reason it's already synced in the entity
 
-    private Minecraft minecraft = Minecraft.getInstance();
+    private final Minecraft minecraft = Minecraft.getInstance();
 
     public void renderHUD(float partialTick) {
         checkTime();

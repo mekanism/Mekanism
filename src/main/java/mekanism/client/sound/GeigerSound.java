@@ -7,19 +7,19 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public class GeigerSound extends PlayerSound {
 
-    private RadiationScale scale;
-
-    private GeigerSound(@Nonnull PlayerEntity player, RadiationScale scale) {
-        super(player, scale.getSoundEvent());
-        this.scale = scale;
-        setFade(1, 1);
-    }
-
     public static GeigerSound create(@Nonnull PlayerEntity player, RadiationScale scale) {
         if (scale == RadiationScale.NONE) {
             throw new IllegalArgumentException("Can't create a GeigerSound with a RadiationScale of NONE.");
         }
         return new GeigerSound(player, scale);
+    }
+
+    private final RadiationScale scale;
+
+    private GeigerSound(@Nonnull PlayerEntity player, RadiationScale scale) {
+        super(player, scale.getSoundEvent());
+        this.scale = scale;
+        setFade(1, 1);
     }
 
     @Override

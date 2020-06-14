@@ -77,7 +77,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable {
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = nbtTags.getInt(NBTConstants.REDSTONE);
@@ -86,7 +86,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable {
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.put(NBTConstants.MAIN, NBTUtil.writeBlockPos(getMainPos()));
         nbtTags.putInt(NBTConstants.REDSTONE, currentRedstoneLevel);

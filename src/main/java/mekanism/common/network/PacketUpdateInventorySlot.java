@@ -8,8 +8,8 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketUpdateInventorySlot {
 
-    private ItemStack containerStack;
-    private int slotId;
+    private final ItemStack containerStack;
+    private final int slotId;
 
     public PacketUpdateInventorySlot(ItemStack containerStack, int slotId) {
         this.containerStack = containerStack;

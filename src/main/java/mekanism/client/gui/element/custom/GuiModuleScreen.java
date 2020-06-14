@@ -27,8 +27,8 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
     private final int TEXT_COLOR = screenTextColor();
 
-    private GuiInnerScreen background;
-    private Consumer<ItemStack> callback;
+    private final GuiInnerScreen background;
+    private final Consumer<ItemStack> callback;
 
     private Module currentModule;
     private List<MiniElement> miniElements = new ArrayList<>();

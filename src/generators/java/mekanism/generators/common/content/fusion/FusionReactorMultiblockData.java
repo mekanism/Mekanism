@@ -65,7 +65,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private static final double caseWaterConductivity = 0.3;
     private static final double caseAirConductivity = 0.1;
 
-    private Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
+    private final Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
 
     @ContainerSync
     private boolean burning = false;
@@ -95,10 +95,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     public double plasmaTemperature = HeatAPI.AMBIENT_TEMP;
 
-    private ReactorInventorySlot reactorSlot;
+    private final ReactorInventorySlot reactorSlot;
 
-    public boolean clientBurning;
-    public double clientTemp;
+    private boolean clientBurning;
+    private double clientTemp;
 
     private AxisAlignedBB deathZone;
 

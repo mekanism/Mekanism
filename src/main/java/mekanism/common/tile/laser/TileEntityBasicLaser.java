@@ -286,7 +286,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.LAST_FIRED, value -> lastFired = value);
     }

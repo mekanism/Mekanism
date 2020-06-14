@@ -44,7 +44,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
     }

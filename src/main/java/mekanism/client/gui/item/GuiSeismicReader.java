@@ -26,8 +26,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
-    private List<BlockState> blockList = new ArrayList<>();
-    private Object2IntMap<Block> frequencies = new Object2IntOpenHashMap<>();
+    private final List<BlockState> blockList = new ArrayList<>();
+    private final Object2IntMap<Block> frequencies = new Object2IntOpenHashMap<>();
     private MekanismButton upButton;
     private MekanismButton downButton;
     private GuiScrollBar scrollBar;
@@ -48,7 +48,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         super.init();
         addButton(new GuiInnerScreen(this, 7, 11, 63, 49));
         addButton(new GuiInnerScreen(this, 74, 11, 51, 159));
-        addButton(scrollBar = new GuiScrollBar(this, 126, 25, 131, () -> blockList.size(), () -> 1));
+        addButton(scrollBar = new GuiScrollBar(this, 126, 25, 131, blockList::size, () -> 1));
         addButton(new GuiArrowSelection(this, 76, 81, () -> {
             int currentLayer = scrollBar.getCurrentSelection();
             if (currentLayer >= 0) {

@@ -38,7 +38,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     private Structure structure = Structure.INVALID;
 
-    private T defaultMultiblock = createMultiblock();
+    private final T defaultMultiblock = createMultiblock();
 
     /**
      * This multiblock's previous "has structure" state.
@@ -252,7 +252,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (!getMultiblock().isFormed() && nbtTags.hasUniqueId(NBTConstants.INVENTORY_ID)) {
             cachedID = nbtTags.getUniqueId(NBTConstants.INVENTORY_ID);

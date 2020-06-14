@@ -51,7 +51,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
       ITileCachedRecipeHolder<RECIPE> {
 
     private final CachedRecipe<RECIPE>[] cachedRecipes;
-    private boolean[] activeStates;
+    private final boolean[] activeStates;
     protected ProcessInfo[] processInfoSlots;
     /**
      * This Factory's tier.
@@ -276,7 +276,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         sorting = nbtTags.getBoolean(NBTConstants.SORTING);
         for (int i = 0; i < tier.processes; i++) {

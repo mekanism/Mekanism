@@ -67,7 +67,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
     }

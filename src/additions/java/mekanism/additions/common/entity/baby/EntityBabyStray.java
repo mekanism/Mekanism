@@ -63,7 +63,7 @@ public class EntityBabyStray extends StrayEntity {
     }
 
     @Override
-    protected int getExperiencePoints(PlayerEntity player) {
+    protected int getExperiencePoints(@Nonnull PlayerEntity player) {
         if (isChild()) {
             experienceValue = (int) (experienceValue * 2.5F);
         }
@@ -76,7 +76,7 @@ public class EntityBabyStray extends StrayEntity {
     }
 
     @Override
-    protected float getStandingEyeHeight(Pose pose, EntitySize size) {
+    protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntitySize size) {
         return this.isChild() ? 0.93F : super.getStandingEyeHeight(pose, size);
     }
 }

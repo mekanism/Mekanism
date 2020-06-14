@@ -59,7 +59,7 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
         SUPERFAST(64, () -> true),
         EXTREME(128, MekanismConfig.gear.disassemblerFastMode);
 
-        private static ExcavationMode[] MODES = values();
+        private static final ExcavationMode[] MODES = values();
 
         private final BooleanSupplier checkEnabled;
         private final ITextComponent label;

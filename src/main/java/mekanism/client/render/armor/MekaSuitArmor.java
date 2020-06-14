@@ -58,7 +58,7 @@ public class MekaSuitArmor extends CustomArmor {
     public static MekaSuitArmor PANTS = new MekaSuitArmor(0.5F, EquipmentSlotType.LEGS, EquipmentSlotType.FEET);
     public static MekaSuitArmor BOOTS = new MekaSuitArmor(0.5F, EquipmentSlotType.FEET, EquipmentSlotType.LEGS);
 
-    private static Table<EquipmentSlotType, ModuleData<?>, ModuleModelSpec> moduleModelSpec = HashBasedTable.create();
+    private static final Table<EquipmentSlotType, ModuleData<?>, ModuleModelSpec> moduleModelSpec = HashBasedTable.create();
 
     static {
         registerModule("solar_helmet", Modules.SOLAR_RECHARGING_UNIT, EquipmentSlotType.HEAD);
@@ -67,18 +67,18 @@ public class MekaSuitArmor extends CustomArmor {
         // TODO make sure these are correct
     }
 
-    private static QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vec3d(-1, 0.5, 0)));
+    private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vec3d(-1, 0.5, 0)));
 
-    private LoadingCache<QuickHash, ArmorQuads> cache = CacheBuilder.newBuilder().build(new CacheLoader<QuickHash, ArmorQuads>() {
+    private final LoadingCache<QuickHash, ArmorQuads> cache = CacheBuilder.newBuilder().build(new CacheLoader<QuickHash, ArmorQuads>() {
         @Override
         @SuppressWarnings("unchecked")
-        public ArmorQuads load(QuickHash key) throws Exception {
+        public ArmorQuads load(@Nonnull QuickHash key) {
             return createQuads((Set<ModuleModelSpec>) key.get()[0], (Set<EquipmentSlotType>) key.get()[1]);
         }
     });
 
-    private EquipmentSlotType type;
-    private EquipmentSlotType adjacentType;
+    private final EquipmentSlotType type;
+    private final EquipmentSlotType adjacentType;
 
     private MekaSuitArmor(float size, EquipmentSlotType type, EquipmentSlotType adjacentType) {
         super(size);
@@ -127,10 +127,10 @@ public class MekaSuitArmor extends CustomArmor {
 
         public static final ModelPos[] VALUES = values();
 
-        private QuadTransformation transform;
-        private Predicate<String> modelSpec;
+        private final QuadTransformation transform;
+        private final Predicate<String> modelSpec;
 
-        private ModelPos(QuadTransformation transform, Predicate<String> modelSpec) {
+        ModelPos(QuadTransformation transform, Predicate<String> modelSpec) {
             this.transform = transform;
             this.modelSpec = modelSpec;
         }
@@ -266,10 +266,8 @@ public class MekaSuitArmor extends CustomArmor {
             return true;
         } else if (type == EquipmentSlotType.LEGS && text.contains("leggings")) {
             return true;
-        } else if (type == EquipmentSlotType.FEET && text.contains("boots")) {
-            return true;
-        }
-        return false;
+        } else
+            return type == EquipmentSlotType.FEET && text.contains("boots");
     }
 
     public static class ArmorQuads {
@@ -287,10 +285,10 @@ public class MekaSuitArmor extends CustomArmor {
 
     public static class ModuleModelSpec {
 
-        private ModuleData<?> module;
-        private EquipmentSlotType slotType;
-        private String name;
-        private Predicate<String> modelSpec;
+        private final ModuleData<?> module;
+        private final EquipmentSlotType slotType;
+        private final String name;
+        private final Predicate<String> modelSpec;
 
         public ModuleModelSpec(ModuleData<?> module, EquipmentSlotType slotType, String name) {
             this.module = module;
@@ -330,7 +328,7 @@ public class MekaSuitArmor extends CustomArmor {
 
     private static class MekaSuitModelConfiguration implements IModelConfiguration {
 
-        private Set<String> parts;
+        private final Set<String> parts;
 
         public MekaSuitModelConfiguration(Set<String> parts) {
             this.parts = parts;
@@ -388,7 +386,7 @@ public class MekaSuitArmor extends CustomArmor {
         }
 
         @Override
-        public boolean getPartVisibility(IModelGeometryPart part, boolean fallback) {
+        public boolean getPartVisibility(@Nonnull IModelGeometryPart part, boolean fallback) {
             //Ignore fallback as we always have a true or false answer
             return getPartVisibility(part);
         }

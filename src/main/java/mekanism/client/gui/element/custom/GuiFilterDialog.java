@@ -15,7 +15,7 @@ public abstract class GuiFilterDialog<FILTER extends IFilter<FILTER>> extends Gu
     protected boolean isNew;
     protected int ticker;
 
-    private ITextComponent filterName;
+    private final ITextComponent filterName;
 
     public GuiFilterDialog(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, FILTER origFilter) {
         super(gui, x, y, width, height);

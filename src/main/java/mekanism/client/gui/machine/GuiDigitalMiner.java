@@ -39,13 +39,13 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
+    private static final ResourceLocation eject = MekanismUtils.getResource(ResourceType.GUI, "switch/eject.png");
+    private static final ResourceLocation input = MekanismUtils.getResource(ResourceType.GUI, "switch/input.png");
+    private static final ResourceLocation silk = MekanismUtils.getResource(ResourceType.GUI, "switch/silk.png");
+
     private MekanismButton startButton;
     private MekanismButton stopButton;
     private MekanismButton configButton;
-
-    private ResourceLocation eject = MekanismUtils.getResource(ResourceType.GUI, "switch/eject.png");
-    private ResourceLocation input = MekanismUtils.getResource(ResourceType.GUI, "switch/input.png");
-    private ResourceLocation silk = MekanismUtils.getResource(ResourceType.GUI, "switch/silk.png");
 
     public GuiDigitalMiner(MekanismTileContainer<TileEntityDigitalMiner> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

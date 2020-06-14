@@ -46,8 +46,9 @@ public class ItemTierInstaller extends Item {
         return toTier;
     }
 
+    @Nonnull
     @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
+    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         return super.getDisplayName(stack).applyTextStyle(toTier.getTextColor().textFormatting);
     }
 

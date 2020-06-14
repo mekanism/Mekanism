@@ -6,8 +6,8 @@ import net.minecraft.item.Item;
 
 public class ItemProcessedResource extends Item {
 
-    private ResourceType type;
-    private PrimaryResource resource;
+    private final ResourceType type;
+    private final PrimaryResource resource;
 
     public ItemProcessedResource(Item.Properties properties, ResourceType type, PrimaryResource resource) {
         super(properties);

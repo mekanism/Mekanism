@@ -619,7 +619,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         running = nbtTags.getBoolean(NBTConstants.RUNNING);
         delay = nbtTags.getInt(NBTConstants.DELAY);

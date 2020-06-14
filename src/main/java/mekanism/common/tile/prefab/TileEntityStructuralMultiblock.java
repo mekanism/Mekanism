@@ -21,10 +21,9 @@ import net.minecraft.util.Hand;
 
 public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism implements IStructuralMultiblock, IConfigurable {
 
-    private Map<MultiblockManager<?>, Structure> structures = new HashMap<>();
+    private final Map<MultiblockManager<?>, Structure> structures = new HashMap<>();
     private final Structure invalidStructure = Structure.INVALID;
-
-    private MultiblockData defaultMultiblock = new MultiblockData(this);
+    private final MultiblockData defaultMultiblock = new MultiblockData(this);
 
     public TileEntityStructuralMultiblock(IBlockProvider provider) {
         super(provider);

@@ -71,7 +71,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         if (index == inv.currentItem) {
             return new HotBarSlot(inv, index, x, y) {
                 @Override
-                public boolean canTakeStack(PlayerEntity player) {
+                public boolean canTakeStack(@Nonnull PlayerEntity player) {
                     return false;
                 }
             };

@@ -196,6 +196,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
     }
 
+    @Nonnull
     @Override
     public Optional<IGuiEventListener> getEventListenerForPos(double mouseX, double mouseY) {
         GuiWindow window = windows.stream().filter(w -> w.isMouseOver(mouseX, mouseY)).findFirst().orElse(null);

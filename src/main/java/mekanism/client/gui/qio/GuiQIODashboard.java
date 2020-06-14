@@ -11,7 +11,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
 
-    private TileEntityQIODashboard tile;
+    private final TileEntityQIODashboard tile;
 
     public GuiQIODashboard(QIODashboardContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

@@ -40,12 +40,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     private static final int MAX_FLUID = 24_000;
     private static final int FLUID_RATE = 10;
+    private static final double THERMAL_EFFICIENCY = 0.5;
     private static final FloatingLong MAX_PRODUCTION = FloatingLong.createConst(500);
     /**
      * The FluidTank for this generator.
      */
     public BasicFluidTank lavaTank;
-    private double thermalEfficiency = 0.5;
     private FloatingLong producingEnergy = FloatingLong.ZERO;
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
@@ -121,7 +121,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return boost;
     }
 
-    @Nonnull
     @Override
     public double getInverseInsulation(int capacitor, @Nullable Direction side) {
         return side == Direction.DOWN ? 0 : super.getInverseInsulation(capacitor, side);
@@ -133,7 +132,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         double temp = getTotalTemperature();
         // 1 - Qc / Qh
         double carnotEfficiency = 1 - Math.min(HeatAPI.AMBIENT_TEMP, temp) / Math.max(HeatAPI.AMBIENT_TEMP, temp);
-        double heatLost = thermalEfficiency * (temp - HeatAPI.AMBIENT_TEMP);
+        double heatLost = THERMAL_EFFICIENCY * (temp - HeatAPI.AMBIENT_TEMP);
         heatCapacitor.handleHeat(-heatLost);
         getEnergyContainer().insert(MAX_PRODUCTION.min(FloatingLong.create(Math.abs(heatLost) * carnotEfficiency)), Action.EXECUTE, AutomationType.INTERNAL);
         return super.simulate();

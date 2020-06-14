@@ -19,7 +19,7 @@ public class VoiceClient extends Thread {
     private DataInputStream input;
     private boolean running;
     private Socket socket;
-    private String ip;
+    private final String ip;
 
     public VoiceClient(String s) {
         ip = s;

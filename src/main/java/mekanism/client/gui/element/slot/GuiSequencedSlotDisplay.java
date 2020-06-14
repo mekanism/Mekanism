@@ -12,7 +12,7 @@ public class GuiSequencedSlotDisplay extends GuiRelativeElement {
     private int stackIndex;
     private int stackSwitchTicker;
     private ItemStack renderStack = ItemStack.EMPTY;
-    private Supplier<List<ItemStack>> stackListSupplier;
+    private final Supplier<List<ItemStack>> stackListSupplier;
     private float zOffset;
 
     public GuiSequencedSlotDisplay(IGuiWrapper gui, int x, int y, Supplier<List<ItemStack>> stackListSupplier) {

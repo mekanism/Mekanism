@@ -24,7 +24,7 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> {
     private final FrequencyUpdate updateType;
     private final FrequencyIdentity data;
     private final BlockPos tilePosition;
-    private Hand currentHand;
+    private final Hand currentHand;
 
     private PacketGuiSetFrequency(FrequencyUpdate updateType, FrequencyType<FREQ> type, FrequencyIdentity data, BlockPos tilePosition, Hand currentHand) {
         this.updateType = updateType;

@@ -14,17 +14,17 @@ public abstract class MekKeyHandler {
     /**
      * KeyBinding instances
      */
-    private KeyBinding[] keyBindings;
+    private final KeyBinding[] keyBindings;
 
     /**
      * Track which keys have been seen as pressed currently
      */
-    private BitSet keyDown;
+    private final BitSet keyDown;
 
     /**
      * Whether keys send repeated KeyDown pseudo-messages
      */
-    private BitSet repeatings;
+    private final BitSet repeatings;
 
     /**
      * Pass an array of keybindings and a repeat flag for each one

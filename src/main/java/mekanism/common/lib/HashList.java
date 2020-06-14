@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 
 public class HashList<T> extends AbstractList<T> {
 
-    private List<T> list;
+    private final List<T> list;
 
     public HashList(List<T> newList) {
         list = newList;
@@ -91,6 +91,7 @@ public class HashList<T> extends AbstractList<T> {
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public HashList<T> clone() {
         return new HashList<>(new ArrayList<>(list));
     }

@@ -93,7 +93,7 @@ public class RenderTickHandler {
 
     private static final double HUD_SCALE = 0.6;
 
-    private static HUDRenderer hudRenderer = new HUDRenderer();
+    private static final HUDRenderer hudRenderer = new HUDRenderer();
 
     public static int modeSwitchTimer = 0;
     public static double prevRadiation = 0;

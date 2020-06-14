@@ -18,8 +18,8 @@ import net.minecraft.util.math.BlockPos;
 
 public class MatrixValidator extends CuboidStructureValidator<MatrixMultiblockData> {
 
-    private List<TileEntityInductionCell> cells = new ArrayList<>();
-    private List<TileEntityInductionProvider> providers = new ArrayList<>();
+    private final List<TileEntityInductionCell> cells = new ArrayList<>();
+    private final List<TileEntityInductionProvider> providers = new ArrayList<>();
 
     @Override
     protected CasingType getCasingType(BlockPos pos, BlockState state) {

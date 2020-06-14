@@ -156,10 +156,8 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
                     return true;
                 }
                 IFluidHandlerItem itemFluidHandler = MekanismUtils.toOptional(cap).get();
-                if (itemFluidHandler.fill(fluidInTank, FluidAction.SIMULATE) > 0) {
-                    //True if the tanks contents are valid and we can fill the item with any of the contents
-                    return true;
-                }
+                //True if the tanks contents are valid and we can fill the item with any of the contents
+                return itemFluidHandler.fill(fluidInTank, FluidAction.SIMULATE) > 0;
             }
             return false;
         }, stack -> isNonFullFluidContainer(FluidUtil.getFluidHandler(stack)), listener, x, y);

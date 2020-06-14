@@ -159,6 +159,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         return energyContainer;
     }
 
+    @Nonnull
     @Override
     public MekanismRecipeType<NucleosynthesizingRecipe> getRecipeType() {
         return MekanismRecipeType.NUCLEOSYNTHESIZING;

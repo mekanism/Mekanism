@@ -20,7 +20,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiQIOTileFrequencySelect extends GuiQIOFrequencySelect<QIOFrequencySelectTileContainer> {
 
-    private IQIOFrequencyHolder tile;
+    private final IQIOFrequencyHolder tile;
 
     public GuiQIOTileFrequencySelect(QIOFrequencySelectTileContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);

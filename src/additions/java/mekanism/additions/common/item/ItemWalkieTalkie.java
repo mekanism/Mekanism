@@ -32,7 +32,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(OnOff.of(getOn(stack), true).getTextComponent());
         tooltip.add(AdditionsLang.CHANNEL.translateColored(EnumColor.DARK_AQUA, EnumColor.GRAY, getChannel(stack)));
         if (!MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
@@ -42,7 +42,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             setOn(itemStack, !getOn(itemStack));

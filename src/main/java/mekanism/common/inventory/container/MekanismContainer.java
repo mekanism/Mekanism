@@ -67,7 +67,7 @@ public abstract class MekanismContainer extends Container {
     protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
     protected final List<OffhandSlot> offhandSlots = new ArrayList<>();
     private final List<ISyncableData> trackedData = new ArrayList<>();
-    private Map<Object, List<ISyncableData>> specificTrackedData = new Object2ObjectOpenHashMap<>();
+    private final Map<Object, List<ISyncableData>> specificTrackedData = new Object2ObjectOpenHashMap<>();
 
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv) {
         super(type.getContainerType(), id);

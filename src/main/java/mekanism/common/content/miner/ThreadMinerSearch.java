@@ -25,7 +25,7 @@ import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread {
 
-    private TileEntityDigitalMiner tile;
+    private final TileEntityDigitalMiner tile;
 
     public State state = State.IDLE;
 

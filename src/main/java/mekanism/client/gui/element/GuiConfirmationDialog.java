@@ -9,7 +9,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiConfirmationDialog extends GuiWindow {
 
-    private ITextComponent title;
+    private final ITextComponent title;
 
     public GuiConfirmationDialog(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent title, Runnable onConfirm, DialogType type) {
         super(gui, x, y, width, height);

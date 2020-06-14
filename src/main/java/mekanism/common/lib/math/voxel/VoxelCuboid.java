@@ -6,8 +6,8 @@ import net.minecraft.util.math.BlockPos;
 
 public class VoxelCuboid implements IShape {
 
-    private BlockPos minPos;
-    private BlockPos maxPos;
+    private final BlockPos minPos;
+    private final BlockPos maxPos;
 
     public VoxelCuboid(BlockPos minPos, BlockPos maxPos) {
         this.minPos = minPos;
@@ -193,10 +193,10 @@ public class VoxelCuboid implements IShape {
         private static final CuboidSide[][] ORDERED = new CuboidSide[][] {{WEST, BOTTOM, NORTH}, {EAST, TOP, SOUTH}};
         private static final CuboidSide[] OPPOSITES = new CuboidSide[] {TOP, BOTTOM, SOUTH, NORTH, EAST, WEST};
 
-        private Axis axis;
-        private Face face;
+        private final Axis axis;
+        private final Face face;
 
-        private CuboidSide(Axis axis, Face face) {
+        CuboidSide(Axis axis, Face face) {
             this.axis = axis;
             this.face = face;
         }
@@ -233,7 +233,7 @@ public class VoxelCuboid implements IShape {
 
     public static class CuboidBuilder {
 
-        private BlockPosBuilder[] bounds = new BlockPosBuilder[] {new BlockPosBuilder(), new BlockPosBuilder()};
+        private final BlockPosBuilder[] bounds = new BlockPosBuilder[] {new BlockPosBuilder(), new BlockPosBuilder()};
 
         public boolean isSet(CuboidSide side) {
             return bounds[side.getFace().ordinal()].isSet(side.getAxis());

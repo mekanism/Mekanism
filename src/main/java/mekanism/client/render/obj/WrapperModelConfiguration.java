@@ -69,7 +69,7 @@ public class WrapperModelConfiguration implements IModelConfiguration {
     }
 
     @Override
-    public boolean getPartVisibility(IModelGeometryPart part, boolean fallback) {
+    public boolean getPartVisibility(@Nonnull IModelGeometryPart part, boolean fallback) {
         return internal.getPartVisibility(part, fallback);
     }
 

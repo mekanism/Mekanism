@@ -16,7 +16,7 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
     private static final int texWidth = 3;
     private static final int texHeight = 8;
 
-    private ColorFunction colorFunction;
+    private final ColorFunction colorFunction;
 
     public GuiDynamicHorizontalRateBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int width) {
         this(gui, handler, x, y, width, ColorFunction.HEAT);

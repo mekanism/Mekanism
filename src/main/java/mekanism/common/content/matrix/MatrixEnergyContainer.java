@@ -23,9 +23,9 @@ import net.minecraft.util.math.BlockPos;
 @MethodsReturnNonnullByDefault
 public class MatrixEnergyContainer implements IEnergyContainer {
 
-    private Map<BlockPos, InductionProviderTier> providers = new Object2ObjectOpenHashMap<>();
-    private Map<BlockPos, IEnergyContainer> cells = new Object2ObjectOpenHashMap<>();
-    private Set<BlockPos> invalidPositions = new ObjectOpenHashSet<>();
+    private final Map<BlockPos, InductionProviderTier> providers = new Object2ObjectOpenHashMap<>();
+    private final Map<BlockPos, IEnergyContainer> cells = new Object2ObjectOpenHashMap<>();
+    private final Set<BlockPos> invalidPositions = new ObjectOpenHashSet<>();
 
     //TODO: Eventually we could look into extending FloatingLong to have a "BigInt" styled implementation that is used by the class
     // at the very least for keeping track of the cached values and rates

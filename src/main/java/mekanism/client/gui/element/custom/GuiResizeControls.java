@@ -13,8 +13,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiResizeControls extends GuiSideHolder {
 
-    private MekanismImageButton expandButton, shrinkButton;
-    private Consumer<ResizeType> resizeHandler;
+    private final MekanismImageButton expandButton, shrinkButton;
+    private final Consumer<ResizeType> resizeHandler;
 
     private int tooltipTicks;
 

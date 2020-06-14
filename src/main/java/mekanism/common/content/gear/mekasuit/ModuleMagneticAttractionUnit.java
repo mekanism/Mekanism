@@ -72,8 +72,9 @@ public class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
         MED(3F),
         HIGH(5),
         ULTRA(10);
-        private float range;
-        private ITextComponent label;
+
+        private final float range;
+        private final ITextComponent label;
 
         Range(float boost) {
             this.range = boost;

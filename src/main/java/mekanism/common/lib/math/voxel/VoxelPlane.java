@@ -8,13 +8,13 @@ import net.minecraft.util.math.BlockPos;
 
 public class VoxelPlane {
 
-    private Axis axis;
+    private final Axis axis;
     private int minCol, maxCol;
     private int minRow, maxRow;
     private int size;
     private boolean hasController;
 
-    private Set<BlockPos> outsideSet = new HashSet<>();
+    private final Set<BlockPos> outsideSet = new HashSet<>();
 
     public VoxelPlane(Axis axis, BlockPos pos, boolean controller) {
         this.axis = axis;

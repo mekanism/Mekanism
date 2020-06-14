@@ -15,9 +15,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiUpgradeScrollList extends GuiScrollList {
 
-    private static ResourceLocation UPGRADE_SELECTION = MekanismUtils.getResource(ResourceType.GUI, "upgrade_selection.png");
-    private static int TEXTURE_WIDTH = 58;
-    private static int TEXTURE_HEIGHT = 36;
+    private static final ResourceLocation UPGRADE_SELECTION = MekanismUtils.getResource(ResourceType.GUI, "upgrade_selection.png");
+    private static final int TEXTURE_WIDTH = 58;
+    private static final int TEXTURE_HEIGHT = 36;
 
     @Nullable
     private Upgrade selectedType;

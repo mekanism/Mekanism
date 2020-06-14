@@ -14,11 +14,11 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketPortableTeleporter {
 
-    private List<TeleporterFrequency> publicCache;
-    private List<TeleporterFrequency> privateCache;
-    private TeleporterFrequency frequency;
-    private Hand currentHand;
-    private byte status;
+    private final List<TeleporterFrequency> publicCache;
+    private final List<TeleporterFrequency> privateCache;
+    private final TeleporterFrequency frequency;
+    private final Hand currentHand;
+    private final byte status;
 
     public PacketPortableTeleporter(Hand hand, TeleporterFrequency freq, byte b, List<TeleporterFrequency> publicFreqs, List<TeleporterFrequency> privateFreqs) {
         currentHand = hand;

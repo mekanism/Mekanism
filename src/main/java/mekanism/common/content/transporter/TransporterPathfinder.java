@@ -309,11 +309,10 @@ public final class TransporterPathfinder {
         private final BlockPos finalNode;
         private final TransporterStack transportStack;
         private final DestChecker destChecker;
-
+        private final World world;
         private double finalScore;
         private Direction side;
         private List<BlockPos> results;
-        private World world;
 
         public Pathfinder(DestChecker checker, World world, BlockPos finishObj, BlockPos startObj, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
             destChecker = checker;

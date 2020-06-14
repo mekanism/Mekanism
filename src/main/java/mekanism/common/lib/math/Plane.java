@@ -8,8 +8,8 @@ import net.minecraft.util.math.Vec3d;
 // can add to this as we see necessary
 public class Plane {
 
-    private Vec3d minPos;
-    private Vec3d maxPos;
+    private final Vec3d minPos;
+    private final Vec3d maxPos;
 
     public Plane(Vec3d minPos, Vec3d maxPos) {
         this.minPos = minPos;

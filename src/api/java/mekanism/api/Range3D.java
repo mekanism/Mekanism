@@ -19,6 +19,7 @@ public class Range3D {
     }
 
     @Override
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Range3D clone() {
         return new Range3D(xMin, zMin, xMax, zMax, dimension);
     }

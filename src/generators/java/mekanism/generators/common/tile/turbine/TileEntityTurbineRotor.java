@@ -131,7 +131,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         blades = nbtTags.getInt(NBTConstants.BLADES);
         position = nbtTags.getInt(NBTConstants.POSITION);

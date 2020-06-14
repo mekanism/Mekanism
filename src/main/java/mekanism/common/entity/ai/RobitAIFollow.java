@@ -13,12 +13,12 @@ public class RobitAIFollow extends RobitAIBase {
     /**
      * The distance between the owner the robit must be at in order for the protocol to begin.
      */
-    private float maxDist;
+    private final float maxDist;
 
     /**
      * The distance between the owner the robit must reach before it stops the protocol.
      */
-    private float minDist;
+    private final float minDist;
 
     public RobitAIFollow(EntityRobit entityRobit, float speed, float min, float max) {
         super(entityRobit, speed);

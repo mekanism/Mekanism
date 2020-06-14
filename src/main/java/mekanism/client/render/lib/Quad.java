@@ -1,6 +1,7 @@
 package mekanism.client.render.lib;
 
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -17,7 +18,7 @@ public class Quad {
     private static final VertexFormat FORMAT = DefaultVertexFormats.BLOCK;
     private static final int SIZE = DefaultVertexFormats.BLOCK.getElements().size();
 
-    private Vertex[] vertices;
+    private final Vertex[] vertices;
     private Direction side;
     private TextureAtlasSprite sprite;
     private int tintIndex = -1;
@@ -110,6 +111,7 @@ public class Quad {
         private Vertex vertex = new Vertex();
         private int vertexIndex = 0;
 
+        @Nonnull
         @Override
         public VertexFormat getVertexFormat() {
             return FORMAT;
@@ -121,7 +123,7 @@ public class Quad {
         }
 
         @Override
-        public void setQuadOrientation(Direction orientation) {
+        public void setQuadOrientation(@Nonnull Direction orientation) {
             side = orientation;
         }
 
@@ -131,7 +133,7 @@ public class Quad {
         }
 
         @Override
-        public void setTexture(TextureAtlasSprite texture) {
+        public void setTexture(@Nonnull TextureAtlasSprite texture) {
             sprite = texture;
         }
 
@@ -178,7 +180,7 @@ public class Quad {
     public static class Builder {
 
         private TextureAtlasSprite texture;
-        private Direction side;
+        private final Direction side;
 
         private Vec3d vec1, vec2, vec3, vec4;
 

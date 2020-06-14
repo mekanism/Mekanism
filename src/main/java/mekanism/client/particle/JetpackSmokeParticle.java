@@ -23,7 +23,7 @@ public class JetpackSmokeParticle extends SmokeParticle {
     }
 
     @Override
-    public void renderParticle(IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void renderParticle(@Nonnull IVertexBuilder vertexBuilder, @Nonnull ActiveRenderInfo renderInfo, float partialTicks) {
         if (age > 0) {
             super.renderParticle(vertexBuilder, renderInfo, partialTicks);
         }

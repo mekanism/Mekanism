@@ -30,8 +30,8 @@ import net.minecraft.client.gui.screen.Screen;
 
 public class GuiTransporterConfig extends GuiWindow {
 
-    private List<GuiPos> slotPosList = new ArrayList<>();
-    private TileEntityMekanism tile;
+    private final List<GuiPos> slotPosList = new ArrayList<>();
+    private final TileEntityMekanism tile;
 
     public GuiTransporterConfig(IGuiWrapper gui, int x, int y, TileEntityMekanism tile) {
         super(gui, x, y, 156, 95);

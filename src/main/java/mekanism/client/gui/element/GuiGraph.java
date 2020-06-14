@@ -14,8 +14,8 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiGraph extends GuiTexturedElement {
 
-    private static int textureWidth = 3;
-    private static int textureHeight = 2;
+    private static final int TEXTURE_WIDTH = 3;
+    private static final int TEXTURE_HEIGHT = 2;
 
     private final GuiInnerScreen innerScreen;
     private final LongList graphData = new LongArrayList();
@@ -64,7 +64,7 @@ public class GuiGraph extends GuiTexturedElement {
         for (int i = 0; i < size; i++) {
             long data = Math.min(currentScale, graphData.getLong(i));
             int relativeHeight = (int) (data * height / (double) currentScale);
-            blit(x + i, y + height - relativeHeight, 0, 0, 1, 1, textureWidth, textureHeight);
+            blit(x + i, y + height - relativeHeight, 0, 0, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
             RenderSystem.shadeModel(GL11.GL_SMOOTH);
             RenderSystem.disableAlphaTest();
@@ -72,14 +72,14 @@ public class GuiGraph extends GuiTexturedElement {
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
             RenderSystem.color4f(1, 1, 1, 0.2F + 0.8F * i / size);
-            blit(x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, textureWidth, textureHeight);
+            blit(x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
             int hoverIndex = mouseX - getButtonX();
             if (hoverIndex == i && mouseY >= getButtonY() && mouseY < getButtonY() + height) {
                 RenderSystem.color4f(1, 1, 1, 0.5F);
-                blit(x + i, y, 2, 0, 1, height, textureWidth, textureHeight);
+                blit(x + i, y, 2, 0, 1, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
                 MekanismRenderer.resetColor();
-                blit(x + i, y + height - relativeHeight, 0, 1, 1, 1, textureWidth, textureHeight);
+                blit(x + i, y + height - relativeHeight, 0, 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             }
 
             MekanismRenderer.resetColor();

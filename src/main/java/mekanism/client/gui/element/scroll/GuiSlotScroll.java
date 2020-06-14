@@ -22,11 +22,11 @@ public class GuiSlotScroll extends GuiRelativeElement {
     private static final ResourceLocation SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
     private static final ResourceLocation SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
 
-    private GuiScrollBar scrollBar;
+    private final GuiScrollBar scrollBar;
 
-    private int xSlots, ySlots;
-    private Supplier<List<IScrollableSlot>> slotList;
-    private ISlotClickHandler clickHandler;
+    private final int xSlots, ySlots;
+    private final Supplier<List<IScrollableSlot>> slotList;
+    private final ISlotClickHandler clickHandler;
 
     public GuiSlotScroll(IGuiWrapper gui, int x, int y, int xSlots, int ySlots, Supplier<List<IScrollableSlot>> slotList, ISlotClickHandler clickHandler) {
         super(gui, x, y, xSlots * 18 + 18, ySlots * 18);

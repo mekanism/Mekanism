@@ -24,14 +24,11 @@ public class WildcardMatcher {
                 }
             }
             if (fail) {
-                return continueSearch ? matches(wildcard, text, wildcardStartIndex, textIndex + 1, true) : false;
+                return continueSearch && matches(wildcard, text, wildcardStartIndex, textIndex + 1, true);
             }
             textIndex++;
         }
         // break if there's more text left and we didn't our query with a wildcard char
-        if (textIndex < text.length() && (wildcard.isEmpty() || wildcard.charAt(wildcard.length() - 1) != '*')) {
-            return false;
-        }
-        return true;
+        return textIndex >= text.length() || (!wildcard.isEmpty() && wildcard.charAt(wildcard.length() - 1) == '*');
     }
 }

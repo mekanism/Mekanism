@@ -67,7 +67,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
         DisassemblerMode mode = getMode(stack);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, mode));
@@ -75,7 +75,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity target, @Nonnull LivingEntity attacker) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
         FloatingLong energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
@@ -99,13 +99,13 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public float getDestroySpeed(ItemStack stack, BlockState state) {
+    public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         return energyContainer == null || energyContainer.isEmpty() ? 1 : getMode(stack).getEfficiency();
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity entityliving) {
+    public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity entityliving) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null) {
             energyContainer.extract(getDestroyEnergy(stack, state.getBlockHardness(world, pos)), Action.EXECUTE, AutomationType.MANUAL);
@@ -221,7 +221,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Nonnull
     @Override
     @Deprecated
-    public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
+    public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType equipmentSlot) {
         Multimap<String, AttributeModifier> multiMap = super.getAttributeModifiers(equipmentSlot);
         if (equipmentSlot == EquipmentSlotType.MAINHAND) {
             multiMap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
@@ -273,7 +273,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, MekanismConfig.gear.disassemblerExtendedMining),
         OFF(MekanismLang.DISASSEMBLER_OFF, 0, () -> true);
 
-        private static DisassemblerMode[] MODES = values();
+        private static final DisassemblerMode[] MODES = values();
 
         private final BooleanSupplier checkEnabled;
         private final ILangEntry langEntry;

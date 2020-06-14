@@ -49,7 +49,7 @@ public class StructureHelper {
      * @param structure structure to check
      * @param minBounds minimum size of the cuboid
      * @param maxBounds maximum size of the cuboid
-     * @param sides
+     * @param sides     sides to check
      * @param tolerance how many missing blocks are tolerated in the completed structure (will double count edges & triple count corners)
      * @return found cuboid, or null if it doesn't exist
      */

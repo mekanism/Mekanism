@@ -89,9 +89,7 @@ public class CommonPlayerTickHandler {
                 return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
             }
             Module module = Modules.load(stack, Modules.HYDRAULIC_PROPULSION_UNIT);
-            if (module != null && module.isEnabled()) {
-                return true;
-            }
+            return module != null && module.isEnabled();
         }
         return false;
     }

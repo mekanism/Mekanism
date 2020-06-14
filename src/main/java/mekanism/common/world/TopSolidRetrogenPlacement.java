@@ -22,7 +22,8 @@ public class TopSolidRetrogenPlacement extends TopSolid {
 
     @Nonnull
     @Override
-    public Stream<BlockPos> getPositions(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random random, FrequencyConfig config, BlockPos pos) {
+    public Stream<BlockPos> getPositions(@Nonnull IWorld world, @Nonnull ChunkGenerator<? extends GenerationSettings> generator, @Nonnull Random random,
+          FrequencyConfig config, @Nonnull BlockPos pos) {
         return IntStream.range(0, config.count).mapToObj(num -> {
             int i = random.nextInt(16) + pos.getX();
             int j = random.nextInt(16) + pos.getZ();

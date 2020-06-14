@@ -34,7 +34,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final double height = 0.45;
     private static final double offset = 0.015;
     //Note: this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support. 6 is used for null side
-    private static Int2ObjectMap<FluidRenderMap<Int2ObjectMap<Model3D>>> cachedLiquids = new Int2ObjectArrayMap<>(7);
+    private static final Int2ObjectMap<FluidRenderMap<Int2ObjectMap<Model3D>>> cachedLiquids = new Int2ObjectArrayMap<>(7);
 
     public RenderMechanicalPipe(TileEntityRendererDispatcher renderer) {
         super(renderer);

@@ -47,7 +47,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
       IHasSortableFilters {
 
     private HashList<TransporterFilter<?>> filters = new HashList<>();
-    private Finder strictFinder = stack -> filters.stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().modifies(stack));
+    private final Finder strictFinder = stack -> filters.stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().modifies(stack));
 
     public EnumColor color;
     public boolean autoEject;
@@ -141,7 +141,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         setConfigurationData(nbtTags);
     }

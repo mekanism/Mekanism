@@ -48,8 +48,9 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         return false;
     }
 
+    @Nonnull
     @Override
-    public FluidStack insertFluid(FluidStack stack, Direction side, Action action) {
+    public FluidStack insertFluid(@Nonnull FluidStack stack, Direction side, @Nonnull Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
         if (ret.getAmount() < stack.getAmount() && action.execute()) {
             getMultiblock().triggerValveTransfer(this);

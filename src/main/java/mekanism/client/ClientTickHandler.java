@@ -130,10 +130,7 @@ public class ClientTickHandler {
 
     public static boolean isVisionEnhancementOn(PlayerEntity player) {
         ModuleVisionEnhancementUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.HEAD), Modules.VISION_ENHANCEMENT_UNIT);
-        if (module != null && module.isEnabled() && module.getContainerEnergy().greaterThan(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get())) {
-            return true;
-        }
-        return false;
+        return module != null && module.isEnabled() && module.getContainerEnergy().greaterThan(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get());
     }
 
     public static boolean isFlamethrowerOn(PlayerEntity player) {

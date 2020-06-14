@@ -274,7 +274,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     protected static class MekaSuitMaterial extends BaseSpecialArmorMaterial {
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType slotType) {
+        public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
             return 0;
         }
 
@@ -283,6 +283,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
             return 0;
         }
 
+        @Nonnull
         @Override
         public String getName() {
             return "mekasuit";

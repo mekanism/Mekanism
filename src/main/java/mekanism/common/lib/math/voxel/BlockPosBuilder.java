@@ -5,8 +5,8 @@ import net.minecraft.util.math.BlockPos;
 
 public class BlockPosBuilder {
 
-    private int[] pos = new int[3];
-    private boolean[] set = new boolean[3];
+    private final int[] pos = new int[3];
+    private final boolean[] set = new boolean[3];
 
     public BlockPos build() {
         return new BlockPos(pos[0], pos[1], pos[2]);

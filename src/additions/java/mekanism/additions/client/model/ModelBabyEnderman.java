@@ -1,5 +1,6 @@
 package mekanism.additions.client.model;
 
+import javax.annotation.Nonnull;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
 import net.minecraft.client.renderer.entity.model.EndermanModel;
 
@@ -10,7 +11,7 @@ public class ModelBabyEnderman extends EndermanModel<EntityBabyEnderman> {
     }
 
     @Override
-    public void setRotationAngles(EntityBabyEnderman enderman, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(@Nonnull EntityBabyEnderman enderman, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         super.setRotationAngles(enderman, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         //Shift the head to be in the proper place for baby endermen
         bipedHead.rotationPointY += 5.0F;

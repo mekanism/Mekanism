@@ -51,10 +51,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileComponentConfig implements ITileComponent, ISpecificContainerTracker {
 
-    public TileEntityMekanism tile;
-    private Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
+    public final TileEntityMekanism tile;
+    private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
     //TODO: See if we can come up with a way of not needing this. The issue is we want this to be sorted, but getting the keyset of configInfo doesn't work for us
-    private List<TransmissionType> transmissionTypes = new ArrayList<>();
+    private final List<TransmissionType> transmissionTypes = new ArrayList<>();
 
     public TileComponentConfig(TileEntityMekanism tile, TransmissionType... types) {
         this.tile = tile;
@@ -112,7 +112,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     public void addSupported(TransmissionType type) {
         if (!configInfo.containsKey(type)) {
             //TODO: ISideConfiguration#getOrientation?
-            configInfo.put(type, new ConfigInfo(() -> tile.getDirection()));
+            configInfo.put(type, new ConfigInfo(tile::getDirection));
             transmissionTypes.add(type);
         }
     }

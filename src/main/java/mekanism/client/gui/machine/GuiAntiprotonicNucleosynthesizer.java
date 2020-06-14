@@ -41,8 +41,8 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntity
     private static final Vec3d from = new Vec3d(47, 50, 0), to = new Vec3d(147, 50, 0);
     private static final BoltRenderInfo boltRenderInfo = new BoltRenderInfo().color(Color.rgbad(0.45F, 0.45F, 0.5F, 1));
 
-    private BoltRenderer bolt = new BoltRenderer();
-    private Supplier<BoltEffect> boltSupplier = () -> new BoltEffect(boltRenderInfo, from, to, 15)
+    private final BoltRenderer bolt = new BoltRenderer();
+    private final Supplier<BoltEffect> boltSupplier = () -> new BoltEffect(boltRenderInfo, from, to, 15)
           .count((int) Math.min(Math.ceil(tile.getProcessRate() / 8F), 20))
           .size(1)
           .lifespan(1)

@@ -51,7 +51,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         StorageUtils.addStoredGas(stack, tooltip, true, false);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }

@@ -19,7 +19,7 @@ public class RecipeFormula {
     public NonNullList<ItemStack> input = NonNullList.withSize(9, ItemStack.EMPTY);
     @Nullable
     public ICraftingRecipe recipe;
-    private CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
+    private final CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
 
     public RecipeFormula(World world, NonNullList<ItemStack> inv) {
         for (int i = 0; i < 9; i++) {

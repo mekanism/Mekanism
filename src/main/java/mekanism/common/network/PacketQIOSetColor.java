@@ -18,7 +18,7 @@ public class PacketQIOSetColor {
     private final int extra;
     private final FrequencyIdentity identity;
     private final BlockPos tilePosition;
-    private Hand currentHand;
+    private final Hand currentHand;
 
     private PacketQIOSetColor(Type type, int extra, FrequencyIdentity identity, BlockPos tilePosition, Hand currentHand) {
         this.type = type;

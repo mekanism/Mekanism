@@ -29,7 +29,7 @@ public class SoundEventBuilder {
     private boolean replace;
     @Nullable
     private String translationKey;
-    private Map<ResourceLocation, SoundBuilder> soundBuilders = new HashMap<>();
+    private final Map<ResourceLocation, SoundBuilder> soundBuilders = new HashMap<>();
 
     private SoundEventBuilder(SoundEventRegistryObject<?> soundEventRO) {
         path = soundEventRO.getSoundEvent().getRegistryName().getPath();

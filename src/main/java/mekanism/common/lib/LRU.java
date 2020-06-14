@@ -6,12 +6,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 
 public class LRU<T> extends AbstractCollection<T> {
 
-    private Map<T, LRUEntry> lookupMap = new Object2ObjectOpenHashMap<>();
+    private final Map<T, LRUEntry> lookupMap = new Object2ObjectOpenHashMap<>();
 
-    private LRUEntry head, tail;
+    private final LRUEntry head, tail;
     private int size;
 
     public LRU() {
@@ -82,7 +83,7 @@ public class LRU<T> extends AbstractCollection<T> {
 
     private class LRUEntry {
 
-        private T value;
+        private final T value;
         private LRUEntry prev, next;
 
         private LRUEntry(T value) {
@@ -90,6 +91,7 @@ public class LRU<T> extends AbstractCollection<T> {
         }
     }
 
+    @Nonnull
     @Override
     public LRUIterator iterator() {
         return new LRUIterator();

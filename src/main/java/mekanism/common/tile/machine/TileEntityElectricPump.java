@@ -82,7 +82,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     /**
      * The nodes that have full sources near them or in them
      */
-    private Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
+    private final Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
 
     private MachineEnergyContainer<TileEntityElectricPump> energyContainer;
     private FluidInventorySlot inputSlot;
@@ -289,7 +289,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundNBT nbtTags) {
         super.read(nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
         suckedLastOperation = nbtTags.getBoolean(NBTConstants.SUCKED_LAST_OPERATION);

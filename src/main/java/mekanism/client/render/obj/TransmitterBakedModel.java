@@ -209,7 +209,7 @@ public class TransmitterBakedModel implements IBakedModel {
 
     public static class QuickHash {
 
-        private Object[] objs;
+        private final Object[] objs;
 
         public QuickHash(Object... objs) {
             this.objs = objs;
@@ -217,6 +217,7 @@ public class TransmitterBakedModel implements IBakedModel {
 
         @Override
         public int hashCode() {
+            //TODO: Cache the hashcode?
             return Arrays.hashCode(objs);
         }
 
@@ -226,9 +227,7 @@ public class TransmitterBakedModel implements IBakedModel {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == this)
-                return true;
-            return obj instanceof QuickHash && Arrays.deepEquals(objs, ((QuickHash) obj).objs);
+            return obj == this || obj instanceof QuickHash && Arrays.deepEquals(objs, ((QuickHash) obj).objs);
         }
     }
  }

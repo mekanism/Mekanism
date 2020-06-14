@@ -11,7 +11,7 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketRadiationData {
 
-    private RadiationPacketType type;
+    private final RadiationPacketType type;
     private RadiationScale scale;
     private double radiation;
 

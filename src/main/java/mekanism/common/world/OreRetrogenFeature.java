@@ -20,7 +20,7 @@ public class OreRetrogenFeature extends OreFeature {
     }
 
     @Override
-    public boolean place(@Nonnull IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, OreFeatureConfig config) {
+    public boolean place(@Nonnull IWorld world, @Nonnull ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, OreFeatureConfig config) {
         float angle = rand.nextFloat() * (float) Math.PI;
         float f1 = (float) config.size / 8.0F;
         int i = MathHelper.ceil((f1 + 1.0F) / 2.0F);

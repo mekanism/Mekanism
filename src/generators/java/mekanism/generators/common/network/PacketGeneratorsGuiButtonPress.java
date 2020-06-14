@@ -108,7 +108,7 @@ public class PacketGeneratorsGuiButtonPress {
             return null;
         });
 
-        private BiFunction<TileEntityMekanism, Integer, INamedContainerProvider> providerFromTile;
+        private final BiFunction<TileEntityMekanism, Integer, INamedContainerProvider> providerFromTile;
 
         ClickedGeneratorsTileButton(BiFunction<TileEntityMekanism, Integer, INamedContainerProvider> providerFromTile) {
             this.providerFromTile = providerFromTile;

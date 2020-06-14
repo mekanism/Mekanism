@@ -10,9 +10,9 @@ import net.minecraft.world.World;
 
 public class SparkleAnimation {
 
-    private TileEntity tile;
-    private BlockPos corner1;
-    private BlockPos corner2;
+    private final TileEntity tile;
+    private final BlockPos corner1;
+    private final BlockPos corner2;
 
     public SparkleAnimation(TileEntity tile, BlockPos corner1, BlockPos corner2) {
         this.tile = tile;

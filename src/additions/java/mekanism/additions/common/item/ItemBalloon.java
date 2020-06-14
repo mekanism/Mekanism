@@ -42,7 +42,7 @@ public class ItemBalloon extends Item {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
         if (!world.isRemote) {
             Pos3D pos = new Pos3D(hand == Hand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).rotateYaw(player.renderYawOffset).translate(new Pos3D(player));
             world.addEntity(new EntityBalloon(world, pos.x - 0.5, pos.y - 0.25, pos.z - 0.5, color));
@@ -101,7 +101,7 @@ public class ItemBalloon extends Item {
     }
 
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand) {
+    public boolean itemInteractionForEntity(@Nonnull ItemStack stack, PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
         if (player.isSneaking()) {
             if (!player.world.isRemote) {
                 AxisAlignedBB bound = new AxisAlignedBB(entity.getPosX() - 0.2, entity.getPosY() - 0.5, entity.getPosZ() - 0.2,

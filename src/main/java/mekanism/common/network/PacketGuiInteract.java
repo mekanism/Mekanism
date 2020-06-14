@@ -40,11 +40,11 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
  */
 public class PacketGuiInteract {
 
-    private Type interactionType;
+    private final Type interactionType;
 
     private GuiInteraction interaction;
     private GuiInteractionItem itemInteraction;
-    private BlockPos tilePosition;
+    private final BlockPos tilePosition;
     private int extra;
     private ItemStack extraItem;
 
@@ -127,7 +127,7 @@ public class PacketGuiInteract {
             }
         });
 
-        private TriConsumer<TileEntityMekanism, PlayerEntity, ItemStack> consumerForTile;
+        private final TriConsumer<TileEntityMekanism, PlayerEntity, ItemStack> consumerForTile;
 
         GuiInteractionItem(TriConsumer<TileEntityMekanism, PlayerEntity, ItemStack> consumerForTile) {
             this.consumerForTile = consumerForTile;
@@ -342,7 +342,7 @@ public class PacketGuiInteract {
 
         ;
 
-        private TriConsumer<TileEntityMekanism, PlayerEntity, Integer> consumerForTile;
+        private final TriConsumer<TileEntityMekanism, PlayerEntity, Integer> consumerForTile;
 
         GuiInteraction(TriConsumer<TileEntityMekanism, PlayerEntity, Integer> consumerForTile) {
             this.consumerForTile = consumerForTile;

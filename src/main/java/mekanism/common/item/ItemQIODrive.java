@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemQIODrive extends Item implements IQIODriveItem {
 
-    private QIODriveTier tier;
+    private final QIODriveTier tier;
 
     public ItemQIODrive(QIODriveTier tier, Properties properties) {
         super(properties.maxStackSize(1));
@@ -34,8 +34,9 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
               QIOFrequency.formatItemCount(meta.getTypes()), QIOFrequency.formatItemCount(getTypeCapacity(stack))));
     }
 
+    @Nonnull
     @Override
-    public ITextComponent getDisplayName(ItemStack stack) {
+    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
         return super.getDisplayName(stack).applyTextStyle(tier.getBaseTier().getTextColor().textFormatting);
     }
 

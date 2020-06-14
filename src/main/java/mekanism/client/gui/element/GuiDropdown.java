@@ -12,9 +12,9 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum> extends GuiTexturedElement {
 
-    private Consumer<TYPE> handler;
-    private Supplier<TYPE> curType;
-    private TYPE[] options;
+    private final Consumer<TYPE> handler;
+    private final Supplier<TYPE> curType;
+    private final TYPE[] options;
 
     private boolean isOpen;
     private boolean isHolding;
@@ -31,11 +31,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum> extends GuiTex
     public void onClick(double mouseX, double mouseY) {
         super.onClick(mouseX, mouseY);
         isHolding = true;
-        if (isOpen && mouseY <= y + 11) {
-            setOpen(false);
-        } else {
-            setOpen(true);
-        }
+        setOpen(!isOpen || !(mouseY <= y + 11));
         minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
     }
 

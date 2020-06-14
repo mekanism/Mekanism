@@ -58,7 +58,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
  */
 public class PacketGuiButtonPress {
 
-    private Type type;
+    private final Type type;
     private ClickedItemButton itemButton;
     private ClickedTileButton tileButton;
     private ClickedEntityButton entityButton;
@@ -179,7 +179,7 @@ public class PacketGuiButtonPress {
         }),
         QIO_FREQUENCY_SELECT((stack, hand) -> new ContainerProvider(MekanismLang.QIO_FREQUENCY_SELECT, (i, inv, player) -> new QIOFrequencySelectItemContainer(i, inv, hand, stack)));
 
-        private BiFunction<ItemStack, Hand, INamedContainerProvider> providerFromItem;
+        private final BiFunction<ItemStack, Hand, INamedContainerProvider> providerFromItem;
 
         ClickedItemButton(BiFunction<ItemStack, Hand, INamedContainerProvider> providerFromItem) {
             this.providerFromItem = providerFromItem;
@@ -292,7 +292,7 @@ public class PacketGuiButtonPress {
             return null;
         });
 
-        private BiFunction<TileEntityMekanism, Integer, INamedContainerProvider> providerFromTile;
+        private final BiFunction<TileEntityMekanism, Integer, INamedContainerProvider> providerFromTile;
 
         ClickedTileButton(BiFunction<TileEntityMekanism, Integer, INamedContainerProvider> providerFromTile) {
             this.providerFromTile = providerFromTile;
@@ -336,7 +336,7 @@ public class PacketGuiButtonPress {
             return null;
         });
 
-        private Function<Entity, INamedContainerProvider> providerFromEntity;
+        private final Function<Entity, INamedContainerProvider> providerFromEntity;
 
         ClickedEntityButton(Function<Entity, INamedContainerProvider> providerFromEntity) {
             this.providerFromEntity = providerFromEntity;

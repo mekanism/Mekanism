@@ -23,9 +23,9 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
  */
 public class PacketGeneratorsGuiInteract {
 
-    private GeneratorsGuiInteraction interaction;
-    private BlockPos tilePosition;
-    private double extra;
+    private final GeneratorsGuiInteraction interaction;
+    private final BlockPos tilePosition;
+    private final double extra;
 
     public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, TileEntity tile) {
         this(interaction, tile.getPos());
@@ -90,7 +90,7 @@ public class PacketGeneratorsGuiInteract {
             }
         });
 
-        private TriConsumer<TileEntityMekanism, PlayerEntity, Double> consumerForTile;
+        private final TriConsumer<TileEntityMekanism, PlayerEntity, Double> consumerForTile;
 
         GeneratorsGuiInteraction(TriConsumer<TileEntityMekanism, PlayerEntity, Double> consumerForTile) {
             this.consumerForTile = consumerForTile;

@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiDigitalIconToggle;
@@ -30,7 +31,7 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> {
 
     private GuiTextField searchField;
-    private Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '\"', '\'', '|', '(', ')', ':');
+    private final Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '\"', '\'', '|', '(', ')', ':');
 
     {
         // include all search prefix chars
@@ -96,7 +97,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void resize(Minecraft minecraft, int sizeX, int sizeY) {
+    public void resize(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
         super.resize(minecraft, sizeX, sizeY);
         container.updateSearch(searchField.getText());
     }

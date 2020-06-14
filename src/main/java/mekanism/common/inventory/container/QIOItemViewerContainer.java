@@ -336,7 +336,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     public static class ItemSlotData implements IScrollableSlot {
 
         private final HashedItem itemType;
-        private long count;
+        private final long count;
 
         private ItemSlotData(HashedItem itemType, long count) {
             this.itemType = itemType;

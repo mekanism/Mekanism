@@ -10,8 +10,8 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketRobit {
 
-    private RobitPacketType activeType;
-    private int entityId;
+    private final RobitPacketType activeType;
+    private final int entityId;
     private ITextComponent name;
 
     public PacketRobit(RobitPacketType type, int entityId) {

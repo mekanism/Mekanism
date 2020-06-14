@@ -111,7 +111,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     @Override
-    public float getDestroySpeed(ItemStack stack, BlockState state) {
+    public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         ModuleExcavationEscalationUnit module = Modules.load(stack, Modules.EXCAVATION_ESCALATION_UNIT);
         double efficiency = module == null || !module.isEnabled() ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getEfficiency();
@@ -119,7 +119,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity entityliving) {
+    public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity entityliving) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null) {
             energyContainer.extract(getDestroyEnergy(stack, state.getBlockHardness(world, pos), false), Action.EXECUTE, AutomationType.MANUAL);

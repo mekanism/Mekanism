@@ -33,7 +33,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
      */
     private static final int FILTER_COUNT = 3;
 
-    private Map<OredictionificatorFilter, ItemStack> renderStacks = new Object2ObjectOpenHashMap<>();
+    private final Map<OredictionificatorFilter, ItemStack> renderStacks = new Object2ObjectOpenHashMap<>();
     private GuiScrollBar scrollBar;
 
     public GuiOredictionificator(MekanismTileContainer<TileEntityOredictionificator> container, PlayerInventory inv, ITextComponent title) {

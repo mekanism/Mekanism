@@ -37,7 +37,7 @@ public class ItemCraftingFormula extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemStack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         NonNullList<ItemStack> inv = getInventory(itemStack);
         if (inv != null) {
             List<ItemStack> stacks = new ArrayList<>();
@@ -64,7 +64,7 @@ public class ItemCraftingFormula extends Item {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             if (!world.isRemote) {

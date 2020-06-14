@@ -12,7 +12,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
 
-    private Supplier<QIOFrequency> frequencySupplier;
+    private final Supplier<QIOFrequency> frequencySupplier;
 
     public GuiQIOFrequencyDataScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<QIOFrequency> frequencySupplier) {
         super(gui, x, y, width, height);

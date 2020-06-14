@@ -15,10 +15,10 @@ import net.minecraft.util.SoundEvent;
 
 public final class HolidayManager {
 
-    private static Calendar calendar = Calendar.getInstance();
+    private static final Calendar calendar = Calendar.getInstance();
 
-    private static List<Holiday> holidays = new ArrayList<>();
-    private static List<Holiday> holidaysNotified = new ArrayList<>();
+    private static final List<Holiday> holidays = new ArrayList<>();
+    private static final List<Holiday> holidaysNotified = new ArrayList<>();
 
     public static void init() {
         if (MekanismConfig.client.holidays.get()) {

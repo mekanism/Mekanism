@@ -57,13 +57,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  */
 public class SoundHandler {
 
-    private static Set<UUID> jetpackSounds = new ObjectOpenHashSet<>();
-    private static Set<UUID> scubaMaskSounds = new ObjectOpenHashSet<>();
-    private static Set<UUID> flamethrowerSounds = new ObjectOpenHashSet<>();
-    private static Set<UUID> gravitationalModulationSounds = new ObjectOpenHashSet<>();
+    private static final Set<UUID> jetpackSounds = new ObjectOpenHashSet<>();
+    private static final Set<UUID> scubaMaskSounds = new ObjectOpenHashSet<>();
+    private static final Set<UUID> flamethrowerSounds = new ObjectOpenHashSet<>();
+    private static final Set<UUID> gravitationalModulationSounds = new ObjectOpenHashSet<>();
     public static Map<RadiationScale, GeigerSound> radiationSoundMap = new HashMap<>();
 
-    private static Long2ObjectMap<ISound> soundMap = new Long2ObjectOpenHashMap<>();
+    private static final Long2ObjectMap<ISound> soundMap = new Long2ObjectOpenHashMap<>();
     private static boolean IN_MUFFLED_CHECK = false;
     private static SoundEngine soundEngine;
 
@@ -215,7 +215,7 @@ public class SoundHandler {
         // Choose an interval between 60-80 ticks (3-4 seconds) to check for muffling changes. We do this
         // to ensure that not every tile sound tries to run on the same tick and thus create
         // uneven spikes of CPU usage
-        private int checkInterval = 20 + ThreadLocalRandom.current().nextInt(20);
+        private final int checkInterval = 20 + ThreadLocalRandom.current().nextInt(20);
 
         TileTickableSound(SoundEvent soundEvent, SoundCategory category, BlockPos pos, float volume) {
             super(soundEvent, category);

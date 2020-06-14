@@ -15,12 +15,12 @@ import net.minecraft.world.World;
 
 public class MultiblockManager<T extends MultiblockData> {
 
-    private static Set<MultiblockManager<?>> managers = new ObjectOpenHashSet<>();
+    private static final Set<MultiblockManager<?>> managers = new ObjectOpenHashSet<>();
 
-    private String name;
+    private final String name;
 
-    private Supplier<MultiblockCache<T>> cacheSupplier;
-    private Supplier<IStructureValidator<T>> validatorSupplier;
+    private final Supplier<MultiblockCache<T>> cacheSupplier;
+    private final Supplier<IStructureValidator<T>> validatorSupplier;
 
     /**
      * A map containing references to all multiblock inventory caches.

@@ -16,10 +16,10 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class PlayerState {
 
-    private Set<UUID> activeJetpacks = new ObjectOpenHashSet<>();
-    private Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
-    private Set<UUID> activeGravitationalModulators = new ObjectOpenHashSet<>();
-    private Set<UUID> activeFlamethrowers = new ObjectOpenHashSet<>();
+    private final Set<UUID> activeJetpacks = new ObjectOpenHashSet<>();
+    private final Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
+    private final Set<UUID> activeGravitationalModulators = new ObjectOpenHashSet<>();
+    private final Set<UUID> activeFlamethrowers = new ObjectOpenHashSet<>();
 
     private IWorld world;
 

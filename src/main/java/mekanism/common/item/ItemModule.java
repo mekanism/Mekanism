@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemModule extends Item implements IModuleItem {
 
-    private ModuleData<?> moduleData;
+    private final ModuleData<?> moduleData;
 
     public ItemModule(ModuleData<?> moduleData, Properties properties) {
         super(properties.maxStackSize(moduleData.getMaxStackSize()).rarity(Rarity.UNCOMMON));
@@ -33,8 +33,9 @@ public class ItemModule extends Item implements IModuleItem {
         return moduleData;
     }
 
+    @Nonnull
     @Override
-    public Rarity getRarity(ItemStack stack) {
+    public Rarity getRarity(@Nonnull ItemStack stack) {
         return moduleData.getRarity();
     }
 
@@ -52,6 +53,7 @@ public class ItemModule extends Item implements IModuleItem {
         }
     }
 
+    @Nonnull
     @Override
     public String getTranslationKey() {
         return moduleData.getTranslationKey();

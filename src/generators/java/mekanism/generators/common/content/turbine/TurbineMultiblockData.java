@@ -1,10 +1,11 @@
 package mekanism.generators.common.content.turbine;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
@@ -168,6 +169,7 @@ public class TurbineMultiblockData extends MultiblockData {
         return lowerVolume * GAS_PER_TANK;
     }
 
+    @Nonnull
     public FloatingLong getEnergyCapacity() {
         return energyCapacity;
     }

@@ -16,9 +16,9 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketQIOItemViewerSlotInteract {
 
-    private Type type;
-    private HashedItem itemType;
-    private int count;
+    private final Type type;
+    private final HashedItem itemType;
+    private final int count;
 
     private PacketQIOItemViewerSlotInteract(Type type, HashedItem itemType, int count) {
         this.type = type;

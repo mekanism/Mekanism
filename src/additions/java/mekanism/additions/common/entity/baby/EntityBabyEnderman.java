@@ -54,7 +54,7 @@ public class EntityBabyEnderman extends EndermanEntity {
     }
 
     @Override
-    protected int getExperiencePoints(PlayerEntity player) {
+    protected int getExperiencePoints(@Nonnull PlayerEntity player) {
         if (isChild()) {
             experienceValue = (int) (experienceValue * 2.5F);
         }
@@ -67,7 +67,7 @@ public class EntityBabyEnderman extends EndermanEntity {
     }
 
     @Override
-    protected float getStandingEyeHeight(Pose pose, EntitySize size) {
+    protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntitySize size) {
         return this.isChild() ? 1.36F : super.getStandingEyeHeight(pose, size);
     }
 }
