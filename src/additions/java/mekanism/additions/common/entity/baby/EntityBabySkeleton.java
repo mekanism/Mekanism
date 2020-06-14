@@ -2,6 +2,7 @@ package mekanism.additions.common.entity.baby;
 
 import javax.annotation.Nonnull;
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.registries.AdditionsItems;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
@@ -9,9 +10,11 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class EntityBabySkeleton extends SkeletonEntity {
@@ -69,5 +72,10 @@ public class EntityBabySkeleton extends SkeletonEntity {
     @Override
     protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntitySize size) {
         return this.isChild() ? 0.93F : super.getStandingEyeHeight(pose, size);
+    }
+
+    @Override
+    public ItemStack getPickedResult(RayTraceResult target) {
+        return AdditionsItems.BABY_SKELETON_SPAWN_EGG.getItemStack();
     }
 }

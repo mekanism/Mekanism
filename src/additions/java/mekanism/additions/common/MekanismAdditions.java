@@ -117,8 +117,8 @@ public class MekanismAdditions implements IModule {
             ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_SKELETON.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_SKELETON);
             ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_STRAY.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_STRAY);
             ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_WITHER_SKELETON.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_WITHER_SKELETON);
-            Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
         });
+        Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }
 
     @SafeVarargs
@@ -134,9 +134,8 @@ public class MekanismAdditions implements IModule {
                 return stack;
             }
         };
-        //TODO: Remove this when we can, for now just lazy add the dispense behavior, and middle clicking
+        //TODO: Remove this when we can, for now just lazy add the dispense behavior
         for (ItemRegistryObject<AdditionsSpawnEggItem> spawnEgg : spawnEggs) {
-            spawnEgg.getItem().addToEggLookup();
             DispenserBlock.registerDispenseBehavior(spawnEgg, dispenseBehavior);
         }
     }

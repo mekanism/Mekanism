@@ -2,6 +2,7 @@ package mekanism.additions.common.entity.baby;
 
 import javax.annotation.Nonnull;
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.registries.AdditionsItems;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
@@ -9,9 +10,11 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -81,5 +84,10 @@ public class EntityBabyCreeper extends CreeperEntity {
             remove();
             spawnLingeringCloud();
         }
+    }
+
+    @Override
+    public ItemStack getPickedResult(RayTraceResult target) {
+        return AdditionsItems.BABY_CREEPER_SPAWN_EGG.getItemStack();
     }
 }

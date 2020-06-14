@@ -31,8 +31,4 @@ public class AdditionsSpawnEggItem extends SpawnEggItem {
         }
         return entityTypeRO.getEntityType();
     }
-
-    public void addToEggLookup() {
-        EGGS.put(entityTypeRO.getEntityType(), this);
-    }
 }
