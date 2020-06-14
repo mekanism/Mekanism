@@ -5,7 +5,8 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.ChemicalTankBuilder.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -152,7 +153,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     private class FuelTank extends BasicGasTank {
 
         protected FuelTank(@Nullable IContentsListener listener) {
-            super(MAX_GAS, notExternal, alwaysTrueBi, gas -> gas.has(Fuel.class), listener);
+            super(MAX_GAS, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas.has(Fuel.class), null, listener);
         }
 
         @Override

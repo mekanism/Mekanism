@@ -6,9 +6,10 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockGasTank;
+import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
@@ -29,9 +30,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     private static final long MAX_OUTPUT_GAS = 1_000;
 
     @ContainerSync
-    public MultiblockGasTank<SPSMultiblockData> inputTank;
+    public IGasTank inputTank;
     @ContainerSync
-    public MultiblockGasTank<SPSMultiblockData> outputTank;
+    public IGasTank outputTank;
 
     public SyncableCoilData coilData = new SyncableCoilData();
 
@@ -48,11 +49,10 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
         super(tile);
-
-        gasTanks.add(inputTank = MultiblockGasTank.create(this, tile, this::getMaxInputGas,
+        gasTanks.add(inputTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getMaxInputGas,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(), (stack, automationType) -> isFormed(),
               gas -> gas == MekanismGases.POLONIUM.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
-        gasTanks.add(outputTank = MultiblockGasTank.create(this, tile, () -> MAX_OUTPUT_GAS,
+        gasTanks.add(outputTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> MAX_OUTPUT_GAS,
               (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(),
               gas -> gas == MekanismGases.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
     }

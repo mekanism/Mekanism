@@ -6,8 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -43,13 +42,8 @@ public class InfusionRecipeData extends ChemicalRecipeData<InfuseType, InfusionS
     }
 
     @Override
-    protected IInfusionTank createTank() {
-        return BasicInfusionTank.createDummy(Long.MAX_VALUE);
-    }
-
-    @Override
-    protected IInfusionTank createTank(long capacity, Predicate<@NonNull InfuseType> validator) {
-        return BasicInfusionTank.create(capacity, validator, null);
+    protected ChemicalTankBuilder<InfuseType, InfusionStack, IInfusionTank> getTankBuilder() {
+        return ChemicalTankBuilder.INFUSION;
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
@@ -60,11 +60,11 @@ public class RateLimitMultiTankGasHandler extends ItemStackMekanismGasHandler {
         }
 
         public static GasTankSpec create(LongSupplier rate, LongSupplier capacity) {
-            return new GasTankSpec(rate, capacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue);
+            return new GasTankSpec(rate, capacity, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue);
         }
 
         public static GasTankSpec createFillOnly(LongSupplier rate, LongSupplier capacity, Predicate<@NonNull Gas> isValid) {
-            return new GasTankSpec(rate, capacity, (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, isValid);
+            return new GasTankSpec(rate, capacity, (item, automationType) -> automationType != AutomationType.EXTERNAL, ChemicalTankBuilder.GAS.alwaysTrueBi, isValid);
         }
 
         public boolean isValid(@NonNull Gas gas) {

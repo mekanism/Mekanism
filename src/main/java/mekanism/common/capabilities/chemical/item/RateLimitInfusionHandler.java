@@ -11,7 +11,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.inventory.AutomationType;
@@ -22,7 +22,7 @@ import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.Rate
 public class RateLimitInfusionHandler extends ItemStackMekanismInfusionHandler {
 
     public static RateLimitInfusionHandler create(LongSupplier rate, LongSupplier capacity) {
-        return create(rate, capacity, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrue);
+        return create(rate, capacity, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrue);
     }
 
     public static RateLimitInfusionHandler create(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,

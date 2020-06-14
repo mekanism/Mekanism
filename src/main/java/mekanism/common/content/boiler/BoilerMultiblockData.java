@@ -8,13 +8,14 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.MathUtils;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockGasTank;
+import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
@@ -49,11 +50,11 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     public static final double COOLANT_COOLING_EFFICIENCY = 0.4;
 
     @ContainerSync
-    public MultiblockGasTank<BoilerMultiblockData> superheatedCoolantTank, cooledCoolantTank;
+    public IGasTank superheatedCoolantTank, cooledCoolantTank;
     @ContainerSync
     public MultiblockFluidTank<BoilerMultiblockData> waterTank;
     @ContainerSync
-    public MultiblockGasTank<BoilerMultiblockData> steamTank;
+    public IGasTank steamTank;
     @ContainerSync
     public MultiblockHeatCapacitor<BoilerMultiblockData> heatCapacitor;
 
@@ -81,15 +82,15 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     public BoilerMultiblockData(TileEntityBoilerCasing tile) {
         super(tile);
-        superheatedCoolantTank = MultiblockGasTank.create(this, tile, this::getSuperheatedCoolantTankCapacity,
+        superheatedCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getSuperheatedCoolantTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(),
               gas -> gas.has(HeatedCoolant.class));
         waterTank = MultiblockFluidTank.input(this, tile, this::getWaterTankCapacity, fluid -> fluid.getFluid().isIn(FluidTags.WATER));
         fluidTanks.add(waterTank);
-        steamTank = MultiblockGasTank.create(this, tile, this::getSteamTankCapacity,
+        steamTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getSteamTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas == MekanismGases.STEAM.getChemical());
-        cooledCoolantTank = MultiblockGasTank.create(this, tile, this::getCooledCoolantTankCapacity,
+        cooledCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getCooledCoolantTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas.has(CooledCoolant.class));
         gasTanks.addAll(Arrays.asList(steamTank, superheatedCoolantTank, cooledCoolantTank));

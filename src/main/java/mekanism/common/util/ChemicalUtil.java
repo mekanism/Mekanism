@@ -16,20 +16,17 @@ import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.inventory.AutomationType;
@@ -181,20 +178,21 @@ public class ChemicalUtil {
 
     public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IChemicalProvider<?> provider) {
         if (provider instanceof IGasProvider) {
-            return getFilledVariant(toFill, BasicGasTank.createDummy(capacity), (IGasProvider) provider, NBTConstants.GAS_TANKS);
+            return getFilledVariant(toFill, ChemicalTankBuilder.GAS, capacity, (IGasProvider) provider, NBTConstants.GAS_TANKS);
         } else if (provider instanceof IInfuseTypeProvider) {
-            return getFilledVariant(toFill, BasicInfusionTank.createDummy(capacity), (IInfuseTypeProvider) provider, NBTConstants.INFUSION_TANKS);
+            return getFilledVariant(toFill, ChemicalTankBuilder.INFUSION, capacity, (IInfuseTypeProvider) provider, NBTConstants.INFUSION_TANKS);
         } else if (provider instanceof IPigmentProvider) {
-            return getFilledVariant(toFill, BasicPigmentTank.createDummy(capacity), (IPigmentProvider) provider, NBTConstants.PIGMENT_TANKS);
+            return getFilledVariant(toFill, ChemicalTankBuilder.PIGMENT, capacity, (IPigmentProvider) provider, NBTConstants.PIGMENT_TANKS);
         } else if (provider instanceof ISlurryProvider) {
-            return getFilledVariant(toFill, BasicSlurryTank.createDummy(capacity), (ISlurryProvider) provider, NBTConstants.SLURRY_TANKS);
+            return getFilledVariant(toFill, ChemicalTankBuilder.SLURRY, capacity, (ISlurryProvider) provider, NBTConstants.SLURRY_TANKS);
         } else {
             throw new IllegalStateException("Unknown Chemical Type: " + provider.getChemical().getClass().getName());
         }
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
-    ItemStack getFilledVariant(ItemStack toFill, TANK dummyTank, IChemicalProvider<CHEMICAL> provider, String key) {
+    ItemStack getFilledVariant(ItemStack toFill, ChemicalTankBuilder<CHEMICAL, STACK, TANK> tankBuilder, long capacity, IChemicalProvider<CHEMICAL> provider, String key) {
+        TANK dummyTank = tankBuilder.createDummy(capacity);
         //Manually handle filling it as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
         dummyTank.setStack((STACK) provider.getStack(dummyTank.getCapacity()));
         ItemDataUtils.setList(toFill, key, DataHandlerUtils.writeContainers(Collections.singletonList(dummyTank)));

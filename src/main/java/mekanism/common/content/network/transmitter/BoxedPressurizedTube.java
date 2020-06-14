@@ -11,21 +11,17 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.merged.BoxedChemical;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
@@ -66,10 +62,10 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         super(tile, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY);
         this.tier = Attribute.getTier(blockProvider.getBlock(), TubeTier.class);
         chemicalTank = MergedChemicalTank.create(
-              BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this),
-              BasicInfusionTank.create(getCapacity(), BasicInfusionTank.alwaysFalse, BasicInfusionTank.alwaysTrue, BasicInfusionTank.alwaysTrue, this),
-              BasicPigmentTank.create(getCapacity(), BasicPigmentTank.alwaysFalse, BasicPigmentTank.alwaysTrue, BasicPigmentTank.alwaysTrue, this),
-              BasicSlurryTank.create(getCapacity(), BasicSlurryTank.alwaysFalse, BasicSlurryTank.alwaysTrue, BasicSlurryTank.alwaysTrue, this)
+              ChemicalTankBuilder.GAS.createAllValid(getCapacity(), this),
+              ChemicalTankBuilder.INFUSION.createAllValid(getCapacity(), this),
+              ChemicalTankBuilder.PIGMENT.createAllValid(getCapacity(), this),
+              ChemicalTankBuilder.SLURRY.createAllValid(getCapacity(), this)
         );
         gasTanks = Collections.singletonList(chemicalTank.getGasTank());
         infusionTanks = Collections.singletonList(chemicalTank.getInfusionTank());

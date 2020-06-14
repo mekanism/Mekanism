@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -38,7 +38,7 @@ import net.minecraft.item.ItemStack;
 public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemStackToGasRecipe> {
 
     public static final long MAX_GAS = 10_000;
-    public BasicGasTank gasTank;
+    public IGasTank gasTank;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
@@ -66,7 +66,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(gasTank = BasicGasTank.output(MAX_GAS, this));
+        builder.addTank(gasTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this));
         return builder.build();
     }
 

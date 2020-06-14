@@ -6,8 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentHandler.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
@@ -43,13 +42,8 @@ public class PigmentRecipeData extends ChemicalRecipeData<Pigment, PigmentStack,
     }
 
     @Override
-    protected IPigmentTank createTank() {
-        return BasicPigmentTank.createDummy(Long.MAX_VALUE);
-    }
-
-    @Override
-    protected IPigmentTank createTank(long capacity, Predicate<@NonNull Pigment> validator) {
-        return BasicPigmentTank.create(capacity, validator, null);
+    protected ChemicalTankBuilder<Pigment, PigmentStack, IPigmentTank> getTankBuilder() {
+        return ChemicalTankBuilder.PIGMENT;
     }
 
     @Override

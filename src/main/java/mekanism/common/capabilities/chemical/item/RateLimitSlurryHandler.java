@@ -11,7 +11,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.inventory.AutomationType;
@@ -22,7 +22,7 @@ import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.Rate
 public class RateLimitSlurryHandler extends ItemStackMekanismSlurryHandler {
 
     public static RateLimitSlurryHandler create(LongSupplier rate, LongSupplier capacity) {
-        return create(rate, capacity, BasicSlurryTank.alwaysTrueBi, BasicSlurryTank.alwaysTrueBi, BasicSlurryTank.alwaysTrue);
+        return create(rate, capacity, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrue);
     }
 
     public static RateLimitSlurryHandler create(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull Slurry, @NonNull AutomationType> canExtract,

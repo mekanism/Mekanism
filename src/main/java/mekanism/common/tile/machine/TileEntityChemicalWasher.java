@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -51,8 +51,8 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     public static final long MAX_SLURRY = 10_000;
     public static final int MAX_FLUID = 10_000;
     public BasicFluidTank fluidTank;
-    public BasicSlurryTank inputTank;
-    public BasicSlurryTank outputTank;
+    public ISlurryTank inputTank;
+    public ISlurryTank outputTank;
 
     public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
@@ -86,8 +86,8 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @Override
     public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
         ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurryWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputTank = BasicSlurryTank.input(MAX_SLURRY, slurry -> containsRecipe(recipe -> recipe.getChemicalInput().testType(slurry)), this));
-        builder.addTank(outputTank = BasicSlurryTank.output(MAX_SLURRY, this));
+        builder.addTank(inputTank = ChemicalTankBuilder.SLURRY.input(MAX_SLURRY, slurry -> containsRecipe(recipe -> recipe.getChemicalInput().testType(slurry)), this));
+        builder.addTank(outputTank = ChemicalTankBuilder.SLURRY.output(MAX_SLURRY, this));
         return builder.build();
     }
 

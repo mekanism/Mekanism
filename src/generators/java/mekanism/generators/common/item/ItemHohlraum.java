@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.text.EnumColor;
@@ -90,6 +90,7 @@ public class ItemHohlraum extends Item {
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(MekanismGeneratorsConfig.generators.hohlraumFillRate,
-              MekanismGeneratorsConfig.generators.hohlraumMaxGas, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL)));
+              MekanismGeneratorsConfig.generators.hohlraumMaxGas, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi,
+              gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL)));
     }
 }

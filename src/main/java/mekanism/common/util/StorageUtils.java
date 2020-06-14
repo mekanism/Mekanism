@@ -11,15 +11,12 @@ import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -159,7 +156,7 @@ public class StorageUtils {
      */
     @Nonnull
     public static GasStack getStoredGasFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, BasicGasTank.createDummy(Long.MAX_VALUE), NBTConstants.GAS_TANKS);
+        return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.GAS.createDummy(Long.MAX_VALUE), NBTConstants.GAS_TANKS);
     }
 
     /**
@@ -168,7 +165,7 @@ public class StorageUtils {
      */
     @Nonnull
     public static InfusionStack getStoredInfusionFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, BasicInfusionTank.createDummy(Long.MAX_VALUE), NBTConstants.INFUSION_TANKS);
+        return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.INFUSION.createDummy(Long.MAX_VALUE), NBTConstants.INFUSION_TANKS);
     }
 
     /**
@@ -177,7 +174,7 @@ public class StorageUtils {
      */
     @Nonnull
     public static PigmentStack getStoredPigmentFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, BasicPigmentTank.createDummy(Long.MAX_VALUE), NBTConstants.PIGMENT_TANKS);
+        return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.PIGMENT.createDummy(Long.MAX_VALUE), NBTConstants.PIGMENT_TANKS);
     }
 
     /**
@@ -186,7 +183,7 @@ public class StorageUtils {
      */
     @Nonnull
     public static SlurryStack getStoredSlurryFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, BasicSlurryTank.createDummy(Long.MAX_VALUE), NBTConstants.SLURRY_TANKS);
+        return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.SLURRY.createDummy(Long.MAX_VALUE), NBTConstants.SLURRY_TANKS);
     }
 
     @Nonnull

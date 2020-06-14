@@ -26,11 +26,6 @@ public abstract class MultiblockChemicalTank<CHEMICAL extends Chemical<CHEMICAL>
     protected final MULTIBLOCK multiblock;
     protected final TileEntityMultiblock<MULTIBLOCK> tile;
 
-    protected MultiblockChemicalTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity, Predicate<@NonNull CHEMICAL> validator) {
-        this(multiblock, tile, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(),
-              (stack, automationType) -> automationType != AutomationType.EXTERNAL || multiblock.isFormed(), validator, null, null);
-    }
-
     protected MultiblockChemicalTank(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, LongSupplier capacity,
           BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert,
           Predicate<@NonNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {

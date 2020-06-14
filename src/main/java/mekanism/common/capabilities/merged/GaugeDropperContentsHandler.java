@@ -8,10 +8,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.capabilities.CapabilityCache;
@@ -50,18 +47,19 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
     private GaugeDropperContentsHandler() {
         mergedTank = MergedTank.create(
               new RateLimitFluidTank(TRANSFER_RATE, () -> CAPACITY, this),
-              new RateLimitGasTank(() -> TRANSFER_RATE, () -> CAPACITY, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, null,
-                    gasHandler = new DynamicGasHandler(side -> gasTanks, InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE,
-                          () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks))),
-              new RateLimitInfusionTank(() -> TRANSFER_RATE, () -> CAPACITY, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrue,
-                    infusionHandler = new DynamicInfusionHandler(side -> infusionTanks, InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE,
-                          () -> onContentsChanged(NBTConstants.INFUSION_TANKS, infusionTanks))),
-              new RateLimitPigmentTank(() -> TRANSFER_RATE, () -> CAPACITY, BasicPigmentTank.alwaysTrueBi, BasicPigmentTank.alwaysTrueBi, BasicPigmentTank.alwaysTrue,
-                    pigmentHandler = new DynamicPigmentHandler(side -> pigmentTanks, InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE,
+              new RateLimitGasTank(() -> TRANSFER_RATE, () -> CAPACITY, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
+                    ChemicalTankBuilder.GAS.alwaysTrue, null, gasHandler = new DynamicGasHandler(side -> gasTanks, InteractPredicate.ALWAYS_TRUE,
+                    InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks))),
+              new RateLimitInfusionTank(() -> TRANSFER_RATE, () -> CAPACITY, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
+                    ChemicalTankBuilder.INFUSION.alwaysTrue, infusionHandler = new DynamicInfusionHandler(side -> infusionTanks, InteractPredicate.ALWAYS_TRUE,
+                    InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.INFUSION_TANKS, infusionTanks))),
+              new RateLimitPigmentTank(() -> TRANSFER_RATE, () -> CAPACITY, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
+                    ChemicalTankBuilder.PIGMENT.alwaysTrue, pigmentHandler = new DynamicPigmentHandler(side -> pigmentTanks, InteractPredicate.ALWAYS_TRUE,
+                    InteractPredicate.ALWAYS_TRUE,
                           () -> onContentsChanged(NBTConstants.PIGMENT_TANKS, pigmentTanks))),
-              new RateLimitSlurryTank(() -> TRANSFER_RATE, () -> CAPACITY, BasicSlurryTank.alwaysTrueBi, BasicSlurryTank.alwaysTrueBi, BasicSlurryTank.alwaysTrue,
-                    slurryHandler = new DynamicSlurryHandler(side -> slurryTanks, InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE,
-                          () -> onContentsChanged(NBTConstants.SLURRY_TANKS, slurryTanks)))
+              new RateLimitSlurryTank(() -> TRANSFER_RATE, () -> CAPACITY, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
+                    ChemicalTankBuilder.SLURRY.alwaysTrue, slurryHandler = new DynamicSlurryHandler(side -> slurryTanks, InteractPredicate.ALWAYS_TRUE,
+                    InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.SLURRY_TANKS, slurryTanks)))
         );
     }
 

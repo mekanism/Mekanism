@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -46,8 +46,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     private static final int BASE_DURATION = 100;
     private static final long MAX_GAS = 10_000;
     public BasicFluidTank inputFluidTank;
-    public BasicGasTank inputGasTank;
-    public BasicGasTank outputGasTank;
+    public IGasTank inputGasTank;
+    public IGasTank outputGasTank;
 
     private final IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
@@ -81,9 +81,9 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputGasTank = BasicGasTank.create(MAX_GAS, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi,
+        builder.addTank(inputGasTank = ChemicalTankBuilder.GAS.create(MAX_GAS, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi,
               gas -> containsRecipe(recipe -> recipe.getInputGas().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
-        builder.addTank(outputGasTank = BasicGasTank.output(MAX_GAS, this));
+        builder.addTank(outputGasTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this));
         return builder.build();
     }
 

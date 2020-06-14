@@ -17,20 +17,15 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.merged.BoxedChemical;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
@@ -40,10 +35,7 @@ import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
-import mekanism.common.capabilities.chemical.variable.VariableCapacityGasTank;
-import mekanism.common.capabilities.chemical.variable.VariableCapacityInfusionTank;
-import mekanism.common.capabilities.chemical.variable.VariableCapacityPigmentTank;
-import mekanism.common.capabilities.chemical.variable.VariableCapacitySlurryTank;
+import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTankBuilder;
 import mekanism.common.content.network.distribution.BoxedChemicalTransmitterSaveTarget;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
@@ -79,10 +71,10 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     public BoxedChemicalNetwork(UUID networkID) {
         super(networkID);
         chemicalTank = MergedChemicalTank.create(
-              VariableCapacityGasTank.create(this::getCapacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, this),
-              VariableCapacityInfusionTank.create(this::getCapacity, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrue, this),
-              VariableCapacityPigmentTank.create(this::getCapacity, BasicPigmentTank.alwaysTrueBi, BasicPigmentTank.alwaysTrueBi, BasicPigmentTank.alwaysTrue, this),
-              VariableCapacitySlurryTank.create(this::getCapacity, BasicSlurryTank.alwaysTrueBi, BasicSlurryTank.alwaysTrueBi, BasicSlurryTank.alwaysTrue, this)
+              VariableCapacityChemicalTankBuilder.GAS.createAllValid(this::getCapacity, this),
+              VariableCapacityChemicalTankBuilder.INFUSION.createAllValid(this::getCapacity, this),
+              VariableCapacityChemicalTankBuilder.PIGMENT.createAllValid(this::getCapacity, this),
+              VariableCapacityChemicalTankBuilder.SLURRY.createAllValid(this::getCapacity, this)
         );
         gasTanks = Collections.singletonList(chemicalTank.getGasTank());
         infusionTanks = Collections.singletonList(chemicalTank.getInfusionTank());

@@ -9,12 +9,13 @@ import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockGasTank;
+import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
@@ -61,16 +62,16 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     public int fuelAssemblies = 1, surfaceArea;
 
     @ContainerSync
-    public MultiblockGasTank<FissionReactorMultiblockData> gasCoolantTank;
+    public IGasTank gasCoolantTank;
     @ContainerSync
     public MultiblockFluidTank<FissionReactorMultiblockData> fluidCoolantTank;
     @ContainerSync
-    public MultiblockGasTank<FissionReactorMultiblockData> fuelTank;
+    public IGasTank fuelTank;
 
     @ContainerSync
-    public MultiblockGasTank<FissionReactorMultiblockData> heatedCoolantTank;
+    public IGasTank heatedCoolantTank;
     @ContainerSync
-    public MultiblockGasTank<FissionReactorMultiblockData> wasteTank;
+    public IGasTank wasteTank;
     @ContainerSync
     public MultiblockHeatCapacitor<FissionReactorMultiblockData> heatCapacitor;
 
@@ -97,16 +98,16 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
               fluid -> fluid.getFluid().isIn(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
         fluidTanks.add(fluidCoolantTank);
-        gasCoolantTank = MultiblockGasTank.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
+        gasCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
               gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty());
-        fuelTank = MultiblockGasTank.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
+        fuelTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
               gas -> gas == MekanismGases.FISSILE_FUEL.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
-        heatedCoolantTank = MultiblockGasTank.create(this, tile, () -> getVolume() * HEATED_COOLANT_PER_VOLUME,
+        heatedCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> getVolume() * HEATED_COOLANT_PER_VOLUME,
               (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas == MekanismGases.STEAM.get() || gas.has(HeatedCoolant.class));
-        wasteTank = MultiblockGasTank.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
+        wasteTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
               (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas == MekanismGases.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
         gasTanks.addAll(Arrays.asList(fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank));

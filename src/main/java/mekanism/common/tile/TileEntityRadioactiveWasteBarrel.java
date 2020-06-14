@@ -4,8 +4,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -23,7 +23,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
 
     private static final float TOLERANCE = 0.05F;
 
-    private BasicGasTank gasTank;
+    private IGasTank gasTank;
     private float prevScale;
 
     public TileEntityRadioactiveWasteBarrel() {
@@ -34,8 +34,8 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSide(this::getDirection);
-        builder.addTank(gasTank = BasicGasTank.create(MekanismConfig.general.radioactiveWasteBarrelMaxGas.get(), BasicGasTank.alwaysTrueBi,
-              BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, ChemicalAttributeValidator.createStrict(GasAttributes.Radiation.class), this),
+        builder.addTank(gasTank = ChemicalTankBuilder.GAS.create(MekanismConfig.general.radioactiveWasteBarrelMaxGas.get(),
+              ChemicalAttributeValidator.createStrict(GasAttributes.Radiation.class), this),
               RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }

@@ -6,8 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -43,13 +42,8 @@ public class GasRecipeData extends ChemicalRecipeData<Gas, GasStack, IGasTank, I
     }
 
     @Override
-    protected IGasTank createTank() {
-        return BasicGasTank.createDummy(Long.MAX_VALUE);
-    }
-
-    @Override
-    protected IGasTank createTank(long capacity, Predicate<@NonNull Gas> validator) {
-        return BasicGasTank.create(capacity, validator, null);
+    protected ChemicalTankBuilder<Gas, GasStack, IGasTank> getTankBuilder() {
+        return ChemicalTankBuilder.GAS;
     }
 
     @Override

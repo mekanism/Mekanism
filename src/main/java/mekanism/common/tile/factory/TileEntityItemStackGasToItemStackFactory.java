@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -43,7 +43,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     private double secondaryEnergyPerTick;
     private long secondaryEnergyThisTick;
     private GasInventorySlot extraSlot;
-    private BasicGasTank gasTank;
+    private IGasTank gasTank;
 
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -57,7 +57,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(gasTank = BasicGasTank.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes,
+        builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes,
               gas -> containsRecipe(recipe -> recipe.getChemicalInput().testType(gas)), this));
         return builder.build();
     }
@@ -68,7 +68,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::getWorld, this, 7, 57));
     }
 
-    public BasicGasTank getGasTank() {
+    public IGasTank getGasTank() {
         return gasTank;
     }
 

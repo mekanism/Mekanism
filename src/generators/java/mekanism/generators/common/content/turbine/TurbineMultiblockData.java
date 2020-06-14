@@ -8,12 +8,12 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockGasTank;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -43,7 +43,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public static Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
 
     @ContainerSync
-    public MultiblockGasTank<TurbineMultiblockData> gasTank;
+    public IGasTank gasTank;
     @ContainerSync
     public IExtendedFluidTank ventTank;
     public List<IExtendedFluidTank> ventTanks;

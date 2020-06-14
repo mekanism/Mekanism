@@ -1,32 +1,26 @@
 package mekanism.common.capabilities.chemical.item;
 
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
@@ -37,14 +31,14 @@ import mekanism.common.tier.ChemicalTankTier;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class ChemicalTankRateLimitChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends RateLimitChemicalTank<CHEMICAL, STACK> {
+public abstract class ChemicalTankRateLimitChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>
+      extends RateLimitChemicalTank<CHEMICAL, STACK> {
 
     private final boolean isCreative;
 
-    private ChemicalTankRateLimitChemicalTank(ChemicalTankTier tier, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert, Predicate<@NonNull CHEMICAL> validator, @Nullable IContentsListener listener) {
-        super(tier::getOutput, tier::getStorage, canExtract, canInsert, validator, tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null,
-              listener);
+    private ChemicalTankRateLimitChemicalTank(ChemicalTankTier tier, ChemicalTankBuilder<CHEMICAL, STACK, ?> tankBuilder, @Nullable IContentsListener listener) {
+        super(tier::getOutput, tier::getStorage, tankBuilder.alwaysTrueBi, tankBuilder.alwaysTrueBi, tankBuilder.alwaysTrue,
+              tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
         isCreative = tier == ChemicalTankTier.CREATIVE;
     }
 
@@ -72,28 +66,28 @@ public abstract class ChemicalTankRateLimitChemicalTank<CHEMICAL extends Chemica
     public static class GasTankRateLimitChemicalTank extends ChemicalTankRateLimitChemicalTank<Gas, GasStack> implements IGasHandler, IGasTank {
 
         public GasTankRateLimitChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-            super(tier, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, listener);
+            super(tier, ChemicalTankBuilder.GAS, listener);
         }
     }
 
     public static class InfusionTankRateLimitChemicalTank extends ChemicalTankRateLimitChemicalTank<InfuseType, InfusionStack> implements IInfusionHandler, IInfusionTank {
 
         public InfusionTankRateLimitChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-            super(tier, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrueBi, BasicInfusionTank.alwaysTrue, listener);
+            super(tier, ChemicalTankBuilder.INFUSION, listener);
         }
     }
 
     public static class PigmentTankRateLimitChemicalTank extends ChemicalTankRateLimitChemicalTank<Pigment, PigmentStack> implements IPigmentHandler, IPigmentTank {
 
         public PigmentTankRateLimitChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-            super(tier, BasicPigmentTank.alwaysTrueBi, BasicPigmentTank.alwaysTrueBi, BasicPigmentTank.alwaysTrue, listener);
+            super(tier, ChemicalTankBuilder.PIGMENT, listener);
         }
     }
 
     public static class SlurryTankRateLimitChemicalTank extends ChemicalTankRateLimitChemicalTank<Slurry, SlurryStack> implements ISlurryHandler, ISlurryTank {
 
         public SlurryTankRateLimitChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
-            super(tier, BasicSlurryTank.alwaysTrueBi, BasicSlurryTank.alwaysTrueBi, BasicSlurryTank.alwaysTrue, listener);
+            super(tier, ChemicalTankBuilder.SLURRY, listener);
         }
     }
 }

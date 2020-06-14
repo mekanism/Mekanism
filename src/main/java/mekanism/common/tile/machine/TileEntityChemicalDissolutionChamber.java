@@ -5,20 +5,17 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.MergedChemicalTank;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -57,7 +54,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     public static final long MAX_GAS = 10_000;
     public static final int BASE_INJECT_USAGE = 1;
     public static final int BASE_TICKS_REQUIRED = 100;
-    public BasicGasTank injectTank;
+    public IGasTank injectTank;
     public MergedChemicalTank outputTank;
     public double injectUsage = BASE_INJECT_USAGE;
     public long injectUsageThisTick;
@@ -94,10 +91,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     protected void presetVariables() {
         outputTank = MergedChemicalTank.create(
-              BasicGasTank.ejectOutput(MAX_GAS, this),
-              BasicInfusionTank.ejectOutput(MAX_GAS, this),
-              BasicPigmentTank.ejectOutput(MAX_GAS, this),
-              BasicSlurryTank.ejectOutput(MAX_GAS, this)
+              ChemicalTankBuilder.GAS.ejectOutput(MAX_GAS, this),
+              ChemicalTankBuilder.INFUSION.ejectOutput(MAX_GAS, this),
+              ChemicalTankBuilder.PIGMENT.ejectOutput(MAX_GAS, this),
+              ChemicalTankBuilder.SLURRY.ejectOutput(MAX_GAS, this)
         );
     }
 
@@ -105,7 +102,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(injectTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
+        builder.addTank(injectTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
         builder.addTank(outputTank.getGasTank());
         return builder.build();
     }

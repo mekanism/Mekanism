@@ -6,8 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryHandler.IMekanismSlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
@@ -43,13 +42,8 @@ public class SlurryRecipeData extends ChemicalRecipeData<Slurry, SlurryStack, IS
     }
 
     @Override
-    protected ISlurryTank createTank() {
-        return BasicSlurryTank.createDummy(Long.MAX_VALUE);
-    }
-
-    @Override
-    protected ISlurryTank createTank(long capacity, Predicate<@NonNull Slurry> validator) {
-        return BasicSlurryTank.create(capacity, validator, null);
+    protected ChemicalTankBuilder<Slurry, SlurryStack, ISlurryTank> getTankBuilder() {
+        return ChemicalTankBuilder.SLURRY;
     }
 
     @Override

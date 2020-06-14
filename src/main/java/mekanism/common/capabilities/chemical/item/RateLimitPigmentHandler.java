@@ -11,7 +11,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.inventory.AutomationType;
@@ -22,7 +22,7 @@ import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.Rate
 public class RateLimitPigmentHandler extends ItemStackMekanismPigmentHandler {
 
     public static RateLimitPigmentHandler create(LongSupplier rate, LongSupplier capacity) {
-        return create(rate, capacity, BasicPigmentTank.alwaysTrueBi, BasicPigmentTank.alwaysTrueBi, BasicPigmentTank.alwaysTrue);
+        return create(rate, capacity, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrue);
     }
 
     public static RateLimitPigmentHandler create(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull Pigment, @NonNull AutomationType> canExtract,

@@ -7,7 +7,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -70,11 +70,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     /**
      * The amount of oxygen this block is storing.
      */
-    public BasicGasTank leftTank;
+    public IGasTank leftTank;
     /**
      * The amount of hydrogen this block is storing.
      */
-    public BasicGasTank rightTank;
+    public IGasTank rightTank;
     /**
      * The type of gas this block is outputting.
      */
@@ -143,8 +143,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(leftTank = BasicGasTank.output(MAX_GAS, this));
-        builder.addTank(rightTank = BasicGasTank.output(MAX_GAS, this));
+        builder.addTank(leftTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this));
+        builder.addTank(rightTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this));
         return builder.build();
     }
 

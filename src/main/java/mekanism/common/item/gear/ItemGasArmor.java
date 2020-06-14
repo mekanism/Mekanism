@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
 import mekanism.client.render.armor.CustomArmor;
@@ -87,6 +87,6 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear, IG
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(getFillRate(), getMaxGas(),
-              (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == getGasType().getChemical()));
+              (item, automationType) -> automationType != AutomationType.EXTERNAL, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas == getGasType().getChemical()));
     }
 }

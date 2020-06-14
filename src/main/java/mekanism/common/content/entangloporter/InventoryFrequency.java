@@ -6,14 +6,11 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.ChemicalUtils;
-import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -43,10 +40,10 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
       IInfusionTracker, IPigmentTracker, ISlurryTracker {
 
     private BasicFluidTank storedFluid;
-    private BasicGasTank storedGas;
-    private BasicInfusionTank storedInfusion;
-    private BasicPigmentTank storedPigment;
-    private BasicSlurryTank storedSlurry;
+    private IGasTank storedGas;
+    private IInfusionTank storedInfusion;
+    private IPigmentTank storedPigment;
+    private ISlurryTank storedSlurry;
     private IInventorySlot storedItem;
     public IEnergyContainer storedEnergy;
     private BasicHeatCapacitor storedHeat;
@@ -71,10 +68,10 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     private void presetVariables() {
         fluidTanks = Collections.singletonList(storedFluid = BasicFluidTank.create(MekanismConfig.general.entangloporterFluidBuffer.get(), this));
-        gasTanks = Collections.singletonList(storedGas = BasicGasTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
-        infusionTanks = Collections.singletonList(storedInfusion = BasicInfusionTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
-        pigmentTanks = Collections.singletonList(storedPigment = BasicPigmentTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
-        slurryTanks = Collections.singletonList(storedSlurry = BasicSlurryTank.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
+        gasTanks = Collections.singletonList(storedGas = ChemicalTankBuilder.GAS.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
+        infusionTanks = Collections.singletonList(storedInfusion = ChemicalTankBuilder.INFUSION.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
+        pigmentTanks = Collections.singletonList(storedPigment = ChemicalTankBuilder.PIGMENT.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
+        slurryTanks = Collections.singletonList(storedSlurry = ChemicalTankBuilder.SLURRY.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
         energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.get(), this));
         heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(1, 1, 1_000, this));

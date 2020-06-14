@@ -3,20 +3,14 @@ package mekanism.common.content.tank;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockGasTank;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockInfusionTank;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockPigmentTank;
-import mekanism.common.capabilities.chemical.multiblock.MultiblockSlurryTank;
+import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
@@ -50,10 +44,10 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         super(tile);
         mergedTank = MergedTank.create(
               MultiblockFluidTank.create(this, tile, this::getTankCapacity, BasicFluidTank.alwaysTrue),
-              MultiblockGasTank.create(this, tile, this::getTankCapacity, BasicGasTank.alwaysTrue),
-              MultiblockInfusionTank.create(this, tile, this::getTankCapacity, BasicInfusionTank.alwaysTrue),
-              MultiblockPigmentTank.create(this, tile, this::getTankCapacity, BasicPigmentTank.alwaysTrue),
-              MultiblockSlurryTank.create(this, tile, this::getTankCapacity, BasicSlurryTank.alwaysTrue)
+              MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getTankCapacity, ChemicalTankBuilder.GAS.alwaysTrue),
+              MultiblockChemicalTankBuilder.INFUSION.create(this, tile, this::getTankCapacity, ChemicalTankBuilder.INFUSION.alwaysTrue),
+              MultiblockChemicalTankBuilder.PIGMENT.create(this, tile, this::getTankCapacity, ChemicalTankBuilder.PIGMENT.alwaysTrue),
+              MultiblockChemicalTankBuilder.SLURRY.create(this, tile, this::getTankCapacity, ChemicalTankBuilder.SLURRY.alwaysTrue)
         );
         fluidTanks.add(mergedTank.getFluidTank());
         gasTanks.add(mergedTank.getGasTank());

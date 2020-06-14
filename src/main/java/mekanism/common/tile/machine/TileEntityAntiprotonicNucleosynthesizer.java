@@ -3,7 +3,7 @@ package mekanism.common.tile.machine;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -44,7 +44,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     public static final int BASE_TICKS_REQUIRED = 400;
     public static final long MAX_GAS = 10_000;
 
-    public BasicGasTank gasTank;
+    public IGasTank gasTank;
 
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;
     protected final IInputHandler<@NonNull ItemStack> itemInputHandler;
@@ -77,7 +77,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(gasTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getChemicalInput().testType(gas)), this));
+        builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getChemicalInput().testType(gas)), this));
         return builder.build();
     }
 

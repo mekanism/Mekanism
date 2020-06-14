@@ -14,6 +14,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -41,7 +42,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
         int count = DataHandlerUtils.getMaxId(tanks, NBTConstants.TANK);
         this.tanks = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            this.tanks.add(createTank());
+            this.tanks.add(getTankBuilder().createDummy(Long.MAX_VALUE));
         }
         DataHandlerUtils.readContainers(this.tanks, tanks);
     }
@@ -63,9 +64,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
 
     protected abstract SubstanceType getSubstanceType();
 
-    protected abstract TANK createTank();
-
-    protected abstract TANK createTank(long capacity, Predicate<@NonNull CHEMICAL> validator);
+    protected abstract ChemicalTankBuilder<CHEMICAL, STACK, TANK> getTankBuilder();
 
     protected abstract HANDLER getOutputHandler(List<TANK> tanks);
 
@@ -109,7 +108,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
         List<TANK> tanks = new ArrayList<>();
         for (int tank = 0; tank < tankCount; tank++) {
             //TODO: Do we need to also clone the attribute validator
-            tanks.add(createTank(handler.getTankCapacity(tank), cloneValidator(handler, tank)));
+            tanks.add(getTankBuilder().create(handler.getTankCapacity(tank), cloneValidator(handler, tank), null));
         }
         //TODO: Improve the logic used so that it tries to batch similar types of chemicals together first
         // and maybe make it try multiple slot combinations

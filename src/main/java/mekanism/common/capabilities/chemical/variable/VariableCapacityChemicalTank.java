@@ -25,11 +25,6 @@ public abstract class VariableCapacityChemicalTank<CHEMICAL extends Chemical<CHE
     private final LongSupplier capacity;
 
     protected VariableCapacityChemicalTank(LongSupplier capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert, Predicate<@NonNull CHEMICAL> validator, @Nullable IContentsListener listener) {
-        this(capacity, canExtract, canInsert, validator, null, listener);
-    }
-
-    protected VariableCapacityChemicalTank(LongSupplier capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert, Predicate<@NonNull CHEMICAL> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         super(capacity.getAsLong(), canExtract, canInsert, validator, attributeValidator, listener);

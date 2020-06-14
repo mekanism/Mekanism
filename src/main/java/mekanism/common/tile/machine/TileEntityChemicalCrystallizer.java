@@ -3,21 +3,18 @@ package mekanism.common.tile.machine;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.infuse.BasicInfusionTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.merged.MergedChemicalTank;
-import mekanism.api.chemical.pigment.BasicPigmentTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.BasicSlurryTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -86,19 +83,19 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     @Override
     protected void presetVariables() {
         inputTank = MergedChemicalTank.create(
-              BasicGasTank.input(MAX_CHEMICAL, gas -> containsRecipe(recipe -> {
+              ChemicalTankBuilder.GAS.input(MAX_CHEMICAL, gas -> containsRecipe(recipe -> {
                   IChemicalStackIngredient<?, ?> input = recipe.getInput();
                   return input instanceof GasStackIngredient && ((GasStackIngredient) input).testType(gas);
               }), this),
-              BasicInfusionTank.input(MAX_CHEMICAL, infuseType -> containsRecipe(recipe -> {
+              ChemicalTankBuilder.INFUSION.input(MAX_CHEMICAL, infuseType -> containsRecipe(recipe -> {
                   IChemicalStackIngredient<?, ?> input = recipe.getInput();
                   return input instanceof InfusionStackIngredient && ((InfusionStackIngredient) input).testType(infuseType);
               }), this),
-              BasicPigmentTank.input(MAX_CHEMICAL, pigment -> containsRecipe(recipe -> {
+              ChemicalTankBuilder.PIGMENT.input(MAX_CHEMICAL, pigment -> containsRecipe(recipe -> {
                   IChemicalStackIngredient<?, ?> input = recipe.getInput();
                   return input instanceof PigmentStackIngredient && ((PigmentStackIngredient) input).testType(pigment);
               }), this),
-              BasicSlurryTank.input(MAX_CHEMICAL, slurry -> containsRecipe(recipe -> {
+              ChemicalTankBuilder.SLURRY.input(MAX_CHEMICAL, slurry -> containsRecipe(recipe -> {
                   IChemicalStackIngredient<?, ?> input = recipe.getInput();
                   return input instanceof SlurryStackIngredient && ((SlurryStackIngredient) input).testType(slurry);
               }), this)
