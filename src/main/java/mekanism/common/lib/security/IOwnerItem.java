@@ -7,7 +7,7 @@ import mekanism.api.NBTConstants;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 
-//TODO - V10: Convert this into being a capability and accessible from the API
+//TODO - V11: Convert this into being a capability and accessible from the API
 public interface IOwnerItem {
 
     @Nullable

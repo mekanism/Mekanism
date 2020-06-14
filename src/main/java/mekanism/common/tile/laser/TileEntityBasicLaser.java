@@ -51,7 +51,7 @@ import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.world.BlockEvent;
 
-//TODO - V10: Make the laser "shrink" the further distance it goes, If above a certain energy level and in water makes it make a bubble stream
+//TODO - V11: Make the laser "shrink" the further distance it goes, If above a certain energy level and in water makes it make a bubble stream
 public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     protected LaserEnergyContainer energyContainer;
@@ -119,7 +119,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         //If the entity is a living entity check if they are blocking with a shield and then allow
                         // the shield to cause some of the damage to be dissipated in exchange for durability
                         LivingEntity livingEntity = (LivingEntity) entity;
-                        //TODO - V10: Add a system for dissipating lasers in armor/the meka-suit
+                        //TODO - V11: Add a system for dissipating lasers in armor/the meka-suit
                         if (livingEntity.isActiveItemStackBlocking() && livingEntity.getActiveItemStack().isShield(livingEntity)) {
                             float damageBlocked = damageShield(livingEntity, livingEntity.getActiveItemStack(), damage, 2);
                             //Remove how ever much energy we were able to block

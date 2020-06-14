@@ -18,7 +18,7 @@ import net.minecraft.world.dimension.DimensionType;
  *
  * @author aidancbrady
  */
-public class Coord4D {//TODO - V10: Continue working on replacing uses of this with BlockPos/GlobalPos where appropriate
+public class Coord4D {//TODO - V11: Continue working on replacing uses of this with BlockPos/GlobalPos where appropriate
 
     private final int x;
     private final int y;

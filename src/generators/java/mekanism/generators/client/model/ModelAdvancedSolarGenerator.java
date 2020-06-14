@@ -32,7 +32,7 @@ public class ModelAdvancedSolarGenerator extends MekanismModel {
     private final ModelRenderer base3;
     private final ModelRenderer base2;
 
-    //TODO - V10: Implement what I think was an original idea based on the rotates comments where the panels rotate to face towards the sun
+    //TODO - V11: Implement what I think was an original idea based on the rotates comments where the panels rotate to face towards the sun
     public ModelAdvancedSolarGenerator() {
         super(RenderType::getEntitySolid);
         textureWidth = 256;

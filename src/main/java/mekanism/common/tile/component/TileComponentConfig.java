@@ -95,7 +95,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
         tile.sendUpdatePacket();
         tile.markDirty(false);
-        //TODO - V10: We can probably remove the extra neighbor update notification
         //Notify the neighbor on that side our state changed
         MekanismUtils.notifyNeighborOfChange(tile.getWorld(), direction, tile.getPos());
     }
