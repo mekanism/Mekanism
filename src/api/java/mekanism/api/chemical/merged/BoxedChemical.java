@@ -12,13 +12,15 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.text.IHasTextComponent;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BoxedChemical {
+public class BoxedChemical implements IHasTextComponent {
 
     //TODO: Make a subclass for the empty implementation?
     public static final BoxedChemical EMPTY = new BoxedChemical(ChemicalType.GAS, MekanismAPI.EMPTY_GAS);
@@ -115,5 +117,10 @@ public class BoxedChemical {
 
     public Chemical<?> getChemical() {
         return chemical;
+    }
+
+    @Override
+    public ITextComponent getTextComponent() {
+        return chemical.getTextComponent();
     }
 }

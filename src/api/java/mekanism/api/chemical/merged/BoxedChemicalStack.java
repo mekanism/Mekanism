@@ -7,9 +7,11 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.text.IHasTextComponent;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 
-public class BoxedChemicalStack {
+public class BoxedChemicalStack implements IHasTextComponent {
 
     //TODO: Make a subclass for the empty implementation?
     public static final BoxedChemicalStack EMPTY = new BoxedChemicalStack(ChemicalType.GAS, GasStack.EMPTY);
@@ -61,5 +63,10 @@ public class BoxedChemicalStack {
 
     public ChemicalStack<?> getChemicalStack() {
         return chemicalStack;
+    }
+
+    @Override
+    public ITextComponent getTextComponent() {
+        return chemicalStack.getTextComponent();
     }
 }

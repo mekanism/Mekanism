@@ -10,6 +10,11 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
+import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
+import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -52,9 +57,14 @@ public enum ChemicalType implements IStringSerializable {
     }
 
     @Nullable
+    public static ChemicalType fromString(String name) {
+        return nameToType.get(name);
+    }
+
+    @Nullable
     public static ChemicalType fromNBT(@Nullable CompoundNBT nbt) {
         if (nbt != null && nbt.contains(NBTConstants.CHEMICAL_TYPE, NBT.TAG_STRING)) {
-            return nameToType.get(nbt.getString(NBTConstants.CHEMICAL_TYPE));
+            return fromString(nbt.getString(NBTConstants.CHEMICAL_TYPE));
         }
         return null;
     }
@@ -74,5 +84,18 @@ public enum ChemicalType implements IStringSerializable {
 
     public static ChemicalType getTypeFor(ChemicalStack<?> stack) {
         return getTypeFor(stack.getType());
+    }
+
+    public static ChemicalType getTypeFor(IChemicalStackIngredient<?, ?> ingredient) {
+        if (ingredient instanceof GasStackIngredient) {
+            return GAS;
+        } else if (ingredient instanceof InfusionStackIngredient) {
+            return INFUSION;
+        } else if (ingredient instanceof PigmentStackIngredient) {
+            return PIGMENT;
+        } else if (ingredient instanceof SlurryStackIngredient) {
+            return SLURRY;
+        }
+        throw new IllegalStateException("Unknown chemical ingredient type");
     }
 }

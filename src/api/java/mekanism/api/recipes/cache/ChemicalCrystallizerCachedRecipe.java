@@ -1,26 +1,22 @@
-package mekanism.api.recipes.cache.chemical;
+package mekanism.api.recipes.cache;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.chemical.ChemicalToItemStackRecipe;
-import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
+import mekanism.api.chemical.merged.BoxedChemicalStack;
+import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.inputs.BoxedChemicalInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.item.ItemStack;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>> extends CachedRecipe<RECIPE> {
+public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCrystallizerRecipe> {
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
-    private final IInputHandler<@NonNull STACK> inputHandler;
+    private final BoxedChemicalInputHandler inputHandler;
 
-    public ChemicalToItemStackCachedRecipe(RECIPE recipe, IInputHandler<@NonNull STACK> inputHandler, IOutputHandler<@NonNull ItemStack> outputHandler) {
+    public ChemicalCrystallizerCachedRecipe(ChemicalCrystallizerRecipe recipe, BoxedChemicalInputHandler inputHandler, IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
         this.inputHandler = inputHandler;
         this.outputHandler = outputHandler;
@@ -33,7 +29,7 @@ public class ChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        STACK recipeInput = inputHandler.getRecipeInput(recipe.getInput());
+        BoxedChemicalStack recipeInput = inputHandler.getRecipeInput(recipe.getInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputChemical)
         if (recipeInput.isEmpty()) {
             return -1;
@@ -56,7 +52,7 @@ public class ChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>
     @Override
     protected void finishProcessing(int operations) {
         //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
-        STACK recipeInput = inputHandler.getRecipeInput(recipe.getInput());
+        BoxedChemicalStack recipeInput = inputHandler.getRecipeInput(recipe.getInput());
         if (recipeInput.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;

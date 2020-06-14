@@ -1,7 +1,8 @@
 package mekanism.common.integration.projecte.mappers;
 
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.GasToItemStackRecipe;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.merged.BoxedChemicalStack;
+import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -13,11 +14,11 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 
 @RecipeTypeMapper
-public class GasToItemStackRecipeMapper implements IRecipeTypeMapper {
+public class ChemicalCrystallizerRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public String getName() {
-        return "MekGasToItemStack";
+        return "MekChemicalCrystallizer";
     }
 
     @Override
@@ -32,14 +33,14 @@ public class GasToItemStackRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-        if (!(iRecipe instanceof GasToItemStackRecipe)) {
+        if (!(iRecipe instanceof ChemicalCrystallizerRecipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        GasToItemStackRecipe recipe = (GasToItemStackRecipe) iRecipe;
-        for (GasStack representation : recipe.getInput().getRepresentations()) {
-            ItemStack output = recipe.getOutput(representation);
+        ChemicalCrystallizerRecipe recipe = (ChemicalCrystallizerRecipe) iRecipe;
+        for (ChemicalStack<?> representation : recipe.getInput().getRepresentations()) {
+            ItemStack output = recipe.getOutput(BoxedChemicalStack.box(representation));
             if (!output.isEmpty()) {
                 IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                 ingredientHelper.put(representation);

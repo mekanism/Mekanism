@@ -9,6 +9,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -54,6 +55,22 @@ public class SerializerHelper {
         if (!json.get(key).isJsonObject()) {
             throw new JsonSyntaxException("Expected '" + key + "' to be an object");
         }
+    }
+
+    public static ChemicalType getChemicalType(@Nonnull JsonObject json) {
+        if (!json.has(JsonConstants.CHEMICAL_TYPE)) {
+            throw new JsonSyntaxException("Missing '" + JsonConstants.CHEMICAL_TYPE + "', expected to find a string");
+        }
+        JsonElement element = json.get(JsonConstants.CHEMICAL_TYPE);
+        if (!element.isJsonPrimitive()) {
+            throw new JsonSyntaxException("Expected '" + JsonConstants.CHEMICAL_TYPE + "' to be a json primitive representing a string");
+        }
+        String name = element.getAsString();
+        ChemicalType chemicalType = ChemicalType.fromString(name);
+        if (chemicalType == null) {
+            throw new JsonSyntaxException("Invalid chemical type '" + name + "'.");
+        }
+        return chemicalType;
     }
 
     public static ItemStack getItemStack(@Nonnull JsonObject json, @Nonnull String key) {
@@ -171,5 +188,19 @@ public class SerializerHelper {
 
     public static JsonElement serializeSlurryStack(@Nonnull SlurryStack stack) {
         return ChemicalIngredientDeserializer.SLURRY.serializeStack(stack);
+    }
+
+    public static ChemicalIngredientDeserializer<?, ?, ?> getDeserializerForType(ChemicalType chemicalType) {
+        if (chemicalType == ChemicalType.GAS) {
+            return ChemicalIngredientDeserializer.GAS;
+        } else if (chemicalType == ChemicalType.INFUSION) {
+            return ChemicalIngredientDeserializer.INFUSION;
+        } else if (chemicalType == ChemicalType.PIGMENT) {
+            return ChemicalIngredientDeserializer.PIGMENT;
+        } else if (chemicalType == ChemicalType.SLURRY) {
+            return ChemicalIngredientDeserializer.SLURRY;
+        } else {
+            throw new IllegalStateException("Unknown Chemical Type");
+        }
     }
 }

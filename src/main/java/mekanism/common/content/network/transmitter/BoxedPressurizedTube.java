@@ -249,7 +249,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         if (current == Current.EMPTY) {
             ret = BoxedChemicalStack.EMPTY;
         } else {
-            IChemicalTank<?, ?> tank = getTankFromCurrent(current);
+            IChemicalTank<?, ?> tank = chemicalTank.getTankFromCurrent(current);
             ret = BoxedChemicalStack.box(tank.getStack());
             tank.setEmpty();
         }
@@ -263,7 +263,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         if (current == Current.EMPTY) {
             return BoxedChemicalStack.EMPTY;
         }
-        return BoxedChemicalStack.box(getTankFromCurrent(current).getStack());
+        return BoxedChemicalStack.box(chemicalTank.getTankFromCurrent(current).getStack());
     }
 
     @Override
@@ -290,8 +290,8 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
             if (networkCurrent != Current.EMPTY && !saveShare.isEmpty()) {
                 ChemicalStack<?> chemicalStack = saveShare.getChemicalStack();
                 long amount = chemicalStack.getAmount();
-                MekanismUtils.logMismatchedStackSize(transmitterNetwork.getTankFromCurrent(networkCurrent).shrinkStack(amount, Action.EXECUTE), amount);
-                setStackClearOthers(chemicalStack, getTankFromCurrent(networkCurrent));
+                MekanismUtils.logMismatchedStackSize(transmitterNetwork.chemicalTank.getTankFromCurrent(networkCurrent).shrinkStack(amount, Action.EXECUTE), amount);
+                setStackClearOthers(chemicalStack, chemicalTank.getTankFromCurrent(networkCurrent));
             }
         }
     }
@@ -376,19 +376,5 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
 
     public ISlurryTank getSlurryTank() {
         return chemicalTank.getSlurryTank();
-    }
-
-    private IChemicalTank<?, ?> getTankFromCurrent(Current current) {
-        switch (current) {
-            case GAS:
-                return getGasTank();
-            case INFUSION:
-                return getInfusionTank();
-            case PIGMENT:
-                return getPigmentTank();
-            case SLURRY:
-                return getSlurryTank();
-        }
-        throw new IllegalStateException("Unknown chemical type");
     }
 }

@@ -8,12 +8,8 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.ChemicalType;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
@@ -22,23 +18,24 @@ import net.minecraft.util.ResourceLocation;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipeBuilder<ChemicalToItemStackRecipeBuilder<CHEMICAL, STACK, INGREDIENT>> {
+public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder> {
 
-    private final INGREDIENT input;
+    private final ChemicalType chemicalType;
+    private final IChemicalStackIngredient<?, ?> input;
     private final ItemStack output;
 
-    protected ChemicalToItemStackRecipeBuilder(ResourceLocation serializerName, INGREDIENT input, ItemStack output) {
+    protected ChemicalCrystallizerRecipeBuilder(ResourceLocation serializerName, IChemicalStackIngredient<?, ?> input, ItemStack output) {
         super(serializerName);
         this.input = input;
+        this.chemicalType = ChemicalType.getTypeFor(input);
         this.output = output;
     }
 
-    public static ChemicalToItemStackRecipeBuilder<Gas, GasStack, GasStackIngredient> crystallizing(GasStackIngredient input, ItemStack output) {
+    public static ChemicalCrystallizerRecipeBuilder crystallizing(IChemicalStackIngredient<?, ?> input, ItemStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This crystallizing recipe requires a non empty item output.");
         }
-        return new ChemicalToItemStackRecipeBuilder<>(mekSerializer("crystallizing"), input, output);
+        return new ChemicalCrystallizerRecipeBuilder(mekSerializer("crystallizing"), input, output);
     }
 
     @Override
@@ -58,6 +55,7 @@ public class ChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
 
         @Override
         public void serialize(@Nonnull JsonObject json) {
+            json.addProperty(JsonConstants.CHEMICAL_TYPE, chemicalType.getName());
             json.add(JsonConstants.INPUT, input.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));
         }

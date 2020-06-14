@@ -121,6 +121,20 @@ public class MergedChemicalTank {
         return Current.EMPTY;
     }
 
+    public IChemicalTank<?, ?> getTankFromCurrent(Current current) {
+        switch (current) {
+            case GAS:
+                return getGasTank();
+            case INFUSION:
+                return getInfusionTank();
+            case PIGMENT:
+                return getPigmentTank();
+            case SLURRY:
+                return getSlurryTank();
+        }
+        throw new IllegalStateException("Unknown chemical type");
+    }
+
     public enum Current {
         EMPTY,
         GAS,

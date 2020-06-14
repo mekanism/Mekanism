@@ -2,15 +2,16 @@ package mekanism.client.gui.machine;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.GasToItemStackRecipe;
+import mekanism.api.chemical.merged.BoxedChemicalStack;
+import mekanism.api.chemical.merged.MergedChemicalTank.Current;
+import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.custom.GuiCrystallizerScreen;
 import mekanism.client.gui.element.custom.GuiCrystallizerScreen.IOreInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiMergedChemicalTankGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
@@ -39,14 +40,15 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         addButton(crystallizerScreen = new GuiCrystallizerScreen(this, 31, 13, new IOreInfo() {
             @Nonnull
             @Override
-            public GasStack getInputGas() {
-                return tile.inputTank.getStack();
+            public BoxedChemicalStack getInputChemical() {
+                Current current = tile.inputTank.getCurrent();
+                return current == Current.EMPTY ? BoxedChemicalStack.EMPTY : BoxedChemicalStack.box(tile.inputTank.getTankFromCurrent(current).getStack());
             }
 
             @Nullable
             @Override
-            public GasToItemStackRecipe getRecipe() {
-                CachedRecipe<GasToItemStackRecipe> cachedRecipe = tile.getUpdatedCache(0);
+            public ChemicalCrystallizerRecipe getRecipe() {
+                CachedRecipe<ChemicalCrystallizerRecipe> cachedRecipe = tile.getUpdatedCache(0);
                 return cachedRecipe == null ? null : cachedRecipe.getRecipe();
             }
         }));
@@ -57,7 +59,8 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        addButton(new GuiGasGauge(() -> tile.inputTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 7, 4));
+        addButton(new GuiMergedChemicalTankGauge<>(() -> tile.inputTank, () -> tile, GaugeType.STANDARD, this, 7, 4,
+              GaugeType.STANDARD.getGaugeOverlay().getWidth() + 2, GaugeType.STANDARD.getGaugeOverlay().getHeight() + 2));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61));
     }
 

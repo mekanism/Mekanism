@@ -6,7 +6,6 @@ import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
@@ -18,6 +17,7 @@ import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
+import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.bin.BinExtractRecipe;
 import mekanism.common.recipe.bin.BinInsertRecipe;
@@ -51,7 +51,7 @@ import mekanism.common.recipe.serializer.ElectrolysisRecipeSerializer;
 import mekanism.common.recipe.serializer.FluidSlurryToSlurryRecipeSerializer;
 import mekanism.common.recipe.serializer.FluidToFluidRecipeSerializer;
 import mekanism.common.recipe.serializer.GasToGasRecipeSerializer;
-import mekanism.common.recipe.serializer.GasToItemStackRecipeSerializer;
+import mekanism.common.recipe.serializer.ChemicalCrystallizerRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackGasToGasRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackGasToItemStackRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToEnergyRecipeSerializer;
@@ -90,7 +90,7 @@ public class MekanismRecipeSerializers {
     public static final IRecipeSerializerRegistryObject<GasToGasRecipe> ACTIVATING = RECIPE_SERIALIZERS.register("activating", () -> new GasToGasRecipeSerializer<>(ActivatingIRecipe::new));
     public static final IRecipeSerializerRegistryObject<GasToGasRecipe> CENTRIFUGING = RECIPE_SERIALIZERS.register("centrifuging", () -> new GasToGasRecipeSerializer<>(CentrifugingIRecipe::new));
 
-    public static final IRecipeSerializerRegistryObject<GasToItemStackRecipe> CRYSTALLIZING = RECIPE_SERIALIZERS.register("crystallizing", () -> new GasToItemStackRecipeSerializer<>(ChemicalCrystallizerIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ChemicalCrystallizerRecipe> CRYSTALLIZING = RECIPE_SERIALIZERS.register("crystallizing", () -> new ChemicalCrystallizerRecipeSerializer<>(ChemicalCrystallizerIRecipe::new));
 
     public static final IRecipeSerializerRegistryObject<ItemStackGasToGasRecipe> DISSOLUTION = RECIPE_SERIALIZERS.register("dissolution", () -> new ItemStackGasToGasRecipeSerializer<>(ItemStackGasToGasIRecipe::new));
 

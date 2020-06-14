@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import java.util.function.Consumer;
+import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.FluidSlurryToSlurryRecipeBuilder;
@@ -126,9 +127,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "clump/from_shard"));
         // Crystal
         // from slurry
-        //TODO - V10: Figure out how to handle slurries for recipes
-        /*ChemicalToItemStackRecipeBuilder.crystallizing(SlurryStackIngredient.from(slurry.getCleanSlurry(), 200), crystal.getItemStack())
-              .build(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));*/
+        ChemicalCrystallizerRecipeBuilder.crystallizing(SlurryStackIngredient.from(slurry.getCleanSlurry(), 200), crystal.getItemStack())
+              .build(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));
         // Dirty Dust
         // from clump
         ItemStackToItemStackRecipeBuilder.crushing(ItemStackIngredient.from(clumpTag), dirtyDust.getItemStack())

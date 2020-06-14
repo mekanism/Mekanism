@@ -2,6 +2,7 @@ package mekanism.common.integration.projecte;
 
 import java.util.HashMap;
 import java.util.Map;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -52,6 +53,18 @@ public class IngredientHelper {
             isValid = false;
         } else {
             put(stack, (int) amount);
+        }
+    }
+
+    public void put(ChemicalStack<?> stack) {
+        if (stack instanceof GasStack) {
+            put((GasStack) stack);
+        } else if (stack instanceof InfusionStack) {
+            put((InfusionStack) stack);
+        } else if (stack instanceof PigmentStack) {
+            put((PigmentStack) stack);
+        } else if (stack instanceof SlurryStack) {
+            put((SlurryStack) stack);
         }
     }
 
