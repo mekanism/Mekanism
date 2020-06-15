@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.MekanismRecipe;
@@ -69,20 +70,22 @@ public class RecipeRegistryHelper {
     }
 
     public static void registerNutritionalLiquifier(IRecipeRegistration registry) {
-        //TODO - V10: FIXME don't use a null recipe id
         registry.addRecipes(ForgeRegistries.ITEMS.getValues().stream().filter(Item::isFood)
-              .map(item -> new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(item.getFood().getHealing() * 50)))
+              .map(item -> new NutritionalLiquifierIRecipe(Mekanism.rl("liquifier/" + item.getRegistryName()), ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(item.getFood().getHealing() * 50)))
               .collect(Collectors.toList()), MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
     }
 
     public static void registerSPS(IRecipeRegistration registry) {
-        //TODO - V10: FIXME, all these nonnull things should not be null (recipe id, serializer, type)
-        GasToGasRecipe recipe = new GasToGasRecipe(null, GasStackIngredient.from(MekanismGases.POLONIUM, 1000), MekanismGases.ANTIMATTER.getStack(1)) {
+        //TODO - V11: Make the SPS have a proper recipe type to allow for custom recipes
+        // Note: While the serializer and type are nonnull, they aren't used anywhere by recipes that are only added to JEI
+        GasToGasRecipe recipe = new GasToGasRecipe(Mekanism.rl("processing/polonium_to_antimatter"), GasStackIngredient.from(MekanismGases.POLONIUM, 1_000), MekanismGases.ANTIMATTER.getStack(1)) {
+            @Nonnull
             @Override
             public IRecipeSerializer<?> getSerializer() {
                 return null;
             }
 
+            @Nonnull
             @Override
             public IRecipeType<?> getType() {
                 return null;

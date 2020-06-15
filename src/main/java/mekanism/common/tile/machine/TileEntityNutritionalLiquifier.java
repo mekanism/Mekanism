@@ -16,6 +16,7 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -66,54 +67,6 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         outputHandler = OutputHelper.getOutputHandler(gasTank);
     }
 
-    @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        energySlot.fillContainerOrConvert();
-        outputSlot.drainTank();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
-    }
-
-    @Nonnull
-    @Override
-    public MekanismRecipeType<ItemStackToGasRecipe> getRecipeType() {
-        //TODO - V10: FIXME
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<ItemStackToGasRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
-    }
-
-    @Nullable
-    @Override
-    public ItemStackToGasRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandler.getInput();
-        if (stack.isEmpty() || !stack.getItem().isFood()) {
-            return null;
-        }
-        Food food = stack.getItem().getFood();
-        //TODO - V10: FIXME - no null recipe ids
-        return new NutritionalLiquifierIRecipe(null, ItemStackIngredient.from(stack.getItem()), MekanismGases.NUTRITIONAL_PASTE.getStack(food.getHealing() * 50));
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe, int cacheIndex) {
-        return new ItemStackToGasCachedRecipe(recipe, inputHandler, outputHandler)
-              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
-              .setActive(this::setActive)
-              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(() -> markDirty(false))
-              .setOperatingTicksChanged(this::setOperatingTicks);
-    }
-
     @Nonnull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
@@ -139,6 +92,54 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
+    }
+
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.fillContainerOrConvert();
+        outputSlot.drainTank();
+        cachedRecipe = getUpdatedCache(0);
+        if (cachedRecipe != null) {
+            cachedRecipe.process();
+        }
+    }
+
+    @Nonnull
+    @Override
+    public MekanismRecipeType<ItemStackToGasRecipe> getRecipeType() {
+        //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called a null pointer will occur
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public CachedRecipe<ItemStackToGasRecipe> getCachedRecipe(int cacheIndex) {
+        return cachedRecipe;
+    }
+
+    @Nullable
+    @Override
+    public ItemStackToGasRecipe getRecipe(int cacheIndex) {
+        ItemStack stack = inputHandler.getInput();
+        if (stack.isEmpty() || !stack.getItem().isFood()) {
+            return null;
+        }
+        Food food = stack.getItem().getFood();
+        return new NutritionalLiquifierIRecipe(Mekanism.rl("liquifier/" + stack.getItem().getRegistryName()), ItemStackIngredient.from(stack.getItem()),
+              MekanismGases.NUTRITIONAL_PASTE.getStack(food.getHealing() * 50));
+    }
+
+    @Nullable
+    @Override
+    public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe, int cacheIndex) {
+        return new ItemStackToGasCachedRecipe(recipe, inputHandler, outputHandler)
+              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setActive(this::setActive)
+              .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
+              .setRequiredTicks(() -> ticksRequired)
+              .setOnFinish(() -> markDirty(false))
+              .setOperatingTicksChanged(this::setOperatingTicks);
     }
 
     public MachineEnergyContainer<TileEntityNutritionalLiquifier> getEnergyContainer() {

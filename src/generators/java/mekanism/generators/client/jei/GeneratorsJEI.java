@@ -42,13 +42,16 @@ public class GeneratorsJEI implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
-        //TODO - V10: FIXME, all these nonnull things should not be null (recipe id, serializer, type)
-        GasToGasRecipe recipe = new GasToGasRecipe(null, GasStackIngredient.from(MekanismGases.FISSILE_FUEL, 1), MekanismGases.NUCLEAR_WASTE.getStack(1)) {
+        //TODO - V11: Make the fission reactor have a proper recipe type to allow for custom recipes
+        // Note: While the serializer and type are nonnull, they aren't used anywhere by recipes that are only added to JEI
+        GasToGasRecipe recipe = new GasToGasRecipe(MekanismGenerators.rl("processing/fissile_fuel"), GasStackIngredient.from(MekanismGases.FISSILE_FUEL, 1), MekanismGases.NUCLEAR_WASTE.getStack(1)) {
+            @Nonnull
             @Override
             public IRecipeSerializer<?> getSerializer() {
                 return null;
             }
 
+            @Nonnull
             @Override
             public IRecipeType<?> getType() {
                 return null;
