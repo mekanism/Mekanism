@@ -1,7 +1,5 @@
 package mekanism.common.lib.radiation;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.particles.BasicParticleType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -73,7 +72,7 @@ public class RadiationManager {
     private boolean loaded;
 
     private final Map<Chunk3D, Map<Coord4D, RadiationSource>> radiationMap = new Object2ObjectOpenHashMap<>();
-    private final Int2ObjectMap<List<Meltdown>> meltdowns = new Int2ObjectOpenHashMap<>();
+    private final Map<ResourceLocation, List<Meltdown>> meltdowns = new Object2ObjectOpenHashMap<>();
 
     private final Map<UUID, RadiationScale> playerExposureMap = new Object2ObjectOpenHashMap<>();
 
@@ -135,8 +134,7 @@ public class RadiationManager {
     }
 
     public void createMeltdown(World world, BlockPos minPos, BlockPos maxPos, double magnitude, double chance) {
-        //TODO - V10: FIXME, this should probably use the registry name not the integer id as the key
-        meltdowns.computeIfAbsent(world.getDimension().getType().getId(), (id) -> new ArrayList<>()).add(new Meltdown(world, minPos, maxPos, magnitude, chance));
+        meltdowns.computeIfAbsent(world.getDimension().getType().getRegistryName(), id -> new ArrayList<>()).add(new Meltdown(world, minPos, maxPos, magnitude, chance));
     }
 
     public void clearSources() {
@@ -218,8 +216,9 @@ public class RadiationManager {
         }
 
         // update meltdowns
-        if (meltdowns.containsKey(world.dimension.getType().getId())) {
-            meltdowns.get(world.dimension.getType().getId()).removeIf(Meltdown::update);
+        ResourceLocation dimension = world.getDimension().getType().getRegistryName();
+        if (meltdowns.containsKey(dimension)) {
+            meltdowns.get(dimension).removeIf(Meltdown::update);
         }
     }
 

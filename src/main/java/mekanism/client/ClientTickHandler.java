@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.GeigerSound;
@@ -28,7 +27,6 @@ import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
-import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IRadialModeItem;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
@@ -164,7 +162,7 @@ public class ClientTickHandler {
     public void tickStart() {
         MekanismClient.ticksPassed++;
 
-        if (minecraft.world != null && firstTick) {
+        if (firstTick && minecraft.world != null) {
             MekanismClient.launchClient();
             firstTick = false;
         }
@@ -187,8 +185,6 @@ public class ClientTickHandler {
             }
 
             Mekanism.radiationManager.tickClient(minecraft.player);
-
-            UUID playerUUID = minecraft.player.getUniqueID();
             boolean stepBoostOn = CommonPlayerTickHandler.isStepBoostOn(minecraft.player);
 
             if (stepBoostOn && !minecraft.player.isSneaking()) {
@@ -197,6 +193,7 @@ public class ClientTickHandler {
                 minecraft.player.stepHeight = 0.6F;
             }
 
+            UUID playerUUID = minecraft.player.getUniqueID();
             // Update player's state for various items; this also automatically notifies server if something changed and
             // kicks off sounds as necessary
             Mekanism.playerState.setJetpackState(playerUUID, isJetpackActive(minecraft.player), true);
@@ -228,13 +225,6 @@ public class ClientTickHandler {
                 MekanismClient.updateKey(minecraft.gameSettings.keyBindSneak, KeySync.DESCEND);
             }
 
-            if (!minecraft.player.isCreative() && !minecraft.player.isSpectator()) {
-                if (isFlamethrowerOn(minecraft.player)) {
-                    ItemFlamethrower flamethrower = (ItemFlamethrower) minecraft.player.inventory.getCurrentItem().getItem();
-                    flamethrower.useGas(minecraft.player.inventory.getCurrentItem(), 1);
-                }
-            }
-
             if (isJetpackActive(minecraft.player)) {
                 JetpackMode mode = getJetpackMode(chestStack);
                 Vec3d motion = minecraft.player.getMotion();
@@ -259,10 +249,6 @@ public class ClientTickHandler {
                     }
                     minecraft.player.fallDistance = 0.0F;
                 }
-                // I don't actually know if we need to do this
-                if (chestStack.getItem() instanceof ItemJetpack) {
-                    ((ItemJetpack) chestStack.getItem()).useGas(chestStack, 1);
-                }
             }
 
             if (CommonPlayerTickHandler.isGravitationalModulationReady(minecraft.player)) {
@@ -280,20 +266,10 @@ public class ClientTickHandler {
                 minecraft.player.abilities.isFlying = false;
             }
 
-            if (isScubaMaskOn(minecraft.player)) {
-                ItemScubaTank tank = (ItemScubaTank) chestStack.getItem();
-                final int max = 300;
-                tank.useGas(chestStack, 1);
-                GasStack received = tank.useGas(chestStack, max - minecraft.player.getAir());
-
-                if (!received.isEmpty()) {
-                    minecraft.player.setAir(minecraft.player.getAir() + (int) received.getAmount());
-                }
-                if (minecraft.player.getAir() == max) {
-                    for (EffectInstance effect : minecraft.player.getActivePotionEffects()) {
-                        for (int i = 0; i < 9; i++) {
-                            effect.tick(minecraft.player, () -> MekanismUtils.onChangedPotionEffect(minecraft.player, effect, true));
-                        }
+            if (isScubaMaskOn(minecraft.player) && minecraft.player.getAir() == 300) {
+                for (EffectInstance effect : minecraft.player.getActivePotionEffects()) {
+                    for (int i = 0; i < 9; i++) {
+                        effect.tick(minecraft.player, () -> MekanismUtils.onChangedPotionEffect(minecraft.player, effect, true));
                     }
                 }
             }

@@ -80,8 +80,10 @@ public class ItemCanteen extends Item implements IGasItem {
         if (!world.isRemote && entityLiving instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entityLiving;
             long needed = Math.min(20 - player.getFoodStats().getFoodLevel(), getGas(stack).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
-            player.getFoodStats().addStats((int) needed, MekanismConfig.general.nutritionalPasteSaturation.get());
-            useGas(stack, needed * MekanismConfig.general.nutritionalPasteMBPerFood.get());
+            if (needed > 0) {
+                player.getFoodStats().addStats((int) needed, MekanismConfig.general.nutritionalPasteSaturation.get());
+                useGas(stack, needed * MekanismConfig.general.nutritionalPasteMBPerFood.get());
+            }
         }
         return stack;
     }

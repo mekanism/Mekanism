@@ -14,13 +14,13 @@ import net.minecraft.item.ItemStack;
 
 public interface IGasItem {
 
-    //TODO - V10: Go through and fix usages of this method so that they only actually perform the action if gas got used
     @Nonnull
     default GasStack useGas(ItemStack stack, long amount) {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler) {
+                //TODO: If we end up having more tanks than one in any IGasItem's just kill off this if branch
                 IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getChemicalTank(0, null);
                 if (gasTank != null) {
                     //Should always reach here

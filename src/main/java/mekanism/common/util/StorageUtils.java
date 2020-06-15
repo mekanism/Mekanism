@@ -109,33 +109,41 @@ public class StorageUtils {
         InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
         PigmentStack pigmentStack = StorageUtils.getStoredPigmentFromNBT(stack);
         SlurryStack slurryStack = StorageUtils.getStoredSlurryFromNBT(stack);
-        //TODO - V10: Improve this further by also including the "type" of the stored substance
         if (fluidStack.isEmpty() && gasStack.isEmpty() && infusionStack.isEmpty() && pigmentStack.isEmpty() && slurryStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translate());
-        } else if (!fluidStack.isEmpty()) {
-            if (isCreative) {
-                tooltip.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.ORANGE, fluidStack, EnumColor.GRAY, MekanismLang.INFINITE));
-            } else {
-                tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.ORANGE, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
-            }
+            return;
+        }
+        ILangEntry type;
+        Object contents;
+        long amount;
+        if (!fluidStack.isEmpty()) {
+            contents = fluidStack;
+            amount = fluidStack.getAmount();
+            type = MekanismLang.LIQUID;
         } else {
             ChemicalStack<?> chemicalStack;
             if (!gasStack.isEmpty()) {
                 chemicalStack = gasStack;
+                type = MekanismLang.GAS;
             } else if (!infusionStack.isEmpty()) {
                 chemicalStack = infusionStack;
+                type = MekanismLang.INFUSE_TYPE;
             } else if (!pigmentStack.isEmpty()) {
                 chemicalStack = pigmentStack;
+                type = MekanismLang.PIGMENT;
             } else if (!slurryStack.isEmpty()) {
                 chemicalStack = slurryStack;
+                type = MekanismLang.SLURRY;
             } else {
                 throw new IllegalStateException("Unknown chemical");
             }
-            if (isCreative) {
-                tooltip.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.ORANGE, chemicalStack, EnumColor.GRAY, MekanismLang.INFINITE));
-            } else {
-                tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.ORANGE, chemicalStack, EnumColor.GRAY, chemicalStack.getAmount()));
-            }
+            contents = chemicalStack;
+            amount = chemicalStack.getAmount();
+        }
+        if (isCreative) {
+            tooltip.add(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED.translate(contents, EnumColor.GRAY, MekanismLang.INFINITE)));
+        } else {
+            tooltip.add(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED_MB.translate(contents, EnumColor.GRAY, amount)));
         }
     }
 
