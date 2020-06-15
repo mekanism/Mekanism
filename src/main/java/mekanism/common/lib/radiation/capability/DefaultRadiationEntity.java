@@ -5,6 +5,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.CapabilityCache;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
@@ -101,15 +103,20 @@ public class DefaultRadiationEntity implements IRadiationEntity {
 
         public static final ResourceLocation NAME = new ResourceLocation(Mekanism.MODID, NBTConstants.RADIATION);
         private final IRadiationEntity defaultImpl = new DefaultRadiationEntity();
-        private final LazyOptional<IRadiationEntity> provider = LazyOptional.of(() -> defaultImpl);
+        private final CapabilityCache capabilityCache = new CapabilityCache();
+
+        public Provider() {
+            capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.RADIATION_ENTITY_CAPABILITY, defaultImpl));
+        }
 
         @Nonnull
         @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
-            if (capability == Capabilities.RADIATION_ENTITY_CAPABILITY) {
-                return provider.cast();
-            }
-            return LazyOptional.empty();
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side) {
+            return capabilityCache.getCapability(capability, side);
+        }
+
+        public void invalidate() {
+            capabilityCache.invalidate(Capabilities.RADIATION_ENTITY_CAPABILITY, null);
         }
 
         @Override

@@ -72,7 +72,7 @@ public class Capabilities {
     @CapabilityInject(IRadiationShielding.class)
     public static Capability<IRadiationShielding> RADIATION_SHIELDING_CAPABILITY = null;
 
-    @CapabilityInject(IRadiationEntity.class)//TODO - V10: Validate that we implement this properly and are calling invalidate where proper
+    @CapabilityInject(IRadiationEntity.class)
     public static Capability<IRadiationEntity> RADIATION_ENTITY_CAPABILITY = null;
 
     public static void registerCapabilities() {

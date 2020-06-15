@@ -79,7 +79,9 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void attachCaps(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof PlayerEntity) {
-            event.addCapability(DefaultRadiationEntity.Provider.NAME, new DefaultRadiationEntity.Provider());
+            DefaultRadiationEntity.Provider radiationProvider = new DefaultRadiationEntity.Provider();
+            event.addCapability(DefaultRadiationEntity.Provider.NAME, radiationProvider);
+            event.addListener(radiationProvider::invalidate);
         }
     }
 

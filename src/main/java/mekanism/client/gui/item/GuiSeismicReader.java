@@ -81,7 +81,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         //Render the layer text scaled, so that it does not start overlapping past 100
         drawTextScaledBound(APILang.GENERIC.translate(currentLayer), 111, 87, screenTextColor(), 13);
 
-        //TODO - V10: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
+        //TODO - V11: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
         //Render the item stacks
         for (int i = 0; i < 9; i++) {
             int layer = currentLayer + (i - 4);

@@ -105,7 +105,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         return toStringHelper.toString();
     }
 
-    @Nullable//TODO - V10: Nonnull? See comment in ChemicalInventorySlot
+    @Nullable
     protected abstract MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> getConversionRecipeType();
 
     public List<ItemStack> getStacksFor(@Nonnull CHEMICAL type, boolean displayConversions) {

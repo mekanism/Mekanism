@@ -17,7 +17,7 @@ public class FormatSplitter {
     // go through String.format which would end up using this. So I believe these are technically supported
     // The string pattern from the Formatter is: "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])"
     // we modify it to remove the trailing % as MC declares things like %% as invalid
-    private static final Pattern fsPattern = Pattern.compile("%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z])");
+    private static final Pattern fsPattern = Pattern.compile("%(\\d+\\$)?([-#+ 0,(<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z])");
 
     public static List<Component> split(String text) {
         Matcher matcher = fsPattern.matcher(text);

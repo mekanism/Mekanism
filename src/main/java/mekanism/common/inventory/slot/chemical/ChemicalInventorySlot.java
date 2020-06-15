@@ -155,10 +155,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     @Nullable
     protected abstract IChemicalHandler<CHEMICAL, STACK> getCapability();
 
-    //TODO - V10: Decide if this should be nonnull, it currently is nullable to allow for some chemical types to not implement conversions
-    // though after we start generifying recipes they may all automatically have a conversion type, and even if not we may want to allow
-    // for pack devs to add conversions types. (Currently the one that I don't see much use for having a conversion type would be slurry)
-    @Nullable
+    @Nullable//Note: This is currently nullable as there are some types we don't have direct conversions for: (Slurry)
     protected abstract MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> getConversionRecipeType();
 
     /**
