@@ -19,8 +19,8 @@ public class CatalystRegistryHelper {
     }
 
     public static void registerCondensentrator(IRecipeCatalystRegistration registry) {
-        ResourceLocation condensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_condensentrating");
-        ResourceLocation decondensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_decondensentrating");
+        ResourceLocation condensentrating = Mekanism.rl("rotary_condensentrator_condensentrating");
+        ResourceLocation decondensentrating = Mekanism.rl("rotary_condensentrator_decondensentrating");
         registry.addRecipeCatalyst(MekanismBlocks.ROTARY_CONDENSENTRATOR.getItemStack(), condensentrating, decondensentrating);
     }
 

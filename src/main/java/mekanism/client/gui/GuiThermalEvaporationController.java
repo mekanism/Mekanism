@@ -47,7 +47,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
             public double getLevel() {
                 return Math.min(1, tile.getMultiblock().getTemp() / EvaporationMultiblockData.MAX_MULTIPLIER_TEMP);
             }
-        }, 48, 63));
+        }, 48, 63).jeiCategory(tile));
         addButton(new GuiFluidGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
         addButton(new GuiFluidGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 152, 13));
         addButton(new GuiHeatTab(() -> {

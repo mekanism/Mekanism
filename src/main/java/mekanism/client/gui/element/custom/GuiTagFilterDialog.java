@@ -6,7 +6,6 @@ import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -28,7 +27,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiTagFilterDialog extends GuiFilterDialog<QIOTagFilter> {
 
-    protected MekanismButton checkboxButton;
     protected GuiTextField text;
     protected GuiSequencedSlotDisplay slotDisplay;
 

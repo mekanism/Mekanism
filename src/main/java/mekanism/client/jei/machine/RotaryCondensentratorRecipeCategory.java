@@ -37,7 +37,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
         //We override the things that reference the provider
         super(helper, MekanismBlocks.ROTARY_CONDENSENTRATOR, 3, 12, 170, 71);
         this.condensentrating = condensentrating;
-        uid = new ResourceLocation(Mekanism.MODID, condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating");
+        uid = Mekanism.rl(condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating");
         this.title = (condensentrating ? MekanismLang.CONDENSENTRATING : MekanismLang.DECONDENSENTRATING).translate().getFormattedText();
         //Add the progress bar. addGuiElements gets called before condensentrating is set
         guiElements.add(new GuiProgress(() -> 1, condensentrating ? ProgressType.LARGE_RIGHT : ProgressType.LARGE_LEFT, this, 64, 39));

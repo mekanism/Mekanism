@@ -35,7 +35,7 @@ public class GuiCombiner extends GuiMekanismTile<TileEntityCombiner, MekanismTil
         addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 86, 38));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 86, 38).jeiCategory(tile));
     }
 
     @Override

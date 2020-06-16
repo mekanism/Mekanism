@@ -60,7 +60,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntity
     public void init() {
         super.init();
 
-        addButton(new GuiInnerScreen(this, 45, 18, 104, 68));
+        addButton(new GuiInnerScreen(this, 45, 18, 104, 68).jeiCategory(tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));

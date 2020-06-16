@@ -21,24 +21,6 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.GuiSPS;
-import mekanism.client.gui.GuiThermalEvaporationController;
-import mekanism.client.gui.machine.GuiAntiprotonicNucleosynthesizer;
-import mekanism.client.gui.machine.GuiChemicalCrystallizer;
-import mekanism.client.gui.machine.GuiChemicalDissolutionChamber;
-import mekanism.client.gui.machine.GuiChemicalInfuser;
-import mekanism.client.gui.machine.GuiChemicalOxidizer;
-import mekanism.client.gui.machine.GuiChemicalWasher;
-import mekanism.client.gui.machine.GuiCombiner;
-import mekanism.client.gui.machine.GuiElectrolyticSeparator;
-import mekanism.client.gui.machine.GuiFormulaicAssemblicator;
-import mekanism.client.gui.machine.GuiIsotopicCentrifuge;
-import mekanism.client.gui.machine.GuiMetallurgicInfuser;
-import mekanism.client.gui.machine.GuiNutritionalLiquifier;
-import mekanism.client.gui.machine.GuiPRC;
-import mekanism.client.gui.machine.GuiPrecisionSawmill;
-import mekanism.client.gui.machine.GuiSolarNeutronActivator;
-import mekanism.client.gui.robit.GuiRobitCrafting;
 import mekanism.client.jei.chemical.ChemicalStackHelper;
 import mekanism.client.jei.chemical.ChemicalStackHelper.GasStackHelper;
 import mekanism.client.jei.chemical.ChemicalStackHelper.InfusionStackHelper;
@@ -46,13 +28,13 @@ import mekanism.client.jei.chemical.ChemicalStackHelper.PigmentStackHelper;
 import mekanism.client.jei.chemical.ChemicalStackHelper.SlurryStackHelper;
 import mekanism.client.jei.chemical.ChemicalStackRenderer;
 import mekanism.client.jei.machine.ChemicalCrystallizerRecipeCategory;
+import mekanism.client.jei.machine.ChemicalDissolutionRecipeCategory;
 import mekanism.client.jei.machine.ChemicalInfuserRecipeCategory;
 import mekanism.client.jei.machine.CombinerRecipeCategory;
 import mekanism.client.jei.machine.ElectrolysisRecipeCategory;
 import mekanism.client.jei.machine.FluidSlurryToSlurryRecipeCategory;
 import mekanism.client.jei.machine.FluidToFluidRecipeCategory;
 import mekanism.client.jei.machine.GasToGasRecipeCategory;
-import mekanism.client.jei.machine.ChemicalDissolutionRecipeCategory;
 import mekanism.client.jei.machine.ItemStackGasToItemStackRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToGasRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
@@ -245,36 +227,13 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
-        GuiHandlerRegistryHelper.registerElectricMachines(registry);
-        GuiHandlerRegistryHelper.registerAdvancedElectricMachines(registry);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.COMBINER, GuiCombiner.class, 87, 41, 24, 7);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PRECISION_SAWMILL, GuiPrecisionSawmill.class, 79, 40, 24, 7);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.METALLURGIC_INFUSER, GuiMetallurgicInfuser.class, 72, 47, 32, 8);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_CRYSTALLIZER, GuiChemicalCrystallizer.class, 53, 62, 48, 8);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, GuiChemicalDissolutionChamber.class, 64, 40, 48, 8);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INFUSER, GuiChemicalInfuser.class, 47, 39, 28, 8);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INFUSER, GuiChemicalInfuser.class, 101, 39, 28, 8);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_OXIDIZER, GuiChemicalOxidizer.class, 64, 40, 48, 8);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_WASHER, GuiChemicalWasher.class, 61, 39, 55, 8);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, GuiSolarNeutronActivator.class, 64, 39, 48, 8);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ELECTROLYTIC_SEPARATOR, GuiElectrolyticSeparator.class, 80, 30, 16, 6);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, GuiThermalEvaporationController.class, 49, 20, 78, 38);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, GuiPRC.class, 75, 37, 36, 10);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE, GuiIsotopicCentrifuge.class, 64, 39, 48, 8);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER, GuiNutritionalLiquifier.class, 64, 40, 48, 8);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, GuiAntiprotonicNucleosynthesizer.class, 45, 18, 104, 68);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.SPS_CASING, GuiSPS.class, 27, 17, 122, 60);
-        GuiHandlerRegistryHelper.registerCondensentrator(registry);
-
-        GuiHandlerRegistryHelper.register(registry, GuiRobitCrafting.class, VanillaRecipeCategoryUid.CRAFTING, 90, 35, 22, 15);
-        GuiHandlerRegistryHelper.register(registry, GuiFormulaicAssemblicator.class, VanillaRecipeCategoryUid.CRAFTING, 86, 43, 20, 15);
-
         registry.addGuiContainerHandler(GuiMekanism.class, new GuiElementHandler());
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
         //Register the recipes and their catalysts if enabled
+        RecipeRegistryHelper.register(registry, MekanismBlocks.ENERGIZED_SMELTER, MekanismRecipeType.SMELTING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER, MekanismRecipeType.ENRICHING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.CRUSHER, MekanismRecipeType.CRUSHING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.COMBINER, MekanismRecipeType.COMBINING);
@@ -295,7 +254,6 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, MekanismRecipeType.REACTION);
         RecipeRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismRecipeType.NUCLEOSYNTHESIZING);
         RecipeRegistryHelper.registerCondensentrator(registry);
-        RecipeRegistryHelper.registerSmelter(registry);
         RecipeRegistryHelper.registerNutritionalLiquifier(registry);
         RecipeRegistryHelper.registerSPS(registry);
     }

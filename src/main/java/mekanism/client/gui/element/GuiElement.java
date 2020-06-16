@@ -111,21 +111,23 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         children.forEach(child -> child.syncFrom(element));
     }
 
-    public void onRenderForeground(int mouseX, int mouseY, int zOffset, int totalOffset) {
-        RenderSystem.translatef(0, 0, zOffset);
-        // update the max total offset to prevent clashing of future overlays
-        GuiMekanism.maxZOffset = Math.max(totalOffset, GuiMekanism.maxZOffset);
-        // fix render offset for background drawing
-        RenderSystem.translatef(-guiObj.getLeft(), -guiObj.getTop(), 0);
-        // render background overlay and children above everything else
-        renderBackgroundOverlay(mouseX, mouseY);
-        // render children just above background overlay
-        children.forEach(child -> child.render(mouseX, mouseY, 0));
-        // translate back to top right corner and forward to render foregrounds
-        RenderSystem.translatef(guiObj.getLeft(), guiObj.getTop(), 0);
-        renderForeground(mouseX, mouseY);
-        // translate forward to render child foreground
-        children.forEach(child -> child.onRenderForeground(mouseX, mouseY, 50, totalOffset + 50));
+    public final void onRenderForeground(int mouseX, int mouseY, int zOffset, int totalOffset) {
+        if (visible) {
+            RenderSystem.translatef(0, 0, zOffset);
+            // update the max total offset to prevent clashing of future overlays
+            GuiMekanism.maxZOffset = Math.max(totalOffset, GuiMekanism.maxZOffset);
+            // fix render offset for background drawing
+            RenderSystem.translatef(-guiObj.getLeft(), -guiObj.getTop(), 0);
+            // render background overlay and children above everything else
+            renderBackgroundOverlay(mouseX, mouseY);
+            // render children just above background overlay
+            children.forEach(child -> child.render(mouseX, mouseY, 0));
+            // translate back to top right corner and forward to render foregrounds
+            RenderSystem.translatef(guiObj.getLeft(), guiObj.getTop(), 0);
+            renderForeground(mouseX, mouseY);
+            // translate forward to render child foreground
+            children.forEach(child -> child.onRenderForeground(mouseX, mouseY, 50, totalOffset + 50));
+        }
     }
 
     public void renderForeground(int mouseX, int mouseY) {

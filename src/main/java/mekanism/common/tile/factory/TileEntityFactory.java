@@ -149,6 +149,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return null;
     }
 
+    public FactoryType getFactoryType() {
+        return type;
+    }
+
     @Override
     protected void onUpdateServer() {
         energySlot.fillContainerOrConvert();

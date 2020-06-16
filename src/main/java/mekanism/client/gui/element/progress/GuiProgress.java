@@ -1,12 +1,17 @@
 package mekanism.client.gui.element.progress;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.jei.IJEIRecipeArea;
+import net.minecraft.util.ResourceLocation;
 
-public class GuiProgress extends GuiTexturedElement {
+public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<GuiProgress> {
 
     protected final IProgressInfoHandler handler;
     protected final ProgressType type;
+    private ResourceLocation[] recipeCategories;
 
     public GuiProgress(IProgressInfoHandler handler, ProgressType type, IGuiWrapper gui, int x, int y) {
         super(type.getTexture(), gui, x, y, type.getWidth(), type.getHeight());
@@ -28,5 +33,23 @@ public class GuiProgress extends GuiTexturedElement {
                 blit(x + innerOffsetX, y, type.getOverlayX() + innerOffsetX, type.getOverlayY(), displayInt, height, type.getTextureWidth(), type.getTextureHeight());
             }
         }
+    }
+
+    @Override
+    public boolean isActive() {
+        return handler.isActive();
+    }
+
+    @Nonnull
+    @Override
+    public GuiProgress jeiCategories(@Nullable ResourceLocation... recipeCategories) {
+        this.recipeCategories = recipeCategories;
+        return this;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation[] getRecipeCategories() {
+        return recipeCategories;
     }
 }

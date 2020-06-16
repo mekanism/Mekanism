@@ -6,7 +6,9 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismBlocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -15,6 +17,10 @@ import net.minecraft.util.ResourceLocation;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class NutritionalLiquifierIRecipe extends ItemStackToGasRecipe {
+
+    public NutritionalLiquifierIRecipe(Item item, ItemStackIngredient input, GasStack output) {
+        this(Mekanism.rl("liquifier/" + item.getRegistryName().toString().replace(':', '/')), input, output);
+    }
 
     public NutritionalLiquifierIRecipe(ResourceLocation id, ItemStackIngredient input, GasStack output) {
         super(id, input, output);

@@ -2,19 +2,23 @@ package mekanism.client.gui.element;
 
 import java.util.List;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.jei.IJEIRecipeArea;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiInnerScreen extends GuiScalableElement {
+public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea<GuiInnerScreen> {
 
     public static final ResourceLocation SCREEN = MekanismUtils.getResource(ResourceType.GUI, "inner_screen.png");
 
     private Supplier<List<ITextComponent>> renderStrings;
     private Supplier<List<ITextComponent>> tooltipStrings;
 
+    private ResourceLocation[] recipeCategories;
     private boolean centerY;
     private int spacing = 1;
     private int padding = 3;
@@ -97,5 +101,18 @@ public class GuiInnerScreen extends GuiScalableElement {
 
     private void drawText(ITextComponent text, float x, float y) {
         drawScaledTextScaledBound(text, x, y, screenTextColor(), getWidth() - padding * 2, textScale);
+    }
+
+    @Nonnull
+    @Override
+    public GuiInnerScreen jeiCategories(@Nullable ResourceLocation... recipeCategories) {
+        this.recipeCategories = recipeCategories;
+        return this;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation[] getRecipeCategories() {
+        return recipeCategories;
     }
 }

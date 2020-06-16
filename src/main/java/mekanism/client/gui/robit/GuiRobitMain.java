@@ -1,14 +1,12 @@
 package mekanism.client.gui.robit;
 
-import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSideHolder;
+import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
-import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
-import mekanism.client.gui.element.button.TranslationButton;
-import mekanism.client.gui.element.custom.GuiRobitScreen;
-import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.client.gui.element.custom.GuiRobitRename;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
@@ -24,8 +22,7 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     private final EntityRobit robit;
-    private GuiTextField nameChangeField;
-    private MekanismButton confirmName;
+    private MekanismImageButton renameButton;
 
     public GuiRobitMain(MainRobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -33,36 +30,12 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         dynamicSlots = true;
     }
 
-    private void toggleNameChange() {
-        nameChangeField.visible = !nameChangeField.visible;
-        confirmName.visible = nameChangeField.visible;
-        nameChangeField.setFocused(nameChangeField.visible);
-    }
-
-    private void changeName() {
-        if (!nameChangeField.getText().isEmpty()) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getEntityId(), TextComponentUtil.getString(nameChangeField.getText())));
-            toggleNameChange();
-            nameChangeField.setText("");
-        }
-    }
-
     @Override
     public void init() {
         super.init();
         addButton(new GuiSideHolder(this, 176, 6, 106, false));
-        addButton(new GuiRobitScreen(this, 27, 16, 122, 56, () -> nameChangeField.visible));
+        addButton(new GuiInnerScreen(this, 27, 16, 122, 56));
         addButton(new GuiHorizontalPowerBar(this, robit.getEnergyContainer(), 27, 74, 120));
-        //TODO - V10: The button displays the text regardless of if it is visible or not. We should just make a custom popup window for renaming the robit
-        addButton(confirmName = new TranslationButton(this, getGuiLeft() + 58, getGuiTop() + 47, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
-        confirmName.visible = false;
-
-        addButton(nameChangeField = new GuiTextField(this, 48, 21, 80, 12));
-        nameChangeField.setMaxStringLength(12);
-        nameChangeField.setFocused(true);
-        nameChangeField.setEnterHandler(this::changeName);
-        nameChangeField.visible = false;
-
         addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 16, 18, getButtonLocation("home"), () -> {
             Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
             minecraft.displayGuiScreen(null);
@@ -70,8 +43,12 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 35, 18, getButtonLocation("drop"),
               () -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId())),
               getOnHover(MekanismLang.ROBIT_TOGGLE_PICKUP)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 54, 18, getButtonLocation("rename"),
-              this::toggleNameChange, getOnHover(MekanismLang.ROBIT_RENAME)));
+        addButton(renameButton = new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 54, 18, getButtonLocation("rename"), () -> {
+            GuiWindow window = new GuiRobitRename(this, 27, 16, robit);
+            window.setListenerTab(renameButton);
+            renameButton.active = false;
+            addWindow(window);
+        }, getOnHover(MekanismLang.ROBIT_RENAME)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 152, getGuiTop() + 54, 18, getButtonLocation("follow"),
               () -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.FOLLOW, robit.getEntityId())),
               getOnHover(MekanismLang.ROBIT_TOGGLE_FOLLOW)));
@@ -95,14 +72,12 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(MekanismLang.ROBIT.translate(), 76, 6, titleTextColor());
-        if (!nameChangeField.visible) {
-            CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
-            drawTextScaledBound(MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, screenTextColor(), 119);
-            drawTextScaledBound(MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer().getEnergy(), robit.getEnergyContainer().getMaxEnergy())), 29, 36 - 4, screenTextColor(), 119);
-            drawTextScaledBound(MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, screenTextColor(), 119);
-            drawTextScaledBound(MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()), 29, 54 - 4, screenTextColor(), 119);
-            drawTextScaledBound(MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, screenTextColor(), 119);
-        }
+        drawTextScaledBound(MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, screenTextColor(), 119);
+        drawTextScaledBound(MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer().getEnergy(), robit.getEnergyContainer().getMaxEnergy())), 29, 36 - 4, screenTextColor(), 119);
+        drawTextScaledBound(MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, screenTextColor(), 119);
+        drawTextScaledBound(MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()), 29, 54 - 4, screenTextColor(), 119);
+        CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
+        drawTextScaledBound(MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, screenTextColor(), 119);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

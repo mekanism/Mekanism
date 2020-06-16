@@ -56,6 +56,14 @@ public class GuiTextField extends GuiRelativeElement {
         updateTextField();
     }
 
+    @Override
+    public void resize(int prevLeft, int prevTop, int left, int top) {
+        super.resize(prevLeft, prevTop, left, top);
+        //Ensure we also update the positions of the text field
+        textField.x = textField.x - prevLeft + left;
+        textField.y = textField.y - prevTop + top;
+    }
+
     public GuiTextField setScale(float textScale) {
         this.textScale = textScale;
         return this;
