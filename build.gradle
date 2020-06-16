@@ -302,7 +302,7 @@ dependencies {
 }
 
 def version_properties = ["version": mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version,
-                          "loader_version": loader_version, "top_version": min_top_version]
+                          "loader_version": loader_version]
 def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
 //TODO: Figure out if there is a way to just define one replaceResources task
@@ -621,6 +621,20 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             addGameVersion "${minecraft_version}"
         }
 
+        //Defense
+        /*project {
+            id = '376939'
+            changelogType = "html"
+            changelog = generatedChangelog
+            releaseType = "${curse_release_type}"
+            mainArtifact(defenseJar) {
+                relations {
+                    requiredDependency "mekanism"
+                }
+            }
+            addGameVersion "${minecraft_version}"
+        }*/
+
         //Generators
         project {
             id = '268566'
@@ -628,20 +642,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             changelog = generatedChangelog
             releaseType = "${curse_release_type}"
             mainArtifact(generatorsJar) {
-                relations {
-                    requiredDependency "mekanism"
-                }
-            }
-            addGameVersion "${minecraft_version}"
-        }
-
-        //Defense
-        project {
-            id = '376939'
-            changelogType = "html"
-            changelog = generatedChangelog
-            releaseType = "${curse_release_type}"
-            mainArtifact(defenseJar) {
                 relations {
                     requiredDependency "mekanism"
                 }
