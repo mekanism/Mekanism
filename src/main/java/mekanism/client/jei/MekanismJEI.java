@@ -21,6 +21,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.jei.chemical.ChemicalStackHelper;
 import mekanism.client.jei.chemical.ChemicalStackHelper.GasStackHelper;
 import mekanism.client.jei.chemical.ChemicalStackHelper.InfusionStackHelper;
@@ -227,6 +228,7 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
+        registry.addRecipeClickArea(GuiRobitRepair.class, 102, 48, 22, 15, VanillaRecipeCategoryUid.ANVIL);
         registry.addGuiContainerHandler(GuiMekanism.class, new GuiElementHandler());
     }
 
@@ -281,9 +283,10 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
         CatalystRegistryHelper.registerCondensentrator(registry);
-        CatalystRegistryHelper.registerSmelter(registry);
+        CatalystRegistryHelper.registerRecipeItem(registry, MekanismBlocks.ENERGIZED_SMELTER, MekanismBlocks.ENERGIZED_SMELTER.getRegistryName(), VanillaRecipeCategoryUid.FURNACE);
         CatalystRegistryHelper.registerRecipeItem(registry, MekanismBlocks.FORMULAIC_ASSEMBLICATOR, VanillaRecipeCategoryUid.CRAFTING);
-        CatalystRegistryHelper.registerRecipeItem(registry, MekanismItems.ROBIT, VanillaRecipeCategoryUid.CRAFTING);
+        CatalystRegistryHelper.registerRecipeItem(registry, MekanismItems.ROBIT, MekanismBlocks.ENERGIZED_SMELTER.getRegistryName(), VanillaRecipeCategoryUid.ANVIL,
+              VanillaRecipeCategoryUid.CRAFTING, VanillaRecipeCategoryUid.FURNACE);
     }
 
     @Override

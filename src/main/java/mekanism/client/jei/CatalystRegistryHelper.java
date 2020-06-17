@@ -8,7 +8,6 @@ import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import net.minecraft.util.ResourceLocation;
 
@@ -24,24 +23,16 @@ public class CatalystRegistryHelper {
         registry.addRecipeCatalyst(MekanismBlocks.ROTARY_CONDENSENTRATOR.getItemStack(), condensentrating, decondensentrating);
     }
 
-    public static void registerSmelter(IRecipeCatalystRegistration registry) {
-        register(registry, MekanismBlocks.ENERGIZED_SMELTER);
-        //if (!Mekanism.hooks.CraftTweakerLoaded || !EnergizedSmelter.hasRemovedRecipe()) {
-        //Vanilla catalyst
-        registerRecipeItem(registry, MekanismBlocks.ENERGIZED_SMELTER, VanillaRecipeCategoryUid.FURNACE);
-        //}
-    }
-
-    public static void registerRecipeItem(IRecipeCatalystRegistration registry, IBlockProvider mekanismBlock, ResourceLocation category) {
-        registry.addRecipeCatalyst(mekanismBlock.getItemStack(), category);
+    public static void registerRecipeItem(IRecipeCatalystRegistration registry, IBlockProvider mekanismBlock, ResourceLocation... categories) {
+        registry.addRecipeCatalyst(mekanismBlock.getItemStack(), categories);
         Attribute.ifHas(mekanismBlock.getBlock(), AttributeFactoryType.class, (attr) -> {
             for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-                registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, attr.getFactoryType()).getItemStack(), category);
+                registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, attr.getFactoryType()).getItemStack(), categories);
             }
         });
     }
 
-    public static void registerRecipeItem(IRecipeCatalystRegistration registry, IItemProvider mekanismItem, ResourceLocation category) {
-        registry.addRecipeCatalyst(mekanismItem.getItemStack(), category);
+    public static void registerRecipeItem(IRecipeCatalystRegistration registry, IItemProvider mekanismItem, ResourceLocation... categories) {
+        registry.addRecipeCatalyst(mekanismItem.getItemStack(), categories);
     }
 }
