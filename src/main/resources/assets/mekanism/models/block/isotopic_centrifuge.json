@@ -1,5 +1,5 @@
 {
-	"parent": "block:cube_all",
+	"parent": "block/cube_all",
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "mekanism:block/models/isotopic_centrifuge",
