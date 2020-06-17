@@ -155,7 +155,7 @@ repositories {
 
 group = "mekanism"
 version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
-archivesBaseName = "MekanismAll"
+archivesBaseName = "Mekanism"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
@@ -301,7 +301,7 @@ dependencies {
     datagenmainCompile fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
 }
 
-def version_properties = ["version": mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version,
+def version_properties = ["version"       : mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version,
                           "loader_version": loader_version]
 def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
@@ -375,10 +375,10 @@ processAdditionsResources {
     }
 }
 
-processGeneratorsResources {
+processDefenseResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
-    finalizedBy(replaceResourcesGenerators)
+    finalizedBy(replaceResourcesDefense)
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
@@ -387,10 +387,10 @@ processGeneratorsResources {
     }
 }
 
-processDefenseResources {
+processGeneratorsResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
-    finalizedBy(replaceResourcesDefense)
+    finalizedBy(replaceResourcesGenerators)
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
@@ -412,18 +412,14 @@ processToolsResources {
 }
 
 jar {
-    //TODO: Make this be an "All" jar again, needs to include all sourcesets and then use a merged mods.toml file
-    // Ideally we would have the mods.toml file get combined in processing rather than have to manually
-    // make sure that it stays up to date
-    from sourceSets.main.output
     from sourceSets.api.output
+    from sourceSets.main.output
 }
 
 //TODO: Sources Jars?
 
-task coreJar(type: Jar) {
-    archiveName = "Mekanism-${project.version}.jar"
-    from sourceSets.main.output
+task apiJar(type: Jar) {
+    classifier "api"
     from sourceSets.api.output
 }
 
@@ -432,14 +428,14 @@ task additionsJar(type: Jar) {
     from sourceSets.additions.output
 }
 
-task generatorsJar(type: Jar) {
-    archiveName = "MekanismGenerators-${project.version}.jar"
-    from sourceSets.generators.output
-}
-
 task defenseJar(type: Jar) {
     archiveName = "MekanismDefense-${project.version}.jar"
     from sourceSets.defense.output
+}
+
+task generatorsJar(type: Jar) {
+    archiveName = "MekanismGenerators-${project.version}.jar"
+    from sourceSets.generators.output
 }
 
 task toolsJar(type: Jar) {
@@ -447,27 +443,104 @@ task toolsJar(type: Jar) {
     from sourceSets.tools.output
 }
 
-task apiJar(type: Jar) {
-    classifier "api"
-    from sourceSets.api.output
+task allJar(type: Jar) {
+    //Make sure the other tasks run first
+    shouldRunAfter(apiJar, jar, additionsJar, defenseJar, generatorsJar, toolsJar,
+            processResources, processAdditionsResources, processDefenseResources,
+            processGeneratorsResources, processToolsResources)
+    classifier "all"
+    from(sourceSets.api.output) {
+        exclude 'META-INF/mods.toml'
+        exclude 'META-INF/accesstransformer.cfg'
+    }
+    from(sourceSets.main.output) {
+        exclude 'META-INF/mods.toml'
+        exclude 'META-INF/accesstransformer.cfg'
+    }
+    from(sourceSets.additions.output) {
+        exclude 'META-INF/mods.toml'
+        exclude 'META-INF/accesstransformer.cfg'
+    }
+    from(sourceSets.defense.output) {
+        exclude 'META-INF/mods.toml'
+        exclude 'META-INF/accesstransformer.cfg'
+    }
+    from(sourceSets.generators.output) {
+        exclude 'META-INF/mods.toml'
+        exclude 'META-INF/accesstransformer.cfg'
+    }
+    from(sourceSets.tools.output) {
+        exclude 'META-INF/mods.toml'
+        exclude 'META-INF/accesstransformer.cfg'
+    }
+    //Generate folders, merge the access transformers and mods.toml files
+    mkdir("$buildDir/generated/META-INF")
+    (new File("$buildDir/generated/META-INF/accesstransformer.cfg")).text = mergeATs(sourceSets.api, sourceSets.main,
+            sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
+    (new File("$buildDir/generated/META-INF/mods.toml")).text = mergeModsTOML(sourceSets.api, sourceSets.main,
+            sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
+    //Copy over the generated files
+    from("$buildDir/generated") {
+        include 'META-INF/mods.toml'
+        expand version_properties
+    }
+    from("$buildDir/generated") {
+        include 'META-INF/accesstransformer.cfg'
+    }
+}
+
+static String mergeATs(SourceSet... sourceSets) {
+    String text = ""
+    for (SourceSet sourceSet : sourceSets) {
+        sourceSet.resources.matching {
+            include 'META-INF/accesstransformer.cfg'
+        }.each {
+            File file -> text = text.isEmpty() ? file.getText() : text + "\n" + file.getText()
+        }
+    }
+    return text
+}
+
+static String mergeModsTOML(SourceSet... sourceSets) {
+    String text = ""
+    for (SourceSet sourceSet : sourceSets) {
+        sourceSet.resources.matching {
+            include 'META-INF/mods.toml'
+        }.each {
+            File file ->
+                if (text.isEmpty()) {
+                    //Nothing added yet, take it all
+                    text = file.getText()
+                } else {
+                    //Otherwise add all but the first three lines (which are duplicated between the files)
+                    String[] lines = file.getText().split("\n");
+                    for (int i = 3; i < lines.length; i++) {
+                        text = text + "\n" + lines[i]
+                    }
+                }
+        }
+    }
+    return text
 }
 
 artifacts {
     archives apiJar
-    archives coreJar
+    archives jar
     archives additionsJar
     archives generatorsJar
     archives defenseJar
     archives toolsJar
+    archives allJar
 }
 
 reobf {
     apiJar { classpath = sourceSets.api.compileClasspath }
-    coreJar { classpath = sourceSets.main.compileClasspath }
+    jar { classpath = sourceSets.main.compileClasspath }
     additionsJar { classpath = sourceSets.additions.compileClasspath }
     generatorsJar { classpath = sourceSets.generators.compileClasspath }
     defenseJar { classpath = sourceSets.defense.compileClasspath }
     toolsJar { classpath = sourceSets.tools.compileClasspath }
+    allJar {}
 }
 
 task fullBuild(type: Delete) {
@@ -539,7 +612,7 @@ uploadArchives {
     }
 }
 
-tasks.curseforge.dependsOn coreJar, additionsJar, generatorsJar, defenseJar, toolsJar, apiJar
+tasks.curseforge.dependsOn jar, additionsJar, generatorsJar, defenseJar, toolsJar, apiJar
 
 if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
     println "Enabling Curseforge config"
@@ -585,14 +658,14 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     "<br> $generatedChangelog"
         }
 
-        //Core
+        //Main
         project {
             id = '268560'
             changelogType = "html"
             changelog = generatedChangelog
             // A file can also be set using: changelog = file('changelog.txt')
             releaseType = "${curse_release_type}"
-            mainArtifact(coreJar) {
+            mainArtifact(jar) {
                 relations {
                     optionalDependency "jei"
                     optionalDependency "ctm"
