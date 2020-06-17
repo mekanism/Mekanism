@@ -11,6 +11,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
@@ -39,7 +40,7 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
                 list.add(MekanismLang.PROCESS_RATE_MB.translate(tile.getMultiblock().getProcessRate()));
             }
             return list;
-        }));
+        }).jeiCategories(MekanismBlocks.SPS_CASING.getRegistryName()));
         addButton(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {

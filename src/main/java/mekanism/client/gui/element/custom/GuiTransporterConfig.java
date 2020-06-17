@@ -1,7 +1,5 @@
 package mekanism.client.gui.element.custom;
 
-import java.util.ArrayList;
-import java.util.List;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
@@ -11,7 +9,6 @@ import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.SideDataButton;
-import mekanism.client.gui.element.custom.GuiSideConfiguration.GuiPos;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
@@ -30,46 +27,33 @@ import net.minecraft.client.gui.screen.Screen;
 
 public class GuiTransporterConfig extends GuiWindow {
 
-    private final List<GuiPos> slotPosList = new ArrayList<>();
     private final TileEntityMekanism tile;
 
     public GuiTransporterConfig(IGuiWrapper gui, int x, int y, TileEntityMekanism tile) {
         super(gui, x, y, 156, 95);
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
-        slotPosList.add(new GuiPos(RelativeSide.BOTTOM, 44, 64));
-        slotPosList.add(new GuiPos(RelativeSide.TOP, 44, 34));
-        slotPosList.add(new GuiPos(RelativeSide.FRONT, 44, 49));
-        slotPosList.add(new GuiPos(RelativeSide.BACK, 29, 64));
-        slotPosList.add(new GuiPos(RelativeSide.LEFT, 29, 49));
-        slotPosList.add(new GuiPos(RelativeSide.RIGHT, 59, 49));
-
         addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12));
-        //Add the borders to the actual buttons
-        //Note: We don't bother adding a border for the center one as it is covered by the side ones
-        //Top
-        addChild(new GuiInnerScreen(gui, relativeX + 43, relativeY + 33, 16, 16));
-        //Left
-        addChild(new GuiInnerScreen(gui, relativeX + 28, relativeY + 48, 16, 16));
-        //Right
-        addChild(new GuiInnerScreen(gui, relativeX + 58, relativeY + 48, 16, 16));
-        //Bottom
-        addChild(new GuiInnerScreen(gui, relativeX + 43, relativeY + 63, 16, 16));
-        //Bottom left
-        addChild(new GuiInnerScreen(gui, relativeX + 28, relativeY + 63, 16, 16));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
         addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 136, gui.getTop() + relativeY + 6, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos())), getOnHover(MekanismLang.STRICT_INPUT)));
         addChild(new ColorButton(gui, gui.getLeft() + relativeX + 112, gui.getTop() + relativeY + 49, 16, 16, () -> getTile().getEjector().getOutputColor(),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos(), Screen.hasShiftDown() ? 2 : 0)),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos(), 1))));
-        for (GuiPos guiPos : slotPosList) {
-            addChild(new SideDataButton(gui, gui.getLeft() + relativeX + guiPos.xPos, gui.getTop() + relativeY + guiPos.yPos, guiPos.relativeSide,
-                  () -> getTile().getConfig().getDataType(TransmissionType.ITEM, guiPos.relativeSide), () -> getTile().getEjector().getInputColor(guiPos.relativeSide),
-                  tile, () -> null, ConfigurationPacket.INPUT_COLOR, getOnHover()));
-        }
+        addSideDataButton(RelativeSide.BOTTOM, 44, 64);
+        addSideDataButton(RelativeSide.TOP, 44, 34);
+        addSideDataButton(RelativeSide.FRONT, 44, 49);
+        addSideDataButton(RelativeSide.BACK, 29, 64);
+        addSideDataButton(RelativeSide.LEFT, 29, 49);
+        addSideDataButton(RelativeSide.RIGHT, 59, 49);
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, tile, 0));
         ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).startTracking(0, ((ISideConfiguration) tile).getEjector());
+    }
+
+    private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
+        addChild(new SideDataButton(guiObj, guiObj.getLeft() + relativeX + xPos, guiObj.getTop() + relativeY + yPos, side,
+              () -> getTile().getConfig().getDataType(TransmissionType.ITEM, side), () -> getTile().getEjector().getInputColor(side), tile, () -> null,
+              ConfigurationPacket.INPUT_COLOR, getOnHover()));
     }
 
     @Override

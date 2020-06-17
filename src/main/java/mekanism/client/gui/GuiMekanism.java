@@ -132,7 +132,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // flush the focus listeners list unless it's an overlay
         focusListeners.removeIf(element -> !element.isOverlay);
         int prevLeft = getGuiLeft(), prevTop = getGuiTop();
-        init(minecraft, sizeX, sizeY);
+        super.resize(minecraft, sizeX, sizeY);
 
         windows.forEach(window -> {
             window.resize(prevLeft, prevTop, getGuiLeft(), getGuiTop());

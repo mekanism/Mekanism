@@ -35,7 +35,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
         addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.RIGHT, this, 72, 47));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.RIGHT, this, 72, 47).jeiCategory(tile));
         addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.infusionTank, tile.getInfusionTanks(null)), 7, 15, 4, 52, false));
         addButton(new GuiDumpButton<>(this, tile, 140, 65));
     }

@@ -16,7 +16,7 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiRightArrow(this, 90, 35));
+        addButton(new GuiRightArrow(this, 90, 35).jeiCrafting());
     }
 
     @Override

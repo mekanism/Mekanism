@@ -4,6 +4,7 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
+import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -17,7 +18,7 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiProgress(robit::getScaledProgress, ProgressType.BAR, this, 78, 38));
+        addButton(new GuiProgress(robit::getScaledProgress, ProgressType.BAR, this, 78, 38).jeiCategories(MekanismBlocks.ENERGIZED_SMELTER.getRegistryName()));
     }
 
     @Override

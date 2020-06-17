@@ -18,33 +18,32 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
         super(gui, x, y, width, height);
         this.frequencySupplier = frequencySupplier;
         this.active = true;
-
         addChild(new GuiDigitalBar(gui, new IBarInfoHandler() {
             @Override
             public double getLevel() {
                 QIOFrequency freq = frequencySupplier.get();
-                return freq != null ? (double) freq.getTotalItemCount() / (double) freq.getTotalItemCountCapacity() : 0;
+                return freq == null ? 0 : freq.getTotalItemCount() / (double) freq.getTotalItemCountCapacity();
             }
 
             @Override
             public ITextComponent getTooltip() {
                 QIOFrequency freq = frequencySupplier.get();
-                return freq != null ? MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      QIOFrequency.formatItemCount(freq.getTotalItemCount()), QIOFrequency.formatItemCount(freq.getTotalItemCountCapacity())) : null;
+                return freq == null ? null : MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                      QIOFrequency.formatItemCount(freq.getTotalItemCount()), QIOFrequency.formatItemCount(freq.getTotalItemCountCapacity()));
             }
         }, relativeX + (width / 4) - (50 / 2), relativeY + 20, 50));
         addChild(new GuiDigitalBar(gui, new IBarInfoHandler() {
             @Override
             public double getLevel() {
                 QIOFrequency freq = frequencySupplier.get();
-                return freq != null ? (double) freq.getTotalItemTypes(true) / (double) freq.getTotalItemTypeCapacity() : 0;
+                return freq == null ? 0 : freq.getTotalItemTypes(true) / (double) freq.getTotalItemTypeCapacity();
             }
 
             @Override
             public ITextComponent getTooltip() {
                 QIOFrequency freq = frequencySupplier.get();
-                return freq != null ? MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      QIOFrequency.formatItemCount(freq.getTotalItemTypes(true)), QIOFrequency.formatItemCount(freq.getTotalItemTypeCapacity())) : null;
+                return freq == null ? null : MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                      QIOFrequency.formatItemCount(freq.getTotalItemTypes(true)), QIOFrequency.formatItemCount(freq.getTotalItemTypeCapacity()));
             }
         }, relativeX + (3 * width / 4) - (50 / 2), relativeY + 20, 50));
     }

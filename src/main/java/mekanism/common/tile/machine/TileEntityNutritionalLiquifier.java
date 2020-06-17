@@ -16,7 +16,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -126,7 +125,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
             return null;
         }
         Food food = stack.getItem().getFood();
-        return new NutritionalLiquifierIRecipe(Mekanism.rl("liquifier/" + stack.getItem().getRegistryName()), ItemStackIngredient.from(stack.getItem()),
+        return new NutritionalLiquifierIRecipe(stack.getItem(), ItemStackIngredient.from(stack.getItem()),
               MekanismGases.NUTRITIONAL_PASTE.getStack(food.getHealing() * 50));
     }
 

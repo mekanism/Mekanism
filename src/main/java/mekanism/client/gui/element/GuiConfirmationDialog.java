@@ -16,9 +16,8 @@ public class GuiConfirmationDialog extends GuiWindow {
         this.title = title;
         active = true;
 
-        addChild(new TranslationButton(gui, gui.getLeft() + x + width / 2 - 102 / 2, gui.getTop() + y + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL,
-              this::close));
-        addChild(new TranslationButton(gui, gui.getLeft() + x + width / 2 + 1, gui.getTop() + y + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, () -> {
+        addChild(new TranslationButton(gui, this.x + width / 2 - 102 / 2, this.y + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, this::close));
+        addChild(new TranslationButton(gui, this.x + width / 2 + 1, this.y + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, () -> {
             onConfirm.run();
             close();
         }, null, type.getColorSupplier()));

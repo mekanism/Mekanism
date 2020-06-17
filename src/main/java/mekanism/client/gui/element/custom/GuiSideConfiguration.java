@@ -25,10 +25,8 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 
-//TODO - V10: Make this GUI look better, we extended it vertically to be able to fit the extra types, but now there is a decent bit of empty space at the bottom
 public class GuiSideConfiguration extends GuiWindow {
 
-    private final List<GuiPos> slotPosList = new ArrayList<>();
     private final List<GuiConfigTypeTab> configTabs = new ArrayList<>();
     private final TileEntityMekanism tile;
     private TransmissionType currentType;
@@ -38,26 +36,9 @@ public class GuiSideConfiguration extends GuiWindow {
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
         currentType = getTopTransmission();
-        slotPosList.add(new GuiPos(RelativeSide.BOTTOM, 71, 64));
-        slotPosList.add(new GuiPos(RelativeSide.TOP, 71, 34));
-        slotPosList.add(new GuiPos(RelativeSide.FRONT, 71, 49));
-        slotPosList.add(new GuiPos(RelativeSide.BACK, 56, 64));
-        slotPosList.add(new GuiPos(RelativeSide.LEFT, 56, 49));
-        slotPosList.add(new GuiPos(RelativeSide.RIGHT, 86, 49));
-
-        addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12));
-        //Add the borders to the actual buttons
-        //Note: We don't bother adding a border for the center one as it is covered by the side ones
-        //Top
-        addChild(new GuiInnerScreen(gui, relativeX + 70, relativeY + 33, 16, 16));
-        //Left
-        addChild(new GuiInnerScreen(gui, relativeX + 55, relativeY + 48, 16, 16));
-        //Right
-        addChild(new GuiInnerScreen(gui, relativeX + 85, relativeY + 48, 16, 16));
-        //Bottom
-        addChild(new GuiInnerScreen(gui, relativeX + 70, relativeY + 63, 16, 16));
-        //Bottom left
-        addChild(new GuiInnerScreen(gui, relativeX + 55, relativeY + 63, 16, 16));
+        //TODO: Try to make the GUI look a bit better as it still seems a bit off with the scales and such
+        // Maybe we want to eventually add some sort of "in world preview" type thing
+        addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 25, 74, 12));
         List<TransmissionType> transmissions = getTile().getConfig().getTransmissions();
         for (int i = 0; i < transmissions.size(); i++) {
             GuiConfigTypeTab tab = new GuiConfigTypeTab(gui, transmissions.get(i), relativeX + (i < 4 ? -26 : width), relativeY + (2 + 28 * (i % 4)), this, i < 4);
@@ -65,18 +46,24 @@ public class GuiSideConfiguration extends GuiWindow {
             configTabs.add(tab);
         }
         updateTabs();
-
         addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 136, gui.getTop() + relativeY + 6, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos(), currentType)), getOnHover(MekanismLang.AUTO_EJECT)));
-        for (GuiPos guiPos : slotPosList) {
-            addChild(new SideDataButton(gui, gui.getLeft() + relativeX + guiPos.xPos, gui.getTop() + relativeY + guiPos.yPos, guiPos.relativeSide,
-                  () -> getTile().getConfig().getDataType(currentType, guiPos.relativeSide), () -> {
-                DataType dataType = getTile().getConfig().getDataType(currentType, guiPos.relativeSide);
-                return dataType == null ? EnumColor.GRAY : dataType.getColor();
-            }, tile, () -> currentType, ConfigurationPacket.SIDE_DATA, getOnHover()));
-        }
+        addSideDataButton(RelativeSide.BOTTOM, 71, 74);
+        addSideDataButton(RelativeSide.TOP, 71, 44);
+        addSideDataButton(RelativeSide.FRONT, 71, 59);
+        addSideDataButton(RelativeSide.BACK, 56, 74);
+        addSideDataButton(RelativeSide.LEFT, 56, 59);
+        addSideDataButton(RelativeSide.RIGHT, 86, 59);
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, 1));
         ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).startTracking(1, ((ISideConfiguration) tile).getConfig());
+    }
+
+    private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
+        addChild(new SideDataButton(guiObj, guiObj.getLeft() + relativeX + xPos, guiObj.getTop() + relativeY + yPos, side,
+              () -> getTile().getConfig().getDataType(currentType, side), () -> {
+            DataType dataType = getTile().getConfig().getDataType(currentType, side);
+            return dataType == null ? EnumColor.GRAY : dataType.getColor();
+        }, tile, () -> currentType, ConfigurationPacket.SIDE_DATA, getOnHover()));
     }
 
     @Override
@@ -101,7 +88,7 @@ public class GuiSideConfiguration extends GuiWindow {
         };
     }
 
-    public TransmissionType getTopTransmission() {
+    private TransmissionType getTopTransmission() {
         return getTile().getConfig().getTransmissions().get(0);
     }
 
@@ -121,23 +108,10 @@ public class GuiSideConfiguration extends GuiWindow {
         drawTitleText(MekanismLang.CONFIG_TYPE.translate(currentType), 5);
         ConfigInfo config = getTile().getConfig().getConfig(currentType);
         if (config == null || !config.canEject()) {
-            drawString(MekanismLang.NO_EJECT.translate(), relativeX + 43, relativeY + 17, screenTextColor());
+            drawString(MekanismLang.NO_EJECT.translate(), relativeX + 43, relativeY + 27, screenTextColor());
         } else {
-            drawString(MekanismLang.EJECT.translate(OnOff.of(config.isEjecting())), relativeX + 43, relativeY + 17, screenTextColor());
+            drawString(MekanismLang.EJECT.translate(OnOff.of(config.isEjecting())), relativeX + 43, relativeY + 27, screenTextColor());
         }
-        drawString(MekanismLang.SLOTS.translate(), relativeX + 67, relativeY + 81, 0x787878);
-    }
-
-    public static class GuiPos {
-
-        public final RelativeSide relativeSide;
-        public final int xPos;
-        public final int yPos;
-
-        public GuiPos(RelativeSide side, int x, int y) {
-            relativeSide = side;
-            xPos = x;
-            yPos = y;
-        }
+        drawString(MekanismLang.SLOTS.translate(), relativeX + 67, relativeY + 96, 0x787878);
     }
 }

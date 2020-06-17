@@ -25,9 +25,13 @@ import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityRotaryCondensentrator;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator, MekanismTileContainer<TileEntityRotaryCondensentrator>> {
+
+    private static final ResourceLocation condensentrating = Mekanism.rl("rotary_condensentrator_condensentrating");
+    private static final ResourceLocation decondensentrating = Mekanism.rl("rotary_condensentrator_decondensentrating");
 
     public GuiRotaryCondensentrator(MekanismTileContainer<TileEntityRotaryCondensentrator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -58,7 +62,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
             public boolean isActive() {
                 return !tile.mode;
             }
-        }, ProgressType.LARGE_RIGHT, this, 64, 39));
+        }, ProgressType.LARGE_RIGHT, this, 64, 39).jeiCategories(condensentrating));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
@@ -69,7 +73,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
             public boolean isActive() {
                 return tile.mode;
             }
-        }, ProgressType.LARGE_LEFT, this, 64, 39));
+        }, ProgressType.LARGE_LEFT, this, 64, 39).jeiCategories(decondensentrating));
         addButton(new MekanismImageButton(this, getGuiLeft() + 4, getGuiTop() + 4, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }

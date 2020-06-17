@@ -1,6 +1,7 @@
 package mekanism.common.tile.machine;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
@@ -86,10 +87,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         super(MekanismBlocks.ROTARY_CONDENSENTRATOR);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(Arrays.asList(gasInputSlot, fluidInputSlot), Arrays.asList(gasOutputSlot, fluidOutputSlot), energySlot, true);
-        configComponent.setupIOConfig(TransmissionType.GAS, gasTank, gasTank, RelativeSide.LEFT, true)
-              .setEjecting(true);
-        configComponent.setupIOConfig(TransmissionType.FLUID, fluidTank, fluidTank, RelativeSide.RIGHT, true)
-              .setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.GAS, gasTank, gasTank, RelativeSide.LEFT, true).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.FLUID, fluidTank, fluidTank, RelativeSide.RIGHT, true).setEjecting(true);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
@@ -140,9 +139,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(gasInputSlot = GasInventorySlot.rotary(gasTank, () -> mode, this, 5, 25));
-        builder.addSlot(gasOutputSlot = GasInventorySlot.rotary(gasTank, () -> mode, this, 5, 56));
-        builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, () -> mode, this, 155, 25));
+        BooleanSupplier modeSupplier = () -> mode;
+        builder.addSlot(gasInputSlot = GasInventorySlot.rotaryDrain(gasTank, modeSupplier, this, 5, 25));
+        builder.addSlot(gasOutputSlot = GasInventorySlot.rotaryFill(gasTank, modeSupplier, this, 5, 56));
+        builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, modeSupplier, this, 155, 25));
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 155, 56));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
         gasInputSlot.setSlotType(ContainerSlotType.INPUT);

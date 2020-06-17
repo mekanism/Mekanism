@@ -101,7 +101,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
 
     public static class Provider implements ICapabilitySerializable<CompoundNBT> {
 
-        public static final ResourceLocation NAME = new ResourceLocation(Mekanism.MODID, NBTConstants.RADIATION);
+        public static final ResourceLocation NAME = Mekanism.rl(NBTConstants.RADIATION);
         private final IRadiationEntity defaultImpl = new DefaultRadiationEntity();
         private final CapabilityCache capabilityCache = new CapabilityCache();
 

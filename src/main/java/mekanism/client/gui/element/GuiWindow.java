@@ -8,6 +8,7 @@ import mekanism.client.gui.element.button.GuiCloseButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.lib.Color;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.inventory.container.Container;
 import org.lwjgl.glfw.GLFW;
 
@@ -23,13 +24,13 @@ public class GuiWindow extends GuiTexturedElement {
 
     protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
 
+    //TODO - V10: Fix buttons to make windows popup (like the rename robit button) becoming activatable again after resizing the MC window
     public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height) {
         super(GuiMekanism.BASE_BACKGROUND, gui, x, y, width, height);
         isOverlay = true;
         active = true;
-
         if (!isFocusOverlay()) {
-            addChild(new GuiCloseButton(gui, gui.getLeft() + x + 6, gui.getTop() + y + 6, this));
+            addChild(new GuiCloseButton(gui, this.x + 6, this.y + 6, this));
         }
     }
 
@@ -109,7 +110,7 @@ public class GuiWindow extends GuiTexturedElement {
         return false;
     }
 
-    public void setListenerTab(GuiInsetElement<?> element) {
+    public void setListenerTab(Widget element) {
         closeListener = () -> element.active = true;
     }
 

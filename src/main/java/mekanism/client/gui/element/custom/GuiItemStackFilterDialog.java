@@ -27,7 +27,6 @@ public class GuiItemStackFilterDialog extends GuiFilterDialog<QIOItemStackFilter
     private <TILE extends TileEntityMekanism & ITileFilterHolder<QIOFilter<?>>>
     GuiItemStackFilterDialog(IGuiWrapper gui, int x, int y, TILE tile, QIOItemStackFilter origFilter) {
         super(gui, x, y, 152, 90, MekanismLang.ITEM_FILTER.translate(), origFilter);
-
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 7, relativeY + 18).setRenderHover(true));
         addChild(new GuiInnerScreen(gui, relativeX + 29, relativeY + 18, width - 29 - 7, 43, () -> {
             List<ITextComponent> list = new ArrayList<>();

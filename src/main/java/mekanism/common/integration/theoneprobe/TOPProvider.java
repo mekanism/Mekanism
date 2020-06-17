@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mcjty.theoneprobe.api.CompoundText;
 import mcjty.theoneprobe.api.IElementNew;
 import mcjty.theoneprobe.api.IProbeConfig;
 import mcjty.theoneprobe.api.IProbeConfig.ConfigMode;
@@ -33,6 +34,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -126,13 +128,16 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         return null;
     }
 
+    private ITextComponent getNameComponent(ITextComponent component) {
+        return CompoundText.create().style(TextStyleClass.NAME).text(component).get();
+    }
+
     private void displayFluid(IProbeInfo info, IFluidHandler fluidHandler) {
         int tanks = fluidHandler.getTanks();
         for (int tank = 0; tank < tanks; tank++) {
             FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);
             if (!fluidInTank.isEmpty()) {
-                //Mimic TOP's liquid text, but localized
-                info.text(TextStyleClass.NAME + MekanismLang.LIQUID.translate(fluidInTank).getFormattedText());
+                info.text(getNameComponent(MekanismLang.LIQUID.translate(fluidInTank)));
             }
             info.element(new FluidElement(fluidInTank, fluidHandler.getTankCapacity(tank)));
         }
@@ -154,7 +159,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
             for (int i = 0; i < handler.getTanks(); i++) {
                 STACK chemicalInTank = handler.getChemicalInTank(i);
                 if (!chemicalInTank.isEmpty()) {
-                    info.text(TextStyleClass.NAME + langEntry.translate(chemicalInTank.getType()).getFormattedText());
+                    info.text(getNameComponent(langEntry.translate(chemicalInTank.getType())));
                 }
                 info.element(elementCreator.create(chemicalInTank, handler.getTankCapacity(i)));
             }
@@ -162,7 +167,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
             //Special handling to allow viewing the chemicals in a multiblock when looking at things other than the ports
             for (TANK tank : multiBlockToTanks.apply(structure)) {
                 if (!tank.isEmpty()) {
-                    info.text(TextStyleClass.NAME + langEntry.translate(tank.getType()).getFormattedText());
+                    info.text(getNameComponent(langEntry.translate(tank.getType())));
                 }
                 info.element(elementCreator.create(tank.getStack(), tank.getCapacity()));
             }

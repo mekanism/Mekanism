@@ -83,6 +83,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
               41, ListSortType.class, container::getSortType, container::setSortType));
         addButton(new GuiDigitalIconToggle<>(this, xSize - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, container::getSortDirection, container::setSortDirection));
+        //TODO - V10: Make the max size scale with the gui scale and also with the windows size if it gets changed after the screen is opened
         addButton(new GuiResizeControls(this, (minecraft.getMainWindow().getScaledHeight() / 2) - 20 - getGuiTop(), this::resize));
     }
 
