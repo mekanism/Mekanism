@@ -1,6 +1,6 @@
 package mekanism.client.gui.machine;
 
-import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.GuiProgress;
@@ -10,8 +10,6 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
-import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -19,7 +17,7 @@ import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiPrecisionSawmill extends GuiMekanismTile<TileEntityPrecisionSawmill, MekanismTileContainer<TileEntityPrecisionSawmill>> {
+public class GuiPrecisionSawmill extends GuiConfigurableTile<TileEntityPrecisionSawmill, MekanismTileContainer<TileEntityPrecisionSawmill>> {
 
     public GuiPrecisionSawmill(MekanismTileContainer<TileEntityPrecisionSawmill> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -33,8 +31,6 @@ public class GuiPrecisionSawmill extends GuiMekanismTile<TileEntityPrecisionSawm
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiSideConfigurationTab(this, tile));
-        addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         //Note: We just draw the wide slot on top of the normal slots so that it looks a bit better

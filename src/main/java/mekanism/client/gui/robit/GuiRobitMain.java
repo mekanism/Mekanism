@@ -45,7 +45,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
               getOnHover(MekanismLang.ROBIT_TOGGLE_PICKUP)));
         addButton(renameButton = new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 54, 18, getButtonLocation("rename"), () -> {
             GuiWindow window = new GuiRobitRename(this, 27, 16, robit);
-            window.setListenerTab(renameButton);
+            window.setListenerTab(() -> renameButton);
             renameButton.active = false;
             addWindow(window);
         }, getOnHover(MekanismLang.ROBIT_RENAME)));

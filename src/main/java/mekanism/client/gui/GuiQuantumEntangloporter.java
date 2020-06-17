@@ -10,8 +10,6 @@ import mekanism.client.gui.element.scroll.GuiTextScrollList;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
-import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
@@ -33,7 +31,7 @@ import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumEntangloporter, MekanismTileContainer<TileEntityQuantumEntangloporter>> {
+public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuantumEntangloporter, MekanismTileContainer<TileEntityQuantumEntangloporter>> {
 
     private MekanismButton publicButton;
     private MekanismButton privateButton;
@@ -56,8 +54,6 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     public void init() {
         super.init();
         addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
-        addButton(new GuiSideConfigurationTab(this, tile));
-        addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
 

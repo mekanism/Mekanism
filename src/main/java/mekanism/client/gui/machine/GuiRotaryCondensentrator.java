@@ -1,7 +1,7 @@
 package mekanism.client.gui.machine;
 
 import java.util.Arrays;
-import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -14,8 +14,6 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
-import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -28,7 +26,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator, MekanismTileContainer<TileEntityRotaryCondensentrator>> {
+public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRotaryCondensentrator, MekanismTileContainer<TileEntityRotaryCondensentrator>> {
 
     private static final ResourceLocation condensentrating = Mekanism.rl("rotary_condensentrator_condensentrating");
     private static final ResourceLocation decondensentrating = Mekanism.rl("rotary_condensentrator_decondensentrating");
@@ -45,8 +43,6 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSideConfigurationTab(this, tile));
-        addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
         addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getEnergyContainer().getNeeded()))), this));

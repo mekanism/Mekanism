@@ -2,7 +2,7 @@ package mekanism.client.gui.machine;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
-import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.FilterButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -11,8 +11,6 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
-import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
@@ -26,7 +24,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictionificator, MekanismTileContainer<TileEntityOredictionificator>> {
+public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredictionificator, MekanismTileContainer<TileEntityOredictionificator>> {
 
     /**
      * The number of filters that can be displayed
@@ -52,8 +50,6 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         addButton(scrollBar = new GuiScrollBar(this, 153, 17, 90, () -> getFilters().size(), () -> FILTER_COUNT));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiSideConfigurationTab(this, tile));
-        addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiProgress(() -> tile.didProcess ? 1 : 0, ProgressType.LARGE_RIGHT, this, 64, 119));
         addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tile, -1))));

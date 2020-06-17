@@ -3,7 +3,7 @@ package mekanism.client.gui.machine;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import java.util.function.Supplier;
-import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
@@ -13,8 +13,6 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
-import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.effect.BoltRenderer;
@@ -36,7 +34,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntityAntiprotonicNucleosynthesizer, MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> {
+public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEntityAntiprotonicNucleosynthesizer, MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> {
 
     private static final Vec3d from = new Vec3d(47, 50, 0), to = new Vec3d(147, 50, 0);
     private static final BoltRenderInfo boltRenderInfo = new BoltRenderInfo().color(Color.rgbad(0.45F, 0.45F, 0.5F, 1));
@@ -64,8 +62,6 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiMekanismTile<TileEntity
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSideConfigurationTab(this, tile));
-        addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getEnergyContainer().getNeeded()))), this));
         addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.SMALL_MED, this, 5, 18));

@@ -10,8 +10,6 @@ import mekanism.client.gui.element.bar.GuiMergedChemicalBar;
 import mekanism.client.gui.element.button.GuiGasMode;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
-import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tier.ChemicalTankTier;
@@ -19,7 +17,7 @@ import mekanism.common.tile.TileEntityChemicalTank;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiChemicalTank extends GuiMekanismTile<TileEntityChemicalTank, MekanismTileContainer<TileEntityChemicalTank>> {
+public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank, MekanismTileContainer<TileEntityChemicalTank>> {
 
     public GuiChemicalTank(MekanismTileContainer<TileEntityChemicalTank> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -51,8 +49,6 @@ public class GuiChemicalTank extends GuiMekanismTile<TileEntityChemicalTank, Mek
         }));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiSideConfigurationTab(this, tile));
-        addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumping, tile.getPos(), 0));
     }
 

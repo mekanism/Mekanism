@@ -1,6 +1,7 @@
 package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.function.Supplier;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
@@ -8,7 +9,6 @@ import mekanism.client.gui.element.button.GuiCloseButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.lib.Color;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.inventory.container.Container;
 import org.lwjgl.glfw.GLFW;
 
@@ -17,6 +17,7 @@ public class GuiWindow extends GuiTexturedElement {
     private static final Color OVERLAY_COLOR = Color.rgbai(60, 60, 60, 128);
 
     private Runnable closeListener;
+    private Runnable reattachListener;
 
     private boolean dragging = false;
     private double dragX, dragY;
@@ -24,7 +25,6 @@ public class GuiWindow extends GuiTexturedElement {
 
     protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
 
-    //TODO - V10: Fix buttons to make windows popup (like the rename robit button) becoming activatable again after resizing the MC window
     public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height) {
         super(GuiMekanism.BASE_BACKGROUND, gui, x, y, width, height);
         isOverlay = true;
@@ -110,8 +110,17 @@ public class GuiWindow extends GuiTexturedElement {
         return false;
     }
 
-    public void setListenerTab(Widget element) {
-        closeListener = () -> element.active = true;
+    public void setListenerTab(Supplier<? extends GuiElement> elementSupplier) {
+        closeListener = () -> elementSupplier.get().active = true;
+        reattachListener = () -> elementSupplier.get().active = false;
+    }
+
+    @Override
+    public void resize(int prevLeft, int prevTop, int left, int top) {
+        super.resize(prevLeft, prevTop, left, top);
+        if (reattachListener != null) {
+            reattachListener.run();
+        }
     }
 
     public void renderBlur() {
