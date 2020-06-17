@@ -36,10 +36,14 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 
-public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToGasRecipe> {
+public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock {
 
     public static final int MAX_GAS = 10_000;
 
@@ -157,6 +161,26 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
+    }
+
+    @Override
+    public void onPlace() {
+        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+    }
+
+    @Override
+    public void onBreak(BlockState oldState) {
+        World world = getWorld();
+        if (world != null) {
+            world.removeBlock(getPos().up(), false);
+            world.removeBlock(getPos(), false);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new AxisAlignedBB(pos, pos.add(1, 2, 1));
     }
 
     @Override

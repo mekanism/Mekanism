@@ -425,6 +425,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.ISOTOPIC_CENTRIFUGE)
           .withEnergyConfig(MekanismConfig.usage.isotopicCentrifuge, MekanismConfig.storage.isotopicCentrifuge)
           .withSound(MekanismSounds.ISOTOPIC_CENTRIFUGE)
+          .withCustomShape(BlockShapes.ISOTOPIC_CENTRIFUGE)
           .build();
     // Nutritional Liquifier
     public static final Machine<TileEntityNutritionalLiquifier> NUTRITIONAL_LIQUIFIER = MachineBuilder

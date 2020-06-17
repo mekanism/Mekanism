@@ -38,6 +38,7 @@ public final class BlockShapes {
     public static final VoxelShape[] QIO_DASHBOARD = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] RADIOACTIVE_WASTE_BARREL = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] MODIFICATION_STATION = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] ISOTOPIC_CENTRIFUGE = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
@@ -673,6 +674,34 @@ public final class BlockShapes {
             makeCuboidShape(-4, 28, 6, -1, 30, 14), // modifier_arm_top_left
             makeCuboidShape(4, 4, 15.005, 12, 12, 16.005) // energy_port
         ), MODIFICATION_STATION);
+
+        setShape(VoxelShapeUtils.combine(
+            makeCuboidShape(0, 0, 0, 16, 2, 16), // base
+            makeCuboidShape(1, 2, 14, 2, 3, 15), // rivet1
+            makeCuboidShape(1, 2, 1, 2, 3, 2), // rivet2
+            makeCuboidShape(14, 2, 1, 15, 3, 2), // rivet3
+            makeCuboidShape(14, 2, 14, 15, 3, 15), // rivet4
+            makeCuboidShape(3, 2, 3, 13, 16, 13), // tower1
+            makeCuboidShape(3, 27, 3, 13, 30, 13), // tower2
+            makeCuboidShape(3, 16, 3, 6, 27, 6), // tower3
+            makeCuboidShape(10, 16, 3, 13, 27, 6), // tower4
+            makeCuboidShape(3, 16, 10, 6, 27, 13), // tower5
+            makeCuboidShape(10, 16, 10, 13, 27, 13), // tower6
+            makeCuboidShape(4, 16, 4, 12, 27, 12), // glass_tank
+            makeCuboidShape(2, 9, 2, 14, 10, 14), // ring1
+            makeCuboidShape(2, 7, 2, 14, 8, 14), // ring2
+            makeCuboidShape(2, 5, 2, 14, 6, 14), // ring3
+            makeCuboidShape(2, 3, 2, 14, 4, 14), // ring4
+            makeCuboidShape(2, 10, 10, 3, 14, 11), // pipe1
+            makeCuboidShape(4, 30, 4, 6, 32, 6), // node1
+            makeCuboidShape(5, 30, 10, 6, 32, 11), // node2
+            makeCuboidShape(6, 30, 6, 10, 31, 10), // coil
+            makeCuboidShape(4, 4, 0, 12, 12, 1), // port
+            makeCuboidShape(5, 5, 1, 11, 11, 3), // port_connector
+            makeCuboidShape(6, 18, 7, 7, 25, 8), // random_shape1
+            makeCuboidShape(6, 17, 7, 9, 18, 8), // random_shape2
+            makeCuboidShape(8, 15, 7, 9, 17, 8) // random_shape3
+        ), ISOTOPIC_CENTRIFUGE);
 
         //TODO: Don't bother rotating the shape, it is the same for all rotations
         setShape(makeCuboidShape(2, 0, 2, 14, 16, 14), FLUID_TANK);

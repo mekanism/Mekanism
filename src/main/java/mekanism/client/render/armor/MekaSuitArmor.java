@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,8 +21,11 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import mekanism.client.render.MekanismRenderType;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
+import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.obj.OBJModelCache;
 import mekanism.client.render.obj.OBJModelCache.OBJModelData;
 import mekanism.client.render.obj.TransmitterBakedModel.QuickHash;
@@ -30,6 +34,9 @@ import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemMekaTool;
+import mekanism.common.lib.effect.BoltEffect;
+import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
+import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -56,6 +63,7 @@ public class MekaSuitArmor extends CustomArmor {
     private static final String OVERRIDDEN_TAG = "override_";
     private static final String EXCLUSIVE_TAG = "excl_";
     private static final String SHARED_TAG = "shared_";
+    private static final String GLASS_TAG = "glass";
 
     public static MekaSuitArmor HELMET = new MekaSuitArmor(0.5F, EquipmentSlotType.HEAD, EquipmentSlotType.CHEST);
     public static MekaSuitArmor BODYARMOR = new MekaSuitArmor(0.5F, EquipmentSlotType.CHEST, EquipmentSlotType.HEAD);
@@ -66,11 +74,12 @@ public class MekaSuitArmor extends CustomArmor {
 
     private static final Table<EquipmentSlotType, ModuleData<?>, ModuleModelSpec> moduleModelSpec = HashBasedTable.create();
 
+    private static final Map<UUID, BoltRenderer> boltRenderMap = new Object2ObjectOpenHashMap<>();
+
     static {
         registerModule("solar_helmet", Modules.SOLAR_RECHARGING_UNIT, EquipmentSlotType.HEAD);
         registerModule("jetpack", Modules.JETPACK_UNIT, EquipmentSlotType.CHEST);
         registerModule("modulator", Modules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlotType.CHEST);
-        // TODO make sure these are correct
     }
 
     private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vec3d(-1, 0.5, 0)));
@@ -95,16 +104,36 @@ public class MekaSuitArmor extends CustomArmor {
 
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity, ItemStack stack) {
-        cache.getUnchecked(key(entity)).getMap().forEach((modelPos, quads) -> {
+        cache.getUnchecked(key(entity)).getOpaqueMap().forEach((modelPos, quads) -> {
             matrix.push();
             modelPos.translate(this, matrix);
-            render(renderer, matrix, light, overlayLight, quads);
+            render(renderer, matrix, light, overlayLight, quads, false);
+            matrix.pop();
+        });
+
+        if (type == EquipmentSlotType.CHEST) {
+            BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUniqueID(), id -> new BoltRenderer());
+            if (Modules.isEnabled(entity.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT)) {
+                BoltEffect leftBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3d(-0.01, 0.35, 0.37), new Vec3d(-0.01, 0.15, 0.37), 10)
+                    .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
+                BoltEffect rightBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3d(0.025, 0.35, 0.37), new Vec3d(0.025, 0.15, 0.37), 10)
+                    .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
+                boltRenderer.update(0, leftBolt, MekanismRenderer.getPartialTick());
+                boltRenderer.update(1, rightBolt, MekanismRenderer.getPartialTick());
+            }
+            boltRenderer.render(MekanismRenderer.getPartialTick(), matrix, renderer);
+        }
+
+        cache.getUnchecked(key(entity)).getTransparentMap().forEach((modelPos, quads) -> {
+            matrix.push();
+            modelPos.translate(this, matrix);
+            render(renderer, matrix, light, overlayLight, quads, true);
             matrix.pop();
         });
     }
 
-    private void render(IRenderTypeBuffer renderer, MatrixStack matrix, int light, int overlayLight, List<BakedQuad> quads) {
-        IVertexBuilder builder = renderer.getBuffer(RenderType.getEntityCutout(AtlasTexture.LOCATION_BLOCKS_TEXTURE));
+    private void render(IRenderTypeBuffer renderer, MatrixStack matrix, int light, int overlayLight, List<BakedQuad> quads, boolean transparent) {
+        IVertexBuilder builder = renderer.getBuffer(transparent ? RenderType.getEntityTranslucent(AtlasTexture.LOCATION_BLOCKS_TEXTURE) : MekanismRenderType.getMekaSuit());
         MatrixStack.Entry last = matrix.getLast();
         for (BakedQuad quad : quads) {
             builder.addVertexData(last, quad, 1, 1, 1, 1, light, overlayLight);
@@ -269,20 +298,27 @@ public class MekaSuitArmor extends CustomArmor {
             }
         }
 
-        Map<ModelPos, List<BakedQuad>> map = new Object2ObjectOpenHashMap<>();
+        Map<ModelPos, List<BakedQuad>> opaqueMap = new Object2ObjectOpenHashMap<>();
+        Map<ModelPos, List<BakedQuad>> transparentMap = new Object2ObjectOpenHashMap<>();
+
         for (ModelPos pos : ModelPos.VALUES) {
             for (OBJModelData modelData : specialModels) {
-                map.computeIfAbsent(pos, p -> new ArrayList<>()).addAll(getQuads(modelData,
+                parseTransparency(modelData, pos, opaqueMap, transparentMap,
                     specialQuadsToRenderMap.getOrDefault(modelData, new Object2ObjectOpenHashMap<>()).getOrDefault(pos, new HashSet<>()),
-                    specialLEDQuadsToRenderMap.getOrDefault(modelData, new Object2ObjectOpenHashMap<>()).getOrDefault(pos, new HashSet<>()),
-                    pos.getTransform()));
+                    specialLEDQuadsToRenderMap.getOrDefault(modelData, new Object2ObjectOpenHashMap<>()).getOrDefault(pos, new HashSet<>()));
             }
-            map.get(pos).addAll(getQuads(OBJModelCache.MEKASUIT,
-                  armorQuadsToRender.getOrDefault(pos, new HashSet<>()),
-                  armorLEDQuadsToRender.getOrDefault(pos, new HashSet<>()),
-                  pos.getTransform()));
+            parseTransparency(OBJModelCache.MEKASUIT, pos, opaqueMap, transparentMap, armorQuadsToRender.getOrDefault(pos, new HashSet<>()), armorLEDQuadsToRender.getOrDefault(pos, new HashSet<>()));
         }
-        return new ArmorQuads(map);
+        return new ArmorQuads(opaqueMap, transparentMap);
+    }
+
+    public static void parseTransparency(OBJModelData modelData, ModelPos pos, Map<ModelPos, List<BakedQuad>> opaqueMap, Map<ModelPos, List<BakedQuad>> transparentMap, Set<String> regularQuads, Set<String> ledQuads) {
+        Set<String> opaqueRegularQuads = new HashSet<>(), opaqueLEDQuads = new HashSet<>();
+        Set<String> transparentRegularQuads = new HashSet<>(), transparentLEDQuads = new HashSet<>();
+        regularQuads.forEach(s -> (s.contains(GLASS_TAG) ? transparentRegularQuads : opaqueRegularQuads).add(s));
+        ledQuads.forEach(s -> (s.contains(GLASS_TAG) ? transparentLEDQuads : opaqueLEDQuads).add(s));
+        opaqueMap.computeIfAbsent(pos, p -> new ArrayList<>()).addAll(getQuads(modelData, opaqueRegularQuads, opaqueLEDQuads, pos.getTransform()));
+        transparentMap.computeIfAbsent(pos, p -> new ArrayList<>()).addAll(getQuads(modelData, transparentRegularQuads, transparentLEDQuads, pos.getTransform()));
     }
 
     public static boolean checkEquipment(EquipmentSlotType type, String text) {
@@ -299,14 +335,19 @@ public class MekaSuitArmor extends CustomArmor {
 
     public static class ArmorQuads {
 
-        private Map<ModelPos, List<BakedQuad>> quads = new Object2ObjectOpenHashMap<>();
+        private Map<ModelPos, List<BakedQuad>> opaqueQuads = new Object2ObjectOpenHashMap<>();
+        private Map<ModelPos, List<BakedQuad>> transparentQuads = new Object2ObjectOpenHashMap<>();
 
-        public ArmorQuads(Map<ModelPos, List<BakedQuad>> quads) {
-            this.quads = quads;
+        public ArmorQuads(Map<ModelPos, List<BakedQuad>> opaqueQuads, Map<ModelPos, List<BakedQuad>> transparentQuads) {
+            this.opaqueQuads = opaqueQuads;
+            this.transparentQuads = transparentQuads;
         }
 
-        public Map<ModelPos, List<BakedQuad>> getMap() {
-            return quads;
+        public Map<ModelPos, List<BakedQuad>> getOpaqueMap() {
+            return opaqueQuads;
+        }
+        public Map<ModelPos, List<BakedQuad>> getTransparentMap() {
+            return transparentQuads;
         }
     }
 
@@ -330,6 +371,10 @@ public class MekaSuitArmor extends CustomArmor {
 
         public String processOverrideName(String part) {
             return MekaSuitArmor.processOverrideName(part, name);
+        }
+
+        public ModuleData<?> getModule() {
+            return module;
         }
     }
 
