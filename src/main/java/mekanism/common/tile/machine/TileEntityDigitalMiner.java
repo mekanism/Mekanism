@@ -694,7 +694,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public void onBreak() {
+    public void onBreak(BlockState oldState) {
         if (world != null) {
             for (int x = -1; x <= +1; x++) {
                 for (int y = 0; y <= +1; y++) {

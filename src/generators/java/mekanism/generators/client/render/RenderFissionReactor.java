@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -35,12 +35,12 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
             if (tile.getMultiblock().isBurning()) {
                 if (glowModel == null) {
                     glowModel = new Model3D();
-                    glowModel.minX = 0.1;
+                    glowModel.minX = 0.05;
                     glowModel.minY = 0.01;
-                    glowModel.minZ = 0.1;
-                    glowModel.maxX = 0.9;
+                    glowModel.minZ = 0.05;
+                    glowModel.maxX = 0.95;
                     glowModel.maxY = 0.99;
-                    glowModel.maxZ = 0.9;
+                    glowModel.maxZ = 0.95;
                     glowModel.setTexture(MekanismRenderer.whiteIcon);
                 }
                 for (FormedAssembly assembly : tile.getMultiblock().assemblies) {

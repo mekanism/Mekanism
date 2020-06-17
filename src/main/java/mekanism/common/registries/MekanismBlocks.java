@@ -1,12 +1,12 @@
 package mekanism.common.registries;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import mekanism.api.tier.ITier;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
@@ -54,6 +54,7 @@ import mekanism.common.item.block.ItemBlockInductionCell;
 import mekanism.common.item.block.ItemBlockInductionProvider;
 import mekanism.common.item.block.ItemBlockIndustrialAlarm;
 import mekanism.common.item.block.ItemBlockMekanism;
+import mekanism.common.item.block.ItemBlockModificationStation;
 import mekanism.common.item.block.ItemBlockResource;
 import mekanism.common.item.block.ItemBlockSecurityDesk;
 import mekanism.common.item.block.ItemBlockTooltip;
@@ -275,7 +276,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityResistiveHeater, Machine<TileEntityResistiveHeater>>, ItemBlockMachine> RESISTIVE_HEATER = BLOCKS.register("resistive_heater", () -> new BlockTileModel<>(MekanismBlockTypes.RESISTIVE_HEATER), (block) -> new ItemBlockMachine(block, ISTERProvider::resistiveHeater));
     public static final BlockRegistryObject<BlockTile<TileEntityFormulaicAssemblicator, Machine<TileEntityFormulaicAssemblicator>>, ItemBlockMachine> FORMULAIC_ASSEMBLICATOR = BLOCKS.register("formulaic_assemblicator", () -> new BlockTile<>(MekanismBlockTypes.FORMULAIC_ASSEMBLICATOR), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTile<TileEntityFuelwoodHeater, BlockTypeTile<TileEntityFuelwoodHeater>>, ItemBlockFuelwoodHeater> FUELWOOD_HEATER = BLOCKS.register("fuelwood_heater", () -> new BlockTile<>(MekanismBlockTypes.FUELWOOD_HEATER), ItemBlockFuelwoodHeater::new);
-    public static final BlockRegistryObject<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>, ItemBlockMachine> MODIFICATION_STATION = BLOCKS.register("modification_station", () -> new BlockTileModel<>(MekanismBlockTypes.MODIFICATION_STATION), ItemBlockMachine::new);
+    public static final BlockRegistryObject<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>, ItemBlockModificationStation> MODIFICATION_STATION = BLOCKS.register("modification_station", () -> new BlockTileModel<>(MekanismBlockTypes.MODIFICATION_STATION), ItemBlockModificationStation::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityAntiprotonicNucleosynthesizer, Machine<TileEntityAntiprotonicNucleosynthesizer>>, ItemBlockMachine> ANTIPROTONIC_NUCLEOSYNTHESIZER = BLOCKS.register("antiprotonic_nucleosynthesizer", () -> new BlockTileModel<>(MekanismBlockTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntitySPSCasing>, ItemBlockTooltip<BlockBasicMultiblock<TileEntitySPSCasing>>> SPS_CASING = registerBlock("sps_casing", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.SPS_CASING), Rarity.EPIC);
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntitySPSPort>, ItemBlockTooltip<BlockBasicMultiblock<TileEntitySPSPort>>> SPS_PORT = registerBlock("sps_port", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.SPS_PORT), Rarity.EPIC);

@@ -1,0 +1,16 @@
+{
+    "parent": "mekanism:item/standard_item",
+    "loader": "forge:obj",
+    "model": "mekanism:models/entity/mekatool.obj",
+    "flip-v": "true",
+    "display": {
+        "firstperson_righthand": {
+            "rotation": [ 90, 0, 0 ],
+            "translation": [ 0, 0, 0 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 90, 0, 0 ],
+            "translation": [ 0, 0, -3 ]
+        }
+    }
+}

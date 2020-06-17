@@ -3,7 +3,9 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
+import mekanism.api.RelativeSide;
 import mekanism.api.inventory.AutomationType;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -20,12 +22,17 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 
-public class TileEntityModificationStation extends TileEntityMekanism {
+public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
 
     private EnergyInventorySlot energySlot;
     private InputInventorySlot moduleSlot;
@@ -44,7 +51,7 @@ public class TileEntityModificationStation extends TileEntityMekanism {
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this));
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this), RelativeSide.BACK);
         return builder.build();
     }
 
@@ -132,5 +139,32 @@ public class TileEntityModificationStation extends TileEntityMekanism {
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableInt.create(() -> operatingTicks, value -> operatingTicks = value));
+    }
+
+    @Nonnull
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        // not exact, but doesn't matter that much
+        return new AxisAlignedBB(pos.add(-1, 0, -1), pos.add(2, 2, 2));
+    }
+
+    @Override
+    public void onPlace() {
+        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+        Direction side = getRightSide();
+        MekanismUtils.makeBoundingBlock(getWorld(), getPos().offset(side), getPos());
+        MekanismUtils.makeBoundingBlock(getWorld(), getPos().offset(side).up(), getPos());
+    }
+
+    @Override
+    public void onBreak(BlockState oldState) {
+        World world = getWorld();
+        if (world != null) {
+            Direction side = MekanismUtils.getRight(Attribute.getFacing(oldState));
+            world.removeBlock(getPos().up(), false);
+            world.removeBlock(getPos(), false);
+            world.removeBlock(getPos().offset(side).up(), false);
+            world.removeBlock(getPos().offset(side), false);
+        }
     }
 }

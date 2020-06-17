@@ -2,7 +2,6 @@ package mekanism.common.content.blocktype;
 
 import static mekanism.common.util.VoxelShapeUtils.setShape;
 import static net.minecraft.block.Block.makeCuboidShape;
-
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.util.Direction;
@@ -38,6 +37,7 @@ public final class BlockShapes {
     public static final VoxelShape[] INDUSTRIAL_ALARM = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] QIO_DASHBOARD = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] RADIOACTIVE_WASTE_BARREL = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] MODIFICATION_STATION = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
@@ -640,6 +640,39 @@ public final class BlockShapes {
         setShape(VoxelShapeUtils.combine(
               makeCuboidShape(1, 15, 1, 15, 16, 15)
         ), QIO_DASHBOARD, true);
+
+        setShape(VoxelShapeUtils.combine(
+            makeCuboidShape(-16, 13, 0, 16, 16, 16), // desk_top
+            makeCuboidShape(13, 0, 0, 16, 13, 3), // desk_part1
+            makeCuboidShape(0, 0, 0, 3, 13, 3), // desk_part2
+            makeCuboidShape(-16, 8, 0, 0, 11, 16), // desk_part3
+            makeCuboidShape(0, 8, 3, 16, 11, 16), // desk_part4
+            makeCuboidShape(0, 0, 3, 16, 6, 16), // desk_part5
+            makeCuboidShape(-16, 0, 0, 0, 6, 16), // desk_part6
+            makeCuboidShape(-15, 11, 1, 0, 13, 15), // desk_filler_right_top
+            makeCuboidShape(-15, 6, 1, 0, 8, 15), // desk_filler_right_bottom
+            makeCuboidShape(0, 11, 3, 15, 13, 15), // desk_filler_left_top
+            makeCuboidShape(0, 6, 3, 15, 8, 15), // desk_filler_left_bottom
+            makeCuboidShape(1, 17.5, 10.5, 15, 25.5, 12.5), // monitor
+            makeCuboidShape(2, 17, 11, 3, 18, 12), // led
+            makeCuboidShape(2, 15, 1, 14, 17, 7), // keyboard
+            makeCuboidShape(6, 16, 11, 10, 22, 13), // monitor_stand_arm
+            makeCuboidShape(5, 16, 10, 11, 17, 14), // monitor_stand_base
+            makeCuboidShape(-14, 16, 2, -1, 17, 14), // modifier_base
+            makeCuboidShape(-14, 16, 14, -11, 30, 16), // modifier_arm_right1
+            makeCuboidShape(-14, 6, 14.005, -11, 16, 16.005), // modifier_arm_right2
+            makeCuboidShape(-4, 16, 14, -1, 30, 16), // modifier_arm_left1
+            makeCuboidShape(-4, 6, 14.005, -1, 16, 16.005), // modifier_arm_left2
+            makeCuboidShape(-11, 23, 8, -10, 27, 9), // modifier_probe_right
+            makeCuboidShape(-11, 22, 8, -10, 23, 9), // modifier_probe_right_led
+            makeCuboidShape(-5, 23, 8, -4, 27, 9), // modifier_probe_left
+            makeCuboidShape(-5, 22, 8, -4, 23, 9), // modifier_probe_left_led
+            makeCuboidShape(-13, 27, 7, -2, 28, 10), // modifier_probe_base
+            makeCuboidShape(-11, 28, 6, -4, 30, 11), // modifier_arm_top_center
+            makeCuboidShape(-14, 28, 6, -11, 30, 14), // modifier_arm_top_right
+            makeCuboidShape(-4, 28, 6, -1, 30, 14), // modifier_arm_top_left
+            makeCuboidShape(4, 4, 15.005, 12, 12, 16.005) // energy_port
+        ), MODIFICATION_STATION);
 
         //TODO: Don't bother rotating the shape, it is the same for all rotations
         setShape(makeCuboidShape(2, 0, 2, 14, 16, 14), FLUID_TANK);

@@ -1,9 +1,9 @@
 package mekanism.client.render.obj;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
@@ -23,6 +23,7 @@ public class OBJModelCache {
 
     public static OBJModelData MEKASUIT = register(Mekanism.rl("models/entity/mekasuit.obj"));
     public static OBJModelData MEKASUIT_MODULES = register(Mekanism.rl("models/entity/mekasuit_modules.obj"));
+    public static OBJModelData MEKATOOL = register(Mekanism.rl("models/entity/mekatool.obj"));
 
     public static void onBake(ModelBakeEvent evt) {
         modelMap.values().forEach(OBJModelData::reload);
@@ -50,7 +51,7 @@ public class OBJModelCache {
         }
 
         private void reload() {
-            model = OBJLoader.INSTANCE.loadModel(new ModelSettings(rl, true, false, true, true, null));
+            model = OBJLoader.INSTANCE.loadModel(new ModelSettings(rl, true, true, true, true, null));
             bakedMap.clear();
         }
 

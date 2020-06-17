@@ -1,9 +1,9 @@
 package mekanism.common.registries;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import java.util.EnumSet;
 import java.util.function.Supplier;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
@@ -417,6 +417,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.modificationStation, MekanismConfig.storage.modificationStation)
           .withCustomContainerProvider((tile) -> (i, inv, player) -> new ModificationStationContainer(i, inv, (TileEntityModificationStation) tile))
           .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeRedstone(), new AttributeSecurity())
+          .withCustomShape(BlockShapes.MODIFICATION_STATION)
           .build();
     // Isotopic Centrifuge
     public static final Machine<TileEntityIsotopicCentrifuge> ISOTOPIC_CENTRIFUGE = MachineBuilder

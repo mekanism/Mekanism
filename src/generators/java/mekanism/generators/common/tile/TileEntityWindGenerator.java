@@ -14,6 +14,7 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -111,7 +112,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     }
 
     @Override
-    public void onBreak() {
+    public void onBreak(BlockState oldState) {
         if (world != null) {
             world.removeBlock(getPos().add(0, 1, 0), false);
             world.removeBlock(getPos().add(0, 2, 0), false);

@@ -33,6 +33,7 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -165,7 +166,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     @Override
-    public void onBreak() {
+    public void onBreak(BlockState oldState) {
         World world = getWorld();
         if (world != null) {
             world.removeBlock(getPos().up(), false);

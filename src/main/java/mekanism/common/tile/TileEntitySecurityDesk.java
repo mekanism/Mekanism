@@ -17,6 +17,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -114,7 +115,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public void onBreak() {
+    public void onBreak(BlockState oldState) {
         World world = getWorld();
         if (world != null) {
             world.removeBlock(getPos().up(), false);

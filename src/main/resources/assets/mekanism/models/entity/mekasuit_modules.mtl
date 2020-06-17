@@ -1,0 +1,8 @@
+# Made in Blockbench 3.5.4
+newmtl 4
+map_Kd mekanism:entity/armor/mekasuit_armor_helmet
+newmtl 6
+map_Kd mekanism:entity/armor/mekasuit_armor_modules
+newmtl 7
+map_Kd mekanism:entity/armor/mekasuit_gravitational_modulator
+newmtl none

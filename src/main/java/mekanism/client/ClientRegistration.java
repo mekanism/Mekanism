@@ -1,10 +1,10 @@
 package mekanism.client;
 
-import com.google.common.collect.Table.Cell;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import com.google.common.collect.Table.Cell;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
@@ -80,6 +80,7 @@ import mekanism.client.gui.robit.GuiRobitMain;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
 import mekanism.client.model.baked.DriveArrayBakedModel;
+import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
@@ -238,6 +239,7 @@ public class ClientRegistration {
         }
 
         customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), (orig, evt) -> new DriveArrayBakedModel(orig));
+        customModels.put(MekanismBlocks.MODIFICATION_STATION.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
     }
 
     @SubscribeEvent

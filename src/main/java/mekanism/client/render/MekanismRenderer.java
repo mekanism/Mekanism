@@ -1,14 +1,15 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -52,7 +53,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
-import org.lwjgl.opengl.GL11;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
@@ -353,6 +353,9 @@ public class MekanismRenderer {
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_body"));
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_helmet"));
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_exoskeleton"));
+        event.addSprite(Mekanism.rl("entity/armor/mekasuit_gravitational_modulator"));
+        event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_modules"));
+        event.addSprite(Mekanism.rl("entity/armor/mekatool"));
 
         addChemicalSprites(event, MekanismAPI.gasRegistry());
         addChemicalSprites(event, MekanismAPI.infuseTypeRegistry());

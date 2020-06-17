@@ -1,13 +1,13 @@
 package mekanism.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.GeigerSound;
@@ -381,15 +381,21 @@ public class ClientTickHandler {
             PlayerEntity entity = (PlayerEntity) evt.getEntity();
             if (entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
                 evt.getRenderer().getEntityModel().bipedHead.showModel = false;
+                evt.getRenderer().getEntityModel().bipedHeadwear.showModel = false;
             }
             if (entity.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof ItemMekaSuitArmor) {
                 evt.getRenderer().getEntityModel().bipedBody.showModel = false;
+                evt.getRenderer().getEntityModel().bipedBodyWear.showModel = false;
                 evt.getRenderer().getEntityModel().bipedLeftArm.showModel = false;
+                evt.getRenderer().getEntityModel().bipedLeftArmwear.showModel = false;
                 evt.getRenderer().getEntityModel().bipedRightArm.showModel = false;
+                evt.getRenderer().getEntityModel().bipedRightArmwear.showModel = false;
             }
             if (entity.getItemStackFromSlot(EquipmentSlotType.LEGS).getItem() instanceof ItemMekaSuitArmor) {
                 evt.getRenderer().getEntityModel().bipedLeftLeg.showModel = false;
+                evt.getRenderer().getEntityModel().bipedLeftLegwear.showModel = false;
                 evt.getRenderer().getEntityModel().bipedRightLeg.showModel = false;
+                evt.getRenderer().getEntityModel().bipedRightLegwear.showModel = false;
             }
         }
     }

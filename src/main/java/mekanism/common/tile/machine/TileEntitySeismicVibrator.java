@@ -17,6 +17,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
@@ -99,7 +100,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     }
 
     @Override
-    public void onBreak() {
+    public void onBreak(BlockState oldState) {
         World world = getWorld();
         if (world != null) {
             world.removeBlock(getPos().up(), false);
