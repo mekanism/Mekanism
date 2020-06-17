@@ -62,7 +62,7 @@ public class MekaSuitArmor extends CustomArmor {
     public static MekaSuitArmor PANTS = new MekaSuitArmor(0.5F, EquipmentSlotType.LEGS, EquipmentSlotType.FEET);
     public static MekaSuitArmor BOOTS = new MekaSuitArmor(0.5F, EquipmentSlotType.FEET, EquipmentSlotType.LEGS);
 
-    private static final Set<OBJModelData> specialModels = Sets.newHashSet(OBJModelCache.MEKASUIT_MODULES, OBJModelCache.MEKATOOL);
+    private static final Set<OBJModelData> specialModels = Sets.newHashSet(OBJModelCache.MEKASUIT_MODULES);
 
     private static final Table<EquipmentSlotType, ModuleData<?>, ModuleModelSpec> moduleModelSpec = HashBasedTable.create();
 
@@ -187,6 +187,7 @@ public class MekaSuitArmor extends CustomArmor {
         Map<OBJModelData, Map<ModelPos, Set<String>>> specialLEDQuadsToRenderMap = new Object2ObjectOpenHashMap<>();
         // map of normal model part name to overwritten model part name (i.e. chest_body_box1 -> jetpack_chest_body_overridden_box1
         Map<String, Pair<OBJModelData, String>> overrides = new Object2ObjectOpenHashMap<>();
+        Set<String> ignored = new HashSet<>();
 
         if (modules.size() > 0) {
             Map<ModelPos, Set<String>> moduleQuadsToRender = specialQuadsToRenderMap.computeIfAbsent(OBJModelCache.MEKASUIT_MODULES, d -> new Object2ObjectOpenHashMap<>());
@@ -218,13 +219,10 @@ public class MekaSuitArmor extends CustomArmor {
 
         // handle mekatool overrides
         if (type == EquipmentSlotType.CHEST && hasMekaTool) {
-            specialQuadsToRenderMap.put(OBJModelCache.MEKATOOL, new Object2ObjectOpenHashMap<>());
-            specialLEDQuadsToRenderMap.put(OBJModelCache.MEKATOOL, new Object2ObjectOpenHashMap<>());
-
             for (IModelGeometryPart part : OBJModelCache.MEKATOOL.getModel().getParts()) {
                 String name = part.name();
                 if (name.contains(OVERRIDDEN_TAG)) {
-                    overrides.put(processOverrideName(name, "mekatool"), Pair.of(OBJModelCache.MEKATOOL, name));
+                    ignored.add(processOverrideName(name, "mekatool"));
                 }
             }
         }
@@ -252,19 +250,21 @@ public class MekaSuitArmor extends CustomArmor {
                 Mekanism.logger.warn("MekaSuit part '" + name + "' is invalid. Ignoring.");
             }
 
-            Pair<OBJModelData, String> override = overrides.get(name);
-            if (override != null) {
-                String overrideName = override.getRight();
-                if (overrideName.contains(LED_TAG)) {
-                    specialLEDQuadsToRenderMap.get(override.getLeft()).computeIfAbsent(pos, p -> new HashSet<>()).add(overrideName);
+            if (!ignored.contains(name)) {
+                Pair<OBJModelData, String> override = overrides.get(name);
+                if (override != null) {
+                    String overrideName = override.getRight();
+                    if (overrideName.contains(LED_TAG)) {
+                        specialLEDQuadsToRenderMap.get(override.getLeft()).computeIfAbsent(pos, p -> new HashSet<>()).add(overrideName);
+                    } else {
+                        specialQuadsToRenderMap.get(override.getLeft()).computeIfAbsent(pos, p -> new HashSet<>()).add(overrideName);
+                    }
                 } else {
-                    specialQuadsToRenderMap.get(override.getLeft()).computeIfAbsent(pos, p -> new HashSet<>()).add(overrideName);
-                }
-            } else {
-                if (name.contains(LED_TAG)) {
-                    armorLEDQuadsToRender.computeIfAbsent(pos, p -> new HashSet<>()).add(name);
-                } else {
-                    armorQuadsToRender.computeIfAbsent(pos, p -> new HashSet<>()).add(name);
+                    if (name.contains(LED_TAG)) {
+                        armorLEDQuadsToRender.computeIfAbsent(pos, p -> new HashSet<>()).add(name);
+                    } else {
+                        armorQuadsToRender.computeIfAbsent(pos, p -> new HashSet<>()).add(name);
+                    }
                 }
             }
         }

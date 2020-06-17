@@ -240,6 +240,7 @@ public class ClientRegistration {
 
         customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), (orig, evt) -> new DriveArrayBakedModel(orig));
         customModels.put(MekanismBlocks.MODIFICATION_STATION.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        customModels.put(MekanismItems.MEKA_TOOL.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
     }
 
     @SubscribeEvent

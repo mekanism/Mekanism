@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.data.IModelData;
 
 public class ExtensionBakedModel<T> implements IBakedModel {
@@ -103,9 +104,6 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData data) {
         List<BakedQuad> quads = original.getQuads(state, side, rand, data);
-        if (state == null) {
-            return quads;
-        }
         QuadsKey<T> key = createKey(new QuadsKey<>(state, side, rand, quads), data);
         if (key == null) {
             return quads;
@@ -122,6 +120,17 @@ public class ExtensionBakedModel<T> implements IBakedModel {
         @Override
         protected List<BakedQuad> createQuads(QuadsKey<Void> key) {
             return QuadUtils.transformBakedQuads(key.getQuads(), TextureFilteredTransformation.of(QuadTransformation.fullbright, rl -> rl.getPath().contains("led")));
+        }
+
+        @Override
+        public List<BakedQuad> getQuads(BlockState state, Direction side, @Nonnull Random rand) {
+            List<BakedQuad> origQuads = original.getQuads(state, side, rand);
+            return QuadUtils.transformBakedQuads(origQuads, TextureFilteredTransformation.of(QuadTransformation.fullbright, rl -> rl.getPath().contains("led")));
+        }
+
+        @Override
+        public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+            return ForgeHooksClient.handlePerspective(this, cameraTransformType, mat);
         }
     }
 
