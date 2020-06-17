@@ -11,11 +11,9 @@ public abstract class GuiConfigurableTile<TILE extends TileEntityMekanism, CONTA
 
     private GuiSideConfigurationTab sideConfigTab;
     private GuiTransporterConfigTab transporterConfigTab;
-    protected final TILE tile;
 
     protected GuiConfigurableTile(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        tile = container.getTileEntity();
     }
 
     @Override

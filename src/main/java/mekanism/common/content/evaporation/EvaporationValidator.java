@@ -19,6 +19,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
+//TODO - V10: It probably would be good to make this support controllers on the top level of the multiblock again.
 public class EvaporationValidator extends CuboidStructureValidator<EvaporationMultiblockData> {
 
     private static final VoxelCuboid MIN_CUBOID = new VoxelCuboid(4, 3, 4);
