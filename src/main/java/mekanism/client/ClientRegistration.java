@@ -134,6 +134,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -237,6 +238,10 @@ public class ClientRegistration {
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : MekanismFluids.FLUIDS.getAllFluids()) {
             ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
         }
+
+        RenderTypeLookup.setRenderLayer(MekanismBlocks.ISOTOPIC_CENTRIFUGE.getBlock(), (layer) -> {
+            return layer == RenderType.getSolid() || layer == RenderType.getTranslucent();
+        });
 
         customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), (orig, evt) -> new DriveArrayBakedModel(orig));
         customModels.put(MekanismBlocks.MODIFICATION_STATION.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));

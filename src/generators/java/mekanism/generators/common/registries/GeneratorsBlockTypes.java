@@ -176,11 +176,13 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityFissionFuelAssembly> FISSION_FUEL_ASSEMBLY = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_FUEL_ASSEMBLY, GeneratorsLang.DESCRIPTION_FISSION_FUEL_ASSEMBLY)
           .with(new AttributeMultiblock())
+          .withCustomShape(BlockShapes.FUEL_ASSEMBLY)
           .build();
     // Control Rod Assembly
     public static final BlockTypeTile<TileEntityControlRodAssembly> CONTROL_ROD_ASSEMBLY = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.CONTROL_ROD_ASSEMBLY, GeneratorsLang.DESCRIPTION_CONTROL_ROD_ASSEMBLY)
           .with(new AttributeMultiblock())
+          .withCustomShape(BlockShapes.CONTROL_ROD_ASSEMBLY)
           .build();
 
     // Fusion Reactor Controller
