@@ -25,7 +25,7 @@ import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.content.miner.MinerMaterialFilter;
 import mekanism.common.content.miner.MinerModIDFilter;
 import mekanism.common.content.miner.MinerTagFilter;
-import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketGuiInteract;
@@ -36,11 +36,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileEntityDigitalMiner, EmptyTileContainer<TileEntityDigitalMiner>> {
+public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
     private GuiTextField radiusField, minField, maxField;
 
-    public GuiDigitalMinerConfig(EmptyTileContainer<TileEntityDigitalMiner> container, PlayerInventory inv, ITextComponent title) {
+    public GuiDigitalMinerConfig(MekanismTileContainer<TileEntityDigitalMiner> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

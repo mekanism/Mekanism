@@ -27,7 +27,7 @@ import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.content.transporter.SorterMaterialFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
-import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -37,9 +37,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEntityLogisticalSorter, EmptyTileContainer<TileEntityLogisticalSorter>> {
+public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEntityLogisticalSorter, MekanismTileContainer<TileEntityLogisticalSorter>> {
 
-    public GuiLogisticalSorter(EmptyTileContainer<TileEntityLogisticalSorter> container, PlayerInventory inv, ITextComponent title) {
+    public GuiLogisticalSorter(MekanismTileContainer<TileEntityLogisticalSorter> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

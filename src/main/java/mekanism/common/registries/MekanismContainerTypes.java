@@ -159,6 +159,6 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityBoilerCasing>> BOILER_STATS = CONTAINER_TYPES.registerEmpty("boiler_stats", TileEntityBoilerCasing.class);
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityInductionCasing>> MATRIX_STATS = CONTAINER_TYPES.register("matrix_stats", MatrixStatsTabContainer::new);
 
-    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityDigitalMiner>> DIGITAL_MINER_CONFIG = CONTAINER_TYPES.register("digital_miner_config", DigitalMinerConfigContainer::new);
-    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityLogisticalSorter>> LOGISTICAL_SORTER = CONTAINER_TYPES.registerEmpty(MekanismBlocks.LOGISTICAL_SORTER, TileEntityLogisticalSorter.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityDigitalMiner>> DIGITAL_MINER_CONFIG = CONTAINER_TYPES.register("digital_miner_config", DigitalMinerConfigContainer::new);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityLogisticalSorter>> LOGISTICAL_SORTER = CONTAINER_TYPES.custom(MekanismBlocks.LOGISTICAL_SORTER, TileEntityLogisticalSorter.class).offset(0, 86).build();
 }
