@@ -43,7 +43,6 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
-import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.HashList;
@@ -173,7 +172,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private void closeInvalidScreens() {
         if (getActive() && !playersUsing.isEmpty()) {
             for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
-                if (player.openContainer instanceof IEmptyContainer || player.openContainer instanceof FilterContainer) {
+                if (player.openContainer instanceof IEmptyContainer) {
                     player.closeScreen();
                 }
             }

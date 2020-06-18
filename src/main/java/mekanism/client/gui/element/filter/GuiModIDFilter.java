@@ -1,61 +1,55 @@
 package mekanism.client.gui.element.filter;
 
-import java.util.Arrays;
-import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.GuiInnerScreen;
+import java.util.Collections;
+import java.util.List;
+import mekanism.api.text.ILangEntry;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.IModIDFilter;
-import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-@Deprecated
-public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
-      FilterContainer<FILTER, TILE>> extends GuiTextFilter<FILTER, TILE, CONTAINER> {
+public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
+      extends GuiTextFilter<FILTER, TILE> {
 
-    protected GuiModIDFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
-        super(container, inv, title);
+    protected GuiModIDFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, FILTER origFilter) {
+        super(gui, x, y, width, height, MekanismLang.MODID_FILTER.translate(), tile, origFilter);
     }
 
     @Override
-    public void init() {
-        super.init();
-
-        if (filter.getModID() != null && !filter.getModID().isEmpty()) {
-            updateRenderStacks();
-        }
+    protected List<ITextComponent> getScreenText() {
+        List<ITextComponent> list = super.getScreenText();
+        MekanismLang.MODID_FILTER_ID.translate(filter.getModID());
+        return list;
     }
 
     @Override
-    protected void addButtons() {
-        addButton(new GuiInnerScreen(this, 33, 18, 111, 43, () -> Arrays.asList(
-              MekanismLang.STATUS.translate(status),
-              MekanismLang.MODID_FILTER_ID.translate(filter.getModID())
-        )).clearFormat());
+    protected ILangEntry getNoFilterSaveError() {
+        return MekanismLang.MODID_FILTER_NO_ID;
     }
 
     @Override
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {
-            status = MekanismLang.MODID_FILTER_NO_ID.translateColored(EnumColor.DARK_RED);
-            ticker = 20;
-            return;
+            filterSaveFailed(getNoFilterSaveError());
         } else if (name.equals(filter.getModID())) {
-            status = MekanismLang.MODID_FILTER_SAME_ID.translateColored(EnumColor.DARK_RED);
-            ticker = 20;
-            return;
+            filterSaveFailed(MekanismLang.MODID_FILTER_SAME_ID);
+        } else {
+            filter.setModID(name);
+            slotDisplay.updateStackList();
+            text.setText("");
         }
-        filter.setModID(name);
-        updateRenderStacks();
-        text.setText("");
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.MODID_FILTER), 43, 6, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected List<ItemStack> getRenderStacks() {
+        if (filter.hasFilter()) {
+            return TagCache.getModIDStacks(filter.getModID(), false);
+        }
+        return Collections.emptyList();
     }
 }

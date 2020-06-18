@@ -2,16 +2,16 @@ package mekanism.common.content.filter;
 
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.common.content.miner.MItemStackFilter;
-import mekanism.common.content.miner.MMaterialFilter;
-import mekanism.common.content.miner.MModIDFilter;
-import mekanism.common.content.miner.MTagFilter;
+import mekanism.common.content.miner.MinerItemStackFilter;
+import mekanism.common.content.miner.MinerMaterialFilter;
+import mekanism.common.content.miner.MinerModIDFilter;
+import mekanism.common.content.miner.MinerTagFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
-import mekanism.common.content.transporter.TItemStackFilter;
-import mekanism.common.content.transporter.TMaterialFilter;
-import mekanism.common.content.transporter.TModIDFilter;
-import mekanism.common.content.transporter.TTagFilter;
+import mekanism.common.content.transporter.SorterItemStackFilter;
+import mekanism.common.content.transporter.SorterMaterialFilter;
+import mekanism.common.content.transporter.SorterModIDFilter;
+import mekanism.common.content.transporter.SorterTagFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -64,21 +64,21 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     private static IFilter<?> fromType(FilterType filterType) {
         switch (filterType) {
             case MINER_ITEMSTACK_FILTER:
-                return new MItemStackFilter();
+                return new MinerItemStackFilter();
             case MINER_MATERIAL_FILTER:
-                return new MMaterialFilter();
+                return new MinerMaterialFilter();
             case MINER_MODID_FILTER:
-                return new MModIDFilter();
+                return new MinerModIDFilter();
             case MINER_TAG_FILTER:
-                return new MTagFilter();
+                return new MinerTagFilter();
             case SORTER_ITEMSTACK_FILTER:
-                return new TItemStackFilter();
+                return new SorterItemStackFilter();
             case SORTER_MATERIAL_FILTER:
-                return new TMaterialFilter();
+                return new SorterMaterialFilter();
             case SORTER_MODID_FILTER:
-                return new TModIDFilter();
+                return new SorterModIDFilter();
             case SORTER_TAG_FILTER:
-                return new TTagFilter();
+                return new SorterTagFilter();
             case OREDICTIONIFICATOR:
                 return new OredictionificatorFilter();
             case QIO_ITEMSTACK_FILTER:

@@ -1,16 +1,16 @@
-package mekanism.common.content.transporter;
+package mekanism.common.content.miner;
 
 import javax.annotation.Nonnull;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IMaterialFilter;
-import mekanism.common.lib.inventory.Finder;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class TMaterialFilter extends TransporterFilter<TMaterialFilter> implements IMaterialFilter<TMaterialFilter> {
+public class MinerMaterialFilter extends MinerFilter<MinerMaterialFilter> implements IMaterialFilter<MinerMaterialFilter> {
 
     private ItemStack materialItem = ItemStack.EMPTY;
 
@@ -19,8 +19,8 @@ public class TMaterialFilter extends TransporterFilter<TMaterialFilter> implemen
     }
 
     @Override
-    public Finder getFinder() {
-        return Finder.material(getMaterial());
+    public boolean canFilter(BlockState state) {
+        return state.getMaterial() == getMaterial();
     }
 
     @Override
@@ -51,28 +51,27 @@ public class TMaterialFilter extends TransporterFilter<TMaterialFilter> implemen
     @Override
     public int hashCode() {
         int code = 1;
-        code = 31 * code + super.hashCode();
         code = 31 * code + materialItem.hashCode();
         return code;
     }
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof TMaterialFilter && ((TMaterialFilter) filter).materialItem.isItemEqual(materialItem);
+        return filter instanceof MinerMaterialFilter && ((MinerMaterialFilter) filter).materialItem.isItemEqual(materialItem);
     }
 
     @Override
-    public TMaterialFilter clone() {
-        TMaterialFilter filter = new TMaterialFilter();
-        filter.allowDefault = allowDefault;
-        filter.color = color;
+    public MinerMaterialFilter clone() {
+        MinerMaterialFilter filter = new MinerMaterialFilter();
+        filter.replaceStack = replaceStack;
+        filter.requireStack = requireStack;
         filter.materialItem = materialItem;
         return filter;
     }
 
     @Override
     public FilterType getFilterType() {
-        return FilterType.SORTER_MATERIAL_FILTER;
+        return FilterType.MINER_MATERIAL_FILTER;
     }
 
     @Nonnull

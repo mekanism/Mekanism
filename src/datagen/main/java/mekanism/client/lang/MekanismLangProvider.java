@@ -732,7 +732,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ITEM_FILTER, "Item Filter");
         add(MekanismLang.ITEM_FILTER_NO_ITEM, "No item");
         add(MekanismLang.ITEM_FILTER_SIZE_MODE, "%s!");
-        add(MekanismLang.ITEM_FILTER_DETAILS, "ItemStack Details:");
         add(MekanismLang.ITEM_FILTER_MAX_LESS_THAN_MIN, "Max < min");
         add(MekanismLang.ITEM_FILTER_OVER_SIZED, "Max > 64");
         add(MekanismLang.ITEM_FILTER_SIZE_MISSING, "Max/min");

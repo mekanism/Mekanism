@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
-public class MTagFilter extends MinerFilter<MTagFilter> implements ITagFilter<MTagFilter> {
+public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagFilter<MinerTagFilter> {
 
     private String tagName;
 
@@ -75,12 +75,12 @@ public class MTagFilter extends MinerFilter<MTagFilter> implements ITagFilter<MT
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof MTagFilter && ((MTagFilter) filter).tagName.equals(tagName);
+        return filter instanceof MinerTagFilter && ((MinerTagFilter) filter).tagName.equals(tagName);
     }
 
     @Override
-    public MTagFilter clone() {
-        MTagFilter filter = new MTagFilter();
+    public MinerTagFilter clone() {
+        MinerTagFilter filter = new MinerTagFilter();
         filter.replaceStack = replaceStack;
         filter.requireStack = requireStack;
         filter.tagName = tagName;

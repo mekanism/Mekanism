@@ -326,7 +326,6 @@ public enum MekanismLang implements ILangEntry {
     ITEM_FILTER_NO_ITEM("filter", "item.no_item"),
     ITEM_FILTER_SIZE_MODE("filter", "item.size_mode"),
     FUZZY_MODE("filter", "fuzzy_mode"),
-    ITEM_FILTER_DETAILS("filter", "item.details"),
     ITEM_FILTER_MAX_LESS_THAN_MIN("filter", "item.max_less_than_min"),
     ITEM_FILTER_OVER_SIZED("filter", "item.over_sized"),
     ITEM_FILTER_SIZE_MISSING("filter", "item.size_missing"),

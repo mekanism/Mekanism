@@ -14,7 +14,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 
-public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>> extends BaseFilter<FILTER> {
+public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends BaseFilter<FILTER> {
 
     public static final int MAX_LENGTH = 48;
 
@@ -66,6 +66,6 @@ public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof TransporterFilter && ((TransporterFilter<?>) filter).color == color;
+        return filter instanceof SorterFilter && ((SorterFilter<?>) filter).color == color;
     }
 }

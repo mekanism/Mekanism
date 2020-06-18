@@ -12,7 +12,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 
-public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implements IItemStackFilter<TItemStackFilter> {
+public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> implements IItemStackFilter<SorterItemStackFilter> {
 
     public boolean sizeMode;
     public boolean fuzzyMode;
@@ -90,14 +90,14 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof TItemStackFilter && ((TItemStackFilter) filter).itemType.isItemEqual(itemType)
-               && ((TItemStackFilter) filter).sizeMode == sizeMode && ((TItemStackFilter) filter).fuzzyMode == fuzzyMode && ((TItemStackFilter) filter).min == min
-               && ((TItemStackFilter) filter).max == max;
+        return super.equals(filter) && filter instanceof SorterItemStackFilter && ((SorterItemStackFilter) filter).itemType.isItemEqual(itemType)
+               && ((SorterItemStackFilter) filter).sizeMode == sizeMode && ((SorterItemStackFilter) filter).fuzzyMode == fuzzyMode && ((SorterItemStackFilter) filter).min == min
+               && ((SorterItemStackFilter) filter).max == max;
     }
 
     @Override
-    public TItemStackFilter clone() {
-        TItemStackFilter filter = new TItemStackFilter();
+    public SorterItemStackFilter clone() {
+        SorterItemStackFilter filter = new SorterItemStackFilter();
         filter.allowDefault = allowDefault;
         filter.color = color;
         filter.itemType = itemType.copy();

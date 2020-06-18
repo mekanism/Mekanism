@@ -1,75 +1,77 @@
 package mekanism.client.gui.element.filter;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.api.text.ILangEntry;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IMaterialFilter;
-import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 
-@Deprecated
-public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
-      FilterContainer<FILTER, TILE>> extends GuiTypeFilter<FILTER, TILE, CONTAINER> {
+public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
+      extends GuiFilter<FILTER, TILE> {
 
-    protected GuiMaterialFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
-        super(container, inv, title);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (ticker > 0) {
-            ticker--;
-        } else {
-            status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
+    protected GuiMaterialFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, FILTER origFilter) {
+        super(gui, x, y, width, height, MekanismLang.MATERIAL_FILTER.translate(), tile, origFilter);
+        if (filter.hasFilter()) {
+            slotDisplay.updateStackList();
         }
     }
 
     @Override
-    protected void addButtons() {
-        addButton(new GuiInnerScreen(this, 33, 18, 111, 43, () -> {
-            List<ITextComponent> list = new ArrayList<>();
-            list.add(MekanismLang.STATUS.translate(status));
-            list.add(MekanismLang.MATERIAL_FILTER_DETAILS.translate());
-            if (!filter.getMaterialItem().isEmpty()) {
-                list.add(filter.getMaterialItem().getDisplayName());
-            }
-            return list;
-        }).clearFormat());
+    protected List<ITextComponent> getScreenText() {
+        List<ITextComponent> list = super.getScreenText();
+        list.add(MekanismLang.MATERIAL_FILTER_DETAILS.translate());
+        if (filter.hasFilter()) {
+            list.add(filter.getMaterialItem().getDisplayName());
+        }
+        return list;
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.MATERIAL_FILTER), 43, 6, titleTextColor());
-        drawForegroundLayer(mouseX, mouseY);
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected ILangEntry getNoFilterSaveError() {
+        return MekanismLang.ITEM_FILTER_NO_ITEM;
     }
 
-    protected void materialMouseClicked() {
-        ItemStack stack = minecraft.player.inventory.getItemStack();
-        if (!stack.isEmpty() && !hasShiftDown()) {
-            if (stack.getItem() instanceof BlockItem) {
-                //TODO: Either look at unbreakable blocks or make a tag for a blacklist
-                if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
-                    filter.setMaterialItem(stack.copy());
-                    filter.getMaterialItem().setCount(1);
+    @Override
+    protected List<ItemStack> getRenderStacks() {
+        ItemStack stack = filter.getMaterialItem();
+        return stack.isEmpty() ? Collections.emptyList() : Collections.singletonList(stack);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            double xAxis = mouseX - guiObj.getLeft();
+            double yAxis = mouseY - guiObj.getTop();
+            //TODO: Check if mouse is over the slot?
+            if (xAxis >= relativeX + 8 && xAxis < relativeX + 24 && yAxis >= relativeY + 19 && yAxis < relativeY + 35) {
+                ItemStack stack = minecraft.player.inventory.getItemStack();
+                if (!stack.isEmpty() && !Screen.hasShiftDown()) {
+                    if (stack.getItem() instanceof BlockItem) {
+                        //TODO - V10: Either look at unbreakable blocks or make a tag for a blacklist
+                        if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
+                            filter.setMaterialItem(StackUtils.size(stack, 1));
+                        }
+                    }
+                } else if (stack.isEmpty() && Screen.hasShiftDown()) {
+                    filter.setMaterialItem(ItemStack.EMPTY);
                 }
+                slotDisplay.updateStackList();
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                return true;
             }
-        } else if (stack.isEmpty() && hasShiftDown()) {
-            filter.setMaterialItem(ItemStack.EMPTY);
         }
-        updateRenderStacks();
-        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

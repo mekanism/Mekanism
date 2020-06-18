@@ -8,7 +8,7 @@ import mekanism.common.network.BasePacketHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class TTagFilter extends TransporterFilter<TTagFilter> implements ITagFilter<TTagFilter> {
+public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements ITagFilter<SorterTagFilter> {
 
     private String tagName;
 
@@ -52,12 +52,12 @@ public class TTagFilter extends TransporterFilter<TTagFilter> implements ITagFil
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof TTagFilter && ((TTagFilter) filter).tagName.equals(tagName);
+        return super.equals(filter) && filter instanceof SorterTagFilter && ((SorterTagFilter) filter).tagName.equals(tagName);
     }
 
     @Override
-    public TTagFilter clone() {
-        TTagFilter filter = new TTagFilter();
+    public SorterTagFilter clone() {
+        SorterTagFilter filter = new SorterTagFilter();
         filter.allowDefault = allowDefault;
         filter.color = color;
         filter.tagName = tagName;

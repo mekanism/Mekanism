@@ -1,34 +1,127 @@
 package mekanism.client.gui.element.filter;
 
-import mekanism.client.gui.GuiMekanismTile;
+import java.util.ArrayList;
+import java.util.List;
+import mekanism.api.text.EnumColor;
+import mekanism.api.text.ILangEntry;
+import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiWindow;
+import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.PacketGuiButtonPress;
-import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
+import mekanism.common.MekanismLang;
+import mekanism.common.content.filter.IFilter;
+import mekanism.common.network.PacketEditFilter;
+import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.entity.player.PlayerInventory;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-@Deprecated
-public abstract class GuiFilter<TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanismTile<TILE, CONTAINER> {
+public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>> extends GuiWindow {
 
-    protected GuiFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
-        super(container, inv, title);
+    private final ITextComponent filterName;
+    protected final TILE tile;
+
+    protected ITextComponent status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
+    protected GuiSequencedSlotDisplay slotDisplay;
+    protected FILTER origFilter;
+    protected FILTER filter;
+    protected boolean isNew;
+    protected int ticker;
+
+    public GuiFilter(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, TILE tile, FILTER origFilter) {
+        super(gui, x, y, width, height);
+        this.tile = tile;
+        this.origFilter = origFilter;
+        this.filterName = filterName;
+        if (origFilter == null) {
+            isNew = true;
+            filter = createNewFilter();
+        } else {
+            filter = origFilter.clone();
+        }
+        init();
+        if (filter.hasFilter()) {
+            slotDisplay.updateStackList();
+        }
     }
 
-    protected abstract void addButtons();
-
-    protected void sendPacketToServer(ClickedTileButton button) {
-        sendPacketToServer(button, 0);
+    protected int getSlotOffset() {
+        return 18;
     }
 
-    protected void sendPacketToServer(ClickedTileButton button, int extra) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tile, extra));
+    protected int getScreenHeight() {
+        return 43;
+    }
+
+    protected void init() {
+        int screenTop = relativeY + 18;
+        int screenBottom = screenTop + getScreenHeight();
+        addChild(new GuiInnerScreen(guiObj, relativeX + 29, screenTop, width - 29 - 7, getScreenHeight(), this::getScreenText).clearFormat());
+        addChild(new TranslationButton(guiObj, x + width / 2 - 61, guiObj.getTop() + screenBottom + 2, 60, 20,
+              isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
+            if (origFilter != null) {
+                Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
+            }
+            close();
+        }));
+        addChild(new TranslationButton(guiObj, x + width / 2 + 1, guiObj.getTop() + screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
+        addChild(new GuiSlot(SlotType.NORMAL, guiObj, relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true));
+        addChild(slotDisplay = new GuiSequencedSlotDisplay(guiObj, relativeX + 8, relativeY + getSlotOffset() + 1, this::getRenderStacks));
+        //TODO - V10: Replace red close button with the back button if it is a new filter to be able to go back to the filter select screen
+    }
+
+    protected List<ITextComponent> getScreenText() {
+        List<ITextComponent> list = new ArrayList<>();
+        list.add(MekanismLang.STATUS.translate(status));
+        return list;
+    }
+
+    protected void validateAndSave() {
+        if (filter.hasFilter()) {
+            saveFilter();
+        } else {
+            filterSaveFailed(getNoFilterSaveError());
+        }
+    }
+
+    protected void filterSaveFailed(ILangEntry reason) {
+        status = reason.translateColored(EnumColor.DARK_RED);
+        ticker = 20;
+    }
+
+    protected void saveFilter() {
+        if (isNew) {
+            Mekanism.packetHandler.sendToServer(new PacketNewFilter(tile.getPos(), filter));
+        } else {
+            Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), false, origFilter, filter));
+        }
+        close();
+    }
+
+    protected abstract ILangEntry getNoFilterSaveError();
+
+    protected abstract List<ItemStack> getRenderStacks();
+
+    @Override
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
+        drawTextScaledBound((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), relativeX + 30, relativeY + 6, titleTextColor(), 110);
     }
 
     @Override
-    public void init() {
-        super.init();
-        addButtons();
+    public void tick() {
+        super.tick();
+        if (ticker > 0) {
+            ticker--;
+        } else {
+            status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
+        }
     }
+
+    protected abstract FILTER createNewFilter();
 }

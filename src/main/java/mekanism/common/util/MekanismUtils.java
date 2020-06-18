@@ -528,6 +528,7 @@ public final class MekanismUtils {
      * @return the corresponding ResourceLocation
      */
     public static ResourceLocation getResource(ResourceType type, String name) {
+        //TODO - V10: Go through and remove unused resources. Should make it easier for resource pack makers to make things and also lower the size of the jar slightly.
         return Mekanism.rl(type.getPrefix() + name);
     }
 
@@ -537,10 +538,9 @@ public final class MekanismUtils {
      * @param tile - TileEntity to save
      */
     public static void saveChunk(TileEntity tile) {
-        if (tile == null || tile.isRemoved() || tile.getWorld() == null) {
-            return;
+        if (tile != null && !tile.isRemoved() && tile.getWorld() != null) {
+            tile.getWorld().markChunkDirty(tile.getPos(), tile);
         }
-        tile.getWorld().markChunkDirty(tile.getPos(), tile);
     }
 
     /**

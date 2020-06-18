@@ -1,71 +1,46 @@
 package mekanism.client.gui.element.filter;
 
-import mekanism.api.text.EnumColor;
+import mekanism.api.functions.CharPredicate;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.common.MekanismLang;
+import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.content.miner.MinerFilter;
-import mekanism.common.content.transporter.TransporterFilter;
-import mekanism.common.inventory.container.tile.filter.FilterContainer;
-import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-@Deprecated//TODO: GuiTextFilterDialog
-public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
-      FilterContainer<FILTER, TILE>> extends GuiFilterBase<FILTER, TILE, CONTAINER> {
+public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
+      extends GuiFilter<FILTER, TILE> {
 
     protected GuiTextField text;
 
-    protected GuiTextFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
-        super(container, inv, title);
+    protected GuiTextFilter(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, TILE tile, FILTER origFilter) {
+        super(gui, x, y, width, height, filterName, tile, origFilter);
     }
-
-    protected boolean wasTextboxKey(char c) {
-        return TransporterFilter.SPECIAL_CHARS.contains(c) || Character.isLetter(c) || Character.isDigit(c);
-    }
-
-    protected abstract void setText();
 
     @Override
-    public void init() {
+    protected void init() {
         super.init();
-        addButton(text = new GuiTextField(this, 35, 47, 107, 12));
-        text.setInputValidator(this::wasTextboxKey);
-        text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
+        addChild(text = new GuiTextField(guiObj, relativeX + 31, relativeY + 4 + getScreenHeight(), width - 31 - 9, 12));
+        text.setMaxStringLength(SorterFilter.MAX_LENGTH);
+        text.setInputValidator(getInputValidator());
+        text.setEnabled(true);
         text.setFocused(true);
         text.configureDigitalInput(this::setText);
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        if (ticker > 0) {
-            ticker--;
-        } else {
-            status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
+    protected void validateAndSave() {
+        if (!text.getText().isEmpty()) {
+            setText();
         }
+        super.validateAndSave();
     }
 
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        if (tile instanceof TileEntityDigitalMiner) {
-            drawMinerForegroundLayer();
-        } else if (tile instanceof TileEntityLogisticalSorter) {
-            drawTransporterForegroundLayer();
-        }
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected CharPredicate getInputValidator() {
+        return InputValidator.or(InputValidator.LETTER, InputValidator.DIGIT, InputValidator.FILTER_CHARS);
     }
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        if (button == 0 && tile instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
-            minerFilterClickCommon(mouseX - getGuiLeft(), mouseY - getGuiTop(), (MinerFilter<?>) filter);
-        }
-        return true;
-    }
+    protected abstract void setText();
 }

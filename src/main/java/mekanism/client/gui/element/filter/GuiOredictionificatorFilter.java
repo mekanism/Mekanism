@@ -3,7 +3,6 @@ package mekanism.client.gui.element.filter;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.functions.CharPredicate;
-import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
@@ -16,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiOredictionificatorFilter extends GuiTextFilterDialog<OredictionificatorFilter, TileEntityOredictionificator> {
+public class GuiOredictionificatorFilter extends GuiTextFilter<OredictionificatorFilter, TileEntityOredictionificator> {
 
     public static GuiOredictionificatorFilter create(IGuiWrapper gui, TileEntityOredictionificator tile) {
         return new GuiOredictionificatorFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, null);
@@ -71,8 +70,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterDialog<Oredictioni
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {
-            status = getNoFilterSaveError().translateColored(EnumColor.DARK_RED);
-            ticker = 20;
+            filterSaveFailed(getNoFilterSaveError());
             return;
         }
         String modid = "forge";
@@ -84,8 +82,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterDialog<Oredictioni
         }
         ResourceLocation filterLocation = new ResourceLocation(modid, newFilter);
         if (filter.filterMatches(filterLocation)) {
-            status = MekanismLang.TAG_FILTER_SAME_TAG.translateColored(EnumColor.DARK_RED);
-            ticker = 20;
+            filterSaveFailed(MekanismLang.TAG_FILTER_SAME_TAG);
         } else {
             List<String> possibleFilters = TileEntityOredictionificator.possibleFilters.getOrDefault(modid, Collections.emptyList());
             if (possibleFilters.stream().anyMatch(newFilter::startsWith)) {
@@ -93,8 +90,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterDialog<Oredictioni
                 slotDisplay.updateStackList();
                 text.setText("");
             } else {
-                status = MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG.translateColored(EnumColor.DARK_RED);
-                ticker = 20;
+                filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG);
             }
         }
     }
@@ -113,7 +109,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterDialog<Oredictioni
     }
 
     @Override
-    public OredictionificatorFilter createNewFilter() {
+    protected OredictionificatorFilter createNewFilter() {
         return new OredictionificatorFilter();
     }
 

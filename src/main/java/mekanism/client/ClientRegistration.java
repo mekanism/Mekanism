@@ -26,16 +26,6 @@ import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.GuiThermoelectricBoiler;
 import mekanism.client.gui.GuiUpgradeManagement;
-import mekanism.client.gui.element.filter.GuiMFilterSelect;
-import mekanism.client.gui.element.filter.GuiMItemStackFilter;
-import mekanism.client.gui.element.filter.GuiMMaterialFilter;
-import mekanism.client.gui.element.filter.GuiMModIDFilter;
-import mekanism.client.gui.element.filter.GuiMTagFilter;
-import mekanism.client.gui.element.filter.GuiTFilterSelect;
-import mekanism.client.gui.element.filter.GuiTItemStackFilter;
-import mekanism.client.gui.element.filter.GuiTMaterialFilter;
-import mekanism.client.gui.element.filter.GuiTModIDFilter;
-import mekanism.client.gui.element.filter.GuiTTagFilter;
 import mekanism.client.gui.item.GuiDictionary;
 import mekanism.client.gui.item.GuiPersonalChestItem;
 import mekanism.client.gui.item.GuiPortableTeleporter;
@@ -318,16 +308,6 @@ public class ClientRegistration {
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DIGITAL_MINER_CONFIG, GuiDigitalMinerConfig::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.LOGISTICAL_SORTER, GuiLogisticalSorter::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DM_FILTER_SELECT, GuiMFilterSelect::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.LS_FILTER_SELECT, GuiTFilterSelect::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DM_TAG_FILTER, GuiMTagFilter::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.LS_TAG_FILTER, GuiTTagFilter::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DM_MOD_ID_FILTER, GuiMModIDFilter::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.LS_MOD_ID_FILTER, GuiTModIDFilter::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DM_MATERIAL_FILTER, GuiMMaterialFilter::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.LS_MATERIAL_FILTER, GuiTMaterialFilter::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DM_ITEMSTACK_FILTER, GuiMItemStackFilter::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.LS_ITEMSTACK_FILTER, GuiTItemStackFilter::new);
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.UPGRADE_MANAGEMENT, GuiUpgradeManagement::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QIO_FREQUENCY_SELECT_TILE, GuiQIOTileFrequencySelect::new);

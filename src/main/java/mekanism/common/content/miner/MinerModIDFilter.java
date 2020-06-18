@@ -8,7 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class MModIDFilter extends MinerFilter<MModIDFilter> implements IModIDFilter<MModIDFilter> {
+public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements IModIDFilter<MinerModIDFilter> {
 
     private String modID;
 
@@ -61,12 +61,12 @@ public class MModIDFilter extends MinerFilter<MModIDFilter> implements IModIDFil
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof MModIDFilter && ((MModIDFilter) filter).modID.equals(modID);
+        return filter instanceof MinerModIDFilter && ((MinerModIDFilter) filter).modID.equals(modID);
     }
 
     @Override
-    public MModIDFilter clone() {
-        MModIDFilter filter = new MModIDFilter();
+    public MinerModIDFilter clone() {
+        MinerModIDFilter filter = new MinerModIDFilter();
         filter.replaceStack = replaceStack;
         filter.requireStack = requireStack;
         filter.modID = modID;

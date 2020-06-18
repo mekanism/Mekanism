@@ -8,7 +8,7 @@ import mekanism.common.network.BasePacketHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class TModIDFilter extends TransporterFilter<TModIDFilter> implements IModIDFilter<TModIDFilter> {
+public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implements IModIDFilter<SorterModIDFilter> {
 
     private String modID;
 
@@ -52,12 +52,12 @@ public class TModIDFilter extends TransporterFilter<TModIDFilter> implements IMo
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof TModIDFilter && ((TModIDFilter) filter).modID.equals(modID);
+        return super.equals(filter) && filter instanceof SorterModIDFilter && ((SorterModIDFilter) filter).modID.equals(modID);
     }
 
     @Override
-    public TModIDFilter clone() {
-        TModIDFilter filter = new TModIDFilter();
+    public SorterModIDFilter clone() {
+        SorterModIDFilter filter = new SorterModIDFilter();
         filter.allowDefault = allowDefault;
         filter.color = color;
         filter.modID = modID;

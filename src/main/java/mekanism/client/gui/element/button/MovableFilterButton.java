@@ -16,7 +16,7 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
-import mekanism.common.content.transporter.TransporterFilter;
+import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.lib.HashList;
 import net.minecraft.item.ItemStack;
 
@@ -82,8 +82,8 @@ public class MovableFilterButton extends FilterButton {
         } else if (filter instanceof IModIDFilter) {
             drawTextScaledBound(MekanismLang.MODID_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
         }
-        if (filter instanceof TransporterFilter) {
-            TransporterFilter<?> sorterFilter = (TransporterFilter<?>) filter;
+        if (filter instanceof SorterFilter) {
+            SorterFilter<?> sorterFilter = (SorterFilter<?>) filter;
             drawString(sorterFilter.color == null ? MekanismLang.NONE.translate() : sorterFilter.color.getColoredName(), x + 22, y + 11, titleTextColor());
         }
     }

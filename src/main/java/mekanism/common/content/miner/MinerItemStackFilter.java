@@ -8,15 +8,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements IItemStackFilter<MItemStackFilter> {
+public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> implements IItemStackFilter<MinerItemStackFilter> {
 
     private ItemStack itemType = ItemStack.EMPTY;
 
-    public MItemStackFilter(ItemStack item) {
+    public MinerItemStackFilter(ItemStack item) {
         itemType = item;
     }
 
-    public MItemStackFilter() {
+    public MinerItemStackFilter() {
     }
 
     @Override
@@ -62,12 +62,12 @@ public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements I
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof MItemStackFilter && ((MItemStackFilter) filter).itemType.isItemEqual(itemType);
+        return filter instanceof MinerItemStackFilter && ((MinerItemStackFilter) filter).itemType.isItemEqual(itemType);
     }
 
     @Override
-    public MItemStackFilter clone() {
-        MItemStackFilter filter = new MItemStackFilter();
+    public MinerItemStackFilter clone() {
+        MinerItemStackFilter filter = new MinerItemStackFilter();
         filter.replaceStack = replaceStack;
         filter.requireStack = requireStack;
         filter.itemType = itemType.copy();
