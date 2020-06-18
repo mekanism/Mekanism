@@ -44,7 +44,7 @@ public class ModelToVoxelShapeUtil {
     }*/
 
     /*public static void main(String[] args) {
-        printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/generators/resources/assets/mekanismgenerators/models/block/fission/fuel_assembly.json");
+        printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/main/resources/assets/mekanism/models/block/chemical_oxidizer.json");
     }*/
 
     public static void printoutModelFile(String path) {

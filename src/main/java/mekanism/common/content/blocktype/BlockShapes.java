@@ -213,16 +213,16 @@ public final class BlockShapes {
         ), CHEMICAL_WASHER);
 
         setShape(VoxelShapeUtils.combine(
-              makeCuboidShape(0, 0, 0, 16, 4, 16), // base
-              makeCuboidShape(8.5, 4, 1.5, 13.5, 5, 14.5), // stand
-              makeCuboidShape(15, 3, 3, 16, 13, 13), // connector
-              makeCuboidShape(8.5, 5.5, 6, 13.5, 15.5, 7), // bridge
-              makeCuboidShape(0, 4, 0, 7, 16, 16), // tank
-              makeCuboidShape(0, 4, 4, 1, 12, 12), // connectorToggle
-              makeCuboidShape(8, 5, 1, 14, 16, 6), // tower1
-              makeCuboidShape(8, 5, 7, 14, 16, 15), // tower2
-              makeCuboidShape(7, 7, 9, 8, 10, 12), // pipe1
-              makeCuboidShape(13, 5, 5, 15, 11, 11)// pipe2
+            makeCuboidShape(9, 4, 2, 13, 5, 14), // stand
+            makeCuboidShape(8, 5, 7, 14, 16, 15), // tower2
+            makeCuboidShape(8, 5, 1, 14, 16, 6), // tower1
+            makeCuboidShape(7, 7, 9, 8, 10, 12), // pipe1
+            makeCuboidShape(0, 4, 0, 7, 16, 16), // tank
+            makeCuboidShape(-0.005, 4, 4, 0.995, 12, 12), // connectorToggle
+            makeCuboidShape(9, 6, 6, 13, 15, 7), // bridge
+            makeCuboidShape(13, 5, 5, 15, 11, 11), // pipe2
+            makeCuboidShape(15.005, 3, 3, 16.005, 13, 13), // connector
+            makeCuboidShape(0, 0, 0, 16, 4, 16) // base
         ), CHEMICAL_OXIDIZER);
 
         setShape(VoxelShapeUtils.combine(
