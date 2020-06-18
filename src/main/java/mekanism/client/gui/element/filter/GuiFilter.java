@@ -58,10 +58,14 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         return 43;
     }
 
+    protected int getScreenWidth() {
+        return 116;
+    }
+
     protected void init() {
         int screenTop = relativeY + 18;
         int screenBottom = screenTop + getScreenHeight();
-        addChild(new GuiInnerScreen(guiObj, relativeX + 29, screenTop, width - 29 - 7, getScreenHeight(), this::getScreenText).clearFormat());
+        addChild(new GuiInnerScreen(guiObj, relativeX + 29, screenTop, getScreenWidth(), getScreenHeight(), this::getScreenText).clearFormat());
         addChild(new TranslationButton(guiObj, x + width / 2 - 61, guiObj.getTop() + screenBottom + 2, 60, 20,
               isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
             if (origFilter != null) {

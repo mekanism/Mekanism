@@ -13,9 +13,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -30,38 +27,32 @@ public interface GuiMinerFilterHelper {
               (onHover, xAxis, yAxis) -> gui.displayTooltip(MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(filter.requireStack)), xAxis, yAxis)));
     }
 
-    default void renderMinerForeground(IGuiWrapper gui, MinerFilter<?> filter) {
-        gui.getItemRenderer().zLevel += 200;
-        gui.renderItem(filter.replaceStack, getRelativeX() + 149, getRelativeY() + 19);
-        gui.getItemRenderer().zLevel -= 200;
+    default void renderReplaceStack(IGuiWrapper gui, MinerFilter<?> filter) {
+        if (!filter.replaceStack.isEmpty()) {
+            gui.getItemRenderer().zLevel += 200;
+            gui.renderItem(filter.replaceStack, getRelativeX() + 149, getRelativeY() + 19);
+            gui.getItemRenderer().zLevel -= 200;
+        }
     }
 
     int getRelativeX();
 
     int getRelativeY();
 
-    //TODO: Clean this up
-    default boolean tryClickReplaceStack(IGuiWrapper gui, double mouseX, double mouseY, int button, MinerFilter<?> filter) {
+    default boolean tryClickReplaceStack(IGuiWrapper gui, double mouseX, double mouseY, int button, int slotOffset, MinerFilter<?> filter) {
         if (button == 0) {
             double xAxis = mouseX - gui.getLeft();
             double yAxis = mouseY - gui.getTop();
             //Over replace output
-            if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
-                boolean doNull = false;
-                ItemStack stack = Minecraft.getInstance().player.inventory.getItemStack();
-                ItemStack toUse = ItemStack.EMPTY;
-                if (!stack.isEmpty() && !Screen.hasShiftDown()) {
-                    if (stack.getItem() instanceof BlockItem) {
-                        //TODO: Either look at unbreakable blocks or make a tag for a blacklist
-                        if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
-                            toUse = StackUtils.size(stack, 1);
-                        }
-                    }
-                } else if (stack.isEmpty() && Screen.hasShiftDown()) {
-                    doNull = true;
-                }
-                if (!toUse.isEmpty() || doNull) {
-                    filter.replaceStack = toUse;
+            if (xAxis >= getRelativeX() + 149 && xAxis <= getRelativeX() + 165 &&
+                yAxis >= getRelativeY() + slotOffset + 1 && yAxis <= getRelativeY() + slotOffset + 17) {
+                ItemStack stack = GuiElement.minecraft.player.inventory.getItemStack();
+                if (Screen.hasShiftDown()) {
+                    filter.replaceStack = ItemStack.EMPTY;
+                } else if (!stack.isEmpty() && stack.getItem() instanceof BlockItem) {
+                    filter.replaceStack = StackUtils.size(stack, 1);
+                } else {
+                    return false;
                 }
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 return true;

@@ -8,15 +8,15 @@ import mekanism.common.tile.machine.TileEntityDigitalMiner;
 public class GuiMinerMaterialFilter extends GuiMaterialFilter<MinerMaterialFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 
     public static GuiMinerMaterialFilter create(IGuiWrapper gui, TileEntityDigitalMiner tile) {
-        return new GuiMinerMaterialFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, null);
+        return new GuiMinerMaterialFilter(gui, (gui.getWidth() - 173) / 2, 30, tile, null);
     }
 
     public static GuiMinerMaterialFilter edit(IGuiWrapper gui, TileEntityDigitalMiner tile, MinerMaterialFilter filter) {
-        return new GuiMinerMaterialFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, filter);
+        return new GuiMinerMaterialFilter(gui, (gui.getWidth() - 173) / 2, 30, tile, filter);
     }
 
     private GuiMinerMaterialFilter(IGuiWrapper gui, int x, int y, TileEntityDigitalMiner tile, MinerMaterialFilter origFilter) {
-        super(gui, x, y, 152, 90, tile, origFilter);
+        super(gui, x, y, 173, 90, tile, origFilter);
     }
 
     @Override
@@ -33,11 +33,11 @@ public class GuiMinerMaterialFilter extends GuiMaterialFilter<MinerMaterialFilte
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
-        renderMinerForeground(guiObj, filter);
+        renderReplaceStack(guiObj, filter);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return tryClickReplaceStack(guiObj, mouseX, mouseY, button, filter) || super.mouseClicked(mouseX, mouseY, button);
+        return tryClickReplaceStack(guiObj, mouseX, mouseY, button, getSlotOffset(), filter) || super.mouseClicked(mouseX, mouseY, button);
     }
 }

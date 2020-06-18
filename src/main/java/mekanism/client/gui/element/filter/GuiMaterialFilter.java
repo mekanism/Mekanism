@@ -10,8 +10,6 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.StackUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -31,8 +29,8 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
     @Override
     protected List<ITextComponent> getScreenText() {
         List<ITextComponent> list = super.getScreenText();
-        list.add(MekanismLang.MATERIAL_FILTER_DETAILS.translate());
         if (filter.hasFilter()) {
+            list.add(MekanismLang.MATERIAL_FILTER_DETAILS.translate());
             list.add(filter.getMaterialItem().getDisplayName());
         }
         return list;
@@ -54,18 +52,15 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
         if (button == 0) {
             double xAxis = mouseX - guiObj.getLeft();
             double yAxis = mouseY - guiObj.getTop();
-            //TODO: Check if mouse is over the slot?
-            if (xAxis >= relativeX + 8 && xAxis < relativeX + 24 && yAxis >= relativeY + 19 && yAxis < relativeY + 35) {
-                ItemStack stack = minecraft.player.inventory.getItemStack();
-                if (!stack.isEmpty() && !Screen.hasShiftDown()) {
-                    if (stack.getItem() instanceof BlockItem) {
-                        //TODO - V10: Either look at unbreakable blocks or make a tag for a blacklist
-                        if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
-                            filter.setMaterialItem(StackUtils.size(stack, 1));
-                        }
-                    }
-                } else if (stack.isEmpty() && Screen.hasShiftDown()) {
+            if (xAxis >= relativeX + 8 && xAxis < relativeX + 22 && yAxis >= relativeY + getSlotOffset() + 1 && yAxis < relativeY + getSlotOffset() + 17) {
+                if (Screen.hasShiftDown()) {
                     filter.setMaterialItem(ItemStack.EMPTY);
+                } else {
+                    ItemStack stack = minecraft.player.inventory.getItemStack();
+                    if (stack.isEmpty() || !(stack.getItem() instanceof BlockItem)) {
+                        return super.mouseClicked(mouseX, mouseY, button);
+                    }
+                    filter.setMaterialItem(StackUtils.size(stack, 1));
                 }
                 slotDisplay.updateStackList();
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

@@ -578,7 +578,6 @@
   "filter.mekanism.filters": ":s\u0279\u01DD\u0287\uA781\u1D09\u2132",
   "filter.mekanism.fuzzy_mode": "\u01DDpoW \u028Ezzn\u2132",
   "filter.mekanism.item": "\u0279\u01DD\u0287\uA781\u1D09\u2132 \u026F\u01DD\u0287I",
-  "filter.mekanism.item.details": ":s\uA781\u1D09\u0250\u0287\u01DD\u15E1 \u029E\u0254\u0250\u0287S\u026F\u01DD\u0287I",
   "filter.mekanism.item.max_less_than_min": "u\u1D09\u026F > x\u0250W",
   "filter.mekanism.item.no_item": "\u026F\u01DD\u0287\u1D09 oN",
   "filter.mekanism.item.over_sized": "\u07C89 < x\u0250W",

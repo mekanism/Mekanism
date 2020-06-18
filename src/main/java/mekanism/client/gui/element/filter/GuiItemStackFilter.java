@@ -47,13 +47,15 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
         if (button == 0) {
             double xAxis = mouseX - guiObj.getLeft();
             double yAxis = mouseY - guiObj.getTop();
-            //TODO: Check if mouse is over the slot instead of hard coding the positions here.
-            if (xAxis >= relativeX + 8 && xAxis < relativeX + 24 && yAxis >= relativeY + 19 && yAxis < relativeY + 35) {
-                ItemStack stack = minecraft.player.inventory.getItemStack();
-                if (!stack.isEmpty() && !Screen.hasShiftDown()) {
-                    filter.setItemStack(StackUtils.size(stack, 1));
-                } else if (stack.isEmpty() && Screen.hasShiftDown()) {
+            if (xAxis >= relativeX + 8 && xAxis < relativeX + 22 && yAxis >= relativeY + getSlotOffset() + 1 && yAxis < relativeY + getSlotOffset() + 17) {
+                if (Screen.hasShiftDown()) {
                     filter.setItemStack(ItemStack.EMPTY);
+                } else {
+                    ItemStack stack = minecraft.player.inventory.getItemStack();
+                    if (stack.isEmpty()) {
+                        return super.mouseClicked(mouseX, mouseY, button);
+                    }
+                    filter.setItemStack(StackUtils.size(stack, 1));
                 }
                 slotDisplay.updateStackList();
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

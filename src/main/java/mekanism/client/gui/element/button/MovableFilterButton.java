@@ -42,7 +42,8 @@ public class MovableFilterButton extends FilterButton {
               (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_UP.translate(), xAxis, yAxis));
         downButton = new FilterSelectButton(gui, arrowX, this.y + height - 8, true, () -> downButtonPress.accept(index + filterIndex.getAsInt()),
               (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis));
-        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, x + 3, y + 3, () -> renderStackSupplier.apply(filters.get().getOrNull(filterIndex.getAsInt() + index))));
+        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, x + 3, y + 3,
+              () -> renderStackSupplier.apply(filters.get().getOrNull(filterIndex.getAsInt() + index))));
     }
 
     @Override

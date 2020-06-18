@@ -62,6 +62,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public boolean canHarvestBlock(@Nonnull BlockState state) {
+        //TODO - V10: Re-evaluate, this should return false for any unbreakable block, for example barriers
         return state.getBlock() != Blocks.BEDROCK;
     }
 

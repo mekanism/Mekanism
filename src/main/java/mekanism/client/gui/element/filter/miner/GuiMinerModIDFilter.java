@@ -12,15 +12,15 @@ import net.minecraft.item.ItemStack;
 public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 
     public static GuiMinerModIDFilter create(IGuiWrapper gui, TileEntityDigitalMiner tile) {
-        return new GuiMinerModIDFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, null);
+        return new GuiMinerModIDFilter(gui, (gui.getWidth() - 173) / 2, 30, tile, null);
     }
 
     public static GuiMinerModIDFilter edit(IGuiWrapper gui, TileEntityDigitalMiner tile, MinerModIDFilter filter) {
-        return new GuiMinerModIDFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, filter);
+        return new GuiMinerModIDFilter(gui, (gui.getWidth() - 173) / 2, 30, tile, filter);
     }
 
     private GuiMinerModIDFilter(IGuiWrapper gui, int x, int y, TileEntityDigitalMiner tile, MinerModIDFilter origFilter) {
-        super(gui, x, y, 152, 90, tile, origFilter);
+        super(gui, x, y, 173, 90, tile, origFilter);
     }
 
     @Override
@@ -45,11 +45,11 @@ public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEn
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
-        renderMinerForeground(guiObj, filter);
+        renderReplaceStack(guiObj, filter);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return tryClickReplaceStack(guiObj, mouseX, mouseY, button, filter) || super.mouseClicked(mouseX, mouseY, button);
+        return tryClickReplaceStack(guiObj, mouseX, mouseY, button, getSlotOffset(), filter) || super.mouseClicked(mouseX, mouseY, button);
     }
 }

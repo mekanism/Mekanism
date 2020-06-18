@@ -578,7 +578,6 @@
   "filter.mekanism.filters": "Filters:",
   "filter.mekanism.fuzzy_mode": "Fuzzy Mode",
   "filter.mekanism.item": "Item Filter",
-  "filter.mekanism.item.details": "ItemStack Details:",
   "filter.mekanism.item.max_less_than_min": "Max < min",
   "filter.mekanism.item.no_item": "No item",
   "filter.mekanism.item.over_sized": "Max > 64",
