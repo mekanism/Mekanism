@@ -1,7 +1,6 @@
 package mekanism.client.jei;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.client.gui.GuiMekanism;
@@ -63,30 +62,13 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
         return null;
     }
 
-    @Override
-    public Collection<IGuiClickableArea> getGuiClickableAreas(GuiMekanism genericGui) {
-        GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
-        //TODO - V10: Stop overriding this method and add the override annotation to the below getGuiClickableArea method.
-        // Requires: https://github.com/mezz/JustEnoughItems/pull/1980 but will allow gui windows to properly stop
-        List<IGuiClickableArea> clickableAreas = new ArrayList<>();
-        for (IGuiEventListener child : gui.children()) {
-            if (child instanceof IJEIRecipeArea) {
-                IJEIRecipeArea<?> recipeArea = (IJEIRecipeArea<?>) child;
-                if (recipeArea.isActive()) {
-                    ResourceLocation[] categories = recipeArea.getRecipeCategories();
-                    if (categories != null && child instanceof GuiRelativeElement) {
-                        GuiRelativeElement element = (GuiRelativeElement) child;
-                        clickableAreas.add(IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(), element.getWidth(), element.getHeight(), categories));
-                    }
-                }
-            }
-        }
-        return clickableAreas;
-    }
-
     @Nullable
+    //@Override//TODO - V10: Uncomment htis override after updating to new JEI
     public IGuiClickableArea getGuiClickableArea(GuiMekanism genericGui, double mouseX, double mouseY) {
         GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
+        //Make mouseX and mouseY not be relative
+        mouseX += gui.getGuiLeft();
+        mouseY += gui.getGuiTop();
         //Check the "active" gui window first
         for (GuiWindow guiWindow : gui.getWindows()) {
             if (guiWindow.isMouseOver(mouseX, mouseY)) {

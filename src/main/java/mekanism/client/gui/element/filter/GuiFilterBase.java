@@ -1,4 +1,4 @@
-package mekanism.client.gui.filter;
+package mekanism.client.gui.element.filter;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +24,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 
+//TODO: Use interfaces to implement common code as defaulted, so that duplicate miner code and duplicate transporter code can be deduplicated
+// even across different filter types
+@Deprecated//TODO: Transition over to GuiFilterDialog
 public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
       FilterContainer<FILTER, TILE>> extends GuiFilter<TILE, CONTAINER> {
 

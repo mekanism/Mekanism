@@ -1,4 +1,4 @@
-package mekanism.client.gui.filter;
+package mekanism.client.gui.element.filter;
 
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
@@ -6,6 +6,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+@Deprecated
 public class GuiTFilterSelect extends GuiFilterSelect<TileEntityLogisticalSorter, EmptyTileContainer<TileEntityLogisticalSorter>> {
 
     public GuiTFilterSelect(EmptyTileContainer<TileEntityLogisticalSorter> container, PlayerInventory inv, ITextComponent title) {

@@ -16,4 +16,7 @@ public interface IFilter<FILTER extends IFilter<FILTER>> {
     void write(PacketBuffer buffer);
 
     void read(PacketBuffer dataStream);
+
+    //TODO: Transition more things over to using this
+    boolean hasFilter();
 }

@@ -9,4 +9,9 @@ public interface IMaterialFilter<FILTER extends IMaterialFilter<FILTER>> extends
     ItemStack getMaterialItem();
 
     void setMaterialItem(@Nonnull ItemStack stack);
+
+    @Override
+    default boolean hasFilter() {
+        return !getMaterialItem().isEmpty();
+    }
 }

@@ -30,13 +30,11 @@ import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContaine
 import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
-import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
@@ -201,13 +199,6 @@ public class PacketGuiButtonPress {
         }),
         QIO_FREQUENCY_SELECT((tile, extra) -> new ContainerProvider(MekanismLang.QIO_FREQUENCY_SELECT, (i, inv, player) -> new QIOFrequencySelectTileContainer(i, inv, tile))),
         UPGRADE_MANAGEMENT((tile, extra) -> new ContainerProvider(MekanismLang.UPGRADES, (i, inv, player) -> new UpgradeManagementContainer(i, inv, tile))),
-        OREDICTIONIFICATOR_FILTER((tile, extra) -> {
-            if (tile instanceof TileEntityOredictionificator) {
-                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) ->
-                      new OredictionificatorFilterContainer(i, inv, (TileEntityOredictionificator) tile, extra));
-            }
-            return null;
-        }),
         DIGITAL_MINER_CONFIG((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
                 return new ContainerProvider(MekanismLang.MINER_CONFIG, (i, inv, player) -> new DigitalMinerConfigContainer(i, inv, (TileEntityDigitalMiner) tile));

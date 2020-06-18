@@ -5,4 +5,9 @@ public interface IModIDFilter<FILTER extends IModIDFilter<FILTER>> extends IFilt
     void setModID(String id);
 
     String getModID();
+
+    @Override
+    default boolean hasFilter() {
+        return getModID() != null && !getModID().isEmpty();
+    }
 }

@@ -1,4 +1,4 @@
-package mekanism.client.gui.filter;
+package mekanism.client.gui.element.filter;
 
 import java.util.Arrays;
 import mekanism.api.text.EnumColor;
@@ -11,6 +11,7 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+@Deprecated
 public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
       FilterContainer<FILTER, TILE>> extends GuiTextFilter<FILTER, TILE, CONTAINER> {
 

@@ -237,7 +237,6 @@ public enum MekanismLang implements ILangEntry {
     //Oredictionificator
     LAST_ITEM("oredictionificator", "last_item"),
     NEXT_ITEM("oredictionificator", "next_item"),
-    TAG_COMPAT("oredictionificator", "tag_compat"),
     //Status
     STATUS("status", "format"),
     STATUS_OK("status", "ok"),
@@ -311,7 +310,6 @@ public enum MekanismLang implements ILangEntry {
     FILTER("filter", "filter"),
     FILTER_NEW("filter", "new"),
     FILTER_EDIT("filter", "edit"),
-    FILTER_INDEX("filter", "index"),
     SIZE_MODE("filter", "size_mode"),
     SIZE_MODE_CONFLICT("filter", "size_mode.conflict"),
     MATERIAL_FILTER("filter", "material"),
@@ -332,6 +330,8 @@ public enum MekanismLang implements ILangEntry {
     ITEM_FILTER_MAX_LESS_THAN_MIN("filter", "item.max_less_than_min"),
     ITEM_FILTER_OVER_SIZED("filter", "item.over_sized"),
     ITEM_FILTER_SIZE_MISSING("filter", "item.size_missing"),
+    OREDICTIONIFICATOR_FILTER("filter", "oredictionificator"),
+    OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG("filter", "oredictionificator.invalid_key"),
     //Seismic Vibrator
     CHUNK("seismic_vibrator", "chunk"),
     VIBRATING("seismic_vibrator", "vibrating"),

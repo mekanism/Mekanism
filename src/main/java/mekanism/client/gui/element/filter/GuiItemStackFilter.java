@@ -1,4 +1,4 @@
-package mekanism.client.gui.filter;
+package mekanism.client.gui.element.filter;
 
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -9,6 +9,7 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+@Deprecated
 public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
       FilterContainer<FILTER, TILE>> extends GuiTypeFilter<FILTER, TILE, CONTAINER> {
 

@@ -9,4 +9,9 @@ public interface IItemStackFilter<FILTER extends IItemStackFilter<FILTER>> exten
     ItemStack getItemStack();
 
     void setItemStack(@Nonnull ItemStack stack);
+
+    @Override
+    default boolean hasFilter() {
+        return !getItemStack().isEmpty();
+    }
 }

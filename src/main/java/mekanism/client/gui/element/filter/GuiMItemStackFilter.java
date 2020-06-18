@@ -1,4 +1,4 @@
-package mekanism.client.gui.filter;
+package mekanism.client.gui.element.filter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 
+@Deprecated
 public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, TileEntityDigitalMiner, DMItemStackFilterContainer> {
 
     public GuiMItemStackFilter(DMItemStackFilterContainer container, PlayerInventory inv, ITextComponent title) {

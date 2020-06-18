@@ -1,4 +1,4 @@
-package mekanism.client.gui.element.custom;
+package mekanism.client.gui.element.filter;
 
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
@@ -21,7 +21,6 @@ public abstract class GuiFilterDialog<FILTER extends IFilter<FILTER>> extends Gu
         super(gui, x, y, width, height);
         this.origFilter = origFilter;
         this.filterName = filterName;
-
         if (origFilter == null) {
             isNew = true;
             filter = createNewFilter();
@@ -33,7 +32,7 @@ public abstract class GuiFilterDialog<FILTER extends IFilter<FILTER>> extends Gu
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
-        drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), relativeX + 39, relativeY + 6, titleTextColor());
+        drawTextScaledBound((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), relativeX + 30, relativeY + 6, titleTextColor(), 110);
     }
 
     @Override

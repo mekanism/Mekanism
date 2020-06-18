@@ -1,4 +1,4 @@
-package mekanism.client.gui.filter;
+package mekanism.client.gui.element.filter;
 
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.text.GuiTextField;
@@ -14,21 +14,30 @@ import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+@Deprecated//TODO: GuiTextFilterDialog
 public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
-      FilterContainer<FILTER, TILE>> extends GuiTextFilterBase<FILTER, TILE, CONTAINER> {
+      FilterContainer<FILTER, TILE>> extends GuiFilterBase<FILTER, TILE, CONTAINER> {
+
+    protected GuiTextField text;
 
     protected GuiTextFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 
-    @Override
     protected boolean wasTextboxKey(char c) {
-        return TransporterFilter.SPECIAL_CHARS.contains(c) || super.wasTextboxKey(c);
+        return TransporterFilter.SPECIAL_CHARS.contains(c) || Character.isLetter(c) || Character.isDigit(c);
     }
 
+    protected abstract void setText();
+
     @Override
-    protected GuiTextField createTextField() {
-        return new GuiTextField(this, 35, 47, 107, 12);
+    public void init() {
+        super.init();
+        addButton(text = new GuiTextField(this, 35, 47, 107, 12));
+        text.setInputValidator(this::wasTextboxKey);
+        text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
+        text.setFocused(true);
+        text.configureDigitalInput(this::setText);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package mekanism.client.gui.element.custom;
+package mekanism.client.gui.element.filter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class GuiItemStackFilterDialog extends GuiFilterDialog<QIOItemStackFilter
         addChild(new GuiInnerScreen(gui, relativeX + 29, relativeY + 18, width - 29 - 7, 43, () -> {
             List<ITextComponent> list = new ArrayList<>();
             list.add(MekanismLang.STATUS.translate(status));
-            if (!filter.getItemStack().isEmpty()) {
+            if (filter.hasFilter()) {
                 list.add(filter.getItemStack().getDisplayName());
             }
             return list;
@@ -43,7 +43,7 @@ public class GuiItemStackFilterDialog extends GuiFilterDialog<QIOItemStackFilter
             close();
         }));
         addChild(new TranslationButton(gui, gui.getLeft() + relativeX + width / 2 + 1, gui.getTop() + relativeY + 63, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
-            if (!filter.getItemStack().isEmpty()) {
+            if (filter.hasFilter()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(tile.getPos(), filter));
                 } else {

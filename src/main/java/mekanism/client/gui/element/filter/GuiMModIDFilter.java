@@ -1,4 +1,4 @@
-package mekanism.client.gui.filter;
+package mekanism.client.gui.element.filter;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,8 +10,8 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
-import mekanism.common.content.miner.MTagFilter;
-import mekanism.common.inventory.container.tile.filter.DMTagFilterContainer;
+import mekanism.common.content.miner.MModIDFilter;
+import mekanism.common.inventory.container.tile.filter.DMModIDFilterContainer;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
@@ -20,13 +20,22 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiMTagFilter extends GuiTagFilter<MTagFilter, TileEntityDigitalMiner, DMTagFilterContainer> {
+@Deprecated
+public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigitalMiner, DMModIDFilterContainer> {
 
-    public GuiMTagFilter(DMTagFilterContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiMModIDFilter(DMModIDFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         origFilter = container.getOrigFilter();
         filter = container.getFilter();
         isNew = container.isNew();
+    }
+
+    @Override
+    public List<ItemStack> getRenderStacks() {
+        if (filter.getModID() == null || filter.getModID().isEmpty()) {
+            return Collections.emptyList();
+        }
+        return TagCache.getModIDStacks(filter.getModID(), true);
     }
 
     @Override
@@ -38,7 +47,7 @@ public class GuiMTagFilter extends GuiTagFilter<MTagFilter, TileEntityDigitalMin
             if (!text.getText().isEmpty()) {
                 setText();
             }
-            if (filter.getTagName() != null && !filter.getTagName().isEmpty()) {
+            if (filter.getModID() != null && !filter.getModID().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(tile.getPos(), filter));
                 } else {
@@ -46,7 +55,7 @@ public class GuiMTagFilter extends GuiTagFilter<MTagFilter, TileEntityDigitalMin
                 }
                 sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
             } else {
-                status = MekanismLang.TAG_FILTER_NO_TAG.translateColored(EnumColor.DARK_RED);
+                status = MekanismLang.MODID_FILTER_NO_ID.translateColored(EnumColor.DARK_RED);
                 ticker = 20;
             }
         }));
@@ -58,13 +67,5 @@ public class GuiMTagFilter extends GuiTagFilter<MTagFilter, TileEntityDigitalMin
               () -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 148, getGuiTop() + 45, 14, 16, getButtonLocation("exclamation"),
               () -> filter.requireStack = !filter.requireStack, getOnHoverReplace(filter)));
-    }
-
-    @Override
-    public List<ItemStack> getRenderStacks() {
-        if (filter.getTagName() == null || filter.getTagName().isEmpty()) {
-            return Collections.emptyList();
-        }
-        return TagCache.getBlockTagStacks(filter.getTagName());
     }
 }

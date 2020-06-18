@@ -1,4 +1,4 @@
-package mekanism.client.gui.filter;
+package mekanism.client.gui.element.filter;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +22,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
+@Deprecated
 public class GuiTTagFilter extends GuiTagFilter<TTagFilter, TileEntityLogisticalSorter, LSTagFilterContainer> {
 
     public GuiTTagFilter(LSTagFilterContainer container, PlayerInventory inv, ITextComponent title) {

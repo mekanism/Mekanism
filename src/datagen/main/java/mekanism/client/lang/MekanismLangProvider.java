@@ -643,7 +643,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Oredictionificator
         add(MekanismLang.LAST_ITEM, "Last Item");
         add(MekanismLang.NEXT_ITEM, "Next Item");
-        add(MekanismLang.TAG_COMPAT, "Compatible Tag");
         //Status
         add(MekanismLang.STATUS, "Status: %s");
         add(MekanismLang.STATUS_OK, "All OK");
@@ -717,7 +716,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.FILTER, "Filter");
         add(MekanismLang.FILTER_NEW, "New: %s");
         add(MekanismLang.FILTER_EDIT, "Edit: %s");
-        add(MekanismLang.FILTER_INDEX, "Index: %s");
         add(MekanismLang.SIZE_MODE, "Size Mode");
         add(MekanismLang.SIZE_MODE_CONFLICT, "Size Mode - has no effect currently, because single item mode is turned on.");
         add(MekanismLang.FUZZY_MODE, "Fuzzy Mode");
@@ -738,6 +736,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ITEM_FILTER_MAX_LESS_THAN_MIN, "Max < min");
         add(MekanismLang.ITEM_FILTER_OVER_SIZED, "Max > 64");
         add(MekanismLang.ITEM_FILTER_SIZE_MISSING, "Max/min");
+        add(MekanismLang.OREDICTIONIFICATOR_FILTER, "Oredictionificator Filter");
+        add(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG, "Incompatible tag");
         //Seismic Vibrator
         add(MekanismLang.CHUNK, "Chunk: %s, %s");
         add(MekanismLang.VIBRATING, "Vibrating");

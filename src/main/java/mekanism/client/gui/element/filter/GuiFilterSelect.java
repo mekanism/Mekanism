@@ -1,4 +1,4 @@
-package mekanism.client.gui.filter;
+package mekanism.client.gui.element.filter;
 
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.MekanismButton;
@@ -10,6 +10,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
+@Deprecated
 public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER extends EmptyTileContainer<TILE>> extends GuiFilter<TILE, CONTAINER> {
 
     protected MekanismButton itemStackButton;

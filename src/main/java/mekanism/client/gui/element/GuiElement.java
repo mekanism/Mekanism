@@ -238,6 +238,9 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
+        //TODO - V10: FIXME? This returns true even if a window is covering the position.
+        // If we fix that then things may work a lot better. For example filter popup for oredictionificator
+        // shows this well with being able to hover over it over the new filter button and it causing the button to show as hovered
         if (super.isMouseOver(mouseX, mouseY)) {
             return true;
         }

@@ -8,7 +8,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.entity.player.PlayerInventory;
 
-//TODO: Should this be EmptyTileContainer
 public abstract class FilterContainer<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>> extends MekanismTileContainer<TILE> {
 
     protected FILTER filter;

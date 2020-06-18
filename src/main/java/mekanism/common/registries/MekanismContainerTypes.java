@@ -34,7 +34,6 @@ import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContaine
 import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
-import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.TileEntityChemicalTank;
@@ -186,6 +185,4 @@ public class MekanismContainerTypes {
 
     public static final ContainerTypeRegistryObject<DMItemStackFilterContainer> DM_ITEMSTACK_FILTER = CONTAINER_TYPES.register("digital_miner_itemstack_filter", DMItemStackFilterContainer::new);
     public static final ContainerTypeRegistryObject<LSItemStackFilterContainer> LS_ITEMSTACK_FILTER = CONTAINER_TYPES.register("logistical_sorter_itemstack_filter", LSItemStackFilterContainer::new);
-
-    public static final ContainerTypeRegistryObject<OredictionificatorFilterContainer> OREDICTIONIFICATOR_FILTER = CONTAINER_TYPES.register("oredictionificator_filter", OredictionificatorFilterContainer::new);
 }
