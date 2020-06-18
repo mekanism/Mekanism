@@ -592,7 +592,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntitySuperchargedCoil> SUPERCHARGED_COIL = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SUPERCHARGED_COIL, MekanismLang.DESCRIPTION_SUPERCHARGED_COIL)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE))
-          .withCustomShape(BlockShapes.LASER)
+          .withCustomShape(BlockShapes.SUPERCHARGED_COIL)
           .build();
 
     // Induction Cells

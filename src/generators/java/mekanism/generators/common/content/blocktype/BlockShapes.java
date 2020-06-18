@@ -2,7 +2,6 @@ package mekanism.generators.common.content.blocktype;
 
 import static mekanism.common.util.VoxelShapeUtils.setShape;
 import static net.minecraft.block.Block.makeCuboidShape;
-
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.util.Rotation;
@@ -89,14 +88,16 @@ public final class BlockShapes {
         ), BIO_GENERATOR);
 
         setShape(VoxelShapeUtils.combine(
-              makeCuboidShape(0, 9, 0, 16, 11, 16),//solarPanel
-              makeCuboidShape(1, 8, 1, 15, 9, 15),//solarPanelBottom
-              makeCuboidShape(4, 0, 4, 12, 1, 12),//solarPanelPort
-              makeCuboidShape(6, 7, 6, 10, 9, 10),//solarPanelConnector
-              makeCuboidShape(6, 1, 6, 10, 2, 10),//solarPanelPipeBase
-              makeCuboidShape(6.5, 3, 6.5, 9.5, 6, 9.5),//solarPanelPipeConnector
-              makeCuboidShape(7, 5, 7, 9, 8, 9),//solarPanelRod1
-              makeCuboidShape(7, 3, 7, 9, 5, 9)//solarPanelRod2
+            makeCuboidShape(0, 6, 0, 16, 8, 16), // solarPanel
+            makeCuboidShape(4, 0, 4, 12, 1, 12), // solarPanelPort
+            makeCuboidShape(6, 4, 6, 10, 6, 10), // solarPanelConnector
+            makeCuboidShape(7, 2, 7, 9, 4, 9), // solarPanelRod1
+            makeCuboidShape(5, 1, 5, 6, 5, 6), // solarPanelRod2
+            makeCuboidShape(10, 1, 5, 11, 5, 6), // solarPanelRod3
+            makeCuboidShape(5, 1, 10, 6, 5, 11), // solarPanelRod3
+            makeCuboidShape(10, 1, 10, 11, 5, 11), // solarPanelRod4
+            makeCuboidShape(6, 1, 6, 10, 2, 10), // solarPanelPipeBase
+            makeCuboidShape(1, 5, 1, 15, 6, 15) // solarPanelBottom
         ), SOLAR_GENERATOR);
 
         setShape(VoxelShapeUtils.combine(

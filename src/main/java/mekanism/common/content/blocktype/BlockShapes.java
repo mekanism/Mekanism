@@ -39,6 +39,7 @@ public final class BlockShapes {
     public static final VoxelShape[] RADIOACTIVE_WASTE_BARREL = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] MODIFICATION_STATION = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] ISOTOPIC_CENTRIFUGE = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] SUPERCHARGED_COIL = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
@@ -702,6 +703,19 @@ public final class BlockShapes {
             makeCuboidShape(6, 17, 7, 9, 18, 8), // random_shape2
             makeCuboidShape(8, 15, 7, 9, 17, 8) // random_shape3
         ), ISOTOPIC_CENTRIFUGE);
+
+        setShape(VoxelShapeUtils.combine(
+            makeCuboidShape(5, 1, 5, 11, 10, 11), // body
+            makeCuboidShape(4.995, 8, 7, 5.995, 13, 8), // wire1
+            makeCuboidShape(10.005, 8, 8, 11.005, 13, 9), // wire2
+            makeCuboidShape(7, 15, 7, 9, 16, 9), // center
+            makeCuboidShape(4, 0, 4, 12, 1, 12), // port
+            makeCuboidShape(6, 10, 6, 10, 15, 10), // coil_large
+            makeCuboidShape(7, 3, 4, 9, 8, 6), // coil_1
+            makeCuboidShape(7, 3, 10, 9, 8, 12), // coil_2
+            makeCuboidShape(4, 3, 7, 6, 8, 9), // coil_3
+            makeCuboidShape(10, 3, 7, 12, 8, 9) // coil_4
+        ), SUPERCHARGED_COIL, true, true);
 
         //TODO: Don't bother rotating the shape, it is the same for all rotations
         setShape(makeCuboidShape(2, 0, 2, 14, 16, 14), FLUID_TANK);

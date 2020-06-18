@@ -1,8 +1,9 @@
 package mekanism.client.gui.element.text;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
+import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.functions.CharPredicate;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -12,7 +13,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * GuiElement wrapper of TextFieldWidget for more control
@@ -212,9 +212,8 @@ public class GuiTextField extends GuiRelativeElement {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (canWrite()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-                //Manually handle hitting escape making the field lose focus
-                setFocused(false);
-                return true;
+                //Manually handle hitting escape to make the whole interface go away
+                return false;
             } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
                 enterHandler.run();
                 return true;

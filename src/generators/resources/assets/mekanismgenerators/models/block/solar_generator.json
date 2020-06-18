@@ -1,112 +1,173 @@
 {
-  "textures": {
-    "all": "mekanismgenerators:block/model/solar_generator",
-    "particle": "mekanismgenerators:block/model/solar_generator"
-  },
-  "elements": [
-    {
-      "__comment": "solarPanel",
-      "from": [0, 9, 0],
-      "to": [16, 11, 16],
-      "faces": {
-        "down":  {"uv": [12, 0, 8, 4], "texture": "#all"},
-        "up":    {"uv": [8, 4, 4, 0], "texture": "#all"},
-        "north": {"uv": [4, 4, 8, 4.5], "texture": "#all"},
-        "south": {"uv": [12, 4, 16, 4.5], "texture": "#all"},
-        "west":  {"uv": [8, 4, 12, 4.5], "texture": "#all"},
-        "east":  {"uv": [0, 4, 4, 4.5], "texture": "#all"}
-      }
-    },
-    {
-      "__comment": "solarPanelRod2",
-      "from": [7, 2, 7],
-      "to": [9, 5, 9],
-      "faces": {
-        "down":  {"uv": [5.5, 8.25, 5, 8.75], "texture": "#all"},
-        "up":    {"uv": [5, 8.75, 4.5, 8.25], "texture": "#all"},
-        "north": {"uv": [4.5, 8.75, 5, 9.5], "texture": "#all"},
-        "south": {"uv": [5.5, 8.75, 6, 9.5], "texture": "#all"},
-        "west":  {"uv": [5, 8.75, 5.5, 9.5], "texture": "#all"},
-        "east":  {"uv": [4, 8.75, 4.5, 9.5], "texture": "#all"}
-      }
-    },
-    {
-      "__comment": "solarPanelPort",
-      "from": [4, 0, 4],
-      "to": [12, 1, 12],
-      "faces": {
-        "down":  {"uv": [6, 11, 4, 13], "texture": "#all"},
-        "up":    {"uv": [4, 13, 2, 11], "texture": "#all"},
-        "north": {"uv": [2, 13, 4, 13.25], "texture": "#all"},
-        "south": {"uv": [6, 13, 8, 13.25], "texture": "#all"},
-        "west":  {"uv": [4, 13, 6, 13.25], "texture": "#all"},
-        "east":  {"uv": [0, 13, 2, 13.25], "texture": "#all"}
-      }
-    },
-    {
-      "__comment": "solarPanelConnector",
-      "from": [6, 7, 6],
-      "to": [10, 9, 10],
-      "faces": {
-        "down":  {"uv": [3, 8.25, 2, 9.25], "texture": "#all"},
-        "up":    {"uv": [2, 9.25, 1, 8.25], "texture": "#all"},
-        "north": {"uv": [1, 9.25, 2, 9.75], "texture": "#all"},
-        "south": {"uv": [3, 9.25, 4, 9.75], "texture": "#all"},
-        "west":  {"uv": [2, 9.25, 3, 9.75], "texture": "#all"},
-        "east":  {"uv": [0, 9.25, 1, 9.75], "texture": "#all"}
-      }
-    },
-    {
-      "__comment": "solarPanelRod1",
-      "from": [7, 5, 7],
-      "to": [9, 8, 9],
-      "faces": {
-        "down":  {"uv": [5.5, 8.25, 5, 8.75], "texture": "#all"},
-        "up":    {"uv": [5, 8.75, 4.5, 8.25], "texture": "#all"},
-        "north": {"uv": [4.5, 8.75, 5, 9.5], "texture": "#all"},
-        "south": {"uv": [5.5, 8.75, 6, 9.5], "texture": "#all"},
-        "west":  {"uv": [5, 8.75, 5.5, 9.5], "texture": "#all"},
-        "east":  {"uv": [4, 8.75, 4.5, 9.5], "texture": "#all"}
-      }
-    },
-    {
-      "__comment": "solarPanelPipeBase",
-      "from": [6, 1, 6],
-      "to": [10, 2, 10],
-      "faces": {
-        "down":  {"uv": [3, 9.75, 2, 10.75], "texture": "#all"},
-        "up":    {"uv": [2, 10.75, 1, 9.75], "texture": "#all"},
-        "north": {"uv": [1, 10.75, 2, 11], "texture": "#all"},
-        "south": {"uv": [3, 10.75, 4, 11], "texture": "#all"},
-        "west":  {"uv": [2, 10.75, 3, 11], "texture": "#all"},
-        "east":  {"uv": [0, 10.75, 1, 11], "texture": "#all"}
-      }
-    },
-    {
-      "__comment": "solarPanelBottom",
-      "from": [1, 8, 1],
-      "to": [15, 9, 15],
-      "faces": {
-        "down":  {"uv": [10.5, 4.5, 7, 8], "texture": "#all"},
-        "up":    {"uv": [7, 8, 3.5, 4.5], "texture": "#all"},
-        "north": {"uv": [3.5, 8, 7, 8.25], "texture": "#all"},
-        "south": {"uv": [10.5, 8, 14, 8.25], "texture": "#all"},
-        "west":  {"uv": [7, 8, 10.5, 8.25], "texture": "#all"},
-        "east":  {"uv": [0, 8, 3.5, 8.25], "texture": "#all"}
-      }
-    },
-    {
-      "__comment": "solarPanelPipeConnector",
-      "from": [6.5, 3, 6.5],
-      "to": [9.5, 6, 9.5],
-      "faces": {
-        "down":  {"uv": [8.25, 8.25, 7.5, 9], "texture": "#all"},
-        "up":    {"uv": [7.5, 9, 6.75, 8.25], "texture": "#all"},
-        "north": {"uv": [6.75, 9, 7.5, 9.75], "texture": "#all"},
-        "south": {"uv": [8.25, 9, 9, 9.75], "texture": "#all"},
-        "west":  {"uv": [7.5, 9, 8.25, 9.75], "texture": "#all"},
-        "east":  {"uv": [6, 9, 6.75, 9.75], "texture": "#all"}
-      }
-    }
-  ]
+	"credit": "Model by CyanideX",
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "mekanismgenerators:block/model/solar_generator",
+		"all": "mekanismgenerators:block/model/solar_generator"
+	},
+	"elements": [
+		{
+			"name": "solarPanel",
+			"from": [0, 6, 0],
+			"to": [16, 8, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 5, 8]},
+			"faces": {
+				"north": {"uv": [0, 8, 8, 9], "texture": "#all", "cullface": "north"},
+				"east": {"uv": [0, 8, 8, 9], "texture": "#all", "cullface": "east"},
+				"south": {"uv": [0, 8, 8, 9], "texture": "#all", "cullface": "south"},
+				"west": {"uv": [0, 8, 8, 9], "texture": "#all", "cullface": "west"},
+				"up": {"uv": [0, 0, 8, 8], "texture": "#all"},
+				"down": {"uv": [8, 0, 16, 8], "texture": "#all"}
+			}
+		},
+		{
+			"name": "solarPanelPort",
+			"from": [4, 0, 4],
+			"to": [12, 1, 12],
+			"faces": {
+				"north": {"uv": [8, 11.5, 12, 12], "texture": "#all"},
+				"east": {"uv": [8, 11.5, 12, 12], "texture": "#all"},
+				"south": {"uv": [8, 11.5, 12, 12], "texture": "#all"},
+				"west": {"uv": [8, 11.5, 12, 12], "texture": "#all"},
+				"up": {"uv": [8, 8, 12, 12], "texture": "#all"},
+				"down": {"uv": [8, 11.5, 12, 12], "texture": "#all", "cullface": "down"}
+			}
+		},
+		{
+			"name": "solarPanelConnector",
+			"from": [6, 4, 6],
+			"to": [10, 6, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 5, 8]},
+			"faces": {
+				"north": {"uv": [12, 14.5, 14, 15], "texture": "#all"},
+				"east": {"uv": [12, 14.5, 14, 15], "texture": "#all"},
+				"south": {"uv": [12, 14.5, 14, 15], "texture": "#all"},
+				"west": {"uv": [12, 14.5, 14, 15], "texture": "#all"},
+				"down": {"uv": [12, 13, 14, 15], "texture": "#all"}
+			}
+		},
+		{
+			"name": "solarPanelRod1",
+			"from": [7, 2, 7],
+			"to": [9, 4, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 5, 8]},
+			"faces": {
+				"north": {"uv": [7, 12, 8, 13], "texture": "#all"},
+				"east": {"uv": [7, 12, 8, 13], "texture": "#all"},
+				"south": {"uv": [7, 12, 8, 13], "texture": "#all"},
+				"west": {"uv": [7, 12, 8, 13], "texture": "#all"}
+			}
+		},
+		{
+			"name": "solarPanelRod2",
+			"from": [5, 1, 5],
+			"to": [6, 5, 6],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 5, 6]},
+			"faces": {
+				"north": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"east": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"south": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"west": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"}
+			}
+		},
+		{
+			"name": "solarPanelRod3",
+			"from": [10, 1, 5],
+			"to": [11, 5, 6],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 5, 6]},
+			"faces": {
+				"north": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"east": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"south": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"west": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"}
+			}
+		},
+		{
+			"name": "solarPanelRod3",
+			"from": [5, 1, 10],
+			"to": [6, 5, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 5, 11]},
+			"faces": {
+				"north": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"east": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"south": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"west": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"}
+			}
+		},
+		{
+			"name": "solarPanelRod4",
+			"from": [10, 1, 10],
+			"to": [11, 5, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10, 5, 11]},
+			"faces": {
+				"north": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"east": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"south": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"},
+				"west": {"uv": [7, 9, 7.5, 11.5], "texture": "#all"}
+			}
+		},
+		{
+			"name": "solarPanelPipeBase",
+			"from": [6, 1, 6],
+			"to": [10, 2, 10],
+			"faces": {
+				"north": {"uv": [12, 13, 14, 13.5], "texture": "#all"},
+				"east": {"uv": [12, 13, 14, 13.5], "texture": "#all"},
+				"south": {"uv": [12, 13, 14, 13.5], "texture": "#all"},
+				"west": {"uv": [12, 13, 14, 13.5], "texture": "#all"},
+				"up": {"uv": [12, 13, 14, 15], "texture": "#all"}
+			}
+		},
+		{
+			"name": "solarPanelBottom",
+			"from": [1, 5, 1],
+			"to": [15, 6, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 5, 8]},
+			"faces": {
+				"north": {"uv": [0, 9, 7, 9.5], "texture": "#all"},
+				"east": {"uv": [0, 15.5, 7, 16], "texture": "#all"},
+				"south": {"uv": [0, 9, 7, 9.5], "texture": "#all"},
+				"west": {"uv": [0, 15.5, 7, 16], "texture": "#all"},
+				"down": {"uv": [0, 9, 7, 16], "texture": "#all"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"translation": [0, 2.25, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 45, 0],
+			"translation": [0, 2.25, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"head": {
+			"translation": [0, 9.5, 0]
+		},
+		"fixed": {
+			"rotation": [-90, 0, 0],
+			"translation": [0, 0, -1],
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
 }

@@ -43,6 +43,10 @@ public class ModelToVoxelShapeUtil {
         return VoxelShapeUtils.combine(shapes, false);
     }*/
 
+    /* public static void main(String[] args) {
+        printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/generators/resources/assets/mekanismgenerators/models/block/solar_generator.json");
+    }*/
+
     public static void printoutModelFile(String path) {
         StringBuilder builder = new StringBuilder();
         try (Stream<String> stream = Files.lines(Paths.get(path), StandardCharsets.UTF_8)) {
