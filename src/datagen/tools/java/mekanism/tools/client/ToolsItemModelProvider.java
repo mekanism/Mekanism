@@ -24,7 +24,6 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
     @Override
     protected void registerModels() {
         //Shields
-        //TODO - V10: Decide if these are the particles we do want to have used, or if the texture looks different and we would rather use a different particle
         addShieldModel(ToolsItems.BRONZE_SHIELD, Mekanism.rl("block/block_bronze"));
         addShieldModel(ToolsItems.LAPIS_LAZULI_SHIELD, mcLoc("block/lapis_block"));
         addShieldModel(ToolsItems.OSMIUM_SHIELD, Mekanism.rl("block/block_osmium"));

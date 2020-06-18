@@ -43,12 +43,11 @@ public class RenderMekanismShieldItem extends ItemStackTileEntityRenderer {
             Mekanism.logger.warn("Unknown item for mekanism shield renderer: {}", item.getRegistryName());
             return;
         }
-        boolean hasBanner = stack.getChildTag(NBTConstants.BLOCK_ENTITY_TAG) != null;
-        Material material = hasBanner ? textures.getBase() : textures.getNoPattern();
+        Material material = textures.getBase();
         matrix.push();
         matrix.scale(1, -1, -1);
         IVertexBuilder buffer = material.getSprite().wrapBuffer(ItemRenderer.getBuffer(renderer, modelShield.getRenderType(material.getAtlasLocation()), false, stack.hasEffect()));
-        if (hasBanner) {
+        if (stack.getChildTag(NBTConstants.BLOCK_ENTITY_TAG) != null) {
             modelShield.func_228294_b_().render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
             List<Pair<BannerPattern, DyeColor>> list = BannerTileEntity.func_230138_a_(ShieldItem.getColor(stack), BannerTileEntity.func_230139_a_(stack));
             BannerTileEntityRenderer.func_230180_a_(matrix, renderer, light, overlayLight, modelShield.func_228293_a_(), material, false, list);
