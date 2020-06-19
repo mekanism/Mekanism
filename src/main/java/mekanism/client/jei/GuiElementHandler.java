@@ -1,6 +1,8 @@
 package mekanism.client.jei;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.client.gui.GuiMekanism;
@@ -61,9 +63,8 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
         return null;
     }
 
-    @Nullable
-    //@Override//TODO - V10: Uncomment this override after updating to new JEI
-    public IGuiClickableArea getGuiClickableArea(GuiMekanism genericGui, double mouseX, double mouseY) {
+    @Override
+    public Collection<IGuiClickableArea> getGuiClickableAreas(GuiMekanism genericGui, double mouseX, double mouseY) {
         GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
         //Make mouseX and mouseY not be relative
         mouseX += gui.getGuiLeft();
@@ -77,8 +78,7 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
         return getGuiClickableArea(guiWindow.children(), mouseX, mouseY);
     }
 
-    @Nullable
-    private IGuiClickableArea getGuiClickableArea(List<? extends IGuiEventListener> children, double mouseX, double mouseY) {
+    private Collection<IGuiClickableArea> getGuiClickableArea(List<? extends IGuiEventListener> children, double mouseX, double mouseY) {
         for (IGuiEventListener child : children) {
             if (child instanceof GuiRelativeElement && child instanceof IJEIRecipeArea) {
                 IJEIRecipeArea<?> recipeArea = (IJEIRecipeArea<?>) child;
@@ -88,11 +88,13 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
                     if (categories != null && child.isMouseOver(mouseX, mouseY)) {
                         GuiRelativeElement element = (GuiRelativeElement) child;
                         //TODO: Decide if we want our own implementation to overwrite the getTooltipStrings and have it show something like "Crusher Recipes"
-                        return IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(), element.getWidth(), element.getHeight(), categories);
+                        IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(), element.getWidth(),
+                              element.getHeight(), categories);
+                        return Collections.singleton(clickableArea);
                     }
                 }
             }
         }
-        return null;
+        return Collections.emptyList();
     }
 }
