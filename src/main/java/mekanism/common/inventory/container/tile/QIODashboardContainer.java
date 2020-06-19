@@ -15,8 +15,8 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
 
     private final TileEntityQIODashboard tile;
 
-    public QIODashboardContainer(int id, PlayerInventory inv, TileEntityQIODashboard tile) {
-        super(MekanismContainerTypes.QIO_DASHBOARD, id, inv);
+    private QIODashboardContainer(int id, PlayerInventory inv, TileEntityQIODashboard tile, boolean remote) {
+        super(MekanismContainerTypes.QIO_DASHBOARD, id, inv, remote);
         this.tile = tile;
         if (tile != null) {
             tile.addContainerTrackers(this);
@@ -24,8 +24,18 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
         addSlotsAndOpen();
     }
 
+    /**
+     * @apiNote Call from the server
+     */
+    public QIODashboardContainer(int id, PlayerInventory inv, TileEntityQIODashboard tile) {
+        this(id, inv, tile, false);
+    }
+
+    /**
+     * @apiNote Call from the client
+     */
     public QIODashboardContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, MekanismTileContainer.getTileFromBuf(buf, TileEntityQIODashboard.class));
+        this(id, inv, MekanismTileContainer.getTileFromBuf(buf, TileEntityQIODashboard.class), true);
     }
 
     @Override

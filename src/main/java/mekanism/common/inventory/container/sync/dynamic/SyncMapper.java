@@ -125,6 +125,7 @@ public class SyncMapper {
             }
         }
 
+        //TODO - V10: FIXME, this does not work properly on the server as it can force client side only stuff to load
         for (Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(ContainerSync.class)) {
                 field.setAccessible(true);
