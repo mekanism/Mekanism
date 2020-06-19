@@ -27,14 +27,14 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
       implements GuiFilterHelper<TILE> {
 
     private final ITextComponent filterName;
+    protected final FILTER origFilter;
+    protected final FILTER filter;
     protected final TILE tile;
+    private final boolean isNew;
 
     protected ITextComponent status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
     protected GuiSequencedSlotDisplay slotDisplay;
-    protected FILTER origFilter;
-    protected FILTER filter;
-    protected boolean isNew;
-    protected int ticker;
+    private int ticker;
 
     public GuiFilter(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, TILE tile, FILTER origFilter) {
         super(gui, x, y, width, height);
@@ -45,6 +45,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
             isNew = true;
             filter = createNewFilter();
         } else {
+            isNew = false;
             filter = origFilter.clone();
         }
         init();
@@ -78,18 +79,22 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         return 116;
     }
 
+    protected int getLeftButtonX() {
+        return x + width / 2 - 61;
+    }
+
     protected void init() {
         int screenTop = relativeY + 18;
         int screenBottom = screenTop + getScreenHeight();
         addChild(new GuiInnerScreen(guiObj, relativeX + 29, screenTop, getScreenWidth(), getScreenHeight(), this::getScreenText).clearFormat());
-        addChild(new TranslationButton(guiObj, x + width / 2 - 61, guiObj.getTop() + screenBottom + 2, 60, 20,
+        addChild(new TranslationButton(guiObj, getLeftButtonX(), guiObj.getTop() + screenBottom + 2, 60, 20,
               isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
             if (origFilter != null) {
                 Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
             }
             close();
         }));
-        addChild(new TranslationButton(guiObj, x + width / 2 + 1, guiObj.getTop() + screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
+        addChild(new TranslationButton(guiObj, getLeftButtonX() + 62, guiObj.getTop() + screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
         addChild(new GuiSlot(SlotType.NORMAL, guiObj, relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true));
         addChild(slotDisplay = new GuiSequencedSlotDisplay(guiObj, relativeX + 8, relativeY + getSlotOffset() + 1, this::getRenderStacks));
     }

@@ -1,7 +1,5 @@
 package mekanism.common.content.transporter;
 
-import java.util.Arrays;
-import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.BaseFilter;
@@ -17,8 +15,6 @@ import net.minecraft.util.Direction;
 public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends BaseFilter<FILTER> {
 
     public static final int MAX_LENGTH = 48;
-
-    public static final List<Character> SPECIAL_CHARS = Arrays.asList('*', '-', ' ', '|', '_', '\'', ':', '/');
 
     public EnumColor color;
 

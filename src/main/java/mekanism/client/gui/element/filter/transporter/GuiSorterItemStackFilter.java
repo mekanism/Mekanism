@@ -14,36 +14,38 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStackFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 
     public static GuiSorterItemStackFilter create(IGuiWrapper gui, TileEntityLogisticalSorter tile) {
-        return new GuiSorterItemStackFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, null);
+        return new GuiSorterItemStackFilter(gui, (gui.getWidth() - 195) / 2, 30, tile, null);
     }
 
     public static GuiSorterItemStackFilter edit(IGuiWrapper gui, TileEntityLogisticalSorter tile, SorterItemStackFilter filter) {
-        return new GuiSorterItemStackFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, filter);
+        return new GuiSorterItemStackFilter(gui, (gui.getWidth() - 195) / 2, 30, tile, filter);
     }
 
     private GuiTextField minField;
     private GuiTextField maxField;
 
     private GuiSorterItemStackFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, SorterItemStackFilter origFilter) {
-        super(gui, x, y, 152, 90, tile, origFilter);
+        super(gui, x, y, 195, 90, tile, origFilter);
+    }
+
+    @Override
+    protected int getLeftButtonX() {
+        return x + 24;
     }
 
     @Override
     protected void init() {
         super.init();
-        addChild(minField = new GuiTextField(guiObj, 149, 19, 20, 11));
+        addSorterDefaults(guiObj, filter, getSlotOffset(), this::addChild);
+        addChild(minField = new GuiTextField(guiObj, relativeX + 169, relativeY + 32, 20, 11));
         minField.setMaxStringLength(2);
         minField.setInputValidator(InputValidator.DIGIT);
         minField.setText("" + filter.min);
-        addChild(maxField = new GuiTextField(guiObj, 149, 31, 20, 11));
+        addChild(maxField = new GuiTextField(guiObj, relativeX + 169, relativeY + 44, 20, 11));
         maxField.setMaxStringLength(2);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.setText("" + filter.max);
-
-        addSorterDefaults(guiObj, filter, getSlotOffset(), this::addChild);
-        addChild(new MekanismImageButton(guiObj, guiObj.getLeft() + 11, guiObj.getTop() + 72, 10, getButtonLocation("fuzzy"),
-              () -> filter.fuzzyMode = !filter.fuzzyMode, getOnHover(MekanismLang.FUZZY_MODE)));
-        addChild(new MekanismImageButton(guiObj, guiObj.getLeft() + 128, guiObj.getTop() + 44, 11, 14, getButtonLocation("silk_touch"),
+        addChild(new MekanismImageButton(guiObj, x + 148, y + 57, 11, 14, getButtonLocation("silk_touch"),
               () -> filter.sizeMode = !filter.sizeMode, (onHover, xAxis, yAxis) -> {
             if (tile.singleItem && filter.sizeMode) {
                 displayTooltip(MekanismLang.SIZE_MODE_CONFLICT.translate(), xAxis, yAxis);
@@ -51,6 +53,8 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
                 displayTooltip(MekanismLang.SIZE_MODE.translate(), xAxis, yAxis);
             }
         }));
+        addChild(new MekanismImageButton(guiObj, x + 148, y + 70, 11, 14, getButtonLocation("fuzzy"),
+              () -> filter.fuzzyMode = !filter.fuzzyMode, getOnHover(MekanismLang.FUZZY_MODE)));
     }
 
     @Override
@@ -84,14 +88,14 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
-        drawString(MekanismLang.MIN.translate(""), relativeX + 128, relativeY + 20, titleTextColor());
-        drawString(MekanismLang.MAX.translate(""), relativeX + 128, relativeY + 32, titleTextColor());
+        renderSorterForeground(filter);
+        drawString(MekanismLang.MIN.translate(""), relativeX + 148, relativeY + 33, titleTextColor());
+        drawString(MekanismLang.MAX.translate(""), relativeX + 148, relativeY + 45, titleTextColor());
         if (tile.singleItem && filter.sizeMode) {
-            drawString(MekanismLang.ITEM_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.of(filter.sizeMode)), relativeX + 141, relativeY + 46, titleTextColor());
+            drawString(MekanismLang.ITEM_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.of(filter.sizeMode)), relativeX + 161, relativeY + 59, titleTextColor());
         } else {
-            drawString(OnOff.of(filter.sizeMode).getTextComponent(), relativeX + 141, relativeY + 46, titleTextColor());
+            drawString(OnOff.of(filter.sizeMode).getTextComponent(), relativeX + 161, relativeY + 59, titleTextColor());
         }
-        drawString(OnOff.of(filter.fuzzyMode).getTextComponent(), relativeX + 24, relativeY + 74, titleTextColor());
-        drawString(OnOff.of(filter.allowDefault).getTextComponent(), relativeX + 24, relativeY + 64, titleTextColor());
+        drawString(OnOff.of(filter.fuzzyMode).getTextComponent(), relativeX + 161, relativeY + 72, titleTextColor());
     }
 }

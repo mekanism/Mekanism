@@ -4,20 +4,19 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.filter.GuiMaterialFilter;
 import mekanism.common.content.transporter.SorterMaterialFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 
 public class GuiSorterMaterialFilter extends GuiMaterialFilter<SorterMaterialFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 
     public static GuiSorterMaterialFilter create(IGuiWrapper gui, TileEntityLogisticalSorter tile) {
-        return new GuiSorterMaterialFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, null);
+        return new GuiSorterMaterialFilter(gui, (gui.getWidth() - 182) / 2, 30, tile, null);
     }
 
     public static GuiSorterMaterialFilter edit(IGuiWrapper gui, TileEntityLogisticalSorter tile, SorterMaterialFilter filter) {
-        return new GuiSorterMaterialFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, filter);
+        return new GuiSorterMaterialFilter(gui, (gui.getWidth() - 182) / 2, 30, tile, filter);
     }
 
     private GuiSorterMaterialFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, SorterMaterialFilter origFilter) {
-        super(gui, x, y, 152, 90, tile, origFilter);
+        super(gui, x, y, 182, 90, tile, origFilter);
     }
 
     @Override
@@ -34,6 +33,6 @@ public class GuiSorterMaterialFilter extends GuiMaterialFilter<SorterMaterialFil
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
-        drawString(OnOff.of(filter.allowDefault).getTextComponent(), relativeX + 24, relativeY + 66, titleTextColor());
+        renderSorterForeground(filter);
     }
 }

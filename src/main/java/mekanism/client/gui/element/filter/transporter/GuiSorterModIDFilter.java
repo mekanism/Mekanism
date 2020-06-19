@@ -8,15 +8,15 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 
     public static GuiSorterModIDFilter create(IGuiWrapper gui, TileEntityLogisticalSorter tile) {
-        return new GuiSorterModIDFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, null);
+        return new GuiSorterModIDFilter(gui, (gui.getWidth() - 182) / 2, 30, tile, null);
     }
 
     public static GuiSorterModIDFilter edit(IGuiWrapper gui, TileEntityLogisticalSorter tile, SorterModIDFilter filter) {
-        return new GuiSorterModIDFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, filter);
+        return new GuiSorterModIDFilter(gui, (gui.getWidth() - 182) / 2, 30, tile, filter);
     }
 
     private GuiSorterModIDFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, SorterModIDFilter origFilter) {
-        super(gui, x, y, 152, 90, tile, origFilter);
+        super(gui, x, y, 182, 90, tile, origFilter);
     }
 
     @Override
@@ -28,5 +28,11 @@ public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, Tile
     @Override
     protected SorterModIDFilter createNewFilter() {
         return new SorterModIDFilter();
+    }
+
+    @Override
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
+        renderSorterForeground(filter);
     }
 }
