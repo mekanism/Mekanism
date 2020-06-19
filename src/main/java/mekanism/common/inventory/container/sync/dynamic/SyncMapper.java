@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container.sync.dynamic;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.lang.annotation.ElementType;
@@ -104,7 +104,6 @@ public class SyncMapper {
     }
 
     private static void collectScanDataUnsafe() throws Throwable {
-        //TODO - V10: Validate this, something weird is going on when syncing from dedicated server to client, example: evaporation tower
         ModList modList = ModList.get();
         Map<Class<?>, List<AnnotationData>> knownClasses = new Object2ObjectOpenHashMap<>();
         Type containerSyncType = Type.getType(ContainerSync.class);
@@ -280,7 +279,8 @@ public class SyncMapper {
 
     private static class PropertyDataClassCache {
 
-        private final Multimap<String, PropertyField> propertyFieldMap = HashMultimap.create();
+        //Note: This needs to be a linked map to ensure that the order is preserved
+        private final Multimap<String, PropertyField> propertyFieldMap = LinkedHashMultimap.create();
     }
 
     private static class PropertyField {
