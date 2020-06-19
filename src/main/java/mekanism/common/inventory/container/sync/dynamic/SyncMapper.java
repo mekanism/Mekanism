@@ -12,7 +12,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,6 +20,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -103,12 +104,9 @@ public class SyncMapper {
     }
 
     private static void collectScanDataUnsafe() throws Throwable {
-        //TODO - V10: Validate this, I believe that the server and client may have the mod file scan data in a different order??
-        // Or at least the evap tower was doing "weird" things such as filling the water tank with brine when on the server
-        // We want to ensure that the order on the server and client are the same, the easiest way to do this will probably
-        // be to store the class + field name of each field, and then sort them at the end of this method
+        //TODO - V10: Validate this, something weird is going on when syncing from dedicated server to client, example: evaporation tower
         ModList modList = ModList.get();
-        Map<Class<?>, List<AnnotationData>> knownClasses = new HashMap<>();
+        Map<Class<?>, List<AnnotationData>> knownClasses = new Object2ObjectOpenHashMap<>();
         Type containerSyncType = Type.getType(ContainerSync.class);
         for (ModFileScanData scanData : modList.getAllScanData()) {
             for (AnnotationData data : scanData.getAnnotations()) {
@@ -124,11 +122,11 @@ public class SyncMapper {
                 }
             }
         }
-        Map<Class<?>, PropertyDataClassCache> flatPropertyMap = new Object2ObjectOpenHashMap<>();
+        Map<Class<?>, List<PropertyFieldInfo>> flatPropertyMap = new Object2ObjectOpenHashMap<>();
         for (Entry<Class<?>, List<AnnotationData>> entry : knownClasses.entrySet()) {
             Class<?> annotatedClass = entry.getKey();
-            PropertyDataClassCache cache = new PropertyDataClassCache();
-            flatPropertyMap.put(annotatedClass, cache);
+            List<PropertyFieldInfo> propertyInfo = new ArrayList<>();
+            flatPropertyMap.put(annotatedClass, propertyInfo);
             for (AnnotationData data : entry.getValue()) {
                 String fieldName = data.getMemberName();
                 try {
@@ -154,42 +152,54 @@ public class SyncMapper {
                     } else {
                         newField = createSpecialProperty(handler, field, annotatedClass, getterName);
                     }
+                    String fullPath = annotatedClass.getName() + "#" + fieldName;
                     if (annotationData.containsKey("tags")) {
                         //If the annotation data has tags add them
                         List<String> tags = (List<String>) annotationData.get("tags");
                         for (String tag : tags) {
-                            cache.propertyFieldMap.put(tag, newField);
+                            propertyInfo.add(new PropertyFieldInfo(fullPath, tag, newField));
                         }
                     } else {
                         //Otherwise fallback to the default
-                        cache.propertyFieldMap.put(DEFAULT_TAG, newField);
+                        propertyInfo.add(new PropertyFieldInfo(fullPath, DEFAULT_TAG, newField));
                     }
                 } catch (NoSuchFieldException e) {
                     Mekanism.logger.error("Failed to find field '{}' for class '{}'", fieldName, data.getClassType());
                 }
             }
         }
-        for (Entry<Class<?>, PropertyDataClassCache> entry : flatPropertyMap.entrySet()) {
+        Map<Class<?>, List<PropertyFieldInfo>> propertyMap = new Object2ObjectOpenHashMap<>();
+        for (Entry<Class<?>, List<PropertyFieldInfo>> entry : flatPropertyMap.entrySet()) {
             Class<?> clazz = entry.getKey();
-            PropertyDataClassCache cache = entry.getValue();
+            List<PropertyFieldInfo> propertyInfo = entry.getValue();
             Class<?> current = clazz;
             while (current.getSuperclass() != null) {
                 current = current.getSuperclass();
-                PropertyDataClassCache superCache = syncablePropertyMap.get(current);
-                if (superCache != null) {
+                List<PropertyFieldInfo> superInfo = propertyMap.get(current);
+                if (superInfo != null) {
                     //If we already have an overall cache for the super class, add from it and break out of checking super classes
-                    cache.propertyFieldMap.putAll(superCache.propertyFieldMap);
+                    propertyInfo.addAll(superInfo);
                     break;
                 }
                 //Otherwise continue building up the cache, collecting all the class names up to the root superclass
-                superCache = flatPropertyMap.get(current);
-                if (superCache != null) {
+                superInfo = flatPropertyMap.get(current);
+                if (superInfo != null) {
                     //If the property map has the super class, grab the fields that correspond to it
                     //Note: We keep going here as it may have super classes higher up
-                    cache.propertyFieldMap.putAll(superCache.propertyFieldMap);
+                    propertyInfo.addAll(superInfo);
                 }
             }
-            syncablePropertyMap.put(clazz, cache);
+            propertyMap.put(clazz, propertyInfo);
+        }
+        List<ClassPropertyFieldInfo> flatPropertyMapInfo = propertyMap.entrySet().stream().map(entry -> new ClassPropertyFieldInfo(entry.getKey(), entry.getValue()))
+              .sorted(Comparator.comparing(info -> info.className)).collect(Collectors.toList());
+        for (ClassPropertyFieldInfo classPropertyInfo : flatPropertyMapInfo) {
+            PropertyDataClassCache cache = new PropertyDataClassCache();
+            classPropertyInfo.propertyFields.sort(Comparator.comparing(info -> info.fieldPath + "|" + info.tag));
+            for (PropertyFieldInfo field : classPropertyInfo.propertyFields) {
+                cache.propertyFieldMap.put(field.tag, field.field);
+            }
+            syncablePropertyMap.put(classPropertyInfo.clazz, cache);
         }
     }
 
@@ -199,7 +209,6 @@ public class SyncMapper {
 
     public static void setup(MekanismContainer container, Class<?> holderClass, Supplier<Object> holderSupplier, String tag) {
         PropertyDataClassCache cache = syncablePropertyMap.computeIfAbsent(holderClass, SyncMapper::buildSyncMap);
-
         for (PropertyField field : cache.propertyFieldMap.get(tag)) {
             for (TrackedFieldData data : field.trackedData) {
                 container.track(data.createSyncableData(holderSupplier));
@@ -403,6 +412,32 @@ public class SyncMapper {
         @SuppressWarnings("unchecked")
         protected static <O, V> SpecialPropertyData<O> create(Class<V> propertyType, Function<O, V> getter, BiConsumer<O, V> setter) {
             return new SpecialPropertyData<>(propertyType, getter, (BiConsumer<O, Object>) setter);
+        }
+    }
+
+    private static class ClassPropertyFieldInfo {
+
+        private final Class<?> clazz;
+        private final String className;
+        private final List<PropertyFieldInfo> propertyFields;
+
+        private ClassPropertyFieldInfo(Class<?> clazz, List<PropertyFieldInfo> propertyFields) {
+            this.clazz = clazz;
+            this.className = clazz.getName();
+            this.propertyFields = propertyFields;
+        }
+    }
+
+    private static class PropertyFieldInfo {
+
+        private final PropertyField field;
+        private final String fieldPath;
+        private final String tag;
+
+        private PropertyFieldInfo(String fieldPath, String tag, PropertyField field) {
+            this.fieldPath = fieldPath;
+            this.field = field;
+            this.tag = tag;
         }
     }
 }
