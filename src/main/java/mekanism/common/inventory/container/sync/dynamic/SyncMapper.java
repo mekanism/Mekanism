@@ -143,24 +143,33 @@ public class SyncMapper {
                     try {
                         Field field = clazz.getDeclaredField(fieldName);
                         field.setAccessible(true);
-                        //TODO: Change syncData to instead use the data from the annotationData
-                        ContainerSync syncData = field.getAnnotation(ContainerSync.class);
-                        PropertyType type = PropertyType.getFromType(field.getType());
-                        SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
+                        Map<String, Object> annotationData = data.getAnnotationData();
+                        String getterName = (String) annotationData.getOrDefault("getter", "");
                         PropertyField newField;
-                        if (handler != null) {
-                            newField = createSpecialProperty(handler, field, clazz, syncData);
-                        } else if (type != null) {
-                            newField = new PropertyField(new TrackedFieldData(createGetter(field, clazz, syncData), createSetter(field, clazz, syncData), type));
-                        } else if (field.getType().isEnum()) {
-                            newField = new PropertyField(new EnumFieldData(createGetter(field, clazz, syncData), createSetter(field, clazz, syncData), field.getType()));
+                        SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
+                        if (handler == null) {
+                            PropertyType type = PropertyType.getFromType(field.getType());
+                            String setterName = (String) annotationData.getOrDefault("setter", "");
+                            if (type != null) {
+                                newField = new PropertyField(new TrackedFieldData(createGetter(field, clazz, getterName), createSetter(field, clazz, setterName), type));
+                            } else if (field.getType().isEnum()) {
+                                newField = new PropertyField(new EnumFieldData(createGetter(field, clazz, getterName), createSetter(field, clazz, setterName), field.getType()));
+                            } else {
+                                Mekanism.logger.error("Attempted to sync an invalid field '{}'", fieldName);
+                                continue;
+                            }
                         } else {
-                            Mekanism.logger.error("Attempted to sync an invalid field '{}'", fieldName);
-                            continue;
+                            newField = createSpecialProperty(handler, field, clazz, getterName);
                         }
-
-                        for (String tag : syncData.tags()) {
-                            cache.propertyFieldMap.put(tag, newField);
+                        if (annotationData.containsKey("tags")) {
+                            //If the annotation data has tags add them
+                            List<String> tags = (List<String>) annotationData.get("tags");
+                            for (String tag : tags) {
+                                cache.propertyFieldMap.put(tag, newField);
+                            }
+                        } else {
+                            //Otherwise fallback to the default
+                            cache.propertyFieldMap.put(DEFAULT_TAG, newField);
                         }
                     } catch (NoSuchFieldException e) {
                         //TODO: Better error message
@@ -196,11 +205,11 @@ public class SyncMapper {
         }*/
     }
 
-    private static <O> PropertyField createSpecialProperty(SpecialPropertyHandler<O> handler, Field field, Class<?> objType, ContainerSync syncData) throws Throwable {
+    private static <O> PropertyField createSpecialProperty(SpecialPropertyHandler<O> handler, Field field, Class<?> objType, String getterName) throws Throwable {
         PropertyField ret = new PropertyField();
         for (SpecialPropertyData<O> data : handler.specialData) {
             // create a getter for the actual property field itself
-            Function<Object, O> fieldGetter = createGetter(field, objType, syncData);
+            Function<Object, O> fieldGetter = createGetter(field, objType, getterName);
             // create a new tracked field
             TrackedFieldData trackedField = TrackedFieldData.create(data.propertyType, obj -> data.get(fieldGetter.apply(obj)), (obj, val) -> data.set(fieldGetter.apply(obj), val));
             if (trackedField != null) {
@@ -210,12 +219,8 @@ public class SyncMapper {
         return ret;
     }
 
-    private static <O, V> Function<O, V> createGetter(Field field, Class<?> objType, ContainerSync syncData) throws Throwable {
-        if (!syncData.getter().isEmpty()) {
-            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "apply", MethodType.methodType(Function.class), MethodType.methodType(Object.class, Object.class),
-                  LOOKUP.findVirtual(objType, syncData.getter(), MethodType.methodType(field.getType())), MethodType.methodType(field.getType(), objType));
-            return (Function<O, V>) site.getTarget().invokeExact();
-        } else {
+    private static <O, V> Function<O, V> createGetter(Field field, Class<?> objType, String getterName) throws Throwable {
+        if (getterName.isEmpty()) {
             MethodHandle getter = LOOKUP.unreflectGetter(field);
             MethodType type = getter.type();
             if (field.getType().isPrimitive()) {
@@ -223,15 +228,15 @@ public class SyncMapper {
             }
             CallSite site = LambdaMetafactory.metafactory(LOOKUP, "apply", MethodType.methodType(Function.class, MethodHandle.class), type.erase(), MethodHandles.exactInvoker(getter.type()), type);
             return (Function<O, V>) site.getTarget().invokeExact(getter);
+        } else {
+            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "apply", MethodType.methodType(Function.class), MethodType.methodType(Object.class, Object.class),
+                  LOOKUP.findVirtual(objType, getterName, MethodType.methodType(field.getType())), MethodType.methodType(field.getType(), objType));
+            return (Function<O, V>) site.getTarget().invokeExact();
         }
     }
 
-    private static <O, V> BiConsumer<O, V> createSetter(Field field, Class<?> objType, ContainerSync syncData) throws Throwable {
-        if (!syncData.setter().isEmpty()) {
-            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "accept", MethodType.methodType(BiConsumer.class), MethodType.methodType(void.class, Object.class, Object.class),
-                  LOOKUP.findVirtual(objType, syncData.setter(), MethodType.methodType(void.class, field.getType())), MethodType.methodType(void.class, objType, field.getType()));
-            return (BiConsumer<O, V>) site.getTarget().invokeExact();
-        } else {
+    private static <O, V> BiConsumer<O, V> createSetter(Field field, Class<?> objType, String setterName) throws Throwable {
+        if (setterName.isEmpty()) {
             MethodHandle setter = LOOKUP.unreflectSetter(field);
             MethodType type = setter.type();
             if (field.getType().isPrimitive()) {
@@ -239,15 +244,19 @@ public class SyncMapper {
             }
             CallSite site = LambdaMetafactory.metafactory(LOOKUP, "accept", MethodType.methodType(BiConsumer.class, MethodHandle.class), type.erase(), MethodHandles.exactInvoker(setter.type()), type);
             return (BiConsumer<O, V>) site.getTarget().invokeExact(setter);
+        } else {
+            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "accept", MethodType.methodType(BiConsumer.class), MethodType.methodType(void.class, Object.class, Object.class),
+                  LOOKUP.findVirtual(objType, setterName, MethodType.methodType(void.class, field.getType())), MethodType.methodType(void.class, objType, field.getType()));
+            return (BiConsumer<O, V>) site.getTarget().invokeExact();
         }
     }
 
-    protected static class PropertyDataClassCache {
+    private static class PropertyDataClassCache {
 
         private final Multimap<String, PropertyField> propertyFieldMap = HashMultimap.create();
     }
 
-    protected static class PropertyField {
+    private static class PropertyField {
 
         private final List<TrackedFieldData> trackedData = new ArrayList<>();
 
@@ -341,7 +350,7 @@ public class SyncMapper {
         }
     }
 
-    protected static class SpecialPropertyHandler<O> {
+    private static class SpecialPropertyHandler<O> {
 
         private final Class<O> fieldType;
         private final List<SpecialPropertyData<O>> specialData = new ArrayList<>();
