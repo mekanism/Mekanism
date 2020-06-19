@@ -3,6 +3,7 @@ package mekanism.common.inventory.container.sync.dynamic;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.lang.annotation.ElementType;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
@@ -40,11 +41,14 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.network.container.property.PropertyType;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.ModFileScanData;
+import org.objectweb.asm.Type;
 
 public class SyncMapper {
 
     public static final String DEFAULT_TAG = "default";
-
+    private static final Type CONTAINER_SYNC_TYPE = Type.getType(ContainerSync.class);
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
     private static final List<SpecialPropertyHandler<?>> specialProperties = new ArrayList<>();
 
@@ -125,8 +129,49 @@ public class SyncMapper {
             }
         }
 
+        //TODO - V10: Work on improving this, due to the fact that the above uses recursion
+        //TODO - V10: Validate this, I believe that the server and client may have the mod file scan data in a different order??
+        // Or at least the evap tower was doing "weird" things such as filling the water tank with brine when on the server
+        ModList modList = ModList.get();
+        String clazzPath = clazz.getName();
+        for (ModFileScanData scanData : modList.getAllScanData()) {
+            for (ModFileScanData.AnnotationData data : scanData.getAnnotations()) {
+                //If the annotation is on a field, and is the sync type, and the class matches the class we are checking
+                if (data.getTargetType() == ElementType.FIELD && CONTAINER_SYNC_TYPE.equals(data.getAnnotationType()) &&
+                    clazzPath.equals(data.getClassType().getClassName())) {
+                    String fieldName = data.getMemberName();
+                    try {
+                        Field field = clazz.getDeclaredField(fieldName);
+                        field.setAccessible(true);
+                        //TODO: Change syncData to instead use the data from the annotationData
+                        ContainerSync syncData = field.getAnnotation(ContainerSync.class);
+                        PropertyType type = PropertyType.getFromType(field.getType());
+                        SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
+                        PropertyField newField;
+                        if (handler != null) {
+                            newField = createSpecialProperty(handler, field, clazz, syncData);
+                        } else if (type != null) {
+                            newField = new PropertyField(new TrackedFieldData(createGetter(field, clazz, syncData), createSetter(field, clazz, syncData), type));
+                        } else if (field.getType().isEnum()) {
+                            newField = new PropertyField(new EnumFieldData(createGetter(field, clazz, syncData), createSetter(field, clazz, syncData), field.getType()));
+                        } else {
+                            Mekanism.logger.error("Attempted to sync an invalid field '{}'", fieldName);
+                            continue;
+                        }
+
+                        for (String tag : syncData.tags()) {
+                            cache.propertyFieldMap.put(tag, newField);
+                        }
+                    } catch (NoSuchFieldException e) {
+                        //TODO: Better error message
+                        Mekanism.logger.error("Failed to find: {}, for class: {}", fieldName, clazz.getName());
+                    }
+                }
+            }
+        }
+
         //TODO - V10: FIXME, this does not work properly on the server as it can force client side only stuff to load
-        for (Field field : clazz.getDeclaredFields()) {
+        /*for (Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(ContainerSync.class)) {
                 field.setAccessible(true);
                 ContainerSync syncData = field.getAnnotation(ContainerSync.class);
@@ -148,7 +193,7 @@ public class SyncMapper {
                     cache.propertyFieldMap.put(tag, newField);
                 }
             }
-        }
+        }*/
     }
 
     private static <O> PropertyField createSpecialProperty(SpecialPropertyHandler<O> handler, Field field, Class<?> objType, ContainerSync syncData) throws Throwable {
