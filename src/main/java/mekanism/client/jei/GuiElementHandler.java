@@ -42,14 +42,13 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
     @Override
     public Object getIngredientUnderMouse(GuiMekanism genericGui, double mouseX, double mouseY) {
         GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
-        //Check the "active" gui window first
-        for (GuiWindow guiWindow : gui.getWindows()) {
-            if (guiWindow.isMouseOver(mouseX, mouseY)) {
-                return getIngredientUnderMouse(guiWindow.children(), mouseX, mouseY);
-            }
+        GuiWindow guiWindow = gui.getWindowHovering(mouseX, mouseY);
+        if (guiWindow == null) {
+            //If no window is being hovered, then check the elements in general
+            return getIngredientUnderMouse(gui.children(), mouseX, mouseY);
         }
-        //If none are hovered, then check the elements in general
-        return getIngredientUnderMouse(gui.children(), mouseX, mouseY);
+        //Otherwise check the elements of the window
+        return getIngredientUnderMouse(guiWindow.children(), mouseX, mouseY);
     }
 
     @Nullable
@@ -69,14 +68,13 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
         //Make mouseX and mouseY not be relative
         mouseX += gui.getGuiLeft();
         mouseY += gui.getGuiTop();
-        //Check the "active" gui window first
-        for (GuiWindow guiWindow : gui.getWindows()) {
-            if (guiWindow.isMouseOver(mouseX, mouseY)) {
-                return getGuiClickableArea(guiWindow.children(), mouseX, mouseY);
-            }
+        GuiWindow guiWindow = gui.getWindowHovering(mouseX, mouseY);
+        if (guiWindow == null) {
+            //If no window is being hovered, then check the elements in general
+            return getGuiClickableArea(gui.children(), mouseX, mouseY);
         }
-        //If none are hovered, then check the elements in general
-        return getGuiClickableArea(gui.children(), mouseX, mouseY);
+        //Otherwise check the elements of the window
+        return getGuiClickableArea(guiWindow.children(), mouseX, mouseY);
     }
 
     @Nullable

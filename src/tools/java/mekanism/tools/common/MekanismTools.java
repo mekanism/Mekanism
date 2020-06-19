@@ -39,13 +39,12 @@ public class MekanismTools implements IModule {
     public MekanismTools() {
         Mekanism.modulesLoaded.add(instance = this);
         MekanismToolsConfig.registerConfigs(ModLoadingContext.get());
+        //Register the listener for special mob spawning (mobs with Mekanism armor/tools)
+        MinecraftForge.EVENT_BUS.addListener(this::onLivingSpecialSpawn);
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
-        //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
-        MinecraftForge.EVENT_BUS.addListener(this::onLivingSpecialSpawn);
-
         ToolsItems.ITEMS.register(modEventBus);
         ToolsRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle

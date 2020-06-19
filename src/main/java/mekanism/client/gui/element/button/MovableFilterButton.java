@@ -60,9 +60,9 @@ public class MovableFilterButton extends FilterButton {
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         int xAxis = mouseX - guiObj.getLeft(), yAxis = mouseY - guiObj.getTop();
-        if (upButton.isMouseOver(mouseX, mouseY)) {
+        if (upButton.isMouseOverCheckWindows(mouseX, mouseY)) {
             upButton.renderToolTip(xAxis, yAxis);
-        } else if (downButton.isMouseOver(mouseX, mouseY)) {
+        } else if (downButton.isMouseOverCheckWindows(mouseX, mouseY)) {
             downButton.renderToolTip(xAxis, yAxis);
         } else {
             super.renderForeground(mouseX, mouseY);

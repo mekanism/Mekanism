@@ -39,12 +39,11 @@ public class MekanismDefense implements IModule {
     public MekanismDefense() {
         Mekanism.modulesLoaded.add(instance = this);
         MekanismDefenseConfig.registerConfigs(ModLoadingContext.get());
+        MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
+
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
-
-        MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
-
         DefenseItems.ITEMS.register(modEventBus);
         DefenseBlocks.BLOCKS.register(modEventBus);
         DefenseContainerTypes.CONTAINER_TYPES.register(modEventBus);

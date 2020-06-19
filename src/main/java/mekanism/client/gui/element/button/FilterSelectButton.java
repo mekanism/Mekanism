@@ -35,14 +35,12 @@ public class FilterSelectButton extends MekanismButton {
         int x = getButtonX();
         int y = getButtonY();
         MekanismRenderer.bindTexture(ARROWS);
-        //TODO: This can use isHovered() once we fix the isHovered logic
-        blit(x, y, isMouseOver(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         RenderSystem.disableBlend();
     }
 
     @Override
     public boolean isMouseOver(double xAxis, double yAxis) {
-        //TODO: override isHovered
         if (super.isMouseOver(xAxis, yAxis)) {
             //First we do a basic check to see if we are over the button if it was a rectangle rather than a triangle.
             double xShifted = xAxis - x;

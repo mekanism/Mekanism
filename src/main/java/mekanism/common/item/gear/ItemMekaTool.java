@@ -33,7 +33,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
@@ -75,8 +74,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Override
     public boolean canHarvestBlock(@Nonnull BlockState state) {
-        //TODO - V10: Re-evaluate, this should return false for any unbreakable block, for example barriers
-        return state.getBlock() != Blocks.BEDROCK;
+        //Allow harvesting everything, things that are unbreakable are caught elsewhere
+        return true;
     }
 
     @Override

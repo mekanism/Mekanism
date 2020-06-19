@@ -97,7 +97,9 @@ public final class MekanismUtils {
 
     private static final List<UUID> warnedFails = new ArrayList<>();
 
-    //TODO - V10: Add an extra optional param to shrink and grow stack that allows for logging if it is mismatched. Defaults to false
+    //TODO: Evaluate adding an extra optional param to shrink and grow stack that allows for logging if it is mismatched. Defaults to false
+    // Deciding on how to implement it into the API will need more thought as we want to keep overriding implementations as simple as
+    // possible, and also ideally would use our normal logger instead of the API logger
     public static void logMismatchedStackSize(long actual, long expected) {
         if (expected != actual) {
             Mekanism.logger.error("Stack size changed by a different amount (" + actual + ") than requested (" + expected + ").", new Exception());
