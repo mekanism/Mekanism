@@ -12,7 +12,7 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 784;
+        return 1_568;
     }
 
     @Override

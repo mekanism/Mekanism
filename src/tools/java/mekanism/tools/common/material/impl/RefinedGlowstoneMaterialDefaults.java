@@ -12,7 +12,7 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 403;
+        return 806;
     }
 
     @Override

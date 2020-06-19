@@ -12,7 +12,7 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 1_120;
+        return 2_240;
     }
 
     @Override

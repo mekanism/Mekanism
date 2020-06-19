@@ -12,7 +12,7 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 896;
+        return 1_792;
     }
 
     @Override

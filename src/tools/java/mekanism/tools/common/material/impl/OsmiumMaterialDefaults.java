@@ -14,7 +14,7 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 672;
+        return 1_344;
     }
 
     @Override
