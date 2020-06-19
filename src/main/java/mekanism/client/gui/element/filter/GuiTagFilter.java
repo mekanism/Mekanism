@@ -2,6 +2,7 @@ package mekanism.client.gui.element.filter;
 
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
@@ -45,6 +46,7 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
         }
     }
 
+    @Nonnull
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {

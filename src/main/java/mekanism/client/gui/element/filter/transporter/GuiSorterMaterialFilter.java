@@ -9,11 +9,11 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 public class GuiSorterMaterialFilter extends GuiMaterialFilter<SorterMaterialFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 
     public static GuiSorterMaterialFilter create(IGuiWrapper gui, TileEntityLogisticalSorter tile) {
-        return new GuiSorterMaterialFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, null);
+        return new GuiSorterMaterialFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, null);
     }
 
     public static GuiSorterMaterialFilter edit(IGuiWrapper gui, TileEntityLogisticalSorter tile, SorterMaterialFilter filter) {
-        return new GuiSorterMaterialFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, filter);
+        return new GuiSorterMaterialFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, filter);
     }
 
     private GuiSorterMaterialFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, SorterMaterialFilter origFilter) {

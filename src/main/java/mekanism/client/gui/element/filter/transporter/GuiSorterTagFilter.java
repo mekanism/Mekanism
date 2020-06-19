@@ -8,11 +8,11 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 
     public static GuiSorterTagFilter create(IGuiWrapper gui, TileEntityLogisticalSorter tile) {
-        return new GuiSorterTagFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, null);
+        return new GuiSorterTagFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, null);
     }
 
     public static GuiSorterTagFilter edit(IGuiWrapper gui, TileEntityLogisticalSorter tile, SorterTagFilter filter) {
-        return new GuiSorterTagFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, filter);
+        return new GuiSorterTagFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, filter);
     }
 
     private GuiSorterTagFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, SorterTagFilter origFilter) {

@@ -2,6 +2,7 @@ package mekanism.client.gui.element.filter.miner;
 
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.filter.GuiModIDFilter;
 import mekanism.common.base.TagCache;
@@ -34,6 +35,7 @@ public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEn
         return new MinerModIDFilter();
     }
 
+    @Nonnull
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {

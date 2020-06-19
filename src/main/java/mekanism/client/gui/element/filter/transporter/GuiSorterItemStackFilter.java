@@ -14,11 +14,11 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStackFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 
     public static GuiSorterItemStackFilter create(IGuiWrapper gui, TileEntityLogisticalSorter tile) {
-        return new GuiSorterItemStackFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, null);
+        return new GuiSorterItemStackFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, null);
     }
 
     public static GuiSorterItemStackFilter edit(IGuiWrapper gui, TileEntityLogisticalSorter tile, SorterItemStackFilter filter) {
-        return new GuiSorterItemStackFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, filter);
+        return new GuiSorterItemStackFilter(gui, (gui.getWidth() - 152) / 2, 30, tile, filter);
     }
 
     private GuiTextField minField;

@@ -2,11 +2,13 @@ package mekanism.client.gui.element.filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiWindow;
+import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -21,7 +23,8 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>> extends GuiWindow {
+public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>> extends GuiWindow
+      implements GuiFilterHelper<TILE> {
 
     private final ITextComponent filterName;
     protected final TILE tile;
@@ -45,9 +48,22 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
             filter = origFilter.clone();
         }
         init();
+        if (!isFocusOverlay()) {
+            if (isNew && getFilterSelect(gui, tile) != null) {
+                //If it is a new filter and we have a filter select screen add a back button instead of a close button
+                addChild(new MekanismImageButton(gui, this.x + 6, this.y + 6, 11, 14, getButtonLocation("back"), this::openFilterSelect));
+            } else {
+                super.addCloseButton();
+            }
+        }
         if (filter.hasFilter()) {
             slotDisplay.updateStackList();
         }
+    }
+
+    @Override
+    protected void addCloseButton() {
+        //No-op the super close button addition
     }
 
     protected int getSlotOffset() {
@@ -76,7 +92,13 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         addChild(new TranslationButton(guiObj, x + width / 2 + 1, guiObj.getTop() + screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
         addChild(new GuiSlot(SlotType.NORMAL, guiObj, relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true));
         addChild(slotDisplay = new GuiSequencedSlotDisplay(guiObj, relativeX + 8, relativeY + getSlotOffset() + 1, this::getRenderStacks));
-        //TODO - V10: Replace red close button with the back button if it is a new filter to be able to go back to the filter select screen
+    }
+
+    private void openFilterSelect() {
+        //Add the window for the filter select dialog to the parent gui
+        getGuiObj().addWindow(getFilterSelect(getGuiObj(), tile));
+        //And close the filter filter
+        close();
     }
 
     protected List<ITextComponent> getScreenText() {
@@ -109,6 +131,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected abstract ILangEntry getNoFilterSaveError();
 
+    @Nonnull
     protected abstract List<ItemStack> getRenderStacks();
 
     @Override

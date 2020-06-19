@@ -2,6 +2,7 @@ package mekanism.client.gui.element.filter;
 
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -113,6 +114,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
         return new OredictionificatorFilter();
     }
 
+    @Nonnull
     @Override
     protected List<ItemStack> getRenderStacks() {
         ItemStack result = filter.getResult();

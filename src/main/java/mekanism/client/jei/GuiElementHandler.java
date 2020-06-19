@@ -63,7 +63,7 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
     }
 
     @Nullable
-    //@Override//TODO - V10: Uncomment htis override after updating to new JEI
+    //@Override//TODO - V10: Uncomment this override after updating to new JEI
     public IGuiClickableArea getGuiClickableArea(GuiMekanism genericGui, double mouseX, double mouseY) {
         GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
         //Make mouseX and mouseY not be relative

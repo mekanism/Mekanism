@@ -2,6 +2,7 @@ package mekanism.client.gui.element.filter;
 
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
@@ -41,6 +42,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
         return MekanismLang.ITEM_FILTER_NO_ITEM;
     }
 
+    @Nonnull
     @Override
     protected List<ItemStack> getRenderStacks() {
         ItemStack stack = filter.getMaterialItem();

@@ -2,6 +2,7 @@ package mekanism.client.gui.element.filter.miner;
 
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.filter.GuiTagFilter;
 import mekanism.common.base.TagCache;
@@ -34,6 +35,7 @@ public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDi
         return new MinerTagFilter();
     }
 
+    @Nonnull
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {

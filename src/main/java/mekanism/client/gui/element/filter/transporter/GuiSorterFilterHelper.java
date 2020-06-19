@@ -5,16 +5,19 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.filter.GuiFilterHelper;
+import mekanism.client.gui.element.filter.GuiFilterSelect;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.transporter.SorterFilter;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.screen.Screen;
 
-public interface GuiSorterFilterHelper {
+public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisticalSorter> {
 
     default void addSorterDefaults(IGuiWrapper gui, SorterFilter<?> filter, int slotOffset, Consumer<GuiElement> childAdder) {
         int slotX = getRelativeX() + 7;
@@ -26,7 +29,8 @@ public interface GuiSorterFilterHelper {
               () -> filter.allowDefault = !filter.allowDefault, (onHover, xAxis, yAxis) -> gui.displayTooltip(MekanismLang.FILTER_ALLOW_DEFAULT.translate(), xAxis, yAxis)));
     }
 
-    int getRelativeX();
-
-    int getRelativeY();
+    @Override
+    default GuiFilterSelect getFilterSelect(IGuiWrapper gui, TileEntityLogisticalSorter tile) {
+        return new GuiSorterFilerSelect(gui, tile);
+    }
 }

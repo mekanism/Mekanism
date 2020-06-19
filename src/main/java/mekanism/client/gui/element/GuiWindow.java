@@ -30,8 +30,12 @@ public class GuiWindow extends GuiTexturedElement {
         isOverlay = true;
         active = true;
         if (!isFocusOverlay()) {
-            addChild(new GuiCloseButton(gui, this.x + 6, this.y + 6, this));
+            addCloseButton();
         }
+    }
+
+    protected void addCloseButton() {
+        addChild(new GuiCloseButton(getGuiObj(), this.x + 6, this.y + 6, this));
     }
 
     @Override
