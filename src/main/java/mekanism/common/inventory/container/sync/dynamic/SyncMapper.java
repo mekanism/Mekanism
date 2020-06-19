@@ -12,8 +12,10 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -43,14 +45,15 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
+import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
 import org.objectweb.asm.Type;
 
 public class SyncMapper {
 
     public static final String DEFAULT_TAG = "default";
-    private static final Type CONTAINER_SYNC_TYPE = Type.getType(ContainerSync.class);
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
     private static final List<SpecialPropertyHandler<?>> specialProperties = new ArrayList<>();
+    private static final Map<Class<?>, PropertyDataClassCache> syncablePropertyMap = new Object2ObjectOpenHashMap<>();
 
     static {
         specialProperties.add(new SpecialPropertyHandler<>(IExtendedFluidTank.class,
@@ -90,7 +93,105 @@ public class SyncMapper {
         ));
     }
 
-    private static final Map<Class<?>, PropertyDataClassCache> syncablePropertyMap = new Object2ObjectOpenHashMap<>();
+    public static void collectScanData() {
+        try {
+            collectScanDataUnsafe();
+        } catch (Throwable e) {
+            Mekanism.logger.error("Failed to collect scan data and create sync maps");
+            e.printStackTrace();
+        }
+    }
+
+    private static void collectScanDataUnsafe() throws Throwable {
+        //TODO - V10: Validate this, I believe that the server and client may have the mod file scan data in a different order??
+        // Or at least the evap tower was doing "weird" things such as filling the water tank with brine when on the server
+        // We want to ensure that the order on the server and client are the same, the easiest way to do this will probably
+        // be to store the class + field name of each field, and then sort them at the end of this method
+        ModList modList = ModList.get();
+        Map<Class<?>, List<AnnotationData>> knownClasses = new HashMap<>();
+        Type containerSyncType = Type.getType(ContainerSync.class);
+        for (ModFileScanData scanData : modList.getAllScanData()) {
+            for (AnnotationData data : scanData.getAnnotations()) {
+                //If the annotation is on a field, and is the sync type
+                if (data.getTargetType() == ElementType.FIELD && containerSyncType.equals(data.getAnnotationType())) {
+                    String className = data.getClassType().getClassName();
+                    try {
+                        Class<?> annotatedClass = Class.forName(className);
+                        knownClasses.computeIfAbsent(annotatedClass, clazz -> new ArrayList<>()).add(data);
+                    } catch (ClassNotFoundException e) {
+                        Mekanism.logger.error("Failed to find class '{}'", className);
+                    }
+                }
+            }
+        }
+        Map<Class<?>, PropertyDataClassCache> flatPropertyMap = new Object2ObjectOpenHashMap<>();
+        for (Entry<Class<?>, List<AnnotationData>> entry : knownClasses.entrySet()) {
+            Class<?> annotatedClass = entry.getKey();
+            PropertyDataClassCache cache = new PropertyDataClassCache();
+            flatPropertyMap.put(annotatedClass, cache);
+            for (AnnotationData data : entry.getValue()) {
+                String fieldName = data.getMemberName();
+                try {
+                    Field field = annotatedClass.getDeclaredField(fieldName);
+                    field.setAccessible(true);
+                    Map<String, Object> annotationData = data.getAnnotationData();
+                    String getterName = (String) annotationData.getOrDefault("getter", "");
+                    PropertyField newField;
+                    SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
+                    if (handler == null) {
+                        PropertyType type = PropertyType.getFromType(field.getType());
+                        String setterName = (String) annotationData.getOrDefault("setter", "");
+                        if (type != null) {
+                            newField = new PropertyField(new TrackedFieldData(createGetter(field, annotatedClass, getterName),
+                                  createSetter(field, annotatedClass, setterName), type));
+                        } else if (field.getType().isEnum()) {
+                            newField = new PropertyField(new EnumFieldData(createGetter(field, annotatedClass, getterName),
+                                  createSetter(field, annotatedClass, setterName), field.getType()));
+                        } else {
+                            Mekanism.logger.error("Attempted to sync an invalid field '{}'", fieldName);
+                            return;
+                        }
+                    } else {
+                        newField = createSpecialProperty(handler, field, annotatedClass, getterName);
+                    }
+                    if (annotationData.containsKey("tags")) {
+                        //If the annotation data has tags add them
+                        List<String> tags = (List<String>) annotationData.get("tags");
+                        for (String tag : tags) {
+                            cache.propertyFieldMap.put(tag, newField);
+                        }
+                    } else {
+                        //Otherwise fallback to the default
+                        cache.propertyFieldMap.put(DEFAULT_TAG, newField);
+                    }
+                } catch (NoSuchFieldException e) {
+                    Mekanism.logger.error("Failed to find field '{}' for class '{}'", fieldName, data.getClassType());
+                }
+            }
+        }
+        for (Entry<Class<?>, PropertyDataClassCache> entry : flatPropertyMap.entrySet()) {
+            Class<?> clazz = entry.getKey();
+            PropertyDataClassCache cache = entry.getValue();
+            Class<?> current = clazz;
+            while (current.getSuperclass() != null) {
+                current = current.getSuperclass();
+                PropertyDataClassCache superCache = syncablePropertyMap.get(current);
+                if (superCache != null) {
+                    //If we already have an overall cache for the super class, add from it and break out of checking super classes
+                    cache.propertyFieldMap.putAll(superCache.propertyFieldMap);
+                    break;
+                }
+                //Otherwise continue building up the cache, collecting all the class names up to the root superclass
+                superCache = flatPropertyMap.get(current);
+                if (superCache != null) {
+                    //If the property map has the super class, grab the fields that correspond to it
+                    //Note: We keep going here as it may have super classes higher up
+                    cache.propertyFieldMap.putAll(superCache.propertyFieldMap);
+                }
+            }
+            syncablePropertyMap.put(clazz, cache);
+        }
+    }
 
     public static void setup(MekanismContainer container, Class<?> holderClass, Supplier<Object> holderSupplier) {
         setup(container, holderClass, holderSupplier, DEFAULT_TAG);
@@ -108,101 +209,18 @@ public class SyncMapper {
 
     private static PropertyDataClassCache buildSyncMap(Class<?> clazz) {
         PropertyDataClassCache cache = new PropertyDataClassCache();
-        try {
-            buildSyncMap(clazz, cache);
-        } catch (Throwable e) {
-            Mekanism.logger.error("Failed to create sync map for {}", clazz.getName());
-            e.printStackTrace();
+        Class<?> current = clazz;
+        while (current.getSuperclass() != null) {
+            current = current.getSuperclass();
+            PropertyDataClassCache superCache = syncablePropertyMap.get(current);
+            if (superCache != null) {
+                //If we already have an overall cache for the super class, add from it and break out of checking super classes
+                cache.propertyFieldMap.putAll(superCache.propertyFieldMap);
+                break;
+            }
+            //Otherwise continue going up to the root superclass
         }
         return cache;
-    }
-
-    private static void buildSyncMap(Class<?> clazz, PropertyDataClassCache cache) throws Throwable {
-        if (clazz.getSuperclass() != null) {
-            PropertyDataClassCache superCache = syncablePropertyMap.get(clazz.getSuperclass());
-            if (superCache != null) {
-                cache.propertyFieldMap.putAll(superCache.propertyFieldMap);
-                return;
-            } else {
-                // recurse to root superclass
-                buildSyncMap(clazz.getSuperclass(), cache);
-            }
-        }
-
-        //TODO - V10: Work on improving this, due to the fact that the above uses recursion
-        //TODO - V10: Validate this, I believe that the server and client may have the mod file scan data in a different order??
-        // Or at least the evap tower was doing "weird" things such as filling the water tank with brine when on the server
-        ModList modList = ModList.get();
-        String clazzPath = clazz.getName();
-        for (ModFileScanData scanData : modList.getAllScanData()) {
-            for (ModFileScanData.AnnotationData data : scanData.getAnnotations()) {
-                //If the annotation is on a field, and is the sync type, and the class matches the class we are checking
-                if (data.getTargetType() == ElementType.FIELD && CONTAINER_SYNC_TYPE.equals(data.getAnnotationType()) &&
-                    clazzPath.equals(data.getClassType().getClassName())) {
-                    String fieldName = data.getMemberName();
-                    try {
-                        Field field = clazz.getDeclaredField(fieldName);
-                        field.setAccessible(true);
-                        Map<String, Object> annotationData = data.getAnnotationData();
-                        String getterName = (String) annotationData.getOrDefault("getter", "");
-                        PropertyField newField;
-                        SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
-                        if (handler == null) {
-                            PropertyType type = PropertyType.getFromType(field.getType());
-                            String setterName = (String) annotationData.getOrDefault("setter", "");
-                            if (type != null) {
-                                newField = new PropertyField(new TrackedFieldData(createGetter(field, clazz, getterName), createSetter(field, clazz, setterName), type));
-                            } else if (field.getType().isEnum()) {
-                                newField = new PropertyField(new EnumFieldData(createGetter(field, clazz, getterName), createSetter(field, clazz, setterName), field.getType()));
-                            } else {
-                                Mekanism.logger.error("Attempted to sync an invalid field '{}'", fieldName);
-                                continue;
-                            }
-                        } else {
-                            newField = createSpecialProperty(handler, field, clazz, getterName);
-                        }
-                        if (annotationData.containsKey("tags")) {
-                            //If the annotation data has tags add them
-                            List<String> tags = (List<String>) annotationData.get("tags");
-                            for (String tag : tags) {
-                                cache.propertyFieldMap.put(tag, newField);
-                            }
-                        } else {
-                            //Otherwise fallback to the default
-                            cache.propertyFieldMap.put(DEFAULT_TAG, newField);
-                        }
-                    } catch (NoSuchFieldException e) {
-                        //TODO: Better error message
-                        Mekanism.logger.error("Failed to find: {}, for class: {}", fieldName, clazz.getName());
-                    }
-                }
-            }
-        }
-
-        //TODO - V10: FIXME, this does not work properly on the server as it can force client side only stuff to load
-        /*for (Field field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(ContainerSync.class)) {
-                field.setAccessible(true);
-                ContainerSync syncData = field.getAnnotation(ContainerSync.class);
-                PropertyType type = PropertyType.getFromType(field.getType());
-                SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
-                PropertyField newField;
-                if (handler != null) {
-                    newField = createSpecialProperty(handler, field, clazz, syncData);
-                } else if (type != null) {
-                    newField = new PropertyField(new TrackedFieldData(createGetter(field, clazz, syncData), createSetter(field, clazz, syncData), type));
-                } else if (field.getType().isEnum()) {
-                    newField = new PropertyField(new EnumFieldData(createGetter(field, clazz, syncData), createSetter(field, clazz, syncData), field.getType()));
-                } else {
-                    Mekanism.logger.error("Attempted to sync an invalid field '{}'", field.getName());
-                    continue;
-                }
-
-                for (String tag : syncData.tags()) {
-                    cache.propertyFieldMap.put(tag, newField);
-                }
-            }
-        }*/
     }
 
     private static <O> PropertyField createSpecialProperty(SpecialPropertyHandler<O> handler, Field field, Class<?> objType, String getterName) throws Throwable {
