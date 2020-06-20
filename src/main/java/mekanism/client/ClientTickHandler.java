@@ -65,9 +65,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  */
 public class ClientTickHandler {
 
-    public static Minecraft minecraft = Minecraft.getInstance();
-    public static Random rand = new Random();
-    public static Map<PlayerEntity, TeleportData> portableTeleports = new Object2ObjectOpenHashMap<>();
+    public static final Minecraft minecraft = Minecraft.getInstance();
+    public static final Random rand = new Random();
+    public static final Map<PlayerEntity, TeleportData> portableTeleports = new Object2ObjectOpenHashMap<>();
     public boolean initHoliday = false;
     public boolean shouldReset = false;
     public static boolean firstTick = true;

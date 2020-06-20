@@ -23,23 +23,23 @@ import org.lwjgl.glfw.GLFW;
 
 public class MekanismKeyHandler extends MekKeyHandler {
 
-    public static KeyBinding handModeSwitchKey = new KeyBinding(MekanismLang.KEY_HAND_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+    public static final KeyBinding handModeSwitchKey = new KeyBinding(MekanismLang.KEY_HAND_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_N, MekanismLang.MEKANISM.getTranslationKey());
-    public static KeyBinding headModeSwitchKey = new KeyBinding(MekanismLang.KEY_HEAD_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+    public static final KeyBinding headModeSwitchKey = new KeyBinding(MekanismLang.KEY_HEAD_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_V, MekanismLang.MEKANISM.getTranslationKey());
-    public static KeyBinding chestModeSwitchKey = new KeyBinding(MekanismLang.KEY_CHEST_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+    public static final KeyBinding chestModeSwitchKey = new KeyBinding(MekanismLang.KEY_CHEST_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_G, MekanismLang.MEKANISM.getTranslationKey());
-    public static KeyBinding feetModeSwitchKey = new KeyBinding(MekanismLang.KEY_FEET_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+    public static final KeyBinding feetModeSwitchKey = new KeyBinding(MekanismLang.KEY_FEET_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_B, MekanismLang.MEKANISM.getTranslationKey());
-    public static KeyBinding detailsKey = new KeyBinding(MekanismLang.KEY_DETAILS_MODE.getTranslationKey(), KeyConflictContext.GUI, InputMappings.Type.KEYSYM,
+    public static final KeyBinding detailsKey = new KeyBinding(MekanismLang.KEY_DETAILS_MODE.getTranslationKey(), KeyConflictContext.GUI, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_LEFT_SHIFT, MekanismLang.MEKANISM.getTranslationKey());
-    public static KeyBinding descriptionKey = new KeyBinding(MekanismLang.KEY_DESCRIPTION_MODE.getTranslationKey(), KeyConflictContext.GUI,
+    public static final KeyBinding descriptionKey = new KeyBinding(MekanismLang.KEY_DESCRIPTION_MODE.getTranslationKey(), KeyConflictContext.GUI,
           KeyModifier.SHIFT, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_N, MekanismLang.MEKANISM.getTranslationKey());
-    public static KeyBinding moduleTweakerKey = new KeyBinding(MekanismLang.KEY_MODULE_TWEAKER.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+    public static final KeyBinding moduleTweakerKey = new KeyBinding(MekanismLang.KEY_MODULE_TWEAKER.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_BACKSLASH, MekanismLang.MEKANISM.getTranslationKey());
-    public static KeyBinding boostKey = new KeyBinding(MekanismLang.KEY_BOOST.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+    public static final KeyBinding boostKey = new KeyBinding(MekanismLang.KEY_BOOST.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_LEFT_CONTROL, MekanismLang.MEKANISM.getTranslationKey());
-    public static KeyBinding hudKey = new KeyBinding(MekanismLang.KEY_HUD.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+    public static final KeyBinding hudKey = new KeyBinding(MekanismLang.KEY_HUD.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_H, MekanismLang.MEKANISM.getTranslationKey());
 
     private static final Builder BINDINGS = new Builder(9)

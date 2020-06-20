@@ -52,9 +52,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
 
-    public CraftingInventory dummyInv = MekanismUtils.getDummyCraftingInv();
+    private static final int BASE_TICKS_REQUIRED = 40;
 
-    public int BASE_TICKS_REQUIRED = 40;
+    private final CraftingInventory dummyInv = MekanismUtils.getDummyCraftingInv();
 
     public int ticksRequired = BASE_TICKS_REQUIRED;
 
@@ -74,8 +74,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private Optional<ICraftingRecipe> cachedRecipe = Optional.empty();
     private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
-    public TileComponentEjector ejectorComponent;
-    public TileComponentConfig configComponent;
+    public final TileComponentEjector ejectorComponent;
+    public final TileComponentConfig configComponent;
 
     public ItemStack lastFormulaStack = ItemStack.EMPTY;
     public ItemStack lastOutputStack = ItemStack.EMPTY;

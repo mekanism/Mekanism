@@ -28,7 +28,7 @@ public abstract class Module {
     public static final String ENABLED_KEY = "enabled";
     public static final String HANDLE_MODE_CHANGE_KEY = "handleModeChange";
 
-    protected List<ModuleConfigItem<?>> configItems = new ArrayList<>();
+    protected final List<ModuleConfigItem<?>> configItems = new ArrayList<>();
 
     private ModuleData<?> data;
     private ItemStack container;

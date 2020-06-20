@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 
 public class RecipeFormula {
 
-    public NonNullList<ItemStack> input = NonNullList.withSize(9, ItemStack.EMPTY);
+    public final NonNullList<ItemStack> input = NonNullList.withSize(9, ItemStack.EMPTY);
     @Nullable
     public ICraftingRecipe recipe;
     private final CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();

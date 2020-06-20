@@ -52,8 +52,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     public static final ResourceLocation BLUR = MekanismUtils.getResource(ResourceType.GUI, "blur.png");
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
-    protected LRU<GuiWindow> windows = new LRU<>();
-    protected List<GuiElement> focusListeners = new ArrayList<>();
+    protected final LRU<GuiWindow> windows = new LRU<>();
+    protected final List<GuiElement> focusListeners = new ArrayList<>();
 
     public static int maxZOffset;
 

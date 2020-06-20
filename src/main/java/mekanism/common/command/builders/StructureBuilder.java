@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 
 public abstract class StructureBuilder {
 
-    protected int sizeX, sizeY, sizeZ;
+    protected final int sizeX, sizeY, sizeZ;
 
     protected StructureBuilder(int sizeX, int sizeY, int sizeZ) {
         this.sizeX = sizeX;

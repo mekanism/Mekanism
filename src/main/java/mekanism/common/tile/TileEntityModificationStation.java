@@ -34,14 +34,14 @@ import net.minecraft.world.World;
 
 public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
 
+    private static final int BASE_TICKS_REQUIRED = 40;
+
+    public int ticksRequired = BASE_TICKS_REQUIRED;
+    public int operatingTicks;
     private EnergyInventorySlot energySlot;
     private InputInventorySlot moduleSlot;
     public InputInventorySlot containerSlot;
     private MachineEnergyContainer<TileEntityModificationStation> energyContainer;
-
-    public int BASE_TICKS_REQUIRED = 40;
-    public int ticksRequired = BASE_TICKS_REQUIRED;
-    public int operatingTicks;
 
     public TileEntityModificationStation() {
         super(MekanismBlocks.MODIFICATION_STATION);

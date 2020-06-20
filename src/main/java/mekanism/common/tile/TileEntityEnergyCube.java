@@ -38,8 +38,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
      */
     private EnergyCubeTier tier;
     private float prevScale;
-    public TileComponentEjector ejectorComponent;
-    public TileComponentConfig configComponent;
+    public final TileComponentEjector ejectorComponent;
+    public final TileComponentConfig configComponent;
 
     private EnergyCubeEnergyContainer energyContainer;
     private EnergyInventorySlot chargeSlot;

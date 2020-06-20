@@ -24,13 +24,13 @@ import net.minecraftforge.common.util.NonNullConsumer;
 @MethodsReturnNonnullByDefault
 public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAcceptorInfo> {
 
-    protected final Map<Direction, NonNullConsumer<LazyOptional<ACCEPTOR>>> cachedListeners = new EnumMap<>(Direction.class);
+    private final Map<Direction, NonNullConsumer<LazyOptional<ACCEPTOR>>> cachedListeners = new EnumMap<>(Direction.class);
     protected final Map<Direction, INFO> cachedAcceptors = new EnumMap<>(Direction.class);
     protected final Transmitter<ACCEPTOR, ?, ?> transmitter;
-    protected final TileEntityTransmitter transmitterTile;
+    private final TileEntityTransmitter transmitterTile;
     public byte currentAcceptorConnections = 0x00;
 
-    public AbstractAcceptorCache(Transmitter<ACCEPTOR, ?, ?> transmitter, TileEntityTransmitter transmitterTile) {
+    protected AbstractAcceptorCache(Transmitter<ACCEPTOR, ?, ?> transmitter, TileEntityTransmitter transmitterTile) {
         this.transmitter = transmitter;
         this.transmitterTile = transmitterTile;
     }
@@ -72,7 +72,7 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAccep
         return acceptors;
     }
 
-    public abstract LazyOptional<ACCEPTOR> getConnectedAcceptor(Direction side);
+    protected abstract LazyOptional<ACCEPTOR> getConnectedAcceptor(Direction side);
 
     /**
      * Gets the listener that will refresh connections on a given side.

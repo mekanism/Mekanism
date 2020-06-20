@@ -21,9 +21,9 @@ public class OBJModelCache {
     private static final Map<ResourceLocation, OBJModelData> modelMap = new Object2ObjectOpenHashMap<>();
     private static final Set<Runnable> callbacks = new HashSet<>();
 
-    public static OBJModelData MEKASUIT = register(Mekanism.rl("models/entity/mekasuit.obj"));
-    public static OBJModelData MEKASUIT_MODULES = register(Mekanism.rl("models/entity/mekasuit_modules.obj"));
-    public static OBJModelData MEKATOOL = register(Mekanism.rl("models/entity/mekatool.obj"));
+    public static final OBJModelData MEKASUIT = register(Mekanism.rl("models/entity/mekasuit.obj"));
+    public static final OBJModelData MEKASUIT_MODULES = register(Mekanism.rl("models/entity/mekasuit_modules.obj"));
+    public static final OBJModelData MEKATOOL = register(Mekanism.rl("models/entity/mekatool.obj"));
 
     public static void onBake(ModelBakeEvent evt) {
         modelMap.values().forEach(OBJModelData::reload);

@@ -57,7 +57,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public abstract class MekanismContainer extends Container {
 
-    public static int BASE_Y_OFFSET = 84;
+    public static final int BASE_Y_OFFSET = 84;
 
     @Nullable
     protected final PlayerInventory inv;

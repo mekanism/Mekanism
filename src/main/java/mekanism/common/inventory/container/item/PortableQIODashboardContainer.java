@@ -18,8 +18,8 @@ import net.minecraft.util.Hand;
 
 public class PortableQIODashboardContainer extends QIOItemViewerContainer {
 
-    protected Hand hand;
-    protected ItemStack stack;
+    protected final Hand hand;
+    protected final ItemStack stack;
 
     private PortableQIODashboardContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack, boolean remote) {
         super(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, id, inv, remote);

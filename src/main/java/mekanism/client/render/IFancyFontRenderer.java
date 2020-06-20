@@ -131,8 +131,8 @@ public interface IFancyFontRenderer {
     // efficient tool to draw word-by-word wrapped text based on a horizontal bound. looks intimidating but runs in O(n)
     class WrappedTextRenderer {
 
-        IFancyFontRenderer font;
-        List<Pair<String, Float>> linesToDraw = new ArrayList<>();
+        final IFancyFontRenderer font;
+        final List<Pair<String, Float>> linesToDraw = new ArrayList<>();
         StringBuilder lineBuilder = new StringBuilder(), wordBuilder = new StringBuilder();
         float lineLength = 0, wordLength = 0;
         final float SPACE_LENGTH;

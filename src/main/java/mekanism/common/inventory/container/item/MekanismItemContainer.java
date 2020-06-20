@@ -14,8 +14,8 @@ import net.minecraftforge.fml.DistExecutor;
 
 public abstract class MekanismItemContainer extends MekanismContainer {
 
-    protected Hand hand;
-    protected ItemStack stack;
+    protected final Hand hand;
+    protected final ItemStack stack;
 
     protected MekanismItemContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, Hand hand, ItemStack stack) {
         super(type, id, inv);

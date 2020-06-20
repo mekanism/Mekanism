@@ -19,7 +19,7 @@ public class FluidRenderMap<V> extends Object2ObjectOpenCustomHashMap<FluidStack
      */
     public static class FluidHashStrategy implements Hash.Strategy<FluidStack> {
 
-        public static FluidHashStrategy INSTANCE = new FluidHashStrategy();
+        public static final FluidHashStrategy INSTANCE = new FluidHashStrategy();
 
         @Override
         public int hashCode(FluidStack stack) {

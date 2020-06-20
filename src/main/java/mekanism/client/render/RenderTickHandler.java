@@ -83,7 +83,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class RenderTickHandler {
 
-    public Minecraft minecraft = Minecraft.getInstance();
+    public final Minecraft minecraft = Minecraft.getInstance();
 
     private static final ResourceLocation POWER_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "horizontal_power_long.png");
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);

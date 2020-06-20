@@ -31,7 +31,7 @@ public enum TransmitterType {
         SMALL(6),
         LARGE(8);
 
-        public int centerSize;
+        public final int centerSize;
 
         Size(int size) {
             centerSize = size;

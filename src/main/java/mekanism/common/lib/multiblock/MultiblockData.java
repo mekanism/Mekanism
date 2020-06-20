@@ -51,7 +51,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
       IPigmentTracker, ISlurryTracker {
 
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
-    public Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
+    public final Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
     @ContainerSync(getter = "getVolume", setter = "setVolume")

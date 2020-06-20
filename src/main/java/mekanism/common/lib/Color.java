@@ -7,7 +7,7 @@ public class Color {
     public static final Color WHITE = rgbad(1F, 1F, 1F, 1F);
     public static final Color BLACK = rgbad(0F, 0F, 0F, 1F);
 
-    private int r, g, b, a;
+    private final int r, g, b, a;
 
     private Color(int r, int g, int b, int a) {
         this.r = r;

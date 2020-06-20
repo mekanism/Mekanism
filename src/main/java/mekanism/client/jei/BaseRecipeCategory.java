@@ -29,13 +29,13 @@ import net.minecraft.util.ResourceLocation;
 public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
     private final IGuiHelper guiHelper;
-    protected ITickTimer timer;
-    protected int xOffset;
-    protected int yOffset;
-    protected IDrawable fluidOverlayLarge;
-    protected IDrawable fluidOverlaySmall;
-    protected IDrawable fluidOverlaySmallMed;
-    protected Set<GuiTexturedElement> guiElements = new ObjectOpenHashSet<>();
+    protected final ITickTimer timer;
+    protected final int xOffset;
+    protected final int yOffset;
+    protected final IDrawable fluidOverlayLarge;
+    protected final IDrawable fluidOverlaySmall;
+    protected final IDrawable fluidOverlaySmallMed;
+    protected final Set<GuiTexturedElement> guiElements = new ObjectOpenHashSet<>();
     private final IBaseProvider provider;
 
     private final IDrawable background;

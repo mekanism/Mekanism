@@ -9,7 +9,7 @@ import net.minecraft.state.IProperty;
 
 public class AttributeStateActive extends AttributeState {
 
-    public static final BooleanProperty activeProperty = BooleanProperty.create("active");
+    private static final BooleanProperty activeProperty = BooleanProperty.create("active");
 
     public boolean isActive(BlockState state) {
         return state.get(activeProperty);

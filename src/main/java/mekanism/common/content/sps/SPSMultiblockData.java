@@ -34,7 +34,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @ContainerSync
     public IGasTank outputTank;
 
-    public SyncableCoilData coilData = new SyncableCoilData();
+    public final SyncableCoilData coilData = new SyncableCoilData();
 
     @ContainerSync
     public double progress;
@@ -158,7 +158,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     public static class SyncableCoilData {
 
-        public Map<BlockPos, CoilData> coilMap = new Object2ObjectOpenHashMap<>();
+        public final Map<BlockPos, CoilData> coilMap = new Object2ObjectOpenHashMap<>();
         public int prevHash;
 
         private boolean tick() {

@@ -13,7 +13,7 @@ public class WrapperModelConfiguration implements IModelConfiguration {
 
     protected final IModelConfiguration internal;
 
-    public WrapperModelConfiguration(IModelConfiguration internal) {
+    protected WrapperModelConfiguration(IModelConfiguration internal) {
         this.internal = internal;
     }
 

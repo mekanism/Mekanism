@@ -65,7 +65,7 @@ public class MekanismRenderer {
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
-    public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
+    public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
 
     //We ignore the warning, due to this actually being able to be null during runData
     @SuppressWarnings("ConstantConditions")
@@ -408,9 +408,9 @@ public class MekanismRenderer {
         public double minX, minY, minZ;
         public double maxX, maxY, maxZ;
 
-        public TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
+        public final TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
 
-        public boolean[] renderSides = new boolean[]{true, true, true, true, true, true, false};
+        public final boolean[] renderSides = new boolean[]{true, true, true, true, true, true, false};
 
         public double sizeX() {
             return maxX - minX;

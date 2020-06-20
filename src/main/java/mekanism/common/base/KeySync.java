@@ -8,11 +8,11 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public class KeySync {
 
-    public static int ASCEND = 0;
-    public static int DESCEND = 1;
-    public static int BOOST = 2;
+    public static final int ASCEND = 0;
+    public static final int DESCEND = 1;
+    public static final int BOOST = 2;
 
-    public Map<PlayerEntity, KeySet> keys = new Object2ObjectOpenHashMap<>();
+    public final Map<PlayerEntity, KeySet> keys = new Object2ObjectOpenHashMap<>();
 
     public KeySet getPlayerKeys(PlayerEntity player) {
         return keys.get(player);
@@ -50,7 +50,7 @@ public class KeySync {
 
     public static class KeySet {
 
-        public IntSet keysActive = new IntOpenHashSet();
+        public final IntSet keysActive = new IntOpenHashSet();
 
         public KeySet(int key) {
             keysActive.add(key);

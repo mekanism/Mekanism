@@ -50,6 +50,11 @@ import net.minecraft.util.Direction;
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ISideConfiguration, ISpecialConfigData,
       ITileCachedRecipeHolder<RECIPE> {
 
+    /**
+     * How many ticks it takes, by default, to run an operation.
+     */
+    private static final int BASE_TICKS_REQUIRED = 200;
+
     private final CachedRecipe<RECIPE>[] cachedRecipes;
     private final boolean[] activeStates;
     protected ProcessInfo[] processInfoSlots;
@@ -60,11 +65,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     /**
      * An int[] used to track all current operations' progress.
      */
-    public int[] progress;
-    /**
-     * How many ticks it takes, by default, to run an operation.
-     */
-    public int BASE_TICKS_REQUIRED = 200;
+    public final int[] progress;
     /**
      * How many ticks it takes, with upgrades, to run an operation
      */
@@ -72,17 +73,17 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected boolean sorting;
     public FloatingLong lastUsage = FloatingLong.ZERO;
 
-    public TileComponentEjector ejectorComponent;
-    public TileComponentConfig configComponent;
+    public final TileComponentEjector ejectorComponent;
+    public final TileComponentConfig configComponent;
     /**
      * This machine's factory type.
      */
     @Nonnull
-    protected FactoryType type;
+    protected final FactoryType type;
 
     protected MachineEnergyContainer<TileEntityFactory<?>> energyContainer;
-    protected List<IInventorySlot> inputSlots;
-    protected List<IInventorySlot> outputSlots;
+    protected final List<IInventorySlot> inputSlots;
+    protected final List<IInventorySlot> outputSlots;
     protected EnergyInventorySlot energySlot;
 
     protected TileEntityFactory(IBlockProvider blockProvider) {

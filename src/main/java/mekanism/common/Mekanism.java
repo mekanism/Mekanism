@@ -111,11 +111,11 @@ public class Mekanism {
     /**
      * Mekanism Packet Pipeline
      */
-    public static PacketHandler packetHandler = new PacketHandler();
+    public static final PacketHandler packetHandler = new PacketHandler();
     /**
      * Mekanism logger instance
      */
-    public static Logger logger = LogManager.getLogger(MOD_NAME);
+    public static final Logger logger = LogManager.getLogger(MOD_NAME);
     /**
      * Mekanism proxy instance
      */
@@ -129,7 +129,7 @@ public class Mekanism {
     /**
      * Mekanism hooks instance
      */
-    public static MekanismHooks hooks = new MekanismHooks();
+    public static final MekanismHooks hooks = new MekanismHooks();
     /**
      * Mekanism version number
      */
@@ -137,33 +137,33 @@ public class Mekanism {
     /**
      * MultiblockManagers for various structures
      */
-    public static MultiblockManager<TankMultiblockData> tankManager = new MultiblockManager<>("dynamicTank", TankCache::new, TankValidator::new);
-    public static MultiblockManager<MatrixMultiblockData> matrixManager = new MultiblockManager<>("inductionMatrix", MultiblockCache::new, MatrixValidator::new);
-    public static MultiblockManager<BoilerMultiblockData> boilerManager = new MultiblockManager<>("thermoelectricBoiler", MultiblockCache::new, BoilerValidator::new);
-    public static MultiblockManager<EvaporationMultiblockData> evaporationManager = new MultiblockManager<>("evaporation", MultiblockCache::new, EvaporationValidator::new);
-    public static MultiblockManager<SPSMultiblockData> spsManager = new MultiblockManager<>("sps", SPSCache::new, SPSValidator::new);
+    public static final MultiblockManager<TankMultiblockData> tankManager = new MultiblockManager<>("dynamicTank", TankCache::new, TankValidator::new);
+    public static final MultiblockManager<MatrixMultiblockData> matrixManager = new MultiblockManager<>("inductionMatrix", MultiblockCache::new, MatrixValidator::new);
+    public static final MultiblockManager<BoilerMultiblockData> boilerManager = new MultiblockManager<>("thermoelectricBoiler", MultiblockCache::new, BoilerValidator::new);
+    public static final MultiblockManager<EvaporationMultiblockData> evaporationManager = new MultiblockManager<>("evaporation", MultiblockCache::new, EvaporationValidator::new);
+    public static final MultiblockManager<SPSMultiblockData> spsManager = new MultiblockManager<>("sps", SPSCache::new, SPSValidator::new);
     /**
      * RadiationManager for handling radiation across all dimensions
      */
-    public static RadiationManager radiationManager = new RadiationManager();
+    public static final RadiationManager radiationManager = new RadiationManager();
     /**
      * Mekanism creative tab
      */
-    public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
+    public static final CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
     /**
      * List of Mekanism modules loaded
      */
-    public static List<IModule> modulesLoaded = new ArrayList<>();
+    public static final List<IModule> modulesLoaded = new ArrayList<>();
     /**
      * The server's world tick handler.
      */
-    public static CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
+    public static final CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
     /**
      * The GameProfile used by the dummy Mekanism player
      */
-    public static GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("mekanism.common".getBytes()), Mekanism.LOG_TAG);
-    public static KeySync keyMap = new KeySync();
-    public static Set<Coord4D> activeVibrators = new ObjectOpenHashSet<>();
+    public static final GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("mekanism.common".getBytes()), Mekanism.LOG_TAG);
+    public static final KeySync keyMap = new KeySync();
+    public static final Set<Coord4D> activeVibrators = new ObjectOpenHashSet<>();
 
     private MekanismTagManager mekanismTagManager;
     private ReloadListener recipeCacheManager;

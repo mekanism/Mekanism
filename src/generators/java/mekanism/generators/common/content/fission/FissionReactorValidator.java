@@ -109,7 +109,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
 
     public static class FuelAssembly {
 
-        public TreeSet<BlockPos> fuelAssemblies = new TreeSet<>(Comparator.comparingInt(Vec3i::getY));
+        public final TreeSet<BlockPos> fuelAssemblies = new TreeSet<>(Comparator.comparingInt(Vec3i::getY));
         public BlockPos controlRodAssembly;
 
         public FuelAssembly(BlockPos start, boolean isControlRod) {
@@ -146,8 +146,8 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
 
     public static class FormedAssembly {
 
-        BlockPos pos;
-        int height;
+        private final BlockPos pos;
+        private final int height;
 
         public FormedAssembly(BlockPos pos, int height) {
             this.pos = pos;
@@ -179,7 +179,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
 
     public static class AssemblyPos {
 
-        int x, z;
+        private final int x, z;
 
         public AssemblyPos(int x, int z) {
             this.x = x;

@@ -44,11 +44,11 @@ public class RateLimitMultiTankGasHandler extends ItemStackMekanismGasHandler {
 
     public static class GasTankSpec {
 
-        LongSupplier rate;
-        LongSupplier capacity;
-        Predicate<@NonNull Gas> isValid;
-        BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract;
-        BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert;
+        final LongSupplier rate;
+        final LongSupplier capacity;
+        final Predicate<@NonNull Gas> isValid;
+        final BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract;
+        final BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert;
 
         public GasTankSpec(LongSupplier rate, LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid) {

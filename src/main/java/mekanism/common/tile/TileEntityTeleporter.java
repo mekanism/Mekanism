@@ -49,8 +49,8 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
 
+    public final Set<UUID> didTeleport = new ObjectOpenHashSet<>();
     private AxisAlignedBB teleportBounds = null;
-    public Set<UUID> didTeleport = new ObjectOpenHashSet<>();
     public int teleDelay = 0;
     public boolean shouldRender;
 

@@ -22,7 +22,7 @@ import net.minecraft.item.ItemTier;
 
 public class ToolsItems {
 
-    public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismTools.MODID);
+    public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismTools.MODID);
 
     public static final ItemRegistryObject<ItemMekanismPaxel> WOOD_PAXEL = registerPaxel(ItemTier.WOOD);
     public static final ItemRegistryObject<ItemMekanismPaxel> STONE_PAXEL = registerPaxel(ItemTier.STONE);

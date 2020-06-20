@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +33,6 @@ public class TileEntityChargepad extends TileEntityMekanism {
 
     private static final Predicate<LivingEntity> CHARGE_PREDICATE = entity -> !entity.isSpectator() && (entity instanceof PlayerEntity || entity instanceof EntityRobit);
 
-    public Random random = new Random();
     private MachineEnergyContainer<TileEntityChargepad> energyContainer;
 
     public TileEntityChargepad() {
@@ -106,8 +104,8 @@ public class TileEntityChargepad extends TileEntityMekanism {
     protected void onUpdateClient() {
         super.onUpdateClient();
         if (getActive()) {
-            world.addParticle(RedstoneParticleData.REDSTONE_DUST, getPos().getX() + random.nextDouble(), getPos().getY() + 0.15,
-                  getPos().getZ() + random.nextDouble(), 0, 0, 0);
+            world.addParticle(RedstoneParticleData.REDSTONE_DUST, getPos().getX() + world.rand.nextDouble(), getPos().getY() + 0.15,
+                  getPos().getZ() + world.rand.nextDouble(), 0, 0, 0);
         }
     }
 

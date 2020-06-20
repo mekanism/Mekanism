@@ -40,13 +40,13 @@ public class TurbineMultiblockData extends MultiblockData {
     public static final long GAS_PER_TANK = TankMultiblockData.FLUID_PER_TANK;
 
     public static final float ROTATION_THRESHOLD = 0.001F;
-    public static Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
+    public static final Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
 
     @ContainerSync
     public IGasTank gasTank;
     @ContainerSync
     public IExtendedFluidTank ventTank;
-    public List<IExtendedFluidTank> ventTanks;
+    public final List<IExtendedFluidTank> ventTanks;
     @ContainerSync
     public IEnergyContainer energyContainer;
     @ContainerSync

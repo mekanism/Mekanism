@@ -25,7 +25,7 @@ public class MultiblockManager<T extends MultiblockData> {
     /**
      * A map containing references to all multiblock inventory caches.
      */
-    public Map<UUID, CacheWrapper> inventories = new Object2ObjectOpenHashMap<>();
+    public final Map<UUID, CacheWrapper> inventories = new Object2ObjectOpenHashMap<>();
 
     public MultiblockManager(String name, Supplier<MultiblockCache<T>> cacheSupplier, Supplier<IStructureValidator<T>> validatorSupplier) {
         this.name = name;

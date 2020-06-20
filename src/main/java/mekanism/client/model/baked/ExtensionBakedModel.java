@@ -25,7 +25,7 @@ import net.minecraftforge.client.model.data.IModelData;
 
 public class ExtensionBakedModel<T> implements IBakedModel {
 
-    protected IBakedModel original;
+    protected final IBakedModel original;
 
     private final LoadingCache<QuadsKey<T>, List<BakedQuad>> cache = CacheBuilder.newBuilder().build(new CacheLoader<QuadsKey<T>, List<BakedQuad>>() {
         @Override

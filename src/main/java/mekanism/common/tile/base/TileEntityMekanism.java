@@ -131,7 +131,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     /**
      * The players currently using this block.
      */
-    public Set<PlayerEntity> playersUsing = new ObjectOpenHashSet<>();
+    public final Set<PlayerEntity> playersUsing = new ObjectOpenHashSet<>();
 
     /**
      * A timer used to send packets to clients.
@@ -140,7 +140,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private final List<ICapabilityHandlerManager<?>> capabilityHandlerManagers = new ArrayList<>();
     private final List<ITileComponent> components = new ArrayList<>();
 
-    protected IBlockProvider blockProvider;
+    protected final IBlockProvider blockProvider;
 
     private boolean supportsComparator;
     private boolean supportsUpgrades;
@@ -172,7 +172,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End variables ITileUpgradable
 
     //Variables for handling IFrequencyHandler
-    protected TileComponentFrequency frequencyComponent;
+    protected final TileComponentFrequency frequencyComponent;
     //End variables IFrequencyHandler
 
     //Variables for handling ITileContainer

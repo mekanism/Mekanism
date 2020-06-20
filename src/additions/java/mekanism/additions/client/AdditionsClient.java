@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 
 public class AdditionsClient {
 
-    public static VoiceClient voiceClient;
+    private static VoiceClient voiceClient;
 
     public static void reset() {
         if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {

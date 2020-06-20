@@ -8,12 +8,12 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketKey {
 
-    public int key;
-    public boolean add;
+    private final int key;
+    private final boolean add;
 
-    public PacketKey(int k, boolean a) {
-        key = k;
-        add = a;
+    public PacketKey(int key, boolean add) {
+        this.key = key;
+        this.add = add;
     }
 
     public static void handle(PacketKey message, Supplier<Context> context) {

@@ -24,14 +24,14 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public final class TagType<TYPE extends IForgeRegistryEntry<TYPE>> {
 
-    public static TagType<Item> ITEM = new TagType<>("Item", "items", () -> ForgeRegistries.ITEMS, ItemTags::setCollection);
-    public static TagType<Block> BLOCK = new TagType<>("Block", "blocks", () -> ForgeRegistries.BLOCKS, BlockTags::setCollection);
-    public static TagType<EntityType<?>> ENTITY_TYPE = new TagType<>("Entity Type", "entity_types", () -> ForgeRegistries.ENTITIES, EntityTypeTags::setCollection);
-    public static TagType<Fluid> FLUID = new TagType<>("Fluid", "fluids", () -> ForgeRegistries.FLUIDS, FluidTags::setCollection);
-    public static TagType<Gas> GAS = new TagType<>("Gas", "gases", MekanismAPI::gasRegistry, ChemicalTags.GAS::setCollection);
-    public static TagType<InfuseType> INFUSE_TYPE = new TagType<>("Infuse Type", "infuse_types", MekanismAPI::infuseTypeRegistry, ChemicalTags.INFUSE_TYPE::setCollection);
-    public static TagType<Pigment> PIGMENT = new TagType<>("Pigment", "pigments", MekanismAPI::pigmentRegistry, ChemicalTags.PIGMENT::setCollection);
-    public static TagType<Slurry> SLURRY = new TagType<>("Slurry", "slurries", MekanismAPI::slurryRegistry, ChemicalTags.SLURRY::setCollection);
+    public static final TagType<Item> ITEM = new TagType<>("Item", "items", () -> ForgeRegistries.ITEMS, ItemTags::setCollection);
+    public static final TagType<Block> BLOCK = new TagType<>("Block", "blocks", () -> ForgeRegistries.BLOCKS, BlockTags::setCollection);
+    public static final TagType<EntityType<?>> ENTITY_TYPE = new TagType<>("Entity Type", "entity_types", () -> ForgeRegistries.ENTITIES, EntityTypeTags::setCollection);
+    public static final TagType<Fluid> FLUID = new TagType<>("Fluid", "fluids", () -> ForgeRegistries.FLUIDS, FluidTags::setCollection);
+    public static final TagType<Gas> GAS = new TagType<>("Gas", "gases", MekanismAPI::gasRegistry, ChemicalTags.GAS::setCollection);
+    public static final TagType<InfuseType> INFUSE_TYPE = new TagType<>("Infuse Type", "infuse_types", MekanismAPI::infuseTypeRegistry, ChemicalTags.INFUSE_TYPE::setCollection);
+    public static final TagType<Pigment> PIGMENT = new TagType<>("Pigment", "pigments", MekanismAPI::pigmentRegistry, ChemicalTags.PIGMENT::setCollection);
+    public static final TagType<Slurry> SLURRY = new TagType<>("Slurry", "slurries", MekanismAPI::slurryRegistry, ChemicalTags.SLURRY::setCollection);
 
     private final Consumer<TagCollection<TYPE>> collectionSetter;
     private final NonNullSupplier<IForgeRegistry<TYPE>> registry;

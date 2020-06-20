@@ -25,7 +25,7 @@ public class AttributeParticleFX implements Attribute {
         private final IParticleData type;
         private final Pos3D pos;
 
-        public Particle(IParticleData type, Pos3D pos) {
+        protected Particle(IParticleData type, Pos3D pos) {
             this.type = type;
             this.pos = pos;
         }

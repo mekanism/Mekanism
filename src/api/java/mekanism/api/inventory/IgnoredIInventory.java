@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 @MethodsReturnNonnullByDefault
 public final class IgnoredIInventory implements IInventory {
 
-    public static IgnoredIInventory INSTANCE = new IgnoredIInventory();
+    public static final IgnoredIInventory INSTANCE = new IgnoredIInventory();
 
     private IgnoredIInventory() {
     }

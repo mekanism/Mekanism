@@ -57,7 +57,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     private final Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
 
-    public Set<FormedAssembly> assemblies = new LinkedHashSet<>();
+    public final Set<FormedAssembly> assemblies = new LinkedHashSet<>();
     @ContainerSync
     public int fuelAssemblies = 1, surfaceArea;
 

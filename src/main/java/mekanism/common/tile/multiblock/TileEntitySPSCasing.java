@@ -16,7 +16,7 @@ import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData> {
 
-    public Queue<SPSOrbitEffect> orbitEffects = new LinkedList<>();
+    public final Queue<SPSOrbitEffect> orbitEffects = new LinkedList<>();
 
     private boolean handleSound;
     private boolean prevActive;

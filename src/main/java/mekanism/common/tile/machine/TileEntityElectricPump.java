@@ -61,6 +61,10 @@ import net.minecraftforge.fluids.IFluidBlock;
 public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable {
 
     /**
+     * How many ticks it takes to run an operation.
+     */
+    private static final int BASE_TICKS_REQUIRED = 20;
+    /**
      * This pump's tank
      */
     public BasicFluidTank fluidTank;
@@ -70,10 +74,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Nonnull
     private FluidStack activeType = FluidStack.EMPTY;
     private boolean suckedLastOperation;
-    /**
-     * How many ticks it takes to run an operation.
-     */
-    public int BASE_TICKS_REQUIRED = 20;
     public int ticksRequired = BASE_TICKS_REQUIRED;
     /**
      * How many ticks this machine has been operating for.

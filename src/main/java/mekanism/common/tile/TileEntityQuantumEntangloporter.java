@@ -76,9 +76,9 @@ import net.minecraft.util.math.ChunkPos;
 
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, IFrequencyHandler, ISustainedData, IChunkLoader {
 
-    public TileComponentEjector ejectorComponent;
-    public TileComponentConfig configComponent;
-    public TileComponentChunkLoader<TileEntityQuantumEntangloporter> chunkLoaderComponent;
+    public final TileComponentEjector ejectorComponent;
+    public final TileComponentConfig configComponent;
+    public final TileComponentChunkLoader<TileEntityQuantumEntangloporter> chunkLoaderComponent;
 
     private double lastTransferLoss;
     private double lastEnvironmentLoss;

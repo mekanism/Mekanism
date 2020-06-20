@@ -20,7 +20,7 @@ public class TileComponentSecurity implements ITileComponent {
     /**
      * TileEntity implementing this component.
      */
-    public TileEntityMekanism tile;
+    public final TileEntityMekanism tile;
 
     private UUID ownerUUID;
     private String clientOwner;

@@ -4,11 +4,11 @@ import net.minecraft.world.dimension.DimensionType;
 
 public class Range3D {
 
-    public DimensionType dimension;
-    public int xMin;
-    public int zMin;
-    public int xMax;
-    public int zMax;
+    public final DimensionType dimension;
+    public final int xMin;
+    public final int zMin;
+    public final int xMax;
+    public final int zMax;
 
     public Range3D(int minX, int minZ, int maxX, int maxZ, DimensionType dimension) {
         xMin = minX;

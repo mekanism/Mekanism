@@ -16,22 +16,22 @@ public abstract class RobitAIBase extends Goal {
     /**
      * The robit entity.
      */
-    protected EntityRobit theRobit;
+    protected final EntityRobit theRobit;
 
     /**
      * The world the robit is located in.
      */
-    protected World world;
+    protected final World world;
 
     /**
      * How fast the robit can travel.
      */
-    protected float moveSpeed;
+    protected final float moveSpeed;
 
     /**
      * The robit's pathfinder.
      */
-    protected GroundPathNavigator thePathfinder;
+    protected final GroundPathNavigator thePathfinder;
 
     /**
      * The ticker for updates.

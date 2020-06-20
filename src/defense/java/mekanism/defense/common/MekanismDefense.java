@@ -34,7 +34,7 @@ public class MekanismDefense implements IModule {
     /**
      * Mekanism Generators Packet Pipeline
      */
-    public static DefensePacketHandler packetHandler = new DefensePacketHandler();
+    public static final DefensePacketHandler packetHandler = new DefensePacketHandler();
 
     public MekanismDefense() {
         Mekanism.modulesLoaded.add(instance = this);

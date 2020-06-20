@@ -28,7 +28,7 @@ import net.minecraft.world.IWorldReader;
 
 public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements IHasDescription, ITypeBlock {
 
-    protected TYPE type;
+    protected final TYPE type;
 
     public BlockBase(TYPE type) {
         this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

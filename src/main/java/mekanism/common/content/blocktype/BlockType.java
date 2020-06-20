@@ -76,7 +76,7 @@ public class BlockType {
 
     public static class BlockTypeBuilder<BLOCK extends BlockType, T extends BlockTypeBuilder<BLOCK, T>> {
 
-        protected BLOCK holder;
+        protected final BLOCK holder;
 
         protected BlockTypeBuilder(BLOCK holder) {
             this.holder = holder;

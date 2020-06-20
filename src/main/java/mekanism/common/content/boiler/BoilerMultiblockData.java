@@ -35,7 +35,7 @@ import net.minecraft.world.World;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
 
-    public static Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
+    public static final Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
     public static final double CASING_HEAT_CAPACITY = 50;
     public static final double CASING_INVERSE_INSULATION_COEFFICIENT = 100_000;

@@ -196,9 +196,8 @@ public final class HolidayManager {
 
     public static class YearlyDate {
 
-        public Month month;
-
-        public int day;
+        public final Month month;
+        public final int day;
 
         public YearlyDate(Month m, int d) {
             month = m;

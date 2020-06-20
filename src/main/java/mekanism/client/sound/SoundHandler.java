@@ -3,7 +3,7 @@ package mekanism.client.sound;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -61,7 +61,7 @@ public class SoundHandler {
     private static final Set<UUID> scubaMaskSounds = new ObjectOpenHashSet<>();
     private static final Set<UUID> flamethrowerSounds = new ObjectOpenHashSet<>();
     private static final Set<UUID> gravitationalModulationSounds = new ObjectOpenHashSet<>();
-    public static Map<RadiationScale, GeigerSound> radiationSoundMap = new HashMap<>();
+    public static final Map<RadiationScale, GeigerSound> radiationSoundMap = new EnumMap<>(RadiationScale.class);
 
     private static final Long2ObjectMap<ISound> soundMap = new Long2ObjectOpenHashMap<>();
     private static boolean IN_MUFFLED_CHECK = false;

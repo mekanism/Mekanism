@@ -119,7 +119,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
     abstract class MiniElement {
 
-        int xPos, yPos;
+        final int xPos, yPos;
 
         public MiniElement(int xPos, int yPos) {
             this.xPos = xPos;
@@ -154,7 +154,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
     class BooleanToggle extends MiniElement {
 
-        ModuleConfigItem<Boolean> data;
+        final ModuleConfigItem<Boolean> data;
 
         BooleanToggle(ModuleConfigItem<Boolean> data, int xPos, int yPos) {
             super(xPos, yPos);
@@ -205,7 +205,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
         final int BAR_LENGTH = getWidth() - 24;
         final int BAR_START = 10;
         final float TEXT_SCALE = 0.7F;
-        ModuleConfigItem<Enum<? extends IHasTextComponent>> data;
+        final ModuleConfigItem<Enum<? extends IHasTextComponent>> data;
         boolean dragging = false;
 
         EnumToggle(ModuleConfigItem<Enum<? extends IHasTextComponent>> data, int xPos, int yPos) {

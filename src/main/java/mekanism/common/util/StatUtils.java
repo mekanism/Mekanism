@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class StatUtils {
 
-    public static Random rand = new Random();
+    public static final Random rand = new Random();
 
     public static int inversePoisson(double mean) {
         double r = rand.nextDouble() * Math.exp(mean);

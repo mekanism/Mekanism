@@ -22,7 +22,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class DiversionTransporter extends LogisticalTransporterBase {
 
-    public DiversionControl[] modes;
+    public final DiversionControl[] modes;
 
     public DiversionTransporter(TileEntityTransmitter tile) {
         super(tile, TransporterTier.BASIC);

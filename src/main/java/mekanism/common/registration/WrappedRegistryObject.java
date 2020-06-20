@@ -13,7 +13,7 @@ public class WrappedRegistryObject<T extends IForgeRegistryEntry<? super T>> imp
 
     protected RegistryObject<T> registryObject;
 
-    public WrappedRegistryObject(RegistryObject<T> registryObject) {
+    protected WrappedRegistryObject(RegistryObject<T> registryObject) {
         this.registryObject = registryObject;
     }
 

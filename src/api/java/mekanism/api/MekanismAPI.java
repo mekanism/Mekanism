@@ -26,7 +26,7 @@ public class MekanismAPI {
      */
     public static boolean debug = false;
 
-    public static Logger logger = LogManager.getLogger(MEKANISM_MODID + "_api");
+    public static final Logger logger = LogManager.getLogger(MEKANISM_MODID + "_api");
 
     private static IForgeRegistry<Gas> GAS_REGISTRY;
     private static IForgeRegistry<InfuseType> INFUSE_TYPE_REGISTRY;
