@@ -5,7 +5,8 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -13,8 +14,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class ModelIndustrialAlarm extends MekanismModel {
 
-    private static final ResourceLocation TEXTURE = Mekanism.rl("render/industrial_alarm.png");
-    private static final ResourceLocation TEXTURE_ACTIVE = Mekanism.rl("render/industrial_alarm_active.png");
+    private static final ResourceLocation TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "industrial_alarm.png");
+    private static final ResourceLocation TEXTURE_ACTIVE = MekanismUtils.getResource(ResourceType.RENDER, "industrial_alarm_active.png");
     private final RenderType RENDER_TYPE = MekanismRenderType.mekStandard(TEXTURE);
     private final RenderType RENDER_TYPE_ACTIVE = MekanismRenderType.mekStandard(TEXTURE_ACTIVE);
 
