@@ -70,7 +70,7 @@ import mekanism.common.item.block.machine.ItemBlockLaserTractorBeam;
 import mekanism.common.item.block.machine.ItemBlockLogisticalSorter;
 import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.item.block.machine.ItemBlockOredictionificator;
-import mekanism.common.item.block.machine.ItemBlockPersonalChest;
+import mekanism.common.item.block.ItemBlockPersonalChest;
 import mekanism.common.item.block.machine.ItemBlockQuantumEntangloporter;
 import mekanism.common.item.block.machine.ItemBlockSeismicVibrator;
 import mekanism.common.item.block.machine.ItemBlockSolarNeutronActivator;

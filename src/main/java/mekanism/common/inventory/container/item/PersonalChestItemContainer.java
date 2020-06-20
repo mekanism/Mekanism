@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.item.block.machine.ItemBlockPersonalChest;
+import mekanism.common.item.block.ItemBlockPersonalChest;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
