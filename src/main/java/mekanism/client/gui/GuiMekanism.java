@@ -23,6 +23,7 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.LRU;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
@@ -117,7 +118,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeftIn, int guiTopIn, int mouseButton) {
-        return windows.stream().noneMatch(w -> w.isMouseOver(mouseX, mouseY)) && super.hasClickedOutside(mouseX, mouseY, guiLeftIn, guiTopIn, mouseButton);
+        return getWindowHovering(mouseX, mouseY) == null && super.hasClickedOutside(mouseX, mouseY, guiLeftIn, guiTopIn, mouseButton);
     }
 
     @Override
@@ -144,7 +145,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 Widget widget = buttons.get(e.getLeft());
                 // we're forced to assume that the children list is the same before and after the resize.
                 // for verification, we run a lightweight class equality check
-                if (widget.getClass() == e.getRight().getClass() && widget instanceof GuiElement) {
+                // Note: We do not perform an instance check on widget to ensure it is a GuiElement, as that is
+                // ensured by the class comparison, and the restrictions of what can go in prevElements
+                if (widget.getClass() == e.getRight().getClass()) {
                     ((GuiElement) widget).syncFrom(e.getRight());
                 }
             }
@@ -179,7 +182,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             RenderSystem.popMatrix();
         }
         // then render tooltips, translating above max z offset to prevent clashing
-        GuiElement tooltipElement = windows.stream().filter(window -> window.isMouseOver(mouseX, mouseY)).findFirst().orElse(null);
+        GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
         if (tooltipElement == null) {
             for (int i = buttons.size() - 1; i >= 0; i--) {
                 Widget widget = buttons.get(i);
@@ -199,7 +202,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Nonnull
     @Override
     public Optional<IGuiEventListener> getEventListenerForPos(double mouseX, double mouseY) {
-        GuiWindow window = windows.stream().filter(w -> w.isMouseOver(mouseX, mouseY)).findFirst().orElse(null);
+        GuiWindow window = getWindowHovering(mouseX, mouseY);
         return window != null ? Optional.of(window) : super.getEventListenerForPos(mouseX, mouseY);
     }
 
@@ -260,7 +263,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     protected boolean isPointInRegion(int x, int y, int width, int height, double mouseX, double mouseY) {
         // overridden to prevent slot interactions when a GuiElement is blocking
         return super.isPointInRegion(x, y, width, height, mouseX, mouseY) &&
-               windows.stream().noneMatch(window -> window.isMouseOver(mouseX, mouseY)) &&
+               getWindowHovering(mouseX, mouseY) == null &&
                buttons.stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
     }
 
@@ -303,9 +306,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Nullable
     protected DataType findDataType(InventoryContainerSlot slot) {
-        if (container instanceof MekanismTileContainer && ((MekanismTileContainer<?>) container).getTileEntity() instanceof ISideConfiguration) {
-            ISideConfiguration tile = (ISideConfiguration) ((MekanismTileContainer<?>) container).getTileEntity();
-            return tile.getActiveDataType(slot.getInventorySlot());
+        if (container instanceof MekanismTileContainer) {
+            TileEntityMekanism tileEntity = ((MekanismTileContainer<?>) container).getTileEntity();
+            if (tileEntity instanceof ISideConfiguration) {
+                return ((ISideConfiguration) tileEntity).getActiveDataType(slot.getInventorySlot());
+            }
         }
         return null;
     }
@@ -343,26 +348,15 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
-        if (!stack.isEmpty()) {
-            try {
-                RenderSystem.pushMatrix();
-                RenderSystem.enableDepthTest();
-                RenderHelper.enableStandardItemLighting();
-                if (scale != 1) {
-                    RenderSystem.scalef(scale, scale, scale);
-                }
-                itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
-                RenderHelper.disableStandardItemLighting();
-                RenderSystem.disableDepthTest();
-                RenderSystem.popMatrix();
-            } catch (Exception e) {
-                Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
-            }
-        }
+        renderItem(stack, xAxis, yAxis, scale, null, false);
     }
 
     @Override
     public void renderItemWithOverlay(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
+        renderItem(stack, xAxis, yAxis, scale, text, true);
+    }
+
+    private void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text, boolean overlay) {
         if (!stack.isEmpty()) {
             try {
                 RenderSystem.pushMatrix();
@@ -372,7 +366,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                     RenderSystem.scalef(scale, scale, scale);
                 }
                 itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
-                itemRenderer.renderItemOverlayIntoGUI(font, stack, xAxis, yAxis, text);
+                if (overlay) {
+                    itemRenderer.renderItemOverlayIntoGUI(font, stack, xAxis, yAxis, text);
+                }
                 RenderHelper.disableStandardItemLighting();
                 RenderSystem.disableDepthTest();
                 RenderSystem.popMatrix();
@@ -404,6 +400,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void removeWindow(GuiWindow window) {
         windows.remove(window);
+    }
+
+    @Nullable
+    @Override
+    public GuiWindow getWindowHovering(double mouseX, double mouseY) {
+        return windows.stream().filter(w -> w.isMouseOver(mouseX, mouseY)).findFirst().orElse(null);
     }
 
     public Collection<GuiWindow> getWindows() {

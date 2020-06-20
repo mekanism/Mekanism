@@ -83,7 +83,6 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
               41, ListSortType.class, container::getSortType, container::setSortType));
         addButton(new GuiDigitalIconToggle<>(this, xSize - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, container::getSortDirection, container::setSortDirection));
-        //TODO - V10: Make the max size scale with the gui scale and also with the windows size if it gets changed after the screen is opened
         addButton(new GuiResizeControls(this, (minecraft.getMainWindow().getScaledHeight() / 2) - 20 - getGuiTop(), this::resize));
     }
 
@@ -101,6 +100,15 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     public void resize(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
         super.resize(minecraft, sizeX, sizeY);
         container.updateSearch(searchField.getText());
+        //Validate the height is still valid, and if it isn't recreate it
+        int maxY = QIOItemViewerContainer.getSlotsYMax();
+        if (MekanismConfig.client.qioItemViewerSlotsY.get() > maxY) {
+            //Note: We need to update it here to ensure that it refreshes when recreating the viewer on the client when connected to a server
+            MekanismConfig.client.qioItemViewerSlotsY.set(maxY);
+            // save the updated config info
+            MekanismConfig.client.getConfigSpec().save();
+            recreateViewer();
+        }
     }
 
     @Override
@@ -117,17 +125,29 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
 
     private void resize(ResizeType type) {
         int sizeX = MekanismConfig.client.qioItemViewerSlotsX.get(), sizeY = MekanismConfig.client.qioItemViewerSlotsY.get();
+        boolean changed = false;
         if (type == ResizeType.EXPAND_X && sizeX < QIOItemViewerContainer.SLOTS_X_MAX) {
             MekanismConfig.client.qioItemViewerSlotsX.set(sizeX + 1);
-        } else if (type == ResizeType.EXPAND_Y && sizeY < QIOItemViewerContainer.SLOTS_Y_MAX) {
+            changed = true;
+        } else if (type == ResizeType.EXPAND_Y && sizeY < QIOItemViewerContainer.getSlotsYMax()) {
             MekanismConfig.client.qioItemViewerSlotsY.set(sizeY + 1);
+            changed = true;
         } else if (type == ResizeType.SHRINK_X && sizeX > QIOItemViewerContainer.SLOTS_X_MIN) {
             MekanismConfig.client.qioItemViewerSlotsX.set(sizeX - 1);
+            changed = true;
         } else if (type == ResizeType.SHRINK_Y && sizeY > QIOItemViewerContainer.SLOTS_Y_MIN) {
             MekanismConfig.client.qioItemViewerSlotsY.set(sizeY - 1);
+            changed = true;
         }
-        // save the updated config info
-        MekanismConfig.client.getConfigSpec().save();
+        if (changed) {
+            // save the updated config info
+            MekanismConfig.client.getConfigSpec().save();
+            // And recreate the viewer
+            recreateViewer();
+        }
+    }
+
+    private void recreateViewer() {
         // here we subtly recreate the entire interface + container, maintaining the same window ID
         @SuppressWarnings("unchecked")
         CONTAINER c = (CONTAINER) container.recreate();

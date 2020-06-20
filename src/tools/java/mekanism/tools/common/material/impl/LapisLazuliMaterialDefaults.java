@@ -12,7 +12,7 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 291;
+        return 582;
     }
 
     @Override

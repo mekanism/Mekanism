@@ -13,19 +13,13 @@ public enum ShieldTextures {
     STEEL("steel");
 
     private final Material base;
-    private final Material noPattern;
 
     ShieldTextures(String name) {
         base = material("item/" + name + "/shield");
-        noPattern = material("item/" + name + "/shield_no_pattern");
     }
 
     public Material getBase() {
         return base;
-    }
-
-    public Material getNoPattern() {
-        return noPattern;
     }
 
     private static Material material(String path) {

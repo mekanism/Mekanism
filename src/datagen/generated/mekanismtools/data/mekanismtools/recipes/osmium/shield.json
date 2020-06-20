@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismtools:osmium_shield"
+  },
+  "pattern": [
+    "IPI",
+    "III",
+    " I "
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:shield"
+    },
+    "I": {
+      "tag": "forge:ingots/osmium"
+    }
+  }
+}

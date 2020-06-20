@@ -2,6 +2,7 @@ package mekanism.client.jei;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.client.gui.GuiMekanism;
@@ -43,14 +44,13 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
     @Override
     public Object getIngredientUnderMouse(GuiMekanism genericGui, double mouseX, double mouseY) {
         GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
-        //Check the "active" gui window first
-        for (GuiWindow guiWindow : gui.getWindows()) {
-            if (guiWindow.isMouseOver(mouseX, mouseY)) {
-                return getIngredientUnderMouse(guiWindow.children(), mouseX, mouseY);
-            }
+        GuiWindow guiWindow = gui.getWindowHovering(mouseX, mouseY);
+        if (guiWindow == null) {
+            //If no window is being hovered, then check the elements in general
+            return getIngredientUnderMouse(gui.children(), mouseX, mouseY);
         }
-        //If none are hovered, then check the elements in general
-        return getIngredientUnderMouse(gui.children(), mouseX, mouseY);
+        //Otherwise check the elements of the window
+        return getIngredientUnderMouse(guiWindow.children(), mouseX, mouseY);
     }
 
     @Nullable
@@ -64,41 +64,21 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
     }
 
     @Override
-    public Collection<IGuiClickableArea> getGuiClickableAreas(GuiMekanism genericGui) {
+    public Collection<IGuiClickableArea> getGuiClickableAreas(GuiMekanism genericGui, double mouseX, double mouseY) {
         GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
-        //TODO - V10: Stop overriding this method and add the override annotation to the below getGuiClickableArea method.
-        // Requires: https://github.com/mezz/JustEnoughItems/pull/1980 but will allow gui windows to properly stop
-        List<IGuiClickableArea> clickableAreas = new ArrayList<>();
-        for (IGuiEventListener child : gui.children()) {
-            if (child instanceof IJEIRecipeArea) {
-                IJEIRecipeArea<?> recipeArea = (IJEIRecipeArea<?>) child;
-                if (recipeArea.isActive()) {
-                    ResourceLocation[] categories = recipeArea.getRecipeCategories();
-                    if (categories != null && child instanceof GuiRelativeElement) {
-                        GuiRelativeElement element = (GuiRelativeElement) child;
-                        clickableAreas.add(IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(), element.getWidth(), element.getHeight(), categories));
-                    }
-                }
-            }
+        //Make mouseX and mouseY not be relative
+        mouseX += gui.getGuiLeft();
+        mouseY += gui.getGuiTop();
+        GuiWindow guiWindow = gui.getWindowHovering(mouseX, mouseY);
+        if (guiWindow == null) {
+            //If no window is being hovered, then check the elements in general
+            return getGuiClickableArea(gui.children(), mouseX, mouseY);
         }
-        return clickableAreas;
+        //Otherwise check the elements of the window
+        return getGuiClickableArea(guiWindow.children(), mouseX, mouseY);
     }
 
-    @Nullable
-    public IGuiClickableArea getGuiClickableArea(GuiMekanism genericGui, double mouseX, double mouseY) {
-        GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
-        //Check the "active" gui window first
-        for (GuiWindow guiWindow : gui.getWindows()) {
-            if (guiWindow.isMouseOver(mouseX, mouseY)) {
-                return getGuiClickableArea(guiWindow.children(), mouseX, mouseY);
-            }
-        }
-        //If none are hovered, then check the elements in general
-        return getGuiClickableArea(gui.children(), mouseX, mouseY);
-    }
-
-    @Nullable
-    private IGuiClickableArea getGuiClickableArea(List<? extends IGuiEventListener> children, double mouseX, double mouseY) {
+    private Collection<IGuiClickableArea> getGuiClickableArea(List<? extends IGuiEventListener> children, double mouseX, double mouseY) {
         for (IGuiEventListener child : children) {
             if (child instanceof GuiRelativeElement && child instanceof IJEIRecipeArea) {
                 IJEIRecipeArea<?> recipeArea = (IJEIRecipeArea<?>) child;
@@ -108,11 +88,13 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
                     if (categories != null && child.isMouseOver(mouseX, mouseY)) {
                         GuiRelativeElement element = (GuiRelativeElement) child;
                         //TODO: Decide if we want our own implementation to overwrite the getTooltipStrings and have it show something like "Crusher Recipes"
-                        return IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(), element.getWidth(), element.getHeight(), categories);
+                        IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(), element.getWidth(),
+                              element.getHeight(), categories);
+                        return Collections.singleton(clickableArea);
                     }
                 }
             }
         }
-        return null;
+        return Collections.emptyList();
     }
 }

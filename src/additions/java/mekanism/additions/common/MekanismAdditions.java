@@ -64,13 +64,12 @@ public class MekanismAdditions implements IModule {
     public MekanismAdditions() {
         Mekanism.modulesLoaded.add(instance = this);
         MekanismAdditionsConfig.registerConfigs(ModLoadingContext.get());
+        MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
-        MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
         modEventBus.addListener(this::onConfigLoad);
-
         AdditionsItems.ITEMS.register(modEventBus);
         AdditionsBlocks.BLOCKS.register(modEventBus);
         AdditionsEntityTypes.ENTITY_TYPES.register(modEventBus);

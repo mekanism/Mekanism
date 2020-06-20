@@ -49,6 +49,10 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
     private static final RecipePattern BOOTS = RecipePattern.createPattern(
           TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT),
           TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT));
+    private static final RecipePattern SHIELD = RecipePattern.createPattern(
+          TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
+          TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+          TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY));
     //Tool Patterns
     private static final RecipePattern AXE = RecipePattern.createPattern(
           DoubleLine.of(Pattern.INGOT, Pattern.INGOT),
@@ -103,12 +107,16 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
     private void registerRecipeSet(Consumer<IFinishedRecipe> consumer, String name, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings,
           IItemProvider boots, IItemProvider sword, IItemProvider pickaxe, IItemProvider axe, IItemProvider shovel, IItemProvider hoe, IItemProvider paxel,
           IItemProvider shield, Tag<Item> ingot, Tag<Item> rod, @Nullable IItemProvider nugget) {
-        //TODO - V10: Shield recipes
         String baseArmorPath = name + "/armor/";
         armor(HELMET, helmet, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "helmet"));
         armor(CHESTPLATE, chestplate, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "chestplate"));
         armor(LEGGINGS, leggings, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "leggings"));
         armor(BOOTS, boots, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "boots"));
+        ExtendedShapedRecipeBuilder.shapedRecipe(shield)
+              .pattern(SHIELD)
+              .key(Pattern.PREVIOUS, Items.SHIELD)
+              .key(Pattern.INGOT, ingot)
+              .build(consumer, MekanismTools.rl(name + "/shield"));
         String baseToolsPath = name + "/tools/";
         tool(SWORD, sword, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "sword"));
         tool(PICKAXE, pickaxe, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "pickaxe"));

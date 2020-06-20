@@ -36,14 +36,13 @@ import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
-import mekanism.common.inventory.container.tile.filter.FilterContainer;
+import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.HashList;
@@ -173,7 +172,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private void closeInvalidScreens() {
         if (getActive() && !playersUsing.isEmpty()) {
             for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
-                if (player.openContainer instanceof IEmptyContainer || player.openContainer instanceof FilterContainer) {
+                if (player.openContainer instanceof DigitalMinerConfigContainer) {
                     player.closeScreen();
                 }
             }

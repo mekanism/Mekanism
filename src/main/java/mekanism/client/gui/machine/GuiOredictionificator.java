@@ -11,13 +11,11 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.common.Mekanism;
+import mekanism.client.gui.element.filter.GuiOredictionificatorFilter;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.HashList;
-import mekanism.common.network.PacketGuiButtonPress;
-import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.entity.player.PlayerInventory;
@@ -52,7 +50,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiProgress(() -> tile.didProcess ? 1 : 0, ProgressType.LARGE_RIGHT, this, 64, 119));
         addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tile, -1))));
+              () -> addWindow(GuiOredictionificatorFilter.create(this, tile))));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
             addButton(new FilterButton(this, 10, 18 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, this::getFilters, this::onClick));
@@ -65,7 +63,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
 
     protected void onClick(IFilter<?> filter, int index) {
         if (filter instanceof OredictionificatorFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tile, index));
+            addWindow(GuiOredictionificatorFilter.edit(this, tile, (OredictionificatorFilter) filter));
         }
     }
 

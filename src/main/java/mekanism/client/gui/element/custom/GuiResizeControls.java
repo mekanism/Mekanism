@@ -66,7 +66,7 @@ public class GuiResizeControls extends GuiSideHolder {
 
     private void updateButtonState() {
         int index = getIndex();
-        expandButton.active = index < QIOItemViewerContainer.SLOTS_Y_MAX;
+        expandButton.active = index < QIOItemViewerContainer.getSlotsYMax();
         shrinkButton.active = index > QIOItemViewerContainer.SLOTS_Y_MIN;
     }
 

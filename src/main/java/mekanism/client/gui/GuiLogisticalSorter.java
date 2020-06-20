@@ -4,6 +4,11 @@ import java.util.List;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.filter.transporter.GuiSorterFilerSelect;
+import mekanism.client.gui.element.filter.transporter.GuiSorterItemStackFilter;
+import mekanism.client.gui.element.filter.transporter.GuiSorterMaterialFilter;
+import mekanism.client.gui.element.filter.transporter.GuiSorterModIDFilter;
+import mekanism.client.gui.element.filter.transporter.GuiSorterTagFilter;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
@@ -17,10 +22,12 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
-import mekanism.common.content.transporter.TransporterFilter;
-import mekanism.common.inventory.container.tile.EmptyTileContainer;
-import mekanism.common.network.PacketGuiButtonPress;
-import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
+import mekanism.common.content.transporter.SorterFilter;
+import mekanism.common.content.transporter.SorterItemStackFilter;
+import mekanism.common.content.transporter.SorterMaterialFilter;
+import mekanism.common.content.transporter.SorterModIDFilter;
+import mekanism.common.content.transporter.SorterTagFilter;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -30,9 +37,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, TileEntityLogisticalSorter, EmptyTileContainer<TileEntityLogisticalSorter>> {
+public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEntityLogisticalSorter, MekanismTileContainer<TileEntityLogisticalSorter>> {
 
-    public GuiLogisticalSorter(EmptyTileContainer<TileEntityLogisticalSorter> container, PlayerInventory inv, ITextComponent title) {
+    public GuiLogisticalSorter(MekanismTileContainer<TileEntityLogisticalSorter> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 
@@ -43,9 +50,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
-
         addButton(new TranslationButton(this, getGuiLeft() + 56, getGuiTop() + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tile))));
+              () -> addWindow(new GuiSorterFilerSelect(this, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 58, 14, getButtonLocation("single"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SINGLE_ITEM_BUTTON, tile)),
               getOnHover(MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION)));
@@ -81,13 +87,13 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
     @Override
     protected void onClick(IFilter<?> filter, int index) {
         if (filter instanceof IItemStackFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_ITEMSTACK, tile, index));
+            addWindow(GuiSorterItemStackFilter.edit(this, tile, (SorterItemStackFilter) filter));
         } else if (filter instanceof ITagFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_TAG, tile, index));
+            addWindow(GuiSorterTagFilter.edit(this, tile, (SorterTagFilter) filter));
         } else if (filter instanceof IMaterialFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MATERIAL, tile, index));
+            addWindow(GuiSorterMaterialFilter.edit(this, tile, (SorterMaterialFilter) filter));
         } else if (filter instanceof IModIDFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MOD_ID, tile, index));
+            addWindow(GuiSorterModIDFilter.edit(this, tile, (SorterModIDFilter) filter));
         }
     }
 

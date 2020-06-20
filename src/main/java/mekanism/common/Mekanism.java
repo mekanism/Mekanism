@@ -46,6 +46,7 @@ import mekanism.common.content.tank.TankValidator;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -323,9 +324,12 @@ public class Mekanism {
         hooks.hookCommonSetup();
         Capabilities.registerCapabilities();
 
-        //Register the mod's world generators
-        //noinspection deprecation
-        DeferredWorkQueue.runLater(GenHandler::setupWorldGeneration);
+        DeferredWorkQueue.runLater(() -> {
+            //Register the mod's world generators
+            GenHandler.setupWorldGeneration();
+            //Collect sync mapper scan data
+            SyncMapper.collectScanData();
+        });
 
         //Register player tracker
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTracker());

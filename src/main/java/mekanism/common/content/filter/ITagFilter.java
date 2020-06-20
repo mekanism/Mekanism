@@ -5,4 +5,9 @@ public interface ITagFilter<FILTER extends ITagFilter<FILTER>> extends IFilter<F
     void setTagName(String name);
 
     String getTagName();
+
+    @Override
+    default boolean hasFilter() {
+        return getTagName() != null && !getTagName().isEmpty();
+    }
 }

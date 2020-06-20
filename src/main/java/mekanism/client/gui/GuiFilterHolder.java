@@ -7,13 +7,14 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
-import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.HashList;
 import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
@@ -23,7 +24,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends EmptyTileContainer<TILE>>
+public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends MekanismTileContainer<TILE>>
       extends GuiMekanismTile<TILE, CONTAINER> {
 
     /**
@@ -34,6 +35,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
 
     public GuiFilterHolder(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        ySize += 86;
+        dynamicSlots = true;
     }
 
     @Override
@@ -85,4 +88,10 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     }
 
     protected abstract List<ItemStack> getTagStacks(String tagName);
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
 }

@@ -5,7 +5,7 @@ import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
-import mekanism.common.content.transporter.TransporterFilter;
+import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
@@ -35,8 +35,8 @@ public class PacketNewFilter {
         }
         context.get().enqueueWork(() -> {
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.pos);
-            if (message.filter instanceof TransporterFilter && tile instanceof TileEntityLogisticalSorter) {
-                ((TileEntityLogisticalSorter) tile).getFilters().add((TransporterFilter<?>) message.filter);
+            if (message.filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
+                ((TileEntityLogisticalSorter) tile).getFilters().add((SorterFilter<?>) message.filter);
             } else if (message.filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner) {
                 ((TileEntityDigitalMiner) tile).getFilters().add((MinerFilter<?>) message.filter);
             } else if (message.filter instanceof OredictionificatorFilter && tile instanceof TileEntityOredictionificator) {

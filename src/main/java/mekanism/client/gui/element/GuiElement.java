@@ -238,10 +238,25 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        if (super.isMouseOver(mouseX, mouseY)) {
-            return true;
+        return super.isMouseOver(mouseX, mouseY) || children.stream().anyMatch(child -> child.isMouseOver(mouseX, mouseY));
+    }
+
+    /**
+     * Does the same as {@link #isMouseOver(double, double)}, but validates there is no window in the way
+     */
+    public final boolean isMouseOverCheckWindows(double mouseX, double mouseY) {
+        //TODO: Ideally we would have the various places that call this instead check isHovered if we can properly override setting that
+        boolean isHovering = isMouseOver(mouseX, mouseY);
+        if (isHovering) {
+            //If the mouse is over this element, check if there is a window that would intercept the mouse
+            GuiWindow window = guiObj.getWindowHovering(mouseX, mouseY);
+            if (window != null && !window.children().contains(this)) {
+                //If there is and this element is not part of that window,
+                // then mark that our mouse is not over the element
+                isHovering = false;
+            }
         }
-        return children.stream().anyMatch(child -> child.isMouseOver(mouseX, mouseY));
+        return isHovering;
     }
 
     //TODO: Convert this stuff into a javadoc
@@ -273,8 +288,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         //TODO: Convert this to being two different 16x48 images, one for with border and one for buttons without a black border?
         // And then make it so that they can stretch out to be any size (make this make use of the renderExtendedTexture method
         MekanismRenderer.bindTexture(buttonBackground.getTexture());
-        //TODO: This can use isHovered() once we fix the isHovered logic
-        int i = getYImage(isMouseOver(mouseX, mouseY));
+        int i = getYImage(isMouseOverCheckWindows(mouseX, mouseY));
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
         RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);

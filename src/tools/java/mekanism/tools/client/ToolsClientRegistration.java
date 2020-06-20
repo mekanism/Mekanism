@@ -15,7 +15,6 @@ public class ToolsClientRegistration {
         if (event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
             for (ShieldTextures textures : ShieldTextures.values()) {
                 event.addSprite(textures.getBase().getTextureLocation());
-                event.addSprite(textures.getNoPattern().getTextureLocation());
             }
         }
     }

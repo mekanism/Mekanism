@@ -51,7 +51,7 @@ public class FilterButton extends MekanismButton {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         colorButton();
         minecraft.textureManager.bindTexture(TEXTURE);
-        blit(x, y, width, height, 0, isMouseOver(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(x, y, width, height, 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         MekanismRenderer.resetColor();
         slot.renderButton(mouseX, mouseY, partialTicks);
     }

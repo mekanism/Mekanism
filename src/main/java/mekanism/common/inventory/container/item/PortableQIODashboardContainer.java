@@ -21,15 +21,25 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     protected Hand hand;
     protected ItemStack stack;
 
-    public PortableQIODashboardContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack) {
-        super(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, id, inv);
+    private PortableQIODashboardContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack, boolean remote) {
+        super(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, id, inv, remote);
         this.hand = hand;
         this.stack = stack;
         addSlotsAndOpen();
     }
 
+    /**
+     * @apiNote Call from the server
+     */
+    public PortableQIODashboardContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack) {
+        this(id, inv, hand, stack, false);
+    }
+
+    /**
+     * @apiNote Call from the client
+     */
     public PortableQIODashboardContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, buf.readEnumValue(Hand.class), MekanismItemContainer.getStackFromBuffer(buf, ItemPortableQIODashboard.class));
+        this(id, inv, buf.readEnumValue(Hand.class), MekanismItemContainer.getStackFromBuffer(buf, ItemPortableQIODashboard.class), true);
     }
 
     public Hand getHand() {

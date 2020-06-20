@@ -1,8 +1,9 @@
 package mekanism.common.inventory.container.sync.dynamic;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.lang.annotation.ElementType;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
@@ -11,12 +12,15 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -40,13 +44,17 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.network.container.property.PropertyType;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.ModFileScanData;
+import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
+import org.objectweb.asm.Type;
 
 public class SyncMapper {
 
     public static final String DEFAULT_TAG = "default";
-
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
     private static final List<SpecialPropertyHandler<?>> specialProperties = new ArrayList<>();
+    private static final Map<Class<?>, PropertyDataClassCache> syncablePropertyMap = new Object2ObjectOpenHashMap<>();
 
     static {
         specialProperties.add(new SpecialPropertyHandler<>(IExtendedFluidTank.class,
@@ -86,7 +94,113 @@ public class SyncMapper {
         ));
     }
 
-    private static final Map<Class<?>, PropertyDataClassCache> syncablePropertyMap = new Object2ObjectOpenHashMap<>();
+    public static void collectScanData() {
+        try {
+            collectScanDataUnsafe();
+        } catch (Throwable e) {
+            Mekanism.logger.error("Failed to collect scan data and create sync maps");
+            e.printStackTrace();
+        }
+    }
+
+    private static void collectScanDataUnsafe() throws Throwable {
+        ModList modList = ModList.get();
+        Map<Class<?>, List<AnnotationData>> knownClasses = new Object2ObjectOpenHashMap<>();
+        Type containerSyncType = Type.getType(ContainerSync.class);
+        for (ModFileScanData scanData : modList.getAllScanData()) {
+            for (AnnotationData data : scanData.getAnnotations()) {
+                //If the annotation is on a field, and is the sync type
+                if (data.getTargetType() == ElementType.FIELD && containerSyncType.equals(data.getAnnotationType())) {
+                    String className = data.getClassType().getClassName();
+                    try {
+                        Class<?> annotatedClass = Class.forName(className);
+                        knownClasses.computeIfAbsent(annotatedClass, clazz -> new ArrayList<>()).add(data);
+                    } catch (ClassNotFoundException e) {
+                        Mekanism.logger.error("Failed to find class '{}'", className);
+                    }
+                }
+            }
+        }
+        Map<Class<?>, List<PropertyFieldInfo>> flatPropertyMap = new Object2ObjectOpenHashMap<>();
+        for (Entry<Class<?>, List<AnnotationData>> entry : knownClasses.entrySet()) {
+            Class<?> annotatedClass = entry.getKey();
+            List<PropertyFieldInfo> propertyInfo = new ArrayList<>();
+            flatPropertyMap.put(annotatedClass, propertyInfo);
+            for (AnnotationData data : entry.getValue()) {
+                String fieldName = data.getMemberName();
+                try {
+                    Field field = annotatedClass.getDeclaredField(fieldName);
+                    field.setAccessible(true);
+                    Map<String, Object> annotationData = data.getAnnotationData();
+                    String getterName = (String) annotationData.getOrDefault("getter", "");
+                    PropertyField newField;
+                    SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
+                    if (handler == null) {
+                        PropertyType type = PropertyType.getFromType(field.getType());
+                        String setterName = (String) annotationData.getOrDefault("setter", "");
+                        if (type != null) {
+                            newField = new PropertyField(new TrackedFieldData(createGetter(field, annotatedClass, getterName),
+                                  createSetter(field, annotatedClass, setterName), type));
+                        } else if (field.getType().isEnum()) {
+                            newField = new PropertyField(new EnumFieldData(createGetter(field, annotatedClass, getterName),
+                                  createSetter(field, annotatedClass, setterName), field.getType()));
+                        } else {
+                            Mekanism.logger.error("Attempted to sync an invalid field '{}'", fieldName);
+                            return;
+                        }
+                    } else {
+                        newField = createSpecialProperty(handler, field, annotatedClass, getterName);
+                    }
+                    String fullPath = annotatedClass.getName() + "#" + fieldName;
+                    if (annotationData.containsKey("tags")) {
+                        //If the annotation data has tags add them
+                        List<String> tags = (List<String>) annotationData.get("tags");
+                        for (String tag : tags) {
+                            propertyInfo.add(new PropertyFieldInfo(fullPath, tag, newField));
+                        }
+                    } else {
+                        //Otherwise fallback to the default
+                        propertyInfo.add(new PropertyFieldInfo(fullPath, DEFAULT_TAG, newField));
+                    }
+                } catch (NoSuchFieldException e) {
+                    Mekanism.logger.error("Failed to find field '{}' for class '{}'", fieldName, data.getClassType());
+                }
+            }
+        }
+        Map<Class<?>, List<PropertyFieldInfo>> propertyMap = new Object2ObjectOpenHashMap<>();
+        for (Entry<Class<?>, List<PropertyFieldInfo>> entry : flatPropertyMap.entrySet()) {
+            Class<?> clazz = entry.getKey();
+            List<PropertyFieldInfo> propertyInfo = entry.getValue();
+            Class<?> current = clazz;
+            while (current.getSuperclass() != null) {
+                current = current.getSuperclass();
+                List<PropertyFieldInfo> superInfo = propertyMap.get(current);
+                if (superInfo != null) {
+                    //If we already have an overall cache for the super class, add from it and break out of checking super classes
+                    propertyInfo.addAll(superInfo);
+                    break;
+                }
+                //Otherwise continue building up the cache, collecting all the class names up to the root superclass
+                superInfo = flatPropertyMap.get(current);
+                if (superInfo != null) {
+                    //If the property map has the super class, grab the fields that correspond to it
+                    //Note: We keep going here as it may have super classes higher up
+                    propertyInfo.addAll(superInfo);
+                }
+            }
+            propertyMap.put(clazz, propertyInfo);
+        }
+        List<ClassPropertyFieldInfo> flatPropertyMapInfo = propertyMap.entrySet().stream().map(entry -> new ClassPropertyFieldInfo(entry.getKey(), entry.getValue()))
+              .sorted(Comparator.comparing(info -> info.className)).collect(Collectors.toList());
+        for (ClassPropertyFieldInfo classPropertyInfo : flatPropertyMapInfo) {
+            PropertyDataClassCache cache = new PropertyDataClassCache();
+            classPropertyInfo.propertyFields.sort(Comparator.comparing(info -> info.fieldPath + "|" + info.tag));
+            for (PropertyFieldInfo field : classPropertyInfo.propertyFields) {
+                cache.propertyFieldMap.put(field.tag, field.field);
+            }
+            syncablePropertyMap.put(classPropertyInfo.clazz, cache);
+        }
+    }
 
     public static void setup(MekanismContainer container, Class<?> holderClass, Supplier<Object> holderSupplier) {
         setup(container, holderClass, holderSupplier, DEFAULT_TAG);
@@ -94,7 +208,6 @@ public class SyncMapper {
 
     public static void setup(MekanismContainer container, Class<?> holderClass, Supplier<Object> holderSupplier, String tag) {
         PropertyDataClassCache cache = syncablePropertyMap.computeIfAbsent(holderClass, SyncMapper::buildSyncMap);
-
         for (PropertyField field : cache.propertyFieldMap.get(tag)) {
             for (TrackedFieldData data : field.trackedData) {
                 container.track(data.createSyncableData(holderSupplier));
@@ -104,57 +217,25 @@ public class SyncMapper {
 
     private static PropertyDataClassCache buildSyncMap(Class<?> clazz) {
         PropertyDataClassCache cache = new PropertyDataClassCache();
-        try {
-            buildSyncMap(clazz, cache);
-        } catch (Throwable e) {
-            Mekanism.logger.error("Failed to create sync map for {}", clazz.getName());
-            e.printStackTrace();
+        Class<?> current = clazz;
+        while (current.getSuperclass() != null) {
+            current = current.getSuperclass();
+            PropertyDataClassCache superCache = syncablePropertyMap.get(current);
+            if (superCache != null) {
+                //If we already have an overall cache for the super class, add from it and break out of checking super classes
+                cache.propertyFieldMap.putAll(superCache.propertyFieldMap);
+                break;
+            }
+            //Otherwise continue going up to the root superclass
         }
         return cache;
     }
 
-    private static void buildSyncMap(Class<?> clazz, PropertyDataClassCache cache) throws Throwable {
-        if (clazz.getSuperclass() != null) {
-            PropertyDataClassCache superCache = syncablePropertyMap.get(clazz.getSuperclass());
-            if (superCache != null) {
-                cache.propertyFieldMap.putAll(superCache.propertyFieldMap);
-                return;
-            } else {
-                // recurse to root superclass
-                buildSyncMap(clazz.getSuperclass(), cache);
-            }
-        }
-
-        for (Field field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(ContainerSync.class)) {
-                field.setAccessible(true);
-                ContainerSync syncData = field.getAnnotation(ContainerSync.class);
-                PropertyType type = PropertyType.getFromType(field.getType());
-                SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
-                PropertyField newField;
-                if (handler != null) {
-                    newField = createSpecialProperty(handler, field, clazz, syncData);
-                } else if (type != null) {
-                    newField = new PropertyField(new TrackedFieldData(createGetter(field, clazz, syncData), createSetter(field, clazz, syncData), type));
-                } else if (field.getType().isEnum()) {
-                    newField = new PropertyField(new EnumFieldData(createGetter(field, clazz, syncData), createSetter(field, clazz, syncData), field.getType()));
-                } else {
-                    Mekanism.logger.error("Attempted to sync an invalid field '{}'", field.getName());
-                    continue;
-                }
-
-                for (String tag : syncData.tags()) {
-                    cache.propertyFieldMap.put(tag, newField);
-                }
-            }
-        }
-    }
-
-    private static <O> PropertyField createSpecialProperty(SpecialPropertyHandler<O> handler, Field field, Class<?> objType, ContainerSync syncData) throws Throwable {
+    private static <O> PropertyField createSpecialProperty(SpecialPropertyHandler<O> handler, Field field, Class<?> objType, String getterName) throws Throwable {
         PropertyField ret = new PropertyField();
         for (SpecialPropertyData<O> data : handler.specialData) {
             // create a getter for the actual property field itself
-            Function<Object, O> fieldGetter = createGetter(field, objType, syncData);
+            Function<Object, O> fieldGetter = createGetter(field, objType, getterName);
             // create a new tracked field
             TrackedFieldData trackedField = TrackedFieldData.create(data.propertyType, obj -> data.get(fieldGetter.apply(obj)), (obj, val) -> data.set(fieldGetter.apply(obj), val));
             if (trackedField != null) {
@@ -164,12 +245,8 @@ public class SyncMapper {
         return ret;
     }
 
-    private static <O, V> Function<O, V> createGetter(Field field, Class<?> objType, ContainerSync syncData) throws Throwable {
-        if (!syncData.getter().isEmpty()) {
-            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "apply", MethodType.methodType(Function.class), MethodType.methodType(Object.class, Object.class),
-                  LOOKUP.findVirtual(objType, syncData.getter(), MethodType.methodType(field.getType())), MethodType.methodType(field.getType(), objType));
-            return (Function<O, V>) site.getTarget().invokeExact();
-        } else {
+    private static <O, V> Function<O, V> createGetter(Field field, Class<?> objType, String getterName) throws Throwable {
+        if (getterName.isEmpty()) {
             MethodHandle getter = LOOKUP.unreflectGetter(field);
             MethodType type = getter.type();
             if (field.getType().isPrimitive()) {
@@ -177,15 +254,15 @@ public class SyncMapper {
             }
             CallSite site = LambdaMetafactory.metafactory(LOOKUP, "apply", MethodType.methodType(Function.class, MethodHandle.class), type.erase(), MethodHandles.exactInvoker(getter.type()), type);
             return (Function<O, V>) site.getTarget().invokeExact(getter);
+        } else {
+            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "apply", MethodType.methodType(Function.class), MethodType.methodType(Object.class, Object.class),
+                  LOOKUP.findVirtual(objType, getterName, MethodType.methodType(field.getType())), MethodType.methodType(field.getType(), objType));
+            return (Function<O, V>) site.getTarget().invokeExact();
         }
     }
 
-    private static <O, V> BiConsumer<O, V> createSetter(Field field, Class<?> objType, ContainerSync syncData) throws Throwable {
-        if (!syncData.setter().isEmpty()) {
-            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "accept", MethodType.methodType(BiConsumer.class), MethodType.methodType(void.class, Object.class, Object.class),
-                  LOOKUP.findVirtual(objType, syncData.setter(), MethodType.methodType(void.class, field.getType())), MethodType.methodType(void.class, objType, field.getType()));
-            return (BiConsumer<O, V>) site.getTarget().invokeExact();
-        } else {
+    private static <O, V> BiConsumer<O, V> createSetter(Field field, Class<?> objType, String setterName) throws Throwable {
+        if (setterName.isEmpty()) {
             MethodHandle setter = LOOKUP.unreflectSetter(field);
             MethodType type = setter.type();
             if (field.getType().isPrimitive()) {
@@ -193,15 +270,20 @@ public class SyncMapper {
             }
             CallSite site = LambdaMetafactory.metafactory(LOOKUP, "accept", MethodType.methodType(BiConsumer.class, MethodHandle.class), type.erase(), MethodHandles.exactInvoker(setter.type()), type);
             return (BiConsumer<O, V>) site.getTarget().invokeExact(setter);
+        } else {
+            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "accept", MethodType.methodType(BiConsumer.class), MethodType.methodType(void.class, Object.class, Object.class),
+                  LOOKUP.findVirtual(objType, setterName, MethodType.methodType(void.class, field.getType())), MethodType.methodType(void.class, objType, field.getType()));
+            return (BiConsumer<O, V>) site.getTarget().invokeExact();
         }
     }
 
-    protected static class PropertyDataClassCache {
+    private static class PropertyDataClassCache {
 
-        private final Multimap<String, PropertyField> propertyFieldMap = HashMultimap.create();
+        //Note: This needs to be a linked map to ensure that the order is preserved
+        private final Multimap<String, PropertyField> propertyFieldMap = LinkedHashMultimap.create();
     }
 
-    protected static class PropertyField {
+    private static class PropertyField {
 
         private final List<TrackedFieldData> trackedData = new ArrayList<>();
 
@@ -295,7 +377,7 @@ public class SyncMapper {
         }
     }
 
-    protected static class SpecialPropertyHandler<O> {
+    private static class SpecialPropertyHandler<O> {
 
         private final Class<O> fieldType;
         private final List<SpecialPropertyData<O>> specialData = new ArrayList<>();
@@ -330,6 +412,32 @@ public class SyncMapper {
         @SuppressWarnings("unchecked")
         protected static <O, V> SpecialPropertyData<O> create(Class<V> propertyType, Function<O, V> getter, BiConsumer<O, V> setter) {
             return new SpecialPropertyData<>(propertyType, getter, (BiConsumer<O, Object>) setter);
+        }
+    }
+
+    private static class ClassPropertyFieldInfo {
+
+        private final Class<?> clazz;
+        private final String className;
+        private final List<PropertyFieldInfo> propertyFields;
+
+        private ClassPropertyFieldInfo(Class<?> clazz, List<PropertyFieldInfo> propertyFields) {
+            this.clazz = clazz;
+            this.className = clazz.getName();
+            this.propertyFields = propertyFields;
+        }
+    }
+
+    private static class PropertyFieldInfo {
+
+        private final PropertyField field;
+        private final String fieldPath;
+        private final String tag;
+
+        private PropertyFieldInfo(String fieldPath, String tag, PropertyField field) {
+            this.fieldPath = fieldPath;
+            this.field = field;
+            this.tag = tag;
         }
     }
 }

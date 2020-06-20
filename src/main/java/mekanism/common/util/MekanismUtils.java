@@ -97,7 +97,9 @@ public final class MekanismUtils {
 
     private static final List<UUID> warnedFails = new ArrayList<>();
 
-    //TODO - V10: Add an extra optional param to shrink and grow stack that allows for logging if it is mismatched. Defaults to false
+    //TODO: Evaluate adding an extra optional param to shrink and grow stack that allows for logging if it is mismatched. Defaults to false
+    // Deciding on how to implement it into the API will need more thought as we want to keep overriding implementations as simple as
+    // possible, and also ideally would use our normal logger instead of the API logger
     public static void logMismatchedStackSize(long actual, long expected) {
         if (expected != actual) {
             Mekanism.logger.error("Stack size changed by a different amount (" + actual + ") than requested (" + expected + ").", new Exception());
@@ -528,6 +530,7 @@ public final class MekanismUtils {
      * @return the corresponding ResourceLocation
      */
     public static ResourceLocation getResource(ResourceType type, String name) {
+        //TODO - V10: Go through and remove unused resources. Should make it easier for resource pack makers to make things and also lower the size of the jar slightly.
         return Mekanism.rl(type.getPrefix() + name);
     }
 
@@ -537,10 +540,9 @@ public final class MekanismUtils {
      * @param tile - TileEntity to save
      */
     public static void saveChunk(TileEntity tile) {
-        if (tile == null || tile.isRemoved() || tile.getWorld() == null) {
-            return;
+        if (tile != null && !tile.isRemoved() && tile.getWorld() != null) {
+            tile.getWorld().markChunkDirty(tile.getPos(), tile);
         }
-        tile.getWorld().markChunkDirty(tile.getPos(), tile);
     }
 
     /**

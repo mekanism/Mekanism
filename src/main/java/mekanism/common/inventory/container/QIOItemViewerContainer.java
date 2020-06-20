@@ -27,6 +27,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StackUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -37,10 +38,15 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
-    public static final int SLOTS_X_MIN = 8, SLOTS_X_MAX = 16, SLOTS_Y_MIN = 2, SLOTS_Y_MAX = 16;
+    public static final int SLOTS_X_MIN = 8, SLOTS_X_MAX = 16, SLOTS_Y_MIN = 2, SLOTS_Y_MAX = 48;
 
     public static final int SLOTS_START_Y = 43;
     private static final int DOUBLE_CLICK_TRANSFER_DURATION = 20;
+
+    public static int getSlotsYMax() {
+        int maxY = (int) Math.ceil(Minecraft.getInstance().getMainWindow().getScaledHeight() * 0.05 - 8) + 1;
+        return Math.max(Math.min(maxY, SLOTS_Y_MAX), SLOTS_Y_MIN);
+    }
 
     private ListSortType sortType = MekanismConfig.client.qioItemViewerSortType.get();
     private SortDirection sortDirection = MekanismConfig.client.qioItemViewerSortDirection.get();
@@ -61,8 +67,17 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private int lastSlot = -1;
     private ItemStack lastStack = ItemStack.EMPTY;
 
-    protected QIOItemViewerContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv) {
+    protected QIOItemViewerContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, boolean remote) {
         super(type, id, inv);
+        if (remote) {
+            //Validate the max size when we are on the client, and fix it if it is incorrect
+            int maxY = getSlotsYMax();
+            if (MekanismConfig.client.qioItemViewerSlotsY.get() > maxY) {
+                MekanismConfig.client.qioItemViewerSlotsY.set(maxY);
+                // save the updated config info
+                MekanismConfig.client.getConfigSpec().save();
+            }
+        }
     }
 
     public abstract QIOFrequency getFrequency();

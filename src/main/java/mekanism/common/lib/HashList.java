@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class HashList<T> extends AbstractList<T> {
 
@@ -37,6 +38,7 @@ public class HashList<T> extends AbstractList<T> {
         return list.get(index);
     }
 
+    @Nullable
     public T getOrNull(int index) {
         return index >= 0 && index < size() ? get(index) : null;
     }

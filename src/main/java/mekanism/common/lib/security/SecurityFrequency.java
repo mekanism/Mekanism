@@ -8,6 +8,7 @@ import mekanism.common.lib.HashList;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.ISecurityTile.SecurityMode;
+import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -86,7 +87,7 @@ public class SecurityFrequency extends Frequency {
         trustedCache = new ArrayList<>();
         int count = dataStream.readInt();
         for (int i = 0; i < count; i++) {
-            trustedCache.add(dataStream.readString());
+            trustedCache.add(BasePacketHandler.readString(dataStream));
         }
     }
 

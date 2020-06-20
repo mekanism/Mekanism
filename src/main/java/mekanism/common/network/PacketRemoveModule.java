@@ -40,6 +40,6 @@ public class PacketRemoveModule {
     }
 
     public static PacketRemoveModule decode(PacketBuffer buf) {
-        return new PacketRemoveModule(buf.readBlockPos(), Modules.get(buf.readString()));
+        return new PacketRemoveModule(buf.readBlockPos(), Modules.get(BasePacketHandler.readString(buf)));
     }
 }

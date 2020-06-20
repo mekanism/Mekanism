@@ -8,8 +8,8 @@ import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.client.gui.element.button.TranslationButton;
-import mekanism.client.gui.element.custom.GuiItemStackFilterDialog;
-import mekanism.client.gui.element.custom.GuiTagFilterDialog;
+import mekanism.client.gui.element.filter.qio.GuiQIOItemStackFilter;
+import mekanism.client.gui.element.filter.qio.GuiQIOTagFilter;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -94,16 +94,16 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
             }));
         }
         addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
-              () -> addWindow(GuiItemStackFilterDialog.create(this, tile))));
+              () -> addWindow(GuiQIOItemStackFilter.create(this, tile))));
         addButton(new TranslationButton(this, getGuiLeft() + 81, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_TAG_FILTER,
-              () -> addWindow(GuiTagFilterDialog.create(this, tile))));
+              () -> addWindow(GuiQIOTagFilter.create(this, tile))));
     }
 
     protected void onClick(IFilter<?> filter, int index) {
         if (filter instanceof IItemStackFilter) {
-            addWindow(GuiItemStackFilterDialog.edit(this, tile, (QIOItemStackFilter) filter));
+            addWindow(GuiQIOItemStackFilter.edit(this, tile, (QIOItemStackFilter) filter));
         } else if (filter instanceof ITagFilter) {
-            addWindow(GuiTagFilterDialog.edit(this, tile, (QIOTagFilter) filter));
+            addWindow(GuiQIOTagFilter.edit(this, tile, (QIOTagFilter) filter));
         }
     }
 

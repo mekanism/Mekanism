@@ -5,7 +5,7 @@ import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
-import mekanism.common.content.transporter.TransporterFilter;
+import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.lib.HashList;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
@@ -40,13 +40,13 @@ public class PacketEditFilter {
         }
         context.get().enqueueWork(() -> {
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.pos);
-            if (message.filter instanceof TransporterFilter && tile instanceof TileEntityLogisticalSorter) {
-                HashList<TransporterFilter<?>> filters = ((TileEntityLogisticalSorter) tile).getFilters();
+            if (message.filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
+                HashList<SorterFilter<?>> filters = ((TileEntityLogisticalSorter) tile).getFilters();
                 int index = filters.indexOf(message.filter);
                 if (index != -1) {
                     filters.remove(index);
                     if (!message.delete) {
-                        filters.add(index, (TransporterFilter<?>) message.edited);
+                        filters.add(index, (SorterFilter<?>) message.edited);
                     }
                 }
             } else if (message.filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner) {

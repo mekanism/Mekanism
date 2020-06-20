@@ -397,6 +397,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
             return code;
         }
 
+        @Override
         public boolean hasFilter() {
             return filterLocation != null;
         }

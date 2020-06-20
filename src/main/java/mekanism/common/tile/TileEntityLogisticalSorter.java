@@ -15,8 +15,8 @@ import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
-import mekanism.common.content.transporter.TItemStackFilter;
-import mekanism.common.content.transporter.TransporterFilter;
+import mekanism.common.content.transporter.SorterItemStackFilter;
+import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -43,10 +43,10 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<TransporterFilter<?>>,
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<SorterFilter<?>>,
       IHasSortableFilters {
 
-    private HashList<TransporterFilter<?>> filters = new HashList<>();
+    private HashList<SorterFilter<?>> filters = new HashList<>();
     private final Finder strictFinder = stack -> filters.stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().modifies(stack));
 
     public EnumColor color;
@@ -87,13 +87,13 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 boolean sentItems = false;
                 int min = 0;
 
-                for (TransporterFilter<?> filter : filters) {
+                for (SorterFilter<?> filter : filters) {
                     TransitRequest request = filter.mapInventory(back, getOppositeDirection(), singleItem);
                     if (request.isEmpty()) {
                         continue;
                     }
-                    if (!singleItem && filter instanceof TItemStackFilter) {
-                        TItemStackFilter itemFilter = (TItemStackFilter) filter;
+                    if (!singleItem && filter instanceof SorterItemStackFilter) {
+                        SorterItemStackFilter itemFilter = (SorterItemStackFilter) filter;
                         if (itemFilter.sizeMode) {
                             min = itemFilter.min;
                         }
@@ -214,7 +214,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         nbtTags.putInt(NBTConstants.INDEX, rrIndex);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
-            for (TransporterFilter<?> filter : filters) {
+            for (SorterFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundNBT()));
             }
             nbtTags.put(NBTConstants.FILTERS, filterTags);
@@ -233,8 +233,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof TransporterFilter) {
-                    filters.add((TransporterFilter<?>) filter);
+                if (filter instanceof SorterFilter) {
+                    filters.add((SorterFilter<?>) filter);
                 }
             }
         }
@@ -253,7 +253,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         ItemDataUtils.setBoolean(itemStack, NBTConstants.SINGLE_ITEM, singleItem);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
-            for (TransporterFilter<?> filter : filters) {
+            for (SorterFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundNBT()));
             }
             ItemDataUtils.setList(itemStack, NBTConstants.FILTERS, filterTags);
@@ -272,8 +272,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             ListNBT tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof TransporterFilter) {
-                    filters.add((TransporterFilter<?>) filter);
+                if (filter instanceof SorterFilter) {
+                    filters.add((SorterFilter<?>) filter);
                 }
             }
         }
@@ -302,7 +302,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public HashList<TransporterFilter<?>> getFilters() {
+    public HashList<SorterFilter<?>> getFilters() {
         return filters;
     }
 
@@ -315,7 +315,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         container.track(SyncableInt.create(() -> TransporterUtils.getColorIndex(color), value -> color = TransporterUtils.readColor(value)));
         container.track(SyncableFilterList.create(this::getFilters, value -> {
             if (value instanceof HashList) {
-                filters = (HashList<TransporterFilter<?>>) value;
+                filters = (HashList<SorterFilter<?>>) value;
             } else {
                 filters = new HashList<>(value);
             }

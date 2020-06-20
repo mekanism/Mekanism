@@ -1,9 +1,9 @@
 package mekanism.common.registries;
 
-import java.util.EnumSet;
-import java.util.function.Supplier;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import java.util.EnumSet;
+import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
@@ -36,7 +36,6 @@ import mekanism.common.content.blocktype.Machine;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.content.blocktype.Machine.MachineBuilder;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.ModificationStationContainer;
@@ -398,7 +397,6 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.LOGISTICAL_SORTER)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
           .with(new AttributeStateFacing(BlockStateProperties.FACING))
-          .withCustomContainerProvider((tile) -> (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.LOGISTICAL_SORTER, i, inv, tile))
           .withCustomShape(BlockShapes.LOGISTICAL_SORTER)
           .withSound(MekanismSounds.LOGISTICAL_SORTER)
           .build();

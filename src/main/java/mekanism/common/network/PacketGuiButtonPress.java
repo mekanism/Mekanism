@@ -20,23 +20,10 @@ import mekanism.common.inventory.container.tile.MatrixStatsTabContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.QIOFrequencySelectTileContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
-import mekanism.common.inventory.container.tile.filter.DMFilterSelectContainer;
-import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
-import mekanism.common.inventory.container.tile.filter.DMMaterialFilterContainer;
-import mekanism.common.inventory.container.tile.filter.DMModIDFilterContainer;
-import mekanism.common.inventory.container.tile.filter.DMTagFilterContainer;
-import mekanism.common.inventory.container.tile.filter.LSFilterSelectContainer;
-import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContainer;
-import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer;
-import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
-import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
-import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
@@ -201,76 +188,9 @@ public class PacketGuiButtonPress {
         }),
         QIO_FREQUENCY_SELECT((tile, extra) -> new ContainerProvider(MekanismLang.QIO_FREQUENCY_SELECT, (i, inv, player) -> new QIOFrequencySelectTileContainer(i, inv, tile))),
         UPGRADE_MANAGEMENT((tile, extra) -> new ContainerProvider(MekanismLang.UPGRADES, (i, inv, player) -> new UpgradeManagementContainer(i, inv, tile))),
-        OREDICTIONIFICATOR_FILTER((tile, extra) -> {
-            if (tile instanceof TileEntityOredictionificator) {
-                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) ->
-                      new OredictionificatorFilterContainer(i, inv, (TileEntityOredictionificator) tile, extra));
-            }
-            return null;
-        }),
         DIGITAL_MINER_CONFIG((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
                 return new ContainerProvider(MekanismLang.MINER_CONFIG, (i, inv, player) -> new DigitalMinerConfigContainer(i, inv, (TileEntityDigitalMiner) tile));
-            }
-            return null;
-        }),
-        DM_SELECT_FILTER_TYPE((tile, extra) -> {
-            if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new DMFilterSelectContainer(i, inv, (TileEntityDigitalMiner) tile));
-            }
-            return null;
-        }),
-        DM_FILTER_ITEMSTACK((tile, extra) -> {
-            if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider(MekanismLang.ITEM_FILTER, (i, inv, player) -> new DMItemStackFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
-            }
-            return null;
-        }),
-        DM_FILTER_MATERIAL((tile, extra) -> {
-            if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider(MekanismLang.MATERIAL_FILTER, (i, inv, player) -> new DMMaterialFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
-            }
-            return null;
-        }),
-        DM_FILTER_MOD_ID((tile, extra) -> {
-            if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider(MekanismLang.MODID_FILTER, (i, inv, player) -> new DMModIDFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
-            }
-            return null;
-        }),
-        DM_FILTER_TAG((tile, extra) -> {
-            if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider(MekanismLang.TAG_FILTER, (i, inv, player) -> new DMTagFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
-            }
-            return null;
-        }),
-        LS_SELECT_FILTER_TYPE((tile, extra) -> {
-            if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new LSFilterSelectContainer(i, inv, (TileEntityLogisticalSorter) tile));
-            }
-            return null;
-        }),
-        LS_FILTER_ITEMSTACK((tile, extra) -> {
-            if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider(MekanismLang.ITEM_FILTER, (i, inv, player) -> new LSItemStackFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
-            }
-            return null;
-        }),
-        LS_FILTER_MATERIAL((tile, extra) -> {
-            if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider(MekanismLang.MATERIAL_FILTER, (i, inv, player) -> new LSMaterialFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
-            }
-            return null;
-        }),
-        LS_FILTER_MOD_ID((tile, extra) -> {
-            if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider(MekanismLang.MODID_FILTER, (i, inv, player) -> new LSModIDFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
-            }
-            return null;
-        }),
-        LS_FILTER_TAG((tile, extra) -> {
-            if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider(MekanismLang.TAG_FILTER, (i, inv, player) -> new LSTagFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
             }
             return null;
         }),

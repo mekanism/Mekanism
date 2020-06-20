@@ -16,7 +16,7 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
-import mekanism.common.content.transporter.TransporterFilter;
+import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.lib.HashList;
 import net.minecraft.item.ItemStack;
 
@@ -42,7 +42,8 @@ public class MovableFilterButton extends FilterButton {
               (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_UP.translate(), xAxis, yAxis));
         downButton = new FilterSelectButton(gui, arrowX, this.y + height - 8, true, () -> downButtonPress.accept(index + filterIndex.getAsInt()),
               (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis));
-        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, x + 3, y + 3, () -> renderStackSupplier.apply(filters.get().getOrNull(filterIndex.getAsInt() + index))));
+        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, x + 3, y + 3,
+              () -> renderStackSupplier.apply(filters.get().getOrNull(filterIndex.getAsInt() + index))));
     }
 
     @Override
@@ -59,9 +60,9 @@ public class MovableFilterButton extends FilterButton {
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         int xAxis = mouseX - guiObj.getLeft(), yAxis = mouseY - guiObj.getTop();
-        if (upButton.isMouseOver(mouseX, mouseY)) {
+        if (upButton.isMouseOverCheckWindows(mouseX, mouseY)) {
             upButton.renderToolTip(xAxis, yAxis);
-        } else if (downButton.isMouseOver(mouseX, mouseY)) {
+        } else if (downButton.isMouseOverCheckWindows(mouseX, mouseY)) {
             downButton.renderToolTip(xAxis, yAxis);
         } else {
             super.renderForeground(mouseX, mouseY);
@@ -82,8 +83,8 @@ public class MovableFilterButton extends FilterButton {
         } else if (filter instanceof IModIDFilter) {
             drawTextScaledBound(MekanismLang.MODID_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
         }
-        if (filter instanceof TransporterFilter) {
-            TransporterFilter<?> sorterFilter = (TransporterFilter<?>) filter;
+        if (filter instanceof SorterFilter) {
+            SorterFilter<?> sorterFilter = (SorterFilter<?>) filter;
             drawString(sorterFilter.color == null ? MekanismLang.NONE.translate() : sorterFilter.color.getColoredName(), x + 22, y + 11, titleTextColor());
         }
     }

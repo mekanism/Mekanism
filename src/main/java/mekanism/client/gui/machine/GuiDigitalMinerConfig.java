@@ -4,6 +4,11 @@ import java.util.List;
 import mekanism.client.gui.GuiFilterHolder;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.filter.miner.GuiMinerFilerSelect;
+import mekanism.client.gui.element.filter.miner.GuiMinerItemStackFilter;
+import mekanism.client.gui.element.filter.miner.GuiMinerMaterialFilter;
+import mekanism.client.gui.element.filter.miner.GuiMinerModIDFilter;
+import mekanism.client.gui.element.filter.miner.GuiMinerTagFilter;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.Mekanism;
@@ -16,7 +21,11 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.miner.MinerFilter;
-import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.content.miner.MinerItemStackFilter;
+import mekanism.common.content.miner.MinerMaterialFilter;
+import mekanism.common.content.miner.MinerModIDFilter;
+import mekanism.common.content.miner.MinerTagFilter;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketGuiInteract;
@@ -27,11 +36,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileEntityDigitalMiner, EmptyTileContainer<TileEntityDigitalMiner>> {
+public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
     private GuiTextField radiusField, minField, maxField;
 
-    public GuiDigitalMinerConfig(EmptyTileContainer<TileEntityDigitalMiner> container, PlayerInventory inv, ITextComponent title) {
+    public GuiDigitalMinerConfig(MekanismTileContainer<TileEntityDigitalMiner> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 
@@ -39,7 +48,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     public void init() {
         super.init();
         addButton(new TranslationButton(this, getGuiLeft() + 56, getGuiTop() + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tile))));
+              () -> addWindow(new GuiMinerFilerSelect(this, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 141, 14, getButtonLocation("strict_input"),
@@ -73,13 +82,13 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     @Override
     protected void onClick(IFilter<?> filter, int index) {
         if (filter instanceof IItemStackFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_ITEMSTACK, tile, index));
+            addWindow(GuiMinerItemStackFilter.edit(this, tile, (MinerItemStackFilter) filter));
         } else if (filter instanceof ITagFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_TAG, tile, index));
+            addWindow(GuiMinerTagFilter.edit(this, tile, (MinerTagFilter) filter));
         } else if (filter instanceof IMaterialFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MATERIAL, tile, index));
+            addWindow(GuiMinerMaterialFilter.edit(this, tile, (MinerMaterialFilter) filter));
         } else if (filter instanceof IModIDFilter) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MOD_ID, tile, index));
+            addWindow(GuiMinerModIDFilter.edit(this, tile, (MinerModIDFilter) filter));
         }
     }
 

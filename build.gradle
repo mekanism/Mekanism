@@ -449,6 +449,14 @@ task allJar(type: Jar) {
             processResources, processAdditionsResources, processDefenseResources,
             processGeneratorsResources, processToolsResources)
     classifier "all"
+    doFirst {
+        //Generate folders, merge the access transformers and mods.toml files
+        mkdir("$buildDir/generated/META-INF")
+        (new File("$buildDir/generated/META-INF/accesstransformer.cfg")).text = mergeATs(sourceSets.api, sourceSets.main,
+                sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
+        (new File("$buildDir/generated/META-INF/mods.toml")).text = mergeModsTOML(sourceSets.api, sourceSets.main,
+                sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
+    }
     from(sourceSets.api.output) {
         exclude 'META-INF/mods.toml'
         exclude 'META-INF/accesstransformer.cfg'
@@ -473,12 +481,6 @@ task allJar(type: Jar) {
         exclude 'META-INF/mods.toml'
         exclude 'META-INF/accesstransformer.cfg'
     }
-    //Generate folders, merge the access transformers and mods.toml files
-    mkdir("$buildDir/generated/META-INF")
-    (new File("$buildDir/generated/META-INF/accesstransformer.cfg")).text = mergeATs(sourceSets.api, sourceSets.main,
-            sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
-    (new File("$buildDir/generated/META-INF/mods.toml")).text = mergeModsTOML(sourceSets.api, sourceSets.main,
-            sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
     //Copy over the generated files
     from("$buildDir/generated") {
         include 'META-INF/mods.toml'
@@ -513,7 +515,7 @@ static String mergeModsTOML(SourceSet... sourceSets) {
                     text = file.getText()
                 } else {
                     //Otherwise add all but the first three lines (which are duplicated between the files)
-                    String[] lines = file.getText().split("\n");
+                    String[] lines = file.getText().split("\n")
                     for (int i = 3; i < lines.length; i++) {
                         text = text + "\n" + lines[i]
                     }

@@ -11,6 +11,7 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
+import mekanism.common.network.BasePacketHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
@@ -110,7 +111,7 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     public static <FREQ extends Frequency> FrequencyType<FREQ> load(PacketBuffer buf) {
-        return (FrequencyType<FREQ>) registryMap.get(buf.readString());
+        return (FrequencyType<FREQ>) registryMap.get(BasePacketHandler.readString(buf));
     }
 
     public static <FREQ extends Frequency> FrequencyType<FREQ> load(CompoundNBT tag) {

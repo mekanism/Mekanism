@@ -3,6 +3,7 @@ package mekanism.common.lib.frequency;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.network.BasePacketHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
@@ -11,7 +12,7 @@ public interface IdentitySerializer {
     IdentitySerializer NAME = new IdentitySerializer() {
         @Override
         public FrequencyIdentity read(PacketBuffer buf) {
-            return new FrequencyIdentity(buf.readString(), buf.readBoolean());
+            return new FrequencyIdentity(BasePacketHandler.readString(buf), buf.readBoolean());
         }
 
         @Override
