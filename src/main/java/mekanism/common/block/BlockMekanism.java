@@ -149,9 +149,6 @@ public abstract class BlockMekanism extends Block {
             tile.redstone = world.isBlockPowered(pos);
         }
 
-        if (tile instanceof IBoundingBlock) {
-            ((IBoundingBlock) tile).onPlace();
-        }
         tile.onPlace();
 
         //Handle item

@@ -12,10 +12,13 @@ public interface IBoundingBlock {
     /**
      * Called when the main block is placed.
      */
+    //TODO: Evaluate this, onPlace is a method in TileEntityMekanism now, so it always gets called via that exposure
+    // So having this here may not be needed anymore
     void onPlace();
 
     /**
      * Called when any part of the structure is broken.
+     *
      * @param oldState TODO
      */
     void onBreak(BlockState oldState);

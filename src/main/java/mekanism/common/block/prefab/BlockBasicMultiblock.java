@@ -19,9 +19,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends BlockTile<TILE, BlockTypeTile<TILE>> {
 
@@ -48,14 +46,8 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
     @Override
     public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType type, @Nullable EntityType<?> entityType) {
         TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
-        if (tile != null) {
-            if (world instanceof IWorldReader ? !((IWorldReader) world).isRemote() : EffectiveSide.get().isServer()) {
-                if (tile.getMultiblock().isFormed()) {
-                    return false;
-                }
-            } else if (tile.getMultiblock().isFormed()) {
-                return false;
-            }
+        if (tile != null && tile.getMultiblock().isFormed()) {
+            return false;
         }
         return super.canCreatureSpawn(state, world, pos, type, entityType);
     }
@@ -68,6 +60,10 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
         TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile != null) {
             if (world.isRemote) {
+                //TODO - V10: Re-evaluate after porting to 1.16. This being success causes issues where sounds don't work properly
+                // and also when blocks that when placed have side effects (such as placing bounding blocks), causes it to not
+                // happen on the client and then the positioning packet happens before the client knows the bounding block exists
+                // As the issue with sounds is supposedly fixed in 1.16, vanilla might have added a decent way to go about fixing it
                 return ActionResultType.SUCCESS;
             }
             if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
