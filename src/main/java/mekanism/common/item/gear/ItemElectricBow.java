@@ -46,7 +46,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvider {
 
     public ItemElectricBow(Properties properties) {
-        super(properties.rarity(Rarity.RARE).setNoRepair());
+        super(properties.rarity(Rarity.RARE).setNoRepair().maxStackSize(1));
     }
 
     @Override
