@@ -118,7 +118,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                             TransitResponse response = insert(tile, request, getColor(), true, 0);
                             if (response.isEmpty()) {
                                 //Insert failed; increment the backoff and calculate delay. Note that we cap retries
-                                // at a max of 40 ticks (2 seocnds), which would be 4 consecutive retries
+                                // at a max of 40 ticks (2 seconds), which would be 4 consecutive retries
                                 delayCount++;
                                 delay = Math.min(40, (int) Math.exp(delayCount));
                             } else {

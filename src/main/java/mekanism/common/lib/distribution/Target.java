@@ -97,7 +97,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      */
     public void shiftNeeded(SplitInfo<TYPE> splitInfo) {
         Iterator<Entry<Direction, TYPE>> iterator = needed.entrySet().iterator();
-        //Use an iterator rather than a copy of the keyset of the needed submap
+        //Use an iterator rather than a copy of the keySet of the needed subMap
         // This allows for us to remove it once we find it without  having to
         // start looping again or make a large number of copies of the set
         while (iterator.hasNext()) {

@@ -20,7 +20,7 @@ public interface ICapabilityResolver {
     List<Capability<?>> getSupportedCapabilities();
 
     /**
-     * Resolves a given capability from a given side. This value should be cached for later invalidation, as well as quicker relookup.
+     * Resolves a given capability from a given side. This value should be cached for later invalidation, as well as quicker re-lookup.
      *
      * @param capability Capability
      * @param side       Side

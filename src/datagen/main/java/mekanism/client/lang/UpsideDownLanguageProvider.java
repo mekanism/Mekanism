@@ -95,7 +95,7 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
             if (inLiteral) {
                 literalBuilder.append(c);
                 if (c == '#' || c == '<' || c == '\u2264') {
-                    //#, <, and less than equal are valid comparisions for ChoiceFormat
+                    //#, <, and less than equal are valid comparisons for ChoiceFormat
                     // after we hit one, we are no longer in a literal though so mark it as such
                     inLiteral = false;
                     converted.append(literalBuilder);

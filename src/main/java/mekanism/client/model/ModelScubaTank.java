@@ -17,13 +17,13 @@ public class ModelScubaTank extends MekanismModel {
 
     private final ModelRenderer tankL;
     private final ModelRenderer tankR;
-    private final ModelRenderer tankdock;
+    private final ModelRenderer tankDock;
     private final ModelRenderer capL;
     private final ModelRenderer capR;
-    private final ModelRenderer tankbridge;
-    private final ModelRenderer tankpipelower;
-    private final ModelRenderer tankpipeupper;
-    private final ModelRenderer tankbackbrace;
+    private final ModelRenderer tankBridge;
+    private final ModelRenderer tankPipeLower;
+    private final ModelRenderer tankPipeUpper;
+    private final ModelRenderer tankBackBrace;
 
     public ModelScubaTank() {
         super(RenderType::getEntitySolid);
@@ -43,12 +43,12 @@ public class ModelScubaTank extends MekanismModel {
         tankR.mirror = true;
         setRotation(tankR, -0.2443461F, -0.5235988F, 0F);
         tankR.mirror = false;
-        tankdock = new ModelRenderer(this, 0, 55);
-        tankdock.addBox(-2F, 5F, 1F, 4, 4, 5, false);
-        tankdock.setRotationPoint(0F, 0F, 0F);
-        tankdock.setTextureSize(128, 64);
-        tankdock.mirror = true;
-        setRotation(tankdock, 0F, 0F, 0F);
+        tankDock = new ModelRenderer(this, 0, 55);
+        tankDock.addBox(-2F, 5F, 1F, 4, 4, 5, false);
+        tankDock.setRotationPoint(0F, 0F, 0F);
+        tankDock.setTextureSize(128, 64);
+        tankDock.mirror = true;
+        setRotation(tankDock, 0F, 0F, 0F);
         capL = new ModelRenderer(this, 23, 51);
         capL.addBox(-0.5F, 1F, 4.5F, 2, 1, 2, false);
         capL.setRotationPoint(0F, 0F, 0F);
@@ -61,30 +61,30 @@ public class ModelScubaTank extends MekanismModel {
         capR.setTextureSize(128, 64);
         capR.mirror = true;
         setRotation(capR, -0.2443461F, -0.5235988F, 0F);
-        tankbridge = new ModelRenderer(this, 0, 47);
-        tankbridge.addBox(-1F, 3F, -1.5F, 2, 5, 3, false);
-        tankbridge.setRotationPoint(0F, 0F, 0F);
-        tankbridge.setTextureSize(128, 64);
-        tankbridge.mirror = true;
-        setRotation(tankbridge, 0.5934119F, 0F, 0F);
-        tankpipelower = new ModelRenderer(this, 0, 37);
-        tankpipelower.addBox(-0.5F, 2F, 3F, 1, 4, 1, false);
-        tankpipelower.setRotationPoint(0F, 0F, 0F);
-        tankpipelower.setTextureSize(128, 64);
-        tankpipelower.mirror = true;
-        setRotation(tankpipelower, 0.2094395F, 0F, 0F);
-        tankpipeupper = new ModelRenderer(this, 4, 38);
-        tankpipeupper.addBox(-0.5F, 1F, 1.5F, 1, 1, 3, false);
-        tankpipeupper.setRotationPoint(0F, 0F, 0F);
-        tankpipeupper.setTextureSize(128, 64);
-        tankpipeupper.mirror = true;
-        setRotation(tankpipeupper, 0F, 0F, 0F);
-        tankbackbrace = new ModelRenderer(this, 0, 42);
-        tankbackbrace.addBox(-3F, 2F, 0.5F, 6, 3, 2, false);
-        tankbackbrace.setRotationPoint(0F, 0F, 0F);
-        tankbackbrace.setTextureSize(128, 64);
-        tankbackbrace.mirror = true;
-        setRotation(tankbackbrace, 0.2443461F, 0F, 0F);
+        tankBridge = new ModelRenderer(this, 0, 47);
+        tankBridge.addBox(-1F, 3F, -1.5F, 2, 5, 3, false);
+        tankBridge.setRotationPoint(0F, 0F, 0F);
+        tankBridge.setTextureSize(128, 64);
+        tankBridge.mirror = true;
+        setRotation(tankBridge, 0.5934119F, 0F, 0F);
+        tankPipeLower = new ModelRenderer(this, 0, 37);
+        tankPipeLower.addBox(-0.5F, 2F, 3F, 1, 4, 1, false);
+        tankPipeLower.setRotationPoint(0F, 0F, 0F);
+        tankPipeLower.setTextureSize(128, 64);
+        tankPipeLower.mirror = true;
+        setRotation(tankPipeLower, 0.2094395F, 0F, 0F);
+        tankPipeUpper = new ModelRenderer(this, 4, 38);
+        tankPipeUpper.addBox(-0.5F, 1F, 1.5F, 1, 1, 3, false);
+        tankPipeUpper.setRotationPoint(0F, 0F, 0F);
+        tankPipeUpper.setTextureSize(128, 64);
+        tankPipeUpper.mirror = true;
+        setRotation(tankPipeUpper, 0F, 0F, 0F);
+        tankBackBrace = new ModelRenderer(this, 0, 42);
+        tankBackBrace.addBox(-3F, 2F, 0.5F, 6, 3, 2, false);
+        tankBackBrace.setRotationPoint(0F, 0F, 0F);
+        tankBackBrace.setTextureSize(128, 64);
+        tankBackBrace.mirror = true;
+        setRotation(tankBackBrace, 0.2443461F, 0F, 0F);
     }
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
@@ -95,12 +95,12 @@ public class ModelScubaTank extends MekanismModel {
     public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         tankL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         tankR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tankdock.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tankDock.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         capL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         capR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tankbridge.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tankpipelower.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tankpipeupper.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tankbackbrace.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tankBridge.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tankPipeLower.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tankPipeUpper.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tankBackBrace.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 }

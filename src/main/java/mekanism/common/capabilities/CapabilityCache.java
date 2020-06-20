@@ -73,7 +73,7 @@ public class CapabilityCache {
      * Marks the given capability as having a check for sometimes being disabled.
      *
      * @implNote These "semi disabled" checks are stored in a list so that children can define more cases a capability should be disabled than the ones the parent already
-     * wants them to be disabed in.
+     * wants them to be disabled in.
      */
     public void addSemiDisabledCapability(Capability<?> capability, BooleanSupplier checker) {
         //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)

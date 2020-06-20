@@ -150,7 +150,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             if (!getMultiblock().isFormed() || (!getMultiblock().locations.contains(pos) && !getMultiblock().internalLocations.contains(pos))) {
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);
                 if (!world.isAirBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
-                    MekanismUtils.notifyNeighborofChange(world, pos, getPos());
+                    MekanismUtils.notifyNeighborOfChange(world, pos, getPos());
                 }
             }
         }

@@ -75,8 +75,14 @@ public class MekanismRenderType extends RenderType {
     }
 
     public static RenderType getMekaSuit() {
-        RenderType.State rendertype$state = RenderType.State.getBuilder().texture(BLOCK_SHEET).diffuseLighting(DIFFUSE_LIGHTING_ENABLED).shadeModel(SHADE_ENABLED).alpha(HALF_ALPHA).lightmap(LIGHTMAP_ENABLED).build(true);
-        return makeType("mekasuit", DefaultVertexFormats.BLOCK, 7, 131072, true, true, rendertype$state);
+        RenderType.State state = RenderType.State.getBuilder()
+              .texture(BLOCK_SHEET)
+              .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
+              .shadeModel(SHADE_ENABLED)
+              .alpha(HALF_ALPHA)
+              .lightmap(LIGHTMAP_ENABLED)
+              .build(true);
+        return makeType("mekasuit", DefaultVertexFormats.BLOCK, 7, 131072, true, true, state);
      }
 
     public static RenderType renderSPS(ResourceLocation resourceLocation) {

@@ -135,7 +135,7 @@ public class Mekanism {
      */
     public final Version versionNumber;
     /**
-     * MultiblockManagers for various structrures
+     * MultiblockManagers for various structures
      */
     public static MultiblockManager<TankMultiblockData> tankManager = new MultiblockManager<>("dynamicTank", TankCache::new, TankValidator::new);
     public static MultiblockManager<MatrixMultiblockData> matrixManager = new MultiblockManager<>("inductionMatrix", MultiblockCache::new, MatrixValidator::new);

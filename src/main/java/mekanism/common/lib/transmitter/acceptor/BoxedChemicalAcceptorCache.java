@@ -89,7 +89,7 @@ public class BoxedChemicalAcceptorCache extends AbstractAcceptorCache<BoxedChemi
     /**
      * {@inheritDoc}
      *
-     * @implNote We overrde this method to skip wrapping it in a lazy optional before resolving them
+     * @implNote We override this method to skip wrapping it in a lazy optional before resolving them
      */
     @Override
     public List<BoxedChemicalHandler> getConnectedAcceptors(Set<Direction> sides) {

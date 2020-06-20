@@ -31,7 +31,8 @@ import org.apache.logging.log4j.Logger;
 public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoader> implements ITileComponent {
 
     private static final Logger LOGGER = LogManager.getLogger("Mekanism_TileComponentChunkLoader");
-    private static final TicketType<TileComponentChunkLoader<?>> TICKET_TYPE = TicketType.create("mekanism:chunk_loader", Comparator.comparing(tccl -> tccl.tile.getPos()));
+    private static final TicketType<TileComponentChunkLoader<?>> TICKET_TYPE = TicketType.create("mekanism:chunk_loader",
+          Comparator.comparing(component -> component.tile.getPos()));
     /**
      * Not 100% sure what this is, but 2 means the ticket has the same value as a forceChunk()
      */
@@ -164,7 +165,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     /**
-     * Release and re-register tickets, call when chunkset changes
+     * Release and re-register tickets, call when chunk set changes
      */
     public void refreshChunkTickets() {
         if (prevWorld != null) {

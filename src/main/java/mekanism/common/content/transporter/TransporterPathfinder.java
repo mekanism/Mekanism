@@ -114,19 +114,19 @@ public final class TransporterPathfinder {
             }
         }
 
-        List<Destination> dests = new ArrayList<>(destPaths.values());
-        Collections.sort(dests);
+        List<Destination> destinations = new ArrayList<>(destPaths.values());
+        Collections.sort(destinations);
         Destination closest = null;
-        if (!dests.isEmpty()) {
-            if (outputter.rrIndex <= dests.size() - 1) {
-                closest = dests.get(outputter.rrIndex);
-                if (outputter.rrIndex == dests.size() - 1) {
+        if (!destinations.isEmpty()) {
+            if (outputter.rrIndex <= destinations.size() - 1) {
+                closest = destinations.get(outputter.rrIndex);
+                if (outputter.rrIndex == destinations.size() - 1) {
                     outputter.rrIndex = 0;
-                } else if (outputter.rrIndex < dests.size() - 1) {
+                } else if (outputter.rrIndex < destinations.size() - 1) {
                     outputter.rrIndex++;
                 }
             } else {
-                closest = dests.get(dests.size() - 1);
+                closest = destinations.get(destinations.size() - 1);
                 outputter.rrIndex = 0;
             }
         }
@@ -431,11 +431,11 @@ public final class TransporterPathfinder {
             return false;
         }
 
-        private List<BlockPos> reconstructPath(Map<BlockPos, BlockPos> naviMap, BlockPos currentNode) {
+        private List<BlockPos> reconstructPath(Map<BlockPos, BlockPos> navMap, BlockPos currentNode) {
             List<BlockPos> path = new ArrayList<>();
             path.add(currentNode);
-            if (naviMap.containsKey(currentNode)) {
-                path.addAll(reconstructPath(naviMap, naviMap.get(currentNode)));
+            if (navMap.containsKey(currentNode)) {
+                path.addAll(reconstructPath(navMap, navMap.get(currentNode)));
             }
             finalScore = gScore.getDouble(currentNode) + MekanismUtils.distanceBetween(currentNode, finalNode);
             return path;

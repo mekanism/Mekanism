@@ -73,7 +73,7 @@ public class ModelDigitalMiner extends MekanismModel {
     private final ExtendedModelRenderer powerConnector1;
     private final ExtendedModelRenderer powerConnector2a;
     private final ExtendedModelRenderer powerConnector2b;
-    private final ExtendedModelRenderer powerCpnnector3a;
+    private final ExtendedModelRenderer powerConnector3a;
     private final ExtendedModelRenderer powerConnector3b;
     private final ExtendedModelRenderer frame2a;
     private final ExtendedModelRenderer frame2b;
@@ -373,12 +373,12 @@ public class ModelDigitalMiner extends MekanismModel {
         powerConnector2b.setTextureSize(256, 128);
         powerConnector2b.mirror = true;
         setRotation(powerConnector2b, 0F, 0F, 0F);
-        powerCpnnector3a = new ExtendedModelRenderer(this, 24, 105);
-        powerCpnnector3a.addBox(0F, 0F, 0F, 1, 8, 8, false);
-        powerCpnnector3a.setRotationPoint(-24F, 12F, 12F);
-        powerCpnnector3a.setTextureSize(256, 128);
-        powerCpnnector3a.mirror = true;
-        setRotation(powerCpnnector3a, 0F, 0F, 0F);
+        powerConnector3a = new ExtendedModelRenderer(this, 24, 105);
+        powerConnector3a.addBox(0F, 0F, 0F, 1, 8, 8, false);
+        powerConnector3a.setRotationPoint(-24F, 12F, 12F);
+        powerConnector3a.setTextureSize(256, 128);
+        powerConnector3a.mirror = true;
+        setRotation(powerConnector3a, 0F, 0F, 0F);
         powerConnector3b = new ExtendedModelRenderer(this, 24, 105);
         powerConnector3b.addBox(0F, 0F, 0F, 1, 8, 8, false);
         powerConnector3b.setRotationPoint(-17F, 12F, 12F);
@@ -499,7 +499,7 @@ public class ModelDigitalMiner extends MekanismModel {
         powerConnector1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         powerConnector2a.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         powerConnector2b.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        powerCpnnector3a.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
+        powerConnector3a.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         powerConnector3b.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         frame2a.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         frame2b.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);

@@ -165,9 +165,9 @@ public final class MekanismUtils {
         return orientation.rotateYCCW();
     }
 
-    public static float fractionUpgrades(IUpgradeTile mgmt, Upgrade type) {
-        if (mgmt.supportsUpgrades()) {
-            return (float) mgmt.getComponent().getUpgrades(type) / (float) type.getMax();
+    public static float fractionUpgrades(IUpgradeTile tile, Upgrade type) {
+        if (tile.supportsUpgrades()) {
+            return (float) tile.getComponent().getUpgrades(type) / (float) type.getMax();
         }
         return 0;
     }
@@ -218,14 +218,14 @@ public final class MekanismUtils {
     /**
      * Gets the operating ticks required for a machine via it's upgrades.
      *
-     * @param mgmt - tile containing upgrades
+     * @param tile - tile containing upgrades
      * @param def  - the original, default ticks required
      *
      * @return required operating ticks
      */
-    public static int getTicks(IUpgradeTile mgmt, int def) {
-        if (mgmt.supportsUpgrades()) {
-            return (int) (def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(mgmt, Upgrade.SPEED)));
+    public static int getTicks(IUpgradeTile tile, int def) {
+        if (tile.supportsUpgrades()) {
+            return (int) (def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(tile, Upgrade.SPEED)));
         }
         return def;
     }
@@ -233,14 +233,14 @@ public final class MekanismUtils {
     /**
      * Gets the energy required per tick for a machine via it's upgrades.
      *
-     * @param mgmt - tile containing upgrades
+     * @param tile - tile containing upgrades
      * @param def  - the original, default energy required
      *
      * @return required energy per tick
      */
-    public static FloatingLong getEnergyPerTick(IUpgradeTile mgmt, FloatingLong def) {
-        if (mgmt.supportsUpgrades()) {
-            return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.ENERGY)));
+    public static FloatingLong getEnergyPerTick(IUpgradeTile tile, FloatingLong def) {
+        if (tile.supportsUpgrades()) {
+            return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.ENERGY)));
         }
         return def;
     }
@@ -248,17 +248,17 @@ public final class MekanismUtils {
     /**
      * Gets the secondary energy required per tick for a machine via upgrades.
      *
-     * @param mgmt - tile containing upgrades
+     * @param tile - tile containing upgrades
      * @param def  - the original, default secondary energy required
      *
      * @return max secondary energy per tick
      */
-    public static double getGasPerTickMean(IUpgradeTile mgmt, long def) {
-        if (mgmt.supportsUpgrades()) {
-            if (mgmt.getComponent().supports(Upgrade.GAS)) {
-                return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
+    public static double getGasPerTickMean(IUpgradeTile tile, long def) {
+        if (tile.supportsUpgrades()) {
+            if (tile.getComponent().supports(Upgrade.GAS)) {
+                return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.GAS));
             }
-            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(mgmt, Upgrade.SPEED));
+            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.SPEED));
         }
         return def;
     }
@@ -266,14 +266,14 @@ public final class MekanismUtils {
     /**
      * Gets the maximum energy for a machine via it's upgrades.
      *
-     * @param mgmt - tile containing upgrades - best known for "Kids", 2008
+     * @param tile - tile containing upgrades - best known for "Kids", 2008
      * @param def  - original, default max energy
      *
      * @return max energy
      */
-    public static FloatingLong getMaxEnergy(IUpgradeTile mgmt, FloatingLong def) {
-        if (mgmt.supportsUpgrades()) {
-            return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(mgmt, Upgrade.ENERGY)));
+    public static FloatingLong getMaxEnergy(IUpgradeTile tile, FloatingLong def) {
+        if (tile.supportsUpgrades()) {
+            return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.ENERGY)));
         }
         return def;
     }
@@ -361,7 +361,7 @@ public final class MekanismUtils {
         for (Direction dir : EnumUtils.DIRECTIONS) {
             BlockPos offset = pos.offset(dir);
             if (isBlockLoaded(world, offset)) {
-                notifyNeighborofChange(world, offset, pos);
+                notifyNeighborOfChange(world, offset, pos);
                 if (world.getBlockState(offset).isNormalCube(world, offset)) {
                     offset = offset.offset(dir);
                     if (isBlockLoaded(world, offset)) {
@@ -383,7 +383,7 @@ public final class MekanismUtils {
      * @param pos     neighbor to notify
      * @param fromPos pos of our block that updated
      */
-    public static void notifyNeighborofChange(World world, BlockPos pos, BlockPos fromPos) {
+    public static void notifyNeighborOfChange(World world, BlockPos pos, BlockPos fromPos) {
         BlockState state = world.getBlockState(pos);
         state.getBlock().onNeighborChange(state, world, pos, fromPos);
         state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);

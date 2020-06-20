@@ -81,14 +81,14 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
     @Override
     protected void useResources(int operations) {
         super.useResources(operations);
-        GasStack reciperecipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
+        GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
-        if (reciperecipeGas.isEmpty()) {
+        if (recipeGas.isEmpty()) {
             //Something went wrong, this if should never really be true if we are in useResources
             return;
         }
         //TODO: Verify we actually have enough and should be passing operations like this?
-        gasInputHandler.use(reciperecipeGas, operations * getGasUsage());
+        gasInputHandler.use(recipeGas, operations * getGasUsage());
         //TODO: Else throw some error? It really should already have the needed amount due to the hasResourceForTick call
         // but it may make sense to check anyways
     }

@@ -91,7 +91,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-//TODO: When Galaticraft gets ported make it so the robit can "breath" without a mask
+//TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
 public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, ICachedRecipeHolder<ItemStackToItemStackRecipe>,
       IMekanismStrictEnergyHandler {
 

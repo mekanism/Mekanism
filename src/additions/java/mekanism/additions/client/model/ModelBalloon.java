@@ -21,7 +21,7 @@ public class ModelBalloon extends Model {
     private final ModelRenderer Balloon2;
     private final ModelRenderer Balloon1;
     private final ModelRenderer Balloon3;
-    private final ModelRenderer Balloonnub;
+    private final ModelRenderer BalloonNub;
     private final ModelRenderer String;
 
     public ModelBalloon() {
@@ -47,12 +47,12 @@ public class ModelBalloon extends Model {
         Balloon3.setTextureSize(64, 32);
         Balloon3.mirror = true;
         setRotation(Balloon3, 0F, 0F, 0F);
-        Balloonnub = new ModelRenderer(this, 18, 9);
-        Balloonnub.addBox(-0.5F, 2.5F, -0.5F, 1, 1, 1, false);
-        Balloonnub.setRotationPoint(0F, 0F, 0F);
-        Balloonnub.setTextureSize(64, 32);
-        Balloonnub.mirror = true;
-        setRotation(Balloonnub, 0F, 0F, 0F);
+        BalloonNub = new ModelRenderer(this, 18, 9);
+        BalloonNub.addBox(-0.5F, 2.5F, -0.5F, 1, 1, 1, false);
+        BalloonNub.setRotationPoint(0F, 0F, 0F);
+        BalloonNub.setTextureSize(64, 32);
+        BalloonNub.mirror = true;
+        setRotation(BalloonNub, 0F, 0F, 0F);
         String = new ModelRenderer(this, 34, 0);
         String.addBox(-0.5F, 3.5F, -0.5F, 1, 11, 1, false);
         String.setRotationPoint(0F, 0F, 0F);
@@ -79,7 +79,7 @@ public class ModelBalloon extends Model {
         Balloon2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         Balloon1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         Balloon3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        Balloonnub.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        BalloonNub.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         matrix.pop();
 
         matrix.push();

@@ -15,7 +15,7 @@ public class ModelFlamethrower extends MekanismModel {
     private static final ResourceLocation FLAMETHROWER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "flamethrower.png");
     private final RenderType RENDER_TYPE = getRenderType(FLAMETHROWER_TEXTURE);
 
-    private final ModelRenderer RingButtom;
+    private final ModelRenderer RingBottom;
     private final ModelRenderer RingTop;
     private final ModelRenderer Ring;
     private final ModelRenderer Axle;
@@ -44,12 +44,12 @@ public class ModelFlamethrower extends MekanismModel {
         textureWidth = 64;
         textureHeight = 64;
 
-        RingButtom = new ModelRenderer(this, 19, 14);
-        RingButtom.addBox(0F, 0F, 0F, 3, 1, 3, false);
-        RingButtom.setRotationPoint(-2F, 19.5F, 1.5F);
-        RingButtom.setTextureSize(64, 64);
-        RingButtom.mirror = true;
-        setRotation(RingButtom, 0F, 0F, 0F);
+        RingBottom = new ModelRenderer(this, 19, 14);
+        RingBottom.addBox(0F, 0F, 0F, 3, 1, 3, false);
+        RingBottom.setRotationPoint(-2F, 19.5F, 1.5F);
+        RingBottom.setTextureSize(64, 64);
+        RingBottom.mirror = true;
+        setRotation(RingBottom, 0F, 0F, 0F);
         RingTop = new ModelRenderer(this, 19, 14);
         RingTop.addBox(0F, 0F, 0F, 3, 1, 3, false);
         RingTop.setRotationPoint(-2F, 13.5F, 1.466667F);
@@ -191,7 +191,7 @@ public class ModelFlamethrower extends MekanismModel {
 
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        RingButtom.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        RingBottom.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         RingTop.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         Ring.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         Axle.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);

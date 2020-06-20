@@ -353,7 +353,7 @@ public class BoltEffect {
         FadeFunction NONE = (totalBolts, lifeScale) -> Pair.of(0, totalBolts);
 
         /**
-         * Remder bolts with a segment-by-segment 'fade' in and out, with a specified fade duration (applied to start and finish).
+         * Render bolts with a segment-by-segment 'fade' in and out, with a specified fade duration (applied to start and finish).
          */
         static FadeFunction fade(float fade) {
             return (totalBolts, lifeScale) -> {

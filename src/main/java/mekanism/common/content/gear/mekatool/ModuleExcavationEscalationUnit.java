@@ -56,7 +56,7 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
         SLOW(4, MekanismConfig.gear.disassemblerSlowMode),
         NORMAL(16, () -> true),
         FAST(32, () -> true),
-        SUPERFAST(64, () -> true),
+        SUPER_FAST(64, () -> true),
         EXTREME(128, MekanismConfig.gear.disassemblerFastMode);
 
         private static final ExcavationMode[] MODES = values();
