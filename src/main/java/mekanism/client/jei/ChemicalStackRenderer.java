@@ -1,8 +1,9 @@
-package mekanism.client.jei.chemical;
+package mekanism.client.jei;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,7 +56,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         this(capacityMb, showCapacity ? TooltipMode.SHOW_AMOUNT_AND_CAPACITY : TooltipMode.SHOW_AMOUNT, width, height, overlay);
     }
 
-    protected ChemicalStackRenderer(long capacityMb, TooltipMode tooltipMode, int width, int height, @Nullable IDrawable overlay) {
+    private ChemicalStackRenderer(long capacityMb, TooltipMode tooltipMode, int width, int height, @Nullable IDrawable overlay) {
         this.capacityMb = capacityMb;
         this.tooltipMode = tooltipMode;
         this.width = width;
@@ -82,9 +83,6 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     private void drawChemical(int xPosition, int yPosition, @Nonnull STACK stack) {
-        if (stack.isEmpty()) {
-            return;
-        }
         int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
         if (desiredHeight < MIN_CHEMICAL_HEIGHT) {
             desiredHeight = MIN_CHEMICAL_HEIGHT;
@@ -149,11 +147,11 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
 
     @Override
     public List<String> getTooltip(@Nonnull STACK stack, ITooltipFlag tooltipFlag) {
-        List<String> tooltip = new ArrayList<>();
         Chemical<?> chemical = stack.getType();
         if (chemical.isEmptyType()) {
-            return tooltip;
+            return Collections.emptyList();
         }
+        List<String> tooltip = new ArrayList<>();
         tooltip.add(TextComponentUtil.build(chemical).getFormattedText());
         ITextComponent component = null;
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {

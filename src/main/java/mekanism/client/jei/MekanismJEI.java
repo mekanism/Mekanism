@@ -22,12 +22,10 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
-import mekanism.client.jei.chemical.ChemicalStackHelper;
-import mekanism.client.jei.chemical.ChemicalStackHelper.GasStackHelper;
-import mekanism.client.jei.chemical.ChemicalStackHelper.InfusionStackHelper;
-import mekanism.client.jei.chemical.ChemicalStackHelper.PigmentStackHelper;
-import mekanism.client.jei.chemical.ChemicalStackHelper.SlurryStackHelper;
-import mekanism.client.jei.chemical.ChemicalStackRenderer;
+import mekanism.client.jei.ChemicalStackHelper.GasStackHelper;
+import mekanism.client.jei.ChemicalStackHelper.InfusionStackHelper;
+import mekanism.client.jei.ChemicalStackHelper.PigmentStackHelper;
+import mekanism.client.jei.ChemicalStackHelper.SlurryStackHelper;
 import mekanism.client.jei.machine.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.jei.machine.ChemicalDissolutionRecipeCategory;
 import mekanism.client.jei.machine.ChemicalInfuserRecipeCategory;
@@ -37,7 +35,9 @@ import mekanism.client.jei.machine.FluidSlurryToSlurryRecipeCategory;
 import mekanism.client.jei.machine.FluidToFluidRecipeCategory;
 import mekanism.client.jei.machine.GasToGasRecipeCategory;
 import mekanism.client.jei.machine.ItemStackGasToItemStackRecipeCategory;
+import mekanism.client.jei.machine.ItemStackToEnergyRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToGasRecipeCategory;
+import mekanism.client.jei.machine.ItemStackToInfuseTypeRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
 import mekanism.client.jei.machine.MetallurgicInfuserRecipeCategory;
 import mekanism.client.jei.machine.NucleosynthesizingRecipeCategory;
@@ -84,6 +84,10 @@ public class MekanismJEI implements IModPlugin {
     public static final InfusionStackHelper INFUSION_STACK_HELPER = new InfusionStackHelper();
     public static final PigmentStackHelper PIGMENT_STACK_HELPER = new PigmentStackHelper();
     public static final SlurryStackHelper SLURRY_STACK_HELPER = new SlurryStackHelper();
+
+    private static final ResourceLocation ENERGY_CONVERSION = Mekanism.rl("energy_conversion");
+    private static final ResourceLocation GAS_CONVERSION = Mekanism.rl("gas_conversion");
+    private static final ResourceLocation INFUSION_CONVERSION = Mekanism.rl("infusion_conversion");
 
     private static final ISubtypeInterpreter MEKANISM_NBT_INTERPRETER = stack -> {
         if (!stack.hasTag()) {
@@ -224,6 +228,11 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.ENERGIZED_SMELTER));
 
         registry.addRecipeCategories(new FluidToFluidRecipeCategory(guiHelper));
+
+        //Conversion recipes
+        registry.addRecipeCategories(new ItemStackToEnergyRecipeCategory(guiHelper, ENERGY_CONVERSION));
+        registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper, GAS_CONVERSION));
+        registry.addRecipeCategories(new ItemStackToInfuseTypeRecipeCategory(guiHelper, INFUSION_CONVERSION));
     }
 
     @Override
@@ -258,6 +267,9 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.registerCondensentrator(registry);
         RecipeRegistryHelper.registerNutritionalLiquifier(registry);
         RecipeRegistryHelper.registerSPS(registry);
+        RecipeRegistryHelper.register(registry, ENERGY_CONVERSION, MekanismRecipeType.ENERGY_CONVERSION);
+        RecipeRegistryHelper.register(registry, GAS_CONVERSION, MekanismRecipeType.GAS_CONVERSION);
+        RecipeRegistryHelper.register(registry, INFUSION_CONVERSION, MekanismRecipeType.INFUSION_CONVERSION);
     }
 
     @Override
@@ -269,7 +281,7 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.register(registry, MekanismBlocks.OSMIUM_COMPRESSOR);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.PRECISION_SAWMILL);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.METALLURGIC_INFUSER);
+        CatalystRegistryHelper.registerRecipeItem(registry, MekanismBlocks.METALLURGIC_INFUSER, MekanismBlocks.METALLURGIC_INFUSER.getRegistryName(), INFUSION_CONVERSION);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INFUSER);
@@ -287,6 +299,11 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.registerRecipeItem(registry, MekanismBlocks.FORMULAIC_ASSEMBLICATOR, VanillaRecipeCategoryUid.CRAFTING);
         CatalystRegistryHelper.registerRecipeItem(registry, MekanismItems.ROBIT, MekanismBlocks.ENERGIZED_SMELTER.getRegistryName(), VanillaRecipeCategoryUid.ANVIL,
               VanillaRecipeCategoryUid.CRAFTING, VanillaRecipeCategoryUid.FURNACE);
+        //TODO: Decide if we want to make it so all mekanism energy supporting blocks that have gui's are added as catalysts?
+        registry.addRecipeCatalyst(MekanismBlocks.BASIC_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
+        registry.addRecipeCatalyst(MekanismBlocks.ADVANCED_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
+        registry.addRecipeCatalyst(MekanismBlocks.ELITE_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
+        registry.addRecipeCatalyst(MekanismBlocks.ULTIMATE_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
     }
 
     @Override

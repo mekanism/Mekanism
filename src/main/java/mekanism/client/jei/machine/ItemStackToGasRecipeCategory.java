@@ -1,54 +1,40 @@
 package mekanism.client.jei.machine;
 
-import java.util.Collections;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.progress.GuiProgress;
-import mekanism.client.gui.element.progress.ProgressType;
-import mekanism.client.gui.element.slot.GuiSlot;
-import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mekanism.common.MekanismLang;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.util.ResourceLocation;
 
-public class ItemStackToGasRecipeCategory extends BaseRecipeCategory<ItemStackToGasRecipe> {
+public class ItemStackToGasRecipeCategory extends ItemStackToChemicalRecipeCategory<Gas, GasStack, ItemStackToGasRecipe> {
+
+    private static final ResourceLocation iconRL = MekanismUtils.getResource(ResourceType.GUI, "gases.png");
 
     public ItemStackToGasRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
-        super(helper, mekanismBlock, 20, 12, 132, 62);
+        super(helper, mekanismBlock.getRegistryName(), mekanismBlock.getTextComponent(), MekanismJEI.TYPE_GAS, false);
+    }
+
+    public ItemStackToGasRecipeCategory(IGuiHelper helper, ResourceLocation id) {
+        super(helper, id, MekanismLang.CONVERSION_GAS.translate(), MekanismJEI.TYPE_GAS, true);
+        icon = helper.drawableBuilder(iconRL, 0, 0, 18, 18)
+              .setTextureSize(18, 18)
+              .build();
     }
 
     @Override
-    protected void addGuiElements() {
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 133, 13));
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 25, 35));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 64, 40));
+    protected GuiGasGauge getGauge(GaugeType type, int x, int y) {
+        return GuiGasGauge.getDummy(type, this, x, y);
     }
 
     @Override
     public Class<? extends ItemStackToGasRecipe> getRecipeClass() {
         return ItemStackToGasRecipe.class;
-    }
-
-    @Override
-    public void setIngredients(ItemStackToGasRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.getOutputDefinition());
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, ItemStackToGasRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
-        itemStacks.set(0, recipe.getInput().getRepresentations());
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initChemical(gasStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputDefinition()), true);
     }
 }

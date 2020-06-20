@@ -20,7 +20,6 @@ import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -35,10 +34,9 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
     private static final ResourceLocation iconRL = MekanismUtils.getResource(ResourceType.GUI, "radioactive.png");
 
     private final List<GasStack> steamOutput = Collections.singletonList(MekanismGases.STEAM.getStack(1_000));
-    private final IDrawable icon;
 
     public FissionReactorRecipeCategory(IGuiHelper helper) {
-        super(helper, GeneratorsBlocks.FISSION_REACTOR_CASING, 3, 12, 189, 70);
+        super(helper, GeneratorsBlocks.FISSION_REACTOR_CASING.getRegistryName(), GeneratorsLang.FISSION_REACTOR.translate(), 3, 12, 189, 70);
         icon = helper.drawableBuilder(iconRL, 0, 0, 18, 18)
               .setTextureSize(18, 18)
               .build();
@@ -63,18 +61,6 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
             representations.add(new FluidStack(fluid, 1_000));
         }
         return representations;
-    }
-
-    @Nonnull
-    @Override
-    public String getTitle() {
-        return GeneratorsLang.FISSION_REACTOR.translate().getFormattedText();
-    }
-
-    @Nonnull
-    @Override
-    public IDrawable getIcon() {
-        return icon;
     }
 
     @Nonnull

@@ -17,40 +17,25 @@ import mekanism.client.jei.MekanismJEI;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<RotaryRecipe> {
 
     private final boolean condensentrating;
-    private final ResourceLocation uid;
-    private final String title;
 
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         //We override the things that reference the provider
-        super(helper, MekanismBlocks.ROTARY_CONDENSENTRATOR, 3, 12, 170, 71);
+        super(helper, Mekanism.rl(condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating"),
+              condensentrating ? MekanismLang.CONDENSENTRATING.translate() : MekanismLang.DECONDENSENTRATING.translate(), 3, 12, 170, 71);
         this.condensentrating = condensentrating;
-        uid = Mekanism.rl(condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating");
-        this.title = (condensentrating ? MekanismLang.CONDENSENTRATING : MekanismLang.DECONDENSENTRATING).translate().getFormattedText();
         //Add the progress bar. addGuiElements gets called before condensentrating is set
         guiElements.add(new GuiProgress(() -> 1, condensentrating ? ProgressType.LARGE_RIGHT : ProgressType.LARGE_LEFT, this, 64, 39));
-    }
-
-    @Override
-    public ResourceLocation getUid() {
-        return uid;
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
     }
 
     @Override

@@ -40,6 +40,12 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
         infoHandler = handler;
     }
 
+    public static GuiEnergyGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
+        GuiEnergyGauge gauge = new GuiEnergyGauge(null, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
+        gauge.dummy = true;
+        return gauge;
+    }
+
     @Override
     public TransmissionType getTransmission() {
         return TransmissionType.ENERGY;
@@ -47,6 +53,9 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     @Override
     public int getScaledLevel() {
+        if (dummy) {
+            return height - 2;
+        }
         if (infoHandler.getEnergy().equals(FloatingLong.ZERO)) {
             return 0;
         }
@@ -68,7 +77,9 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     @Override
     public List<ITextComponent> getTooltipText() {
-        if (infoHandler.getEnergy().isZero()) {
+        if (dummy) {
+            return Collections.emptyList();
+        } else if (infoHandler.getEnergy().isZero()) {
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
         return Collections.singletonList(EnergyDisplay.of(infoHandler.getEnergy(), infoHandler.getMaxEnergy()).getTextComponent());

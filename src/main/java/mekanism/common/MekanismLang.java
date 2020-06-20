@@ -41,6 +41,10 @@ public enum MekanismLang implements ILangEntry {
     BOILER_INVALID_MISSING_DISPERSER("boiler", "invalid_missing_disperser"),
     BOILER_INVALID_NO_DISPERSER("boiler", "invalid_no_disperser"),
     BOILER_INVALID_SUPERHEATING("boiler", "invalid_superheating"),
+    //Conversion
+    CONVERSION_ENERGY("conversion", "energy"),
+    CONVERSION_GAS("conversion", "gas"),
+    CONVERSION_INFUSION("conversion", "infusion"),
     //QIO stuff
     SET_FREQUENCY("qio", "set_frequency"),
     QIO_FREQUENCY_SELECT("qio", "qio_frequency_select"),

@@ -6,13 +6,13 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IBaseProvider;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.gauge.GaugeOverlay;
-import mekanism.client.jei.chemical.ChemicalStackRenderer;
 import mekanism.common.Mekanism;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -25,10 +25,10 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
-    private final IGuiHelper guiHelper;
     protected final ITickTimer timer;
     protected final int xOffset;
     protected final int yOffset;
@@ -36,18 +36,24 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     protected final IDrawable fluidOverlaySmall;
     protected final IDrawable fluidOverlaySmallMed;
     protected final Set<GuiTexturedElement> guiElements = new ObjectOpenHashSet<>();
-    private final IBaseProvider provider;
-
+    private final ResourceLocation id;
+    private final ITextComponent component;
     private final IDrawable background;
+    @Nullable
+    protected IDrawable icon;
 
     protected BaseRecipeCategory(IGuiHelper helper, IBaseProvider provider, int xOffset, int yOffset, int width, int height) {
-        this.guiHelper = helper;
-        this.provider = provider;
+        this(helper, provider.getRegistryName(), provider.getTextComponent(), xOffset, yOffset, width, height);
+    }
+
+    protected BaseRecipeCategory(IGuiHelper helper, ResourceLocation id, ITextComponent component, int xOffset, int yOffset, int width, int height) {
+        this.id = id;
+        this.component = component;
         //TODO: Only make a timer for ones we need it
         this.timer = helper.createTickTimer(20, 20, false);
-        this.fluidOverlayLarge = createDrawable(guiHelper, GaugeOverlay.STANDARD);
-        this.fluidOverlaySmall = createDrawable(guiHelper, GaugeOverlay.SMALL);
-        this.fluidOverlaySmallMed = createDrawable(guiHelper, GaugeOverlay.SMALL_MED);
+        this.fluidOverlayLarge = createDrawable(helper, GaugeOverlay.STANDARD);
+        this.fluidOverlaySmall = createDrawable(helper, GaugeOverlay.SMALL);
+        this.fluidOverlaySmallMed = createDrawable(helper, GaugeOverlay.SMALL_MED);
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.background = new NOOPDrawable(width, height);
@@ -80,15 +86,14 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         return background.getHeight();
     }
 
-
     @Override
     public ResourceLocation getUid() {
-        return provider.getRegistryName();
+        return id;
     }
 
     @Override
     public String getTitle() {
-        return provider.getTextComponent().getFormattedText();
+        return component.getFormattedText();
     }
 
     @Override
@@ -136,8 +141,8 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public IDrawable getIcon() {
-        //Note: This is allowed to be null even though annotations imply it isn't supposed to be
-        return null;
+        //Note: Even though we usually return null form here, this is allowed even though annotations imply it isn't supposed to be
+        return icon;
     }
 
     protected <STACK extends ChemicalStack<?>> void initChemical(IGuiIngredientGroup<STACK> group, int slot, boolean input, int x, int y, int width, int height,

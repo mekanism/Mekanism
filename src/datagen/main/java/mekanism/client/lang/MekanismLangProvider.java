@@ -448,6 +448,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, "Couldn't form, expected but didn't find Pressure Disperser at %s.");
         add(MekanismLang.BOILER_INVALID_NO_DISPERSER, "Couldn't form, no Pressure Disperser layer found.");
         add(MekanismLang.BOILER_INVALID_SUPERHEATING, "Couldn't form, invalid Superheating Element arrangement.");
+        //Conversion
+        add(MekanismLang.CONVERSION_ENERGY, "Item to Energy");
+        add(MekanismLang.CONVERSION_GAS, "Item to Gas");
+        add(MekanismLang.CONVERSION_INFUSION, "Item to Infuse Type");
         //QIO stuff
         add(MekanismLang.SET_FREQUENCY, "Set Frequency");
         add(MekanismLang.QIO_FREQUENCY_SELECT, "QIO Frequency Select");

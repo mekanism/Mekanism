@@ -46,7 +46,11 @@ public class RecipeRegistryHelper {
     }
 
     public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, IBlockProvider mekanismBlock, MekanismRecipeType<RECIPE> type) {
-        registry.addRecipes(type.getRecipes(getWorld()), mekanismBlock.getRegistryName());
+        register(registry, mekanismBlock.getRegistryName(), type);
+    }
+
+    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, ResourceLocation id, MekanismRecipeType<RECIPE> type) {
+        registry.addRecipes(type.getRecipes(getWorld()), id);
     }
 
     public static void registerNutritionalLiquifier(IRecipeRegistration registry) {

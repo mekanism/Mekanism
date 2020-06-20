@@ -55,19 +55,22 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         GaugeInfo color = getGaugeColor();
         renderExtendedTexture(color.getResourceLocation(), color.getSideWidth(), color.getSideHeight());
         if (!dummy) {
-            int scale = getScaledLevel();
-            TextureAtlasSprite icon = getIcon();
-            if (scale > 0 && icon != null) {
-                applyRenderColor();
-                drawTiledSprite(x + 1, y + 1, height - 2, width - 2, scale, icon);
-                MekanismRenderer.resetColor();
-            }
-            //Draw the bar overlay
-            minecraft.textureManager.bindTexture(getResource());
-            GaugeOverlay gaugeOverlay = gaugeType.getGaugeOverlay();
-
-            blit(x + 1, y + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
+            renderContents();
         }
+    }
+
+    public void renderContents() {
+        int scale = getScaledLevel();
+        TextureAtlasSprite icon = getIcon();
+        if (scale > 0 && icon != null) {
+            applyRenderColor();
+            drawTiledSprite(x + 1, y + 1, height - 2, width - 2, scale, icon);
+            MekanismRenderer.resetColor();
+        }
+        //Draw the bar overlay
+        minecraft.textureManager.bindTexture(getResource());
+        GaugeOverlay gaugeOverlay = gaugeType.getGaugeOverlay();
+        blit(x + 1, y + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }
 
     @Override

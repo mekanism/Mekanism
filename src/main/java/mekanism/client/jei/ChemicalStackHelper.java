@@ -1,4 +1,4 @@
-package mekanism.client.jei.chemical;
+package mekanism.client.jei;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
