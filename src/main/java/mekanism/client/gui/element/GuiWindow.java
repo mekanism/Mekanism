@@ -51,7 +51,7 @@ public class GuiWindow extends GuiTexturedElement {
                 prevDY = 0;
             }
         } else if (!ret && interactionStrategy.allowContainer()) {
-            if (guiObj instanceof GuiMekanism && ((GuiMekanism<?>) guiObj).getContainer() != null) {
+            if (guiObj instanceof GuiMekanism) {
                 Container c = ((GuiMekanism<?>) guiObj).getContainer();
                 if (!(c instanceof IEmptyContainer)) {
                     // allow interaction with slots

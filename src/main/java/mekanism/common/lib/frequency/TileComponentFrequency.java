@@ -33,7 +33,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Override
     public void tick() {
-        if (!tile.getWorld().isRemote()) {
+        if (!tile.isRemote()) {
             for (FrequencyType<?> type : heldFrequencies.keySet()) {
                 updateFrequency(type);
             }
@@ -115,7 +115,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     private void unload() {
-        if (!tile.getWorld().isRemote()) {
+        if (!tile.isRemote()) {
             heldFrequencies.forEach((key, value) -> deactivate(key));
         }
     }

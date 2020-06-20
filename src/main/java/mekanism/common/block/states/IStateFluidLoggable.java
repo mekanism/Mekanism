@@ -23,8 +23,8 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
 
     /**
      * Gets the fluid this fluid loggable block supports. Overriding this is an easy way to change the block from supporting water logging to supporting a specific
-     * different type of fluid, but dynamic fluid stuff cannot be done without a sizeable patch to forge/a change in vanilla so that {@link
-     * net.minecraft.block.Block#getFluidState(BlockState)} has position information.
+     * different type of fluid, but dynamic fluid stuff cannot be done without a sizeable patch to forge/a change in vanilla so that {@link BlockState#getFluidState()}
+     * has position information.
      */
     default Fluid getSupportedFluid() {
         return Fluids.WATER;

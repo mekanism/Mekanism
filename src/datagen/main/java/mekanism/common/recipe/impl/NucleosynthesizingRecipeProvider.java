@@ -23,13 +23,13 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Items.COAL),
               GasStackIngredient.from(MekanismGases.ANTIMATTER, 4),
               new ItemStack(Items.DIAMOND),
-              1000
+              1_000
         ).build(consumer, Mekanism.rl(basePath + "diamond"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               ItemStackIngredient.from(Items.DIAMOND),
               GasStackIngredient.from(MekanismGases.ANTIMATTER, 4),
               new ItemStack(Items.EMERALD),
-              1000
+              1_000
         ).build(consumer, Mekanism.rl(basePath + "emerald"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(

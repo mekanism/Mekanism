@@ -246,12 +246,6 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Nonnull
     @Override
-    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
-        return null;
-    }
-
-    @Nonnull
-    @Override
     @Deprecated
     public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType equipmentSlot) {
         Multimap<String, AttributeModifier> multiMap = super.getAttributeModifiers(equipmentSlot);

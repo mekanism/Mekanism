@@ -6,8 +6,8 @@ import mekanism.api.tier.ITier;
 public enum QIODriveTier implements ITier {
     BASE(BaseTier.BASIC, 16_000, 128),
     HYPER_DENSE(BaseTier.ADVANCED, 128_000, 256),
-    TIME_DILATING(BaseTier.ELITE, 1_048_000, 1024),
-    SUPERMASSIVE(BaseTier.ULTIMATE, 16_000_000_000L, 8192);
+    TIME_DILATING(BaseTier.ELITE, 1_048_000, 1_024),
+    SUPERMASSIVE(BaseTier.ULTIMATE, 16_000_000_000L, 8_192);
 
     private final BaseTier baseTier;
     private final long count;

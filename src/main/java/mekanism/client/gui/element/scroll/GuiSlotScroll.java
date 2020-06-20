@@ -161,7 +161,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
             return Long.toString(count);
         }
         if (count < 10_000_000) {
-            return Double.toString(Math.round(count / 1000D)) + "K";
+            return Double.toString(Math.round(count / 1_000D)) + "K";
         }
         if (count < 10_000_000_000L) {
             return Double.toString(Math.round(count / 1_000_000D)) + "M";

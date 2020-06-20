@@ -39,7 +39,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     private boolean exportWithoutFilter;
 
     private final EfficientEjector<Object2LongMap.Entry<HashedItem>> filterEjector =
-          new EfficientEjector<>(Entry::getKey, (e) -> (int) Math.min(Integer.MAX_VALUE, e.getValue()));
+          new EfficientEjector<>(Entry::getKey, (e) -> (int) Math.min(Integer.MAX_VALUE, e.getLongValue()));
     private final EfficientEjector<Map.Entry<HashedItem, QIOItemTypeData>> filterlessEjector =
           new EfficientEjector<>(Entry::getKey, (e) -> (int) Math.min(Integer.MAX_VALUE, e.getValue().getCount()));
 

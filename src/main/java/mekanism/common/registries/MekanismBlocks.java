@@ -336,7 +336,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<Block, BlockItem> SALT_BLOCK = BLOCKS.register("block_salt", Block.Properties.create(Material.SAND).hardnessAndResistance(0.5F, 0).sound(SoundType.SAND));
 
     private static BlockRegistryObject<BlockBounding, BlockItem> registerBoundingBlock(String name, Supplier<BlockBounding> blockSupplier) {
-        return BLOCKS.register(name, blockSupplier, block -> new BlockItem(block, new Item.Properties().group(null)));
+        return BLOCKS.register(name, blockSupplier, block -> new BlockItem(block, new Item.Properties()));
     }
 
     private static BlockRegistryObject<BlockResource, ItemBlockResource> registerResourceBlock(BlockResourceInfo resource) {

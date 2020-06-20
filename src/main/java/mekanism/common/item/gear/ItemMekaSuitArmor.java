@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -216,12 +215,6 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     @Override
     public boolean supportsSlotType(@Nonnull EquipmentSlotType slotType) {
         return slotType == getEquipmentSlot();
-    }
-
-    @Nullable
-    @Override
-    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
-        return null;
     }
 
     @Override

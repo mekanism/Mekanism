@@ -24,7 +24,9 @@ public interface IModeItem {
     }
 
     @Nullable
-    ITextComponent getScrollTextComponent(@Nonnull ItemStack stack);
+    default ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+        return null;
+    }
 
     static boolean isModeItem(@Nonnull PlayerEntity player, @Nonnull EquipmentSlotType slotType) {
         return isModeItem(player, slotType, true);

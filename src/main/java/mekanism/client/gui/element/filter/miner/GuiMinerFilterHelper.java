@@ -16,6 +16,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -50,7 +51,7 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
             //Over replace output
             if (xAxis >= getRelativeX() + 149 && xAxis <= getRelativeX() + 165 &&
                 yAxis >= getRelativeY() + slotOffset + 1 && yAxis <= getRelativeY() + slotOffset + 17) {
-                ItemStack stack = GuiElement.minecraft.player.inventory.getItemStack();
+                ItemStack stack = Minecraft.getInstance().player.inventory.getItemStack();
                 if (Screen.hasShiftDown()) {
                     filter.replaceStack = ItemStack.EMPTY;
                 } else if (!stack.isEmpty() && stack.getItem() instanceof BlockItem) {

@@ -186,7 +186,7 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("radiationEnabled", true));
         radiationChunkCheckRadius = CachedIntValue.wrap(this, builder.comment("The radius of chunks checked when running radiation calculations. The algorithm is efficient, but don't abuse it by making this crazy high.")
               .defineInRange("chunkCheckRadius", 5, 1, 100));
-        radiationSourceDecayRate = CachedDoubleValue.wrap(this, builder.comment("Radiation sources are multiplied by this constant roughly once per second to represent their emission decay. At the default rate, it takes roughly 10 days to remove a 1000 Sv/h (crazy high) source.")
+        radiationSourceDecayRate = CachedDoubleValue.wrap(this, builder.comment("Radiation sources are multiplied by this constant roughly once per second to represent their emission decay. At the default rate, it takes roughly 10 days to remove a 1,000 Sv/h (crazy high) source.")
               .define("sourceDecayRate", 0.9995D));
         radiationTargetDecayRate = CachedDoubleValue.wrap(this, builder.comment("Radiated objects and entities are multiplied by this constant roughly once per second to represent their dosage decay.")
               .define("targetDecayRate", 0.9995D));

@@ -43,7 +43,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
 
     private static final int MAX_OUTPUT = 10_000;
     private static final int MAX_HEIGHT = 18;
-    public static final double MAX_MULTIPLIER_TEMP = 3000;
+    public static final double MAX_MULTIPLIER_TEMP = 3_000;
 
     @ContainerSync
     public BasicFluidTank inputTank;

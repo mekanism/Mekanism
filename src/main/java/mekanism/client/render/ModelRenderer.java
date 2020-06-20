@@ -10,7 +10,7 @@ import mekanism.client.render.data.ValveRenderData;
 
 public final class ModelRenderer {
 
-    private static final int BLOCK_STAGES = 1000;
+    private static final int BLOCK_STAGES = 1_000;
 
     private static final Map<RenderData, Int2ObjectMap<Model3D>> cachedCenterData = new Object2ObjectOpenHashMap<>();
     private static final Map<ValveRenderData, Model3D> cachedValveFluids = new Object2ObjectOpenHashMap<>();

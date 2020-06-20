@@ -1,16 +1,5 @@
 package mekanism.client.render.armor;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -21,6 +10,16 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Predicate;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.QuadTransformation;
@@ -56,6 +55,7 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class MekaSuitArmor extends CustomArmor {
 
@@ -115,9 +115,9 @@ public class MekaSuitArmor extends CustomArmor {
             BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUniqueID(), id -> new BoltRenderer());
             if (Modules.isEnabled(entity.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT)) {
                 BoltEffect leftBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3d(-0.01, 0.35, 0.37), new Vec3d(-0.01, 0.15, 0.37), 10)
-                    .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
+                      .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
                 BoltEffect rightBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3d(0.025, 0.35, 0.37), new Vec3d(0.025, 0.15, 0.37), 10)
-                    .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
+                      .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
                 boltRenderer.update(0, leftBolt, MekanismRenderer.getPartialTick());
                 boltRenderer.update(1, rightBolt, MekanismRenderer.getPartialTick());
             }
@@ -304,8 +304,8 @@ public class MekaSuitArmor extends CustomArmor {
         for (ModelPos pos : ModelPos.VALUES) {
             for (OBJModelData modelData : specialModels) {
                 parseTransparency(modelData, pos, opaqueMap, transparentMap,
-                    specialQuadsToRenderMap.getOrDefault(modelData, new Object2ObjectOpenHashMap<>()).getOrDefault(pos, new HashSet<>()),
-                    specialLEDQuadsToRenderMap.getOrDefault(modelData, new Object2ObjectOpenHashMap<>()).getOrDefault(pos, new HashSet<>()));
+                      specialQuadsToRenderMap.getOrDefault(modelData, new Object2ObjectOpenHashMap<>()).getOrDefault(pos, new HashSet<>()),
+                      specialLEDQuadsToRenderMap.getOrDefault(modelData, new Object2ObjectOpenHashMap<>()).getOrDefault(pos, new HashSet<>()));
             }
             parseTransparency(OBJModelCache.MEKASUIT, pos, opaqueMap, transparentMap, armorQuadsToRender.getOrDefault(pos, new HashSet<>()), armorLEDQuadsToRender.getOrDefault(pos, new HashSet<>()));
         }
@@ -335,8 +335,8 @@ public class MekaSuitArmor extends CustomArmor {
 
     public static class ArmorQuads {
 
-        private Map<ModelPos, List<BakedQuad>> opaqueQuads = new Object2ObjectOpenHashMap<>();
-        private Map<ModelPos, List<BakedQuad>> transparentQuads = new Object2ObjectOpenHashMap<>();
+        private final Map<ModelPos, List<BakedQuad>> opaqueQuads;
+        private final Map<ModelPos, List<BakedQuad>> transparentQuads;
 
         public ArmorQuads(Map<ModelPos, List<BakedQuad>> opaqueQuads, Map<ModelPos, List<BakedQuad>> transparentQuads) {
             this.opaqueQuads = opaqueQuads;
@@ -346,6 +346,7 @@ public class MekaSuitArmor extends CustomArmor {
         public Map<ModelPos, List<BakedQuad>> getOpaqueMap() {
             return opaqueQuads;
         }
+
         public Map<ModelPos, List<BakedQuad>> getTransparentMap() {
             return transparentQuads;
         }

@@ -45,6 +45,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
 
     @Nonnull
     @Override
+    @Deprecated
     public BlockState updatePostPlacement(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         if (facing.getOpposite() == Attribute.get(state.getBlock(), AttributeStateFacing.class).getDirection(state) && !state.isValidPosition(world, currentPos)) {

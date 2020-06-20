@@ -1,16 +1,16 @@
 package mekanism.common.resource;
 
 public enum BlockResourceInfo implements IResource {
-    OSMIUM("osmium", 7.5F, 20.0F, 1),
-    TIN("tin", 5.0F, 10.0F, 1),
-    COPPER("copper", 5.0F, 10.0F, 1),
-    LEAD("lead", 5.0F, 10.0F, 1),
-    URANIUM("uranium", 5.0F, 10.0F, 1),
-    CHARCOAL("charcoal", 5.0F, 10.0F, 0, 16_000, 0, false),
-    BRONZE("bronze", 5.0F, 15.0F, 1),
-    STEEL("steel", 5.0F, 15.0F, 1),
-    REFINED_OBSIDIAN("refined_obsidian", 50.0F, 4000.0F, 2, -1, 8, true, true),
-    REFINED_GLOWSTONE("refined_glowstone", 5.0F, 10.0F, 1, -1, 15);
+    OSMIUM("osmium", 7.5F, 20, 1),
+    TIN("tin", 5, 10, 1),
+    COPPER("copper", 5, 10, 1),
+    LEAD("lead", 5, 10, 1),
+    URANIUM("uranium", 5, 10, 1),
+    CHARCOAL("charcoal", 5, 10, 0, 16_000, 0, false),
+    BRONZE("bronze", 5, 15, 1),
+    STEEL("steel", 5, 15, 1),
+    REFINED_OBSIDIAN("refined_obsidian", 50, 4_000, 2, -1, 8, true, true),
+    REFINED_GLOWSTONE("refined_glowstone", 5, 10, 1, -1, 15);
 
     private final String registrySuffix;
     private final boolean portalFrame;

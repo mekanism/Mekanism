@@ -40,6 +40,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
 
     @Nonnull
     @Override
+    @Deprecated
     public List<BakedQuad> getQuads(BlockState state, Direction side, @Nonnull Random rand) {
         return original.getQuads(state, side, rand);
     }
@@ -83,6 +84,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
 
     @Nonnull
     @Override
+    @Deprecated
     public ItemCameraTransforms getItemCameraTransforms() {
         return original.getItemCameraTransforms();
     }
@@ -122,7 +124,9 @@ public class ExtensionBakedModel<T> implements IBakedModel {
             return QuadUtils.transformBakedQuads(key.getQuads(), TextureFilteredTransformation.of(QuadTransformation.fullbright, rl -> rl.getPath().contains("led")));
         }
 
+        @Nonnull
         @Override
+        @Deprecated
         public List<BakedQuad> getQuads(BlockState state, Direction side, @Nonnull Random rand) {
             List<BakedQuad> origQuads = original.getQuads(state, side, rand);
             return QuadUtils.transformBakedQuads(origQuads, TextureFilteredTransformation.of(QuadTransformation.fullbright, rl -> rl.getPath().contains("led")));

@@ -12,7 +12,6 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiChemicalBar.ChemicalInfoProvider;
 import mekanism.client.jei.IJEIIngredientHelper;
 import mekanism.client.render.MekanismRenderer;
@@ -22,6 +21,7 @@ import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse;
 import mekanism.common.network.PacketDropperUse.DropperAction;
 import mekanism.common.network.PacketDropperUse.TankType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -60,7 +60,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY)) {
-            ItemStack stack = GuiTexturedElement.minecraft.player.inventory.getItemStack();
+            ItemStack stack = Minecraft.getInstance().player.inventory.getItemStack();
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TankType tankType = null;
                 CHEMICAL type = getHandler().getStack().getType();

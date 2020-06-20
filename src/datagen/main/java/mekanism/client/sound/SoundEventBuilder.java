@@ -82,7 +82,7 @@ public class SoundEventBuilder {
     public JsonElement toJson() {
         JsonObject jsonObject = new JsonObject();
         if (replace) {
-            jsonObject.addProperty(DataGenJsonConstants.REPLACE, replace);
+            jsonObject.addProperty(DataGenJsonConstants.REPLACE, true);
         }
         if (translationKey != null) {
             jsonObject.addProperty(DataGenJsonConstants.SUBTITLE, translationKey);

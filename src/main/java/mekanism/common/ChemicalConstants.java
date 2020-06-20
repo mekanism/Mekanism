@@ -10,13 +10,13 @@ import mekanism.common.base.IChemicalConstant;
  */
 public enum ChemicalConstants implements IChemicalConstant {
     HYDROGEN("hydrogen", 0xFFFFFFFF, 0, 20.28F, 70.85F),
-    OXYGEN("oxygen", 0xFF6CE2FF, 0, 90.19F, 1141),
-    CHLORINE("chlorine", 0xFFCFE800, 0, 207.15F, 1422.92F),
-    SULFUR_DIOXIDE("sulfur_dioxide", 0xFFA99D90, 0, 263.05F, 1400),
-    SULFUR_TRIOXIDE("sulfur_trioxide", 0xFFCE6C6C, 0, 318, 1920),
+    OXYGEN("oxygen", 0xFF6CE2FF, 0, 90.19F, 1_141),
+    CHLORINE("chlorine", 0xFFCFE800, 0, 207.15F, 1_422.92F),
+    SULFUR_DIOXIDE("sulfur_dioxide", 0xFFA99D90, 0, 263.05F, 1_400),
+    SULFUR_TRIOXIDE("sulfur_trioxide", 0xFFCE6C6C, 0, 318, 1_920),
     //Note: We use 300 for the temperature given that is what water is set to by forge for "room temperature"
     // Sulfuric acid is a liquid at room temperature
-    SULFURIC_ACID("sulfuric_acid", 0xFF82802B, 0, 300, 1840),
+    SULFURIC_ACID("sulfuric_acid", 0xFF82802B, 0, 300, 1_840),
     HYDROGEN_CHLORIDE("hydrogen_chloride", 0xFFA8F1E9, 0, 188.1F, 821.43F),
     ETHENE("ethene", 0xFFEACCF9, 0, 169.45F, 577),
     //Note: it is a solid at room temperature
@@ -24,9 +24,9 @@ public enum ChemicalConstants implements IChemicalConstant {
     SUPERHEATED_SODIUM("superheated_sodium", 0xFFD19469, 0, 2_000.0F, 927),
     //Note: it is a solid at room temperature
     LITHIUM("lithium", 0xFFEBA400, 0, 453.65F, 512),
-    HYDROFLUORIC_ACID("hydrofluoric_acid", 0xFFC6C7BD, 0, 189.6F, 1150F),
-    URANIUM_OXIDE("uranium_oxide", 0xFFE1F573, 0, 3138.15F, 10970F),
-    URANIUM_HEXAFLUORIDE("uranium_hexafluoride", 0xFF809960, 0, 337.2F, 5090F);
+    HYDROFLUORIC_ACID("hydrofluoric_acid", 0xFFC6C7BD, 0, 189.6F, 1_150),
+    URANIUM_OXIDE("uranium_oxide", 0xFFE1F573, 0, 3138.15F, 10_970),
+    URANIUM_HEXAFLUORIDE("uranium_hexafluoride", 0xFF809960, 0, 337.2F, 5_090);
 
     private final String name;
     private final int color;

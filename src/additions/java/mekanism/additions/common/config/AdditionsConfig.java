@@ -27,7 +27,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
         voiceServerEnabled = CachedBooleanValue.wrap(this, builder.comment("Enables the voice server for Walkie Talkies.")
               .define("voiceServerEnabled", false));
         VOICE_PORT = CachedIntValue.wrap(this, builder.comment("TCP port for the Voice server to listen on.")
-              .defineInRange("VoicePort", 36123, 1, 65535));
+              .defineInRange("VoicePort", 36_123, 1, 65_535));
         builder.pop();
         configSpec = builder.build();
     }

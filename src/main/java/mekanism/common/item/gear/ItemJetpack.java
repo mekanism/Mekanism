@@ -124,12 +124,6 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
         return slotType == getEquipmentSlot();
     }
 
-    @Nullable
-    @Override
-    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
-        return null;
-    }
-
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
         if (!(this instanceof ItemArmoredJetpack)) {

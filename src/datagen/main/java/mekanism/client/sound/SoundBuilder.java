@@ -129,7 +129,7 @@ public class SoundBuilder {
             hasSettings = true;
         }
         if (stream) {
-            jsonObject.addProperty(DataGenJsonConstants.STREAM, stream);
+            jsonObject.addProperty(DataGenJsonConstants.STREAM, true);
             hasSettings = true;
         }
         if (attenuationDistance != 16) {
@@ -137,7 +137,7 @@ public class SoundBuilder {
             hasSettings = true;
         }
         if (preload) {
-            jsonObject.addProperty(DataGenJsonConstants.PRELOAD, preload);
+            jsonObject.addProperty(DataGenJsonConstants.PRELOAD, true);
             hasSettings = true;
         }
         if (type != SoundType.SOUND) {

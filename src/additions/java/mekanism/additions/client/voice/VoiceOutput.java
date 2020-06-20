@@ -14,7 +14,7 @@ public class VoiceOutput extends Thread {
 
     public VoiceOutput(VoiceClient client) {
         voiceClient = client;
-        speaker = new DataLine.Info(SourceDataLine.class, voiceClient.getAudioFormat(), 2200);
+        speaker = new DataLine.Info(SourceDataLine.class, voiceClient.getAudioFormat(), 2_200);
 
         setDaemon(true);
         setName("VoiceServer Client Output Thread");
@@ -24,9 +24,9 @@ public class VoiceOutput extends Thread {
     public void run() {
         try {
             sourceLine = (SourceDataLine) AudioSystem.getLine(speaker);
-            sourceLine.open(voiceClient.getAudioFormat(), 2200);
+            sourceLine.open(voiceClient.getAudioFormat(), 2_200);
             sourceLine.start();
-            byte[] audioData = new byte[4096]; //less allocation/gc (if done outside the loop)
+            byte[] audioData = new byte[4_096]; //less allocation/gc (if done outside the loop)
             int byteCount;
             int length;
             while (voiceClient.isRunning()) {

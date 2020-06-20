@@ -191,7 +191,7 @@ public class RadiationManager {
                 // apply radiation to the player
                 player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
                     double added = magnitude * (1 - Math.min(1, getRadiationResistance(player)));
-                    added /= 3600D; // convert to Sv/s
+                    added /= 3_600D; // convert to Sv/s
                     c.radiate(added);
                 });
             }

@@ -266,9 +266,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                     if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < maxSize) {
                         int needed = maxSize - itemStack.getCount();
                         int toAdd = Math.min(needed, item.getItem().getCount());
-                        if (slot.growStack(toAdd, Action.EXECUTE) != toAdd) {
-                            //TODO: Print warning that something went wrong
-                        }
+                        MekanismUtils.logMismatchedStackSize(slot.growStack(toAdd, Action.EXECUTE), toAdd);
                         item.getItem().shrink(toAdd);
                         onItemPickup(item, toAdd);
                         if (item.getItem().isEmpty()) {

@@ -187,7 +187,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     private void unload() {
-        if (!world.isRemote()) {
+        if (!isRemote()) {
             structure.invalidate(world);
             if (cachedID != null) {
                 getManager().invalidate(this);
@@ -325,7 +325,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        if (!getWorld().isRemote() && !getMultiblock().isFormed()) {
+        if (!isRemote() && !getMultiblock().isFormed()) {
             FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
                 player.sendMessage(result.getResultText());

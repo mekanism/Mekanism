@@ -40,44 +40,46 @@ public class PacketEditFilter {
         }
         context.get().enqueueWork(() -> {
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.pos);
-            if (message.filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
-                HashList<SorterFilter<?>> filters = ((TileEntityLogisticalSorter) tile).getFilters();
-                int index = filters.indexOf(message.filter);
-                if (index != -1) {
-                    filters.remove(index);
-                    if (!message.delete) {
-                        filters.add(index, (SorterFilter<?>) message.edited);
+            if (tile != null) {
+                if (message.filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
+                    HashList<SorterFilter<?>> filters = ((TileEntityLogisticalSorter) tile).getFilters();
+                    int index = filters.indexOf(message.filter);
+                    if (index != -1) {
+                        filters.remove(index);
+                        if (!message.delete) {
+                            filters.add(index, (SorterFilter<?>) message.edited);
+                        }
+                    }
+                } else if (message.filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner) {
+                    HashList<MinerFilter<?>> filters = ((TileEntityDigitalMiner) tile).getFilters();
+                    int index = filters.indexOf(message.filter);
+                    if (index != -1) {
+                        filters.remove(index);
+                        if (!message.delete) {
+                            filters.add(index, (MinerFilter<?>) message.edited);
+                        }
+                    }
+                } else if (message.filter instanceof OredictionificatorFilter && tile instanceof TileEntityOredictionificator) {
+                    HashList<OredictionificatorFilter> filters = ((TileEntityOredictionificator) tile).getFilters();
+                    int index = filters.indexOf(message.filter);
+                    if (index != -1) {
+                        filters.remove(index);
+                        if (!message.delete) {
+                            filters.add(index, (OredictionificatorFilter) message.edited);
+                        }
+                    }
+                } else if (message.filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {
+                    HashList<QIOFilter<?>> filters = ((TileEntityQIOFilterHandler) tile).getFilters();
+                    int index = filters.indexOf(message.filter);
+                    if (index != -1) {
+                        filters.remove(index);
+                        if (!message.delete) {
+                            filters.add(index, (QIOFilter<?>) message.edited);
+                        }
                     }
                 }
-            } else if (message.filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner) {
-                HashList<MinerFilter<?>> filters = ((TileEntityDigitalMiner) tile).getFilters();
-                int index = filters.indexOf(message.filter);
-                if (index != -1) {
-                    filters.remove(index);
-                    if (!message.delete) {
-                        filters.add(index, (MinerFilter<?>) message.edited);
-                    }
-                }
-            } else if (message.filter instanceof OredictionificatorFilter && tile instanceof TileEntityOredictionificator) {
-                HashList<OredictionificatorFilter> filters = ((TileEntityOredictionificator) tile).getFilters();
-                int index = filters.indexOf(message.filter);
-                if (index != -1) {
-                    filters.remove(index);
-                    if (!message.delete) {
-                        filters.add(index, (OredictionificatorFilter) message.edited);
-                    }
-                }
-            } else if (message.filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {
-                HashList<QIOFilter<?>> filters = ((TileEntityQIOFilterHandler) tile).getFilters();
-                int index = filters.indexOf(message.filter);
-                if (index != -1) {
-                    filters.remove(index);
-                    if (!message.delete) {
-                        filters.add(index, (QIOFilter<?>) message.edited);
-                    }
-                }
+                tile.markDirty();
             }
-            tile.markDirty();
         });
         context.get().setPacketHandled(true);
     }

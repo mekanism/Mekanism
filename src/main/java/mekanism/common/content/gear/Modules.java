@@ -160,9 +160,9 @@ public class Modules {
         MODULE module = type.get(container);
         if (module == null) {
             Mekanism.logger.error("Attempted to load unknown module type '{}' from container {}", type, container.getItem());
+        } else {
+            module.read(modulesTag.getCompound(type.getName()));
         }
-
-        module.read(modulesTag.getCompound(type.getName()));
         return module;
     }
 

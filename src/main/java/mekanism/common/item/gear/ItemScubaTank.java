@@ -126,12 +126,6 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
         return slotType == getEquipmentSlot();
     }
 
-    @Nullable
-    @Override
-    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
-        return null;
-    }
-
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
     protected static class ScubaTankMaterial extends BaseSpecialArmorMaterial {

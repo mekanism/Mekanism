@@ -131,10 +131,10 @@ public class Structure {
                 Map<Integer, VoxelPlane> map = getMajorAxisMap(axis);
                 s.planeMap.get(axis).forEach((key, value) -> {
                     VoxelPlane p = map.get(key);
-                    if (p != null) {
-                        p.merge(value);
-                    } else {
+                    if (p == null) {
                         map.put(key, p = value);
+                    } else {
+                        p.merge(value);
                     }
                 });
             }

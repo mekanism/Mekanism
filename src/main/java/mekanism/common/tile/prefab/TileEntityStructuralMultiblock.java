@@ -80,7 +80,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        if (!getWorld().isRemote()) {
+        if (!isRemote()) {
             for (Structure s : structures.values()) {
                 IMultiblock<?> master = s.getController();
                 if (master != null && !getMultiblockData(s.getManager()).isFormed()) {
@@ -103,7 +103,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     public void remove() {
         super.remove();
-        if (!world.isRemote()) {
+        if (!isRemote()) {
             structures.values().forEach(s -> s.invalidate(world));
         }
     }
@@ -111,7 +111,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        if (!world.isRemote()) {
+        if (!isRemote()) {
             structures.values().forEach(s -> s.invalidate(world));
         }
     }

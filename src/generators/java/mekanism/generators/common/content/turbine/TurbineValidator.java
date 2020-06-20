@@ -138,7 +138,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
             TileEntityTurbineRotor rotor = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, new BlockPos(centerX, y, centerZ));
             if (rotor == null) {
                 // Not a contiguous set of rotors
-                FormationResult.fail(GeneratorsLang.TURBINE_INVALID_ROTORS_NOT_CONTIGUOUS);
+                return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_ROTORS_NOT_CONTIGUOUS);
             }
             turbineHeight++;
             blades += rotor.getHousedBlades();

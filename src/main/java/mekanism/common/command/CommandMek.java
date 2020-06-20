@@ -132,7 +132,7 @@ public class CommandMek {
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("radiation")
                   .requires(cs -> cs.hasPermissionLevel(4))
-                  .then(Commands.literal("add").then(Commands.argument("magnitude", DoubleArgumentType.doubleArg(0, 10000))
+                  .then(Commands.literal("add").then(Commands.argument("magnitude", DoubleArgumentType.doubleArg(0, 10_000))
                         .executes(ctx -> {
                             try {
                                 CommandSource source = ctx.getSource();

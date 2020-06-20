@@ -74,8 +74,8 @@ class FloatingLongTest {
     @DisplayName("Test division with a very large numerator")
     void testDivisionLargeNumerator() {
         FloatingLong a = FloatingLong.create(Long.MAX_VALUE);
-        FloatingLong b = FloatingLong.create((long) 7 * 7 * 73 * 127 * 92737);
-        Assertions.assertEquals(FloatingLong.create((long) 649657 * 337), a.divide(b));
+        FloatingLong b = FloatingLong.create((long) 7 * 7 * 73 * 127 * 92_737);
+        Assertions.assertEquals(FloatingLong.create((long) 649_657 * 337), a.divide(b));
     }
 
     @Test

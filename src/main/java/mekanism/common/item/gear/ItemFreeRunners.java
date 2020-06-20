@@ -126,12 +126,6 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
         return slotType == getEquipmentSlot();
     }
 
-    @Nullable
-    @Override
-    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
-        return null;
-    }
-
     public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent {
         NORMAL(MekanismLang.FREE_RUNNER_NORMAL, EnumColor.DARK_GREEN),
         DISABLED(MekanismLang.FREE_RUNNER_DISABLED, EnumColor.DARK_RED);

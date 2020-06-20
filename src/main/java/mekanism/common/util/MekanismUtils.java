@@ -266,7 +266,7 @@ public final class MekanismUtils {
     /**
      * Gets the maximum energy for a machine via it's upgrades.
      *
-     * @param tile - tile containing upgrades - best known for "Kids", 2008
+     * @param tile - tile containing upgrades
      * @param def  - original, default max energy
      *
      * @return max energy
@@ -383,10 +383,12 @@ public final class MekanismUtils {
      * @param pos     neighbor to notify
      * @param fromPos pos of our block that updated
      */
-    public static void notifyNeighborOfChange(World world, BlockPos pos, BlockPos fromPos) {
-        BlockState state = world.getBlockState(pos);
-        state.getBlock().onNeighborChange(state, world, pos, fromPos);
-        state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
+    public static void notifyNeighborOfChange(@Nullable World world, BlockPos pos, BlockPos fromPos) {
+        if (world != null) {
+            BlockState state = world.getBlockState(pos);
+            state.getBlock().onNeighborChange(state, world, pos, fromPos);
+            state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
+        }
     }
 
     /**
@@ -396,11 +398,13 @@ public final class MekanismUtils {
      * @param neighborSide The side the neighbor to notify is on
      * @param fromPos      pos of our block that updated
      */
-    public static void notifyNeighborOfChange(World world, Direction neighborSide, BlockPos fromPos) {
-        BlockPos neighbor = fromPos.offset(neighborSide);
-        BlockState state = world.getBlockState(neighbor);
-        state.getBlock().onNeighborChange(state, world, neighbor, fromPos);
-        state.neighborChanged(world, neighbor, world.getBlockState(fromPos).getBlock(), fromPos, false);
+    public static void notifyNeighborOfChange(@Nullable World world, Direction neighborSide, BlockPos fromPos) {
+        if (world != null) {
+            BlockPos neighbor = fromPos.offset(neighborSide);
+            BlockState state = world.getBlockState(neighbor);
+            state.getBlock().onNeighborChange(state, world, neighbor, fromPos);
+            state.neighborChanged(world, neighbor, world.getBlockState(fromPos).getBlock(), fromPos, false);
+        }
     }
 
     /**

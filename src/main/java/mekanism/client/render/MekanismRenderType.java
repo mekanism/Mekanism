@@ -82,7 +82,7 @@ public class MekanismRenderType extends RenderType {
               .alpha(HALF_ALPHA)
               .lightmap(LIGHTMAP_ENABLED)
               .build(true);
-        return makeType("mekasuit", DefaultVertexFormats.BLOCK, 7, 131072, true, true, state);
+        return makeType("mekasuit", DefaultVertexFormats.BLOCK, 7, 131_072, true, true, state);
      }
 
     public static RenderType renderSPS(ResourceLocation resourceLocation) {

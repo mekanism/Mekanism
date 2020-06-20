@@ -36,7 +36,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     public double getBoilEfficiency() {
-        return (double) Math.round(getMultiblock().getBoilEfficiency() * 1000) / 1000;
+        return (double) Math.round(getMultiblock().getBoilEfficiency() * 1_000) / 1_000;
     }
 
     public long getMaxBurnRate() {
@@ -58,8 +58,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
 
     public EnumColor getTempColor() {
         double temp = getMultiblock().heatCapacitor.getTemperature();
-        return temp < 600 ? EnumColor.BRIGHT_GREEN : (temp < 1000 ? EnumColor.YELLOW :
-                                                      (temp < 1200 ? EnumColor.ORANGE : (temp < 1600 ? EnumColor.RED : EnumColor.DARK_RED)));
+        return temp < 600 ? EnumColor.BRIGHT_GREEN : (temp < 1_000 ? EnumColor.YELLOW :
+                                                      (temp < 1_200 ? EnumColor.ORANGE : (temp < 1_600 ? EnumColor.RED : EnumColor.DARK_RED)));
     }
 
     public void setRateLimitFromPacket(double rate) {

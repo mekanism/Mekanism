@@ -63,7 +63,7 @@ public class VoxelPlane {
                 minRow = Math.min(minRow, other.minRow);
                 maxRow = Math.max(maxRow, other.maxRow);
             }
-            hasController |= other.hasController;
+            hasController = true;
         }
         outsideSet.removeIf(pos -> {
             if (!isOutside(pos)) {

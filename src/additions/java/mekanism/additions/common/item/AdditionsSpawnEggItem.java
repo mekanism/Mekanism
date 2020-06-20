@@ -14,6 +14,7 @@ public class AdditionsSpawnEggItem extends SpawnEggItem {
 
     private final EntityTypeRegistryObject<?> entityTypeRO;
 
+    @SuppressWarnings("ConstantConditions")
     public AdditionsSpawnEggItem(EntityTypeRegistryObject<?> entityTypeRO, int primaryColor, int secondaryColor) {
         //Note: We pass null for now so that it does not override "pick block" on skeletons or some other existing type
         super(null, primaryColor, secondaryColor, ItemDeferredRegister.getMekBaseProperties());

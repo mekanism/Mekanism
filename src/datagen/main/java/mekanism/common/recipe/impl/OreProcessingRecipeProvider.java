@@ -392,7 +392,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToChemicalRecipeBuilder.dissolution(
               ItemStackIngredient.from(MekanismTags.Items.GEMS_FLUORITE),
               GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
-              MekanismGases.HYDROFLUORIC_ACID.getStack(1000)
+              MekanismGases.HYDROFLUORIC_ACID.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "hydrofluoric_acid"));
         //uranium oxide
         ItemStackToChemicalRecipeBuilder.oxidizing(
@@ -419,7 +419,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //fragment -> fuel
         ItemStackToChemicalRecipeBuilder.oxidizing(
               ItemStackIngredient.from(MekanismItems.REPROCESSED_FISSILE_FRAGMENT),
-              MekanismGases.FISSILE_FUEL.getStack(2000)
+              MekanismGases.FISSILE_FUEL.getStack(2_000)
         ).build(consumer, Mekanism.rl(basePath + "reprocessing/to_fuel"));
     }
 }

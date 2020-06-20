@@ -9,7 +9,7 @@ public class BlockPlasticReinforced extends Block implements IColoredBlock {
     private final EnumColor color;
 
     public BlockPlasticReinforced(EnumColor color) {
-        super(Block.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(50F, 2000F));
+        super(Block.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(50F, 2_000F));
         this.color = color;
     }
 

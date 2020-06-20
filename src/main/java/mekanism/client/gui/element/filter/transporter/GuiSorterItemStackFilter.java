@@ -92,7 +92,7 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
         drawString(MekanismLang.MIN.translate(""), relativeX + 148, relativeY + 33, titleTextColor());
         drawString(MekanismLang.MAX.translate(""), relativeX + 148, relativeY + 45, titleTextColor());
         if (tile.singleItem && filter.sizeMode) {
-            drawString(MekanismLang.ITEM_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.of(filter.sizeMode)), relativeX + 161, relativeY + 59, titleTextColor());
+            drawString(MekanismLang.ITEM_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.of(true)), relativeX + 161, relativeY + 59, titleTextColor());
         } else {
             drawString(OnOff.of(filter.sizeMode).getTextComponent(), relativeX + 161, relativeY + 59, titleTextColor());
         }

@@ -15,7 +15,7 @@ public class VoiceInput extends Thread {
 
     public VoiceInput(VoiceClient client) {
         voiceClient = client;
-        microphone = new DataLine.Info(TargetDataLine.class, voiceClient.getAudioFormat(), 2200);
+        microphone = new DataLine.Info(TargetDataLine.class, voiceClient.getAudioFormat(), 2_200);
 
         setDaemon(true);
         setName("VoiceServer Client Input Thread");
@@ -29,7 +29,7 @@ public class VoiceInput extends Thread {
                 return;
             }
             targetLine = (TargetDataLine) AudioSystem.getLine(microphone);
-            targetLine.open(voiceClient.getAudioFormat(), 2200);
+            targetLine.open(voiceClient.getAudioFormat(), 2_200);
             targetLine.start();
             AudioInputStream audioInput = new AudioInputStream(targetLine);
 
@@ -42,7 +42,7 @@ public class VoiceInput extends Thread {
                     while (voiceClient.isRunning() && AdditionsKeyHandler.voiceKey.isPressed()) {
                         try {
                             int availableBytes = audioInput.available();
-                            byte[] audioData = new byte[Math.min(availableBytes, 2200)];
+                            byte[] audioData = new byte[Math.min(availableBytes, 2_200)];
                             int bytesRead = audioInput.read(audioData, 0, audioData.length);
 
                             if (bytesRead > 0) {

@@ -37,7 +37,7 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getPaxelMaxUses() {
-        return 1100;
+        return 1_100;
     }
 
     @Override

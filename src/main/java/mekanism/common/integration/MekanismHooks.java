@@ -35,12 +35,6 @@ public final class MekanismHooks {
         ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
-
-        if (CraftTweakerLoaded) {
-            //CraftTweaker must be ran after all other recipe changes
-            //CrafttweakerIntegration.registerCommands();
-            //CrafttweakerIntegration.applyRecipeChanges();
-        }
     }
 
     public void sendIMCMessages(InterModEnqueueEvent event) {

@@ -24,7 +24,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     private static final FluidRenderMap<Int2ObjectMap<Model3D>> cachedCenterFluids = new FluidRenderMap<>();
     private static final FluidRenderMap<Int2ObjectMap<Model3D>> cachedValveFluids = new FluidRenderMap<>();
 
-    private static final int stages = 1400;
+    private static final int stages = 1_400;
 
     public RenderFluidTank(TileEntityRendererDispatcher renderer) {
         super(renderer);

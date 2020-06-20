@@ -175,7 +175,7 @@ public class ClientTickHandler {
         }
 
         if (minecraft.world != null && minecraft.player != null && !Mekanism.proxy.isPaused()) {
-            if (!initHoliday || MekanismClient.ticksPassed % 1200 == 0) {
+            if (!initHoliday || MekanismClient.ticksPassed % 1_200 == 0) {
                 HolidayManager.check(Minecraft.getInstance().player);
                 initHoliday = true;
             }

@@ -94,14 +94,14 @@ public class TransmitterBakedModel implements IBakedModel {
                 for (Direction dir : EnumUtils.DIRECTIONS) {
                     visible.add(dir.getName() + data.getConnectionType(dir).getName().toUpperCase());
                 }
-                List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData), hasColor).getQuads(state, side, rand, extraData);
+                List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData), hasColor).getQuads(state, null, rand, extraData);
                 modelCache.put(hash, result);
                 return result;
             }
             return modelCache.get(hash);
         }
         //Fallback to our "default" model arrangement. The item variant uses this
-        return bakedVariant.getQuads(state, side, rand, extraData);
+        return bakedVariant.getQuads(state, null, rand, extraData);
     }
 
     /**

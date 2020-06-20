@@ -145,7 +145,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     public double getProcessRate() {
-        return Math.round((lastProcessed / MekanismConfig.general.spsInputPerAntimatter.get()) * 1000) / 1000D;
+        return Math.round((lastProcessed / MekanismConfig.general.spsInputPerAntimatter.get()) * 1_000) / 1_000D;
     }
 
     public float getScaledProgress() {

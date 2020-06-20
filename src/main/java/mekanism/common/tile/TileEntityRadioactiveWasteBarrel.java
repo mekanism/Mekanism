@@ -78,9 +78,10 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
         super.remove();
         if (!isRemote() && gasTank.getStored() > 0) {
             // should always be true
-            if (gasTank.getStack().has(GasAttributes.Radiation.class)) {
-                double radioactivity = gasTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
-                Mekanism.radiationManager.radiate(Coord4D.get(this), gasTank.getStored() * radioactivity);
+            GasStack stack = gasTank.getStack();
+            if (stack.has(GasAttributes.Radiation.class)) {
+                double radioactivity = stack.get(GasAttributes.Radiation.class).getRadioactivity();
+                Mekanism.radiationManager.radiate(Coord4D.get(this), radioactivity * stack.getAmount());
             }
         }
     }

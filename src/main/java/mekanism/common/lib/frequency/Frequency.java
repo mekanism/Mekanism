@@ -163,7 +163,7 @@ public abstract class Frequency {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + (publicFreq ? 1231 : 1237);
+            result = prime * result + (publicFreq ? 1_231 : 1_237);
             result = prime * result + ((key == null) ? 0 : key.hashCode());
             return result;
         }

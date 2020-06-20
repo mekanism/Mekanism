@@ -271,7 +271,7 @@ public class MekanismRenderer {
         RenderSystem.enableBlend();
         RenderSystem.disableAlphaTest();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.shadeModel(7425);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
@@ -280,7 +280,7 @@ public class MekanismRenderer {
         bufferbuilder.pos(x, height, 0).color(r, g, b, a).endVertex();
         bufferbuilder.pos(width, height, 0).color(r, g, b, a).endVertex();
         tessellator.draw();
-        RenderSystem.shadeModel(7424);
+        RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();

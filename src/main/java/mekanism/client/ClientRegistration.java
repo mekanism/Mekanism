@@ -123,7 +123,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -220,7 +219,7 @@ public class ClientRegistration {
         //TODO: Does the diversion transporter actually need to be in multiple render types
         // Also can we move the overlay from the TER to being part of the baked model
         //Logistical Transporter
-        ClientRegistrationUtil.setRenderLayer(renderType -> renderType.equals(RenderType.getCutout()) || renderType.equals(RenderType.getTranslucent()),
+        ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getCutout() || renderType == RenderType.getTranslucent(),
               MekanismBlocks.DIVERSION_TRANSPORTER, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
         //Fluids (translucent)
@@ -228,9 +227,8 @@ public class ClientRegistration {
             ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
         }
 
-        RenderTypeLookup.setRenderLayer(MekanismBlocks.ISOTOPIC_CENTRIFUGE.getBlock(), (layer) -> {
-            return layer == RenderType.getSolid() || layer == RenderType.getTranslucent();
-        });
+        ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getSolid() || renderType == RenderType.getTranslucent(),
+              MekanismBlocks.ISOTOPIC_CENTRIFUGE);
 
         customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), (orig, evt) -> new DriveArrayBakedModel(orig));
         customModels.put(MekanismBlocks.MODIFICATION_STATION.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
