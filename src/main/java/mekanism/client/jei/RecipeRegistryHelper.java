@@ -40,7 +40,7 @@ public class RecipeRegistryHelper {
             }
         }
         ResourceLocation condensentrating = Mekanism.rl("rotary_condensentrator_condensentrating");
-        ResourceLocation decondensentrating = Mekanism.rl( "rotary_condensentrator_decondensentrating");
+        ResourceLocation decondensentrating = Mekanism.rl("rotary_condensentrator_decondensentrating");
         registry.addRecipes(condensentratorRecipes, condensentrating);
         registry.addRecipes(decondensentratorRecipes, decondensentrating);
     }

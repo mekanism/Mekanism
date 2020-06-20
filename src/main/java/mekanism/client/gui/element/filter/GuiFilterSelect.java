@@ -13,7 +13,7 @@ import mekanism.common.content.filter.ITagFilter;
 public abstract class GuiFilterSelect extends GuiWindow {
 
     protected GuiFilterSelect(IGuiWrapper gui) {
-        super(gui,(gui.getWidth() - 152) / 2, 20, 152, 110);
+        super(gui, (gui.getWidth() - 152) / 2, 20, 152, 110);
         addChild(new GuiElementHolder(gui, 23, relativeY + 18, 130, 82));
         addChild(new TranslationButton(gui, gui.getLeft() + 24, this.y + 19, 128, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
               () -> openCreateFilterDialog(createNewItemStackFilter())));

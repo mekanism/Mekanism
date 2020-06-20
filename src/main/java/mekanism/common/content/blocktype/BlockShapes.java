@@ -2,6 +2,7 @@ package mekanism.common.content.blocktype;
 
 import static mekanism.common.util.VoxelShapeUtils.setShape;
 import static net.minecraft.block.Block.makeCuboidShape;
+
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.util.Direction;
@@ -213,16 +214,16 @@ public final class BlockShapes {
         ), CHEMICAL_WASHER);
 
         setShape(VoxelShapeUtils.combine(
-            makeCuboidShape(9, 4, 2, 13, 5, 14), // stand
-            makeCuboidShape(8, 5, 7, 14, 16, 15), // tower2
-            makeCuboidShape(8, 5, 1, 14, 16, 6), // tower1
-            makeCuboidShape(7, 7, 9, 8, 10, 12), // pipe1
-            makeCuboidShape(0, 4, 0, 7, 16, 16), // tank
-            makeCuboidShape(-0.005, 4, 4, 0.995, 12, 12), // connectorToggle
-            makeCuboidShape(9, 6, 6, 13, 15, 7), // bridge
-            makeCuboidShape(13, 5, 5, 15, 11, 11), // pipe2
-            makeCuboidShape(15.005, 3, 3, 16.005, 13, 13), // connector
-            makeCuboidShape(0, 0, 0, 16, 4, 16) // base
+              makeCuboidShape(9, 4, 2, 13, 5, 14), // stand
+              makeCuboidShape(8, 5, 7, 14, 16, 15), // tower2
+              makeCuboidShape(8, 5, 1, 14, 16, 6), // tower1
+              makeCuboidShape(7, 7, 9, 8, 10, 12), // pipe1
+              makeCuboidShape(0, 4, 0, 7, 16, 16), // tank
+              makeCuboidShape(-0.005, 4, 4, 0.995, 12, 12), // connectorToggle
+              makeCuboidShape(9, 6, 6, 13, 15, 7), // bridge
+              makeCuboidShape(13, 5, 5, 15, 11, 11), // pipe2
+              makeCuboidShape(15.005, 3, 3, 16.005, 13, 13), // connector
+              makeCuboidShape(0, 0, 0, 16, 4, 16) // base
         ), CHEMICAL_OXIDIZER);
 
         setShape(VoxelShapeUtils.combine(
@@ -644,77 +645,77 @@ public final class BlockShapes {
         ), QIO_DASHBOARD, true);
 
         setShape(VoxelShapeUtils.combine(
-            makeCuboidShape(-16, 13, 0, 16, 16, 16), // desk_top
-            makeCuboidShape(13, 0, 0, 16, 13, 3), // desk_part1
-            makeCuboidShape(0, 0, 0, 3, 13, 3), // desk_part2
-            makeCuboidShape(-16, 8, 0, 0, 11, 16), // desk_part3
-            makeCuboidShape(0, 8, 3, 16, 11, 16), // desk_part4
-            makeCuboidShape(0, 0, 3, 16, 6, 16), // desk_part5
-            makeCuboidShape(-16, 0, 0, 0, 6, 16), // desk_part6
-            makeCuboidShape(-15, 11, 1, 0, 13, 15), // desk_filler_right_top
-            makeCuboidShape(-15, 6, 1, 0, 8, 15), // desk_filler_right_bottom
-            makeCuboidShape(0, 11, 3, 15, 13, 15), // desk_filler_left_top
-            makeCuboidShape(0, 6, 3, 15, 8, 15), // desk_filler_left_bottom
-            makeCuboidShape(1, 17.5, 10.5, 15, 25.5, 12.5), // monitor
-            makeCuboidShape(2, 17, 11, 3, 18, 12), // led
-            makeCuboidShape(2, 15, 1, 14, 17, 7), // keyboard
-            makeCuboidShape(6, 16, 11, 10, 22, 13), // monitor_stand_arm
-            makeCuboidShape(5, 16, 10, 11, 17, 14), // monitor_stand_base
-            makeCuboidShape(-14, 16, 2, -1, 17, 14), // modifier_base
-            makeCuboidShape(-14, 16, 14, -11, 30, 16), // modifier_arm_right1
-            makeCuboidShape(-14, 6, 14.005, -11, 16, 16.005), // modifier_arm_right2
-            makeCuboidShape(-4, 16, 14, -1, 30, 16), // modifier_arm_left1
-            makeCuboidShape(-4, 6, 14.005, -1, 16, 16.005), // modifier_arm_left2
-            makeCuboidShape(-11, 23, 8, -10, 27, 9), // modifier_probe_right
-            makeCuboidShape(-11, 22, 8, -10, 23, 9), // modifier_probe_right_led
-            makeCuboidShape(-5, 23, 8, -4, 27, 9), // modifier_probe_left
-            makeCuboidShape(-5, 22, 8, -4, 23, 9), // modifier_probe_left_led
-            makeCuboidShape(-13, 27, 7, -2, 28, 10), // modifier_probe_base
-            makeCuboidShape(-11, 28, 6, -4, 30, 11), // modifier_arm_top_center
-            makeCuboidShape(-14, 28, 6, -11, 30, 14), // modifier_arm_top_right
-            makeCuboidShape(-4, 28, 6, -1, 30, 14), // modifier_arm_top_left
-            makeCuboidShape(4, 4, 15.005, 12, 12, 16.005) // energy_port
+              makeCuboidShape(-16, 13, 0, 16, 16, 16), // desk_top
+              makeCuboidShape(13, 0, 0, 16, 13, 3), // desk_part1
+              makeCuboidShape(0, 0, 0, 3, 13, 3), // desk_part2
+              makeCuboidShape(-16, 8, 0, 0, 11, 16), // desk_part3
+              makeCuboidShape(0, 8, 3, 16, 11, 16), // desk_part4
+              makeCuboidShape(0, 0, 3, 16, 6, 16), // desk_part5
+              makeCuboidShape(-16, 0, 0, 0, 6, 16), // desk_part6
+              makeCuboidShape(-15, 11, 1, 0, 13, 15), // desk_filler_right_top
+              makeCuboidShape(-15, 6, 1, 0, 8, 15), // desk_filler_right_bottom
+              makeCuboidShape(0, 11, 3, 15, 13, 15), // desk_filler_left_top
+              makeCuboidShape(0, 6, 3, 15, 8, 15), // desk_filler_left_bottom
+              makeCuboidShape(1, 17.5, 10.5, 15, 25.5, 12.5), // monitor
+              makeCuboidShape(2, 17, 11, 3, 18, 12), // led
+              makeCuboidShape(2, 15, 1, 14, 17, 7), // keyboard
+              makeCuboidShape(6, 16, 11, 10, 22, 13), // monitor_stand_arm
+              makeCuboidShape(5, 16, 10, 11, 17, 14), // monitor_stand_base
+              makeCuboidShape(-14, 16, 2, -1, 17, 14), // modifier_base
+              makeCuboidShape(-14, 16, 14, -11, 30, 16), // modifier_arm_right1
+              makeCuboidShape(-14, 6, 14.005, -11, 16, 16.005), // modifier_arm_right2
+              makeCuboidShape(-4, 16, 14, -1, 30, 16), // modifier_arm_left1
+              makeCuboidShape(-4, 6, 14.005, -1, 16, 16.005), // modifier_arm_left2
+              makeCuboidShape(-11, 23, 8, -10, 27, 9), // modifier_probe_right
+              makeCuboidShape(-11, 22, 8, -10, 23, 9), // modifier_probe_right_led
+              makeCuboidShape(-5, 23, 8, -4, 27, 9), // modifier_probe_left
+              makeCuboidShape(-5, 22, 8, -4, 23, 9), // modifier_probe_left_led
+              makeCuboidShape(-13, 27, 7, -2, 28, 10), // modifier_probe_base
+              makeCuboidShape(-11, 28, 6, -4, 30, 11), // modifier_arm_top_center
+              makeCuboidShape(-14, 28, 6, -11, 30, 14), // modifier_arm_top_right
+              makeCuboidShape(-4, 28, 6, -1, 30, 14), // modifier_arm_top_left
+              makeCuboidShape(4, 4, 15.005, 12, 12, 16.005) // energy_port
         ), MODIFICATION_STATION);
 
         setShape(VoxelShapeUtils.combine(
-            makeCuboidShape(0, 0, 0, 16, 2, 16), // base
-            makeCuboidShape(1, 2, 14, 2, 3, 15), // rivet1
-            makeCuboidShape(1, 2, 1, 2, 3, 2), // rivet2
-            makeCuboidShape(14, 2, 1, 15, 3, 2), // rivet3
-            makeCuboidShape(14, 2, 14, 15, 3, 15), // rivet4
-            makeCuboidShape(3, 2, 3, 13, 16, 13), // tower1
-            makeCuboidShape(3, 27, 3, 13, 30, 13), // tower2
-            makeCuboidShape(3, 16, 3, 6, 27, 6), // tower3
-            makeCuboidShape(10, 16, 3, 13, 27, 6), // tower4
-            makeCuboidShape(3, 16, 10, 6, 27, 13), // tower5
-            makeCuboidShape(10, 16, 10, 13, 27, 13), // tower6
-            makeCuboidShape(4, 16, 4, 12, 27, 12), // glass_tank
-            makeCuboidShape(2, 9, 2, 14, 10, 14), // ring1
-            makeCuboidShape(2, 7, 2, 14, 8, 14), // ring2
-            makeCuboidShape(2, 5, 2, 14, 6, 14), // ring3
-            makeCuboidShape(2, 3, 2, 14, 4, 14), // ring4
-            makeCuboidShape(2, 10, 10, 3, 14, 11), // pipe1
-            makeCuboidShape(4, 30, 4, 6, 32, 6), // node1
-            makeCuboidShape(5, 30, 10, 6, 32, 11), // node2
-            makeCuboidShape(6, 30, 6, 10, 31, 10), // coil
-            makeCuboidShape(4, 4, 0, 12, 12, 1), // port
-            makeCuboidShape(5, 5, 1, 11, 11, 3), // port_connector
-            makeCuboidShape(6, 18, 7, 7, 25, 8), // random_shape1
-            makeCuboidShape(6, 17, 7, 9, 18, 8), // random_shape2
-            makeCuboidShape(8, 15, 7, 9, 17, 8) // random_shape3
+              makeCuboidShape(0, 0, 0, 16, 2, 16), // base
+              makeCuboidShape(1, 2, 14, 2, 3, 15), // rivet1
+              makeCuboidShape(1, 2, 1, 2, 3, 2), // rivet2
+              makeCuboidShape(14, 2, 1, 15, 3, 2), // rivet3
+              makeCuboidShape(14, 2, 14, 15, 3, 15), // rivet4
+              makeCuboidShape(3, 2, 3, 13, 16, 13), // tower1
+              makeCuboidShape(3, 27, 3, 13, 30, 13), // tower2
+              makeCuboidShape(3, 16, 3, 6, 27, 6), // tower3
+              makeCuboidShape(10, 16, 3, 13, 27, 6), // tower4
+              makeCuboidShape(3, 16, 10, 6, 27, 13), // tower5
+              makeCuboidShape(10, 16, 10, 13, 27, 13), // tower6
+              makeCuboidShape(4, 16, 4, 12, 27, 12), // glass_tank
+              makeCuboidShape(2, 9, 2, 14, 10, 14), // ring1
+              makeCuboidShape(2, 7, 2, 14, 8, 14), // ring2
+              makeCuboidShape(2, 5, 2, 14, 6, 14), // ring3
+              makeCuboidShape(2, 3, 2, 14, 4, 14), // ring4
+              makeCuboidShape(2, 10, 10, 3, 14, 11), // pipe1
+              makeCuboidShape(4, 30, 4, 6, 32, 6), // node1
+              makeCuboidShape(5, 30, 10, 6, 32, 11), // node2
+              makeCuboidShape(6, 30, 6, 10, 31, 10), // coil
+              makeCuboidShape(4, 4, 0, 12, 12, 1), // port
+              makeCuboidShape(5, 5, 1, 11, 11, 3), // port_connector
+              makeCuboidShape(6, 18, 7, 7, 25, 8), // random_shape1
+              makeCuboidShape(6, 17, 7, 9, 18, 8), // random_shape2
+              makeCuboidShape(8, 15, 7, 9, 17, 8) // random_shape3
         ), ISOTOPIC_CENTRIFUGE);
 
         setShape(VoxelShapeUtils.combine(
-            makeCuboidShape(5, 1, 5, 11, 10, 11), // body
-            makeCuboidShape(4.995, 8, 7, 5.995, 13, 8), // wire1
-            makeCuboidShape(10.005, 8, 8, 11.005, 13, 9), // wire2
-            makeCuboidShape(7, 15, 7, 9, 16, 9), // center
-            makeCuboidShape(4, 0, 4, 12, 1, 12), // port
-            makeCuboidShape(6, 10, 6, 10, 15, 10), // coil_large
-            makeCuboidShape(7, 3, 4, 9, 8, 6), // coil_1
-            makeCuboidShape(7, 3, 10, 9, 8, 12), // coil_2
-            makeCuboidShape(4, 3, 7, 6, 8, 9), // coil_3
-            makeCuboidShape(10, 3, 7, 12, 8, 9) // coil_4
+              makeCuboidShape(5, 1, 5, 11, 10, 11), // body
+              makeCuboidShape(4.995, 8, 7, 5.995, 13, 8), // wire1
+              makeCuboidShape(10.005, 8, 8, 11.005, 13, 9), // wire2
+              makeCuboidShape(7, 15, 7, 9, 16, 9), // center
+              makeCuboidShape(4, 0, 4, 12, 1, 12), // port
+              makeCuboidShape(6, 10, 6, 10, 15, 10), // coil_large
+              makeCuboidShape(7, 3, 4, 9, 8, 6), // coil_1
+              makeCuboidShape(7, 3, 10, 9, 8, 12), // coil_2
+              makeCuboidShape(4, 3, 7, 6, 8, 9), // coil_3
+              makeCuboidShape(10, 3, 7, 12, 8, 9) // coil_4
         ), SUPERCHARGED_COIL, true, true);
 
         //TODO: Don't bother rotating the shape, it is the same for all rotations

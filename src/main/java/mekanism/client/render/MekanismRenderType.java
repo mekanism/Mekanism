@@ -1,6 +1,5 @@
 package mekanism.client.render;
 
-import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -10,6 +9,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class MekanismRenderType extends RenderType {
 
@@ -83,7 +83,7 @@ public class MekanismRenderType extends RenderType {
               .lightmap(LIGHTMAP_ENABLED)
               .build(true);
         return makeType("mekasuit", DefaultVertexFormats.BLOCK, 7, 131_072, true, true, state);
-     }
+    }
 
     public static RenderType renderSPS(ResourceLocation resourceLocation) {
         RenderType.State state = RenderType.State.getBuilder()
