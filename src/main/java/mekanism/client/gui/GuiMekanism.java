@@ -170,7 +170,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
         // now render overlays in reverse-order (i.e. back to front)
         zOffset = maxZOffset;
-        for (LRU<GuiWindow>.LRUIterator iter = windows.descendingIterator(); iter.hasNext(); ) {
+        for (LRU<GuiWindow>.LRUIterator iter = getWindowsDescendingIterator(); iter.hasNext(); ) {
             GuiWindow overlay = iter.next();
             zOffset += 150;
             RenderSystem.pushMatrix();
@@ -410,6 +410,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     public Collection<GuiWindow> getWindows() {
         return windows;
+    }
+
+    public LRU<GuiWindow>.LRUIterator getWindowsDescendingIterator() {
+        return windows.descendingIterator();
     }
 
     //Some blit param namings
