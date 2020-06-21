@@ -2,7 +2,10 @@ package mekanism.client.gui.element.filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
@@ -13,6 +16,7 @@ import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
@@ -20,11 +24,17 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.util.StackUtils;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>> extends GuiWindow
       implements GuiFilterHelper<TILE> {
+
+    public static final Predicate<ItemStack> NOT_EMPTY = stack -> !stack.isEmpty();
+    public static final Predicate<ItemStack> NOT_EMPTY_BLOCK = stack -> !stack.isEmpty() && stack.getItem() instanceof BlockItem;
 
     private final ITextComponent filterName;
     protected final FILTER origFilter;
@@ -95,8 +105,13 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
             close();
         }));
         addChild(new TranslationButton(guiObj, getLeftButtonX() + 62, guiObj.getTop() + screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
-        addChild(new GuiSlot(SlotType.NORMAL, guiObj, relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true));
+        addChild(new GuiSlot(SlotType.NORMAL, guiObj, relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true).setGhostHandler(getGhostHandler()));
         addChild(slotDisplay = new GuiSequencedSlotDisplay(guiObj, relativeX + 8, relativeY + getSlotOffset() + 1, this::getRenderStacks));
+    }
+
+    @Nullable
+    protected IGhostIngredientConsumer getGhostHandler() {
+        return null;
     }
 
     private void openFilterSelect() {
@@ -156,4 +171,27 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     }
 
     protected abstract FILTER createNewFilter();
+
+    public static boolean mouseClickSlot(IGuiWrapper gui, int button, double mouseX, double mouseY, double xMin, double yMin, Predicate<ItemStack> stackValidator,
+          Consumer<ItemStack> itemConsumer) {
+        if (button == 0) {
+            double xAxis = mouseX - gui.getLeft();
+            double yAxis = mouseY - gui.getTop();
+            if (xAxis >= xMin && xAxis < xMin + 16 && yAxis >= yMin && yAxis < yMin + 16) {
+                ItemStack toSet;
+                if (Screen.hasShiftDown()) {
+                    toSet = ItemStack.EMPTY;
+                } else {
+                    ItemStack stack = minecraft.player.inventory.getItemStack();
+                    if (!stackValidator.test(stack)) {
+                        return false;
+                    }
+                    toSet = StackUtils.size(stack, 1);
+                }
+                itemConsumer.accept(toSet);
+                return true;
+            }
+        }
+        return false;
+    }
 }

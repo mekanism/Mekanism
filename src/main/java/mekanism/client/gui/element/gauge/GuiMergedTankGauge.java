@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.jei.IJEIIngredientHelper;
+import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;

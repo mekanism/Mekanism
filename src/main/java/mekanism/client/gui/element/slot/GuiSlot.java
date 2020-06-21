@@ -3,15 +3,17 @@ package mekanism.client.gui.element.slot;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-public class GuiSlot extends GuiTexturedElement {
+public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
     private static final int INVALID_SLOT_COLOR = MekanismRenderer.getColorARGB(EnumColor.DARK_RED, 0.8F);
     public static final int DEFAULT_HOVER_COLOR = 0x80FFFFFF;
@@ -23,6 +25,9 @@ public class GuiSlot extends GuiTexturedElement {
     private IHoverable onHover;
     private IClickable onClick;
     private boolean renderHover;
+
+    @Nullable
+    private IGhostIngredientConsumer ghostHandler;
 
     public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y) {
         super(type.getTexture(), gui, x, y, type.getWidth(), type.getHeight());
@@ -62,6 +67,11 @@ public class GuiSlot extends GuiTexturedElement {
 
     public GuiSlot setRenderHover(boolean renderHover) {
         this.renderHover = renderHover;
+        return this;
+    }
+
+    public GuiSlot setGhostHandler(@Nullable IGhostIngredientConsumer ghostHandler) {
+        this.ghostHandler = ghostHandler;
         return this;
     }
 
@@ -128,5 +138,16 @@ public class GuiSlot extends GuiTexturedElement {
         }
 
         return false;
+    }
+
+    @Nullable
+    @Override
+    public IGhostIngredientConsumer getGhostHandler() {
+        return ghostHandler;
+    }
+
+    @Override
+    public int borderSize() {
+        return 1;
     }
 }

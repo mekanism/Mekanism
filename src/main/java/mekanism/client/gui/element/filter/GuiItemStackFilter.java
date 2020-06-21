@@ -3,15 +3,16 @@ package mekanism.client.gui.element.filter;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostItemConsumer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.StackUtils;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
@@ -44,26 +45,21 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
         return stack.isEmpty() ? Collections.emptyList() : Collections.singletonList(stack);
     }
 
+    @Nullable
+    @Override
+    protected IGhostItemConsumer getGhostHandler() {
+        return ingredient -> setFilterStack(StackUtils.size((ItemStack) ingredient, 1));
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) {
-            double xAxis = mouseX - guiObj.getLeft();
-            double yAxis = mouseY - guiObj.getTop();
-            if (xAxis >= relativeX + 8 && xAxis < relativeX + 22 && yAxis >= relativeY + getSlotOffset() + 1 && yAxis < relativeY + getSlotOffset() + 17) {
-                if (Screen.hasShiftDown()) {
-                    filter.setItemStack(ItemStack.EMPTY);
-                } else {
-                    ItemStack stack = minecraft.player.inventory.getItemStack();
-                    if (stack.isEmpty()) {
-                        return super.mouseClicked(mouseX, mouseY, button);
-                    }
-                    filter.setItemStack(StackUtils.size(stack, 1));
-                }
-                slotDisplay.updateStackList();
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                return true;
-            }
-        }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return mouseClickSlot(getGuiObj(), button, mouseX, mouseY, relativeX + 8, relativeY + getSlotOffset() + 1, NOT_EMPTY, this::setFilterStack) ||
+               super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private void setFilterStack(@Nonnull ItemStack stack) {
+        filter.setItemStack(stack);
+        slotDisplay.updateStackList();
+        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
     }
 }

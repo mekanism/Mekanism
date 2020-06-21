@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
-import mekanism.client.jei.IJEIRecipeArea;
+import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<GuiProgress> {

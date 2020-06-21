@@ -13,7 +13,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiChemicalBar.ChemicalInfoProvider;
-import mekanism.client.jei.IJEIIngredientHelper;
+import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;

@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
-import mekanism.client.jei.IJEIIngredientHelper;
+import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse;

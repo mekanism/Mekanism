@@ -9,6 +9,8 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.GuiWindow;
+import mekanism.client.jei.interfaces.IJEIIngredientHelper;
+import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -21,8 +23,7 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
     public List<Rectangle2d> getGuiExtraAreas(GuiMekanism genericGui) {
         GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
         List<Rectangle2d> extraAreas = new ArrayList<>();
-        List<? extends IGuiEventListener> children = gui.children();
-        for (IGuiEventListener child : children) {
+        for (IGuiEventListener child : gui.children()) {
             //TODO: Decide if we just want to do this for any GuiElement
             if (child instanceof GuiRelativeElement) {
                 GuiRelativeElement element = (GuiRelativeElement) child;

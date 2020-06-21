@@ -1,7 +1,9 @@
 package mekanism.client.gui.element.filter.miner;
 
+import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.filter.GuiMaterialFilter;
+import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostBlockItemConsumer;
 import mekanism.common.content.miner.MinerMaterialFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 
@@ -34,6 +36,13 @@ public class GuiMinerMaterialFilter extends GuiMaterialFilter<MinerMaterialFilte
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
         renderReplaceStack(guiObj, filter);
+    }
+
+    @Nullable
+    @Override
+    protected IGhostBlockItemConsumer getGhostHandler() {
+        //Note: The miner requires the player to actually get targets
+        return null;
     }
 
     @Override

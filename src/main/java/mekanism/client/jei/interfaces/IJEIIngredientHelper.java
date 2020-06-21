@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+package mekanism.client.jei.interfaces;
 
 import javax.annotation.Nullable;
 
