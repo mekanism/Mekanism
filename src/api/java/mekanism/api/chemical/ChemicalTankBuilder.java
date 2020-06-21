@@ -55,10 +55,10 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
     }
 
     public TANK create(long capacity, @Nullable IContentsListener listener) {
-        return create(capacity, (ChemicalAttributeValidator) null, listener);
+        return createWithValidator(capacity, null, listener);
     }
 
-    public TANK create(long capacity, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
+    public TANK createWithValidator(long capacity, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -66,7 +66,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
     }
 
     public TANK createAllValid(long capacity, @Nullable IContentsListener listener) {
-        return create(capacity, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
+        return createWithValidator(capacity, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
     }
 
     public TANK create(long capacity, Predicate<@NonNull CHEMICAL> canExtract, Predicate<@NonNull CHEMICAL> canInsert, @Nullable IContentsListener listener) {

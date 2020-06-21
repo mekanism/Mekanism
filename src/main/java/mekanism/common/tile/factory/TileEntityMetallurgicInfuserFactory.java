@@ -2,6 +2,7 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -40,14 +41,14 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         super(blockProvider);
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
         configComponent.addSupported(TransmissionType.INFUSION);
-        configComponent.setupInputConfig(TransmissionType.INFUSION, infusionTank);
+        configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, infusionTank, RelativeSide.RIGHT).setCanEject(false);
     }
 
     @Nonnull
     @Override
     public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
         ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(infusionTank = ChemicalTankBuilder.INFUSION.input(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes,
+        builder.addTank(infusionTank = ChemicalTankBuilder.INFUSION.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes,
               type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this));
         return builder.build();
     }
