@@ -32,7 +32,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     private static final String EVAPORATION_CATEGORY = "thermal_evaporation";
     private static final String SPS_CATEGORY = "sps";
     private static final String RADIATION_CATEGORY = "radiation";
-    private static final String PREFILLED_CATEGORY = "chemical_tanks";
+    private static final String PREFILLED_CATEGORY = "prefilled";
     private static final String NUTRITIONAL_PASTE_CATEGORY = "nutritional_paste";
 
     private final ForgeConfigSpec configSpec;
@@ -51,7 +51,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Auto eject
     public final CachedIntValue fluidAutoEjectRate;
     public final CachedLongValue chemicalAutoEjectRate;
-    //Chemical Tanks
+    //Prefilled
+    public final CachedBooleanValue prefilledFluidTanks;
     public final CachedBooleanValue prefilledGasTanks;
     public final CachedBooleanValue prefilledInfusionTanks;
     public final CachedBooleanValue prefilledPigmentTanks;
@@ -142,7 +143,9 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("chemical", 1_024L, 1, Long.MAX_VALUE));
         builder.pop();
 
-        builder.comment("Prefilled Chemical Tanks").push(PREFILLED_CATEGORY);
+        builder.comment("Prefilled Tanks").push(PREFILLED_CATEGORY);
+        prefilledFluidTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative fluid tanks to creative/JEI.")
+              .define("fluidTanks", true));
         prefilledGasTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative gas tanks to creative/JEI.")
               .define("gasTanks", true));
         prefilledInfusionTanks = CachedBooleanValue.wrap(this, builder.comment("Add filled creative infusion tanks to creative/JEI.")

@@ -1,9 +1,11 @@
 package mekanism.common.item.block.machine;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -15,7 +17,9 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.item.interfaces.IModeItem;
@@ -36,12 +40,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
@@ -58,6 +64,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> implements IItemSustainedInventory, ISecurityItem, IModeItem {
 
@@ -99,6 +106,28 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
         }
         tooltip.add(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getBucketMode(stack))));
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
+    }
+
+    @Override
+    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemGroup(group, items);
+        if (isInGroup(group)) {
+            FluidTankTier tier = Attribute.getTier(getBlock(), FluidTankTier.class);
+            if (tier == FluidTankTier.CREATIVE && MekanismConfig.general.prefilledFluidTanks.get()) {
+                int capacity = tier.getStorage();
+                for (Fluid fluid : ForgeRegistries.FLUIDS.getValues()) {
+                    //Only add sources
+                    if (fluid.isSource(fluid.getDefaultState())) {
+                        IExtendedFluidTank dummyTank = BasicFluidTank.create(capacity, null);
+                        //Manually handle filling it as capabilities are not necessarily loaded yet
+                        dummyTank.setStack(new FluidStack(fluid, dummyTank.getCapacity()));
+                        ItemStack stack = new ItemStack(this);
+                        ItemDataUtils.setList(stack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeContainers(Collections.singletonList(dummyTank)));
+                        items.add(stack);
+                    }
+                }
+            }
+        }
     }
 
     @Nonnull
