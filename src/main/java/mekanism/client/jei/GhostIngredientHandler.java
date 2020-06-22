@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.ObjectBidirectionalIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.jei.interfaces.IJEIGhostTarget;
@@ -94,6 +95,161 @@ public class GhostIngredientHandler implements IGhostIngredientHandler<GuiMekani
     public void onComplete() {
     }
 
+    private static void addVisibleAreas(List<Rectangle2d> visible, Rectangle2d area, List<Rectangle2d> coveredArea) {
+        boolean intersected = false;
+        int x = area.getX();
+        int x2 = x + area.getWidth();
+        int y = area.getY();
+        int y2 = y + area.getHeight();
+        int size = coveredArea.size();
+        for (int i = 0; i < size; i++) {
+            Rectangle2d covered = coveredArea.get(i);
+            int cx = covered.getX();
+            int cx2 = cx + covered.getWidth();
+            int cy = covered.getY();
+            int cy2 = cy + covered.getHeight();
+            //Check if the covered area intersects the area we are checking against
+            if (x < cx2 && x2 > cx && y < cy2 && y2 > cy) {
+                intersected = true;
+                if (x < cx || y < cy || x2 > cx2 || y2 > cy2) {
+                    //If the area is not fully covered then get the parts of it that are not covered
+                    List<Rectangle2d> uncoveredArea = getVisibleArea(area, covered);
+                    if (i + 1 == size) {
+                        //If there are no more elements left, just add all the remaining visible parts
+                        visible.addAll(uncoveredArea);
+                    } else {
+                        //Otherwise grab the remaining unchecked elements from the covering layer
+                        List<Rectangle2d> coveredAreas = coveredArea.subList(i + 1, size);
+                        //And check each of our sub visible areas
+                        for (Rectangle2d visibleArea : uncoveredArea) {
+                            addVisibleAreas(visible, visibleArea, coveredAreas);
+                        }
+                    }
+                }
+                //If it is covered at all exit, we either added the uncovered parts or it is fully covered
+                break;
+            }
+        }
+        if (!intersected) {
+            //If we didn't intersect it at all, just add the area itself
+            visible.add(area);
+        }
+    }
+
+    private static List<Rectangle2d> getVisibleArea(Rectangle2d area, Rectangle2d coveredArea) {
+        //Useful tool for visualizing overlaps: https://silentmatt.com/rectangle-intersection/
+        //TODO: Look into further cleaning this up so that it is less "hardcoded" manner for adding the various components
+        // started out as more hardcoded to actually figure out the different pieces
+        int x = area.getX();
+        int x2 = x + area.getWidth();
+        int y = area.getY();
+        int y2 = y + area.getHeight();
+        int cx = coveredArea.getX();
+        int cx2 = cx + coveredArea.getWidth();
+        int cy = coveredArea.getY();
+        int cy2 = cy + coveredArea.getHeight();
+        //Given we know it intersects we can use a simplified check for seeing which sides get intersected
+        boolean intersectsTop = y >= cy && y <= cy2;
+        boolean intersectsLeft = x >= cx && x <= cx2;
+        boolean intersectsBottom = y2 >= cy && y2 <= cy2;
+        boolean intersectsRight = x2 >= cx && x2 <= cx2;
+        List<Rectangle2d> areas = new ArrayList<>();
+        if (intersectsTop && intersectsBottom) {
+            //Intersects three sides (even if the perpendicular one may only have the top and bottom point intersected), we have one rectangle
+            if (intersectsLeft) {
+                //Right section
+                areas.add(new Rectangle2d(cx2, y, x2 - cx2, area.getHeight()));
+            } else if (intersectsRight) {
+                //Left section
+                areas.add(new Rectangle2d(x, y, cx - x, area.getHeight()));
+            } else {
+                //Intersects two parallel sides, we have two rectangles
+                //Left section
+                areas.add(new Rectangle2d(x, y, cx - x, area.getHeight()));
+                //Right section
+                areas.add(new Rectangle2d(cx2, y, x2 - cx2, area.getHeight()));
+            }
+        } else if (intersectsLeft && intersectsRight) {
+            //Intersects three sides (even if the perpendicular one may only have the top and bottom point intersected), we have one rectangle
+            if (intersectsTop) {
+                //Bottom section
+                areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            } else if (intersectsBottom) {
+                //Top section
+                areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            } else {
+                //Intersects two parallel sides, we have two rectangles
+                //Top section
+                areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+                //Bottom section
+                areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            }
+        }
+        //Intersects two perpendicular sides, we have two rectangles
+        else if (intersectsTop && intersectsLeft) {
+            //Bottom section
+            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            //Right section
+            areas.add(new Rectangle2d(cx2, y, x2 - cx2, cy2 - y));
+        } else if (intersectsTop && intersectsRight) {
+            //Left section
+            areas.add(new Rectangle2d(x, y, cx - x, cy2 - y));
+            //Bottom section
+            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+        } else if (intersectsBottom && intersectsLeft) {
+            //Top section
+            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            //Right section
+            areas.add(new Rectangle2d(cx2, cy, x2 - cx2, y2 - cy));
+        } else if (intersectsBottom && intersectsRight) {
+            //Top section
+            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            //Left section
+            areas.add(new Rectangle2d(x, cy, cx - x, y2 - cy));
+        }
+        //Intersects a single side, we have three rectangles
+        else if (intersectsTop) {
+            //Left section
+            areas.add(new Rectangle2d(x, y, cx - x, cy2 - y));
+            //Bottom section
+            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            //Right section
+            areas.add(new Rectangle2d(cx2, y, x2 - cx2, cy2 - y));
+        } else if (intersectsLeft) {
+            //Top section
+            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            //Bottom section
+            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            //Right section
+            areas.add(new Rectangle2d(cx2, cy, x2 - cx2, coveredArea.getHeight()));
+        } else if (intersectsBottom) {
+            //Top section
+            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            //Left section
+            areas.add(new Rectangle2d(x, cy, cx - x, y2 - cy));
+            //Right section
+            areas.add(new Rectangle2d(cx2, cy, x2 - cx2, y2 - cy));
+        } else if (intersectsRight) {
+            //Top section
+            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            //Left section
+            areas.add(new Rectangle2d(x, cy, cx - x, coveredArea.getHeight()));
+            //Bottom section
+            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+        } else {
+            //The covered area is entirely contained by the main area, we have four rectangles
+            //Top section
+            areas.add(new Rectangle2d(x, y, area.getWidth(), cy - y));
+            //Left section
+            areas.add(new Rectangle2d(x, cy, cx - x, coveredArea.getHeight()));
+            //Bottom section
+            areas.add(new Rectangle2d(x, cy2, area.getWidth(), y2 - cy2));
+            //Right section
+            areas.add(new Rectangle2d(cx2, cy, x2 - cx2, coveredArea.getHeight()));
+        }
+        return areas;
+    }
+
     private static class TargetInfo<INGREDIENT> {
 
         private final IGhostIngredientConsumer ghostHandler;
@@ -109,35 +265,19 @@ public class GhostIngredientHandler implements IGhostIngredientHandler<GuiMekani
         }
 
         public List<Target<INGREDIENT>> convertToTargets(List<Rectangle2d> coveredArea) {
-            //TODO: Further improve the filtering that is performed. Currently we only are removing elements that
-            // are fully blocked by a singular element. Ideally we want to remove any that are blocked by multiple
-            // individual components, and also only show the portions that are visible, as JEI will color the entire
-            // target's area even if parts of it are not visible.
-            // Maybe we can do this by keeping track of Rectangle2ds that are for the target areas, and then compare those
-            // to the covered area
-            boolean isCovered = false;
-            for (Rectangle2d area : coveredArea) {
-                if (x >= area.getX() && y >= area.getY() && x + width <= area.getX() + area.getWidth() && y + height <= area.getY() + area.getHeight()) {
-                    //If one of the area components fully covers the area exit
-                    isCovered = true;
-                    break;
-                }
-            }
-            if (isCovered) {
-                return Collections.emptyList();
-            }
-            Rectangle2d area = new Rectangle2d(x, y, width, height);
-            return Collections.singletonList(new Target<INGREDIENT>() {
+            List<Rectangle2d> visibleAreas = new ArrayList<>();
+            addVisibleAreas(visibleAreas, new Rectangle2d(x, y, width, height), coveredArea);
+            return visibleAreas.stream().map(visibleArea -> new Target<INGREDIENT>() {
                 @Override
                 public Rectangle2d getArea() {
-                    return area;
+                    return visibleArea;
                 }
 
                 @Override
                 public void accept(INGREDIENT ingredient) {
                     ghostHandler.accept(ingredient);
                 }
-            });
+            }).collect(Collectors.toList());
         }
     }
 }
