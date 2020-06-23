@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +8,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
@@ -41,7 +42,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import org.apache.commons.lang3.tuple.Pair;
 
 //TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
@@ -54,6 +54,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     protected boolean dynamicSlots;
     protected final LRU<GuiWindow> windows = new LRU<>();
     protected final List<GuiElement> focusListeners = new ArrayList<>();
+
+    private boolean hasClicked = false;
 
     public static int maxZOffset;
 
@@ -208,6 +210,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        hasClicked = true;
         // first try to send the mouse event to our overlays
         GuiWindow focused = windows.stream().filter(overlay -> overlay.mouseClicked(mouseX, mouseY, button)).findFirst().orElse(null);
         if (focused != null) {
@@ -230,6 +233,14 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (hasClicked) {
+            return super.mouseReleased(mouseX, mouseY, button);
+        }
+        return false;
     }
 
     @Override

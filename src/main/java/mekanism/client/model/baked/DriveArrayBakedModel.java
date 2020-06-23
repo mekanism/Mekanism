@@ -56,7 +56,7 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
                     }
                 }
             }
-            ret.addAll(QuadUtils.transformAndBake(driveQuads, QuadTransformation.rotate(key.getSide())));
+            ret.addAll(QuadUtils.transformAndBake(driveQuads, QuadTransformation.rotate(key.getSide().getOpposite())));
         }
         return ret;
     }
