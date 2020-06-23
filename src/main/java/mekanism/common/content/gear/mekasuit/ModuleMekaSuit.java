@@ -193,7 +193,7 @@ public abstract class ModuleMekaSuit extends Module {
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
             FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
-            if (!player.isCreative() && player.canEat(false) && getContainerEnergy().greaterOrEqual(usage)) {
+            if (MekanismUtils.isPlayingMode(player) && player.canEat(false) && getContainerEnergy().greaterOrEqual(usage)) {
                 ItemMekaSuitArmor item = (ItemMekaSuitArmor) getContainer().getItem();
                 long toFeed = Math.min(1, item.getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
                 if (toFeed > 0) {

@@ -80,7 +80,7 @@ public class ClientTickHandler {
         if (player != minecraft.player) {
             return Mekanism.playerState.isJetpackOn(player);
         }
-        if (!player.isCreative() && !player.isSpectator()) {
+        if (MekanismUtils.isPlayingMode(player)) {
             ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             if (!chest.isEmpty()) {
                 JetpackMode mode = getJetpackMode(chest);
@@ -261,7 +261,7 @@ public class ClientTickHandler {
                     }
                 }
 
-            } else if (!minecraft.player.isCreative() && !minecraft.player.isSpectator()) {
+            } else if (MekanismUtils.isPlayingMode(minecraft.player)) {
                 minecraft.player.abilities.allowFlying = false;
                 minecraft.player.abilities.isFlying = false;
             }

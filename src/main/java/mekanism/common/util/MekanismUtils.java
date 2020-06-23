@@ -998,6 +998,8 @@ public final class MekanismUtils {
     }
 
     /**
+     * Calculates the redstone level based on the percentage of amount stored.
+     * 
      * @param amount   Amount currently stored
      * @param capacity Total amount that can be stored.
      *
@@ -1008,6 +1010,17 @@ public final class MekanismUtils {
             return 0;
         }
         return 1 + amount.divide(capacity).multiply(14).intValue();
+    }
+
+    /**
+     * Checks whether the player is in creative or spectator mode.
+     * 
+     * @param player the player to check.
+     * 
+     * @return true if the player is neither in creative mode, nor in spectator mode.
+     */
+    public static boolean isPlayingMode(PlayerEntity player) {
+        return !player.isCreative() && !player.isSpectator();
     }
 
     public enum ResourceType {

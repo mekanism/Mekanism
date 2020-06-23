@@ -16,6 +16,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -76,7 +77,7 @@ public abstract class Module {
 
     public FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
-        if ((!(wearer instanceof PlayerEntity) || !((PlayerEntity) wearer).isCreative()) && energyContainer != null) {
+        if ((!(wearer instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) wearer)) && energyContainer != null) {
             return energyContainer.extract(energy, Action.EXECUTE, AutomationType.MANUAL);
         }
         return FloatingLong.ZERO;
