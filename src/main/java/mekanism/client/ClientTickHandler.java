@@ -261,7 +261,7 @@ public class ClientTickHandler {
                     }
                 }
 
-            } else if (!minecraft.player.isCreative()) {
+            } else if (!minecraft.player.isCreative() && !minecraft.player.isSpectator()) {
                 minecraft.player.abilities.allowFlying = false;
                 minecraft.player.abilities.isFlying = false;
             }

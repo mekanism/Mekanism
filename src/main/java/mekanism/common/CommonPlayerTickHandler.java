@@ -183,7 +183,7 @@ public class CommonPlayerTickHandler {
                 }
                 module.useEnergy(player, Mekanism.keyMap.has(player, KeySync.BOOST) ? usage.multiply(4) : usage);
             }
-        } else if (!player.isCreative()) {
+        } else if (!player.isCreative() && !player.isSpectator()) {
             player.abilities.allowFlying = false;
             player.abilities.isFlying = false;
         }
@@ -212,7 +212,7 @@ public class CommonPlayerTickHandler {
     public static boolean isGravitationalModulationReady(PlayerEntity player) {
         ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
-        return !player.isCreative() && module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(usage);
+        return !player.isCreative() && !player.isSpectator() && module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(usage);
     }
 
     public static boolean isGravitationalModulationOn(PlayerEntity player) {
