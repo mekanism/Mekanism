@@ -187,7 +187,7 @@ public class RadiationManager {
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
         if (player.world.getRandom().nextInt(20) == 0) {
             double magnitude = getRadiationLevel(new Coord4D(player));
-            if (magnitude > BASELINE && !player.isCreative()) {
+            if (magnitude > BASELINE && MekanismUtils.isPlayingMode(player)) {
                 // apply radiation to the player
                 player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
                     double added = magnitude * (1 - Math.min(1, getRadiationResistance(player)));
