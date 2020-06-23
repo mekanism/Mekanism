@@ -249,7 +249,7 @@ public class RenderTickHandler {
                     }
                 }
 
-                if (!player.isCreative()) {
+                if (MekanismUtils.isPlayingMode(player)) {
                     player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
                         double radiation = c.getRadiation();
                         double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;

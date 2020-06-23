@@ -113,7 +113,7 @@ public class CommonPlayerTickHandler {
 
         if (isFlamethrowerOn(player)) {
             player.world.addEntity(new EntityFlame(player));
-            if (!player.isCreative() && !player.isSpectator()) {
+            if (MekanismUtils.isPlayingMode(player)) {
                 ItemStack currentItem = player.inventory.getCurrentItem();
                 ((ItemFlamethrower) currentItem.getItem()).useGas(currentItem, 1);
             }
@@ -183,14 +183,14 @@ public class CommonPlayerTickHandler {
                 }
                 module.useEnergy(player, Mekanism.keyMap.has(player, KeySync.BOOST) ? usage.multiply(4) : usage);
             }
-        } else if (!player.isCreative()) {
+        } else if (MekanismUtils.isPlayingMode(player)) {
             player.abilities.allowFlying = false;
             player.abilities.isFlying = false;
         }
     }
 
     public static boolean isJetpackOn(PlayerEntity player) {
-        if (!player.isCreative() && !player.isSpectator()) {
+        if (MekanismUtils.isPlayingMode(player)) {
             ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             if (!chest.isEmpty()) {
                 JetpackMode mode = getJetpackMode(chest);
@@ -212,7 +212,7 @@ public class CommonPlayerTickHandler {
     public static boolean isGravitationalModulationReady(PlayerEntity player) {
         ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
-        return !player.isCreative() && module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(usage);
+        return MekanismUtils.isPlayingMode(player) && module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(usage);
     }
 
     public static boolean isGravitationalModulationOn(PlayerEntity player) {

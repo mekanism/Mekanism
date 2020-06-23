@@ -12,6 +12,7 @@ import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.network.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageSource;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -44,7 +45,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             PacketRadiationData.sync(player);
         }
 
-        if (!player.isCreative()) {
+        if (MekanismUtils.isPlayingMode(player)) {
             Random rand = player.world.getRandom();
             double minSeverity = MekanismConfig.general.radiationNegativeEffectsMinSeverity.get();
             double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
