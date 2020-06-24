@@ -1,6 +1,6 @@
 {
-  "parent": "mekanism:block/colored_cube",
+  "parent": "mekanism:block/basic_cube",
   "textures": {
-    "all": "mekanism:block/resource_block"
+    "all": "mekanism:block/block_lead"
   }
 }
