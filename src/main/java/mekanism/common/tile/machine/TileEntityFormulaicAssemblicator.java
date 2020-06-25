@@ -1,10 +1,14 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
@@ -12,6 +16,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -30,6 +35,7 @@ import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.item.ItemCraftingFormula;
+import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -37,7 +43,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.inventory.CraftingInventory;
@@ -47,6 +52,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess, IHasMode {
 
@@ -66,6 +72,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     public boolean stockControl = false;
     public boolean needsOrganize = true; //organize on load
+    private HashedItem[] stockControlMap = new HashedItem[18];
 
     public int pulseOperations;
 
@@ -117,28 +124,19 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         builder.addSlot(formulaSlot = FormulaInventorySlot.at(this, 6, 26));
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
+                int index = slotY * 9 + slotX;
                 InputInventorySlot inputSlot = InputInventorySlot.at(stack -> {
                     //Is item valid
                     if (formula == null) {
                         return true;
                     }
-                    //TODO: CLEAN THIS UP/FIX as some of this logic should probably be elsewhere
                     IntList indices = formula.getIngredientIndices(world, stack);
                     if (!indices.isEmpty()) {
-                        if (stockControl) {
-                            int filled = 0;
-                            for (IInventorySlot stockSlot : inputSlots) {
-                                if (!stockSlot.isEmpty()) {
-                                    //Note: If odd things start happening due to a recipe modifying things improperly
-                                    // then copy the stack before calling the parameter
-                                    if (formula.isIngredientInPos(world, stockSlot.getStack(), indices.getInt(0))) {
-                                        filled++;
-                                    }
-                                }
-                            }
-                            return filled < indices.size() * 2;
+                        HashedItem stockItem = stockControlMap[index];
+                        if (!stockControl || stockItem == null) {
+                            return true;
                         }
-                        return true;
+                        return ItemHandlerHelper.canItemStacksStack(stockItem.getStack(), stack);
                     }
                     return false;
                 }, item -> true, this, 8 + slotX * 18, 98 + slotY * 18);
@@ -184,6 +182,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         if (formula != null && stockControl && needsOrganize) {
             needsOrganize = false;
             organizeStock();
+            buildStockControlMap();
         }
         energySlot.fillContainerOrConvert();
         if (getControlType() != RedstoneControl.PULSE) {
@@ -438,35 +437,67 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private void organizeStock() {
-        //TODO: Try to clean this up
-        int inputSlotCount = inputSlots.size();
-        for (int j = 0; j < inputSlotCount; j++) {
-            IInventorySlot compareSlot = inputSlots.get(j);
-            for (int i = inputSlotCount - 1; i > j; i--) {
-                IInventorySlot stockSlot = inputSlots.get(i);
-                if (!stockSlot.isEmpty()) {
-                    ItemStack stockStack = stockSlot.getStack();
-                    ItemStack compareStack = compareSlot.getStack();
-                    if (compareStack.isEmpty()) {
-                        compareSlot.setStack(stockStack);
-                        stockSlot.setStack(ItemStack.EMPTY);
-                        markDirty(false);
-                        return;
-                    }
-                    int maxCompareSize = compareSlot.getLimit(compareStack);
-                    if (compareStack.getCount() < maxCompareSize) {
-                        if (InventoryUtils.areItemsStackable(stockStack, compareStack)) {
-                            int newCount = compareStack.getCount() + stockStack.getCount();
-                            int newCompareSize = Math.min(maxCompareSize, newCount);
-                            MekanismUtils.logMismatchedStackSize(compareSlot.setStackSize(newCompareSize, Action.EXECUTE), newCompareSize);
-                            int newStockSize = Math.max(0, newCount - maxCompareSize);
-                            MekanismUtils.logMismatchedStackSize(stockSlot.setStackSize(newStockSize, Action.EXECUTE), newStockSize);
-                            markDirty(false);
-                            return;
-                        }
-                    }
-                }
+        if (formula == null)
+            return;
+        // build map of what items we have to organize
+        Map<HashedItem, Integer> storedMap = new Object2IntOpenHashMap<>();
+        for (int i = 0; i < inputSlots.size(); i++) {
+            ItemStack stack = inputSlots.get(i).getStack();
+            if (!stack.isEmpty()) {
+                HashedItem hashed = new HashedItem(stack);
+                storedMap.put(hashed, storedMap.getOrDefault(hashed, 0) + stack.getCount());
             }
+            // clear the existing stack
+            inputSlots.get(i).setStack(ItemStack.EMPTY);
+        }
+        // place items into respective controlled slots
+        Set<Integer> unused = new HashSet<>();
+        for (int i = 0; i < inputSlots.size(); i++) {
+            if (stockControlMap[i] == null) {
+                unused.add(i);
+            } else if (storedMap.containsKey(stockControlMap[i])) {
+                inputSlots.get(i).setStack(getStackFromMap(storedMap, stockControlMap[i]));
+            }
+        }
+        // if we still have items, first try to add remaining items to known unused (non-controlled) slots
+        for (int i : unused) {
+            if (storedMap.isEmpty())
+                return; // break early if the map is empty
+            inputSlots.get(i).setStack(getStackFromMap(storedMap, storedMap.keySet().iterator().next()));
+        }
+        // if we still have items, just add them to any slots that are still empty
+        for (int i = 0; i < inputSlots.size(); i++) {
+            if (storedMap.isEmpty())
+                return; // break early if the map is empty
+            if (inputSlots.get(i).getStack().isEmpty()) {
+                inputSlots.get(i).setStack(getStackFromMap(storedMap, storedMap.keySet().iterator().next()));
+            }
+        }
+        if (!storedMap.isEmpty())
+            Mekanism.logger.error("Critical error: Formulaic Assemblicator had items left over after organizing stock. Impossible!");
+    }
+
+    private static ItemStack getStackFromMap(Map<HashedItem, Integer> map, HashedItem item) {
+        if (!map.containsKey(item))
+            return ItemStack.EMPTY;
+        int stored = map.get(item);
+        ItemStack ret = item.createStack(Math.min(item.getStack().getMaxStackSize(), stored));
+        if (ret.getCount() == stored) {
+            map.remove(item);
+        } else {
+            map.put(item, stored - ret.getCount());
+        }
+        return ret;
+    }
+
+    private void buildStockControlMap() {
+        if (formula == null) {
+            return;
+        }
+        for (int i = 0; i < 9; i++) {
+            ItemStack stack = formula.getInputStack(i);
+            stockControlMap[i * 2] = stack.isEmpty() ? null : new HashedItem(stack);
+            stockControlMap[i * 2 + 1] = stack.isEmpty() ? null : new HashedItem(stack);
         }
     }
 

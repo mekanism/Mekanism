@@ -1,9 +1,9 @@
 package mekanism.common.content.assemblicator;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
@@ -39,6 +39,10 @@ public class RecipeFormula {
         }
         resetToRecipe();
         recipe = getRecipeFromGrid(dummy, world);
+    }
+
+    public ItemStack getInputStack(int slot) {
+        return input.get(slot);
     }
 
     private void resetToRecipe() {
