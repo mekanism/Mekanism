@@ -1,10 +1,8 @@
 package mekanism.common.network;
 
-import java.util.function.Function;
 import mekanism.common.Mekanism;
 import mekanism.common.network.container.PacketUpdateContainer;
 import mekanism.common.network.container.PacketUpdateContainerBatch;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class PacketHandler extends BasePacketHandler {
@@ -63,9 +61,5 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketUpdateContainer.class, PacketUpdateContainer::encode, PacketUpdateContainer::decode, PacketUpdateContainer::handle);
         //Container sync packet that batches multiple changes into one packet
         registerServerToClient(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
-    }
-
-    private <MSG extends PacketUpdateContainer> void registerUpdateContainer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
-        registerServerToClient(type, PacketUpdateContainer::encode, decoder, PacketUpdateContainer::handle);
     }
 }

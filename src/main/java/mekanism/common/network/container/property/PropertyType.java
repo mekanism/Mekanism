@@ -71,7 +71,7 @@ public enum PropertyType {
     LIST(ArrayList.class, Collections.emptyList(), (getter, setter) -> null /* not handled */,
           (property, buffer) -> ListPropertyData.readList(property, buffer)),
     BLOCK_POS(BlockPos.class, null, (getter, setter) -> SyncableBlockPos.create(() -> (BlockPos) getter.get(), setter::accept),
-          (property, buffer) -> new BlockPosPropertyData(property, buffer.readBoolean() ? BlockPos.fromLong(buffer.readLong()) : null)),
+          (property, buffer) -> new BlockPosPropertyData(property, buffer.readBoolean() ? buffer.readBlockPos() : null)),
     FLOATING_LONG(FloatingLong.class, FloatingLong.ZERO, (getter, setter) -> SyncableFloatingLong.create(() -> (FloatingLong) getter.get(), setter::accept),
           (property, buffer) -> new FloatingLongPropertyData(property, FloatingLong.readFromBuffer(buffer)));
 
