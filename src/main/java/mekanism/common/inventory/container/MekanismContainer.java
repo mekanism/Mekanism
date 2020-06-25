@@ -1,11 +1,11 @@
 package mekanism.common.inventory.container;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
@@ -22,6 +22,7 @@ import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.container.slot.OffhandSlot;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
+import mekanism.common.inventory.container.sync.SyncableBlockPos;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -53,6 +54,7 @@ import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntReferenceHolder;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
 public abstract class MekanismContainer extends Container {
@@ -389,6 +391,13 @@ public abstract class MekanismContainer extends Container {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableFluidStack) {
             ((SyncableFluidStack) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, @Nonnull BlockPos value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncableBlockPos) {
+            ((SyncableBlockPos) data).set(value);
         }
     }
 

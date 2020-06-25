@@ -1,6 +1,5 @@
 package mekanism.common.lib.multiblock;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,6 +11,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.IGasTank;
@@ -64,6 +64,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     @Nullable//may be null if structure has not been fully sent
     public BlockPos renderLocation;
 
+    @ContainerSync
     private VoxelCuboid bounds = new VoxelCuboid(0, 0, 0);
 
     @ContainerSync

@@ -1,8 +1,5 @@
 package mekanism.common.inventory.container.sync.dynamic;
 
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.lang.annotation.ElementType;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
@@ -21,6 +18,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import org.objectweb.asm.Type;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -41,13 +42,14 @@ import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.network.container.property.PropertyType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
-import org.objectweb.asm.Type;
 
 public class SyncMapper {
 
@@ -91,6 +93,16 @@ public class SyncMapper {
               SpecialPropertyData.create(InfusionStack.class, obj -> obj.getInfusionTank().getStack(), (obj, val) -> obj.getInfusionTank().setStack(val)),
               SpecialPropertyData.create(PigmentStack.class, obj -> obj.getPigmentTank().getStack(), (obj, val) -> obj.getPigmentTank().setStack(val)),
               SpecialPropertyData.create(SlurryStack.class, obj -> obj.getSlurryTank().getStack(), (obj, val) -> obj.getSlurryTank().setStack(val))
+        ));
+        specialProperties.add(new SpecialPropertyHandler<>(MergedChemicalTank.class,
+            SpecialPropertyData.create(GasStack.class, obj -> obj.getGasTank().getStack(), (obj, val) -> obj.getGasTank().setStack(val)),
+            SpecialPropertyData.create(InfusionStack.class, obj -> obj.getInfusionTank().getStack(), (obj, val) -> obj.getInfusionTank().setStack(val)),
+            SpecialPropertyData.create(PigmentStack.class, obj -> obj.getPigmentTank().getStack(), (obj, val) -> obj.getPigmentTank().setStack(val)),
+            SpecialPropertyData.create(SlurryStack.class, obj -> obj.getSlurryTank().getStack(), (obj, val) -> obj.getSlurryTank().setStack(val))
+        ));
+        specialProperties.add(new SpecialPropertyHandler<>(VoxelCuboid.class,
+            SpecialPropertyData.create(BlockPos.class, VoxelCuboid::getMinPos, VoxelCuboid::setMinPos),
+            SpecialPropertyData.create(BlockPos.class, VoxelCuboid::getMaxPos, VoxelCuboid::setMaxPos)
         ));
     }
 

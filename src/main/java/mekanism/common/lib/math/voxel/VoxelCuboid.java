@@ -6,8 +6,8 @@ import net.minecraft.util.math.BlockPos;
 
 public class VoxelCuboid implements IShape {
 
-    private final BlockPos minPos;
-    private final BlockPos maxPos;
+    private BlockPos minPos;
+    private BlockPos maxPos;
 
     public VoxelCuboid(BlockPos minPos, BlockPos maxPos) {
         this.minPos = minPos;
@@ -36,6 +36,14 @@ public class VoxelCuboid implements IShape {
 
     public BlockPos getMaxPos() {
         return maxPos;
+    }
+
+    public void setMinPos(BlockPos minPos) {
+        this.minPos = minPos;
+    }
+
+    public void setMaxPos(BlockPos maxPos) {
+        this.maxPos = maxPos;
     }
 
     public BlockPos getCenter() {

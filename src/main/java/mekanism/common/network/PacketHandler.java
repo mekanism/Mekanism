@@ -4,6 +4,7 @@ import java.util.function.Function;
 import mekanism.common.Mekanism;
 import mekanism.common.network.container.PacketUpdateContainer;
 import mekanism.common.network.container.PacketUpdateContainerBatch;
+import mekanism.common.network.container.PacketUpdateContainerBlockPos;
 import mekanism.common.network.container.PacketUpdateContainerBoolean;
 import mekanism.common.network.container.PacketUpdateContainerByte;
 import mekanism.common.network.container.PacketUpdateContainerDouble;
@@ -93,6 +94,7 @@ public class PacketHandler extends BasePacketHandler {
         registerUpdateContainer(PacketUpdateContainerSlurryStack.class, PacketUpdateContainerSlurryStack::decode);
         registerUpdateContainer(PacketUpdateContainerFrequency.class, PacketUpdateContainerFrequency::decode);
         registerUpdateContainer(PacketUpdateContainerFloatingLong.class, PacketUpdateContainerFloatingLong::decode);
+        registerUpdateContainer(PacketUpdateContainerBlockPos.class, PacketUpdateContainerBlockPos::decode);
         //List sync packets
         registerUpdateContainer(PacketUpdateContainerStringList.class, PacketUpdateContainerStringList::decode);
         registerUpdateContainer(PacketUpdateContainerFilterList.class, PacketUpdateContainerFilterList::decode);

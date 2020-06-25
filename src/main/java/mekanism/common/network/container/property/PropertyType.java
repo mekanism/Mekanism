@@ -11,6 +11,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.inventory.container.sync.ISyncableData;
+import mekanism.common.inventory.container.sync.SyncableBlockPos;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -28,6 +29,7 @@ import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
 import mekanism.common.lib.frequency.Frequency;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
 public enum PropertyType {
@@ -46,6 +48,7 @@ public enum PropertyType {
     SLURRY_STACK(SlurryStack.class, SlurryStack.EMPTY, (getter, setter) -> SyncableSlurryStack.create(() -> (SlurryStack) getter.get(), setter::accept)),
     FREQUENCY(Frequency.class, null, (getter, setter) -> SyncableFrequency.create(() -> (Frequency) getter.get(), setter::accept)),
     LIST(ArrayList.class, Collections.emptyList(), (getter, setter) -> null /* not handled */),
+    BLOCK_POS(BlockPos.class, null, (getter, setter) -> SyncableBlockPos.create(() -> (BlockPos) getter.get(), setter::accept)),
     FLOATING_LONG(FloatingLong.class, FloatingLong.ZERO, (getter, setter) -> SyncableFloatingLong.create(() -> (FloatingLong) getter.get(), setter::accept));
 
     private final Class<?> type;
