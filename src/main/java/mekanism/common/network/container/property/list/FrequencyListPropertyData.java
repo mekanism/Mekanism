@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.lib.frequency.Frequency;
-import mekanism.common.network.container.list.ListType;
-import mekanism.common.network.container.list.PacketUpdateContainerFrequencyList;
 import net.minecraft.network.PacketBuffer;
 
 public class FrequencyListPropertyData<FREQUENCY extends Frequency> extends ListPropertyData<FREQUENCY> {
@@ -28,10 +26,5 @@ public class FrequencyListPropertyData<FREQUENCY extends Frequency> extends List
         for (FREQUENCY value : values) {
             value.write(buffer);
         }
-    }
-
-    @Override
-    public PacketUpdateContainerFrequencyList<?> getSinglePacket(short windowId) {
-        return new PacketUpdateContainerFrequencyList<>(windowId, getProperty(), values);
     }
 }

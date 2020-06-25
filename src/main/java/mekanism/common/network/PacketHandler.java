@@ -4,25 +4,6 @@ import java.util.function.Function;
 import mekanism.common.Mekanism;
 import mekanism.common.network.container.PacketUpdateContainer;
 import mekanism.common.network.container.PacketUpdateContainerBatch;
-import mekanism.common.network.container.PacketUpdateContainerBlockPos;
-import mekanism.common.network.container.PacketUpdateContainerBoolean;
-import mekanism.common.network.container.PacketUpdateContainerByte;
-import mekanism.common.network.container.PacketUpdateContainerDouble;
-import mekanism.common.network.container.PacketUpdateContainerFloat;
-import mekanism.common.network.container.PacketUpdateContainerFloatingLong;
-import mekanism.common.network.container.PacketUpdateContainerFluidStack;
-import mekanism.common.network.container.PacketUpdateContainerFrequency;
-import mekanism.common.network.container.PacketUpdateContainerInt;
-import mekanism.common.network.container.PacketUpdateContainerItemStack;
-import mekanism.common.network.container.PacketUpdateContainerLong;
-import mekanism.common.network.container.PacketUpdateContainerShort;
-import mekanism.common.network.container.chemical.PacketUpdateContainerGasStack;
-import mekanism.common.network.container.chemical.PacketUpdateContainerInfusionStack;
-import mekanism.common.network.container.chemical.PacketUpdateContainerPigmentStack;
-import mekanism.common.network.container.chemical.PacketUpdateContainerSlurryStack;
-import mekanism.common.network.container.list.PacketUpdateContainerFilterList;
-import mekanism.common.network.container.list.PacketUpdateContainerFrequencyList;
-import mekanism.common.network.container.list.PacketUpdateContainerStringList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
@@ -78,32 +59,13 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketFrequencyItemGuiUpdate.class, PacketFrequencyItemGuiUpdate::encode, PacketFrequencyItemGuiUpdate::decode, PacketFrequencyItemGuiUpdate::handle);
         registerServerToClient(PacketQIOItemViewerGuiSync.class, PacketQIOItemViewerGuiSync::encode, PacketQIOItemViewerGuiSync::decode, PacketQIOItemViewerGuiSync::handle);
 
-        //Register the different sync packets for containers
-        registerUpdateContainer(PacketUpdateContainerBoolean.class, PacketUpdateContainerBoolean::decode);
-        registerUpdateContainer(PacketUpdateContainerByte.class, PacketUpdateContainerByte::decode);
-        registerUpdateContainer(PacketUpdateContainerDouble.class, PacketUpdateContainerDouble::decode);
-        registerUpdateContainer(PacketUpdateContainerFloat.class, PacketUpdateContainerFloat::decode);
-        registerUpdateContainer(PacketUpdateContainerInt.class, PacketUpdateContainerInt::decode);
-        registerUpdateContainer(PacketUpdateContainerLong.class, PacketUpdateContainerLong::decode);
-        registerUpdateContainer(PacketUpdateContainerShort.class, PacketUpdateContainerShort::decode);
-        registerUpdateContainer(PacketUpdateContainerItemStack.class, PacketUpdateContainerItemStack::decode);
-        registerUpdateContainer(PacketUpdateContainerFluidStack.class, PacketUpdateContainerFluidStack::decode);
-        registerUpdateContainer(PacketUpdateContainerGasStack.class, PacketUpdateContainerGasStack::decode);
-        registerUpdateContainer(PacketUpdateContainerInfusionStack.class, PacketUpdateContainerInfusionStack::decode);
-        registerUpdateContainer(PacketUpdateContainerPigmentStack.class, PacketUpdateContainerPigmentStack::decode);
-        registerUpdateContainer(PacketUpdateContainerSlurryStack.class, PacketUpdateContainerSlurryStack::decode);
-        registerUpdateContainer(PacketUpdateContainerFrequency.class, PacketUpdateContainerFrequency::decode);
-        registerUpdateContainer(PacketUpdateContainerFloatingLong.class, PacketUpdateContainerFloatingLong::decode);
-        registerUpdateContainer(PacketUpdateContainerBlockPos.class, PacketUpdateContainerBlockPos::decode);
-        //List sync packets
-        registerUpdateContainer(PacketUpdateContainerStringList.class, PacketUpdateContainerStringList::decode);
-        registerUpdateContainer(PacketUpdateContainerFilterList.class, PacketUpdateContainerFilterList::decode);
-        registerUpdateContainer(PacketUpdateContainerFrequencyList.class, PacketUpdateContainerFrequencyList::decode);
+        //Register container sync packet
+        registerServerToClient(PacketUpdateContainer.class, PacketUpdateContainer::encode, PacketUpdateContainer::decode, PacketUpdateContainer::handle);
         //Container sync packet that batches multiple changes into one packet
         registerServerToClient(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
     }
 
-    private <MSG extends PacketUpdateContainer<?>> void registerUpdateContainer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+    private <MSG extends PacketUpdateContainer> void registerUpdateContainer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
         registerServerToClient(type, PacketUpdateContainer::encode, decoder, PacketUpdateContainer::handle);
     }
 }

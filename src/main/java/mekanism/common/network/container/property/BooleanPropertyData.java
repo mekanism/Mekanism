@@ -1,7 +1,6 @@
 package mekanism.common.network.container.property;
 
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.network.container.PacketUpdateContainerBoolean;
 import net.minecraft.network.PacketBuffer;
 
 public class BooleanPropertyData extends PropertyData {
@@ -11,11 +10,6 @@ public class BooleanPropertyData extends PropertyData {
     public BooleanPropertyData(short property, boolean value) {
         super(PropertyType.BOOLEAN, property);
         this.value = value;
-    }
-
-    @Override
-    public PacketUpdateContainerBoolean getSinglePacket(short windowId) {
-        return new PacketUpdateContainerBoolean(windowId, getProperty(), value);
     }
 
     @Override

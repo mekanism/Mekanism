@@ -1,4 +1,4 @@
-package mekanism.common.network.container.list;
+package mekanism.common.network.container.property.list;
 
 public enum ListType {
     STRING,

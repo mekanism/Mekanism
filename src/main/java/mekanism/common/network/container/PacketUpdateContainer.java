@@ -3,32 +3,23 @@ package mekanism.common.network.container;
 import java.util.function.Supplier;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.BasePacketHandler;
+import mekanism.common.network.container.property.PropertyData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public abstract class PacketUpdateContainer<PACKET extends PacketUpdateContainer<PACKET>> {
+public class PacketUpdateContainer {
 
     //Note: windowId gets transferred over the network as an unsigned byte
     protected final short windowId;
     protected final short property;
+    protected PropertyData data;
 
-    protected PacketUpdateContainer(short windowId, short property) {
+    public PacketUpdateContainer(short windowId, short property, PropertyData data) {
         this.windowId = windowId;
         this.property = property;
+        this.data = data;
     }
-
-    protected PacketUpdateContainer(PacketBuffer buffer) {
-        this.windowId = buffer.readUnsignedByte();
-        this.property = buffer.readShort();
-    }
-
-    protected void encode(PacketBuffer buffer) {
-        buffer.writeByte(windowId);
-        buffer.writeShort(property);
-    }
-
-    protected abstract void handle(MekanismContainer container, PACKET packet);
 
     public static void handle(PacketUpdateContainer message, Supplier<Context> context) {
         Context ctx = context.get();
@@ -37,13 +28,22 @@ public abstract class PacketUpdateContainer<PACKET extends PacketUpdateContainer
             //Ensure that the container is one of ours and that the window id is the same as we expect it to be
             if (player.openContainer instanceof MekanismContainer && player.openContainer.windowId == message.windowId) {
                 //If so then handle the packet
-                message.handle((MekanismContainer) player.openContainer, message);
+                message.data.handleWindowProperty((MekanismContainer) player.openContainer);
             }
         });
         ctx.setPacketHandled(true);
     }
 
-    public static void encode(PacketUpdateContainer<?> pkt, PacketBuffer buffer) {
-        pkt.encode(buffer);
+    public static void encode(PacketUpdateContainer pkt, PacketBuffer buffer) {
+        buffer.writeByte(pkt.windowId);
+        buffer.writeShort(pkt.property);
+        pkt.data.writeToPacket(buffer);
+    }
+
+    public static PacketUpdateContainer decode(PacketBuffer buffer) {
+        short windowId = buffer.readUnsignedByte();
+        short property = buffer.readShort();
+        PropertyData data = PropertyData.fromBuffer(buffer);
+        return new PacketUpdateContainer(windowId, property, data);
     }
 }

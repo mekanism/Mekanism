@@ -5,9 +5,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.network.container.list.ListType;
-import mekanism.common.network.container.list.PacketUpdateContainerFilterList;
-import mekanism.common.network.container.list.PacketUpdateContainerList;
 import net.minecraft.network.PacketBuffer;
 
 public class FilterListPropertyData<FILTER extends IFilter<?>> extends ListPropertyData<FILTER> {
@@ -30,10 +27,5 @@ public class FilterListPropertyData<FILTER extends IFilter<?>> extends ListPrope
         for (FILTER value : values) {
             value.write(buffer);
         }
-    }
-
-    @Override
-    public PacketUpdateContainerList<?> getSinglePacket(short windowId) {
-        return new PacketUpdateContainerFilterList<>(windowId, getProperty(), values);
     }
 }

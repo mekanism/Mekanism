@@ -1,7 +1,6 @@
 package mekanism.common.network.container.property;
 
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.network.container.PacketUpdateContainerInt;
 import net.minecraft.network.PacketBuffer;
 
 public class IntPropertyData extends PropertyData {
@@ -11,11 +10,6 @@ public class IntPropertyData extends PropertyData {
     public IntPropertyData(short property, int value) {
         super(PropertyType.INT, property);
         this.value = value;
-    }
-
-    @Override
-    public PacketUpdateContainerInt getSinglePacket(short windowId) {
-        return new PacketUpdateContainerInt(windowId, getProperty(), value);
     }
 
     @Override

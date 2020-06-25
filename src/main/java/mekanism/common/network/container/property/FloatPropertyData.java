@@ -1,7 +1,6 @@
 package mekanism.common.network.container.property;
 
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.network.container.PacketUpdateContainerFloat;
 import net.minecraft.network.PacketBuffer;
 
 public class FloatPropertyData extends PropertyData {
@@ -11,11 +10,6 @@ public class FloatPropertyData extends PropertyData {
     public FloatPropertyData(short property, float value) {
         super(PropertyType.FLOAT, property);
         this.value = value;
-    }
-
-    @Override
-    public PacketUpdateContainerFloat getSinglePacket(short windowId) {
-        return new PacketUpdateContainerFloat(windowId, getProperty(), value);
     }
 
     @Override

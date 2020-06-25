@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -28,39 +29,65 @@ import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
 import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
 import mekanism.common.lib.frequency.Frequency;
+import mekanism.common.network.container.property.chemical.GasStackPropertyData;
+import mekanism.common.network.container.property.chemical.InfusionStackPropertyData;
+import mekanism.common.network.container.property.chemical.PigmentStackPropertyData;
+import mekanism.common.network.container.property.chemical.SlurryStackPropertyData;
+import mekanism.common.network.container.property.list.ListPropertyData;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
 public enum PropertyType {
-    BOOLEAN(Boolean.TYPE, false, (getter, setter) -> SyncableBoolean.create(() -> (boolean) getter.get(), setter::accept)),
-    BYTE(Byte.TYPE, (byte) 0, (getter, setter) -> SyncableByte.create(() -> (byte) getter.get(), setter::accept)),
-    DOUBLE(Double.TYPE, 0D, (getter, setter) -> SyncableDouble.create(() -> (double) getter.get(), setter::accept)),
-    FLOAT(Float.TYPE, 0F, (getter, setter) -> SyncableFloat.create(() -> (float) getter.get(), setter::accept)),
-    INT(Integer.TYPE, 0, (getter, setter) -> SyncableInt.create(() -> (int) getter.get(), setter::accept)),
-    LONG(Long.TYPE, 0L, (getter, setter) -> SyncableLong.create(() -> (long) getter.get(), setter::accept)),
-    SHORT(Short.TYPE, (short) 0, (getter, setter) -> SyncableShort.create(() -> (short) getter.get(), setter::accept)),
-    ITEM_STACK(ItemStack.class, ItemStack.EMPTY, (getter, setter) -> SyncableItemStack.create(() -> (ItemStack) getter.get(), setter::accept)),
-    FLUID_STACK(FluidStack.class, FluidStack.EMPTY, (getter, setter) -> SyncableFluidStack.create(() -> (FluidStack) getter.get(), setter::accept)),
-    GAS_STACK(GasStack.class, GasStack.EMPTY, (getter, setter) -> SyncableGasStack.create(() -> (GasStack) getter.get(), setter::accept)),
-    INFUSION_STACK(InfusionStack.class, InfusionStack.EMPTY, (getter, setter) -> SyncableInfusionStack.create(() -> (InfusionStack) getter.get(), setter::accept)),
-    PIGMENT_STACK(PigmentStack.class, PigmentStack.EMPTY, (getter, setter) -> SyncablePigmentStack.create(() -> (PigmentStack) getter.get(), setter::accept)),
-    SLURRY_STACK(SlurryStack.class, SlurryStack.EMPTY, (getter, setter) -> SyncableSlurryStack.create(() -> (SlurryStack) getter.get(), setter::accept)),
-    FREQUENCY(Frequency.class, null, (getter, setter) -> SyncableFrequency.create(() -> (Frequency) getter.get(), setter::accept)),
-    LIST(ArrayList.class, Collections.emptyList(), (getter, setter) -> null /* not handled */),
-    BLOCK_POS(BlockPos.class, null, (getter, setter) -> SyncableBlockPos.create(() -> (BlockPos) getter.get(), setter::accept)),
-    FLOATING_LONG(FloatingLong.class, FloatingLong.ZERO, (getter, setter) -> SyncableFloatingLong.create(() -> (FloatingLong) getter.get(), setter::accept));
+    BOOLEAN(Boolean.TYPE, false, (getter, setter) -> SyncableBoolean.create(() -> (boolean) getter.get(), setter::accept),
+          (property, buffer) -> new BooleanPropertyData(property, buffer.readBoolean())),
+    BYTE(Byte.TYPE, (byte) 0, (getter, setter) -> SyncableByte.create(() -> (byte) getter.get(), setter::accept),
+          (property, buffer) -> new BytePropertyData(property, buffer.readByte())),
+    DOUBLE(Double.TYPE, 0D, (getter, setter) -> SyncableDouble.create(() -> (double) getter.get(), setter::accept),
+          (property, buffer) -> new DoublePropertyData(property, buffer.readDouble())),
+    FLOAT(Float.TYPE, 0F, (getter, setter) -> SyncableFloat.create(() -> (float) getter.get(), setter::accept),
+          (property, buffer) -> new FloatPropertyData(property, buffer.readFloat())),
+    INT(Integer.TYPE, 0, (getter, setter) -> SyncableInt.create(() -> (int) getter.get(), setter::accept),
+          (property, buffer) -> new IntPropertyData(property, buffer.readVarInt())),
+    LONG(Long.TYPE, 0L, (getter, setter) -> SyncableLong.create(() -> (long) getter.get(), setter::accept),
+          (property, buffer) -> new LongPropertyData(property, buffer.readVarLong())),
+    SHORT(Short.TYPE, (short) 0, (getter, setter) -> SyncableShort.create(() -> (short) getter.get(), setter::accept),
+          (property, buffer) -> new ShortPropertyData(property, buffer.readShort())),
+    ITEM_STACK(ItemStack.class, ItemStack.EMPTY, (getter, setter) -> SyncableItemStack.create(() -> (ItemStack) getter.get(), setter::accept),
+          (property, buffer) -> new ItemStackPropertyData(property, buffer.readItemStack())),
+    FLUID_STACK(FluidStack.class, FluidStack.EMPTY, (getter, setter) -> SyncableFluidStack.create(() -> (FluidStack) getter.get(), setter::accept),
+          (property, buffer) -> new FluidStackPropertyData(property, buffer.readFluidStack())),
+    GAS_STACK(GasStack.class, GasStack.EMPTY, (getter, setter) -> SyncableGasStack.create(() -> (GasStack) getter.get(), setter::accept),
+          (property, buffer) -> new GasStackPropertyData(property, ChemicalUtils.readGasStack(buffer))),
+    INFUSION_STACK(InfusionStack.class, InfusionStack.EMPTY, (getter, setter) -> SyncableInfusionStack.create(() -> (InfusionStack) getter.get(), setter::accept),
+          (property, buffer) -> new InfusionStackPropertyData(property, ChemicalUtils.readInfusionStack(buffer))),
+    PIGMENT_STACK(PigmentStack.class, PigmentStack.EMPTY, (getter, setter) -> SyncablePigmentStack.create(() -> (PigmentStack) getter.get(), setter::accept),
+          (property, buffer) -> new PigmentStackPropertyData(property, ChemicalUtils.readPigmentStack(buffer))),
+    SLURRY_STACK(SlurryStack.class, SlurryStack.EMPTY, (getter, setter) -> SyncableSlurryStack.create(() -> (SlurryStack) getter.get(), setter::accept),
+          (property, buffer) -> new SlurryStackPropertyData(property, ChemicalUtils.readSlurryStack(buffer))),
+    FREQUENCY(Frequency.class, null, (getter, setter) -> SyncableFrequency.create(() -> (Frequency) getter.get(), setter::accept),
+          (property, buffer) -> FrequencyPropertyData.readFrequency(property, buffer)),
+    LIST(ArrayList.class, Collections.emptyList(), (getter, setter) -> null /* not handled */,
+          (property, buffer) -> ListPropertyData.readList(property, buffer)),
+    BLOCK_POS(BlockPos.class, null, (getter, setter) -> SyncableBlockPos.create(() -> (BlockPos) getter.get(), setter::accept),
+          (property, buffer) -> new BlockPosPropertyData(property, buffer.readBoolean() ? BlockPos.fromLong(buffer.readLong()) : null)),
+    FLOATING_LONG(FloatingLong.class, FloatingLong.ZERO, (getter, setter) -> SyncableFloatingLong.create(() -> (FloatingLong) getter.get(), setter::accept),
+          (property, buffer) -> new FloatingLongPropertyData(property, FloatingLong.readFromBuffer(buffer)));
 
     private final Class<?> type;
     private final Object defaultValue;
     private final BiFunction<Supplier<Object>, Consumer<Object>, ISyncableData> creatorFunction;
+    private final BiFunction<Short, PacketBuffer, PropertyData> dataCreatorFunction;
 
     private static final PropertyType[] VALUES = values();
 
-    PropertyType(Class<?> type, Object defaultValue, BiFunction<Supplier<Object>, Consumer<Object>, ISyncableData> creatorFunction) {
+    PropertyType(Class<?> type, Object defaultValue, BiFunction<Supplier<Object>, Consumer<Object>, ISyncableData> creatorFunction,
+          BiFunction<Short, PacketBuffer, PropertyData> dataCreatorFunction) {
         this.type = type;
         this.defaultValue = defaultValue;
         this.creatorFunction = creatorFunction;
+        this.dataCreatorFunction = dataCreatorFunction;
     }
 
     public <T> T getDefault() {
@@ -75,6 +102,10 @@ public enum PropertyType {
         }
 
         return null;
+    }
+
+    public PropertyData createData(short property, PacketBuffer buffer) {
+        return dataCreatorFunction.apply(property, buffer);
     }
 
     public ISyncableData create(Supplier<Object> supplier, Consumer<Object> consumer) {

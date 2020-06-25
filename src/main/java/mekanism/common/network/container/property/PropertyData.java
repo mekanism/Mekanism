@@ -1,17 +1,8 @@
 package mekanism.common.network.container.property;
 
-import mekanism.api.chemical.ChemicalUtils;
-import mekanism.api.math.FloatingLong;
-import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.container.PacketUpdateContainer;
-import mekanism.common.network.container.property.chemical.GasStackPropertyData;
-import mekanism.common.network.container.property.chemical.InfusionStackPropertyData;
-import mekanism.common.network.container.property.chemical.PigmentStackPropertyData;
-import mekanism.common.network.container.property.chemical.SlurryStackPropertyData;
-import mekanism.common.network.container.property.list.ListPropertyData;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
 
 public abstract class PropertyData {
 
@@ -31,7 +22,9 @@ public abstract class PropertyData {
         return property;
     }
 
-    public abstract PacketUpdateContainer<?> getSinglePacket(short windowId);
+    public PacketUpdateContainer getSinglePacket(short windowId) {
+        return new PacketUpdateContainer(windowId, property, this);
+    }
 
     public abstract void handleWindowProperty(MekanismContainer container);
 
@@ -43,44 +36,6 @@ public abstract class PropertyData {
     public static PropertyData fromBuffer(PacketBuffer buffer) {
         PropertyType type = buffer.readEnumValue(PropertyType.class);
         short property = buffer.readShort();
-        switch (type) {
-            case BOOLEAN:
-                return new BooleanPropertyData(property, buffer.readBoolean());
-            case BYTE:
-                return new BytePropertyData(property, buffer.readByte());
-            case DOUBLE:
-                return new DoublePropertyData(property, buffer.readDouble());
-            case FLOAT:
-                return new FloatPropertyData(property, buffer.readFloat());
-            case INT:
-                return new IntPropertyData(property, buffer.readVarInt());
-            case LONG:
-                return new LongPropertyData(property, buffer.readVarLong());
-            case SHORT:
-                return new ShortPropertyData(property, buffer.readShort());
-            case ITEM_STACK:
-                return new ItemStackPropertyData(property, buffer.readItemStack());
-            case FLUID_STACK:
-                return new FluidStackPropertyData(property, buffer.readFluidStack());
-            case GAS_STACK:
-                return new GasStackPropertyData(property, ChemicalUtils.readGasStack(buffer));
-            case INFUSION_STACK:
-                return new InfusionStackPropertyData(property, ChemicalUtils.readInfusionStack(buffer));
-            case PIGMENT_STACK:
-                return new PigmentStackPropertyData(property, ChemicalUtils.readPigmentStack(buffer));
-            case SLURRY_STACK:
-                return new SlurryStackPropertyData(property, ChemicalUtils.readSlurryStack(buffer));
-            case FREQUENCY:
-                return FrequencyPropertyData.readFrequency(property, buffer);
-            case BLOCK_POS:
-                return new BlockPosPropertyData(property, buffer.readBoolean() ? BlockPos.fromLong(buffer.readLong()) : null);
-            case FLOATING_LONG:
-                return new FloatingLongPropertyData(property, FloatingLong.readFromBuffer(buffer));
-            case LIST:
-                return ListPropertyData.readList(property, buffer);
-            default:
-                Mekanism.logger.error("Unrecognized property type received: {}", type);
-                return null;
-        }
+        return type.createData(property, buffer);
     }
 }

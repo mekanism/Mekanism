@@ -2,7 +2,6 @@ package mekanism.common.network.container.property;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.network.container.PacketUpdateContainerFluidStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -14,11 +13,6 @@ public class FluidStackPropertyData extends PropertyData {
     public FluidStackPropertyData(short property, @Nonnull FluidStack value) {
         super(PropertyType.FLUID_STACK, property);
         this.value = value;
-    }
-
-    @Override
-    public PacketUpdateContainerFluidStack getSinglePacket(short windowId) {
-        return new PacketUpdateContainerFluidStack(windowId, getProperty(), value);
     }
 
     @Override

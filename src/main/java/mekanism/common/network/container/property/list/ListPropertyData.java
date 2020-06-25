@@ -4,8 +4,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.network.container.list.ListType;
-import mekanism.common.network.container.list.PacketUpdateContainerList;
 import mekanism.common.network.container.property.PropertyData;
 import mekanism.common.network.container.property.PropertyType;
 import net.minecraft.network.PacketBuffer;
@@ -50,9 +48,6 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
         buffer.writeVarInt(values.size());
         writeListElements(buffer);
     }
-
-    @Override
-    public abstract PacketUpdateContainerList<?> getSinglePacket(short windowId);
 
     protected abstract void writeListElements(PacketBuffer buffer);
 }

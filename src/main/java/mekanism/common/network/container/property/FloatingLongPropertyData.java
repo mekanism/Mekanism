@@ -3,7 +3,6 @@ package mekanism.common.network.container.property;
 import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.network.container.PacketUpdateContainerFloatingLong;
 import net.minecraft.network.PacketBuffer;
 
 public class FloatingLongPropertyData extends PropertyData {
@@ -14,11 +13,6 @@ public class FloatingLongPropertyData extends PropertyData {
     public FloatingLongPropertyData(short property, @Nonnull FloatingLong value) {
         super(PropertyType.FLOATING_LONG, property);
         this.value = value;
-    }
-
-    @Override
-    public PacketUpdateContainerFloatingLong getSinglePacket(short windowId) {
-        return new PacketUpdateContainerFloatingLong(windowId, getProperty(), value);
     }
 
     @Override
