@@ -394,7 +394,7 @@ public abstract class MekanismContainer extends Container {
         }
     }
 
-    public void handleWindowProperty(short property, @Nonnull BlockPos value) {
+    public void handleWindowProperty(short property, @Nullable BlockPos value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableBlockPos) {
             ((SyncableBlockPos) data).set(value);

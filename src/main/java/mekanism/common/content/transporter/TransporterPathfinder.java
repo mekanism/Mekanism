@@ -382,6 +382,9 @@ public final class TransporterPathfinder {
                     // Even if it currently has a bit higher of a score
                     continue;
                 }
+                //TODO: Look into getting all the "tile" information from the network's transmitter and acceptor caches
+                // This should also make it easier to eventually add some sort of "wrapped" support for inventory blocks
+                // that do not have TEs. https://github.com/mekanism/Mekanism/issues/6157
                 TileEntity currentNodeTile = MekanismUtils.getTileEntity(world, chunkMap, currentNode);
                 double currentScore = gScore.getDouble(currentNode);
                 for (Direction direction : EnumUtils.DIRECTIONS) {
