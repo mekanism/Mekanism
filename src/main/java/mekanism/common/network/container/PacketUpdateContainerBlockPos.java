@@ -18,7 +18,7 @@ public class PacketUpdateContainerBlockPos extends PacketUpdateContainer<PacketU
     private PacketUpdateContainerBlockPos(PacketBuffer buffer) {
         super(buffer);
         if (buffer.readBoolean()) {
-            this.value = BlockPos.fromLong(buffer.readLong());
+            this.value = buffer.readBlockPos();
         } else {
             this.value = null;
         }
@@ -31,7 +31,7 @@ public class PacketUpdateContainerBlockPos extends PacketUpdateContainer<PacketU
             buffer.writeBoolean(false);
         } else {
             buffer.writeBoolean(true);
-            buffer.writeLong(value.toLong());
+            buffer.writeBlockPos(value);
         }
     }
 

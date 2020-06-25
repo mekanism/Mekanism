@@ -11,7 +11,6 @@ import mekanism.common.network.container.property.chemical.PigmentStackPropertyD
 import mekanism.common.network.container.property.chemical.SlurryStackPropertyData;
 import mekanism.common.network.container.property.list.ListPropertyData;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
 
 public abstract class PropertyData {
 
@@ -73,7 +72,7 @@ public abstract class PropertyData {
             case FREQUENCY:
                 return FrequencyPropertyData.readFrequency(property, buffer);
             case BLOCK_POS:
-                return new BlockPosPropertyData(property, buffer.readBoolean() ? BlockPos.fromLong(buffer.readLong()) : null);
+                return new BlockPosPropertyData(property, buffer.readBoolean() ? buffer.readBlockPos() : null);
             case FLOATING_LONG:
                 return new FloatingLongPropertyData(property, FloatingLong.readFromBuffer(buffer));
             case LIST:

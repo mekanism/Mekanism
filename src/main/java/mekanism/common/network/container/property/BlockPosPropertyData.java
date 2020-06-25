@@ -33,7 +33,7 @@ public class BlockPosPropertyData extends PropertyData {
             buffer.writeBoolean(false);
         } else {
             buffer.writeBoolean(true);
-            buffer.writeLong(value.toLong());
+            buffer.writeBlockPos(value);
         }
     }
 }
