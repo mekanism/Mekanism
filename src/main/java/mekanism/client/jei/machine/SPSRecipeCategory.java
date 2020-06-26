@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
@@ -81,4 +81,4 @@ public class SPSRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
         initChemical(gasStacks, 0, true, 7 - xOffset, 14 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
         initChemical(gasStacks, 2, false, 151 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
-}
+}*/

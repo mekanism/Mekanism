@@ -134,7 +134,7 @@ public class RadiationManager {
     }
 
     public void createMeltdown(World world, BlockPos minPos, BlockPos maxPos, double magnitude, double chance) {
-        meltdowns.computeIfAbsent(world.getDimension().getType().getRegistryName(), id -> new ArrayList<>()).add(new Meltdown(world, minPos, maxPos, magnitude, chance));
+        meltdowns.computeIfAbsent(world.func_230315_m_().getRegistryName(), id -> new ArrayList<>()).add(new Meltdown(world, minPos, maxPos, magnitude, chance));
     }
 
     public void clearSources() {
@@ -216,7 +216,7 @@ public class RadiationManager {
         }
 
         // update meltdowns
-        ResourceLocation dimension = world.getDimension().getType().getRegistryName();
+        ResourceLocation dimension = world.func_230315_m_().getRegistryName();
         if (meltdowns.containsKey(dimension)) {
             meltdowns.get(dimension).removeIf(Meltdown::update);
         }

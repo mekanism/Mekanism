@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
@@ -62,4 +62,4 @@ public class FluidSlurryToSlurryRecipeCategory extends BaseRecipeCategory<FluidS
         initChemical(slurryStacks, 0, true, 29 - xOffset, 14 - yOffset, 16, 58, recipe.getChemicalInput().getRepresentations(), true);
         initChemical(slurryStacks, 1, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
-}
+}*/

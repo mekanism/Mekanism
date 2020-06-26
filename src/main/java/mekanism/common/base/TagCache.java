@@ -12,8 +12,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -58,9 +58,9 @@ public final class TagCache {
         }
         List<Item> items = new ArrayList<>();
         for (ResourceLocation key : keys) {
-            Tag<Item> itemTag = tagCollection.get(key);
+            ITag<Item> itemTag = tagCollection.get(key);
             if (itemTag != null) {
-                for (Item item : itemTag.getAllElements()) {
+                for (Item item : itemTag.func_230236_b_()) {
                     if (!items.contains(item)) {
                         items.add(item);
                     }
@@ -101,9 +101,9 @@ public final class TagCache {
 
         List<Block> blocks = new ArrayList<>();
         for (ResourceLocation key : keys) {
-            Tag<Block> blockTag = tagCollection.get(key);
+            ITag<Block> blockTag = tagCollection.get(key);
             if (blockTag != null) {
-                for (Block block : blockTag.getAllElements()) {
+                for (Block block : blockTag.func_230236_b_()) {
                     if (!blocks.contains(block)) {
                         blocks.add(block);
                     }

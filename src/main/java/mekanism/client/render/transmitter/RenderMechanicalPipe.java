@@ -69,7 +69,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     if (connectionType == ConnectionType.NORMAL) {
                         MekanismRenderer.renderObject(getModel(side, fluidStack, stage), matrix, buffer, color, glow);
                     } else if (connectionType != ConnectionType.NONE) {
-                        connectionContents.add(side.getName() + connectionType.getName().toUpperCase());
+                        connectionContents.add(side.func_176610_l() + connectionType.func_176610_l().toUpperCase());
                     }
                     if (model != null) {
                         model.setSideRender(side, connectionType == ConnectionType.NONE);

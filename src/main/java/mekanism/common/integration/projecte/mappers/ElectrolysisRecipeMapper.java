@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte.mappers;
+/*package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
@@ -70,4 +70,4 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
         }
         return handled;
     }
-}
+}*/

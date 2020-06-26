@@ -1,4 +1,4 @@
-package mekanism.common.integration.theoneprobe;
+/*package mekanism.common.integration.theoneprobe;
 
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalStack;
@@ -55,4 +55,4 @@ public abstract class ChemicalElement extends TOPElement {
         MekanismRenderer.color(stored.getType());
         return true;
     }
-}
+}*/

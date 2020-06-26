@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,4 +68,4 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         itemStacks.set(2, infuseItemProviders);
         initChemical(recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_INFUSION), 0, true, 3, 0, 4, 52, infusionStacks);
     }
-}
+}*/

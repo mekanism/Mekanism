@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -280,4 +280,4 @@ public class GhostIngredientHandler implements IGhostIngredientHandler<GuiMekani
             }).collect(Collectors.toList());
         }
     }
-}
+}*/

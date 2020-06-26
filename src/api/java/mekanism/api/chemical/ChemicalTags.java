@@ -1,6 +1,7 @@
 package mekanism.api.chemical;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.Gas;
@@ -11,6 +12,7 @@ import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 
+//TODO - 1.16: Figure out ITag versus INamedTag (Some things we moved to INamedTag maybe could use ITag)
 public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
 
     public static final ChemicalTags<Gas> GAS = new ChemicalTags<>();
@@ -18,7 +20,7 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
     public static final ChemicalTags<Pigment> PIGMENT = new ChemicalTags<>();
     public static final ChemicalTags<Slurry> SLURRY = new ChemicalTags<>();
 
-    private TagCollection<CHEMICAL> collection = new TagCollection<>(location -> Optional.empty(), "", false, "");
+    private TagCollection<CHEMICAL> collection = new TagCollection<>(location -> Optional.empty(), "", "");
     private int generation;
 
     private ChemicalTags() {
@@ -57,7 +59,7 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
         return new ChemicalTag<>(resourceLocation, chemicalTags);
     }
 
-    private static class ChemicalTag<CHEMICAL extends Chemical<CHEMICAL>> extends Tag<CHEMICAL> {
+    private static class ChemicalTag<CHEMICAL extends Chemical<CHEMICAL>> implements Tag<CHEMICAL> {
 
         private final ChemicalTags<CHEMICAL> chemicalTags;
         private int lastKnownGeneration = -1;
@@ -84,9 +86,9 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
 
         @Nonnull
         @Override
-        public Collection<CHEMICAL> getAllElements() {
+        public List<CHEMICAL> func_230236_b_() {
             validateCache();
-            return this.cachedTag.getAllElements();
+            return this.cachedTag.func_230236_b_();
         }
 
         @Nonnull

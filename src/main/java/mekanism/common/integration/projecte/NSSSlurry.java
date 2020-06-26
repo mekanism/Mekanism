@@ -1,3 +1,4 @@
+/*
 package mekanism.common.integration.projecte;
 
 import java.util.function.Function;
@@ -12,27 +13,27 @@ import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 
-/**
+*//**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Slurry}.
- */
+ *//*
 public final class NSSSlurry extends AbstractNSSTag<Slurry> {
 
     private NSSSlurry(@Nonnull ResourceLocation resourceLocation, boolean isTag) {
         super(resourceLocation, isTag);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link SlurryStack}
-     */
+     *//*
     @Nonnull
     public static NSSSlurry createSlurry(@Nonnull SlurryStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
         return createSlurry(stack.getType());
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link Slurry}
-     */
+     *//*
     @Nonnull
     public static NSSSlurry createSlurry(@Nonnull Slurry slurry) {
         if (slurry.isEmptyType()) {
@@ -42,28 +43,28 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
         return createSlurry(slurry.getRegistryName());
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link ResourceLocation}
-     */
+     *//*
     @Nonnull
     public static NSSSlurry createSlurry(@Nonnull ResourceLocation slurryID) {
         return new NSSSlurry(slurryID, false);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSSlurry} representing a tag from a {@link ResourceLocation}
-     */
+     *//*
     @Nonnull
     public static NSSSlurry createTag(@Nonnull ResourceLocation tagId) {
         return new NSSSlurry(tagId, true);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSSlurry} representing a tag from a {@link Tag<Slurry>}
-     */
+     *//*
     @Nonnull
-    public static NSSSlurry createTag(@Nonnull Tag<Slurry> tag) {
-        return createTag(tag.getId());
+    public static NSSSlurry createTag(@Nonnull ITag.INamedTag<Slurry> tag) {
+        return createTag(tag.func_230234_a_());
     }
 
     @Override
@@ -93,4 +94,4 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
     protected Function<Slurry, NormalizedSimpleStack> createNew() {
         return NSSSlurry::createSlurry;
     }
-}
+}*/

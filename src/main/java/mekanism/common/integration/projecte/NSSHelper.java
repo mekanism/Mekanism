@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte;
+/*package mekanism.common.integration.projecte;
 
 import com.google.gson.JsonParseException;
 import mekanism.common.integration.MekanismHooks;
@@ -59,4 +59,4 @@ public class NSSHelper {
             throw new JsonParseException("Malformed " + type + " ID", e);
         }
     }
-}
+}*/

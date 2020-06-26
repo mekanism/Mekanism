@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte.mappers;
+/*package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
@@ -51,4 +51,4 @@ public class ChemicalCrystallizerRecipeMapper implements IRecipeTypeMapper {
         }
         return handled;
     }
-}
+}*/

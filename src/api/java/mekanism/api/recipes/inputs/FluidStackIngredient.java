@@ -18,6 +18,7 @@ import mekanism.api.annotations.NonNull;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
@@ -36,7 +37,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         return new Single(instance);
     }
 
-    public static FluidStackIngredient from(@Nonnull Tag<Fluid> fluidTag, int minAmount) {
+    public static FluidStackIngredient from(@Nonnull ITag.INamedTag<Fluid> fluidTag, int minAmount) {
         return new Tagged(fluidTag, minAmount);
     }
 
@@ -178,10 +179,10 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
     public static class Tagged extends FluidStackIngredient {
 
         @Nonnull
-        private final Tag<Fluid> tag;
+        private final ITag.INamedTag<Fluid> tag;
         private final int amount;
 
-        public Tagged(@Nonnull Tag<Fluid> tag, int amount) {
+        public Tagged(@Nonnull ITag.INamedTag<Fluid> tag, int amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -211,7 +212,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         public List<@NonNull FluidStack> getRepresentations() {
             //TODO: Can this be cached some how
             List<@NonNull FluidStack> representations = new ArrayList<>();
-            for (Fluid fluid : tag.getAllElements()) {
+            for (Fluid fluid : tag.func_230236_b_()) {
                 representations.add(new FluidStack(fluid, amount));
             }
             return representations;
@@ -220,7 +221,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.TAGGED);
-            buffer.writeResourceLocation(tag.getId());
+            buffer.writeResourceLocation(tag.func_230234_a_());
             buffer.writeVarInt(amount);
         }
 
@@ -229,7 +230,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             json.addProperty(JsonConstants.AMOUNT, amount);
-            json.addProperty(JsonConstants.TAG, tag.getId().toString());
+            json.addProperty(JsonConstants.TAG, tag.func_230234_a_().toString());
             return json;
         }
 

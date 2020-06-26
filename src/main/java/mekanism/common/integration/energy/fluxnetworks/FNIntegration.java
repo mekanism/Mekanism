@@ -1,4 +1,4 @@
-package mekanism.common.integration.energy.fluxnetworks;
+/*package mekanism.common.integration.energy.fluxnetworks;
 
 import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -77,4 +77,4 @@ public class FNIntegration implements IFNEnergyStorage {
     public boolean canReceiveL() {
         return handler.insertEnergy(FloatingLong.ONE, Action.SIMULATE).smallerThan(FloatingLong.ONE);
     }
-}
+}*/

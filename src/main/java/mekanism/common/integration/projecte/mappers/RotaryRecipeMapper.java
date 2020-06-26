@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte.mappers;
+/*package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
@@ -64,4 +64,4 @@ public class RotaryRecipeMapper implements IRecipeTypeMapper {
         }
         return handled;
     }
-}
+}*/

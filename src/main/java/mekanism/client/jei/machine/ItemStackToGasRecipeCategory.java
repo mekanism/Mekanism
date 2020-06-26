@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -37,4 +37,4 @@ public class ItemStackToGasRecipeCategory extends ItemStackToChemicalRecipeCateg
     public Class<? extends ItemStackToGasRecipe> getRecipeClass() {
         return ItemStackToGasRecipe.class;
     }
-}
+}*/

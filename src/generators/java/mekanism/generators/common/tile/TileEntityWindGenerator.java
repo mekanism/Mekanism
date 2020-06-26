@@ -49,7 +49,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
             // an initial activity status and the client (in MP) will show the windmills turning while not
             // generating any power
-            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName());
+            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.func_230315_m_().getType().getRegistryName());
             if (isBlacklistDimension) {
                 setActive(false);
             }
@@ -107,7 +107,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             MekanismUtils.makeBoundingBlock(world, pos.up(3), pos);
             MekanismUtils.makeBoundingBlock(world, pos.up(4), pos);
             // Check to see if the placement is happening in a blacklisted dimension
-            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName());
+            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.func_230315_m_().getRegistryName());
         }
     }
 

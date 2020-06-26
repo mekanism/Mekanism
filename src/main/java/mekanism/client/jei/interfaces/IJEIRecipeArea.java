@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import net.minecraft.util.ResourceLocation;
 
 public interface IJEIRecipeArea<ELEMENT extends GuiElement> {
@@ -27,7 +26,7 @@ public interface IJEIRecipeArea<ELEMENT extends GuiElement> {
 
     default ELEMENT jeiCrafting() {
         if (Mekanism.hooks.JEILoaded) {
-            return jeiCategories(VanillaRecipeCategoryUid.CRAFTING);
+            //return jeiCategories(VanillaRecipeCategoryUid.CRAFTING);//TODO - JEI
         }
         return jeiCategories((ResourceLocation) null);
     }

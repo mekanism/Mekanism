@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte.mappers;
+/*package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
@@ -49,4 +49,4 @@ public class ItemStackToItemStackRecipeMapper implements IRecipeTypeMapper {
         }
         return handled;
     }
-}
+}*/

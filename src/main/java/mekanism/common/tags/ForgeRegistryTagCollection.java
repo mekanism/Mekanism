@@ -1,11 +1,13 @@
 package mekanism.common.tags;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.Tag.Builder;
 import net.minecraft.tags.TagCollection;
@@ -25,13 +27,14 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
     }
 
     public void write(PacketBuffer buffer) {
-        Map<ResourceLocation, Tag<T>> tagMap = this.getTagMap();
+        Map<ResourceLocation, ITag<T>> tagMap = this.getTagMap();
         buffer.writeVarInt(tagMap.size());
-        for (Entry<ResourceLocation, Tag<T>> entry : tagMap.entrySet()) {
+        for (Entry<ResourceLocation, ITag<T>> entry : tagMap.entrySet()) {
             buffer.writeResourceLocation(entry.getKey());
-            Tag<T> tag = entry.getValue();
-            buffer.writeVarInt(tag.getAllElements().size());
-            for (T element : tag.getAllElements()) {
+            ITag<T> tag = entry.getValue();
+            List<T> tags = tag.func_230236_b_();
+            buffer.writeVarInt(tags.size());
+            for (T element : tags) {
                 ResourceLocation key = this.registry.getKey(element);
                 if (key != null) {
                     buffer.writeResourceLocation(key);
@@ -41,7 +44,7 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
     }
 
     public void read(PacketBuffer buffer) {
-        Map<ResourceLocation, Tag<T>> tagMap = new Object2ObjectOpenHashMap<>();
+        Map<ResourceLocation, ITag<T>> tagMap = new Object2ObjectOpenHashMap<>();
         int tagCount = buffer.readVarInt();
         for (int i = 0; i < tagCount; ++i) {
             ResourceLocation resourceLocation = buffer.readResourceLocation();

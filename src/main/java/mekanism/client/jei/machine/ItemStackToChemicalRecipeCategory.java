@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import mekanism.api.chemical.Chemical;
@@ -56,4 +56,4 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
         IGuiIngredientGroup<STACK> chemicalStacks = recipeLayout.getIngredientsGroup(ingredientType);
         initChemical(chemicalStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputDefinition()), true);
     }
-}
+}*/

@@ -166,7 +166,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                 }
             }
             if (hitFluid) {
-                spawnParticlesAt(getPosition());
+                spawnParticlesAt(func_233580_cy_());
                 playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
             }
             remove();
@@ -179,7 +179,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
             ItemStack result = recipe.get().getRecipeOutput();
             item.setItem(StackUtils.size(result, item.getItem().getCount()));
             item.ticksExisted = 0;
-            spawnParticlesAt(item.getPosition());
+            spawnParticlesAt(item.func_233580_cy_());
             playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
             return true;
         }

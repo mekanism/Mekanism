@@ -240,7 +240,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Nonnull
     public static FloatingLong calculateEnergyCost(Entity entity, Coord4D coords) {
         FloatingLong energyCost = MekanismConfig.usage.teleporterBase.get();
-        if (entity.world.getDimension().getType().equals(coords.dimension)) {
+        if (entity.world.func_230315_m_().equals(coords.dimension)) {
             energyCost = energyCost.add(MekanismConfig.usage.teleporterDistance.get().multiply(Math.sqrt(entity.getDistanceSq(coords.getX(), coords.getY(), coords.getZ()))));
         } else {
             energyCost = energyCost.add(MekanismConfig.usage.teleporterDimensionPenalty.get());

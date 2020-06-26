@@ -31,7 +31,7 @@ public class RobitAIFollow extends RobitAIBase {
         PlayerEntity player = theRobit.getOwner();
         if (player == null) {
             return false;
-        } else if (!theRobit.world.getDimension().equals(player.world.getDimension())) {
+        } else if (!theRobit.world.func_230315_m_().equals(player.world.func_230315_m_())) {
             return false;
         } else if (!theRobit.getFollowing()) {
             //Still looks up at the player if on chargepad or not following
@@ -49,7 +49,7 @@ public class RobitAIFollow extends RobitAIBase {
     @Override
     public boolean shouldContinueExecuting() {
         return !thePathfinder.noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && !theRobit.getEnergyContainer().isEmpty()
-               && theOwner.world.getDimension().equals(theRobit.world.getDimension());
+               && theOwner.world.func_230315_m_().equals(theRobit.world.func_230315_m_());
     }
 
     @Override

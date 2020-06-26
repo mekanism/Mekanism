@@ -1,4 +1,4 @@
-package mekanism.common.integration.energy.fluxnetworks;
+/*package mekanism.common.integration.energy.fluxnetworks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,4 +53,4 @@ public class FNEnergyCompat implements IEnergyCompat {
     public LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side) {
         return CapabilityUtils.getCapability(provider, FNEnergyCapability.FN_ENERGY_STORAGE, side).map(FNStrictEnergyHandler::new);
     }
-}
+}*/

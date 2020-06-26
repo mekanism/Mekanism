@@ -83,7 +83,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
                 if (!prevSlurry.isEmptyType() && !prevSlurry.isIn(MekanismTags.Slurries.DIRTY)) {
                     Tag<Item> oreTag = prevSlurry.getOreTag();
                     if (oreTag != null) {
-                        for (Item ore : oreTag.getAllElements()) {
+                        for (Item ore : oreTag.func_230236_b_()) {
                             iterStacks.add(new ItemStack(ore));
                         }
                     }

@@ -1,4 +1,4 @@
-package mekanism.common.integration.theoneprobe;
+/*package mekanism.common.integration.theoneprobe;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
@@ -63,4 +63,4 @@ public class FluidElement extends TOPElement {
     public int getID() {
         return TOPProvider.FLUID_ELEMENT_ID;
     }
-}
+}*/

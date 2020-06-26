@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,4 +61,4 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
         fluidStacks.set(0, fluidInputs);
         fluidStacks.set(1, recipe.getOutputRepresentation());
     }
-}
+}*/

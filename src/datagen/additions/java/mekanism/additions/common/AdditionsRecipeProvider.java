@@ -26,6 +26,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
@@ -204,7 +205,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     private void registerPlasticBlock(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
         EnumColor color = result.getBlock().getColor();
         String colorString = color.getRegistryPrefix();
-        Tag<Item> dye = color.getDyeTag();
+        ITag<Item> dye = color.getDyeTag();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(PLASTIC)
               .key(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)

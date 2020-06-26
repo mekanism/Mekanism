@@ -305,7 +305,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
         public List<Item> getMatchingItems() {
             if (hasFilter()) {
-                return new ArrayList<>(filterTag.getAllElements());
+                return new ArrayList<>(filterTag.func_230236_b_());
             }
             return Collections.emptyList();
         }

@@ -15,6 +15,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 
 public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements
@@ -81,10 +82,10 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
           ChemicalStackIngredient<CHEMICAL, STACK> {
 
         @Nonnull
-        private final Tag<CHEMICAL> tag;
+        private final ITag.INamedTag<CHEMICAL> tag;
         private final long amount;
 
-        public TaggedIngredient(@Nonnull Tag<CHEMICAL> tag, long amount) {
+        public TaggedIngredient(@Nonnull ITag.INamedTag<CHEMICAL> tag, long amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -120,7 +121,7 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
             ChemicalIngredientInfo<CHEMICAL, STACK> ingredientInfo = getIngredientInfo();
             //TODO: Can this be cached some how
             List<@NonNull STACK> representations = new ArrayList<>();
-            for (CHEMICAL chemical : tag.getAllElements()) {
+            for (CHEMICAL chemical : tag.func_230236_b_()) {
                 representations.add(ingredientInfo.createStack(chemical, amount));
             }
             return representations;
@@ -129,7 +130,7 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.TAGGED);
-            buffer.writeResourceLocation(tag.getId());
+            buffer.writeResourceLocation(tag.func_230234_a_());
             buffer.writeVarLong(amount);
         }
 
@@ -138,7 +139,7 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             json.addProperty(JsonConstants.AMOUNT, amount);
-            json.addProperty(JsonConstants.TAG, tag.getId().toString());
+            json.addProperty(JsonConstants.TAG, tag.func_230234_a_().toString());
             return json;
         }
     }

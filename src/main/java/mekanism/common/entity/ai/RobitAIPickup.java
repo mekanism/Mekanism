@@ -51,7 +51,7 @@ public class RobitAIPickup extends RobitAIBase {
     @Override
     public boolean shouldContinueExecuting() {
         return closest.isAlive() && !thePathfinder.noPath() && theRobit.getDistanceSq(closest) > 100 && theRobit.getDropPickup() && !theRobit.getEnergyContainer().isEmpty()
-               && closest.world.getDimension().equals(theRobit.world.getDimension());
+               && closest.world.func_230315_m_().equals(theRobit.world.func_230315_m_());
     }
 
     @Override

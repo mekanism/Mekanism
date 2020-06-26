@@ -1,4 +1,4 @@
-package mekanism.common.recipe.compat;
+/*package mekanism.common.recipe.compat;
 
 import biomesoplenty.api.block.BOPBlocks;
 import biomesoplenty.api.item.BOPItems;
@@ -77,4 +77,4 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, new ItemTags.Wrapper(rl(name + "_logs")),
               pressurePlate, trapdoor, name, modLoaded);
     }
-}
+}*/

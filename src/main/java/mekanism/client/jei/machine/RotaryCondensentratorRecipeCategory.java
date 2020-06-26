@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
@@ -92,4 +92,4 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
             gasStacks.set(0, recipe.getGasOutputRepresentation());
         }
     }
-}
+}*/

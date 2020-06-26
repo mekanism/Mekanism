@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte.mappers;
+/*package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
 import mekanism.api.annotations.NonNull;
@@ -59,4 +59,4 @@ public class MetallurgicInfuserRecipeMapper implements IRecipeTypeMapper {
         }
         return handled;
     }
-}
+}*/

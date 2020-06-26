@@ -36,7 +36,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         super(container, inv, title);
         xSize = 147;
         ySize = 182;
-        BlockPos pos = inv.player.getPosition();
+        BlockPos pos = inv.player.func_233580_cy_();
         //Calculate all the blocks in the column
         for (BlockPos p : BlockPos.getAllInBoxMutable(new BlockPos(pos.getX(), 0, pos.getZ()), pos)) {
             blockList.add(inv.player.world.getBlockState(p));

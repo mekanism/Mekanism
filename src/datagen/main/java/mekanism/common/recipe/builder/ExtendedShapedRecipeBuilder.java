@@ -15,7 +15,7 @@ import mekanism.common.recipe.pattern.RecipePattern;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 
@@ -56,7 +56,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, Tag<Item> tag) {
+    public ExtendedShapedRecipeBuilder key(char symbol, ITag<Item> tag) {
         return key(symbol, Ingredient.fromTag(tag));
     }
 

@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte;
+/*package mekanism.common.integration.projecte;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -12,27 +12,27 @@ import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 
-/**
+*//**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Pigment}s.
- */
+ *//*
 public final class NSSPigment extends AbstractNSSTag<Pigment> {
 
     private NSSPigment(@Nonnull ResourceLocation resourceLocation, boolean isTag) {
         super(resourceLocation, isTag);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link PigmentStack}
-     */
+     *//*
     @Nonnull
     public static NSSPigment createPigment(@Nonnull PigmentStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
         return createPigment(stack.getType());
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link Pigment}
-     */
+     *//*
     @Nonnull
     public static NSSPigment createPigment(@Nonnull Pigment pigment) {
         if (pigment.isEmptyType()) {
@@ -42,28 +42,28 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
         return createPigment(pigment.getRegistryName());
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link ResourceLocation}
-     */
+     *//*
     @Nonnull
     public static NSSPigment createPigment(@Nonnull ResourceLocation pigmentID) {
         return new NSSPigment(pigmentID, false);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSPigment} representing a tag from a {@link ResourceLocation}
-     */
+     *//*
     @Nonnull
     public static NSSPigment createTag(@Nonnull ResourceLocation tagId) {
         return new NSSPigment(tagId, true);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSPigment} representing a tag from a {@link Tag<Pigment>}
-     */
+     *//*
     @Nonnull
-    public static NSSPigment createTag(@Nonnull Tag<Pigment> tag) {
-        return createTag(tag.getId());
+    public static NSSPigment createTag(@Nonnull ITag.INamedTag<Pigment> tag) {
+        return createTag(tag.func_230234_a_());
     }
 
     @Override
@@ -93,4 +93,4 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
     protected Function<Pigment, NormalizedSimpleStack> createNew() {
         return NSSPigment::createPigment;
     }
-}
+}*/

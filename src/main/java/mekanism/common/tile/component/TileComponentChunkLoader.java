@@ -68,7 +68,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     private void releaseChunkTickets(@Nonnull World world, @Nullable BlockPos pos) {
-        LOGGER.debug("Attempting to remove chunk tickets. Pos: {} World: {}", pos, world.getDimension().getType().getRegistryName());
+        LOGGER.debug("Attempting to remove chunk tickets. Pos: {} World: {}", pos, world.func_230315_m_().getRegistryName());
         ServerChunkProvider chunkProvider = (ServerChunkProvider) world.getChunkProvider();
         Iterator<ChunkPos> chunkIt = chunkSet.iterator();
         ChunkManager manager = ChunkManager.getInstance((ServerWorld) world);

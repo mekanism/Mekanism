@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
@@ -178,4 +178,4 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         SHOW_AMOUNT_AND_CAPACITY,
         ITEM_LIST
     }
-}
+}*/

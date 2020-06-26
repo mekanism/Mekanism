@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte;
+/*package mekanism.common.integration.projecte;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.util.Collections;
@@ -36,4 +36,4 @@ public class MekDefaults implements IEMCMapper<NormalizedSimpleStack, Long> {
         mapper.setValueFromConversion(1, NSSItem.createItem(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)), iron);
         //TODO: Default value for salt?
     }
-}
+}*/

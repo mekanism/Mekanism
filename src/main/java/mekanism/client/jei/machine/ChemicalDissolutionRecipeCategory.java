@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
@@ -108,4 +108,4 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
         IGuiIngredientGroup<STACK> stacks = recipeLayout.getIngredientsGroup(type);
         initChemical(stacks, 1, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(stack), true);
     }
-}
+}*/

@@ -29,7 +29,7 @@ public class ClientProxy extends CommonProxy {
     private void doSparkle(TileEntity tile, SparkleAnimation anim) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         //If player is within 40 blocks (1,600 = 40^2), show the status message/sparkles
-        if (tile.getPos().distanceSq(player.getPosition()) <= 1_600) {
+        if (tile.getPos().distanceSq(player.func_233580_cy_()) <= 1_600) {
             if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
                 anim.run();
             } else {

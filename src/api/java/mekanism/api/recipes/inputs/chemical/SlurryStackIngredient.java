@@ -10,7 +10,7 @@ import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredi
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.SingleIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.TaggedIngredient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 
 public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, SlurryStack> {
 
@@ -22,7 +22,7 @@ public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, 
         return new Single(slurry.getStack(amount));
     }
 
-    static SlurryStackIngredient from(@Nonnull Tag<Slurry> tag, long amount) {
+    static SlurryStackIngredient from(@Nonnull ITag.INamedTag<Slurry> tag, long amount) {
         return new Tagged(tag, amount);
     }
 
@@ -52,7 +52,7 @@ public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, 
 
     class Tagged extends TaggedIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
-        protected Tagged(@Nonnull Tag<Slurry> tag, long amount) {
+        protected Tagged(@Nonnull ITag.INamedTag<Slurry> tag, long amount) {
             super(tag, amount);
         }
     }

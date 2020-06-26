@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import com.ibm.icu.text.AlphabeticIndex.Bucket;
 import com.mojang.authlib.GameProfile;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
@@ -499,7 +501,7 @@ public final class MekanismUtils {
         boolean isReplaceable = state.isReplaceable(fluid);
         boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
         if (world.isAirBlock(pos) || isReplaceable || canContainFluid) {
-            if (world.getDimension().doesWaterVaporize() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
+            if (world.func_230315_m_().func_236040_e_() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
                 fluid.getAttributes().vaporize(player, world, pos, fluidStack);
             } else if (canContainFluid) {
                 if (((ILiquidContainer) state.getBlock()).receiveFluid(world, pos, state, ((FlowingFluid) fluid).getStillFluidState(false))) {

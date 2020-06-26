@@ -17,7 +17,7 @@ buildscript {
 plugins {
     id 'org.ajoberstar.grgit' version '4.0.2'
     id "com.matthewprenger.cursegradle" version '1.4.0'
-    id "com.wynprice.cursemaven" version "2.1.4"
+    id "com.wynprice.cursemaven" version "2.1.5"
     id 'java'
     id 'idea'
     id 'maven'
@@ -283,22 +283,22 @@ dependencies {
 
     compileOnly "org.jetbrains:annotations:${jb_annotations}"
 
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
+    //compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+    //runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
-    runtimeOnly fg.deobf("team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}")
+    //runtimeOnly fg.deobf("team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}")
 
-    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}:api")
-    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}")
+    //compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}:api")
+    //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
-    compileOnly fg.deobf("curse.maven:projecte:${projecte_api_id}")
-    compileOnly fg.deobf("curse.maven:flux-networks:${flux_networks_id}")
+    //compileOnly fg.deobf("curse.maven:projecte:${projecte_api_id}")
+    //compileOnly fg.deobf("curse.maven:flux-networks:${flux_networks_id}")
 
     //Dependencies for data generators for mod compat reference
     //TODO: Ideally we would switch this to compileOnly and runtimeOnly but for some reason it does not work quite right
-    datagenmainCompile fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_id}")
-    datagenmainCompile fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
+    //datagenmainCompile fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_id}")
+    //datagenmainCompile fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
 }
 
 def version_properties = ["version"       : mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version,

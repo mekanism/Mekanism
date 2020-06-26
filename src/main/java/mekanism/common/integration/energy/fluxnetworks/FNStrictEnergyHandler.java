@@ -1,4 +1,4 @@
-package mekanism.common.integration.energy.fluxnetworks;
+/*package mekanism.common.integration.energy.fluxnetworks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -63,4 +63,4 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
         }
         return FloatingLong.ZERO;
     }
-}
+}*/

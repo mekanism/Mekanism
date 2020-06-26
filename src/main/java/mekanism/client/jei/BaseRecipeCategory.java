@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.longs.Long2ObjectFunction;
@@ -164,4 +164,4 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
             group.set(slot, stacks);
         }
     }
-}
+}*/

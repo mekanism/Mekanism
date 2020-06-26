@@ -147,7 +147,7 @@ public abstract class BasePacketHandler {
                 int radius = playerList.getViewDistance() * 16;
                 for (ServerPlayerEntity player : playerList.getPlayers()) {
                     if (range.dimension == player.dimension) {
-                        BlockPos playerPosition = player.getPosition();
+                        BlockPos playerPosition = player.func_233580_cy_();
                         int playerX = playerPosition.getX();
                         int playerZ = playerPosition.getZ();
                         //playerX/Z + radius is the max, so to stay in line with how it was before, it has an extra + 1 added to it

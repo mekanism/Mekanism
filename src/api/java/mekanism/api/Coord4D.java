@@ -9,8 +9,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.dimension.DimensionType;
 
 /**
  * Coord4D - an integer-based way to keep track of and perform operations on blocks in a Minecraft-based environment. This also takes in account the dimension the
@@ -31,11 +31,11 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @param entity - entity to create the Coord4D from
      */
     public Coord4D(Entity entity) {
-        BlockPos entityPosition = entity.getPosition();
+        BlockPos entityPosition = entity.func_233580_cy_();
         this.x = entityPosition.getX();
         this.y = entityPosition.getY();
         this.z = entityPosition.getZ();
-        this.dimension = entity.world.getDimension().getType();
+        this.dimension = entity.world.func_230315_m_();
     }
 
     /**
@@ -54,7 +54,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
     }
 
     public Coord4D(BlockPos pos, IWorldReader world) {
-        this(pos, world.getDimension().getType());
+        this(pos, world.func_230315_m_());
     }
 
     public Coord4D(BlockPos pos, DimensionType dimension) {

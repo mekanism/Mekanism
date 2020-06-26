@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -115,4 +115,4 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
         }
         return Collections.emptyList();
     }
-}
+}*/

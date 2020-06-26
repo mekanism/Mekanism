@@ -11,8 +11,8 @@ import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
@@ -86,7 +86,7 @@ public class CommonWorldTickHandler {
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;
             }
-            ResourceLocation dimensionName = world.getDimension().getType().getRegistryName();
+            ResourceLocation dimensionName = world.func_230315_m_().getRegistryName();
             //Credit to E. Beef
             if (chunkRegenMap.containsKey(dimensionName)) {
                 Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionName);

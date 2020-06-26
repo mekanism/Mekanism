@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,7 +73,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @JeiPlugin
-public class MekanismJEI implements IModPlugin {
+public class MekanismJEI implements IModPlugin {//TODO - JEI
 
     public static final IIngredientType<GasStack> TYPE_GAS = () -> GasStack.class;
     public static final IIngredientType<InfusionStack> TYPE_INFUSION = () -> InfusionStack.class;
@@ -312,4 +312,4 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeTransferHandler(CraftingRobitContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
         registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 19, 9, 35, 36);
     }
-}
+}*/

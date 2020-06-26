@@ -115,7 +115,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         //Lava boost
         FloatingLong boost = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(Arrays.stream(EnumUtils.DIRECTIONS)
               .filter(side -> world.getFluidState(pos.offset(side)).isTagged(FluidTags.LAVA)).count());
-        if (world.getDimension().isNether()) {
+        if (world.func_230315_m_().isNether()) {
             boost = boost.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
         }
         return boost;

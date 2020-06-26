@@ -1,4 +1,4 @@
-package mekanism.common.recipe.compat;
+/*package mekanism.common.recipe.compat;
 
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -104,7 +104,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
 
     private void addPrecisionSawmillBedRecipes(Consumer<IFinishedRecipe> consumer, Item planks, String basePath) {
         //TODO: FIXME, use the correct type of bed, and implement once beds are added back into the mod
-        /*RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLACK_BED, planks, Items.BLACK_WOOL, "black", modLoaded);
+        *//*RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLACK_BED, planks, Items.BLACK_WOOL, "black", modLoaded);
         RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLUE_BED, planks, Items.BLUE_WOOL, "blue", modLoaded);
         RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BROWN_BED, planks, Items.BROWN_WOOL, "brown", modLoaded);
         RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.CYAN_BED, planks, Items.CYAN_WOOL, "cyan", modLoaded);
@@ -119,6 +119,6 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.PURPLE_BED, planks, Items.PURPLE_WOOL, "purple", modLoaded);
         RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.RED_BED, planks, Items.RED_WOOL, "red", modLoaded);
         RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.WHITE_BED, planks, Items.WHITE_WOOL, "white", modLoaded);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.YELLOW_BED, planks, Items.YELLOW_WOOL, "yellow", modLoaded);*/
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.YELLOW_BED, planks, Items.YELLOW_WOOL, "yellow", modLoaded);*//*
     }
-}
+}*/

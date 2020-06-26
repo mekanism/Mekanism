@@ -1,4 +1,4 @@
-package mekanism.generators.client.jei;
+/*package mekanism.generators.client.jei;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +57,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
 
     private List<FluidStack> getWaterInput() {
         List<FluidStack> representations = new ArrayList<>();
-        for (Fluid fluid : FluidTags.WATER.getAllElements()) {
+        for (Fluid fluid : FluidTags.WATER.func_230236_b_()) {
             representations.add(new FluidStack(fluid, 1_000));
         }
         return representations;
@@ -86,4 +86,4 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
         initChemical(gasStacks, 1, true, 153 - xOffset, 14 - yOffset, 16, 58, steamOutput, true);
         initChemical(gasStacks, 2, false, 172 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
-}
+}*/

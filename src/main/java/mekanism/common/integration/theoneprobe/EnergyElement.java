@@ -1,4 +1,4 @@
-package mekanism.common.integration.theoneprobe;
+/*package mekanism.common.integration.theoneprobe;
 
 import mekanism.api.math.FloatingLong;
 import mekanism.client.render.MekanismRenderer;
@@ -50,4 +50,4 @@ public class EnergyElement extends TOPElement {
     public int getID() {
         return TOPProvider.ENERGY_ELEMENT_ID;
     }
-}
+}*/

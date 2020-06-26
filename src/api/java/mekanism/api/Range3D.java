@@ -1,6 +1,6 @@
 package mekanism.api;
 
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
 
 public class Range3D {
 

@@ -1,4 +1,4 @@
-package mekanism.common.integration.theoneprobe;
+/*package mekanism.common.integration.theoneprobe;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nullable;
@@ -80,4 +80,4 @@ public abstract class TOPElement implements IElementNew {
         //Make sure the color does not leak from having drawn the string
         MekanismRenderer.resetColor();
     }
-}
+}*/

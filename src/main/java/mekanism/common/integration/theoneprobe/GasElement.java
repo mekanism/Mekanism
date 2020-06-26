@@ -1,4 +1,4 @@
-package mekanism.common.integration.theoneprobe;
+/*package mekanism.common.integration.theoneprobe;
 
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalUtils;
@@ -19,4 +19,4 @@ public class GasElement extends ChemicalElement {
     public int getID() {
         return TOPProvider.GAS_ELEMENT_ID;
     }
-}
+}*/

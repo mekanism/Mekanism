@@ -10,7 +10,7 @@ import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredi
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.SingleIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.TaggedIngredient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 
 public interface GasStackIngredient extends IChemicalStackIngredient<Gas, GasStack> {
 
@@ -22,7 +22,7 @@ public interface GasStackIngredient extends IChemicalStackIngredient<Gas, GasSta
         return new Single(gas.getStack(amount));
     }
 
-    static GasStackIngredient from(@Nonnull Tag<Gas> tag, long amount) {
+    static GasStackIngredient from(@Nonnull ITag.INamedTag<Gas> tag, long amount) {
         return new Tagged(tag, amount);
     }
 
@@ -52,7 +52,7 @@ public interface GasStackIngredient extends IChemicalStackIngredient<Gas, GasSta
 
     class Tagged extends TaggedIngredient<Gas, GasStack> implements GasStackIngredient {
 
-        protected Tagged(@Nonnull Tag<Gas> tag, long amount) {
+        protected Tagged(@Nonnull ITag.INamedTag<Gas> tag, long amount) {
             super(tag, amount);
         }
     }

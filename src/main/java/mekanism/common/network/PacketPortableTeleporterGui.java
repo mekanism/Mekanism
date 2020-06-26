@@ -89,7 +89,7 @@ public class PacketPortableTeleporterGui {
                                         ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
                                     }
                                     player.closeScreen();
-                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.getPosition()), player.world, coords.getPos());
+                                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.func_233580_cy_()), player.world, coords.getPos());
                                     TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
                                     BlockPos coordsPos = coords.getPos();
                                     if (player instanceof ServerPlayerEntity) {

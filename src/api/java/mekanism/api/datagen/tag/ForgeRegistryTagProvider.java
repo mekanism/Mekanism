@@ -16,6 +16,8 @@ import javax.annotation.Nonnull;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
+import net.minecraft.data.TagsProvider;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
@@ -67,7 +69,7 @@ public abstract class ForgeRegistryTagProvider<TYPE extends IForgeRegistryEntry<
         setCollection(tagCollection);
     }
 
-    protected Tag.Builder<TYPE> getBuilder(Tag<TYPE> tag) {
+    protected TagsProvider.Builder<TYPE> getBuilder(Tag<TYPE> tag) {
         return tagToBuilder.computeIfAbsent(tag, ignored -> Tag.Builder.create());
     }
 

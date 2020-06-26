@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte;
+/*package mekanism.common.integration.projecte;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +19,9 @@ public class IngredientHelper {
 
     private final IMappingCollector<NormalizedSimpleStack, Long> mapper;
     private Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-    /**
+    *//**
      * Gets set to false if we have a recipe that is more than we can handle
-     */
+     *//*
     private boolean isValid = true;
 
     public IngredientHelper(IMappingCollector<NormalizedSimpleStack, Long> mapper) {
@@ -143,4 +143,4 @@ public class IngredientHelper {
     public boolean addAsConversion(ItemStack stack) {
         return addAsConversion(NSSItem.createItem(stack), stack.getCount());
     }
-}
+}*/

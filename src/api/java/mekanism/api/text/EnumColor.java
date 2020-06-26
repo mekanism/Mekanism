@@ -7,7 +7,7 @@ import mekanism.api.math.MathUtils;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -55,14 +55,14 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     @Nullable
     private final String dyeName;
     private final MaterialColor mapColor;
-    private final Tag<Item> dyeTag;
+    private final ITag<Item> dyeTag;
 
     EnumColor(String s, APILang langEntry, String englishName, @Nullable String dyeName, String registryPrefix, int[] rgbCode, TextFormatting textFormatting, DyeColor dyeColor) {
         this(s, langEntry, englishName, dyeName, registryPrefix, rgbCode, textFormatting, dyeColor.getMapColor(), dyeColor.getTag());
     }
 
     EnumColor(String code, APILang langEntry, String englishName, @Nullable String dyeName, String registryPrefix, int[] rgbCode, TextFormatting textFormatting,
-          MaterialColor mapColor, Tag<Item> dyeTag) {
+          MaterialColor mapColor, ITag<Item> dyeTag) {
         this.code = code;
         this.langEntry = langEntry;
         this.englishName = englishName;
@@ -86,7 +86,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
         return mapColor;
     }
 
-    public Tag<Item> getDyeTag() {
+    public ITag<Item> getDyeTag() {
         return dyeTag;
     }
 

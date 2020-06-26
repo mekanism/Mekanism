@@ -1,4 +1,4 @@
-package mekanism.common.integration.theoneprobe;
+/*package mekanism.common.integration.theoneprobe;
 
 import java.util.List;
 import java.util.Optional;
@@ -179,4 +179,4 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
 
         IElementNew create(STACK stored, long capacity);
     }
-}
+}*/

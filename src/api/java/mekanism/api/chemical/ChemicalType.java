@@ -30,7 +30,7 @@ public enum ChemicalType implements IStringSerializable {
 
     static {
         for (ChemicalType type : values()) {
-            nameToType.put(type.getName(), type);
+            nameToType.put(type.func_176610_l(), type);
         }
     }
 
@@ -44,7 +44,7 @@ public enum ChemicalType implements IStringSerializable {
 
     @Nonnull
     @Override
-    public String getName() {
+    public String func_176610_l() {
         return name;
     }
 
@@ -53,7 +53,7 @@ public enum ChemicalType implements IStringSerializable {
     }
 
     public void write(@Nonnull CompoundNBT nbt) {
-        nbt.putString(NBTConstants.CHEMICAL_TYPE, getName());
+        nbt.putString(NBTConstants.CHEMICAL_TYPE, func_176610_l());
     }
 
     @Nullable

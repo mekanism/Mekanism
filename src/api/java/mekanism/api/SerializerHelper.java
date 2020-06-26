@@ -207,7 +207,7 @@ public class SerializerHelper {
         } else {
             throw new IllegalStateException("Unknown chemical type");
         }
-        json.addProperty(JsonConstants.CHEMICAL_TYPE, chemicalType.getName());
+        json.addProperty(JsonConstants.CHEMICAL_TYPE, chemicalType.func_176610_l());
         return json;
     }
 

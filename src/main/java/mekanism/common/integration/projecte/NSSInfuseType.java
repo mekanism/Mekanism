@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte;
+/*package mekanism.common.integration.projecte;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -12,27 +12,27 @@ import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 
-/**
+*//**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link InfuseType}s.
- */
+ *//*
 public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
 
     private NSSInfuseType(@Nonnull ResourceLocation resourceLocation, boolean isTag) {
         super(resourceLocation, isTag);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSInfuseType} representing an infuse type from a {@link InfusionStack}
-     */
+     *//*
     @Nonnull
     public static NSSInfuseType createInfuseType(@Nonnull InfusionStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
         return createInfuseType(stack.getType());
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSInfuseType} representing an infuse type from a {@link InfuseType}
-     */
+     *//*
     @Nonnull
     public static NSSInfuseType createInfuseType(@Nonnull InfuseType infuseType) {
         if (infuseType.isEmptyType()) {
@@ -42,28 +42,28 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
         return createInfuseType(infuseType.getRegistryName());
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSInfuseType} representing an infuse type from a {@link ResourceLocation}
-     */
+     *//*
     @Nonnull
     public static NSSInfuseType createInfuseType(@Nonnull ResourceLocation infuseTypeID) {
         return new NSSInfuseType(infuseTypeID, false);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link ResourceLocation}
-     */
+     *//*
     @Nonnull
     public static NSSInfuseType createTag(@Nonnull ResourceLocation tagId) {
         return new NSSInfuseType(tagId, true);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link Tag<InfuseType>}
-     */
+     *//*
     @Nonnull
-    public static NSSInfuseType createTag(@Nonnull Tag<InfuseType> tag) {
-        return createTag(tag.getId());
+    public static NSSInfuseType createTag(@Nonnull ITag.INamedTag<InfuseType> tag) {
+        return createTag(tag.func_230234_a_());
     }
 
     @Override
@@ -93,4 +93,4 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
     protected Function<InfuseType, NormalizedSimpleStack> createNew() {
         return NSSInfuseType::createInfuseType;
     }
-}
+}*/

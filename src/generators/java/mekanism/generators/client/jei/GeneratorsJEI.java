@@ -1,4 +1,4 @@
-package mekanism.generators.client.jei;
+/*package mekanism.generators.client.jei;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
@@ -20,7 +20,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 
 @JeiPlugin
-public class GeneratorsJEI implements IModPlugin {
+public class GeneratorsJEI implements IModPlugin {//TODO - JEI
 
     @Nonnull
     @Override
@@ -59,4 +59,4 @@ public class GeneratorsJEI implements IModPlugin {
         };
         registry.addRecipes(Collections.singletonList(recipe), GeneratorsBlocks.FISSION_REACTOR_CASING.getRegistryName());
     }
-}
+}*/

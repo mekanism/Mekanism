@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte;
+/*package mekanism.common.integration.projecte;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -12,27 +12,28 @@ import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 
+*/
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Gas}s.
- */
+ *//*
 public final class NSSGas extends AbstractNSSTag<Gas> {
 
     private NSSGas(@Nonnull ResourceLocation resourceLocation, boolean isTag) {
         super(resourceLocation, isTag);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSGas} representing a gas from a {@link GasStack}
-     */
+     *//*
     @Nonnull
     public static NSSGas createGas(@Nonnull GasStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
         return createGas(stack.getType());
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSGas} representing a gas from a {@link Gas}
-     */
+     *//*
     @Nonnull
     public static NSSGas createGas(@Nonnull Gas gas) {
         if (gas.isEmptyType()) {
@@ -42,28 +43,28 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
         return createGas(gas.getRegistryName());
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSGas} representing a gas from a {@link ResourceLocation}
-     */
+     *//*
     @Nonnull
     public static NSSGas createGas(@Nonnull ResourceLocation gasID) {
         return new NSSGas(gasID, false);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSGas} representing a tag from a {@link ResourceLocation}
-     */
+     *//*
     @Nonnull
     public static NSSGas createTag(@Nonnull ResourceLocation tagId) {
         return new NSSGas(tagId, true);
     }
 
-    /**
+    *//**
      * Helper method to create an {@link NSSGas} representing a tag from a {@link Tag<Gas>}
-     */
+     *//*
     @Nonnull
-    public static NSSGas createTag(@Nonnull Tag<Gas> tag) {
-        return createTag(tag.getId());
+    public static NSSGas createTag(@Nonnull ITag.INamedTag<Gas> tag) {
+        return createTag(tag.func_230234_a_());
     }
 
     @Override
@@ -93,4 +94,4 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
     protected Function<Gas, NormalizedSimpleStack> createNew() {
         return NSSGas::createGas;
     }
-}
+}*/

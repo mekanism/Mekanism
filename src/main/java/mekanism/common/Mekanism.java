@@ -378,7 +378,7 @@ public class Mekanism {
     private synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         if (event.getWorld() != null && !event.getWorld().isRemote()) {
             if (MekanismConfig.world.enableRegeneration.get() && event.getData().getInt(NBTConstants.WORLD_GEN_VERSION) < MekanismConfig.world.userGenVersion.get()) {
-                worldTickHandler.addRegenChunk(event.getWorld().getDimension().getType(), event.getChunk().getPos());
+                worldTickHandler.addRegenChunk(event.getWorld().func_230315_m_(), event.getChunk().getPos());
             }
         }
     }

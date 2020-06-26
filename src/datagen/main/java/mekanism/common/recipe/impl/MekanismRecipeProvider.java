@@ -18,9 +18,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
-import mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider;
 import mekanism.common.recipe.compat.CompatRecipeProvider;
-import mekanism.common.recipe.compat.ILikeWoodRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -91,8 +89,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
           new UpgradeRecipeProvider()
     );
     private static final List<CompatRecipeProvider> compatRecipeProviders = Arrays.asList(
-          new BiomesOPlentyRecipeProvider(),
-          new ILikeWoodRecipeProvider()
+          //new BiomesOPlentyRecipeProvider(),//TODO - Biomes O Plenty
+          //new ILikeWoodRecipeProvider()//TODO - ILikeWood
     );
 
     public MekanismRecipeProvider(DataGenerator gen) {

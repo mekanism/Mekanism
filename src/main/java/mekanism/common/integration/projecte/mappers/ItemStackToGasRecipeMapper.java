@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte.mappers;
+/*package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
@@ -50,4 +50,4 @@ public class ItemStackToGasRecipeMapper implements IRecipeTypeMapper {
         }
         return handled;
     }
-}
+}*/

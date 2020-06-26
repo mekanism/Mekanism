@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
@@ -102,4 +102,4 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
         IGuiIngredientGroup<STACK> stacks = recipeLayout.getIngredientsGroup(type);
         initChemical(stacks, 0, true, 8 - xOffset, 5 - yOffset, 16, 58, ingredient.getRepresentations(), true);
     }
-}
+}*/

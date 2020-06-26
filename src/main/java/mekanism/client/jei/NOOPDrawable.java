@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import mezz.jei.api.gui.drawable.IDrawable;
 
@@ -26,4 +26,4 @@ public class NOOPDrawable implements IDrawable {
     public void draw(int xOffset, int yOffset) {
         //NO-OP
     }
-}
+}*/
