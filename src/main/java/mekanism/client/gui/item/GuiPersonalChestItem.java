@@ -17,8 +17,8 @@ public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiSecurityTab<>(this, container.getHand()));
     }
 

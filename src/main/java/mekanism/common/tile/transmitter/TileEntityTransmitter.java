@@ -38,6 +38,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
@@ -198,7 +199,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             getTransmitter().onModeChange(Direction.byIndex(hitSide.ordinal()));
             getTransmitter().refreshConnections();
             getTransmitter().notifyTileChange();
-            player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.connectionTypes[hitSide.ordinal()]));
+            player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.connectionTypes[hitSide.ordinal()]), Util.field_240973_b_);
             sendUpdatePacket();
         }
         return ActionResultType.SUCCESS;

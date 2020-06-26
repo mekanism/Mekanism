@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 
 public class DiversionTransporter extends LogisticalTransporterBase {
@@ -91,7 +92,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         refreshConnections();
         notifyTileChange();
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-              MekanismLang.TOGGLE_DIVERTER.translateColored(EnumColor.GRAY, EnumColor.RED, newMode)));
+              MekanismLang.TOGGLE_DIVERTER.translateColored(EnumColor.GRAY, EnumColor.RED, newMode)), Util.field_240973_b_);
         getTransmitterTile().sendUpdatePacket();
         return ActionResultType.SUCCESS;
     }

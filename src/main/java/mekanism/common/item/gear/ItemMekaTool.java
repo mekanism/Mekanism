@@ -185,7 +185,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                     return silk;
                 }
                 //If it is extended or should be treated as an ore
-                if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                if (extended || state.func_235714_a_(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
                     Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(player, state, pos, world, extended ? module.getExcavationRange() : -1);
                     for (BlockPos foundPos : found) {

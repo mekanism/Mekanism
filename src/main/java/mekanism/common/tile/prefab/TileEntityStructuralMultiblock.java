@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 
 public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism implements IStructuralMultiblock, IConfigurable {
 
@@ -86,7 +87,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 if (master != null && !getMultiblockData(s.getManager()).isFormed()) {
                     FormationResult result = s.runUpdate(this);
                     if (!result.isFormed() && result.getResultText() != null) {
-                        player.sendMessage(result.getResultText());
+                        player.sendMessage(result.getResultText(), Util.field_240973_b_);
                         return ActionResultType.SUCCESS;
                     }
                 }

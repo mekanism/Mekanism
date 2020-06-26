@@ -44,8 +44,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 12, 136));
         func_230480_a_(new GuiRedstoneControlTab(this, tile));
         func_230480_a_(new GuiUpgradeTab(this, tile));

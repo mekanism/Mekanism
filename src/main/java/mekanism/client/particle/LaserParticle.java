@@ -9,12 +9,12 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
 
 public class LaserParticle extends SpriteTexturedParticle {
 
@@ -24,7 +24,7 @@ public class LaserParticle extends SpriteTexturedParticle {
     private final Direction direction;
     private final float halfLength;
 
-    private LaserParticle(World world, Pos3D start, Pos3D end, Direction dir, float energyScale) {
+    private LaserParticle(ClientWorld world, Pos3D start, Pos3D end, Direction dir, float energyScale) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
         maxAge = 5;
         particleRed = 1;
@@ -90,7 +90,7 @@ public class LaserParticle extends SpriteTexturedParticle {
         }
 
         @Override
-        public LaserParticle makeParticle(LaserParticleData data, @Nonnull World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public LaserParticle makeParticle(LaserParticleData data, @Nonnull ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             Pos3D start = new Pos3D(x, y, z);
             Pos3D end = start.translate(data.direction, data.distance);
             LaserParticle particleLaser = new LaserParticle(world, start, end, data.direction, data.energyScale);

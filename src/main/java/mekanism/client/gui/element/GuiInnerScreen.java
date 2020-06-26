@@ -100,7 +100,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     }
 
     private void drawText(ITextComponent text, float x, float y) {
-        drawScaledTextScaledBound(text, x, y, screenTextColor(), getWidth() - padding * 2, textScale);
+        drawScaledTextScaledBound(text, x, y, screenTextColor(), func_230998_h_() - padding * 2, textScale);
     }
 
     @Nonnull

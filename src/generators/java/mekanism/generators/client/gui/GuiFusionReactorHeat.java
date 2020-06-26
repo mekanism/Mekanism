@@ -35,8 +35,8 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING
                     .translate(EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getMultiblock().getPassiveGeneration(false, true)))),

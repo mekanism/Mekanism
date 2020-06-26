@@ -21,6 +21,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -52,7 +53,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
             if (getOwnerUUID(stack) == null) {
                 setOwnerUUID(stack, player.getUniqueID());
                 Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NOW_OWN.translateColored(EnumColor.GRAY)));
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NOW_OWN.translateColored(EnumColor.GRAY)), Util.field_240973_b_);
             } else if (SecurityUtils.canAccess(player, stack)) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PortableTeleporterContainer(i, inv, hand, stack)), buf -> {
                     buf.writeEnumValue(hand);

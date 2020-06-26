@@ -68,7 +68,6 @@ import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -736,8 +735,8 @@ public final class MekanismUtils {
      *
      * @return if the chunk is being vibrated
      */
-    public static boolean isChunkVibrated(ChunkPos chunk, DimensionType dimension) {
-        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == dimension && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
+    public static boolean isChunkVibrated(ChunkPos chunk, World world) {
+        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.func_234923_W_() && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
     }
 
     /**

@@ -176,15 +176,15 @@ public abstract class BaseTagProvider implements IDataProvider {
     }
 
     protected void addToTag(INamedTag<Block> tag, IBlockProvider... blockProviders) {
-        Tag.Builder<Block> tagBuilder = getBlockBuilder(tag);
+        ITag.Builder tagBuilder = getBlockBuilder(tag);
         for (IBlockProvider blockProvider : blockProviders) {
             tagBuilder.add(blockProvider.getBlock());
         }
     }
 
     protected void addToTags(INamedTag<Item> itemTag, INamedTag<Block> blockTag, IBlockProvider... blockProviders) {
-        Tag.Builder<Item> itemTagBuilder = getItemBuilder(itemTag);
-        Tag.Builder<Block> blockTagBuilder = getBlockBuilder(blockTag);
+        ITag.Builder itemTagBuilder = getItemBuilder(itemTag);
+        ITag.Builder blockTagBuilder = getBlockBuilder(blockTag);
         for (IBlockProvider blockProvider : blockProviders) {
             itemTagBuilder.add(blockProvider.getItem());
             blockTagBuilder.add(blockProvider.getBlock());
@@ -192,14 +192,14 @@ public abstract class BaseTagProvider implements IDataProvider {
     }
 
     protected void addToTag(INamedTag<EntityType<?>> tag, IEntityTypeProvider... entityTypeProviders) {
-        Tag.Builder<EntityType<?>> tagBuilder = getEntityTypeBuilder(tag);
+        ITag.Builder tagBuilder = getEntityTypeBuilder(tag);
         for (IEntityTypeProvider entityTypeProvider : entityTypeProviders) {
             tagBuilder.add(entityTypeProvider.getEntityType());
         }
     }
 
     protected void addToTag(INamedTag<Fluid> tag, FluidRegistryObject<?, ?, ?, ?>... fluidRegistryObjects) {
-        Tag.Builder<Fluid> tagBuilder = getFluidBuilder(tag);
+        ITag.Builder tagBuilder = getFluidBuilder(tag);
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidRegistryObjects) {
             tagBuilder.add(fluidRO.getStillFluid(), fluidRO.getFlowingFluid());
         }
@@ -222,7 +222,7 @@ public abstract class BaseTagProvider implements IDataProvider {
     }
 
     @SafeVarargs
-    protected final <CHEMICAL extends Chemical<CHEMICAL>> void addToTag(Tag.Builder<CHEMICAL> tagBuilder, IChemicalProvider<CHEMICAL>... providers) {
+    protected final <CHEMICAL extends Chemical<CHEMICAL>> void addToTag(ITag.Builder tagBuilder, IChemicalProvider<CHEMICAL>... providers) {
         for (IChemicalProvider<CHEMICAL> provider : providers) {
             tagBuilder.add(provider.getChemical());
         }

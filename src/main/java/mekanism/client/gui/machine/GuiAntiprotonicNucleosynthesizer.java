@@ -55,8 +55,8 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
 
         func_230480_a_(new GuiInnerScreen(this, 45, 18, 104, 68).jeiCategory(tile));
         func_230480_a_(new GuiSecurityTab<>(this, tile));

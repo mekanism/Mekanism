@@ -52,6 +52,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IWorldReader;
@@ -101,7 +102,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                         if (!player.isSneaking()) {
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(), dataType,
-                                        dataType.getColor().getColoredName())));
+                                        dataType.getColor().getColoredName())), Util.field_240973_b_);
                         } else if (SecurityUtils.canAccess(player, tile)) {
                             if (!player.isCreative()) {
                                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
@@ -114,7 +115,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                             dataType = info.incrementDataType(relativeSide);
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType,
-                                        dataType.getColor(), dataType, dataType.getColor().getColoredName())));
+                                        dataType.getColor(), dataType, dataType.getColor().getColoredName())), Util.field_240973_b_);
                             config.getConfig().sideChanged(transmissionType, relativeSide);
                         } else {
                             SecurityUtils.displayNoAccess(player);
@@ -214,7 +215,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
             setMode(stack, player, newMode);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.CONFIGURE_STATE.translateColored(EnumColor.GRAY, newMode)));
+                      MekanismLang.CONFIGURE_STATE.translateColored(EnumColor.GRAY, newMode)), Util.field_240973_b_);
             }
         }
     }

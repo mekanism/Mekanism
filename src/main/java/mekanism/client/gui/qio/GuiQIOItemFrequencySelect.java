@@ -23,8 +23,8 @@ public class GuiQIOItemFrequencySelect extends GuiQIOFrequencySelect<QIOFrequenc
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedItemButton.BACK_BUTTON, container.getHand()))));
     }

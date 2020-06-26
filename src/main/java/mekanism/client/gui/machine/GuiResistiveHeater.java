@@ -34,8 +34,8 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiInnerScreen(this, 48, 23, 80, 42, () -> Arrays.asList(
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
               MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick()))

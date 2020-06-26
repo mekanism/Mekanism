@@ -50,7 +50,7 @@ public class SecurityFrequency extends Frequency {
         if (!trusted.isEmpty()) {
             ListNBT trustedList = new ListNBT();
             for (UUID uuid : trusted) {
-                trustedList.add(NBTUtil.writeUniqueId(uuid));
+                trustedList.add(NBTUtil.func_240626_a_(uuid));
             }
             nbtTags.put(NBTConstants.TRUSTED, trustedList);
         }

@@ -34,8 +34,8 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiInnerScreen(this, 50, 18, 112, 50, () -> {
             List<ITextComponent> list = new ArrayList<>();
             if (tile.getMultiblock().isFormed()) {

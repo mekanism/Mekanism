@@ -1,6 +1,5 @@
 package mekanism.api.chemical;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
@@ -8,8 +7,8 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 
@@ -60,21 +59,22 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
         return new ChemicalTag<>(resourceLocation, chemicalTags);
     }
 
-    private static class ChemicalTag<CHEMICAL extends Chemical<CHEMICAL>> extends Tag<CHEMICAL> {
+    private static class ChemicalTag<CHEMICAL extends Chemical<CHEMICAL>> implements INamedTag<CHEMICAL> {
 
+        private final ResourceLocation id;
         private final ChemicalTags<CHEMICAL> chemicalTags;
         private int lastKnownGeneration = -1;
-        private Tag<CHEMICAL> cachedTag;
+        private ITag<CHEMICAL> cachedTag;
 
-        protected ChemicalTag(ResourceLocation resourceLocation, ChemicalTags<CHEMICAL> chemicalTags) {
-            super(resourceLocation);
+        protected ChemicalTag(ResourceLocation id, ChemicalTags<CHEMICAL> chemicalTags) {
+            this.id = id;
             this.chemicalTags = chemicalTags;
         }
 
         private void validateCache() {
             int generation = chemicalTags.getGeneration();
             if (this.lastKnownGeneration != generation) {
-                this.cachedTag = chemicalTags.getCollection().getOrCreate(getId());
+                this.cachedTag = chemicalTags.getCollection().getOrCreate(func_230234_a_());
                 this.lastKnownGeneration = generation;
             }
         }
@@ -92,11 +92,9 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
             return this.cachedTag.func_230236_b_();
         }
 
-        @Nonnull
         @Override
-        public Collection<ITagEntry<CHEMICAL>> getEntries() {
-            validateCache();
-            return this.cachedTag.getEntries();
+        public ResourceLocation func_230234_a_() {
+            return id;
         }
     }
 }

@@ -46,6 +46,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -133,7 +134,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                     return super.onBlockStartBreak(stack, pos, player);
                 }
                 //If it is extended or should be treated as an ore
-                if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                if (extended || state.func_235714_a_(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
                     List<BlockPos> found = findPositions(state, pos, world, extended ? MekanismConfig.gear.disassemblerMiningRange.get() : -1);
                     for (BlockPos foundPos : found) {
@@ -245,7 +246,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             setMode(stack, newMode);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.DISASSEMBLER_MODE_CHANGE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, newMode, EnumColor.AQUA, newMode.getEfficiency())));
+                      MekanismLang.DISASSEMBLER_MODE_CHANGE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, newMode, EnumColor.AQUA, newMode.getEfficiency())),
+                      Util.field_240973_b_);
             }
         }
     }

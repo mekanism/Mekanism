@@ -26,8 +26,8 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiElementHolder(this, 16, 31, 130, 90));
         func_230480_a_(scrollBar = new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {

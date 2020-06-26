@@ -15,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 
 public class LogisticalTransporter extends LogisticalTransporterBase {
 
@@ -44,7 +45,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase {
         getTransmitterTile().sendUpdatePacket();
         EnumColor color = getColor();
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-              MekanismLang.TOGGLE_COLOR.translateColored(EnumColor.GRAY, color != null ? color.getColoredName() : MekanismLang.NONE)));
+              MekanismLang.TOGGLE_COLOR.translateColored(EnumColor.GRAY, color != null ? color.getColoredName() : MekanismLang.NONE)), Util.field_240973_b_);
         return ActionResultType.SUCCESS;
     }
 
@@ -52,7 +53,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase {
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         EnumColor color = getColor();
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-              MekanismLang.CURRENT_COLOR.translateColored(EnumColor.GRAY, color != null ? color.getColoredName() : MekanismLang.NONE)));
+              MekanismLang.CURRENT_COLOR.translateColored(EnumColor.GRAY, color != null ? color.getColoredName() : MekanismLang.NONE)), Util.field_240973_b_);
         return super.onRightClick(player, side);
     }
 

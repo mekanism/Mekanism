@@ -29,7 +29,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY) && tankType != null) {
             ItemStack stack = GuiTexturedElement.minecraft.player.inventory.getItemStack();
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
@@ -46,7 +46,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
                 return true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.func_231044_a_(mouseX, mouseY, button);
     }
 
     public interface ITankInfoHandler<TANK> {

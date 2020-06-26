@@ -59,12 +59,12 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 17));
         func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
         func_230480_a_(new GuiSecurityLight(this, 144, 77, () -> tile.getFreq() == null || tile.ownerUUID == null ||
-                                                            !tile.ownerUUID.equals(minecraft.player.getUniqueID()) ? 2 : tile.getFreq().isOverridden() ? 0 : 1));
+                                                            !tile.ownerUUID.equals(getMinecraft().player.getUniqueID()) ? 2 : tile.getFreq().isOverridden() ? 0 : 1));
         func_230480_a_(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
         func_230480_a_(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
         func_230480_a_(scrollList = new GuiTextScrollList(this, 13, 13, 122, 42));
@@ -131,7 +131,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
             removeButton.field_230693_o_ = scrollList.hasSelection();
         }
 
-        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(minecraft.player.getUniqueID())) {
+        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(getMinecraft().player.getUniqueID())) {
             publicButton.field_230693_o_ = freq.getSecurityMode() != SecurityMode.PUBLIC;
             privateButton.field_230693_o_ = freq.getSecurityMode() != SecurityMode.PRIVATE;
             trustedButton.field_230693_o_ = freq.getSecurityMode() != SecurityMode.TRUSTED;
@@ -145,15 +145,15 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void func_231023_e_() {
+        super.func_231023_e_();
         updateButtons();
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         updateButtons();
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.func_231044_a_(mouseX, mouseY, button);
     }
 
     @Override

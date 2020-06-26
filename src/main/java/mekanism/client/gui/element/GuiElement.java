@@ -152,20 +152,20 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return GuiUtils.checkChildren(children, (child) -> child.mouseClicked(mouseX, mouseY, button)) ||
-               super.mouseClicked(mouseX, mouseY, button);
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+        return GuiUtils.checkChildren(children, (child) -> child.func_231044_a_(mouseX, mouseY, button)) ||
+               super.func_231044_a_(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return GuiUtils.checkChildren(children, (child) -> child.keyPressed(keyCode, scanCode, modifiers)) ||
-               super.keyPressed(keyCode, scanCode, modifiers);
+    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
+        return GuiUtils.checkChildren(children, (child) -> child.func_231046_a_(keyCode, scanCode, modifiers)) ||
+               super.func_231046_a_(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public boolean charTyped(char c, int keyCode) {
-        return GuiUtils.checkChildren(children, (child) -> child.charTyped(c, keyCode)) || super.charTyped(c, keyCode);
+    public boolean func_231042_a_(char c, int keyCode) {
+        return GuiUtils.checkChildren(children, (child) -> child.func_231042_a_(c, keyCode)) || super.func_231042_a_(c, keyCode);
     }
 
     @Override

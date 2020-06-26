@@ -1,7 +1,8 @@
 package mekanism.client.gui.robit;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
+import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
@@ -16,7 +17,6 @@ import net.minecraft.network.play.client.CRenameItemPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IContainerListener {
 
@@ -29,9 +29,9 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    public void init() {
-        super.init();
-        minecraft.keyboardListener.enableRepeatEvents(true);
+    public void func_231160_c_() {
+        super.func_231160_c_();
+        getMinecraft().keyboardListener.enableRepeatEvents(true);
         func_230480_a_(itemNameField = new TextFieldWidget(font, getGuiLeft() + 62, getGuiTop() + 24, 103, 12, ""));
         itemNameField.setCanLoseFocus(false);
         itemNameField.changeFocus(true);
@@ -58,14 +58,14 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
                 newText = "";
             }
             container.updateItemName(newText);
-            minecraft.player.connection.sendPacket(new CRenameItemPacket(newText));
+            getMinecraft().player.connection.sendPacket(new CRenameItemPacket(newText));
         }
     }
 
     @Override
     public void onClose() {
         super.onClose();
-        minecraft.keyboardListener.enableRepeatEvents(false);
+        getMinecraft().keyboardListener.enableRepeatEvents(false);
         container.removeListener(this);
     }
 
@@ -78,7 +78,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
             int k = 0x80FF20;
             boolean flag = true;
             ITextComponent component = MekanismLang.REPAIR_COST.translate(maximumCost);
-            if (maximumCost >= 40 && !minecraft.player.isCreative()) {
+            if (maximumCost >= 40 && !getMinecraft().player.isCreative()) {
                 component = MekanismLang.REPAIR_EXPENSIVE.translate();
                 k = 0xFF6060;
             } else {
@@ -103,7 +103,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     public boolean charTyped(char c, int keyCode) {
         if (itemNameField.canWrite()) {
-            return itemNameField.charTyped(c, keyCode);
+            return itemNameField.func_231042_a_(c, keyCode);
         }
         return super.charTyped(c, keyCode);
     }
@@ -111,7 +111,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && itemNameField.canWrite()) {
-            return itemNameField.keyPressed(keyCode, scanCode, modifiers);
+            return itemNameField.func_231046_a_(keyCode, scanCode, modifiers);
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
@@ -123,7 +123,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        minecraft.textureManager.bindTexture(ANVIL_RESOURCE);
+        getMinecraft().textureManager.bindTexture(ANVIL_RESOURCE);
         blit(getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
         blit(getGuiLeft() + 59, getGuiTop() + 20, 0, getYSize() + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
         if ((container.getSlot(0).getHasStack() || container.getSlot(1).getHasStack()) && !container.getSlot(2).getHasStack()) {

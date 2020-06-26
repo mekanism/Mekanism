@@ -24,8 +24,8 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiRedstoneControlTab(this, tile));
         func_230480_a_(new GuiSecurityTab<>(this, tile));
         func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(

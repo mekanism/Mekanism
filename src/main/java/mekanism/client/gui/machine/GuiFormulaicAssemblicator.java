@@ -42,8 +42,8 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiSecurityTab<>(this, tile));
         func_230480_a_(new GuiUpgradeTab(this, tile));
         func_230480_a_(new GuiRedstoneControlTab(this, tile));
@@ -70,8 +70,8 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void func_231023_e_() {
+        super.func_231023_e_();
         updateEnabledButtons();
     }
 
@@ -112,7 +112,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         //TODO: Gui element
         SlotOverlay overlay = tile.isRecipe ? SlotOverlay.CHECK : SlotOverlay.X;
-        minecraft.textureManager.bindTexture(overlay.getTexture());
+        getMinecraft().textureManager.bindTexture(overlay.getTexture());
         blit(getGuiLeft() + 88, getGuiTop() + 22, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
     }
 

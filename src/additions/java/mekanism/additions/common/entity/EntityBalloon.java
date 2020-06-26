@@ -206,7 +206,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     private int getFloor(LivingEntity entity) {
-        BlockPos pos = new BlockPos(entity);
+        BlockPos pos = new BlockPos(entity.getPositionVec());
         for (BlockPos posi = pos; posi.getY() > 0; posi = posi.down()) {
             if (posi.getY() < world.getHeight() && !world.isAirBlock(posi)) {
                 return posi.getY() + 1 + (entity instanceof PlayerEntity ? 1 : 0);

@@ -25,8 +25,8 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiFissionReactorTab(this, tile, FissionReactorTab.MAIN));
         func_230480_a_(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override

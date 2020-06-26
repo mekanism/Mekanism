@@ -202,7 +202,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
     class EnumToggle extends MiniElement {
 
-        final int BAR_LENGTH = getWidth() - 24;
+        final int BAR_LENGTH = func_230998_h_() - 24;
         final int BAR_START = 10;
         final float TEXT_SCALE = 0.7F;
         final ModuleConfigItem<Enum<? extends IHasTextComponent>> data;

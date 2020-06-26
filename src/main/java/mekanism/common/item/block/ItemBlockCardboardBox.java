@@ -69,7 +69,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         if (getBlockData(stack) == null && !player.isSneaking() && !world.isAirBlock(pos)) {
             BlockState state = world.getBlockState(pos);
             if (!world.isRemote && state.getBlockHardness(world, pos) != -1) {
-                if (state.isIn(MekanismTags.Blocks.CARDBOARD_BLACKLIST) || MekanismConfig.general.cardboardModBlacklist.get().contains(state.getBlock().getRegistryName().getNamespace())) {
+                if (state.func_235714_a_(MekanismTags.Blocks.CARDBOARD_BLACKLIST) || MekanismConfig.general.cardboardModBlacklist.get().contains(state.getBlock().getRegistryName().getNamespace())) {
                     return ActionResultType.FAIL;
                 }
                 BlockData data = new BlockData(state);

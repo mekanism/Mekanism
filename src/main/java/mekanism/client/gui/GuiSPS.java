@@ -27,8 +27,8 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 7, 17));
         func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 151, 17));
         func_230480_a_(new GuiInnerScreen(this, 27, 17, 122, 60, () -> {

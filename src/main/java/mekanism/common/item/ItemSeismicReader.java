@@ -23,6 +23,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -54,13 +55,13 @@ public class ItemSeismicReader extends ItemEnergized {
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         if (!MekanismUtils.isChunkVibrated(new ChunkPos(player.func_233580_cy_()), player.dimension)) {
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NO_VIBRATIONS.translateColored(EnumColor.RED)));
+            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NO_VIBRATIONS.translateColored(EnumColor.RED)), Util.field_240973_b_);
         } else {
             if (!player.isCreative()) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 FloatingLong energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
                 if (energyContainer == null || energyContainer.extract(energyUsage, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyUsage)) {
-                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NEEDS_ENERGY.translateColored(EnumColor.RED)));
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NEEDS_ENERGY.translateColored(EnumColor.RED)), Util.field_240973_b_);
                     return new ActionResult<>(ActionResultType.SUCCESS, stack);
                 }
                 energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);

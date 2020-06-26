@@ -36,6 +36,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -179,7 +180,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
             setFireState(stack, newState);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.FIRE_MODE.translateColored(EnumColor.GRAY, OnOff.of(newState, true))));
+                      MekanismLang.FIRE_MODE.translateColored(EnumColor.GRAY, OnOff.of(newState, true))), Util.field_240973_b_);
             }
         }
     }

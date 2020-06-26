@@ -38,7 +38,7 @@ public class MekanismButton extends GuiElement {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
         //From AbstractButton
         if (this.field_230693_o_ && this.field_230694_p_ && this.isFocused()) {
             if (keyCode == 257 || keyCode == 32 || keyCode == 335) {
@@ -58,8 +58,8 @@ public class MekanismButton extends GuiElement {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button)) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+        if (super.func_231044_a_(mouseX, mouseY, button)) {
             return true;
         }
         if (this.field_230693_o_ && this.field_230694_p_ && isHovered()) {

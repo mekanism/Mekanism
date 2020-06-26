@@ -24,8 +24,8 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiMatrixTab(this, tile, MatrixTab.MAIN));
         func_230480_a_(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override

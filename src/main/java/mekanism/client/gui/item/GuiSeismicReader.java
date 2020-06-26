@@ -1,10 +1,10 @@
 package mekanism.client.gui.item;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import java.util.ArrayList;
-import java.util.List;
 import mekanism.api.text.APILang;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiArrowSelection;
@@ -44,15 +44,15 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiInnerScreen(this, 7, 11, 63, 49));
         func_230480_a_(new GuiInnerScreen(this, 74, 11, 51, 159));
         func_230480_a_(scrollBar = new GuiScrollBar(this, 126, 25, 131, blockList::size, () -> 1));
         func_230480_a_(new GuiArrowSelection(this, 76, 81, () -> {
             int currentLayer = scrollBar.getCurrentSelection();
             if (currentLayer >= 0) {
-                return blockList.get(currentLayer).getBlock().getNameTextComponent();
+                return blockList.get(currentLayer).getBlock().func_235333_g_();
             }
             return null;
         }));
@@ -64,8 +64,8 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void func_231023_e_() {
+        super.func_231023_e_();
         updateEnabledButtons();
     }
 
@@ -110,7 +110,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         // Get the name from the stack and render it
         if (currentLayer >= 0) {
             Block block = blockList.get(currentLayer).getBlock();
-            ITextComponent displayName = block.getNameTextComponent();
+            ITextComponent displayName = block.func_235333_g_();
             drawTextScaledBound(displayName, 10, 16, screenTextColor(), 57);
             frequency = frequencies.computeIntIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
         }

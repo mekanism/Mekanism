@@ -41,8 +41,8 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiInnerScreen(this, 9, 16, xSize - 18, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             QIOFrequency freq = tile.getQIOFrequency();

@@ -31,8 +31,8 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiInnerScreen(this, 60, 23, 96, 40, () -> Arrays.asList(
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getMultiblock().getTotalTemperature(), TemperatureUnit.KELVIN, true)),
               MekanismLang.BOIL_RATE.translate(formatInt(tile.getMultiblock().lastBoilRate)),

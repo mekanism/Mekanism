@@ -19,6 +19,7 @@ import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 
 public class TileEntitySPSPort extends TileEntitySPSCasing {
 
@@ -72,7 +73,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  MekanismLang.SPS_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))));
+                  MekanismLang.SPS_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))), Util.field_240973_b_);
         }
         return ActionResultType.SUCCESS;
     }

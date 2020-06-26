@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -72,7 +73,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
             } else {
                 text = MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY, stored.getAmount());
             }
-            player.sendMessage(text);
+            player.sendMessage(text, Util.field_240973_b_);
         }
         return ActionResultType.SUCCESS;
     }

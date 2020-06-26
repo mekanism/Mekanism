@@ -85,20 +85,20 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar == null) {
             //If all the tanks are currently empty, pass the click event to all of them;
             // if multiple types are somehow stored in the dropper, insertion checks should prevent them from being inserted at the same time
-            gasBar.mouseClicked(mouseX, mouseY, button);
-            infusionBar.mouseClicked(mouseX, mouseY, button);
-            pigmentBar.mouseClicked(mouseX, mouseY, button);
-            slurryBar.mouseClicked(mouseX, mouseY, button);
+            gasBar.func_231044_a_(mouseX, mouseY, button);
+            infusionBar.func_231044_a_(mouseX, mouseY, button);
+            pigmentBar.func_231044_a_(mouseX, mouseY, button);
+            slurryBar.func_231044_a_(mouseX, mouseY, button);
         } else {
             //Otherwise just send the click event to the corresponding bar
-            currentBar.mouseClicked(mouseX, mouseY, button);
+            currentBar.func_231044_a_(mouseX, mouseY, button);
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.func_231044_a_(mouseX, mouseY, button);
     }
 
     @Nullable

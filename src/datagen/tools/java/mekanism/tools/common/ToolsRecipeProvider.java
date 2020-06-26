@@ -23,7 +23,7 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraftforge.common.Tags;
 
 @ParametersAreNonnullByDefault
@@ -106,7 +106,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
 
     private void registerRecipeSet(Consumer<IFinishedRecipe> consumer, String name, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings,
           IItemProvider boots, IItemProvider sword, IItemProvider pickaxe, IItemProvider axe, IItemProvider shovel, IItemProvider hoe, IItemProvider paxel,
-          IItemProvider shield, Tag<Item> ingot, Tag<Item> rod, @Nullable IItemProvider nugget) {
+          IItemProvider shield, INamedTag<Item> ingot, INamedTag<Item> rod, @Nullable IItemProvider nugget) {
         String baseArmorPath = name + "/armor/";
         armor(HELMET, helmet, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "helmet"));
         armor(CHESTPLATE, chestplate, ingot).build(consumer, MekanismTools.rl(baseArmorPath + "chestplate"));
@@ -162,13 +162,13 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         }
     }
 
-    private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, IItemProvider armor, Tag<Item> ingot) {
+    private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, IItemProvider armor, INamedTag<Item> ingot) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(armor)
               .pattern(pattern)
               .key(Pattern.INGOT, ingot);
     }
 
-    private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, IItemProvider tool, Tag<Item> ingot, Tag<Item> rod) {
+    private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, IItemProvider tool, INamedTag<Item> ingot, INamedTag<Item> rod) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(tool)
               .pattern(pattern)
               .key(Pattern.INGOT, ingot)

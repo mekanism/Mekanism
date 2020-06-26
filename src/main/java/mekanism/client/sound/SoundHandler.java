@@ -1,14 +1,14 @@
 package mekanism.client.sound;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Upgrade;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
@@ -249,7 +249,7 @@ public class SoundHandler {
                     volume = originalVolume * getTileVolumeFactor();
                 } else if (s == null) {
                     // Full on mute; go ahead and shutdown
-                    donePlaying = true;
+                    func_239509_o_();
                 } else {
                     // Altered sound returned; adjust volume
                     volume = s.getVolume() * getTileVolumeFactor();

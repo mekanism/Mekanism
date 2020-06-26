@@ -43,8 +43,8 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiFissionReactorTab(this, tile, FissionReactorTab.STAT));
         func_230480_a_(new GuiInnerScreen(this, 45, 17, 105, 56, () -> Arrays.asList(
               MekanismLang.STATUS.translate(tile.getMultiblock().isActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(tile.getMultiblock().isActive())),
@@ -111,8 +111,8 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void func_231023_e_() {
+        super.func_231023_e_();
         heatGraph.addData((int) tile.getMultiblock().heatCapacitor.getTemperature());
     }
 }

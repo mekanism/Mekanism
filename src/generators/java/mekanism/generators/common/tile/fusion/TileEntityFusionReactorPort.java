@@ -28,6 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 
 public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock implements IConfigurable {
 
@@ -106,7 +107,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))));
+                  GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))), Util.field_240973_b_);
         }
         return ActionResultType.SUCCESS;
     }

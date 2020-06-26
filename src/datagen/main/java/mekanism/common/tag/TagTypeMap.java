@@ -37,6 +37,6 @@ public class TagTypeMap<TYPE extends IForgeRegistryEntry<TYPE>> {
     }
 
     public Map<ResourceLocation, Tag.Builder> getBuilders() {
-        return tagToBuilder.entrySet().stream().collect(Collectors.toMap(tag -> tag.getKey().getId(), Entry::getValue));
+        return tagToBuilder.entrySet().stream().collect(Collectors.toMap(tag -> tag.getKey().func_230234_a_(), Entry::getValue));
     }
 }

@@ -53,7 +53,7 @@ public class GuiResizeControls extends GuiSideHolder {
     @Override
     public void onClick(double mouseX, double mouseY) {
         super.onClick(mouseX, mouseY);
-        if (!expandButton.field_230693_o_ && mouseX >= expandButton.field_230690_l_ && mouseX < expandButton.field_230690_l_ + expandButton.getWidth() &&
+        if (!expandButton.field_230693_o_ && mouseX >= expandButton.field_230690_l_ && mouseX < expandButton.field_230690_l_ + expandButton.func_230998_h_() &&
             mouseY >= expandButton.field_230691_m_ && mouseY < expandButton.field_230691_m_ + expandButton.getHeight()) {
             tooltipTicks = 100;
         }

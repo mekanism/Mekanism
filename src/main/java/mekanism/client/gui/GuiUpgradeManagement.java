@@ -36,8 +36,8 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(scrollList = new GuiUpgradeScrollList(this, 24, 6, 66, 50, tile.getComponent()));
         func_230480_a_(new GuiElementHolder(this, 24, 56, 125, 14));
         func_230480_a_(new GuiInnerScreen(this, 90, 6, 59, 50));
@@ -53,8 +53,8 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void func_231023_e_() {
+        super.func_231023_e_();
         if (delay < 40) {
             delay++;
         } else {

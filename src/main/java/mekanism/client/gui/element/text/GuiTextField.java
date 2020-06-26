@@ -160,19 +160,19 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         boolean prevFocus = isTextFieldFocused();
         double scaledX = mouseX;
         // figure out the proper mouse placement based on text scaling
         if (textScale != 1.0F && scaledX > textField.field_230690_l_) {
             scaledX = Math.min(scaledX, textField.field_230690_l_) + (scaledX - textField.field_230690_l_) * (1F / textScale);
         }
-        boolean ret = textField.mouseClicked(scaledX, mouseY, button);
+        boolean ret = textField.func_231044_a_(scaledX, mouseY, button);
         // detect if we're now focused
         if (!prevFocus && isTextFieldFocused()) {
             guiObj.focusChange(this);
         }
-        return ret || super.mouseClicked(mouseX, mouseY, button);
+        return ret || super.func_231044_a_(mouseX, mouseY, button);
     }
 
     @Override
@@ -209,7 +209,7 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
         if (canWrite()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 //Manually handle hitting escape to make the whole interface go away
@@ -221,21 +221,21 @@ public class GuiTextField extends GuiRelativeElement {
                 guiObj.incrementFocus(this);
                 return true;
             }
-            textField.keyPressed(keyCode, scanCode, modifiers);
+            textField.func_231046_a_(keyCode, scanCode, modifiers);
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.func_231046_a_(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public boolean charTyped(char c, int keyCode) {
+    public boolean func_231042_a_(char c, int keyCode) {
         if (canWrite()) {
             if (inputValidator == null || inputValidator.test(c)) {
-                return textField.charTyped(c, keyCode);
+                return textField.func_231042_a_(c, keyCode);
             }
             return false;
         }
-        return super.charTyped(c, keyCode);
+        return super.func_231042_a_(c, keyCode);
     }
 
     public String getText() {

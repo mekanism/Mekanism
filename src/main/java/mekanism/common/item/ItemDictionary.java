@@ -18,6 +18,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -42,12 +43,12 @@ public class ItemDictionary extends Item {
                 //TODO - V11: List block tags/fluid tags it the item is of that type
                 Set<ResourceLocation> tags = testStack.getItem().getTags();
                 if (!tags.isEmpty()) {
-                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_KEYS_FOUND.translateColored(EnumColor.GRAY)));
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_KEYS_FOUND.translateColored(EnumColor.GRAY)), Util.field_240973_b_);
                     for (ResourceLocation tag : tags) {
-                        player.sendMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag));
+                        player.sendMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag), Util.field_240973_b_);
                     }
                 } else {
-                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_NO_KEY.translateColored(EnumColor.GRAY)));
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_NO_KEY.translateColored(EnumColor.GRAY)), Util.field_240973_b_);
                 }
             }
             return ActionResultType.SUCCESS;

@@ -33,8 +33,8 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(crystallizerScreen = new GuiCrystallizerScreen(this, 31, 13, new IOreInfo() {
             @Nonnull
             @Override
@@ -66,8 +66,8 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void func_231023_e_() {
+        super.func_231023_e_();
         crystallizerScreen.tick();
     }
 }

@@ -21,8 +21,8 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         if (tile.getMultiblock().isFormed()) {
             func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(
                   EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy())),

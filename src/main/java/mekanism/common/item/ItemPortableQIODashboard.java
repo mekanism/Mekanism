@@ -19,6 +19,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -36,7 +37,8 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
             if (getOwnerUUID(stack) == null) {
                 setOwnerUUID(stack, player.getUniqueID());
                 Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NOW_OWN.translateColored(EnumColor.GRAY)));
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NOW_OWN.translateColored(EnumColor.GRAY)),
+                      Util.field_240973_b_);
             } else if (SecurityUtils.canAccess(player, stack)) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, getContainerProvider(stack, hand), buf -> {
                     buf.writeEnumValue(hand);

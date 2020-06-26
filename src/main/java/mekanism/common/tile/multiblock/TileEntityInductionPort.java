@@ -13,6 +13,7 @@ import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IConfigurable {
 
@@ -52,7 +53,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  MekanismLang.INDUCTION_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))));
+                  MekanismLang.INDUCTION_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))), Util.field_240973_b_);
         }
         return ActionResultType.SUCCESS;
     }

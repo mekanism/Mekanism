@@ -22,6 +22,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class Module {
@@ -194,13 +195,14 @@ public abstract class Module {
 
     protected void displayModeChange(PlayerEntity player, ITextComponent modeName, IHasTextComponent mode) {
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-              MekanismLang.MODULE_MODE_CHANGE.translateColored(EnumColor.GRAY, modeName, EnumColor.INDIGO, mode.getTextComponent())));
+              MekanismLang.MODULE_MODE_CHANGE.translateColored(EnumColor.GRAY, modeName, EnumColor.INDIGO, mode.getTextComponent())), Util.field_240973_b_);
     }
 
     protected void toggleEnabled(PlayerEntity player, ITextComponent modeName) {
         enabled.set(!isEnabled(), null);
         ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-              MekanismLang.GENERIC_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, modeName, isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate())));
+              MekanismLang.GENERIC_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, modeName, isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate())),
+              Util.field_240973_b_);
     }
 }

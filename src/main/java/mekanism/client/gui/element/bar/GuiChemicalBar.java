@@ -58,7 +58,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY)) {
             ItemStack stack = Minecraft.getInstance().player.inventory.getItemStack();
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
@@ -88,7 +88,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                 }
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.func_231044_a_(mouseX, mouseY, button);
     }
 
     @Nullable

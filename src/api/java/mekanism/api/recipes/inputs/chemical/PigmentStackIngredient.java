@@ -1,8 +1,8 @@
 package mekanism.api.recipes.inputs.chemical;
 
-import com.google.gson.JsonElement;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.gson.JsonElement;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.providers.IPigmentProvider;
@@ -10,7 +10,7 @@ import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredi
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.SingleIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.TaggedIngredient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITag.INamedTag;
 
 public interface PigmentStackIngredient extends IChemicalStackIngredient<Pigment, PigmentStack> {
 
@@ -22,7 +22,7 @@ public interface PigmentStackIngredient extends IChemicalStackIngredient<Pigment
         return new Single(pigment.getStack(amount));
     }
 
-    static PigmentStackIngredient from(@Nonnull ITag<Pigment> tag, long amount) {
+    static PigmentStackIngredient from(@Nonnull INamedTag<Pigment> tag, long amount) {
         return new Tagged(tag, amount);
     }
 
@@ -52,7 +52,7 @@ public interface PigmentStackIngredient extends IChemicalStackIngredient<Pigment
 
     class Tagged extends TaggedIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
-        protected Tagged(@Nonnull ITag<Pigment> tag, long amount) {
+        protected Tagged(@Nonnull INamedTag<Pigment> tag, long amount) {
             super(tag, amount);
         }
     }

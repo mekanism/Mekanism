@@ -45,10 +45,10 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         int slotsY = MekanismConfig.client.qioItemViewerSlotsY.get();
-        minecraft.keyboardListener.enableRepeatEvents(true);
+        getMinecraft().keyboardListener.enableRepeatEvents(true);
         func_230480_a_(new GuiInnerScreen(this, 7, 15, xSize - 16, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             FrequencyIdentity freq = getFrequency();
@@ -83,7 +83,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
               41, ListSortType.class, container::getSortType, container::setSortType));
         func_230480_a_(new GuiDigitalIconToggle<>(this, xSize - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, container::getSortDirection, container::setSortDirection));
-        func_230480_a_(new GuiResizeControls(this, (minecraft.getMainWindow().getScaledHeight() / 2) - 20 - getGuiTop(), this::resize));
+        func_230480_a_(new GuiResizeControls(this, (getMinecraft().getMainWindow().getScaledHeight() / 2) - 20 - getGuiTop(), this::resize));
     }
 
     @Override
@@ -114,7 +114,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     @Override
     public void removed() {
         super.removed();
-        minecraft.keyboardListener.enableRepeatEvents(false);
+        getMinecraft().keyboardListener.enableRepeatEvents(false);
     }
 
     private boolean isValidSearchChar(char c) {

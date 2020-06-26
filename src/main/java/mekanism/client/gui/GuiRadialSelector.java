@@ -1,15 +1,15 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
-import org.lwjgl.opengl.GL11;
 
 public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> extends Screen {
 
@@ -118,7 +118,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         updateSelection();
         return true;
     }

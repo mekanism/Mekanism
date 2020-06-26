@@ -8,6 +8,7 @@ import mekanism.common.MekanismLang;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.server.ServerChunkProvider;
@@ -112,7 +113,7 @@ public class ChunkCommand {
         long key = ChunkPos.asLong(pos.x, pos.z);
         if (chunkWatchers.contains(key)) {
             ITextComponent message = MekanismLang.COMMAND_CHUNK.translate(direction, pos.x, pos.z);
-            event.getWorld().getPlayers().forEach(player -> player.sendMessage(message));
+            event.getWorld().getPlayers().forEach(player -> player.sendMessage(message, Util.field_240973_b_));
         }
     }
 }

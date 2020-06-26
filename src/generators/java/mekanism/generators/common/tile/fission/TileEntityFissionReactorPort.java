@@ -22,6 +22,7 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing implements IConfigurable {
@@ -92,7 +93,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
             FissionPortMode mode = getMode().getNext();
             world.setBlockState(pos, getBlockState().with(AttributeStateFissionPortMode.modeProperty, mode));
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode)));
+                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode)), Util.field_240973_b_);
         }
         return ActionResultType.SUCCESS;
     }

@@ -1,19 +1,19 @@
 package mekanism.client.particle;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SmokeParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
-import net.minecraft.world.World;
 
 public class RadiationParticle extends SmokeParticle {
 
-    private RadiationParticle(World world, double posX, double posY, double posZ, double velX, double velY, double velZ, IAnimatedSprite sprite) {
+    private RadiationParticle(ClientWorld world, double posX, double posY, double posZ, double velX, double velY, double velZ, IAnimatedSprite sprite) {
         super(world, posX, posY, posZ, velX, velY, velZ, 1.0F, sprite);
         setColor(0.2F, 0.66F, 0.32F);
     }
@@ -39,7 +39,7 @@ public class RadiationParticle extends SmokeParticle {
         }
 
         @Override
-        public Particle makeParticle(@Nonnull BasicParticleType type, @Nonnull World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(@Nonnull BasicParticleType type, @Nonnull ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             return new RadiationParticle(world, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }

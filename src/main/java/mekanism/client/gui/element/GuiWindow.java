@@ -39,8 +39,8 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        boolean ret = super.mouseClicked(mouseX, mouseY, button);
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+        boolean ret = super.func_231044_a_(mouseX, mouseY, button);
         // drag 'safe area'
         if (isMouseOver(mouseX, mouseY)) {
             if (mouseY < field_230691_m_ + 18) {
@@ -103,8 +103,8 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
+        if (super.func_231046_a_(keyCode, scanCode, modifiers)) {
             return true;
         }
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {

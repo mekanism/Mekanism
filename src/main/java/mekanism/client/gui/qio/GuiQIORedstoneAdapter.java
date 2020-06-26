@@ -37,8 +37,8 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiQIOFrequencyTab(this, tile));
         func_230480_a_(new GuiSecurityTab<>(this, tile));
         func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true));
@@ -97,13 +97,13 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+        super.func_231044_a_(mouseX, mouseY, button);
         if (button == 0) {
             double xAxis = mouseX - getGuiLeft();
             double yAxis = mouseY - getGuiTop();
             if (xAxis >= 8 && xAxis < 24 && yAxis >= 31 && yAxis < 47) {
-                ItemStack stack = minecraft.player.inventory.getItemStack();
+                ItemStack stack = getMinecraft().player.inventory.getItemStack();
                 if (!stack.isEmpty() && !func_231173_s_()) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, StackUtils.size(stack, 1)));
                 } else if (stack.isEmpty() && func_231173_s_()) {

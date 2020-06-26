@@ -31,8 +31,8 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiElementHolder(this, 16, 31, 130, 90));
         func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 16, getGuiTop() + 19, 11, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING)));

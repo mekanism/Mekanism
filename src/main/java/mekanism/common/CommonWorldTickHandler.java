@@ -1,10 +1,10 @@
 package mekanism.common;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.chunkloading.ChunkManager;
 import mekanism.common.lib.frequency.FrequencyManager;
@@ -12,7 +12,6 @@ import mekanism.common.world.GenHandler;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
@@ -68,7 +67,7 @@ public class CommonWorldTickHandler {
     @SubscribeEvent
     public void onTick(WorldTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
-            tickEnd(event.world);
+            tickEnd((ServerWorld) event.world);
         }
     }
 
@@ -77,10 +76,10 @@ public class CommonWorldTickHandler {
         Mekanism.radiationManager.tickServer();
     }
 
-    private void tickEnd(World world) {
+    private void tickEnd(ServerWorld world) {
         if (!world.isRemote) {
             Mekanism.radiationManager.tickServerWorld(world);
-            ChunkManager.tick((ServerWorld) world);
+            ChunkManager.tick(world);
             flushTagCaches = false;
 
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
@@ -101,7 +100,7 @@ public class CommonWorldTickHandler {
                     long xSeed = fmlRandom.nextLong() >> 2 + 1L;
                     long zSeed = fmlRandom.nextLong() >> 2 + 1L;
                     fmlRandom.setSeed((xSeed * nextChunk.x + zSeed * nextChunk.z) ^ world.getSeed());
-                    if (GenHandler.generate((ServerWorld) world, fmlRandom, nextChunk.x, nextChunk.z)) {
+                    if (GenHandler.generate(world, fmlRandom, nextChunk.x, nextChunk.z)) {
                         Mekanism.logger.info("Regenerating ores at chunk {}", nextChunk);
                     }
                 }

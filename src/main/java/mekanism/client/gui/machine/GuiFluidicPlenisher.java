@@ -29,8 +29,8 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiInnerScreen(this, 54, 23, 80, 41, () -> {
             List<ITextComponent> list = new ArrayList<>();
             list.add(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent());

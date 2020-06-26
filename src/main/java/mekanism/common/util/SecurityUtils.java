@@ -15,6 +15,7 @@ import mekanism.common.lib.security.SecurityFrequency;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.Dist;
 
 public final class SecurityUtils {
@@ -81,7 +82,7 @@ public final class SecurityUtils {
     }
 
     public static void displayNoAccess(PlayerEntity player) {
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NO_ACCESS.translateColored(EnumColor.RED)));
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NO_ACCESS.translateColored(EnumColor.RED)), Util.field_240973_b_);
     }
 
     public static SecurityMode getSecurity(ISecurityTile security, Dist side) {

@@ -31,14 +31,14 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiSideHolder(this, 176, 6, 106, false));
         func_230480_a_(new GuiInnerScreen(this, 27, 16, 122, 56));
         func_230480_a_(new GuiHorizontalPowerBar(this, robit.getEnergyContainer(), 27, 74, 120));
         func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 16, 18, getButtonLocation("home"), () -> {
             Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
-            minecraft.displayGuiScreen(null);
+            getMinecraft().displayGuiScreen(null);
         }, getOnHover(MekanismLang.ROBIT_TELEPORT)));
         func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 35, 18, getButtonLocation("drop"),
               () -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId())),

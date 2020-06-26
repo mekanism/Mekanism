@@ -14,6 +14,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.world.World;
 
 public class ItemDosimeter extends Item {
@@ -29,7 +30,7 @@ public class ItemDosimeter extends Item {
         if (!player.isSneaking() && !world.isRemote()) {
             player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c ->
                   player.sendMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(c.getRadiation()),
-                        UnitDisplayUtils.getDisplayShort(c.getRadiation(), RadiationUnit.SV, 3))));
+                        UnitDisplayUtils.getDisplayShort(c.getRadiation(), RadiationUnit.SV, 3)), Util.field_240973_b_));
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         return new ActionResult<>(ActionResultType.PASS, stack);

@@ -23,8 +23,8 @@ public class GuiElectricMachine<TILE extends TileEntityElectricMachine, CONTAINE
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiUpArrow(this, 68, 38));
         func_230480_a_(new GuiRedstoneControlTab(this, tile));
         func_230480_a_(new GuiUpgradeTab(this, tile));

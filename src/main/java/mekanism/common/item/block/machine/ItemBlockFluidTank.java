@@ -48,6 +48,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
@@ -265,7 +266,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
             setBucketMode(stack, newState);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(newState, true))));
+                      MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(newState, true))), Util.field_240973_b_);
             }
         }
     }

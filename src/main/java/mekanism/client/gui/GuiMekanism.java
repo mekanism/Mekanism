@@ -64,8 +64,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         initPreSlots();
         if (dynamicSlots) {
             addSlots();
@@ -73,9 +73,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        children.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
+    public void func_231023_e_() {
+        super.func_231023_e_();
+        field_230705_e_.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
     }
 
     protected void initPreSlots() {
@@ -126,8 +126,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void resize(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
         List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
-        for (int i = 0; i < buttons.size(); i++) {
-            Widget widget = buttons.get(i);
+        for (int i = 0; i < field_230710_m_.size(); i++) {
+            Widget widget = field_230710_m_.get(i);
             if (widget instanceof GuiElement && ((GuiElement) widget).hasPersistentData()) {
                 prevElements.add(Pair.of(i, (GuiElement) widget));
             }
@@ -139,12 +139,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
         windows.forEach(window -> {
             window.resize(prevLeft, prevTop, getGuiLeft(), getGuiTop());
-            children.add(window);
+            field_230705_e_.add(window);
         });
 
         prevElements.forEach(e -> {
-            if (e.getLeft() < buttons.size()) {
-                Widget widget = buttons.get(e.getLeft());
+            if (e.getLeft() < field_230710_m_.size()) {
+                Widget widget = field_230710_m_.get(e.getLeft());
                 // we're forced to assume that the children list is the same before and after the resize.
                 // for verification, we run a lightweight class equality check
                 // Note: We do not perform an instance check on widget to ensure it is a GuiElement, as that is
@@ -163,7 +163,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // first render general foregrounds
         maxZOffset = 200;
         int zOffset = 200;
-        for (Widget widget : this.buttons) {
+        for (Widget widget : this.field_230710_m_) {
             if (widget instanceof GuiElement) {
                 RenderSystem.pushMatrix();
                 ((GuiElement) widget).onRenderForeground(mouseX, mouseY, zOffset, zOffset);
@@ -186,8 +186,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // then render tooltips, translating above max z offset to prevent clashing
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
         if (tooltipElement == null) {
-            for (int i = buttons.size() - 1; i >= 0; i--) {
-                Widget widget = buttons.get(i);
+            for (int i = field_230710_m_.size() - 1; i >= 0; i--) {
+                Widget widget = field_230710_m_.get(i);
                 if (widget instanceof GuiElement && widget.isMouseOver(mouseX, mouseY)) {
                     tooltipElement = (GuiElement) widget;
                     break;
@@ -209,10 +209,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         hasClicked = true;
         // first try to send the mouse event to our overlays
-        GuiWindow focused = windows.stream().filter(overlay -> overlay.mouseClicked(mouseX, mouseY, button)).findFirst().orElse(null);
+        GuiWindow focused = windows.stream().filter(overlay -> overlay.func_231044_a_(mouseX, mouseY, button)).findFirst().orElse(null);
         if (focused != null) {
             setFocused(focused);
             if (button == 0) {
@@ -222,9 +222,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             return true;
         }
         // otherwise we send it to the current element
-        for (int i = buttons.size() - 1; i >= 0; i--) {
-            IGuiEventListener listener = buttons.get(i);
-            if (listener.mouseClicked(mouseX, mouseY, button)) {
+        for (int i = field_230710_m_.size() - 1; i >= 0; i--) {
+            IGuiEventListener listener = field_230710_m_.get(i);
+            if (listener.func_231044_a_(mouseX, mouseY, button)) {
                 setFocused(listener);
                 if (button == 0) {
                     setDragging(true);
@@ -232,7 +232,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 return true;
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.func_231044_a_(mouseX, mouseY, button);
     }
 
     @Override
@@ -245,16 +245,16 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return windows.stream().anyMatch(window -> window.keyPressed(keyCode, scanCode, modifiers)) ||
-               GuiUtils.checkChildren(buttons, (child) -> child.keyPressed(keyCode, scanCode, modifiers)) ||
-               super.keyPressed(keyCode, scanCode, modifiers);
+        return windows.stream().anyMatch(window -> window.func_231046_a_(keyCode, scanCode, modifiers)) ||
+               GuiUtils.checkChildren(field_230710_m_, (child) -> child.func_231046_a_(keyCode, scanCode, modifiers)) ||
+               super.func_231046_a_(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        return windows.stream().anyMatch(window -> window.charTyped(c, keyCode)) ||
-               GuiUtils.checkChildren(buttons, (child) -> child.charTyped(c, keyCode)) ||
-               super.charTyped(c, keyCode);
+        return windows.stream().anyMatch(window -> window.func_231042_a_(c, keyCode)) ||
+               GuiUtils.checkChildren(field_230710_m_, (child) -> child.func_231042_a_(c, keyCode)) ||
+               super.func_231042_a_(c, keyCode);
     }
 
     /**
@@ -275,7 +275,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // overridden to prevent slot interactions when a GuiElement is blocking
         return super.isPointInRegion(x, y, width, height, mouseX, mouseY) &&
                getWindowHovering(mouseX, mouseY) == null &&
-               buttons.stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
+               field_230710_m_.stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
     }
 
     protected void addSlots() {
@@ -376,9 +376,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 if (scale != 1) {
                     RenderSystem.scalef(scale, scale, scale);
                 }
-                itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
+                field_230707_j_.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 if (overlay) {
-                    itemRenderer.renderItemOverlayIntoGUI(font, stack, xAxis, yAxis, text);
+                    field_230707_j_.renderItemOverlayIntoGUI(font, stack, xAxis, yAxis, text);
                 }
                 RenderHelper.disableStandardItemLighting();
                 RenderSystem.disableDepthTest();
@@ -396,7 +396,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public ItemRenderer getItemRenderer() {
-        return itemRenderer;
+        return field_230707_j_;
     }
 
     protected static String formatInt(long l) {

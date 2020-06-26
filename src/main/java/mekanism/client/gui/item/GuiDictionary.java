@@ -28,8 +28,8 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 5, 5).setRenderHover(true));
         func_230480_a_(scrollList = new GuiTextScrollList(this, 7, 29, 162, 42));
     }
@@ -48,7 +48,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         double xAxis = mouseX - getGuiLeft();
         double yAxis = mouseY - getGuiTop();
         if (button == 0) {
@@ -74,7 +74,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
             }
 
             if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
-                ItemStack stack = minecraft.player.inventory.getItemStack();
+                ItemStack stack = getMinecraft().player.inventory.getItemStack();
                 if (!stack.isEmpty() && !func_231173_s_()) {
                     itemType = StackUtils.size(stack, 1);
                     scrollList.setText(TagCache.getItemTags(itemType));
@@ -85,6 +85,6 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.func_231044_a_(mouseX, mouseY, button);
     }
 }

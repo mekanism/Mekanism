@@ -31,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -329,7 +330,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (!isRemote() && !getMultiblock().isFormed()) {
             FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
-                player.sendMessage(result.getResultText());
+                player.sendMessage(result.getResultText(), Util.field_240973_b_);
                 return ActionResultType.SUCCESS;
             }
         }

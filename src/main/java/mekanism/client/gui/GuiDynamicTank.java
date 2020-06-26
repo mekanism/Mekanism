@@ -33,8 +33,8 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));
         func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
         func_230480_a_(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {

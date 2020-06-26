@@ -27,6 +27,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -64,7 +65,7 @@ public class ItemConfigurationCard extends Item {
                             data.putString(NBTConstants.DATA_TYPE, getNameFromTile(tile, side));
                             setData(stack, data);
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                                  MekanismLang.CONFIG_CARD_GOT.translateColored(EnumColor.GRAY, EnumColor.INDIGO, Translation.of(data.getString(NBTConstants.DATA_TYPE)))));
+                                  MekanismLang.CONFIG_CARD_GOT.translateColored(EnumColor.GRAY, EnumColor.INDIGO, Translation.of(data.getString(NBTConstants.DATA_TYPE)))), Util.field_240973_b_);
                         }
                         return ActionResultType.SUCCESS;
                     }
@@ -81,10 +82,10 @@ public class ItemConfigurationCard extends Item {
                                 MekanismUtils.notifyLoadedNeighborsOfTileChange(world, pos);
                             }
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                                  MekanismLang.CONFIG_CARD_SET.translateColored(EnumColor.DARK_GREEN, EnumColor.INDIGO, Translation.of(getDataType(stack)))));
+                                  MekanismLang.CONFIG_CARD_SET.translateColored(EnumColor.DARK_GREEN, EnumColor.INDIGO, Translation.of(getDataType(stack)))), Util.field_240973_b_);
                         } else {
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                                  MekanismLang.CONFIG_CARD_UNEQUAL.translateColored(EnumColor.RED)));
+                                  MekanismLang.CONFIG_CARD_UNEQUAL.translateColored(EnumColor.RED)), Util.field_240973_b_);
                         }
                         return ActionResultType.SUCCESS;
                     }

@@ -28,8 +28,8 @@ public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElec
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiRedstoneControlTab(this, tile));
         func_230480_a_(new GuiUpgradeTab(this, tile));
         func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),

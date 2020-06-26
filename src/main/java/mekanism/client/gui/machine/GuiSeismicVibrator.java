@@ -21,8 +21,8 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiInnerScreen(this, 16, 23, 112, 40, () -> Arrays.asList(
               tile.getActive() ? MekanismLang.VIBRATING.translate() : MekanismLang.IDLE.translate(),
               MekanismLang.CHUNK.translate(tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)

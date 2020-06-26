@@ -56,9 +56,9 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         return mouseClickSlot(getGuiObj(), button, mouseX, mouseY, relativeX + 8, relativeY + getSlotOffset() + 1, NOT_EMPTY_BLOCK, this::setFilterStack) ||
-               super.mouseClicked(mouseX, mouseY, button);
+               super.func_231044_a_(mouseX, mouseY, button);
     }
 
     private void setFilterStack(@Nonnull ItemStack stack) {

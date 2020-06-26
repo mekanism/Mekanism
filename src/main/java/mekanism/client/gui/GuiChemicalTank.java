@@ -25,8 +25,8 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiMergedChemicalBar<>(this, tile, tile.getChemicalTank(), 42, 16, 116, 10, true));
         func_230480_a_(new GuiInnerScreen(this, 42, 37, 118, 28, () -> {
             List<ITextComponent> ret = new ArrayList<>();

@@ -31,6 +31,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -107,7 +108,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
             setFlowing(stack, newState);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.FLOWING.translateColored(EnumColor.GRAY, OnOff.of(newState, true))));
+                      MekanismLang.FLOWING.translateColored(EnumColor.GRAY, OnOff.of(newState, true))), Util.field_240973_b_);
             }
         }
     }

@@ -85,9 +85,9 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         return mouseClickSlot(getGuiObj(), button, mouseX, mouseY, relativeX + 8, relativeY + getSlotOffset() + 1, NOT_EMPTY,
-              stack -> setFilterName(stack.getItem())) || super.mouseClicked(mouseX, mouseY, button);
+              stack -> setFilterName(stack.getItem())) || super.func_231044_a_(mouseX, mouseY, button);
     }
 
     private void setFilterName(IForgeRegistryEntry<?> registryEntry) {

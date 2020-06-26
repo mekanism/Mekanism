@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -86,7 +87,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
                 setChannel(stack, newChannel);
                 if (displayChangeMessage) {
                     player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                          AdditionsLang.CHANNEL_CHANGE.translateColored(EnumColor.GRAY, newChannel)));
+                          AdditionsLang.CHANNEL_CHANGE.translateColored(EnumColor.GRAY, newChannel)), Util.field_240973_b_);
                 }
             }
         }

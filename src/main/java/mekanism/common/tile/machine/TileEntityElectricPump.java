@@ -51,6 +51,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -305,7 +306,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.PUMP_RESET.translateColored(EnumColor.GRAY)));
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.PUMP_RESET.translateColored(EnumColor.GRAY)), Util.field_240973_b_);
         return ActionResultType.SUCCESS;
     }
 

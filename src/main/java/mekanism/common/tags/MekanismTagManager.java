@@ -67,9 +67,9 @@ public class MekanismTagManager implements IFutureReloadListener {
     private static class TagInfo<T extends IForgeRegistryEntry<T>> {
 
         private final ForgeRegistryTagCollection<T> tagCollection;
-        private final Map<ResourceLocation, Tag.Builder<T>> results;
+        private final Map<ResourceLocation, Tag.Builder> results;
 
-        private TagInfo(ForgeRegistryTagCollection<T> tagCollection, Map<ResourceLocation, Tag.Builder<T>> result) {
+        private TagInfo(ForgeRegistryTagCollection<T> tagCollection, Map<ResourceLocation, Tag.Builder> result) {
             this.tagCollection = tagCollection;
             this.results = result;
         }

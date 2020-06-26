@@ -55,6 +55,6 @@ public class BlockIndustrialAlarm extends BlockTile<TileEntityIndustrialAlarm, B
         //hasEnoughSolidSide does not quite work for us, as the shape is incorrect
         //Don't allow placing on leaves or a block that is too small
         // same restrictions as vanilla except we have a better check for placing against the side
-        return !state.isIn(BlockTags.LEAVES) && !VoxelShapes.compare(projected, MIN_SHAPES[sideOn.ordinal()], IBooleanFunction.ONLY_SECOND);
+        return !state.func_235714_a_(BlockTags.LEAVES) && !VoxelShapes.compare(projected, MIN_SHAPES[sideOn.ordinal()], IBooleanFunction.ONLY_SECOND);
     }
 }

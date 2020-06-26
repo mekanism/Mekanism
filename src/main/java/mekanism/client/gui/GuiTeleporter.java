@@ -49,8 +49,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiTeleporterStatus(this, () -> tile.getFrequency(FrequencyType.TELEPORTER) != null, () -> tile.status));
         func_230480_a_(new GuiRedstoneControlTab(this, tile));
         func_230480_a_(new GuiUpgradeTab(this, tile));
@@ -133,16 +133,16 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void func_231023_e_() {
+        super.func_231023_e_();
         //TODO: Why do we call updateButtons every tick?
         updateButtons();
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         updateButtons();
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.func_231044_a_(mouseX, mouseY, button);
     }
 
     private void setFrequency() {

@@ -1,22 +1,21 @@
 package mekanism.api.recipes.inputs.chemical;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag.INamedTag;
 
 public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements
       IChemicalStackIngredient<CHEMICAL, STACK> {
@@ -82,10 +81,10 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
           ChemicalStackIngredient<CHEMICAL, STACK> {
 
         @Nonnull
-        private final ITag<CHEMICAL> tag;
+        private final INamedTag<CHEMICAL> tag;
         private final long amount;
 
-        public TaggedIngredient(@Nonnull ITag<CHEMICAL> tag, long amount) {
+        public TaggedIngredient(@Nonnull INamedTag<CHEMICAL> tag, long amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -130,7 +129,7 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.TAGGED);
-            buffer.writeResourceLocation(tag.getId());
+            buffer.writeResourceLocation(tag.func_230234_a_());
             buffer.writeVarLong(amount);
         }
 

@@ -37,6 +37,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -128,7 +129,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
             setMode(stack, newMode);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.FLAMETHROWER_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)));
+                      MekanismLang.FLAMETHROWER_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)), Util.field_240973_b_);
             }
         }
     }

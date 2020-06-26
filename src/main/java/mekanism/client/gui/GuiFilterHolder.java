@@ -40,8 +40,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiInnerScreen(this, 9, 17, 46, 140));
         //Filter holder
         func_230480_a_(new GuiElementHolder(this, 55, 17, 98, 118));

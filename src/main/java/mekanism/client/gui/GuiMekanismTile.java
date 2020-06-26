@@ -35,7 +35,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         if (tile instanceof ISideConfiguration) {
-            ItemStack stack = minecraft.player.inventory.getItemStack();
+            ItemStack stack = getMinecraft().player.inventory.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
                 for (int i = 0; i < container.inventorySlots.size(); i++) {
                     Slot slot = container.inventorySlots.get(i);

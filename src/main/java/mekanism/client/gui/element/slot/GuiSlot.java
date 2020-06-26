@@ -128,7 +128,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         if (onClick != null && isValidClickButton(button)) {
             if (mouseX >= field_230690_l_ && mouseY >= field_230691_m_ && mouseX < field_230690_l_ + field_230688_j_ && mouseY < field_230691_m_ + field_230689_k_) {
                 onClick.onClick(this, (int) mouseX, (int) mouseY);

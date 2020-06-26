@@ -51,7 +51,7 @@ public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEn
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return tryClickReplaceStack(guiObj, mouseX, mouseY, button, getSlotOffset(), filter) || super.mouseClicked(mouseX, mouseY, button);
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+        return tryClickReplaceStack(guiObj, mouseX, mouseY, button, getSlotOffset(), filter) || super.func_231044_a_(mouseX, mouseY, button);
     }
 }

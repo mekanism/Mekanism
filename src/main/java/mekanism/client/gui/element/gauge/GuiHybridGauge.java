@@ -44,12 +44,12 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         // pass the click event to both gauges; if both a fluid and gas are stored in the dropper, insertion checks should prevent both from being
         // inserted at the same time
-        gasGauge.mouseClicked(mouseX, mouseY, button);
-        fluidGauge.mouseClicked(mouseX, mouseY, button);
-        return super.mouseClicked(mouseX, mouseY, button);
+        gasGauge.func_231044_a_(mouseX, mouseY, button);
+        fluidGauge.func_231044_a_(mouseX, mouseY, button);
+        return super.func_231044_a_(mouseX, mouseY, button);
     }
 
     @Override

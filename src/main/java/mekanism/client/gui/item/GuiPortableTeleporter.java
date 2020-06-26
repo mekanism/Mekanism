@@ -68,8 +68,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         //func_230480_a_(new GuiInnerScreen(this, 48, 102, 89, 13));
         //func_230480_a_(new GuiInnerScreen(this, 136, 102, 13, 13));
         func_230480_a_(new GuiTeleporterStatus(this, () -> clientFreq != null, () -> clientStatus));
@@ -119,8 +119,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }));
         func_230480_a_(teleportButton = new TranslationButton(this, getGuiLeft() + 42, getGuiTop() + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
             if (clientFreq != null && clientStatus == 1) {
-                ClientTickHandler.portableTeleport(minecraft.player, currentHand, clientFreq);
-                minecraft.player.closeScreen();
+                ClientTickHandler.portableTeleport(getMinecraft().player, currentHand, clientFreq);
+                getMinecraft().player.closeScreen();
             }
             updateButtons();
         }));
@@ -203,15 +203,15 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void func_231023_e_() {
+        super.func_231023_e_();
         updateButtons();
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         updateButtons();
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.func_231044_a_(mouseX, mouseY, button);
     }
 
     @Override

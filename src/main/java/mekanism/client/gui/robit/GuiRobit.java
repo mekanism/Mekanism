@@ -23,8 +23,8 @@ public abstract class GuiRobit<CONTAINER extends Container & IEntityContainer<En
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void func_231160_c_() {
+        super.func_231160_c_();
         func_230480_a_(new GuiSideHolder(this, 176, 6, 106, false));
         func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 10, 18, getButtonLocation("main"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_MAIN, robit.getEntityId())),
