@@ -8,12 +8,12 @@ import mekanism.common.lib.effect.CustomEffect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 public class BillboardingEffectRenderer {
 
@@ -32,7 +32,7 @@ public class BillboardingEffectRenderer {
         new Vector3f(-1.0F, -1.0F, 0.0F).transform(quaternion);
         Vector3f[] vertexPos = new Vector3f[]{new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),
                                               new Vector3f(1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, -1.0F, 0.0F)};
-        Vec3d pos = effect.getPos(partialTick).subtract(new Vec3d(renderPos));
+        Vector3d pos = effect.getPos(partialTick).subtract(Vector3d.func_237491_b_(renderPos));
         for (int i = 0; i < 4; i++) {
             Vector3f vector3f = vertexPos[i];
             vector3f.transform(quaternion);

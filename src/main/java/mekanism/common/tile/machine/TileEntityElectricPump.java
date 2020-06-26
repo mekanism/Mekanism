@@ -1,12 +1,12 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
@@ -44,8 +44,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -189,7 +189,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     private boolean suck(BlockPos pos, boolean hasFilter, boolean addRecurring) {
-        IFluidState fluidState = world.getFluidState(pos);
+        FluidState fluidState = world.getFluidState(pos);
         if (!fluidState.isEmpty() && fluidState.isSource()) {
             //Just in case someone does weird things and has a fluid state that is empty and a source
             // only allow collecting from non empty sources

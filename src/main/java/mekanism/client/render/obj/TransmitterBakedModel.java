@@ -1,8 +1,5 @@
 package mekanism.client.render.obj;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +9,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.render.obj.TransmitterModelConfiguration.IconStatus;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -24,14 +24,14 @@ import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -47,7 +47,7 @@ public class TransmitterBakedModel implements IBakedModel {
     private final OBJModel glass;
     private final IModelConfiguration owner;
     private final ModelBakery bakery;
-    private final Function<Material, TextureAtlasSprite> spriteGetter;
+    private final Function<RenderMaterial, TextureAtlasSprite> spriteGetter;
     private final IModelTransform modelTransform;
     private final ItemOverrideList overrides;
     private final ResourceLocation modelLocation;
@@ -56,7 +56,7 @@ public class TransmitterBakedModel implements IBakedModel {
     private final Map<QuickHash, List<BakedQuad>> modelCache;
 
     public TransmitterBakedModel(OBJModel internal, @Nullable OBJModel glass, IModelConfiguration owner, ModelBakery bakery,
-          Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+          Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
         //4^6 number of states, if we have a glass texture (support coloring), multiply by 2
         this.modelCache = new Object2ObjectOpenHashMap<>(glass == null ? 4_096 : 8_192);
         this.internal = internal;
@@ -196,7 +196,7 @@ public class TransmitterBakedModel implements IBakedModel {
 
     @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
+    public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
         return bakedVariant.getModelData(world, pos, state, tileData);
     }
 

@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.Mekanism;
 import mekanism.generators.client.model.ModelTurbine;
@@ -10,9 +10,9 @@ import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
+import net.minecraft.util.math.vector.Vector3f;
 
 @ParametersAreNonnullByDefault
 public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTurbineRotor> {
@@ -42,8 +42,8 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         if (!Mekanism.proxy.isPaused()) {
             if (tile.getMultiblock() != null && TurbineMultiblockData.clientRotationMap.containsKey(tile.getMultiblock())) {
                 float rotateSpeed = TurbineMultiblockData.clientRotationMap.getFloat(tile.getMultiblock()) * BASE_SPEED;
-                tile.rotationLower = (tile.rotationLower + rotateSpeed * (1F / (float) (baseIndex + 1))) % 360;
-                tile.rotationUpper = (tile.rotationUpper + rotateSpeed * (1F / (float) (baseIndex + 2))) % 360;
+                tile.rotationLower = (tile.rotationLower + rotateSpeed * (1F / (baseIndex + 1))) % 360;
+                tile.rotationUpper = (tile.rotationUpper + rotateSpeed * (1F / (baseIndex + 2))) % 360;
             } else {
                 tile.rotationLower = tile.rotationLower % 360;
                 tile.rotationUpper = tile.rotationUpper % 360;

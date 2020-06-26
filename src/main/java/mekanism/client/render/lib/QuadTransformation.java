@@ -9,7 +9,7 @@ import mekanism.common.lib.Color;
 import mekanism.common.lib.math.Quaternion;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public interface QuadTransformation {
 
@@ -34,7 +34,7 @@ public interface QuadTransformation {
         return new LightTransformation(light, light);
     }
 
-    static QuadTransformation translate(Vec3d translation) {
+    static QuadTransformation translate(Vector3d translation) {
         return new TranslationTransformation(translation);
     }
 
@@ -180,8 +180,8 @@ public interface QuadTransformation {
             });
         }
 
-        private static Vec3d round(Vec3d vec) {
-            return new Vec3d(Math.round(vec.x * EPSILON) / EPSILON, Math.round(vec.y * EPSILON) / EPSILON, Math.round(vec.z * EPSILON) / EPSILON);
+        private static Vector3d round(Vector3d vec) {
+            return new Vector3d(Math.round(vec.x * EPSILON) / EPSILON, Math.round(vec.y * EPSILON) / EPSILON, Math.round(vec.z * EPSILON) / EPSILON);
         }
 
         @Override
@@ -197,9 +197,9 @@ public interface QuadTransformation {
 
     class TranslationTransformation implements QuadTransformation {
 
-        private final Vec3d translation;
+        private final Vector3d translation;
 
-        public TranslationTransformation(Vec3d translation) {
+        public TranslationTransformation(Vector3d translation) {
             this.translation = translation;
         }
 

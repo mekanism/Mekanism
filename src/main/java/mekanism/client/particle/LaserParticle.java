@@ -1,7 +1,7 @@
 package mekanism.client.particle;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.particle.IAnimatedSprite;
@@ -9,11 +9,11 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 
 public class LaserParticle extends SpriteTexturedParticle {
@@ -38,7 +38,7 @@ public class LaserParticle extends SpriteTexturedParticle {
 
     @Override
     public void renderParticle(@Nonnull IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
-        Vec3d view = renderInfo.getProjectedView();
+        Vector3d view = renderInfo.getProjectedView();
         float newX = (float) (MathHelper.lerp(partialTicks, prevPosX, posX) - view.getX());
         float newY = (float) (MathHelper.lerp(partialTicks, prevPosY, posY) - view.getY());
         float newZ = (float) (MathHelper.lerp(partialTicks, prevPosZ, posZ) - view.getZ());

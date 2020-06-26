@@ -1,17 +1,17 @@
 package mekanism.additions.client.render.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.TNTMinecartRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 
 public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
 
@@ -24,8 +24,8 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
     public void render(@Nonnull EntityObsidianTNT tnt, float entityYaw, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light) {
         matrix.push();
         matrix.translate(0, 0.5, 0);
-        if ((float) tnt.getFuse() - partialTick + 1.0F < 10.0F) {
-            float f = 1.0F - ((float) tnt.getFuse() - partialTick + 1.0F) / 10.0F;
+        if (tnt.getFuse() - partialTick + 1.0F < 10.0F) {
+            float f = 1.0F - (tnt.getFuse() - partialTick + 1.0F) / 10.0F;
             f = MathHelper.clamp(f, 0.0F, 1.0F);
             f = f * f;
             f = f * f;

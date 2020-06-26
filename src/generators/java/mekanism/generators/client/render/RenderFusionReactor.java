@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
@@ -12,9 +12,9 @@ import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
+import net.minecraft.util.math.vector.Vector3f;
 
 @ParametersAreNonnullByDefault
 public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFusionReactorController> {

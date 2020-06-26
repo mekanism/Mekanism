@@ -1,7 +1,7 @@
 package mekanism.client.render.obj;
 
 import javax.annotation.Nonnull;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraftforge.client.model.IModelConfiguration;
 
 public class OpaqueModelConfiguration extends WrapperModelConfiguration {
@@ -27,7 +27,7 @@ public class OpaqueModelConfiguration extends WrapperModelConfiguration {
 
     @Nonnull
     @Override
-    public Material resolveTexture(@Nonnull String name) {
+    public RenderMaterial resolveTexture(@Nonnull String name) {
         return internal.resolveTexture(adjustTextureName(name));
     }
 }

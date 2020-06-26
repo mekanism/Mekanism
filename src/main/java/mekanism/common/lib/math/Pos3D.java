@@ -10,31 +10,27 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.DimensionType;
 
 /**
  * Pos3D - a way of performing operations on objects in a three dimensional environment.
  *
  * @author aidancbrady
  */
-public class Pos3D extends Vec3d {
+public class Pos3D extends Vector3d {
 
     public Pos3D() {
         this(0, 0, 0);
     }
 
-    public Pos3D(Vec3d vec) {
+    public Pos3D(Vector3d vec) {
         super(vec.x, vec.y, vec.z);
     }
 
     public Pos3D(Coord4D coord) {
         super(coord.getX(), coord.getY(), coord.getZ());
-    }
-
-    public Pos3D(Vec3i vec) {
-        super(vec);
     }
 
     public Pos3D(double x, double y, double z) {
@@ -50,13 +46,12 @@ public class Pos3D extends Vec3d {
         this(entity.getPosX(), entity.getPosY(), entity.getPosZ());
     }
 
-    /**
-     * Creates a Pos3D with a TileEntity's x, y and z values.
-     *
-     * @param tile - TileEntity to create the Pos3D from
-     */
-    public Pos3D(TileEntity tile) {
-        this(tile.getPos());
+    public static Pos3D create(TileEntity tile) {
+        return create(tile.getPos());
+    }
+
+    public static Pos3D create(Vector3i vec) {
+        return new Pos3D(Vector3d.func_237491_b_(vec));
     }
 
     /**
@@ -110,7 +105,7 @@ public class Pos3D extends Vec3d {
      *
      * @return difference of the two Pos3Ds
      */
-    public Pos3D diff(Vec3d vec) {
+    public Pos3D diff(Vector3d vec) {
         return new Pos3D(x - vec.x, y - vec.y, z - vec.z);
     }
 
@@ -152,7 +147,7 @@ public class Pos3D extends Vec3d {
      *
      * @return translated Pos3D
      */
-    public Pos3D translate(Vec3d pos) {
+    public Pos3D translate(Vector3d pos) {
         return translate(pos.x, pos.y, pos.z);
     }
 
@@ -163,11 +158,11 @@ public class Pos3D extends Vec3d {
      *
      * @return translated Pos3D
      */
-    public Pos3D translate(Vec3d... positions) {
+    public Pos3D translate(Vector3d... positions) {
         double x = this.x;
         double y = this.y;
         double z = this.z;
-        for (Vec3d position : positions) {
+        for (Vector3d position : positions) {
             x += position.x;
             y += position.y;
             z += position.z;
@@ -218,7 +213,7 @@ public class Pos3D extends Vec3d {
      *
      * @return the distance between this and the defined Pos3D
      */
-    public double distance(Vec3d pos) {
+    public double distance(Vector3d pos) {
         double subX = x - pos.x;
         double subY = y - pos.y;
         double subZ = z - pos.z;
@@ -277,7 +272,7 @@ public class Pos3D extends Vec3d {
         return new Pos3D(xPos, yPos, zPos);
     }
 
-    public Pos3D multiply(Vec3d pos) {
+    public Pos3D multiply(Vector3d pos) {
         return scale(pos.x, pos.y, pos.z);
     }
 
@@ -377,7 +372,7 @@ public class Pos3D extends Vec3d {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Vec3d && ((Vec3d) obj).x == x && ((Vec3d) obj).y == y && ((Vec3d) obj).z == z;
+        return obj instanceof Vector3d && ((Vector3d) obj).x == x && ((Vector3d) obj).y == y && ((Vector3d) obj).z == z;
     }
 
     @Override

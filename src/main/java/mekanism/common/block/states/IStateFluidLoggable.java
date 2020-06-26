@@ -6,8 +6,8 @@ import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.block.ILiquidContainer;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -31,7 +31,7 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
     }
 
     @Nonnull
-    default IFluidState getFluid(@Nonnull BlockState state) {
+    default FluidState getFluid(@Nonnull BlockState state) {
         if (state.get(BlockStateHelper.FLUID_LOGGED)) {
             //TODO: Proxy this via the TileEntity if there is one, rather than using a hard coded getSupportedFluid
             Fluid fluid = getSupportedFluid();
@@ -60,7 +60,7 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
      * Overwritten to check against canContainFluid instead of inlining the check to water directly.
      */
     @Override
-    default boolean receiveFluid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IFluidState fluidState) {
+    default boolean receiveFluid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull FluidState fluidState) {
         Fluid fluid = fluidState.getFluid();
         if (canContainFluid(world, pos, state, fluid)) {
             if (!world.isRemote()) {

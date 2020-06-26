@@ -1,15 +1,5 @@
 package mekanism.client.render.armor;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Table;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -20,6 +10,17 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Table;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.QuadTransformation;
@@ -44,18 +45,17 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.ModelRotation;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class MekaSuitArmor extends CustomArmor {
 
@@ -82,7 +82,7 @@ public class MekaSuitArmor extends CustomArmor {
         registerModule("modulator", Modules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlotType.CHEST);
     }
 
-    private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vec3d(-1, 0.5, 0)));
+    private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vector3d(-1, 0.5, 0)));
 
     private final LoadingCache<QuickHash, ArmorQuads> cache = CacheBuilder.newBuilder().build(new CacheLoader<QuickHash, ArmorQuads>() {
         @Override
@@ -114,9 +114,9 @@ public class MekaSuitArmor extends CustomArmor {
         if (type == EquipmentSlotType.CHEST) {
             BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUniqueID(), id -> new BoltRenderer());
             if (Modules.isEnabled(entity.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT)) {
-                BoltEffect leftBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3d(-0.01, 0.35, 0.37), new Vec3d(-0.01, 0.15, 0.37), 10)
+                BoltEffect leftBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3d(-0.01, 0.35, 0.37), new Vector3d(-0.01, 0.15, 0.37), 10)
                       .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
-                BoltEffect rightBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3d(0.025, 0.35, 0.37), new Vec3d(0.025, 0.15, 0.37), 10)
+                BoltEffect rightBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3d(0.025, 0.35, 0.37), new Vector3d(0.025, 0.15, 0.37), 10)
                       .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
                 boltRenderer.update(0, leftBolt, MekanismRenderer.getPartialTick());
                 boltRenderer.update(1, rightBolt, MekanismRenderer.getPartialTick());
@@ -155,10 +155,10 @@ public class MekaSuitArmor extends CustomArmor {
     public enum ModelPos {
         HEAD(BASE_TRANSFORM, s -> s.contains("head")),
         BODY(BASE_TRANSFORM, s -> s.contains("body")),
-        LEFT_ARM(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(-0.3125, -0.125, 0))), s -> s.contains("left_arm")),
-        RIGHT_ARM(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(0.3125, -0.125, 0))), s -> s.contains("right_arm")),
-        LEFT_LEG(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(-0.125, -0.75, 0))), s -> s.contains("left_leg")),
-        RIGHT_LEG(BASE_TRANSFORM.and(QuadTransformation.translate(new Vec3d(0.125, -0.75, 0))), s -> s.contains("right_leg"));
+        LEFT_ARM(BASE_TRANSFORM.and(QuadTransformation.translate(new Vector3d(-0.3125, -0.125, 0))), s -> s.contains("left_arm")),
+        RIGHT_ARM(BASE_TRANSFORM.and(QuadTransformation.translate(new Vector3d(0.3125, -0.125, 0))), s -> s.contains("right_arm")),
+        LEFT_LEG(BASE_TRANSFORM.and(QuadTransformation.translate(new Vector3d(-0.125, -0.75, 0))), s -> s.contains("left_leg")),
+        RIGHT_LEG(BASE_TRANSFORM.and(QuadTransformation.translate(new Vector3d(0.125, -0.75, 0))), s -> s.contains("right_leg"));
 
         public static final ModelPos[] VALUES = values();
 
@@ -431,7 +431,7 @@ public class MekaSuitArmor extends CustomArmor {
 
         @Nonnull
         @Override
-        public Material resolveTexture(@Nonnull String name) {
+        public RenderMaterial resolveTexture(@Nonnull String name) {
             return ModelLoaderRegistry.blockMaterial(name);
         }
 

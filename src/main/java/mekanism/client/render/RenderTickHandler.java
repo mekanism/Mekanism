@@ -1,7 +1,5 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
@@ -10,6 +8,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -69,7 +69,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawHighlightEvent;
@@ -113,7 +113,7 @@ public class RenderTickHandler {
         MatrixStack matrix = event.getMatrixStack();
         matrix.push();
         // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
-        Vec3d camVec = minecraft.gameRenderer.getActiveRenderInfo().getProjectedView();
+        Vector3d camVec = minecraft.gameRenderer.getActiveRenderInfo().getProjectedView();
         matrix.translate(-camVec.x, -camVec.y, -camVec.z);
         IRenderTypeBuffer.Impl renderer = minecraft.getRenderTypeBuffers().getBufferSource();
         boltRenderer.render(minecraft.getRenderPartialTicks(), matrix, renderer);
@@ -198,7 +198,7 @@ public class RenderTickHandler {
                     PlayerEntity p = world.getPlayerByUuid(uuid);
                     if (p != null) {
                         Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
-                        Vec3d playerMotion = p.getMotion();
+                        Vector3d playerMotion = p.getMotion();
                         float random = (world.rand.nextFloat() - 0.5F) * 0.1F;
                         Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isCrouching() ? 20 : 0).rotateYaw(p.renderYawOffset);
                         renderJetpackSmoke(world, playerPos.translate(vLeft, playerMotion), vLeft.scale(0.2).translate(playerMotion, vLeft.scale(random)));
@@ -238,8 +238,8 @@ public class RenderTickHandler {
                                     }
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).rotateYaw(p.renderYawOffset);
                                 }
-                                Vec3d motion = p.getMotion();
-                                Pos3D flameMotion = new Pos3D(motion.getX(), p.onGround ? 0 : motion.getY(), motion.getZ());
+                                Vector3d motion = p.getMotion();
+                                Pos3D flameMotion = new Pos3D(motion.getX(), p.func_233570_aj_() ? 0 : motion.getY(), motion.getZ());
                                 Pos3D playerPos = new Pos3D(p);
                                 Pos3D mergedVec = playerPos.translate(flameVec);
                                 world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(),
@@ -303,7 +303,7 @@ public class RenderTickHandler {
                         TileEntityRenderer<TileEntity> tileRenderer = TileEntityRendererDispatcher.instance.getRenderer(tile);
                         if (tileRenderer instanceof IWireFrameRenderer) {
                             matrix.push();
-                            Vec3d viewPosition = info.getProjectedView();
+                            Vector3d viewPosition = info.getProjectedView();
                             matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
                             ((IWireFrameRenderer) tileRenderer).renderWireFrame(tile, event.getPartialTicks(), matrix, renderer.getBuffer(RenderType.getLines()), 0, 0, 0, 0.4F);
                             matrix.pop();
@@ -337,7 +337,7 @@ public class RenderTickHandler {
                         Direction face = rayTraceResult.getFace();
                         DataType dataType = config.getDataType(type, RelativeSide.fromDirections(configurable.getOrientation(), face));
                         if (dataType != null) {
-                            Vec3d viewPosition = info.getProjectedView();
+                            Vector3d viewPosition = info.getProjectedView();
                             matrix.push();
                             matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
                             MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),

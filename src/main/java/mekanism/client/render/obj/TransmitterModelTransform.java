@@ -1,12 +1,12 @@
 package mekanism.client.render.obj;
 
 import javax.annotation.Nonnull;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 public class TransmitterModelTransform implements IModelTransform {
 
@@ -20,7 +20,7 @@ public class TransmitterModelTransform implements IModelTransform {
     }
 
     private static Vector3f vecForDirection(Direction dir) {
-        Vector3f vec = new Vector3f(new Vec3d(dir.getDirectionVec()));
+        Vector3f vec = new Vector3f(Vector3d.func_237491_b_(dir.getDirectionVec()));
         vec.mul(-1);
         return vec;
     }

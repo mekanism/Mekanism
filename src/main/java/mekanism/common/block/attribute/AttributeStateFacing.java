@@ -4,11 +4,12 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.Contract;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
@@ -16,7 +17,6 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
-import org.jetbrains.annotations.Contract;
 
 public class AttributeStateFacing extends AttributeState {
 
@@ -63,7 +63,7 @@ public class AttributeStateFacing extends AttributeState {
     }
 
     @Override
-    public void fillBlockStateContainer(Block block, List<IProperty<?>> properties) {
+    public void fillBlockStateContainer(Block block, List<Property<?>> properties) {
         properties.add(getFacingProperty());
     }
 
