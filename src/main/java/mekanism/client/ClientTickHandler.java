@@ -1,13 +1,13 @@
 package mekanism.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.GeigerSound;
@@ -48,7 +48,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
@@ -227,7 +227,7 @@ public class ClientTickHandler {
 
             if (isJetpackActive(minecraft.player)) {
                 JetpackMode mode = getJetpackMode(chestStack);
-                Vec3d motion = minecraft.player.getMotion();
+                Vector3d motion = minecraft.player.getMotion();
                 if (mode == JetpackMode.NORMAL) {
                     minecraft.player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.5D), motion.getZ());
                     minecraft.player.fallDistance = 0.0F;
@@ -257,7 +257,7 @@ public class ClientTickHandler {
                     ModuleGravitationalModulatingUnit module = Modules.load(minecraft.player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
                     minecraft.player.setSprinting(false);
                     if (Mekanism.keyMap.has(minecraft.player, KeySync.BOOST)) {
-                        minecraft.player.moveRelative(module.getBoost(), new Vec3d(0, 0, 1));
+                        minecraft.player.moveRelative(module.getBoost(), new Vector3d(0, 0, 1));
                     }
                 }
 

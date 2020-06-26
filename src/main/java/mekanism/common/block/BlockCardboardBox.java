@@ -50,7 +50,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                     data.updateLocation(pos);
                     TileEntity tile = MekanismUtils.getTileEntity(world, pos);
                     if (tile != null) {
-                        tile.read(data.tileTag);
+                        tile.func_230337_a_(state, data.tileTag);
                     }
                 }
                 //TODO: Do we need to call onBlockPlacedBy or not bother given we are setting the blockstate to what it was AND setting any tile data

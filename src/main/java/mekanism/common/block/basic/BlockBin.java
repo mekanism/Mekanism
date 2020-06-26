@@ -24,7 +24,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityBin>> {
@@ -58,7 +58,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                     if (!player.inventory.addItemStackToInventory(stack)) {
                         BlockPos dropPos = pos.offset(bin.getDirection());
                         Entity item = new ItemEntity(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
-                        Vec3d motion = item.getMotion();
+                        Vector3d motion = item.getMotion();
                         item.addVelocity(-motion.getX(), -motion.getY(), -motion.getZ());
                         world.addEntity(item);
                     } else {

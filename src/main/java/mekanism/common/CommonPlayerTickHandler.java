@@ -40,8 +40,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -122,7 +122,7 @@ public class CommonPlayerTickHandler {
         if (isJetpackOn(player)) {
             ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             JetpackMode mode = getJetpackMode(stack);
-            Vec3d motion = player.getMotion();
+            Vector3d motion = player.getMotion();
             if (mode == JetpackMode.NORMAL) {
                 player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.5D), motion.getZ());
             } else if (mode == JetpackMode.HOVER) {
@@ -179,7 +179,7 @@ public class CommonPlayerTickHandler {
                 ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
                 player.setSprinting(false);
                 if (boostKey) {
-                    player.moveRelative(module.getBoost(), new Vec3d(0, 0, 1));
+                    player.moveRelative(module.getBoost(), new Vector3d(0, 0, 1));
                 }
                 module.useEnergy(player, Mekanism.keyMap.has(player, KeySync.BOOST) ? usage.multiply(4) : usage);
             }

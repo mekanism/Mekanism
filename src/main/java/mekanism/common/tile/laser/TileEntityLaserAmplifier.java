@@ -19,6 +19,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
@@ -105,8 +106,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.MIN, value -> minThreshold = value);
         NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.MAX, value -> maxThreshold = value);
         NBTUtils.setIntIfPresent(nbtTags, NBTConstants.TIME, value -> time = value);

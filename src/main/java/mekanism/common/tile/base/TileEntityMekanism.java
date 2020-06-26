@@ -1,6 +1,5 @@
 package mekanism.common.tile.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
@@ -545,8 +545,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         redstone = nbtTags.getBoolean(NBTConstants.REDSTONE);
         for (ITileComponent component : components) {
             component.read(nbtTags);
@@ -673,8 +673,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         for (ITileComponent component : components) {
             component.readFromUpdateTag(tag);
         }

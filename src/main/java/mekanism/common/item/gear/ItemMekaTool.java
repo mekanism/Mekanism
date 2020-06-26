@@ -1,10 +1,10 @@
 package mekanism.common.item.gear;
 
-import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.Multimap;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
@@ -92,7 +92,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             }
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
-            tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
+            tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.func_238171_j_()));
         }
     }
 

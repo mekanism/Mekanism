@@ -11,7 +11,7 @@ import net.minecraft.block.material.Material;
 public class BlockTeleporterFrame extends BlockMekanism implements IHasDescription {
 
     public BlockTeleporterFrame() {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F).lightValue(12));
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F).func_235838_a_(state -> 12));
     }
 
     @Nonnull

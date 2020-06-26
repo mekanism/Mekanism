@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -37,6 +37,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -141,8 +142,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         setConfigurationData(nbtTags);
     }
 

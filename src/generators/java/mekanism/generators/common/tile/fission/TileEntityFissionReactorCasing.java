@@ -10,6 +10,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> {
@@ -94,8 +95,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
         if (getMultiblock().isFormed()) {
             NBTUtils.setDoubleIfPresent(tag, NBTConstants.BURNING, value -> getMultiblock().lastBurnRate = value);

@@ -101,7 +101,7 @@ public class ItemBalloon extends Item {
     }
 
     @Override
-    public boolean itemInteractionForEntity(@Nonnull ItemStack stack, PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
+    public ActionResultType itemInteractionForEntity(@Nonnull ItemStack stack, PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
         if (player.isSneaking()) {
             if (!player.world.isRemote) {
                 AxisAlignedBB bound = new AxisAlignedBB(entity.getPosX() - 0.2, entity.getPosY() - 0.5, entity.getPosZ() - 0.2,
@@ -109,15 +109,15 @@ public class ItemBalloon extends Item {
                 List<EntityBalloon> balloonsNear = player.world.getEntitiesWithinAABB(EntityBalloon.class, bound);
                 for (EntityBalloon balloon : balloonsNear) {
                     if (balloon.latchedEntity == entity) {
-                        return true;
+                        return ActionResultType.SUCCESS;
                     }
                 }
                 player.world.addEntity(new EntityBalloon(entity, color));
                 stack.shrink(1);
             }
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        return false;
+        return ActionResultType.PASS;
     }
 
     public class DispenserBehavior extends DefaultDispenseItemBehavior {
@@ -148,7 +148,7 @@ public class ItemBalloon extends Item {
                 }
             }
             if (!latched) {
-                Pos3D pos = new Pos3D(sourcePos).translate(0, -0.5, 0);
+                Pos3D pos = Pos3D.create(sourcePos).translate(0, -0.5, 0);
                 switch (side) {
                     case DOWN:
                         pos = pos.translate(0, -2.5, 0);

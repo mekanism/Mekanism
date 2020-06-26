@@ -77,8 +77,8 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable {
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = nbtTags.getInt(NBTConstants.REDSTONE);
         receivedCoords = nbtTags.getBoolean(NBTConstants.RECEIVED_COORDS);
@@ -105,8 +105,8 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable {
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = tag.getInt(NBTConstants.REDSTONE);
         receivedCoords = tag.getBoolean(NBTConstants.RECEIVED_COORDS);

@@ -30,7 +30,7 @@ public class ItemBlockDiversionTransporter extends ItemBlockMultipartAble<BlockD
             tooltip.add(MekanismLang.BLOCKS.translateColored(EnumColor.PURPLE, MekanismLang.UNIVERSAL));
             tooltip.add(MekanismLang.DESCRIPTION_DIVERSION.translateColored(EnumColor.DARK_RED));
         } else {
-            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
+            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.func_238171_j_()));
         }
     }
 }

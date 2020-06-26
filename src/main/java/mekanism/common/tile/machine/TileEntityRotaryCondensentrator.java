@@ -53,6 +53,7 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -190,8 +191,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         mode = nbtTags.getBoolean(NBTConstants.MODE);
     }
 

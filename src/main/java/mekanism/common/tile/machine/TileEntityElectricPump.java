@@ -289,8 +289,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
         suckedLastOperation = nbtTags.getBoolean(NBTConstants.SUCKED_LAST_OPERATION);
         NBTUtils.setFluidStackIfPresent(nbtTags, NBTConstants.FLUID_STORED, fluid -> activeType = fluid);

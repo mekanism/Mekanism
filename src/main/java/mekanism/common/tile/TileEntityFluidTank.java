@@ -30,6 +30,7 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
@@ -140,8 +141,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
     }
 
@@ -242,8 +243,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> fluidTank.setStack(fluid));
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.VALVE, fluid -> valveFluid = fluid);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);

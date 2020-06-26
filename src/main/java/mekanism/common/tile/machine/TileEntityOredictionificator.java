@@ -1,6 +1,5 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
@@ -37,6 +37,7 @@ import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -149,8 +150,8 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         setConfigurationData(nbtTags);
     }
 

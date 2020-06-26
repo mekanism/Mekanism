@@ -19,6 +19,7 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
@@ -83,8 +84,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.FLUID_STORED, nbt -> bioFuelTank.deserializeNBT(nbt));
     }
 }

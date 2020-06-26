@@ -6,6 +6,7 @@ import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityCardboardBox extends TileEntityUpdateable {
@@ -17,8 +18,8 @@ public class TileEntityCardboardBox extends TileEntityUpdateable {
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.DATA, nbt -> storedData = BlockData.read(nbt));
     }
 

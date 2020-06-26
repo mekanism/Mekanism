@@ -6,7 +6,7 @@ import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 public class BlockPlasticRoad extends Block implements IColoredBlock {
@@ -26,7 +26,7 @@ public class BlockPlasticRoad extends Block implements IColoredBlock {
     @Override
     public void onEntityWalk(@Nonnull World world, @Nonnull BlockPos pos, Entity entity) {
         double boost = 1.6;
-        Vec3d motion = entity.getMotion();
+        Vector3d motion = entity.getMotion();
         double a = Math.atan2(motion.getX(), motion.getZ());
         float slipperiness = getSlipperiness(world.getBlockState(pos), world, pos, entity);
         motion = motion.add(Math.sin(a) * boost * slipperiness, 0, Math.cos(a) * boost * slipperiness);

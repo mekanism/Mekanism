@@ -10,6 +10,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 
@@ -44,8 +45,8 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
     }
 

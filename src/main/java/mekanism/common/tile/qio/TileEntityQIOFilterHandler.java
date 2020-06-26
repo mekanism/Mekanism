@@ -1,8 +1,8 @@
 package mekanism.common.tile.qio;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
@@ -17,6 +17,7 @@ import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.ItemDataUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -105,8 +106,8 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         setConfigurationData(nbtTags);
     }
 

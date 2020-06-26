@@ -48,7 +48,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
     }
 
     @Override
-    public float getX() {
+    public double getX() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
@@ -58,7 +58,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
     }
 
     @Override
-    public float getY() {
+    public double getY() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
@@ -68,7 +68,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
     }
 
     @Override
-    public float getZ() {
+    public double getZ() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {

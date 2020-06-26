@@ -1,15 +1,14 @@
 package mekanism.common.tags;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.Tag.Builder;
+import net.minecraft.tags.ITag.Builder;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -49,7 +48,7 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
         for (int i = 0; i < tagCount; ++i) {
             ResourceLocation resourceLocation = buffer.readResourceLocation();
             int elementCount = buffer.readVarInt();
-            Builder<T> builder = Builder.create();
+            Builder builder = Builder.create();
             for (int j = 0; j < elementCount; ++j) {
                 T value = registry.getValue(buffer.readResourceLocation());
                 if (value != null) {

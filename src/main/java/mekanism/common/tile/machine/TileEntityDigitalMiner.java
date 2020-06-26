@@ -618,12 +618,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         running = nbtTags.getBoolean(NBTConstants.RUNNING);
         delay = nbtTags.getInt(NBTConstants.DELAY);
         numPowering = nbtTags.getInt(NBTConstants.NUM_POWERING);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.STATE, State::byIndexStatic, state -> searcher.state = state);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.STATE, State::byIndexStatic, s -> searcher.state = s);
         setConfigurationData(nbtTags);
     }
 
@@ -957,8 +957,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         NBTUtils.setIntIfPresent(tag, NBTConstants.RADIUS, this::setRadius);//client allowed to use whatever server sends
         NBTUtils.setIntIfPresent(tag, NBTConstants.MIN, this::setMinY);
         NBTUtils.setIntIfPresent(tag, NBTConstants.MAX, this::setMaxY);

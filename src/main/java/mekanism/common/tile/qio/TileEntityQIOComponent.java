@@ -8,6 +8,7 @@ import mekanism.common.content.qio.IQIOFrequencyHolder;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder {
@@ -44,8 +45,8 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         EnumColor prev = lastColor;
         if (tag.contains(NBTConstants.COLOR)) {
             lastColor = EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR));

@@ -1,8 +1,8 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import java.util.function.Supplier;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -31,12 +31,12 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEntityAntiprotonicNucleosynthesizer, MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> {
 
-    private static final Vec3d from = new Vec3d(47, 50, 0), to = new Vec3d(147, 50, 0);
+    private static final Vector3d from = new Vector3d(47, 50, 0), to = new Vector3d(147, 50, 0);
     private static final BoltRenderInfo boltRenderInfo = new BoltRenderInfo().color(Color.rgbad(0.45F, 0.45F, 0.5F, 1));
 
     private final BoltRenderer bolt = new BoltRenderer();

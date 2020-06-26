@@ -43,6 +43,7 @@ import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -281,8 +282,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         sorting = nbtTags.getBoolean(NBTConstants.SORTING);
         for (int i = 0; i < tier.processes; i++) {
             progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);

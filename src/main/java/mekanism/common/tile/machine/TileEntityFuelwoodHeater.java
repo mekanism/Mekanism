@@ -15,6 +15,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -70,8 +71,8 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         burnTime = nbtTags.getInt(NBTConstants.BURN_TIME);
         maxBurnTime = nbtTags.getInt(NBTConstants.MAX_BURN_TIME);
     }

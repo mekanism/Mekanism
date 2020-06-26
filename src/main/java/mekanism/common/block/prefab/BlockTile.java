@@ -29,7 +29,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -89,7 +89,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         if (tile != null && MekanismUtils.isActive(world, pos) && Attribute.has(state.getBlock(), AttributeParticleFX.class)) {
             for (Function<Random, Particle> particleFunction : type.get(AttributeParticleFX.class).getParticleFunctions()) {
                 Particle particle = particleFunction.apply(random);
-                Vec3d particlePos = particle.getPos();
+                Vector3d particlePos = particle.getPos();
                 if (tile.getDirection() == Direction.WEST) {
                     particlePos = particlePos.rotateYaw(90);
                 } else if (tile.getDirection() == Direction.EAST) {

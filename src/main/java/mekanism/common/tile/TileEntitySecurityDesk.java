@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
-import com.mojang.authlib.GameProfile;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import com.mojang.authlib.GameProfile;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -94,8 +94,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
     }
 
@@ -141,8 +141,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         NBTUtils.setUUIDIfPresent(tag, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
         NBTUtils.setStringIfPresent(tag, NBTConstants.OWNER_NAME, uuid -> clientOwner = uuid);
     }

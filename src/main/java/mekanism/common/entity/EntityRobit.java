@@ -81,7 +81,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
@@ -303,7 +303,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     @Nonnull
     @Override
-    public ActionResultType applyPlayerInteraction(PlayerEntity player, @Nonnull Vec3d vec, @Nonnull Hand hand) {
+    public ActionResultType applyPlayerInteraction(PlayerEntity player, @Nonnull Vector3d vec, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {

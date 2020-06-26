@@ -85,7 +85,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             }
 
             Direction direction = getDirection();
-            Pos3D from = new Pos3D(this).centre().translate(direction, 0.501);
+            Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
             Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
             PlayerEntity dummy = Mekanism.proxy.getDummyPlayer((ServerWorld) world, new BlockPos(from)).get();
             BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, dummy));
@@ -286,8 +286,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.LAST_FIRED, value -> lastFired = value);
     }
 
@@ -308,8 +308,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.LAST_FIRED, fired -> lastFired = fired);
     }
 

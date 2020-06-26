@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.IMekWrench;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.IStateFluidLoggable;
@@ -31,13 +32,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class BlockTransmitter extends BlockMekanism implements IStateFluidLoggable {
 
@@ -113,7 +113,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
             return getCenter();
         }
         //TODO: Try to cache some of this? At the very least the collision boxes
-        Pair<Vec3d, Vec3d> vecs = MultipartUtils.getRayTraceVectors(context.getEntity());
+        Pair<Vector3d, Vector3d> vecs = MultipartUtils.getRayTraceVectors(context.getEntity());
         AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(pos, vecs.getLeft(), vecs.getRight(), tile.getCollisionBoxes());
         if (result != null && result.valid()) {
             return result.bounds;

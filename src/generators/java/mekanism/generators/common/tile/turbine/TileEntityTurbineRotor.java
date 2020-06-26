@@ -9,6 +9,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -131,8 +132,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         blades = nbtTags.getInt(NBTConstants.BLADES);
         position = nbtTags.getInt(NBTConstants.POSITION);
         updateRadius();

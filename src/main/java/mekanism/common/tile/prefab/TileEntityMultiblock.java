@@ -1,9 +1,9 @@
 package mekanism.common.tile.prefab;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
@@ -23,6 +23,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -234,8 +235,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isMaster = value);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> getMultiblock().setFormedForce(value));
         if (isMaster) {
@@ -253,8 +254,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
-        super.read(nbtTags);
+    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.func_230337_a_(state, nbtTags);
         if (!getMultiblock().isFormed() && nbtTags.hasUniqueId(NBTConstants.INVENTORY_ID)) {
             cachedID = nbtTags.getUniqueId(NBTConstants.INVENTORY_ID);
             if (nbtTags.contains(NBTConstants.CACHE)) {

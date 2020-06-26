@@ -39,7 +39,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
             tooltip.add(getUpgradeType(stack).getDescription());
         } else {
-            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getLocalizedName()));
+            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.func_238171_j_()));
         }
     }
 
