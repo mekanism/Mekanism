@@ -26,7 +26,7 @@ import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -170,7 +170,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         }
 
         if (!isLatched()) {
-            Vec3d motion = getMotion();
+            Vector3d motion = getMotion();
             setMotion(motion.getX(), Math.min(motion.getY() * 1.02F, 0.2F), motion.getZ());
 
             move(MoverType.SELF, getMotion());
@@ -182,14 +182,14 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
                 motion = motion.mul(0.7, 0, 0.7);
             }
             if (motion.getY() == 0) {
-                motion = new Vec3d(motion.getX(), 0.04, motion.getZ());
+                motion = new Vector3d(motion.getX(), 0.04, motion.getZ());
             }
             setMotion(motion);
         } else if (latched != null) {
             setMotion(0, 0, 0);
         } else if (latchedEntity != null && latchedEntity.getHealth() > 0) {
             int floor = getFloor(latchedEntity);
-            Vec3d motion = latchedEntity.getMotion();
+            Vector3d motion = latchedEntity.getMotion();
             if (latchedEntity.getPosY() - (floor + 1) < -0.1) {
                 latchedEntity.setMotion(motion.getX(), Math.max(0.04, motion.getY() * 1.015), motion.getZ());
             } else if (latchedEntity.getPosY() - (floor + 1) > 0.1) {
@@ -377,7 +377,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     private AxisAlignedBB getBoundingBox(EntitySize size, double x, double y, double z) {
         float f = size.width / 2F;
         double posY = y - OFFSET;
-        return new AxisAlignedBB(new Vec3d(x - f, posY, z - f), new Vec3d(x + f, posY + size.height, z + f));
+        return new AxisAlignedBB(new Vector3d(x - f, posY, z - f), new Vector3d(x + f, posY + size.height, z + f));
     }
 
     @Override

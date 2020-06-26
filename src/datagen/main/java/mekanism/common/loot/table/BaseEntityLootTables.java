@@ -1,12 +1,12 @@
 package mekanism.common.loot.table;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.providers.IEntityTypeProvider;
 import net.minecraft.data.loot.EntityLootTables;
 import net.minecraft.entity.EntityType;
-import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.loot.LootTable;
 
 public abstract class BaseEntityLootTables extends EntityLootTables {
 

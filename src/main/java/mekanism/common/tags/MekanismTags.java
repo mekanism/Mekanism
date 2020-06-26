@@ -1,9 +1,9 @@
 package mekanism.common.tags;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import java.util.EnumMap;
 import java.util.Map;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;

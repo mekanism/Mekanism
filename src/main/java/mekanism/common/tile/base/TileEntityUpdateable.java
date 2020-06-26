@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUpdateTile;
 import mekanism.common.tile.interfaces.ITileWrapper;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketDirection;
@@ -71,7 +72,7 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
         //We don't want to do a full read from NBT so simply call the super's read method to let Forge do whatever
         // it wants, but don't treat this as if it was the full saved NBT data as not everything has to be synced to the client
         super.read(tag);

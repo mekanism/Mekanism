@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.ModelRotation;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 
@@ -31,7 +31,7 @@ public class ContentsModelConfiguration implements IModelConfiguration {
 
     @Nonnull
     @Override
-    public Material resolveTexture(@Nonnull String name) {
+    public RenderMaterial resolveTexture(@Nonnull String name) {
         return ModelLoaderRegistry.blockMaterial(name);
     }
 

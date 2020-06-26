@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 
 public class AttributeStateActive extends AttributeState {
 
@@ -33,7 +33,7 @@ public class AttributeStateActive extends AttributeState {
     }
 
     @Override
-    public void fillBlockStateContainer(Block block, List<IProperty<?>> properties) {
+    public void fillBlockStateContainer(Block block, List<Property<?>> properties) {
         properties.add(activeProperty);
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 
@@ -146,10 +146,10 @@ public class Quad {
             float f3 = data.length >= 4 ? data[3] : 0;
             switch (element.getUsage()) {
                 case POSITION:
-                    vertex.pos(new Vec3d(f0, f1, f2));
+                    vertex.pos(new Vector3d(f0, f1, f2));
                     break;
                 case NORMAL:
-                    vertex.normal(new Vec3d(f0, f1, f2));
+                    vertex.normal(new Vector3d(f0, f1, f2));
                     break;
                 case COLOR:
                     vertex.color(Color.rgbad(f0, f1, f2, f3));
@@ -182,7 +182,7 @@ public class Quad {
         private TextureAtlasSprite texture;
         private final Direction side;
 
-        private Vec3d vec1, vec2, vec3, vec4;
+        private Vector3d vec1, vec2, vec3, vec4;
 
         private float minU, minV, maxU, maxV;
         private float lightU, lightV;
@@ -230,7 +230,7 @@ public class Quad {
             return this;
         }
 
-        public Builder pos(Vec3d tl, Vec3d bl, Vec3d br, Vec3d tr) {
+        public Builder pos(Vector3d tl, Vector3d bl, Vector3d br, Vector3d tr) {
             this.vec1 = tl;
             this.vec2 = bl;
             this.vec3 = br;
@@ -238,19 +238,19 @@ public class Quad {
             return this;
         }
 
-        public Builder rect(Vec3d start, double width, double height) {
+        public Builder rect(Vector3d start, double width, double height) {
             return rect(start, width, height, 1F / 16F); // default to 1/16 scale
         }
 
         // start = bottom left
-        public Builder rect(Vec3d start, double width, double height, double scale) {
+        public Builder rect(Vector3d start, double width, double height, double scale) {
             start = start.scale(scale);
             return pos(start.add(0, height * scale, 0), start, start.add(width * scale, 0, 0), start.add(width * scale, height * scale, 0));
         }
 
         public Quad build() {
             Vertex[] vertices = new Vertex[4];
-            Vec3d normal = vec3.subtract(vec2).crossProduct(vec1.subtract(vec2)).normalize();
+            Vector3d normal = vec3.subtract(vec2).crossProduct(vec1.subtract(vec2)).normalize();
             vertices[0] = Vertex.create(vec1, normal, texture, minU, minV).light(lightU, lightV);
             vertices[1] = Vertex.create(vec2, normal, texture, minU, maxV).light(lightU, lightV);
             vertices[2] = Vertex.create(vec3, normal, texture, maxU, maxV).light(lightU, lightV);

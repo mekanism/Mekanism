@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 //Note: This isn't an actual registry but should make things a bit cleaner
 @MethodsReturnNonnullByDefault
@@ -16,14 +16,14 @@ public class MekanismDamageSource extends DamageSource implements IHasTranslatio
 
     private final String translationKey;
 
-    private final Vec3d damageLocation;
+    private final Vector3d damageLocation;
 
 
     public MekanismDamageSource(String damageType) {
         this(damageType, null);
     }
 
-    private MekanismDamageSource(@Nonnull String damageType, @Nullable Vec3d damageLocation) {
+    private MekanismDamageSource(@Nonnull String damageType, @Nullable Vector3d damageLocation) {
         super(damageType);
         this.translationKey = "death.attack." + getDamageType();
         this.damageLocation = damageLocation;
@@ -32,7 +32,7 @@ public class MekanismDamageSource extends DamageSource implements IHasTranslatio
     /**
      * Gets a new instance of this damage source, that is positioned at the given location.
      */
-    public MekanismDamageSource fromPosition(@Nonnull Vec3d damageLocation) {
+    public MekanismDamageSource fromPosition(@Nonnull Vector3d damageLocation) {
         return new MekanismDamageSource(getDamageType(), damageLocation);
     }
 
@@ -43,7 +43,7 @@ public class MekanismDamageSource extends DamageSource implements IHasTranslatio
 
     @Nullable
     @Override
-    public Vec3d getDamageLocation() {
+    public Vector3d getDamageLocation() {
         return damageLocation;
     }
 

@@ -18,7 +18,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -63,7 +63,7 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
                         //Make sure to add it as immutable
                         if (!openSet.contains(pos)) {
                             openSet.add(pos.toImmutable());
-                            BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3d(blockPos).add(0.5, 0.5, 0.5), new Vec3d(pos).add(0.5, 0.5, 0.5), 10)
+                            BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, Vector3d.func_237491_b_(blockPos).add(0.5, 0.5, 0.5), Vector3d.func_237491_b_(pos).add(0.5, 0.5, 0.5), 10)
                                   .size(0.015F).lifespan(12).spawn(SpawnFunction.NO_DELAY);
                             Mekanism.proxy.renderBolt(Objects.hash(blockPos, pos), bolt);
                         }

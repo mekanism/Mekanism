@@ -5,22 +5,22 @@ import mekanism.common.loot.table.BaseEntityLootTables;
 import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
+import net.minecraft.loot.ConstantRange;
+import net.minecraft.loot.ItemLootEntry;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.RandomValueRange;
+import net.minecraft.loot.TagLootEntry;
+import net.minecraft.loot.conditions.EntityHasProperty;
+import net.minecraft.loot.conditions.KilledByPlayer;
+import net.minecraft.loot.conditions.RandomChanceWithLooting;
+import net.minecraft.loot.functions.LootingEnchantBonus;
+import net.minecraft.loot.functions.SetCount;
+import net.minecraft.loot.functions.SetNBT;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.storage.loot.ConstantRange;
-import net.minecraft.world.storage.loot.ItemLootEntry;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.RandomValueRange;
-import net.minecraft.world.storage.loot.TagLootEntry;
-import net.minecraft.world.storage.loot.conditions.EntityHasProperty;
-import net.minecraft.world.storage.loot.conditions.KilledByPlayer;
-import net.minecraft.world.storage.loot.conditions.RandomChanceWithLooting;
-import net.minecraft.world.storage.loot.functions.LootingEnchantBonus;
-import net.minecraft.world.storage.loot.functions.SetCount;
-import net.minecraft.world.storage.loot.functions.SetNBT;
 
 public class AdditionsEntityLootTables extends BaseEntityLootTables {
 

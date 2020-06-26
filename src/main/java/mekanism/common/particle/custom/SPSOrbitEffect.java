@@ -8,7 +8,7 @@ import mekanism.common.lib.math.Quaternion;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class SPSOrbitEffect extends CustomEffect {
 
@@ -16,14 +16,14 @@ public class SPSOrbitEffect extends CustomEffect {
 
     private final SPSMultiblockData multiblock;
 
-    private final Vec3d center;
-    private final Vec3d start;
+    private final Vector3d center;
+    private final Vector3d start;
     private final Pos3D axis;
 
     private float speed = 0.5F;
     private final float radius;
 
-    public SPSOrbitEffect(SPSMultiblockData multiblock, Vec3d center) {
+    public SPSOrbitEffect(SPSMultiblockData multiblock, Vector3d center) {
         super(TEXTURE, 1);
         this.multiblock = multiblock;
         this.center = center;
@@ -45,7 +45,7 @@ public class SPSOrbitEffect extends CustomEffect {
     }
 
     @Override
-    public Vec3d getPos(float partialTick) {
+    public Vector3d getPos(float partialTick) {
         return center.add(Quaternion.rotate(start, axis, (ticker + partialTick) * speed));
     }
 }

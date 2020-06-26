@@ -14,7 +14,7 @@ import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -53,9 +53,9 @@ public class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
             }
             if (item.getDistance(player) > 0.1) {
                 useEnergy(player, usage);
-                Vec3d diff = player.getPositionVec().subtract(item.getPositionVec());
-                Vec3d motionNeeded = new Vec3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
-                Vec3d motionDiff = motionNeeded.subtract(player.getMotion());
+                Vector3d diff = player.getPositionVec().subtract(item.getPositionVec());
+                Vector3d motionNeeded = new Vector3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
+                Vector3d motionDiff = motionNeeded.subtract(player.getMotion());
                 item.setMotion(motionDiff.scale(0.2));
                 if (client) {
                     BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int) (diff.length() * 4))

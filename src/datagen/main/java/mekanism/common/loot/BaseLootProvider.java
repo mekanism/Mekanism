@@ -1,7 +1,5 @@
 package mekanism.common.loot;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -9,6 +7,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import mekanism.common.loot.table.BaseBlockLootTables;
 import mekanism.common.loot.table.BaseChestLootTables;
 import mekanism.common.loot.table.BaseEntityLootTables;
@@ -16,12 +16,12 @@ import mekanism.common.loot.table.BaseFishingLootTables;
 import mekanism.common.loot.table.BaseGiftLootTables;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.LootTableProvider;
+import net.minecraft.loot.LootParameterSet;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.LootTable.Builder;
+import net.minecraft.loot.ValidationTracker;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootParameterSet;
-import net.minecraft.world.storage.loot.LootParameterSets;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTable.Builder;
-import net.minecraft.world.storage.loot.ValidationTracker;
 
 public abstract class BaseLootProvider extends LootTableProvider {
 

@@ -1,8 +1,5 @@
 package mekanism.common.util;
 
-import com.ibm.icu.text.AlphabeticIndex.Bucket;
-import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +8,9 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.Contract;
+import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
@@ -46,7 +46,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
@@ -67,16 +66,16 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.ILightReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -84,7 +83,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import org.jetbrains.annotations.Contract;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -487,7 +485,7 @@ public final class MekanismUtils {
      * @param world - world the block is in
      * @param pos   - coordinates
      */
-    public static void recheckLighting(@Nonnull ILightReader world, @Nonnull BlockPos pos) {
+    public static void recheckLighting(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos) {
         world.getLightManager().checkBlock(pos);
     }
 
@@ -587,9 +585,9 @@ public final class MekanismUtils {
     }
 
     public static BlockRayTraceResult rayTrace(PlayerEntity player, double reach) {
-        Vec3d headVec = getHeadVec(player);
-        Vec3d lookVec = player.getLook(1);
-        Vec3d endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
+        Vector3d headVec = getHeadVec(player);
+        Vector3d lookVec = player.getLook(1);
+        Vector3d endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
         return player.getEntityWorld().rayTraceBlocks(new RayTraceContext(headVec, endVec, BlockMode.OUTLINE, FluidMode.NONE, player));
     }
 
@@ -600,12 +598,12 @@ public final class MekanismUtils {
      *
      * @return head location
      */
-    private static Vec3d getHeadVec(PlayerEntity player) {
+    private static Vector3d getHeadVec(PlayerEntity player) {
         double posY = player.getPosY() + player.getEyeHeight();
         if (player.isCrouching()) {
             posY -= 0.08;
         }
-        return new Vec3d(player.getPosX(), posY, player.getPosZ());
+        return new Vector3d(player.getPosX(), posY, player.getPosZ());
     }
 
     public static ITextComponent getEnergyDisplayShort(FloatingLong energy) {
@@ -956,8 +954,8 @@ public final class MekanismUtils {
         entity.potionsNeedUpdate = true;
         if (reapply && !entity.world.isRemote) {
             Effect effect = id.getPotion();
-            effect.removeAttributesModifiersFromEntity(entity, entity.getAttributes(), id.getAmplifier());
-            effect.applyAttributesModifiersToEntity(entity, entity.getAttributes(), id.getAmplifier());
+            effect.removeAttributesModifiersFromEntity(entity, entity.func_233645_dx_(), id.getAmplifier());
+            effect.applyAttributesModifiersToEntity(entity, entity.func_233645_dx_(), id.getAmplifier());
         }
     }
 
@@ -1001,7 +999,7 @@ public final class MekanismUtils {
 
     /**
      * Calculates the redstone level based on the percentage of amount stored.
-     * 
+     *
      * @param amount   Amount currently stored
      * @param capacity Total amount that can be stored.
      *
@@ -1016,9 +1014,9 @@ public final class MekanismUtils {
 
     /**
      * Checks whether the player is in creative or spectator mode.
-     * 
+     *
      * @param player the player to check.
-     * 
+     *
      * @return true if the player is neither in creative mode, nor in spectator mode.
      */
     public static boolean isPlayingMode(PlayerEntity player) {

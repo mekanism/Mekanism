@@ -21,8 +21,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -45,7 +45,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
             if (!fluid.isEmpty()) {
                 FluidAttributes fluidAttributes = fluid.getFluid().getAttributes();
                 //TODO: Decide if we want to always be using the luminosity of the stack
-                ambientLight = Math.max(ambientLight, world instanceof ILightReader ? fluidAttributes.getLuminosity((ILightReader) world, pos)
+                ambientLight = Math.max(ambientLight, world instanceof IBlockDisplayReader ? fluidAttributes.getLuminosity((IBlockDisplayReader) world, pos)
                                                                                     : fluidAttributes.getLuminosity(fluid));
             }
         }

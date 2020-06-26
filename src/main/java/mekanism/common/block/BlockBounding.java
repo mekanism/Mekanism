@@ -15,7 +15,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.chunk.ChunkRenderCache;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
@@ -125,7 +125,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest,
-          IFluidState fluidState) {
+          FluidState fluidState) {
         if (willHarvest) {
             return true;
         }
@@ -231,7 +231,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Nonnull
     @Override
     @Deprecated
-    public IFluidState getFluidState(@Nonnull BlockState state) {
+    public FluidState getFluidState(@Nonnull BlockState state) {
         return getFluid(state);
     }
 

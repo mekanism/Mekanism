@@ -33,7 +33,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -166,7 +166,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
                 //Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
                 // matter we make sure to get an immutable instance of newPos
                 newPos = newPos.toImmutable();
-                useResult = onItemUse.applyAsInt(new ItemUseContext(player, hand, new BlockRayTraceResult(Vec3d.ZERO, Direction.UP, newPos, false)));
+                useResult = onItemUse.applyAsInt(new ItemUseContext(player, hand, new BlockRayTraceResult(Vector3d.ZERO, Direction.UP, newPos, false)));
                 if (useResult < 0) {
                     //We were denied from using the item so continue to the next block
                     continue;

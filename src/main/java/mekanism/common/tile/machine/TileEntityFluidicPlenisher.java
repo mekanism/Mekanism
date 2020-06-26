@@ -1,10 +1,10 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
@@ -37,7 +37,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -186,7 +186,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         if (world.isAirBlock(pos)) {
             return true;
         }
-        IFluidState currentFluidState = world.getFluidState(pos);
+        FluidState currentFluidState = world.getFluidState(pos);
         if (!currentFluidState.isEmpty()) {
             //There is currently a fluid in the spot
             if (currentFluidState.isSource()) {

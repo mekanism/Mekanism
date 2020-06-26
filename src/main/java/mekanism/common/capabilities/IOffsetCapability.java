@@ -3,7 +3,7 @@ package mekanism.common.capabilities;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -33,7 +33,7 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * Direction, Vec3i)}, calling this method is fine.
      */
     @Nonnull
-    default <T> LazyOptional<T> getOffsetCapability(@Nonnull Capability<T> capability, @Nullable Direction side, @Nonnull Vec3i offset) {
+    default <T> LazyOptional<T> getOffsetCapability(@Nonnull Capability<T> capability, @Nullable Direction side, @Nonnull Vector3i offset) {
         return isOffsetCapabilityDisabled(capability, side, offset) ? LazyOptional.empty() : getOffsetCapabilityIfEnabled(capability, side, offset);
     }
 
@@ -48,7 +48,7 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * @return True if this given capability is disabled for the given side and offset. If true, then {@link #getOffsetCapability(Capability, Direction, Vec3i)} should
      * return {@link LazyOptional#empty()}.
      */
-    default boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side, @Nonnull Vec3i offset) {
+    default boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side, @Nonnull Vector3i offset) {
         return false;
     }
 
@@ -70,5 +70,5 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * @return The requested capability.
      */
     @Nonnull
-    <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side, @Nonnull Vec3i offset);
+    <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side, @Nonnull Vector3i offset);
 }

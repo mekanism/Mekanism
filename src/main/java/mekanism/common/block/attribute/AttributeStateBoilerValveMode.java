@@ -11,7 +11,7 @@ import mekanism.common.MekanismLang;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.EnumProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
 
@@ -33,7 +33,7 @@ public class AttributeStateBoilerValveMode extends AttributeState {
     }
 
     @Override
-    public void fillBlockStateContainer(Block block, List<IProperty<?>> properties) {
+    public void fillBlockStateContainer(Block block, List<Property<?>> properties) {
         properties.add(modeProperty);
     }
 

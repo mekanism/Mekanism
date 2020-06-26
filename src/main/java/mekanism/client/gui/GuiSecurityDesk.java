@@ -111,7 +111,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private void setTrusted() {
         SecurityFrequency freq = tile.getFreq();
-        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(minecraft.player.getUniqueID())) {
+        if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(getMinecraft().player.getUniqueID())) {
             addTrusted(trustedField.getText());
             trustedField.setText("");
             updateButtons();

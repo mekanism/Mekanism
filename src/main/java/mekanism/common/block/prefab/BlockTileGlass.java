@@ -9,11 +9,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.EntityType;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.ILightReader;
 import net.minecraftforge.common.ToolType;
 
 public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockTile<TILE, TYPE> {
@@ -23,7 +23,7 @@ public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockT
     }
 
     @Override
-    public boolean shouldDisplayFluidOverlay(BlockState state, ILightReader world, BlockPos pos, IFluidState fluidState) {
+    public boolean shouldDisplayFluidOverlay(BlockState state, IBlockDisplayReader world, BlockPos pos, FluidState fluidState) {
         return true;
     }
 

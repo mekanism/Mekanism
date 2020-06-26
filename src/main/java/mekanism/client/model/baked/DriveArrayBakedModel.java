@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -49,10 +49,10 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
                 if (status != DriveStatus.NONE) {
                     double x = 1 + (i / 4) * 5;
                     double y = 3 + (3 - (i % 4)) * 3;
-                    driveQuads.add(new Quad.Builder(baseTex, key.getSide()).rect(new Vec3d(x, y, 16.01), 4, 1).uv(0, 0, 4, 1F).build());
+                    driveQuads.add(new Quad.Builder(baseTex, key.getSide()).rect(new Vector3d(x, y, 16.01), 4, 1).uv(0, 0, 4, 1F).build());
                     int ledIndex = status.ledIndex();
                     if (ledIndex >= 0) {
-                        driveQuads.add(new Quad.Builder(lightTex, key.getSide()).rect(new Vec3d(x, y, 16.02), 1, 1).uv(ledIndex, 0, ledIndex + 1, 1F).light(1, 1).build());
+                        driveQuads.add(new Quad.Builder(lightTex, key.getSide()).rect(new Vector3d(x, y, 16.02), 1, 1).uv(ledIndex, 0, ledIndex + 1, 1F).light(1, 1).build());
                     }
                 }
             }

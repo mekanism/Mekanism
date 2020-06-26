@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
@@ -38,12 +39,11 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
-import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntityTransmitter extends CapabilityTileEntity implements IConfigurable, ITickableTileEntity, IAlloyInteraction {
 
@@ -169,7 +169,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
-            Pair<Vec3d, Vec3d> vecs = MultipartUtils.getRayTraceVectors(player);
+            Pair<Vector3d, Vector3d> vecs = MultipartUtils.getRayTraceVectors(player);
             AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(getPos(), vecs.getLeft(), vecs.getRight(), getCollisionBoxes());
             if (result == null) {
                 return ActionResultType.PASS;

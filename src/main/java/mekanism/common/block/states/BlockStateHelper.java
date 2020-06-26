@@ -4,24 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.jetbrains.annotations.Contract;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeState;
 import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import org.jetbrains.annotations.Contract;
 
 public class BlockStateHelper {
 
@@ -46,7 +46,7 @@ public class BlockStateHelper {
     }
 
     public static void fillBlockStateContainer(Block block, StateContainer.Builder<Block, BlockState> builder) {
-        List<IProperty<?>> properties = new ArrayList<>();
+        List<Property<?>> properties = new ArrayList<>();
 
         for (Attribute attr : Attribute.getAll(block)) {
             if (attr instanceof AttributeState) {
@@ -60,7 +60,7 @@ public class BlockStateHelper {
             properties.add(FLUID_LOGGED);
         }
         if (!properties.isEmpty()) {
-            builder.add(properties.toArray(new IProperty[0]));
+            builder.add(properties.toArray(new Property[0]));
         }
     }
 
@@ -80,7 +80,7 @@ public class BlockStateHelper {
             }
         }
         if (block instanceof IStateFluidLoggable) {
-            IFluidState fluidState = world.getFluidState(pos);
+            FluidState fluidState = world.getFluidState(pos);
             state = state.with(FLUID_LOGGED, fluidState.getFluid() == Fluids.WATER);
         }
         return state;

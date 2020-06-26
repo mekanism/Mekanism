@@ -39,7 +39,7 @@ import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -177,7 +177,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         if (!player.canPlayerEdit(pos, result.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
-                        IFluidState fluidState = world.getFluidState(pos);
+                        FluidState fluidState = world.getFluidState(pos);
                         if (!fluidState.isEmpty() && fluidState.isSource()) {
                             //Just in case someone does weird things and has a fluid state that is empty and a source
                             // only allow collecting from non empty sources

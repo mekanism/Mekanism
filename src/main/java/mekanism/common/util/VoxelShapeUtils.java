@@ -9,14 +9,14 @@ import net.minecraft.block.Block;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
 
 public final class VoxelShapeUtils {
 
-    private static final Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
+    private static final Vector3d fromOrigin = new Vector3d(-0.5, -0.5, -0.5);
 
     public static void print(double x1, double y1, double z1, double x2, double y2, double z2) {
         Mekanism.logger.info("makeCuboidShape({}, {}, {}, {}, {}, {}),", Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
@@ -412,7 +412,7 @@ public final class VoxelShapeUtils {
     }
 
     /**
-     * Float version of Vec3d
+     * Float version of Vector3d
      */
     private static class Vec3f {
 

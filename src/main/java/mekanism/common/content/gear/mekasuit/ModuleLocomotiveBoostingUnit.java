@@ -7,7 +7,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -27,13 +27,13 @@ public class ModuleLocomotiveBoostingUnit extends ModuleMekaSuit {
 
         if (canFunction(player)) {
             float boost = getBoost();
-            if (!player.onGround) {
+            if (!player.func_233570_aj_()) {
                 boost /= 5F; // throttle if we're in the air
             }
             if (player.isInWater()) {
                 boost /= 5F; // throttle if we're in the water
             }
-            player.moveRelative(boost, new Vec3d(0, 0, 1));
+            player.moveRelative(boost, new Vector3d(0, 0, 1));
             useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
         }
     }
@@ -44,13 +44,13 @@ public class ModuleLocomotiveBoostingUnit extends ModuleMekaSuit {
 
         if (canFunction(player)) {
             float boost = getBoost();
-            if (!player.onGround) {
+            if (!player.func_233570_aj_()) {
                 boost /= 5F; // throttle if we're in the air
             }
             if (player.isInWater()) {
                 boost /= 5F; // throttle if we're in the water
             }
-            player.moveRelative(boost, new Vec3d(0, 0, 1));
+            player.moveRelative(boost, new Vector3d(0, 0, 1));
             // leave energy usage up to server
         }
     }

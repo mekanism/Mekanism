@@ -1,9 +1,5 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
@@ -13,6 +9,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -75,7 +75,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.Region;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
@@ -840,7 +840,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
+    public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vector3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if (hasInventory()) {
                 return itemHandlerManager.resolve(capability, side);
@@ -857,31 +857,31 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vec3i offset) {
+    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vector3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //Input
-            if (offset.equals(new Vec3i(0, 1, 0))) {
+            if (offset.equals(new Vector3i(0, 1, 0))) {
                 //If input then disable if wrong face of input
                 return side != Direction.UP;
             }
             //Output
             Direction back = getOppositeDirection();
-            if (offset.equals(new Vec3i(back.getXOffset(), 1, back.getZOffset()))) {
+            if (offset.equals(new Vector3i(back.getXOffset(), 1, back.getZOffset()))) {
                 //If output then disable if wrong face of output
                 return side != back;
             }
             return true;
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
-            if (offset.equals(Vec3i.NULL_VECTOR)) {
+            if (offset.equals(Vector3i.NULL_VECTOR)) {
                 //Disable if it is the bottom port but wrong side of it
                 return side != Direction.DOWN;
             }
             Direction left = getLeftSide();
             Direction right = getRightSide();
-            if (offset.equals(new Vec3i(left.getXOffset(), 0, left.getZOffset()))) {
+            if (offset.equals(new Vector3i(left.getXOffset(), 0, left.getZOffset()))) {
                 //Disable if left power port but wrong side of the port
                 return side != left;
-            } else if (offset.equals(new Vec3i(right.getXOffset(), 0, right.getZOffset()))) {
+            } else if (offset.equals(new Vector3i(right.getXOffset(), 0, right.getZOffset()))) {
                 //Disable if right power port but wrong side of the port
                 return side != right;
             }

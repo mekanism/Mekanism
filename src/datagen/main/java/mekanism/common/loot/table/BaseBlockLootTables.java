@@ -1,12 +1,12 @@
 package mekanism.common.loot.table;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.BlockCardboardBox;
@@ -23,15 +23,15 @@ import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Block;
 import net.minecraft.data.loot.BlockLootTables;
+import net.minecraft.loot.ConstantRange;
+import net.minecraft.loot.ItemLootEntry;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.LootTable.Builder;
+import net.minecraft.loot.functions.CopyNbt;
+import net.minecraft.loot.functions.CopyNbt.Source;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.storage.loot.ConstantRange;
-import net.minecraft.world.storage.loot.ItemLootEntry;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTable.Builder;
-import net.minecraft.world.storage.loot.functions.CopyNbt;
-import net.minecraft.world.storage.loot.functions.CopyNbt.Source;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
 

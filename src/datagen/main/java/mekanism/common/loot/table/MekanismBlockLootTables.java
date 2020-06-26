@@ -3,8 +3,8 @@ package mekanism.common.loot.table;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.OreType;
-import net.minecraft.world.storage.loot.ConstantRange;
-import net.minecraft.world.storage.loot.RandomValueRange;
+import net.minecraft.loot.ConstantRange;
+import net.minecraft.loot.RandomValueRange;
 
 public class MekanismBlockLootTables extends BaseBlockLootTables {
 

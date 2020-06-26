@@ -1,10 +1,10 @@
 package mekanism.client.gui.qio;
 
-import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import com.google.common.collect.Sets;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiDigitalIconToggle;
@@ -152,9 +152,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         @SuppressWarnings("unchecked")
         CONTAINER c = (CONTAINER) container.recreate();
         GuiQIOItemViewer<CONTAINER> s = recreate(c);
-        minecraft.currentScreen = null;
-        minecraft.player.openContainer = ((IHasContainer<?>) s).getContainer();
-        minecraft.displayGuiScreen(s);
+        getMinecraft().currentScreen = null;
+        getMinecraft().player.openContainer = ((IHasContainer<?>) s).getContainer();
+        getMinecraft().displayGuiScreen(s);
         s.searchField.setText(searchField.getText());
         c.updateSearch(searchField.getText());
     }

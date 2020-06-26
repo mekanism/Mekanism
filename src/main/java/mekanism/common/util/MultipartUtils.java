@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import java.util.Collection;
+import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -8,17 +9,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.util.math.vector.Vector3d;
 
 public final class MultipartUtils {
 
     /* taken from MCMP */
-    public static Pair<Vec3d, Vec3d> getRayTraceVectors(Entity entity) {
+    public static Pair<Vector3d, Vector3d> getRayTraceVectors(Entity entity) {
         float pitch = entity.rotationPitch;
         float yaw = entity.rotationYaw;
-        Vec3d start = new Vec3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ());
+        Vector3d start = new Vector3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ());
         float f1 = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
         float f2 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
         float f3 = -MathHelper.cos(-pitch * 0.017453292F);
@@ -29,11 +29,11 @@ public final class MultipartUtils {
         if (entity instanceof ServerPlayerEntity) {
             d3 = ((ServerPlayerEntity) entity).getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
         }
-        Vec3d end = start.add(f5 * d3, f4 * d3, f6 * d3);
+        Vector3d end = start.add(f5 * d3, f4 * d3, f6 * d3);
         return Pair.of(start, end);
     }
 
-    public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, Collection<VoxelShape> boxes) {
+    public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vector3d start, Vector3d end, Collection<VoxelShape> boxes) {
         double minDistance = Double.POSITIVE_INFINITY;
         AdvancedRayTraceResult hit = null;
         int i = -1;
@@ -70,7 +70,7 @@ public final class MultipartUtils {
             return hit != null && bounds != null;
         }
 
-        public double squareDistanceTo(Vec3d vec) {
+        public double squareDistanceTo(Vector3d vec) {
             return hit.getHitVec().squareDistanceTo(vec);
         }
     }

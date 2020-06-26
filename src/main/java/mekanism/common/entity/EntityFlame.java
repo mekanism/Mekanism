@@ -42,7 +42,7 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -65,7 +65,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         Pos3D playerPos = new Pos3D(player).translate(0, 1.6, 0);
         Pos3D flameVec = new Pos3D(1, 1, 1);
 
-        Vec3d lookVec = player.getLookVec();
+        Vector3d lookVec = player.getLookVec();
         flameVec = flameVec.multiply(lookVec).rotateYaw(6);
 
         Pos3D mergedVec = playerPos.translate(flameVec);
@@ -100,7 +100,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         prevRotationPitch = rotationPitch;
         prevRotationYaw = rotationYaw;
 
-        Vec3d motion = getMotion();
+        Vector3d motion = getMotion();
         setRawPosition(getPosX() + motion.getX(), getPosY() + motion.getY(), getPosZ() + motion.getZ());
 
         setPosition(getPosX(), getPosY(), getPosZ());
@@ -112,12 +112,12 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private void calculateVector() {
-        Vec3d localVec = new Vec3d(getPosX(), getPosY(), getPosZ());
-        Vec3d motion = getMotion();
-        Vec3d motionVec = new Vec3d(getPosX() + motion.getX() * 2, getPosY() + motion.getY() * 2, getPosZ() + motion.getZ() * 2);
+        Vector3d localVec = new Vector3d(getPosX(), getPosY(), getPosZ());
+        Vector3d motion = getMotion();
+        Vector3d motionVec = new Vector3d(getPosX() + motion.getX() * 2, getPosY() + motion.getY() * 2, getPosZ() + motion.getZ() * 2);
         BlockRayTraceResult blockRayTrace = world.rayTraceBlocks(new RayTraceContext(localVec, motionVec, BlockMode.COLLIDER, FluidMode.ANY, this));
-        localVec = new Vec3d(getPosX(), getPosY(), getPosZ());
-        motionVec = new Vec3d(getPosX() + motion.getX(), getPosY() + motion.getY(), getPosZ() + motion.getZ());
+        localVec = new Vector3d(getPosX(), getPosY(), getPosZ());
+        motionVec = new Vector3d(getPosX() + motion.getX(), getPosY() + motion.getY(), getPosZ() + motion.getZ());
         if (blockRayTrace.getType() != Type.MISS) {
             motionVec = blockRayTrace.getHitVec();
         }

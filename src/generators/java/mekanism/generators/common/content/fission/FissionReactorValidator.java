@@ -24,7 +24,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 
 public class FissionReactorValidator extends CuboidStructureValidator<FissionReactorMultiblockData> {
 
@@ -109,7 +109,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
 
     public static class FuelAssembly {
 
-        public final TreeSet<BlockPos> fuelAssemblies = new TreeSet<>(Comparator.comparingInt(Vec3i::getY));
+        public final TreeSet<BlockPos> fuelAssemblies = new TreeSet<>(Comparator.comparingInt(Vector3i::getY));
         public BlockPos controlRodAssembly;
 
         public FuelAssembly(BlockPos start, boolean isControlRod) {
