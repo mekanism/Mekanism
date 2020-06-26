@@ -17,7 +17,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ITag;
 
 class StorageRecipeProvider implements ISubRecipeProvider {
 
@@ -35,7 +35,7 @@ class StorageRecipeProvider implements ISubRecipeProvider {
         addNuggetRecipe(consumer, MekanismItems.STEEL_NUGGET, MekanismTags.Items.INGOTS_STEEL, basePath, "steel");
     }
 
-    private void addNuggetRecipe(Consumer<IFinishedRecipe> consumer, IItemProvider nugget, INamedTag<Item> ingotTag, String basePath, String name) {
+    private void addNuggetRecipe(Consumer<IFinishedRecipe> consumer, IItemProvider nugget, ITag<Item> ingotTag, String basePath, String name) {
         ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
               .addIngredient(ingotTag)
               .build(consumer, Mekanism.rl(basePath + name));
@@ -61,7 +61,7 @@ class StorageRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "salt"));
     }
 
-    private void addStorageBlockRecipe(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<BlockResource, ?> block, INamedTag<Item> ingotTag, String basePath) {
+    private void addStorageBlockRecipe(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<BlockResource, ?> block, ITag<Item> ingotTag, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(block)
               .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
               .key(Pattern.CONSTANT, ingotTag)

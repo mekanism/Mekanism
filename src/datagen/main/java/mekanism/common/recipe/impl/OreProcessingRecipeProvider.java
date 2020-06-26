@@ -40,7 +40,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ITag;
 import net.minecraftforge.common.Tags;
 
 class OreProcessingRecipeProvider implements ISubRecipeProvider {
@@ -80,11 +80,11 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
     private void addDynamicOreProcessingIngotRecipes(Consumer<IFinishedRecipe> consumer, String basePath, PrimaryResource resource) {
         net.minecraft.util.IItemProvider ingot = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
-        INamedTag<Item> ingotTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
+        ITag<Item> ingotTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
         net.minecraft.util.IItemProvider nugget = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
-        INamedTag<Item> nuggetTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
+        ITag<Item> nuggetTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
         net.minecraft.util.IItemProvider block = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource);
-        INamedTag<Item> blockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource);
+        ITag<Item> blockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource);
         net.minecraft.util.IItemProvider ore = MekanismBlocks.ORES.get(OreType.get(resource));
 
         if (resource == PrimaryResource.IRON) {
@@ -110,11 +110,11 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         IItemProvider clump = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
         IItemProvider crystal = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
         IItemProvider shard = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
-        INamedTag<Item> dustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, resource);
-        INamedTag<Item> dirtyDustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource);
-        INamedTag<Item> clumpTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
-        INamedTag<Item> shardTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
-        INamedTag<Item> crystalTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
+        ITag<Item> dustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, resource);
+        ITag<Item> dirtyDustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource);
+        ITag<Item> clumpTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
+        ITag<Item> shardTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
+        ITag<Item> crystalTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
 
         SlurryRegistryObject<?, ?> slurry = MekanismSlurries.PROCESSED_RESOURCES.get(resource);
 
@@ -227,8 +227,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
     }
 
-    private void addOreProcessingGemRecipes(Consumer<IFinishedRecipe> consumer, String basePath, net.minecraft.util.IItemProvider ore, INamedTag<Item> oreTag,
-          IItemProvider dust, INamedTag<Item> dustTag, net.minecraft.util.IItemProvider gem, INamedTag<Item> gemTag, int fromOre, int toOre, INamedTag<Item> combineType) {
+    private void addOreProcessingGemRecipes(Consumer<IFinishedRecipe> consumer, String basePath, net.minecraft.util.IItemProvider ore, ITag<Item> oreTag,
+          IItemProvider dust, ITag<Item> dustTag, net.minecraft.util.IItemProvider gem, ITag<Item> gemTag, int fromOre, int toOre, ITag<Item> combineType) {
         //from dust
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(dustTag),

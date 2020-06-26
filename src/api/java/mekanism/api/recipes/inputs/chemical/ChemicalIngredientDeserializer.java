@@ -1,5 +1,10 @@
 package mekanism.api.recipes.inputs.chemical;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -7,11 +12,6 @@ import java.util.function.IntFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
@@ -27,7 +27,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
@@ -143,7 +143,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
-            INamedTag<CHEMICAL> tag = (INamedTag<CHEMICAL>) tags.getCollection().get(resourceLocation);
+            ITag<CHEMICAL> tag = tags.getCollection().get(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown " + name + " tag '" + resourceLocation + "'");
             }
@@ -204,7 +204,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
     public interface TagIngredientCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
           INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> {
 
-        INGREDIENT create(INamedTag<CHEMICAL> tag, long amount);
+        INGREDIENT create(ITag<CHEMICAL> tag, long amount);
     }
 
     public enum IngredientType {

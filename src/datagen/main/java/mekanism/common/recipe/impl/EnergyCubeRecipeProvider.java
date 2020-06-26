@@ -18,7 +18,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ITag;
 import net.minecraftforge.common.Tags;
 
 class EnergyCubeRecipeProvider implements ISubRecipeProvider {
@@ -38,7 +38,7 @@ class EnergyCubeRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addTieredEnergyCube(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockEnergyCube, ?> energyCube,
-          IItemProvider previousEnergyCube, INamedTag<Item> ingotTag, INamedTag<Item> alloyTag) {
+          IItemProvider previousEnergyCube, ITag<Item> ingotTag, ITag<Item> alloyTag) {
         String tierName = Attribute.getBaseTier(energyCube.getBlock()).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(energyCube)
               .pattern(ENERGY_CUBE_PATTERN)

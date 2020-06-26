@@ -15,7 +15,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ITag;
 import net.minecraftforge.common.Tags;
 
 class UpgradeRecipeProvider implements ISubRecipeProvider {
@@ -36,7 +36,7 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
         addUpgradeRecipe(consumer, MekanismItems.SPEED_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.OSMIUM), basePath);
     }
 
-    private void addUpgradeRecipe(Consumer<IFinishedRecipe> consumer, ItemRegistryObject<ItemUpgrade> upgrade, INamedTag<Item> dustTag, String basePath) {
+    private void addUpgradeRecipe(Consumer<IFinishedRecipe> consumer, ItemRegistryObject<ItemUpgrade> upgrade, ITag<Item> dustTag, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(upgrade)
               .pattern(UPGRADE_PATTERN)
               .key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS)

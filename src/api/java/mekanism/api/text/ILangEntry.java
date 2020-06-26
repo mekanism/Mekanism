@@ -27,6 +27,6 @@ public interface ILangEntry extends IHasTranslationKey {
      * Translates this {@link ILangEntry} and applies the given {@link TextFormatting} to the {@link ITextComponent}
      */
     default ITextComponent translateFormatted(TextFormatting format, Object... args) {
-        return translate(args).applyTextStyle(format);
+        return translate(args).func_240699_a_(format);
     }
 }

@@ -17,7 +17,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ITag;
 
 class ControlCircuitRecipeProvider implements ISubRecipeProvider {
 
@@ -36,7 +36,7 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
         addCircuitUpgradeRecipe(consumer, MekanismItems.ULTIMATE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE, MekanismTags.Items.ALLOYS_ATOMIC, basePath, "ultimate");
     }
 
-    private void addCircuitUpgradeRecipe(Consumer<IFinishedRecipe> consumer, IItemProvider output, INamedTag<Item> circuitTag, INamedTag<Item> alloyTag, String basePath, String name) {
+    private void addCircuitUpgradeRecipe(Consumer<IFinishedRecipe> consumer, IItemProvider output, ITag<Item> circuitTag, ITag<Item> alloyTag, String basePath, String name) {
         ExtendedShapedRecipeBuilder.shapedRecipe(output)
               .pattern(circuitPattern)
               .key(Pattern.CIRCUIT, circuitTag)

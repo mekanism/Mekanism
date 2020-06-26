@@ -1,8 +1,6 @@
 package mekanism.api.chemical;
 
-import java.util.List;
-import java.util.Optional;
-import javax.annotation.Nonnull;
+import java.util.Set;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
@@ -10,9 +8,9 @@ import mekanism.api.chemical.slurry.Slurry;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.TagRegistry;
 import net.minecraft.util.ResourceLocation;
 
-//TODO - 1.16: Figure out ITag versus INamedTag (Some things we moved to INamedTag maybe could use ITag)
 public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
 
     public static final ChemicalTags<Gas> GAS = new ChemicalTags<>();
@@ -20,23 +18,27 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
     public static final ChemicalTags<Pigment> PIGMENT = new ChemicalTags<>();
     public static final ChemicalTags<Slurry> SLURRY = new ChemicalTags<>();
 
-    private TagCollection<CHEMICAL> collection = new TagCollection<>(location -> Optional.empty(), "", "");
-    private int generation;
+    //TODO - 1.16: Evaluate TagRegistry#func_232932_a_ (client side only??)
+    private final TagRegistry<CHEMICAL> collection = new TagRegistry<>();
 
     private ChemicalTags() {
     }
 
     public void setCollection(TagCollection<CHEMICAL> collectionIn) {
-        collection = collectionIn;
-        generation++;
+        collection.func_232935_a_(collectionIn);
     }
 
     public TagCollection<CHEMICAL> getCollection() {
-        return collection;
+        return collection.func_232939_b_();
     }
 
-    public int getGeneration() {
-        return generation;
+    public ResourceLocation lookupTag(ITag<CHEMICAL> tag) {
+        return getCollection().func_232975_b_(tag);
+    }
+
+    //TODO - 1.16: Figure out what this should be called
+    public Set<ResourceLocation> func_232892_b_(TagCollection<CHEMICAL> collection) {
+        return this.collection.func_232940_b_(collection);
     }
 
     public static INamedTag<Gas> gasTag(ResourceLocation resourceLocation) {
@@ -56,45 +58,6 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>> INamedTag<CHEMICAL> chemicalTag(ResourceLocation resourceLocation, ChemicalTags<CHEMICAL> chemicalTags) {
-        return new ChemicalTag<>(resourceLocation, chemicalTags);
-    }
-
-    private static class ChemicalTag<CHEMICAL extends Chemical<CHEMICAL>> implements INamedTag<CHEMICAL> {
-
-        private final ResourceLocation id;
-        private final ChemicalTags<CHEMICAL> chemicalTags;
-        private int lastKnownGeneration = -1;
-        private ITag<CHEMICAL> cachedTag;
-
-        protected ChemicalTag(ResourceLocation id, ChemicalTags<CHEMICAL> chemicalTags) {
-            this.id = id;
-            this.chemicalTags = chemicalTags;
-        }
-
-        private void validateCache() {
-            int generation = chemicalTags.getGeneration();
-            if (this.lastKnownGeneration != generation) {
-                this.cachedTag = chemicalTags.getCollection().getOrCreate(func_230234_a_());
-                this.lastKnownGeneration = generation;
-            }
-        }
-
-        @Override
-        public boolean func_230235_a_(@Nonnull CHEMICAL chemical) {
-            validateCache();
-            return this.cachedTag.func_230235_a_(chemical);
-        }
-
-        @Nonnull
-        @Override
-        public List<CHEMICAL> func_230236_b_() {
-            validateCache();
-            return this.cachedTag.func_230236_b_();
-        }
-
-        @Override
-        public ResourceLocation func_230234_a_() {
-            return id;
-        }
+        return chemicalTags.collection.func_232937_a_(resourceLocation.toString());
     }
 }

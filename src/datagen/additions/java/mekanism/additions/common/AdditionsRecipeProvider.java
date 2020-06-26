@@ -27,7 +27,6 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITag.INamedTag;
 import net.minecraftforge.common.Tags;
 
 @ParametersAreNonnullByDefault
@@ -465,7 +464,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         registerRecolor(consumer, result, AdditionsTags.Items.STAIRS_PLASTIC, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
-    private void registerRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, INamedTag<Item> blockType, ITag<Item> dye, String path) {
+    private void registerRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, ITag<Item> blockType, ITag<Item> dye, String path) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(BLOCK_RECOLOR)
               .key(Pattern.CONSTANT, blockType)

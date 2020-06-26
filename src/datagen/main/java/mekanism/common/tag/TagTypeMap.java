@@ -24,8 +24,8 @@ public class TagTypeMap<TYPE extends IForgeRegistryEntry<TYPE>> {
         return tagType;
     }
 
-    public ITag.Builder getBuilder(INamedTag<TYPE> tag) {
-        return tagToBuilder.computeIfAbsent(tag, ignored -> Tag.Builder.create());
+    public ForgeRegistryTagBuilder<TYPE> getBuilder(INamedTag<TYPE> tag, String modid) {
+        return new ForgeRegistryTagBuilder<>(tagToBuilder.computeIfAbsent(tag, ignored -> Tag.Builder.create()), modid);
     }
 
     public boolean isEmpty() {
@@ -36,7 +36,7 @@ public class TagTypeMap<TYPE extends IForgeRegistryEntry<TYPE>> {
         tagToBuilder.clear();
     }
 
-    public Map<ResourceLocation, Tag.Builder> getBuilders() {
+    public Map<ResourceLocation, ITag.Builder> getBuilders() {
         return tagToBuilder.entrySet().stream().collect(Collectors.toMap(tag -> tag.getKey().func_230234_a_(), Entry::getValue));
     }
 }

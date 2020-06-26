@@ -62,8 +62,8 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
      * Helper method to create an {@link NSSPigment} representing a tag from a {@link Tag<Pigment>}
      *//*
     @Nonnull
-    public static NSSPigment createTag(@Nonnull ITag.INamedTag<Pigment> tag) {
-        return createTag(tag.func_230234_a_());
+    public static NSSPigment createTag(@Nonnull ITag<Pigment> tag) {
+        return createTag(ChemicalTags.PIGMENT.lookupTag(tag));
     }
 
     @Override

@@ -1,9 +1,9 @@
 package mekanism.common.tags;
 
-import java.util.EnumMap;
-import java.util.Map;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import java.util.EnumMap;
+import java.util.Map;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -21,7 +21,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
 
 public class MekanismTags {
 
@@ -133,11 +132,11 @@ public class MekanismTags {
         public static final INamedTag<Item> GEMS_FLUORITE = forgeTag("gems/fluorite");
 
         private static INamedTag<Item> forgeTag(String name) {
-            return new ItemTags.Wrapper(new ResourceLocation("forge", name));
+            return ItemTags.makeWrapperTag("forge:" + name);
         }
 
         private static INamedTag<Item> tag(String name) {
-            return new ItemTags.Wrapper(Mekanism.rl(name));
+            return ItemTags.makeWrapperTag(Mekanism.rl(name).toString());
         }
     }
 
@@ -170,11 +169,11 @@ public class MekanismTags {
         public static final INamedTag<Block> STORAGE_BLOCKS_STEEL = forgeTag("storage_blocks/steel");
 
         private static INamedTag<Block> forgeTag(String name) {
-            return new BlockTags.Wrapper(new ResourceLocation("forge", name));
+            return BlockTags.makeWrapperTag("forge:" + name);
         }
 
         private static INamedTag<Block> tag(String name) {
-            return new BlockTags.Wrapper(Mekanism.rl(name));
+            return BlockTags.makeWrapperTag(Mekanism.rl(name).toString());
         }
     }
 
@@ -196,7 +195,7 @@ public class MekanismTags {
         public static final INamedTag<Fluid> HYDROFLUORIC_ACID = forgeTag("hydrofluoric_acid");
 
         private static INamedTag<Fluid> forgeTag(String name) {
-            return new FluidTags.Wrapper(new ResourceLocation("forge", name));
+            return FluidTags.makeWrapperTag("forge:" + name);
         }
     }
 

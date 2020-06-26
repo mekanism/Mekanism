@@ -11,7 +11,7 @@ import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.providers.ISlurryProvider;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 
@@ -23,7 +23,7 @@ import net.minecraft.util.Util;
 public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
 
     @Nullable
-    private final Tag<Item> oreTag;
+    private final ITag<Item> oreTag;
 
     public Slurry(SlurryBuilder builder) {
         super(builder, ChemicalTags.SLURRY);
@@ -65,7 +65,7 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
      * @return The tag for the item the slurry goes with. May be null.
      */
     @Nullable
-    public Tag<Item> getOreTag() {
+    public ITag<Item> getOreTag() {
         return oreTag;
     }
 }

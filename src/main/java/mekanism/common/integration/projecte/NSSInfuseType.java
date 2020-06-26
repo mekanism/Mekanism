@@ -62,8 +62,8 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
      * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link Tag<InfuseType>}
      *//*
     @Nonnull
-    public static NSSInfuseType createTag(@Nonnull ITag.INamedTag<InfuseType> tag) {
-        return createTag(tag.func_230234_a_());
+    public static NSSInfuseType createTag(@Nonnull ITag<InfuseType> tag) {
+        return createTag(ChemicalTags.INFUSION.lookupTag(tag));
     }
 
     @Override

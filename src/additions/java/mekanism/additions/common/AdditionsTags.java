@@ -7,7 +7,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
 
 public class AdditionsTags {
 
@@ -29,11 +28,11 @@ public class AdditionsTags {
         public static final INamedTag<Item> PLASTIC_BLOCKS_SLICK = tag("plastic_blocks/slick");
 
         private static INamedTag<Item> forgeTag(String name) {
-            return new ItemTags.Wrapper(new ResourceLocation("forge", name));
+            return ItemTags.makeWrapperTag("forge:" + name);
         }
 
         private static INamedTag<Item> tag(String name) {
-            return new ItemTags.Wrapper(MekanismAdditions.rl(name));
+            return ItemTags.makeWrapperTag(MekanismAdditions.rl(name).toString());
         }
     }
 
@@ -53,11 +52,11 @@ public class AdditionsTags {
         public static final INamedTag<Block> PLASTIC_BLOCKS_SLICK = tag("plastic_blocks/slick");
 
         private static INamedTag<Block> forgeTag(String name) {
-            return new BlockTags.Wrapper(new ResourceLocation("forge", name));
+            return BlockTags.makeWrapperTag("forge:" + name);
         }
 
         private static INamedTag<Block> tag(String name) {
-            return new BlockTags.Wrapper(MekanismAdditions.rl(name));
+            return BlockTags.makeWrapperTag(MekanismAdditions.rl(name).toString());
         }
     }
 
@@ -67,8 +66,7 @@ public class AdditionsTags {
         public static final INamedTag<EntityType<?>> ENDERMEN = forgeTag("endermen");
 
         private static INamedTag<EntityType<?>> forgeTag(String name) {
-            return new EntityTypeTags.Wrapper(new ResourceLocation("forge", name));
+            return EntityTypeTags.makeWrapperTag("forge:" + name);
         }
-
     }
 }

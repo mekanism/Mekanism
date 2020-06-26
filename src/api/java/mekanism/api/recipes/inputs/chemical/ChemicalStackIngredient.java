@@ -1,21 +1,21 @@
 package mekanism.api.recipes.inputs.chemical;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ITag;
 
 public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements
       IChemicalStackIngredient<CHEMICAL, STACK> {
@@ -81,10 +81,10 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
           ChemicalStackIngredient<CHEMICAL, STACK> {
 
         @Nonnull
-        private final INamedTag<CHEMICAL> tag;
+        private final ITag<CHEMICAL> tag;
         private final long amount;
 
-        public TaggedIngredient(@Nonnull INamedTag<CHEMICAL> tag, long amount) {
+        public TaggedIngredient(@Nonnull ITag<CHEMICAL> tag, long amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -129,7 +129,7 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.TAGGED);
-            buffer.writeResourceLocation(tag.func_230234_a_());
+            buffer.writeResourceLocation(getIngredientInfo().getTagLocation(tag));
             buffer.writeVarLong(amount);
         }
 
@@ -138,7 +138,7 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             json.addProperty(JsonConstants.AMOUNT, amount);
-            json.addProperty(JsonConstants.TAG, tag.func_230234_a_().toString());
+            json.addProperty(JsonConstants.TAG, getIngredientInfo().getTagLocation(tag).toString());
             return json;
         }
     }

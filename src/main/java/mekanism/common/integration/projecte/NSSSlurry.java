@@ -63,8 +63,8 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
      * Helper method to create an {@link NSSSlurry} representing a tag from a {@link Tag<Slurry>}
      *//*
     @Nonnull
-    public static NSSSlurry createTag(@Nonnull ITag.INamedTag<Slurry> tag) {
-        return createTag(tag.func_230234_a_());
+    public static NSSSlurry createTag(@Nonnull ITag<Slurry> tag) {
+        return createTag(ChemicalTags.SLURRY.lookupTag(tag));
     }
 
     @Override

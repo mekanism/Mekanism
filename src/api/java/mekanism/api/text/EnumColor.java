@@ -8,6 +8,7 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ITag;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -48,6 +49,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
 
     public final int[] rgbCode;
 
+    //TODO - 1.16: Apply the color directly instead?
     public final TextFormatting textFormatting;
     private final APILang langEntry;
     private final String englishName;
@@ -100,7 +102,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      * @return the color's name and color prefix
      */
     public ITextComponent getColoredName() {
-        return getName().applyTextStyle(textFormatting);
+        return getName().func_240699_a_(textFormatting);
     }
 
     /**
@@ -108,7 +110,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      *
      * @return the color's name
      */
-    public ITextComponent getName() {
+    public IFormattableTextComponent getName() {
         return new TranslationTextComponent(langEntry.getTranslationKey());
     }
 

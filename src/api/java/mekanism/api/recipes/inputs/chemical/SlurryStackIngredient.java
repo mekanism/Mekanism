@@ -1,8 +1,8 @@
 package mekanism.api.recipes.inputs.chemical;
 
+import com.google.gson.JsonElement;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.gson.JsonElement;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.providers.ISlurryProvider;
@@ -10,7 +10,7 @@ import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredi
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.SingleIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.TaggedIngredient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ITag;
 
 public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, SlurryStack> {
 
@@ -22,7 +22,7 @@ public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, 
         return new Single(slurry.getStack(amount));
     }
 
-    static SlurryStackIngredient from(@Nonnull INamedTag<Slurry> tag, long amount) {
+    static SlurryStackIngredient from(@Nonnull ITag<Slurry> tag, long amount) {
         return new Tagged(tag, amount);
     }
 
@@ -52,7 +52,7 @@ public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, 
 
     class Tagged extends TaggedIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
-        protected Tagged(@Nonnull INamedTag<Slurry> tag, long amount) {
+        protected Tagged(@Nonnull ITag<Slurry> tag, long amount) {
             super(tag, amount);
         }
     }

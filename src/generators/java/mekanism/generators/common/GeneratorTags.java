@@ -6,7 +6,6 @@ import mekanism.common.Mekanism;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.util.ResourceLocation;
 
 public class GeneratorTags {
 
@@ -18,7 +17,7 @@ public class GeneratorTags {
         public static final INamedTag<Fluid> TRITIUM = forgeTag("tritium");
 
         private static INamedTag<Fluid> forgeTag(String name) {
-            return new FluidTags.Wrapper(new ResourceLocation("forge", name));
+            return FluidTags.makeWrapperTag("forge:" + name);
         }
     }
 

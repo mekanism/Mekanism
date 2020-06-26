@@ -63,8 +63,8 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
      * Helper method to create an {@link NSSGas} representing a tag from a {@link Tag<Gas>}
      *//*
     @Nonnull
-    public static NSSGas createTag(@Nonnull ITag.INamedTag<Gas> tag) {
-        return createTag(tag.func_230234_a_());
+    public static NSSGas createTag(@Nonnull ITag<Gas> tag) {
+        return createTag(ChemicalTags.GAS.lookupTag(tag));
     }
 
     @Override

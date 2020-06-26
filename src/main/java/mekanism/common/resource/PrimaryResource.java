@@ -3,7 +3,7 @@ package mekanism.common.resource;
 import java.util.function.Supplier;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.item.Item;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ITag;
 import net.minecraftforge.common.Tags;
 
 public enum PrimaryResource implements IResource {
@@ -17,19 +17,19 @@ public enum PrimaryResource implements IResource {
 
     private final String name;
     private final int tint;
-    private final Supplier<INamedTag<Item>> oreTag;
+    private final Supplier<ITag<Item>> oreTag;
     private final boolean isVanilla;
     private final BlockResourceInfo resourceBlockInfo;
 
-    PrimaryResource(String name, int tint, INamedTag<Item> oreTag) {
+    PrimaryResource(String name, int tint, ITag<Item> oreTag) {
         this(name, tint, () -> oreTag, true, null);
     }
 
-    PrimaryResource(String name, int tint, Supplier<INamedTag<Item>> oreTag, BlockResourceInfo resourceBlockInfo) {
+    PrimaryResource(String name, int tint, Supplier<ITag<Item>> oreTag, BlockResourceInfo resourceBlockInfo) {
         this(name, tint, oreTag, false, resourceBlockInfo);
     }
 
-    PrimaryResource(String name, int tint, Supplier<INamedTag<Item>> oreTag, boolean isVanilla, BlockResourceInfo resourceBlockInfo) {
+    PrimaryResource(String name, int tint, Supplier<ITag<Item>> oreTag, boolean isVanilla, BlockResourceInfo resourceBlockInfo) {
         this.name = name;
         this.tint = tint;
         this.oreTag = oreTag;
@@ -51,7 +51,7 @@ public enum PrimaryResource implements IResource {
         return tint;
     }
 
-    public INamedTag<Item> getOreTag() {
+    public ITag<Item> getOreTag() {
         return oreTag.get();
     }
 

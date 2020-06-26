@@ -1,21 +1,21 @@
 package mekanism.common.tag;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import javax.annotation.Nonnull;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -40,10 +40,13 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.ITag.Proxy;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class BaseTagProvider implements IDataProvider {
 
@@ -90,28 +93,36 @@ public abstract class BaseTagProvider implements IDataProvider {
     @SuppressWarnings("UnstableApiUsage")
     private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull DirectoryCache cache, TagTypeMap<TYPE> tagTypeMap) {
         if (!tagTypeMap.isEmpty()) {
-            TagCollection<TYPE> tagCollection = new TagCollection<>(id -> Optional.empty(), "", "generated");
-            tagCollection.registerAll(tagTypeMap.getBuilders());
             TagType<TYPE> tagType = tagTypeMap.getTagType();
             IForgeRegistry<TYPE> registry = tagType.getRegistry();
-            for (Entry<ResourceLocation, ITag<TYPE>> entry : tagCollection.getTagMap().entrySet()) {
+            ITag<TYPE> emptyTag = Tag.func_241284_a_();
+            Map<ResourceLocation, ITag.Builder> tagToBuilder = tagTypeMap.getBuilders();
+            //TODO - 1.16: Give this function a better name
+            Function<ResourceLocation, ITag<TYPE>> function = id -> tagToBuilder.containsKey(id) ? emptyTag : null;
+            for (Entry<ResourceLocation, ITag.Builder> entry : tagToBuilder.entrySet()) {
                 ResourceLocation id = entry.getKey();
-                Path path = gen.getOutputFolder().resolve("data/" + id.getNamespace() + "/tags/" + tagType.getPath() + "/" + id.getPath() + ".json");
-                try {
-                    String json = GSON.toJson(cleanJsonTag(entry.getValue().serialize(registry::getKey)));
-                    String hash = HASH_FUNCTION.hashUnencodedChars(json).toString();
-                    if (!Objects.equals(cache.getPreviousHash(path), hash) || !Files.exists(path)) {
-                        Files.createDirectories(path.getParent());
-                        try (BufferedWriter bufferedwriter = Files.newBufferedWriter(path)) {
-                            bufferedwriter.write(json);
+                ITag.Builder tagBuilder = entry.getValue();
+                List<Proxy> list = tagBuilder.func_232963_b_(function, registry::getValue).collect(Collectors.toList());
+                if (!list.isEmpty()) {
+                    throw new IllegalArgumentException(String.format("Couldn't define tag %s as it is missing following references: %s", id,
+                          list.stream().map(Objects::toString).collect(Collectors.joining(","))));
+                } else {
+                    Path path = gen.getOutputFolder().resolve("data/" + id.getNamespace() + "/tags/" + tagType.getPath() + "/" + id.getPath() + ".json");
+                    try {
+                        String json = GSON.toJson(cleanJsonTag(tagBuilder.func_232965_c_()));
+                        String hash = HASH_FUNCTION.hashUnencodedChars(json).toString();
+                        if (!Objects.equals(cache.getPreviousHash(path), hash) || !Files.exists(path)) {
+                            Files.createDirectories(path.getParent());
+                            try (BufferedWriter bufferedwriter = Files.newBufferedWriter(path)) {
+                                bufferedwriter.write(json);
+                            }
                         }
+                        cache.recordHash(path, hash);
+                    } catch (IOException exception) {
+                        LOGGER.error("Couldn't save tags to {}", path, exception);
                     }
-                    cache.recordHash(path, hash);
-                } catch (IOException exception) {
-                    LOGGER.error("Couldn't save tags to {}", path, exception);
                 }
             }
-            tagType.setCollection(tagCollection);
         }
     }
 
@@ -131,59 +142,59 @@ public abstract class BaseTagProvider implements IDataProvider {
         return (TagTypeMap<TYPE>) supportedTagTypes.get(tagType);
     }
 
-    protected <TYPE extends IForgeRegistryEntry<TYPE>> ITag.Builder getBuilder(TagType<TYPE> tagType, INamedTag<TYPE> tag) {
-        return getTagTypeMap(tagType).getBuilder(tag);
+    protected <TYPE extends IForgeRegistryEntry<TYPE>> ForgeRegistryTagBuilder<TYPE> getBuilder(TagType<TYPE> tagType, INamedTag<TYPE> tag) {
+        return getTagTypeMap(tagType).getBuilder(tag, modid);
     }
 
-    protected ITag.Builder getItemBuilder(INamedTag<Item> tag) {
+    protected ForgeRegistryTagBuilder<Item> getItemBuilder(INamedTag<Item> tag) {
         return getBuilder(TagType.ITEM, tag);
     }
 
-    protected ITag.Builder getBlockBuilder(INamedTag<Block> tag) {
+    protected ForgeRegistryTagBuilder<Block> getBlockBuilder(INamedTag<Block> tag) {
         return getBuilder(TagType.BLOCK, tag);
     }
 
-    protected ITag.Builder getEntityTypeBuilder(INamedTag<EntityType<?>> tag) {
+    protected ForgeRegistryTagBuilder<EntityType<?>> getEntityTypeBuilder(INamedTag<EntityType<?>> tag) {
         return getBuilder(TagType.ENTITY_TYPE, tag);
     }
 
-    protected ITag.Builder getFluidBuilder(INamedTag<Fluid> tag) {
+    protected ForgeRegistryTagBuilder<Fluid> getFluidBuilder(INamedTag<Fluid> tag) {
         return getBuilder(TagType.FLUID, tag);
     }
 
-    protected ITag.Builder getGasBuilder(INamedTag<Gas> tag) {
+    protected ForgeRegistryTagBuilder<Gas> getGasBuilder(INamedTag<Gas> tag) {
         return getBuilder(TagType.GAS, tag);
     }
 
-    protected ITag.Builder getInfuseTypeBuilder(INamedTag<InfuseType> tag) {
+    protected ForgeRegistryTagBuilder<InfuseType> getInfuseTypeBuilder(INamedTag<InfuseType> tag) {
         return getBuilder(TagType.INFUSE_TYPE, tag);
     }
 
-    protected ITag.Builder getPigmentBuilder(INamedTag<Pigment> tag) {
+    protected ForgeRegistryTagBuilder<Pigment> getPigmentBuilder(INamedTag<Pigment> tag) {
         return getBuilder(TagType.PIGMENT, tag);
     }
 
-    protected ITag.Builder getSlurryBuilder(INamedTag<Slurry> tag) {
+    protected ForgeRegistryTagBuilder<Slurry> getSlurryBuilder(INamedTag<Slurry> tag) {
         return getBuilder(TagType.SLURRY, tag);
     }
 
     protected void addToTag(INamedTag<Item> tag, IItemProvider... itemProviders) {
-        ITag.Builder tagBuilder = getItemBuilder(tag);
+        ForgeRegistryTagBuilder<Item> tagBuilder = getItemBuilder(tag);
         for (IItemProvider itemProvider : itemProviders) {
             tagBuilder.add(itemProvider.getItem());
         }
     }
 
     protected void addToTag(INamedTag<Block> tag, IBlockProvider... blockProviders) {
-        ITag.Builder tagBuilder = getBlockBuilder(tag);
+        ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(tag);
         for (IBlockProvider blockProvider : blockProviders) {
             tagBuilder.add(blockProvider.getBlock());
         }
     }
 
     protected void addToTags(INamedTag<Item> itemTag, INamedTag<Block> blockTag, IBlockProvider... blockProviders) {
-        ITag.Builder itemTagBuilder = getItemBuilder(itemTag);
-        ITag.Builder blockTagBuilder = getBlockBuilder(blockTag);
+        ForgeRegistryTagBuilder<Item> itemTagBuilder = getItemBuilder(itemTag);
+        ForgeRegistryTagBuilder<Block> blockTagBuilder = getBlockBuilder(blockTag);
         for (IBlockProvider blockProvider : blockProviders) {
             itemTagBuilder.add(blockProvider.getItem());
             blockTagBuilder.add(blockProvider.getBlock());
@@ -191,14 +202,14 @@ public abstract class BaseTagProvider implements IDataProvider {
     }
 
     protected void addToTag(INamedTag<EntityType<?>> tag, IEntityTypeProvider... entityTypeProviders) {
-        ITag.Builder tagBuilder = getEntityTypeBuilder(tag);
+        ForgeRegistryTagBuilder<EntityType<?>> tagBuilder = getEntityTypeBuilder(tag);
         for (IEntityTypeProvider entityTypeProvider : entityTypeProviders) {
             tagBuilder.add(entityTypeProvider.getEntityType());
         }
     }
 
     protected void addToTag(INamedTag<Fluid> tag, FluidRegistryObject<?, ?, ?, ?>... fluidRegistryObjects) {
-        ITag.Builder tagBuilder = getFluidBuilder(tag);
+        ForgeRegistryTagBuilder<Fluid> tagBuilder = getFluidBuilder(tag);
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidRegistryObjects) {
             tagBuilder.add(fluidRO.getStillFluid(), fluidRO.getFlowingFluid());
         }
@@ -221,7 +232,7 @@ public abstract class BaseTagProvider implements IDataProvider {
     }
 
     @SafeVarargs
-    protected final <CHEMICAL extends Chemical<CHEMICAL>> void addToTag(ITag.Builder tagBuilder, IChemicalProvider<CHEMICAL>... providers) {
+    protected final <CHEMICAL extends Chemical<CHEMICAL>> void addToTag(ForgeRegistryTagBuilder<CHEMICAL> tagBuilder, IChemicalProvider<CHEMICAL>... providers) {
         for (IChemicalProvider<CHEMICAL> provider : providers) {
             tagBuilder.add(provider.getChemical());
         }
