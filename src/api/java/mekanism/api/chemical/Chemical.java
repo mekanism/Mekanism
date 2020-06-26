@@ -11,7 +11,7 @@ import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -33,7 +33,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
     private String translationKey;
 
     protected Chemical(ChemicalBuilder<CHEMICAL, ?> builder, ChemicalTags<CHEMICAL> chemicalTags) {
-        reverseTags = new ReverseTagWrapper<>(getChemical(), chemicalTags::getGeneration, chemicalTags::getCollection);
+        reverseTags = new ReverseTagWrapper<>(getChemical(), chemicalTags::getCollection);
         this.attributeMap = builder.getAttributeMap();
         this.iconLocation = builder.getTexture();
         this.tint = builder.getColor();
@@ -147,8 +147,8 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
         return hidden;
     }
 
-    public boolean isIn(Tag<CHEMICAL> tag) {
-        return tag.contains(getChemical());
+    public boolean isIn(ITag<CHEMICAL> tag) {
+        return tag.func_230235_a_(getChemical());
     }
 
     public Set<ResourceLocation> getTags() {

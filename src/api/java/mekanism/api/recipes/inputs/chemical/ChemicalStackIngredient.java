@@ -82,10 +82,10 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
           ChemicalStackIngredient<CHEMICAL, STACK> {
 
         @Nonnull
-        private final ITag.INamedTag<CHEMICAL> tag;
+        private final ITag<CHEMICAL> tag;
         private final long amount;
 
-        public TaggedIngredient(@Nonnull ITag.INamedTag<CHEMICAL> tag, long amount) {
+        public TaggedIngredient(@Nonnull ITag<CHEMICAL> tag, long amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -130,7 +130,7 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.TAGGED);
-            buffer.writeResourceLocation(tag.func_230234_a_());
+            buffer.writeResourceLocation(tag.getId());
             buffer.writeVarLong(amount);
         }
 

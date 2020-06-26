@@ -22,7 +22,7 @@ public interface PigmentStackIngredient extends IChemicalStackIngredient<Pigment
         return new Single(pigment.getStack(amount));
     }
 
-    static PigmentStackIngredient from(@Nonnull ITag.INamedTag<Pigment> tag, long amount) {
+    static PigmentStackIngredient from(@Nonnull ITag<Pigment> tag, long amount) {
         return new Tagged(tag, amount);
     }
 
@@ -52,7 +52,7 @@ public interface PigmentStackIngredient extends IChemicalStackIngredient<Pigment
 
     class Tagged extends TaggedIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
-        protected Tagged(@Nonnull ITag.INamedTag<Pigment> tag, long amount) {
+        protected Tagged(@Nonnull ITag<Pigment> tag, long amount) {
             super(tag, amount);
         }
     }

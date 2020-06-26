@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 
 public final class EmptySlurry extends Slurry {
@@ -15,7 +15,7 @@ public final class EmptySlurry extends Slurry {
     }
 
     @Override
-    public boolean isIn(@Nonnull Tag<Slurry> tags) {
+    public boolean isIn(@Nonnull ITag<Slurry> tags) {
         //Empty slurry is in no tags
         return false;
     }

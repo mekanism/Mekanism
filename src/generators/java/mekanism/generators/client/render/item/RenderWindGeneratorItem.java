@@ -25,7 +25,7 @@ public class RenderWindGeneratorItem extends ItemStackTileEntityRenderer {
             //Only update the angle if we are in a world and that world is not blacklisted
             if (Minecraft.getInstance().world != null) {
                 List<ResourceLocation> blacklistedDimensions = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get();
-                if (blacklistedDimensions.isEmpty() || !blacklistedDimensions.contains(Minecraft.getInstance().world.func_230315_m_().getRegistryName())) {
+                if (blacklistedDimensions.isEmpty() || !blacklistedDimensions.contains(Minecraft.getInstance().world.func_234923_W_().func_240901_a_())) {
                     angle = (angle + 2) % 360;
                 }
             }

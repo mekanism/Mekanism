@@ -37,7 +37,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         return new Single(instance);
     }
 
-    public static FluidStackIngredient from(@Nonnull ITag.INamedTag<Fluid> fluidTag, int minAmount) {
+    public static FluidStackIngredient from(@Nonnull ITag<Fluid> fluidTag, int minAmount) {
         return new Tagged(fluidTag, minAmount);
     }
 
@@ -93,7 +93,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
-            Tag<Fluid> tag = FluidTags.getCollection().get(resourceLocation);
+            ITag<Fluid> tag = FluidTags.getCollection().get(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown fluid tag '" + resourceLocation + "'");
             }
@@ -179,10 +179,10 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
     public static class Tagged extends FluidStackIngredient {
 
         @Nonnull
-        private final ITag.INamedTag<Fluid> tag;
+        private final ITag<Fluid> tag;
         private final int amount;
 
-        public Tagged(@Nonnull ITag.INamedTag<Fluid> tag, int amount) {
+        public Tagged(@Nonnull ITag<Fluid> tag, int amount) {
             this.tag = tag;
             this.amount = amount;
         }

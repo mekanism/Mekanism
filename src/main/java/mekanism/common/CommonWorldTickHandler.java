@@ -86,7 +86,7 @@ public class CommonWorldTickHandler {
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;
             }
-            ResourceLocation dimensionName = world.func_230315_m_().getRegistryName();
+            ResourceLocation dimensionName = world.func_234923_W_().func_240901_a_();
             //Credit to E. Beef
             if (chunkRegenMap.containsKey(dimensionName)) {
                 Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionName);

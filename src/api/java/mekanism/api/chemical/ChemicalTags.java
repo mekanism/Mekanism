@@ -8,6 +8,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
@@ -59,7 +60,7 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
         return new ChemicalTag<>(resourceLocation, chemicalTags);
     }
 
-    private static class ChemicalTag<CHEMICAL extends Chemical<CHEMICAL>> implements Tag<CHEMICAL> {
+    private static class ChemicalTag<CHEMICAL extends Chemical<CHEMICAL>> extends Tag<CHEMICAL> {
 
         private final ChemicalTags<CHEMICAL> chemicalTags;
         private int lastKnownGeneration = -1;
@@ -79,9 +80,9 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
         }
 
         @Override
-        public boolean contains(@Nonnull CHEMICAL chemical) {
+        public boolean func_230235_a_(@Nonnull CHEMICAL chemical) {
             validateCache();
-            return this.cachedTag.contains(chemical);
+            return this.cachedTag.func_230235_a_(chemical);
         }
 
         @Nonnull

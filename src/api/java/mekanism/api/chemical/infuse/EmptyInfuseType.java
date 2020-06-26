@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 
 public final class EmptyInfuseType extends InfuseType {
@@ -15,7 +15,7 @@ public final class EmptyInfuseType extends InfuseType {
     }
 
     @Override
-    public boolean isIn(@Nonnull Tag<InfuseType> tags) {
+    public boolean isIn(@Nonnull ITag<InfuseType> tags) {
         //Empty infuse type is in no tags
         return false;
     }

@@ -33,7 +33,7 @@ public class PacketUpdateTile {
             TileEntityUpdateable tile = MekanismUtils.getTileEntity(TileEntityUpdateable.class, player.world, message.pos, true);
             if (tile == null) {
                 Mekanism.logger.info("Update tile packet received for position: {} in world: {}, but no valid tile was found.", message.pos,
-                      player.world.func_230315_m_().getRegistryName());
+                      player.world.func_234923_W_().func_240901_a_());
             } else {
                 tile.handleUpdatePacket(message.updateTag);
             }

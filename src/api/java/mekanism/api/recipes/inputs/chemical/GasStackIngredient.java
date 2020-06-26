@@ -22,7 +22,7 @@ public interface GasStackIngredient extends IChemicalStackIngredient<Gas, GasSta
         return new Single(gas.getStack(amount));
     }
 
-    static GasStackIngredient from(@Nonnull ITag.INamedTag<Gas> tag, long amount) {
+    static GasStackIngredient from(@Nonnull ITag<Gas> tag, long amount) {
         return new Tagged(tag, amount);
     }
 
@@ -52,7 +52,7 @@ public interface GasStackIngredient extends IChemicalStackIngredient<Gas, GasSta
 
     class Tagged extends TaggedIngredient<Gas, GasStack> implements GasStackIngredient {
 
-        protected Tagged(@Nonnull ITag.INamedTag<Gas> tag, long amount) {
+        protected Tagged(@Nonnull ITag<Gas> tag, long amount) {
             super(tag, amount);
         }
     }

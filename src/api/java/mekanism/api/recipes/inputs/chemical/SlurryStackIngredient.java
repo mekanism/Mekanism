@@ -22,7 +22,7 @@ public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, 
         return new Single(slurry.getStack(amount));
     }
 
-    static SlurryStackIngredient from(@Nonnull ITag.INamedTag<Slurry> tag, long amount) {
+    static SlurryStackIngredient from(@Nonnull ITag<Slurry> tag, long amount) {
         return new Tagged(tag, amount);
     }
 
@@ -52,7 +52,7 @@ public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, 
 
     class Tagged extends TaggedIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
-        protected Tagged(@Nonnull ITag.INamedTag<Slurry> tag, long amount) {
+        protected Tagged(@Nonnull ITag<Slurry> tag, long amount) {
             super(tag, amount);
         }
     }

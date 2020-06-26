@@ -1,4 +1,4 @@
-package mekanism.api.datagen.tag;
+/*package mekanism.api.datagen.tag;
 
 import java.nio.file.Path;
 import javax.annotation.Nonnull;
@@ -14,6 +14,7 @@ import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 
+//TODO - 1.16: Add this back
 public abstract class ChemicalTagsProvider<CHEMICAL extends Chemical<CHEMICAL>> extends ForgeRegistryTagProvider<CHEMICAL> {
 
     private final String baseName;
@@ -71,4 +72,4 @@ public abstract class ChemicalTagsProvider<CHEMICAL extends Chemical<CHEMICAL>> 
             super(gen, modid, MekanismAPI.slurryRegistry(), "Slurry", "slurries", ChemicalTags.SLURRY);
         }
     }
-}
+}*/

@@ -27,7 +27,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredient;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
@@ -143,7 +143,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
-            Tag<CHEMICAL> tag = tags.getCollection().get(resourceLocation);
+            ITag<CHEMICAL> tag = tags.getCollection().get(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown " + name + " tag '" + resourceLocation + "'");
             }
@@ -204,7 +204,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
     public interface TagIngredientCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
           INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> {
 
-        INGREDIENT create(Tag<CHEMICAL> tag, long amount);
+        INGREDIENT create(ITag<CHEMICAL> tag, long amount);
     }
 
     public enum IngredientType {
