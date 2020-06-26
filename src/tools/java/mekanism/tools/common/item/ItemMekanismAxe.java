@@ -1,10 +1,10 @@
 package mekanism.tools.common.item;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;

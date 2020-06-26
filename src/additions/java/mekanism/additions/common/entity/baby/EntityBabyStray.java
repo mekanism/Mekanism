@@ -9,7 +9,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.monster.StrayEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -46,10 +46,11 @@ public class EntityBabyStray extends StrayEntity {
         return getDataManager().get(IS_CHILD);
     }
 
+    @Override
     public void setChild(boolean child) {
         getDataManager().set(IS_CHILD, child);
         if (world != null && !world.isRemote) {
-            IAttributeInstance attributeInstance = getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+            ModifiableAttributeInstance attributeInstance = getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
             attributeInstance.removeModifier(MekanismAdditions.babySpeedBoostModifier);
             if (child) {
                 attributeInstance.applyModifier(MekanismAdditions.babySpeedBoostModifier);

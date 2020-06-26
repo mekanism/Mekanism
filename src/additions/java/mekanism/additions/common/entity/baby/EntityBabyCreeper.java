@@ -6,8 +6,8 @@ import mekanism.additions.common.registries.AdditionsItems;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -39,13 +39,14 @@ public class EntityBabyCreeper extends CreeperEntity {
         return getDataManager().get(IS_CHILD);
     }
 
+    @Override
     public void setChild(boolean child) {
         getDataManager().set(IS_CHILD, child);
         if (world != null && !world.isRemote) {
-            IAttributeInstance attributeInstance = getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+            ModifiableAttributeInstance attributeInstance = getAttribute(Attributes.field_233821_d_);
             attributeInstance.removeModifier(MekanismAdditions.babySpeedBoostModifier);
             if (child) {
-                attributeInstance.applyModifier(MekanismAdditions.babySpeedBoostModifier);
+                attributeInstance.func_233767_b_(MekanismAdditions.babySpeedBoostModifier);
             }
         }
     }
@@ -80,7 +81,7 @@ public class EntityBabyCreeper extends CreeperEntity {
             Explosion.Mode mode = ForgeEventFactory.getMobGriefingEvent(world, this) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
             float f = isCharged() ? 1 : 0.5F;
             dead = true;
-            world.createExplosion(this, getPosX(), getPosY(), getPosZ(), (float) explosionRadius * f, mode);
+            world.createExplosion(this, getPosX(), getPosY(), getPosZ(), explosionRadius * f, mode);
             remove();
             spawnLingeringCloud();
         }
