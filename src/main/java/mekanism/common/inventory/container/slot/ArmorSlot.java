@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container.slot;
 
-import com.mojang.datafixers.util.Pair;
 import javax.annotation.Nonnull;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -47,7 +47,7 @@ public class ArmorSlot extends InsertableSlot {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public Pair<ResourceLocation, ResourceLocation> getBackground() {
+    public Pair<ResourceLocation, ResourceLocation> func_225517_c_() {
         return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[slotType.getIndex()]);
     }
 }

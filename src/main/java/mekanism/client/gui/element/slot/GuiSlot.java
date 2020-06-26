@@ -1,9 +1,9 @@
 package mekanism.client.gui.element.slot;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -132,7 +132,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
         if (onClick != null && isValidClickButton(button)) {
             if (mouseX >= field_230690_l_ && mouseY >= field_230691_m_ && mouseX < field_230690_l_ + field_230688_j_ && mouseY < field_230691_m_ + field_230689_k_) {
                 onClick.onClick(this, (int) mouseX, (int) mouseY);
-                playDownSound(Minecraft.getInstance().getSoundHandler());
+                func_230988_a_(Minecraft.getInstance().getSoundHandler());
                 return true;
             }
         }

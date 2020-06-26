@@ -1,11 +1,11 @@
 package mekanism.common.lib.transmitter;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Range3D;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import net.minecraft.util.math.BlockPos;
@@ -202,7 +202,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
                 initialized = true;
             }
         }
-        return new Range3D(minX, minZ, maxX, maxZ, world.func_230315_m_());
+        return new Range3D(minX, minZ, maxX, maxZ, world.func_234923_W_());
     }
 
     public static class TransferEvent<NETWORK extends DynamicBufferedNetwork<?, NETWORK, ?, ?>> extends Event {

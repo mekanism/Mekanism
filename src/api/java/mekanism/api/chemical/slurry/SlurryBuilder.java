@@ -7,8 +7,8 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalBuilder;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
 @ParametersAreNonnullByDefault
@@ -16,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
 
     @Nullable
-    private Tag<Item> oreTag;
+    private INamedTag<Item> oreTag;
 
     protected SlurryBuilder(ResourceLocation texture) {
         super(texture);
@@ -38,13 +38,13 @@ public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
         return ore(new ItemTags.Wrapper(Objects.requireNonNull(oreTagLocation)));
     }
 
-    public SlurryBuilder ore(Tag<Item> oreTag) {
+    public SlurryBuilder ore(INamedTag<Item> oreTag) {
         this.oreTag = Objects.requireNonNull(oreTag);
         return this;
     }
 
     @Nullable
-    public Tag<Item> getOreTag() {
+    public INamedTag<Item> getOreTag() {
         return oreTag;
     }
 }

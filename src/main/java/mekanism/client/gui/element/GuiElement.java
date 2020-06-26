@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -41,7 +42,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     protected boolean playClickSound;
     public boolean isOverlay;
 
-    public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, String text) {
+    public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent text) {
         super(x, y, width, height, text);
         guiObj = gui;
     }
@@ -264,8 +265,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     // The benefit of drawing all four corners instead of just left and right halves, is that we ensure we include the bottom black bar of the texture
     // Math has also been added to fix rendering odd size buttons.
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        drawButton(mouseX, mouseY);
+    public void func_230431_b_(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        drawButton(matrix, mouseX, mouseY);
     }
 
     protected void drawButtonText() {
@@ -275,12 +276,12 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
             //TODO: Improve the math for this so that it calculates the y value better
             int halfWidthLeft = field_230688_j_ / 2;
             drawCenteredString(getFont(), message, field_230690_l_ - guiObj.getLeft() + halfWidthLeft, field_230691_m_ - guiObj.getTop() + (field_230689_k_ - 8) / 2,
-                  getFGColor() | MathHelper.ceil(alpha * 255.0F) << 24);
+                  getFGColor() | MathHelper.ceil(field_230695_q_ * 255.0F) << 24);
         }
     }
 
     //This method exists so that we don't have to rely on having a path to super.renderButton if we want to draw a background button
-    protected void drawButton(int mouseX, int mouseY) {
+    protected void drawButton(MatrixStack matrix, int mouseX, int mouseY) {
         if (resetColorBeforeRender()) {
             //TODO: Support alpha like super? Is there a point
             MekanismRenderer.resetColor();
@@ -288,7 +289,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         //TODO: Convert this to being two different 16x48 images, one for with border and one for buttons without a black border?
         // And then make it so that they can stretch out to be any size (make this make use of the renderExtendedTexture method
         MekanismRenderer.bindTexture(buttonBackground.getTexture());
-        int i = getYImage(isMouseOverCheckWindows(mouseX, mouseY));
+        int i = func_230989_a_(isMouseOverCheckWindows(mouseX, mouseY));
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
         RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -304,18 +305,18 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         int x = getButtonX();
         int y = getButtonY();
         //Left Top Corner
-        blit(x, y, 0, position, halfWidthLeft, halfHeightTop, BUTTON_TEX_X, BUTTON_TEX_Y);
+        func_238463_a_(matrix, x, y, 0, position, halfWidthLeft, halfHeightTop, BUTTON_TEX_X, BUTTON_TEX_Y);
         //Left Bottom Corner
-        blit(x, y + halfHeightTop, 0, position + 20 - halfHeightBottom, halfWidthLeft, halfHeightBottom, BUTTON_TEX_X, BUTTON_TEX_Y);
+        func_238463_a_(matrix, x, y + halfHeightTop, 0, position + 20 - halfHeightBottom, halfWidthLeft, halfHeightBottom, BUTTON_TEX_X, BUTTON_TEX_Y);
         //Right Top Corner
-        blit(x + halfWidthLeft, y, 200 - halfWidthRight, position, halfWidthRight, halfHeightTop, BUTTON_TEX_X, BUTTON_TEX_Y);
+        func_238463_a_(matrix, x + halfWidthLeft, y, 200 - halfWidthRight, position, halfWidthRight, halfHeightTop, BUTTON_TEX_X, BUTTON_TEX_Y);
         //Right Bottom Corner
-        blit(x + halfWidthLeft, y + halfHeightTop, 200 - halfWidthRight, position + 20 - halfHeightBottom, halfWidthRight, halfHeightBottom, BUTTON_TEX_X, BUTTON_TEX_Y);
+        func_238463_a_(matrix, x + halfWidthLeft, y + halfHeightTop, 200 - halfWidthRight, position + 20 - halfHeightBottom, halfWidthRight, halfHeightBottom, BUTTON_TEX_X, BUTTON_TEX_Y);
 
         //TODO: Add support for buttons that are larger than 200x20 in either direction (most likely would be in the height direction
         // Can use a lot of the same logic as GuiMekanism does for its background
 
-        renderBg(minecraft, mouseX, mouseY);
+        func_230441_a_(matrix, minecraft, mouseX, mouseY);
         RenderSystem.disableBlend();
     }
 
@@ -328,9 +329,9 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
-    public void playDownSound(@Nonnull SoundHandler soundHandler) {
+    public void func_230988_a_(@Nonnull SoundHandler soundHandler) {
         if (playClickSound) {
-            super.playDownSound(soundHandler);
+            super.func_230988_a_(soundHandler);
         }
     }
 

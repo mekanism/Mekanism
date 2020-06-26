@@ -43,7 +43,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     }
 
     @Override
-    public boolean isPauseScreen() {
+    public boolean func_231177_au__() {
         return false;
     }
 
