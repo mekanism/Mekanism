@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Contract;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -23,9 +25,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Contract;
+import net.minecraft.world.World;
 
 public class TransporterStack {
 
@@ -141,7 +141,7 @@ public class TransporterStack {
         itemStack = ItemStack.read(nbtTags);
     }
 
-    private void setPath(IWorldReader world, List<BlockPos> path, Path type) {
+    private void setPath(World world, List<BlockPos> path, Path type) {
         //Make sure old path isn't null
         if (pathType != Path.NONE) {
             TransporterManager.remove(world, this);

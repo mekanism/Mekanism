@@ -112,7 +112,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
         // handle & ignore all key events
         return true;
     }

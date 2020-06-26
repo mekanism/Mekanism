@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -45,7 +44,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
@@ -219,17 +217,21 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     public static void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter) {
-        if (entity.dimension == coord.dimension) {
+        if (entity.world.func_234923_W_() == coord.dimension) {
             entity.setPositionAndUpdate(coord.getX() + 0.5, coord.getY() + 1, coord.getZ() + 0.5);
         } else {
-            entity.changeDimension(coord.dimension, new ITeleporter() {
+            ServerWorld newWorld = ((ServerWorld) teleporter.getWorld()).getServer().getWorld(coord.dimension);
+            Entity newEntity = entity.func_241206_a_(newWorld);
+            newEntity.setPositionAndUpdate(coord.getX() + 0.5, coord.getY() + 1, coord.getZ() + 0.5);
+
+            /* entity.changeDimension(coord.dimension, new ITeleporter() {
                 @Override
                 public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
                     Entity repositionedEntity = repositionEntity.apply(false);
                     repositionedEntity.setPositionAndUpdate(coord.getX() + 0.5, coord.getY() + 1, coord.getZ() + 0.5);
                     return repositionedEntity;
                 }
-            });
+            }); TODO 1.16 make sure this dimension logic is okay */
         }
     }
 

@@ -1,7 +1,7 @@
 package mekanism.client.gui.machine;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.FilterButton;
@@ -88,8 +88,8 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
+    public boolean func_231043_a_(double mouseX, double mouseY, double delta) {
+        return scrollBar.adjustScroll(delta) || super.func_231043_a_(mouseX, mouseY, delta);
     }
 
     private void updateRenderStacks() {

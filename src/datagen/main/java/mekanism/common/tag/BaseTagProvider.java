@@ -40,7 +40,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -91,11 +90,11 @@ public abstract class BaseTagProvider implements IDataProvider {
     @SuppressWarnings("UnstableApiUsage")
     private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull DirectoryCache cache, TagTypeMap<TYPE> tagTypeMap) {
         if (!tagTypeMap.isEmpty()) {
-            TagCollection<TYPE> tagCollection = new TagCollection<>(id -> Optional.empty(), "", false, "generated");
+            TagCollection<TYPE> tagCollection = new TagCollection<>(id -> Optional.empty(), "", "generated");
             tagCollection.registerAll(tagTypeMap.getBuilders());
             TagType<TYPE> tagType = tagTypeMap.getTagType();
             IForgeRegistry<TYPE> registry = tagType.getRegistry();
-            for (Entry<ResourceLocation, Tag<TYPE>> entry : tagCollection.getTagMap().entrySet()) {
+            for (Entry<ResourceLocation, ITag<TYPE>> entry : tagCollection.getTagMap().entrySet()) {
                 ResourceLocation id = entry.getKey();
                 Path path = gen.getOutputFolder().resolve("data/" + id.getNamespace() + "/tags/" + tagType.getPath() + "/" + id.getPath() + ".json");
                 try {

@@ -1,16 +1,17 @@
 package mekanism.api;
 
-import net.minecraft.world.DimensionType;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.World;
 
 public class Range3D {
 
-    public final DimensionType dimension;
+    public final RegistryKey<World> dimension;
     public final int xMin;
     public final int zMin;
     public final int xMax;
     public final int zMax;
 
-    public Range3D(int minX, int minZ, int maxX, int maxZ, DimensionType dimension) {
+    public Range3D(int minX, int minZ, int maxX, int maxZ, RegistryKey<World> dimension) {
         xMin = minX;
         zMin = minZ;
         xMax = maxX;
@@ -26,7 +27,7 @@ public class Range3D {
 
     @Override
     public String toString() {
-        return "[Range3D: " + xMin + ", " + zMin + ", " + xMax + ", " + zMax + ", dim=" + dimension + "]";
+        return "[Range3D: " + xMin + ", " + zMin + ", " + xMax + ", " + zMax + ", dim=" + dimension.func_240901_a_() + "]";
     }
 
     @Override

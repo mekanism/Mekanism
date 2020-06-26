@@ -1,10 +1,5 @@
 package mekanism.api.recipes.inputs;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,14 +7,18 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NonNull;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,7 +36,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         return new Single(instance);
     }
 
-    public static FluidStackIngredient from(@Nonnull ITag<Fluid> fluidTag, int minAmount) {
+    public static FluidStackIngredient from(@Nonnull INamedTag<Fluid> fluidTag, int minAmount) {
         return new Tagged(fluidTag, minAmount);
     }
 
@@ -93,7 +92,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
-            ITag<Fluid> tag = FluidTags.getCollection().get(resourceLocation);
+            INamedTag<Fluid> tag = (INamedTag<Fluid>) FluidTags.getCollection().get(resourceLocation); // TODO 1.16 make sure this works
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown fluid tag '" + resourceLocation + "'");
             }
@@ -179,10 +178,10 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
     public static class Tagged extends FluidStackIngredient {
 
         @Nonnull
-        private final ITag<Fluid> tag;
+        private final INamedTag<Fluid> tag;
         private final int amount;
 
-        public Tagged(@Nonnull ITag<Fluid> tag, int amount) {
+        public Tagged(@Nonnull INamedTag<Fluid> tag, int amount) {
             this.tag = tag;
             this.amount = amount;
         }

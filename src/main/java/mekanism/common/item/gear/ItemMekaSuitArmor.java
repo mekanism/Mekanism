@@ -62,7 +62,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     // TODO separate these into individual modules maybe (specifically fire-related - on_fire, in_fire, lava)
     private static final Set<DamageSource> ALWAYS_SUPPORTED_SOURCES = new HashSet<>(Arrays.asList(
           DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRYOUT,
-          DamageSource.FALL, DamageSource.FALLING_BLOCK, DamageSource.FIREWORKS, DamageSource.FLY_INTO_WALL, DamageSource.GENERIC,
+          DamageSource.FALL, DamageSource.FALLING_BLOCK, DamageSource.FLY_INTO_WALL, DamageSource.GENERIC,
           DamageSource.HOT_FLOOR, DamageSource.IN_FIRE, DamageSource.IN_WALL, DamageSource.LAVA, DamageSource.LIGHTNING_BOLT,
           DamageSource.ON_FIRE, DamageSource.SWEET_BERRY_BUSH, DamageSource.WITHER));
 
@@ -275,6 +275,11 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         @Override
         public float getToughness() {
             return 0;
+        }
+
+        @Override
+        public float func_230304_f_() {
+            return 0.1F; // knockback armor resistance
         }
 
         @Nonnull

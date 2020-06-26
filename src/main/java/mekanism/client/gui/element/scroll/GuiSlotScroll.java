@@ -83,13 +83,13 @@ public class GuiSlotScroll extends GuiRelativeElement {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
+    public boolean func_231043_a_(double mouseX, double mouseY, double delta) {
+        return scrollBar.adjustScroll(delta) || super.func_231043_a_(mouseX, mouseY, delta);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        super.mouseReleased(mouseX, mouseY, button);
+    public boolean func_231048_c_(double mouseX, double mouseY, int button) {
+        super.func_231048_c_(mouseX, mouseY, button);
         IScrollableSlot slot = getSlot(mouseX, mouseY, field_230690_l_, field_230691_m_);
         clickHandler.onClick(slot, button, Screen.func_231173_s_(), minecraft.player.inventory.getItemStack());
         return true;

@@ -1,6 +1,5 @@
 package mekanism.common.lib.radiation;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.UUID;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
@@ -38,7 +38,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -249,7 +248,7 @@ public class RadiationManager {
     public void createOrLoad() {
         if (dataHandler == null) {
             //Always associate the world with the over world as the frequencies are global
-            DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD).getSavedData();
+            DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().getWorld(World.field_234918_g_).getSavedData();
             dataHandler = savedData.getOrCreate(RadiationDataHandler::new, DATA_HANDLER_NAME);
             dataHandler.setManager(this);
             dataHandler.syncManager();

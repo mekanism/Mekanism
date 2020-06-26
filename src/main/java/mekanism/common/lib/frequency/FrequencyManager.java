@@ -1,6 +1,5 @@
 package mekanism.common.lib.frequency;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.HashList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -17,7 +17,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -133,7 +133,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         if (dataHandler == null) {
             String name = getName();
             //Always associate the world with the over world as the frequencies are global
-            DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD).getSavedData();
+            DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().getWorld(World.field_234918_g_).getSavedData();
             dataHandler = savedData.getOrCreate(() -> new FrequencyDataHandler(name), name);
             dataHandler.syncManager();
         }

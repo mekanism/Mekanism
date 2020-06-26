@@ -127,4 +127,9 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
     public Ingredient getCommonRepairMaterial() {
         return Ingredient.fromTag(MekanismTags.Items.INGOTS_STEEL);
     }
+
+    @Override
+    public float func_230304_f_() {
+        return 0;
+    }
 }

@@ -17,6 +17,7 @@ import net.minecraft.network.play.client.CRenameItemPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IContainerListener {
 
@@ -32,7 +33,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     public void func_231160_c_() {
         super.func_231160_c_();
         getMinecraft().keyboardListener.enableRepeatEvents(true);
-        func_230480_a_(itemNameField = new TextFieldWidget(font, getGuiLeft() + 62, getGuiTop() + 24, 103, 12, ""));
+        func_230480_a_(itemNameField = new TextFieldWidget(field_230712_o_, getGuiLeft() + 62, getGuiTop() + 24, 103, 12, new StringTextComponent("")));
         itemNameField.setCanLoseFocus(false);
         itemNameField.changeFocus(true);
         itemNameField.setTextColor(-1);
@@ -93,7 +94,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
             if (flag) {
                 int width = getXSize() - 8 - getStringWidth(component) - 2;
                 fill(width - 2, 67, getXSize() - 8, 79, 0x4F000000);
-                font.drawStringWithShadow(component.getFormattedText(), width, 69.0F, k);
+                getFont().drawStringWithShadow(component.getFormattedText(), width, 69.0F, k);
                 MekanismRenderer.resetColor();
             }
         }
@@ -101,19 +102,19 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    public boolean charTyped(char c, int keyCode) {
+    public boolean func_231042_a_(char c, int keyCode) {
         if (itemNameField.canWrite()) {
             return itemNameField.func_231042_a_(c, keyCode);
         }
-        return super.charTyped(c, keyCode);
+        return super.func_231042_a_(c, keyCode);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && itemNameField.canWrite()) {
             return itemNameField.func_231046_a_(keyCode, scanCode, modifiers);
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.func_231046_a_(keyCode, scanCode, modifiers);
     }
 
     @Override

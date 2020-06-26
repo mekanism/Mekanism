@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,7 +58,9 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
@@ -86,7 +87,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -179,11 +179,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         goalSelector.addGoal(4, new SwimGoal(this));
     }
 
-    @Override
-    protected void registerAttributes() {
-        super.registerAttributes();
-        getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3);
-        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1);
+    public static AttributeModifierMap.MutableAttribute getDefaultAttributes() {
+        return MobEntity.func_233666_p_().func_233815_a_(Attributes.field_233818_a_, 1.0D).func_233815_a_(Attributes.field_233821_d_, 0.3F);
     }
 
     @Override
@@ -281,18 +278,24 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public void goHome() {
+        if (!world.isRemote())
+            return;
         setFollowing(false);
-        if (dimension == homeLocation.dimension) {
+        if (world.func_234923_W_() == homeLocation.dimension) {
             setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
         } else {
-            changeDimension(homeLocation.dimension, new ITeleporter() {
+            ServerWorld newWorld = ((ServerWorld) world).getServer().getWorld(homeLocation.dimension);
+            Entity newEntity = func_241206_a_(newWorld);
+            newEntity.setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
+
+            /* changeDimension(homeLocation.dimension, new ITeleporter() {
                 @Override
                 public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
                     Entity repositionedEntity = repositionEntity.apply(false);
                     repositionedEntity.setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
                     return repositionedEntity;
                 }
-            });
+            }); TODO 1.16 make sure this dimension logic is okay */
         }
         setMotion(0, 0, 0);
     }
@@ -337,7 +340,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         }
         ItemRobit item = (ItemRobit) stack.getItem();
         item.setInventory(((ISustainedInventory) this).getInventory(), stack);
-        item.setName(stack, getName().getFormattedText());
+        item.setName(stack, getName());
         entityItem.setMotion(0, rand.nextGaussian() * 0.05F + 0.2F, 0);
         world.addEntity(entityItem);
     }

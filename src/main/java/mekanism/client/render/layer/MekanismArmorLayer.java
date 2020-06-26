@@ -1,8 +1,7 @@
 package mekanism.client.render.layer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.common.item.interfaces.ISpecialGear;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -47,11 +46,5 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
                 model.render(matrix, renderer, light, OverlayTexture.NO_OVERLAY, stack.hasEffect(), entity, stack);
             }
         }
-    }
-
-    @Nonnull
-    @Override
-    public A getModelFromSlot(EquipmentSlotType slot) {
-        return slot == EquipmentSlotType.LEGS ? this.modelLeggings : this.modelArmor;
     }
 }

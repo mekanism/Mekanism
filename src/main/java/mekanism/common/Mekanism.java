@@ -1,11 +1,13 @@
 package mekanism.common;
 
-import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -45,6 +47,7 @@ import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.content.tank.TankValidator;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.lib.Version;
@@ -74,8 +77,10 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTagManager;
 import mekanism.common.world.GenHandler;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.SimpleReloadableResourceManager;
 import net.minecraft.tags.NetworkTagManager;
 import net.minecraft.util.ResourceLocation;
@@ -98,8 +103,6 @@ import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(Mekanism.MODID)
 public class Mekanism {
@@ -262,7 +265,7 @@ public class Mekanism {
     }
 
     private void serverAboutToStart(FMLServerAboutToStartEvent event) {
-        IReloadableResourceManager resourceManager = event.getServer().getResourceManager();
+        IResourceManager resourceManager = event.getServer().getDataPackRegistries().func_240970_h_();
         boolean added = false;
         if (resourceManager instanceof SimpleReloadableResourceManager) {
             //Note: We "hack" it so that our tag manager gets registered directly after the normal tag manager
@@ -278,15 +281,18 @@ public class Mekanism {
                 }
             }
         }
-        if (!added) {
+        if (!added && resourceManager instanceof IReloadableResourceManager) {
             //Fallback to trying to just add it even though this is probably too late to do so properly
-            resourceManager.addReloadListener(getTagManager());
+            ((IReloadableResourceManager) resourceManager).addReloadListener(getTagManager());
         }
     }
 
     private void serverAboutToStartLowest(FMLServerAboutToStartEvent event) {
         //Note: We register reload listeners here which we want to make sure run after CraftTweaker or any other mods that may modify recipes
-        event.getServer().getResourceManager().addReloadListener(getRecipeCacheManager());
+        IResourceManager resourceManager = event.getServer().getDataPackRegistries().func_240970_h_();
+        if (resourceManager instanceof IReloadableResourceManager) {
+            ((IReloadableResourceManager) resourceManager).addReloadListener(getRecipeCacheManager());
+        }
     }
 
     private void serverStarting(FMLServerStartingEvent event) {
@@ -334,6 +340,9 @@ public class Mekanism {
         //Register player tracker
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTracker());
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTickHandler());
+
+        //Entity attribute assignments
+        GlobalEntityTypeAttributes.put(MekanismEntityTypes.ROBIT.get(), EntityRobit.getDefaultAttributes().func_233813_a_());
 
         //Initialization notification
         logger.info("Version {} initializing...", versionNumber);

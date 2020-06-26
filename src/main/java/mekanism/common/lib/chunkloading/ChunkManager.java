@@ -2,6 +2,8 @@ package mekanism.common.lib.chunkloading;
 
 import java.util.Comparator;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import net.minecraft.nbt.CompoundNBT;
@@ -11,8 +13,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Saved data for managing Mekanism chunkloaders.
@@ -61,7 +61,7 @@ public class ChunkManager extends WorldSavedData {
 
     public static void worldLoad(ServerWorld world) {
         ChunkManager savedData = getInstance(world);
-        LOGGER.info("Loading {} chunks for dimension {}", savedData.chunks.size(), world.dimension.getType().getRegistryName());
+        LOGGER.info("Loading {} chunks for dimension {}", savedData.chunks.size(), world.func_234923_W_().func_240901_a_());
         savedData.chunks.long2ObjectEntrySet().fastForEach(entry -> {
             //Add a separate ticket (which has a timout) to let the chunk tick for a short while (chunkloader will refresh if it's able)
             // This is required as we cannot do any validation about tiles (or blocks) being valid still or not, due to the multithreading

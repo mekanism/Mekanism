@@ -6,7 +6,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
@@ -76,12 +75,12 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         return ActionResultType.PASS;
     }
 
-    public void setName(ItemStack stack, String name) {
-        ItemDataUtils.setString(stack, NBTConstants.NAME, name);
+    public void setName(ItemStack stack, ITextComponent name) {
+        ItemDataUtils.setString(stack, NBTConstants.NAME, ITextComponent.Serializer.toJson(name));
     }
 
     public ITextComponent getName(ItemStack stack) {
         String name = ItemDataUtils.getString(stack, NBTConstants.NAME);
-        return name.isEmpty() ? MekanismLang.ROBIT.translate() : TextComponentUtil.getString(name);
+        return name.isEmpty() ? MekanismLang.ROBIT.translate() : ITextComponent.Serializer.func_240643_a_(name);
     }
 }

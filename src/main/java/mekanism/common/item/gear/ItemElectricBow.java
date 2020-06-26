@@ -89,8 +89,8 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                 if (!world.isRemote) {
                     ArrowItem arrowitem = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
                     AbstractArrowEntity arrowEntity = arrowitem.createArrow(world, ammo, player);
-                    arrowEntity = customeArrow(arrowEntity);
-                    arrowEntity.shoot(player, player.rotationPitch, player.rotationYaw, 0, 3 * velocity, 1);
+                    arrowEntity = customArrow(arrowEntity);
+                    arrowEntity.shoot(player.rotationPitch, player.rotationYaw, 0, 3 * velocity, 1);
                     if (velocity == 1) {
                         arrowEntity.setIsCritical(true);
                     }

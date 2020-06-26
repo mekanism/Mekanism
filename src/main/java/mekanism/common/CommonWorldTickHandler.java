@@ -9,9 +9,10 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.chunkloading.ChunkManager;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.world.GenHandler;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
@@ -26,11 +27,11 @@ public class CommonWorldTickHandler {
     private Map<ResourceLocation, Queue<ChunkPos>> chunkRegenMap;
     public static boolean flushTagCaches;
 
-    public void addRegenChunk(DimensionType dimension, ChunkPos chunkCoord) {
+    public void addRegenChunk(RegistryKey<World> dimension, ChunkPos chunkCoord) {
         if (chunkRegenMap == null) {
             chunkRegenMap = new Object2ObjectArrayMap<>();
         }
-        ResourceLocation dimensionName = dimension.getRegistryName();
+        ResourceLocation dimensionName = dimension.func_240901_a_();
         if (!chunkRegenMap.containsKey(dimensionName)) {
             LinkedList<ChunkPos> list = new LinkedList<>();
             list.add(chunkCoord);

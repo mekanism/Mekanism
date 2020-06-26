@@ -15,7 +15,6 @@ import mekanism.common.content.blocktype.BlockType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -24,7 +23,6 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
 
 public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements IHasDescription, ITypeBlock {
 
@@ -59,8 +57,8 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     }
 
     @Override
-    public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
-        return type.has(AttributeCustomResistance.class) ? type.get(AttributeCustomResistance.class).getResistance() : blockResistance;
+    public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion) {
+        return type.has(AttributeCustomResistance.class) ? type.get(AttributeCustomResistance.class).getResistance() : field_235689_au_;
     }
 
     @Override

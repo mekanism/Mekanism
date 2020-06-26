@@ -12,6 +12,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockDisplayReader;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.ToolType;
@@ -45,15 +48,8 @@ public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockT
     }
 
     @Override
-    @Deprecated
-    public boolean causesSuffocation(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean isNormalCube(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return false;
+    public VoxelShape func_230322_a_(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext ctx) {
+        return VoxelShapes.empty();
     }
 
     @Override

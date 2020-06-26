@@ -1,10 +1,10 @@
 package mekanism.common.world;
 
-import com.google.common.collect.Lists;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 import javax.annotation.Nullable;
+import com.google.common.collect.Lists;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreConfig;
@@ -113,7 +113,7 @@ public class GenHandler {
 
     private static boolean placeFeature(@Nullable ConfiguredFeature<?, ?> feature, ServerWorld world, Random random, BlockPos blockPos) {
         if (feature != null) {
-            feature.place(world, world.getChunkProvider().getChunkGenerator(), random, blockPos);
+            feature.func_236265_a_(world, world.func_241112_a_(), world.getChunkProvider().getChunkGenerator(), random, blockPos);
             return true;
         }
         return false;

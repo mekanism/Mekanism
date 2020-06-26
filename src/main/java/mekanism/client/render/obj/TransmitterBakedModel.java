@@ -68,7 +68,7 @@ public class TransmitterBakedModel implements IBakedModel {
         this.overrides = overrides;
         this.modelLocation = modelLocation;
         //We define our baked variant to be how the item is. As we should always have model data when we have a state
-        List<String> visible = Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE")).collect(Collectors.toList());
+        List<String> visible = Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName2() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE")).collect(Collectors.toList());
         bakedVariant = internal.bake(new VisibleModelConfiguration(owner, visible), bakery, spriteGetter, modelTransform, overrides, modelLocation);
     }
 
@@ -138,7 +138,7 @@ public class TransmitterBakedModel implements IBakedModel {
 
     @Nullable
     private static Direction directionForPiece(@Nonnull String piece) {
-        return Arrays.stream(EnumUtils.DIRECTIONS).filter(dir -> piece.startsWith(dir.getName().toLowerCase())).findFirst().orElse(null);
+        return Arrays.stream(EnumUtils.DIRECTIONS).filter(dir -> piece.startsWith(dir.getName2())).findFirst().orElse(null);
     }
 
     @Override

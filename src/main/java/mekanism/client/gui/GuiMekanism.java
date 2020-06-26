@@ -236,22 +236,22 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean func_231048_c_(double mouseX, double mouseY, int button) {
         if (hasClicked) {
-            return super.mouseReleased(mouseX, mouseY, button);
+            return super.func_231048_c_(mouseX, mouseY, button);
         }
         return false;
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
         return windows.stream().anyMatch(window -> window.func_231046_a_(keyCode, scanCode, modifiers)) ||
                GuiUtils.checkChildren(field_230710_m_, (child) -> child.func_231046_a_(keyCode, scanCode, modifiers)) ||
                super.func_231046_a_(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public boolean charTyped(char c, int keyCode) {
+    public boolean func_231042_a_(char c, int keyCode) {
         return windows.stream().anyMatch(window -> window.func_231042_a_(c, keyCode)) ||
                GuiUtils.checkChildren(field_230710_m_, (child) -> child.func_231042_a_(c, keyCode)) ||
                super.func_231042_a_(c, keyCode);
@@ -261,8 +261,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
      * @apiNote mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance.
      */
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
-        super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+    public boolean func_231045_a_(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
+        super.func_231045_a_(mouseX, mouseY, button, mouseXOld, mouseYOld);
         return getFocused() != null && isDragging() && button == 0 && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }
 
@@ -344,7 +344,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public FontRenderer getFont() {
-        return font;
+        return field_230712_o_;
     }
 
     @Override
@@ -378,7 +378,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 }
                 field_230707_j_.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 if (overlay) {
-                    field_230707_j_.renderItemOverlayIntoGUI(font, stack, xAxis, yAxis, text);
+                    field_230707_j_.renderItemOverlayIntoGUI(getFont(), stack, xAxis, yAxis, text);
                 }
                 RenderHelper.disableStandardItemLighting();
                 RenderSystem.disableDepthTest();

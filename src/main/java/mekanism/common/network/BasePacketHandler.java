@@ -15,11 +15,11 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -102,7 +102,7 @@ public abstract class BasePacketHandler {
      * @param message   - the message to send
      * @param dimension - the dimension to target
      */
-    public <MSG> void sendToDimension(MSG message, DimensionType dimension) {
+    public <MSG> void sendToDimension(MSG message, RegistryKey<World> dimension) {
         getChannel().send(PacketDistributor.DIMENSION.with(() -> dimension), message);
     }
 
@@ -146,7 +146,7 @@ public abstract class BasePacketHandler {
                 //Ignore height for partial Cubic chunks support as range comparision gets used ignoring player height normally anyways
                 int radius = playerList.getViewDistance() * 16;
                 for (ServerPlayerEntity player : playerList.getPlayers()) {
-                    if (range.dimension == player.dimension) {
+                    if (range.dimension == player.func_241141_L_()) {
                         BlockPos playerPosition = player.func_233580_cy_();
                         int playerX = playerPosition.getX();
                         int playerZ = playerPosition.getZ();

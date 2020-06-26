@@ -1,11 +1,11 @@
 package mekanism.common.content.transporter;
 
+import java.util.Map;
+import java.util.Set;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Map;
-import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -20,7 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
 public class TransporterManager {
@@ -31,11 +31,11 @@ public class TransporterManager {
         flowingStacks.clear();
     }
 
-    public static void add(IWorldReader world, TransporterStack stack) {
+    public static void add(World world, TransporterStack stack) {
         flowingStacks.computeIfAbsent(new Coord4D(stack.getDest(), world), k -> new ObjectOpenHashSet<>()).add(stack);
     }
 
-    public static void remove(IWorldReader world, TransporterStack stack) {
+    public static void remove(World world, TransporterStack stack) {
         if (stack.hasPath() && stack.getPathType() != Path.NONE) {
             flowingStacks.get(new Coord4D(stack.getDest(), world)).remove(stack);
         }

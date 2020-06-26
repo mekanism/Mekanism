@@ -31,4 +31,9 @@ public abstract class BaseSpecialArmorMaterial implements IArmorMaterial {
     public Ingredient getRepairMaterial() {
         return Ingredient.EMPTY;
     }
+
+    @Override
+    public float func_230304_f_() {
+        return 0.0F; // knockback armor resistance
+    }
 }

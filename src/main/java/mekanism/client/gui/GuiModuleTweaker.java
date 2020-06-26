@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import org.lwjgl.glfw.GLFW;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import mekanism.client.gui.element.custom.GuiModuleScreen;
@@ -17,7 +18,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
@@ -62,8 +62,8 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    public boolean keyPressed(int key, int i, int j) {
-        if (super.keyPressed(key, i, j)) {
+    public boolean func_231046_a_(int key, int i, int j) {
+        if (super.func_231046_a_(key, i, j)) {
             return true;
         }
 
@@ -92,10 +92,10 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean func_231048_c_(double mouseX, double mouseY, int button) {
         // make sure we get the release event
         moduleScreen.onRelease(mouseX, mouseY);
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.func_231048_c_(mouseX, mouseY, button);
     }
 
     @Override

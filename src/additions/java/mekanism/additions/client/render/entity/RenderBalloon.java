@@ -1,13 +1,14 @@
 package mekanism.additions.client.render.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.additions.client.model.ModelBalloon;
 import mekanism.additions.common.entity.EntityBalloon;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 
 public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
@@ -43,7 +44,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
     }
 
     @Override
-    protected int getBlockLight(@Nonnull EntityBalloon balloon, float partialTick) {
+    protected int getBlockLight(@Nonnull EntityBalloon balloon, BlockPos pos) {
         //We always want our balloon to have full brightness
         return 15;
     }

@@ -74,7 +74,7 @@ public abstract class GuiScrollList extends GuiScrollableElement {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean func_231043_a_(double mouseX, double mouseY, double delta) {
         return isMouseOver(mouseX, mouseY) && adjustScroll(delta);
     }
 }

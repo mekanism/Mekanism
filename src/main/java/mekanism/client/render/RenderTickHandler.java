@@ -140,7 +140,7 @@ public class RenderTickHandler {
                 GuiUtils.renderExtendedTexture(GuiBar.BAR, 2, 2, x, y, 81, 6);
                 minecraft.getTextureManager().bindTexture(POWER_BAR);
                 AbstractGui.blit(x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
-                minecraft.getTextureManager().bindTexture(ForgeIngameGui.GUI_ICONS_LOCATION);
+                minecraft.getTextureManager().bindTexture(ForgeIngameGui.field_230665_h_);
                 ForgeIngameGui.left_height += 8;
             }
         }

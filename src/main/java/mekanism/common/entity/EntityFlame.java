@@ -10,9 +10,10 @@ import mekanism.common.lib.math.Pos3D;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
+import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.TNTBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -21,7 +22,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -131,7 +131,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     return;
                 }
             }
-            if (!entity.getEntity().isImmuneToFire()) {
+            if (!entity.getEntity().func_230279_az_()) {
                 if (entity.getEntity() instanceof ItemEntity && mode == FlamethrowerMode.HEAT) {
                     if (entity.getEntity().ticksExisted > 100 && !smeltItem((ItemEntity) entity.getEntity())) {
                         burn(entity.getEntity());
@@ -153,9 +153,9 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     BlockPos sidePos = hitPos.offset(hitSide);
                     BlockState sideState = world.getBlockState(sidePos);
                     PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
-                    if (FlintAndSteelItem.canSetFire(sideState, world, sidePos)) {
-                        world.setBlockState(sidePos, Blocks.FIRE.getDefaultState());
-                    } else if (FlintAndSteelItem.isUnlitCampfire(hitState)) {
+                    if (AbstractFireBlock.func_241465_a_(world, sidePos)) {
+                        world.setBlockState(sidePos, AbstractFireBlock.func_235326_a_(world, sidePos));
+                    } else if (CampfireBlock.func_241470_h_(hitState)) {
                         world.setBlockState(hitPos, hitState.with(BlockStateProperties.LIT, true));
                     } else if (hitState.isFlammable(world, hitPos, hitSide)) {
                         hitState.catchFire(world, hitPos, hitSide, shooter);

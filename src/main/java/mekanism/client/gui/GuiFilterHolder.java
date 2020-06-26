@@ -83,8 +83,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected abstract void onClick(IFilter<?> filter, int index);
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
+    public boolean func_231043_a_(double mouseX, double mouseY, double delta) {
+        return scrollBar.adjustScroll(delta) || super.func_231043_a_(mouseX, mouseY, delta);
     }
 
     protected abstract List<ItemStack> getTagStacks(String tagName);

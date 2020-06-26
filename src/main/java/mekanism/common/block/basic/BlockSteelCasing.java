@@ -1,7 +1,6 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockMekanism;
@@ -9,10 +8,9 @@ import mekanism.common.block.interfaces.IHasDescription;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.IBlockReader;
 
 public class BlockSteelCasing extends BlockMekanism implements IHasDescription {
 
@@ -21,7 +19,7 @@ public class BlockSteelCasing extends BlockMekanism implements IHasDescription {
     }
 
     @Override
-    public float getExplosionResistance(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
+    public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion) {
         return 9F;
     }
 

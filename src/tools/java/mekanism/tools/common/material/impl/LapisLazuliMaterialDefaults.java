@@ -127,4 +127,9 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     public Ingredient getCommonRepairMaterial() {
         return Ingredient.fromTag(Tags.Items.GEMS_LAPIS);
     }
+
+    @Override
+    public float func_230304_f_() {
+        return 0;
+    }
 }
