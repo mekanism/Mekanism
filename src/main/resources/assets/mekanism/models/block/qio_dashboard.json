@@ -1,23 +1,102 @@
 {
-	"parent": "mekanism:block/flat_model",
-	"texture_size": [64, 64],
+	"credit": "Model by CyanideX",
 	"textures": {
 		"0": "mekanism:block/models/qio_dashboard",
+		"2": "mekanism:block/models/qio_dashboard_screen",
 		"particle": "mekanism:block/models/qio_dashboard"
 	},
 	"elements": [
 		{
+			"name": "qio_dashboard",
 			"from": [1, 0, 1],
 			"to": [15, 1, 15],
-			"rotation": {"angle": 0, "axis": "y", "origin": [9, 8, 8]},
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 1, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 3.5, 0.25], "texture": "#0", "tintindex": 0},
-				"east": {"uv": [0, 0.75, 3.5, 1], "texture": "#0", "tintindex": 0},
-				"south": {"uv": [0, 0.25, 3.5, 0.5], "texture": "#0", "tintindex": 0},
-				"west": {"uv": [0, 0.5, 3.5, 0.75], "texture": "#0", "tintindex": 0},
-				"up": {"uv": [3.5, 0, 7, 3.5], "texture": "#0", "tintindex": 0},
-				"down": {"uv": [3.5, 3.5, 7, 7], "texture": "#0", "tintindex": 0}
+				"north": {"uv": [0, 13, 14, 14], "rotation": 180, "texture": "#0"},
+				"east": {"uv": [0, 0, 1, 12], "rotation": 270, "texture": "#0"},
+				"south": {"uv": [0, 0, 14, 1], "texture": "#0"},
+				"west": {"uv": [13, 0, 14, 12], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [0, 0, 14, 14], "rotation": 180, "texture": "#0"},
+				"down": {"uv": [14, 1, 15, 2], "texture": "#0"}
+			}
+		},
+		{
+			"name": "qio_led_right",
+			"from": [0.995, -0.005, 11],
+			"to": [2.005, 1.005, 13],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 1, 5]},
+			"faces": {
+				"north": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"east": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"south": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"west": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"up": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"down": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0}
+			}
+		},
+		{
+			"name": "qio_led_left",
+			"from": [13.995, -0.005, 11],
+			"to": [15.005, 1.005, 13],
+			"rotation": {"angle": 0, "axis": "x", "origin": [21, 1, 5]},
+			"faces": {
+				"north": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"east": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"south": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"west": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"up": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"down": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0}
+			}
+		},
+		{
+			"name": "qio_dashboard_screen",
+			"from": [2, 1.005, 2],
+			"to": [14, 1.005, 14],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 1, 8]},
+			"faces": {
+				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2"}
 			}
 		}
-	]
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 3.5],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 3.5],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [90, -180, -45],
+			"translation": [-2, 2.5, 2.75],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [90, -180, -45],
+			"translation": [-2, 2.5, 2.75],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"rotation": [90, 0, 0],
+			"translation": [0, 3, 2],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [120, -180, -45],
+			"translation": [-3.25, -1.75, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"head": {
+			"rotation": [-90, 0, 0],
+			"translation": [0, 0, -14.5]
+		},
+		"fixed": {
+			"rotation": [-89, 0, 0],
+			"translation": [0, 0, -4],
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
 }

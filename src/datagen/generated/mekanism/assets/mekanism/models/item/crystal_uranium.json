@@ -1,8 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "mekanism:item/empty",
-    "layer1": "mekanism:item/crystal",
-    "layer2": "mekanism:item/crystal_overlay"
+    "layer0": "mekanism:item/crystal_uranium"
   }
 }
