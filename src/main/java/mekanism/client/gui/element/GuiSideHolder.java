@@ -18,7 +18,7 @@ public class GuiSideHolder extends GuiTexturedElement {
     public GuiSideHolder(IGuiWrapper gui, int x, int y, int height, boolean left) {
         super(left ? HOLDER_LEFT : HOLDER_RIGHT, gui, x, y, TEXTURE_WIDTH, height);
         this.left = left;
-        active = false;
+        field_230693_o_ = false;
     }
 
     protected void colorTab() {
@@ -30,14 +30,14 @@ public class GuiSideHolder extends GuiTexturedElement {
         minecraft.textureManager.bindTexture(getResource());
         colorTab();
         //Top
-        blit(x, y, 0, 0, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Middle
-        int middleHeight = height - 8;
+        int middleHeight = field_230689_k_ - 8;
         if (middleHeight > 0) {
-            blit(x, y + 4, width, middleHeight, 0, 4, width, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            blit(field_230690_l_, field_230691_m_ + 4, field_230688_j_, middleHeight, 0, 4, field_230688_j_, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
         //Bottom
-        blit(x, y + 4 + middleHeight, 0, 5, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(field_230690_l_, field_230691_m_ + 4 + middleHeight, 0, 5, field_230688_j_, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         MekanismRenderer.resetColor();
     }
 }

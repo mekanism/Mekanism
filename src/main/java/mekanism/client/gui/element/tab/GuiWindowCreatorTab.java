@@ -23,7 +23,7 @@ public abstract class GuiWindowCreatorTab<ELEMENT extends GuiWindowCreatorTab<EL
     public void onClick(double mouseX, double mouseY) {
         GuiWindow window = createWindow();
         window.setListenerTab(elementSupplier);
-        active = false;
+        field_230693_o_ = false;
         guiObj.addWindow(window);
     }
 

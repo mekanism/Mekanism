@@ -17,7 +17,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
     public GuiQIOFrequencyDataScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<QIOFrequency> frequencySupplier) {
         super(gui, x, y, width, height);
         this.frequencySupplier = frequencySupplier;
-        this.active = true;
+        this.field_230693_o_ = true;
         addChild(new GuiDigitalBar(gui, new IBarInfoHandler() {
             @Override
             public double getLevel() {
@@ -53,9 +53,9 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
         super.renderForeground(mouseX, mouseY);
         QIOFrequency freq = frequencySupplier.get();
         if (freq != null) {
-            drawScaledTextScaledBound(MekanismLang.FREQUENCY.translate(freq.getName()), relativeX + 5, relativeY + 5, screenTextColor(), width - 10, 0.8F);
+            drawScaledTextScaledBound(MekanismLang.FREQUENCY.translate(freq.getName()), relativeX + 5, relativeY + 5, screenTextColor(), field_230688_j_ - 10, 0.8F);
         }
-        drawScaledCenteredText(MekanismLang.QIO_ITEMS.translate(), relativeX + (width / 4), relativeY + 32, screenTextColor(), 0.8F);
-        drawScaledCenteredText(MekanismLang.QIO_TYPES.translate(), relativeX + (3 * width / 4), relativeY + 32, screenTextColor(), 0.8F);
+        drawScaledCenteredText(MekanismLang.QIO_ITEMS.translate(), relativeX + (field_230688_j_ / 4), relativeY + 32, screenTextColor(), 0.8F);
+        drawScaledCenteredText(MekanismLang.QIO_TYPES.translate(), relativeX + (3 * field_230688_j_ / 4), relativeY + 32, screenTextColor(), 0.8F);
     }
 }

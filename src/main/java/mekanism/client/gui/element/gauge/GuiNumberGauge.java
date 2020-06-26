@@ -23,7 +23,7 @@ public class GuiNumberGauge extends GuiGauge<Void> {
 
     @Override
     public int getScaledLevel() {
-        return (int) ((height - 2) * infoHandler.getScaledLevel());
+        return (int) ((field_230689_k_ - 2) * infoHandler.getScaledLevel());
     }
 
     @Override

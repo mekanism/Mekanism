@@ -120,7 +120,7 @@ public class GuiModuleScrollList extends GuiScrollList {
             ModuleData<?> module = currentList.get(index);
             Module instance = Modules.load(currentItem, module);
             int multipliedElement = elementHeight * i;
-            if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
+            if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= field_230691_m_ + 1 + multipliedElement && mouseY < field_230691_m_ + 1 + multipliedElement + elementHeight) {
                 ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
                 guiObj.displayTooltip(MekanismLang.MODULE_INSTALLED.translate(t), mouseX - guiObj.getLeft(), mouseY - guiObj.getTop(), guiObj.getWidth());
             }
@@ -137,14 +137,14 @@ public class GuiModuleScrollList extends GuiScrollList {
                 break;
             }
             ModuleData<?> module = currentList.get(index);
-            int shiftedY = y + 1 + elementHeight * i;
+            int shiftedY = field_230691_m_ + 1 + elementHeight * i;
             int j = 1;
             if (module == getSelection()) {
                 j = 2;
-            } else if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
+            } else if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
                 j = 0;
             }
-            blit(x + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            blit(field_230690_l_ + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             MekanismRenderer.resetColor();
         }
     }

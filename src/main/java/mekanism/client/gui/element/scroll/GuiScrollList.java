@@ -25,7 +25,7 @@ public abstract class GuiScrollList extends GuiScrollableElement {
 
     @Override
     protected int getFocusedElements() {
-        return (height - 2) / elementHeight;
+        return (field_230689_k_ - 2) / elementHeight;
     }
 
     public abstract boolean hasSelection();
@@ -47,7 +47,7 @@ public abstract class GuiScrollList extends GuiScrollableElement {
         //Middle border
         AbstractGui.blit(barX - 1, barY, 6, maxBarHeight, 0, 1, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Bottom border
-        AbstractGui.blit(barX - 1, y + maxBarHeight + 2, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        AbstractGui.blit(barX - 1, field_230691_m_ + maxBarHeight + 2, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Scroll bar
         AbstractGui.blit(barX, barY + getScroll(), 0, 2, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Draw the elements
@@ -56,12 +56,12 @@ public abstract class GuiScrollList extends GuiScrollableElement {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 && mouseY < y + height - 1) {
+        if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= field_230691_m_ + 1 && mouseY < field_230691_m_ + field_230689_k_ - 1) {
             int index = getCurrentSelection();
             clearSelection();
             for (int i = 0; i < getFocusedElements(); i++) {
                 if (index + i < getMaxElements()) {
-                    int shiftedY = y + 1 + elementHeight * i;
+                    int shiftedY = field_230691_m_ + 1 + elementHeight * i;
                     if (mouseY >= shiftedY && mouseY <= shiftedY + elementHeight) {
                         setSelected(index + i);
                         break;

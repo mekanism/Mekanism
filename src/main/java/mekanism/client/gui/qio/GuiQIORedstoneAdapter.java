@@ -39,10 +39,10 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     @Override
     public void init() {
         super.init();
-        addButton(new GuiQIOFrequencyTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true));
-        addButton(new GuiInnerScreen(this, 7, 16, xSize - 15, 12, () -> {
+        func_230480_a_(new GuiQIOFrequencyTab(this, tile));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true));
+        func_230480_a_(new GuiInnerScreen(this, 7, 16, xSize - 15, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             QIOFrequency freq = tile.getQIOFrequency();
             if (freq != null) {
@@ -62,7 +62,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             }
             return list;
         }));
-        addButton(new GuiInnerScreen(this, 27, 30, xSize - 27 - 8, 54, () -> {
+        func_230480_a_(new GuiInnerScreen(this, 27, 30, xSize - 27 - 8, 54, () -> {
             List<ITextComponent> list = new ArrayList<>();
             list.add(!tile.getItemType().isEmpty() ? tile.getItemType().getStack().getDisplayName() : MekanismLang.QIO_ITEM_TYPE_UNDEFINED.translate());
             list.add(MekanismLang.QIO_TRIGGER_COUNT.translate(QIOFrequency.formatItemCount(tile.getCount())));
@@ -71,7 +71,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             }
             return list;
         }).clearFormat());
-        addButton(text = new GuiTextField(this, 29, 70, xSize - 39, 12));
+        func_230480_a_(text = new GuiTextField(this, 29, 70, xSize - 39, 12));
         text.setMaxStringLength(10);
         text.setInputValidator(InputValidator.DIGIT);
         text.setFocused(true);
@@ -104,9 +104,9 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             double yAxis = mouseY - getGuiTop();
             if (xAxis >= 8 && xAxis < 24 && yAxis >= 31 && yAxis < 47) {
                 ItemStack stack = minecraft.player.inventory.getItemStack();
-                if (!stack.isEmpty() && !hasShiftDown()) {
+                if (!stack.isEmpty() && !func_231173_s_()) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, StackUtils.size(stack, 1)));
-                } else if (stack.isEmpty() && hasShiftDown()) {
+                } else if (stack.isEmpty() && func_231173_s_()) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, ItemStack.EMPTY));
                 }
                 SoundHandler.playSound(MekanismSounds.BEEP.get());

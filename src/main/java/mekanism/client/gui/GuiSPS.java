@@ -29,9 +29,9 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
     @Override
     public void init() {
         super.init();
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 7, 17));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 151, 17));
-        addButton(new GuiInnerScreen(this, 27, 17, 122, 60, () -> {
+        func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 7, 17));
+        func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 151, 17));
+        func_230480_a_(new GuiInnerScreen(this, 27, 17, 122, 60, () -> {
             List<ITextComponent> list = new ArrayList<>();
             boolean active = tile.getMultiblock().lastProcessed > 0;
             list.add(MekanismLang.STATUS.translate(active ? MekanismLang.ACTIVE.translate() : MekanismLang.IDLE.translate()));
@@ -41,7 +41,7 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
             }
             return list;
         }).jeiCategories(MekanismBlocks.SPS_CASING.getRegistryName()));
-        addButton(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
+        func_230480_a_(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return MekanismLang.PROGRESS.translate(TextUtils.getPercent(tile.getMultiblock().getScaledProgress()));

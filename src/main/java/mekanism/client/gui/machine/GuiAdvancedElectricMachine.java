@@ -26,13 +26,13 @@ public class GuiAdvancedElectricMachine<TILE extends TileEntityAdvancedElectricM
     @Override
     public void init() {
         super.init();
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 86, 38).jeiCategory(tile));
-        addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.gasTank, tile.getGasTanks(null)), 68, 36, 6, 12, false));
+        func_230480_a_(new GuiRedstoneControlTab(this, tile));
+        func_230480_a_(new GuiUpgradeTab(this, tile));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        func_230480_a_(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        func_230480_a_(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 86, 38).jeiCategory(tile));
+        func_230480_a_(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.gasTank, tile.getGasTanks(null)), 68, 36, 6, 12, false));
     }
 
     @Override

@@ -46,19 +46,19 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 7, 11, 63, 49));
-        addButton(new GuiInnerScreen(this, 74, 11, 51, 159));
-        addButton(scrollBar = new GuiScrollBar(this, 126, 25, 131, blockList::size, () -> 1));
-        addButton(new GuiArrowSelection(this, 76, 81, () -> {
+        func_230480_a_(new GuiInnerScreen(this, 7, 11, 63, 49));
+        func_230480_a_(new GuiInnerScreen(this, 74, 11, 51, 159));
+        func_230480_a_(scrollBar = new GuiScrollBar(this, 126, 25, 131, blockList::size, () -> 1));
+        func_230480_a_(new GuiArrowSelection(this, 76, 81, () -> {
             int currentLayer = scrollBar.getCurrentSelection();
             if (currentLayer >= 0) {
                 return blockList.get(currentLayer).getBlock().getNameTextComponent();
             }
             return null;
         }));
-        addButton(upButton = new MekanismImageButton(this, getGuiLeft() + 126, getGuiTop() + 11, 14,
+        func_230480_a_(upButton = new MekanismImageButton(this, getGuiLeft() + 126, getGuiTop() + 11, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), () -> scrollBar.adjustScroll(1)));
-        addButton(downButton = new MekanismImageButton(this, getGuiLeft() + 126, getGuiTop() + 156, 14,
+        func_230480_a_(downButton = new MekanismImageButton(this, getGuiLeft() + 126, getGuiTop() + 156, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), () -> scrollBar.adjustScroll(-1)));
         updateEnabledButtons();
     }
@@ -71,8 +71,8 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     private void updateEnabledButtons() {
         int currentLayer = scrollBar.getCurrentSelection();
-        upButton.active = currentLayer + 1 < blockList.size();
-        downButton.active = currentLayer > 0;
+        upButton.field_230693_o_ = currentLayer + 1 < blockList.size();
+        downButton.field_230693_o_ = currentLayer > 0;
     }
 
     @Override

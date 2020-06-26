@@ -32,18 +32,18 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(
+        func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(
               EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getMultiblock().getPassiveGeneration(false, true)))),
               this));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().deuteriumTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.SMALL, this, 25, 64));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 79, 50));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().tritiumTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.SMALL, this, 133, 64));
-        addButton(new GuiProgress(() -> tile.getMultiblock().isBurning() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 47, 76));
-        addButton(new GuiProgress(() -> tile.getMultiblock().isBurning() ? 1 : 0, ProgressType.SMALL_LEFT, this, 101, 76));
-        addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
-        addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
-        addButton(injectionRateField = new GuiTextField(this, 98, 115, 26, 11));
+        func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().deuteriumTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.SMALL, this, 25, 64));
+        func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 79, 50));
+        func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().tritiumTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.SMALL, this, 133, 64));
+        func_230480_a_(new GuiProgress(() -> tile.getMultiblock().isBurning() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 47, 76));
+        func_230480_a_(new GuiProgress(() -> tile.getMultiblock().isBurning() ? 1 : 0, ProgressType.SMALL_LEFT, this, 101, 76));
+        func_230480_a_(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
+        func_230480_a_(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
+        func_230480_a_(injectionRateField = new GuiTextField(this, 98, 115, 26, 11));
         injectionRateField.changeFocus(true);
         injectionRateField.setInputValidator(InputValidator.DIGIT);
         injectionRateField.setEnterHandler(this::setInjection);

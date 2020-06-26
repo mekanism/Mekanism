@@ -41,7 +41,7 @@ public class GuiSideConfiguration extends GuiWindow {
         addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 25, 74, 12));
         List<TransmissionType> transmissions = getTile().getConfig().getTransmissions();
         for (int i = 0; i < transmissions.size(); i++) {
-            GuiConfigTypeTab tab = new GuiConfigTypeTab(gui, transmissions.get(i), relativeX + (i < 4 ? -26 : width), relativeY + (2 + 28 * (i % 4)), this, i < 4);
+            GuiConfigTypeTab tab = new GuiConfigTypeTab(gui, transmissions.get(i), relativeX + (i < 4 ? -26 : field_230688_j_), relativeY + (2 + 28 * (i % 4)), this, i < 4);
             addChild(tab);
             configTabs.add(tab);
         }
@@ -98,7 +98,7 @@ public class GuiSideConfiguration extends GuiWindow {
 
     public void updateTabs() {
         for (GuiConfigTypeTab tab : configTabs) {
-            tab.visible = currentType != tab.getTransmissionType();
+            tab.field_230694_p_ = currentType != tab.getTransmissionType();
         }
     }
 

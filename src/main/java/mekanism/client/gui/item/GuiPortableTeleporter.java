@@ -70,10 +70,10 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     @Override
     public void init() {
         super.init();
-        //addButton(new GuiInnerScreen(this, 48, 102, 89, 13));
-        //addButton(new GuiInnerScreen(this, 136, 102, 13, 13));
-        addButton(new GuiTeleporterStatus(this, () -> clientFreq != null, () -> clientStatus));
-        addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
+        //func_230480_a_(new GuiInnerScreen(this, 48, 102, 89, 13));
+        //func_230480_a_(new GuiInnerScreen(this, 136, 102, 13, 13));
+        func_230480_a_(new GuiTeleporterStatus(this, () -> clientFreq != null, () -> clientStatus));
+        func_230480_a_(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 IEnergyContainer container = StorageUtils.getEnergyContainer(itemStack, 0);
@@ -89,17 +89,17 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                 return container.getEnergy().divideToLevel(container.getMaxEnergy());
             }
         }, 158, 26));
-        addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
+        func_230480_a_(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
 
-        addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
+        func_230480_a_(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 14, 60, 20, MekanismLang.PRIVATE, () -> {
+        func_230480_a_(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 14, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
+        func_230480_a_(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 TeleporterFrequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
@@ -107,7 +107,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
+        func_230480_a_(deleteButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 TeleporterFrequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
@@ -117,19 +117,19 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        addButton(teleportButton = new TranslationButton(this, getGuiLeft() + 42, getGuiTop() + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
+        func_230480_a_(teleportButton = new TranslationButton(this, getGuiLeft() + 42, getGuiTop() + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
             if (clientFreq != null && clientStatus == 1) {
                 ClientTickHandler.portableTeleport(minecraft.player, currentHand, clientFreq);
                 minecraft.player.closeScreen();
             }
             updateButtons();
         }));
-        addButton(frequencyField = new GuiTextField(this, 50, 104, 86, 11));
+        func_230480_a_(frequencyField = new GuiTextField(this, 50, 104, 86, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);
         frequencyField.setInputValidator(InputValidator.or(InputValidator.DIGIT, InputValidator.LETTER, InputValidator.FREQUENCY_CHARS));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 137, getGuiTop() + 103, 11, 12, getButtonLocation("checkmark"), this::setFrequency));
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 137, getGuiTop() + 103, 11, 12, getButtonLocation("checkmark"), this::setFrequency));
         updateButtons();
         if (isInit) {
             isInit = false;
@@ -183,22 +183,22 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }
         scrollList.setText(text);
         if (privateMode) {
-            publicButton.active = true;
-            privateButton.active = false;
+            publicButton.field_230693_o_ = true;
+            privateButton.field_230693_o_ = false;
         } else {
-            publicButton.active = false;
-            privateButton.active = true;
+            publicButton.field_230693_o_ = false;
+            privateButton.field_230693_o_ = true;
         }
         if (scrollList.hasSelection()) {
             TeleporterFrequency freq = privateMode ? clientPrivateCache.get(scrollList.getSelection()) : clientPublicCache.get(scrollList.getSelection());
-            setButton.active = clientFreq == null || !clientFreq.equals(freq);
-            deleteButton.active = getOwner().equals(freq.getOwner());
+            setButton.field_230693_o_ = clientFreq == null || !clientFreq.equals(freq);
+            deleteButton.field_230693_o_ = getOwner().equals(freq.getOwner());
         } else {
-            setButton.active = false;
-            deleteButton.active = false;
+            setButton.field_230693_o_ = false;
+            deleteButton.field_230693_o_ = false;
         }
         if (!itemStack.isEmpty()) {
-            teleportButton.active = clientFreq != null && clientStatus == 1;
+            teleportButton.field_230693_o_ = clientFreq != null && clientStatus == 1;
         }
     }
 

@@ -144,11 +144,11 @@ public class GuiModuleScreen extends GuiRelativeElement {
         }
 
         int getX() {
-            return x + xPos;
+            return field_230690_l_ + xPos;
         }
 
         int getY() {
-            return y + yPos;
+            return field_230691_m_ + yPos;
         }
     }
 

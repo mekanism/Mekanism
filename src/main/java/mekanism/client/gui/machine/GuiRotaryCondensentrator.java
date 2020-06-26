@@ -39,16 +39,16 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     @Override
     public void init() {
         super.init();
-        addButton(new GuiDownArrow(this, 159, 44));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
-        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
+        func_230480_a_(new GuiDownArrow(this, 159, 44));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiRedstoneControlTab(this, tile));
+        func_230480_a_(new GuiUpgradeTab(this, tile));
+        func_230480_a_(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
+        func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getEnergyContainer().getNeeded()))), this));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 133, 13));
-        addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 25, 13));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
+        func_230480_a_(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 133, 13));
+        func_230480_a_(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 25, 13));
+        func_230480_a_(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tile.getActive() ? 1 : 0;
@@ -59,7 +59,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
                 return !tile.mode;
             }
         }, ProgressType.LARGE_RIGHT, this, 64, 39).jeiCategories(condensentrating));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
+        func_230480_a_(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tile.getActive() ? 1 : 0;
@@ -70,7 +70,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
                 return tile.mode;
             }
         }, ProgressType.LARGE_LEFT, this, 64, 39).jeiCategories(decondensentrating));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 4, getGuiTop() + 4, 18, getButtonLocation("toggle"),
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 4, getGuiTop() + 4, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }
 

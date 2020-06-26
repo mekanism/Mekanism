@@ -14,7 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
@@ -39,12 +39,12 @@ public class RecipeProviderUtil {
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, IItemProvider boat, IItemProvider door,
-          IItemProvider fenceGate, Tag<Item> log, IItemProvider pressurePlate, IItemProvider trapdoor, String name) {
+          IItemProvider fenceGate, INamedTag<Item> log, IItemProvider pressurePlate, IItemProvider trapdoor, String name) {
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, log, pressurePlate, trapdoor, name, null);
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, IItemProvider boat, IItemProvider door,
-          IItemProvider fenceGate, Tag<Item> log, IItemProvider pressurePlate, IItemProvider trapdoor, String name, @Nullable ICondition condition) {
+          IItemProvider fenceGate, INamedTag<Item> log, IItemProvider pressurePlate, IItemProvider trapdoor, String name, @Nullable ICondition condition) {
         //Boat
         SawmillRecipeBuilder boatRecipeBuilder = SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(boat.asItem()),

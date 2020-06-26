@@ -31,7 +31,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
     public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y) {
         super(type.getTexture(), gui, x, y, type.getWidth(), type.getHeight());
-        active = false;
+        field_230693_o_ = false;
     }
 
     public GuiSlot validity(Supplier<ItemStack> validityCheck) {
@@ -78,12 +78,12 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        blit(x, y, 0, 0, width, height, width, height);
+        blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
         if (hasValidityCheck) {
             ItemStack invalid = validityCheck.get();
             if (!invalid.isEmpty()) {
-                int xPos = x + 1;
-                int yPos = y + 1;
+                int xPos = field_230690_l_ + 1;
+                int yPos = field_230691_m_ + 1;
                 fill(xPos, yPos, xPos + 16, yPos + 16, INVALID_SLOT_COLOR);
                 MekanismRenderer.resetColor();
                 guiObj.renderItem(invalid, xPos, yPos);
@@ -94,7 +94,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
         }
         if (overlay != null) {
             minecraft.textureManager.bindTexture(overlay.getTexture());
-            blit(x, y, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
+            blit(field_230690_l_, field_230691_m_, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
         }
     }
 
@@ -130,7 +130,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (onClick != null && isValidClickButton(button)) {
-            if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height) {
+            if (mouseX >= field_230690_l_ && mouseY >= field_230691_m_ && mouseX < field_230690_l_ + field_230688_j_ && mouseY < field_230691_m_ + field_230689_k_) {
                 onClick.onClick(this, (int) mouseX, (int) mouseY);
                 playDownSound(Minecraft.getInstance().getSoundHandler());
                 return true;

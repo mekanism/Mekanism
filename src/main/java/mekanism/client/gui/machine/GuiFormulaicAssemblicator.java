@@ -44,26 +44,26 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 159, 15));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiUpgradeTab(this, tile));
+        func_230480_a_(new GuiRedstoneControlTab(this, tile));
+        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 159, 15));
         //Overwrite the output slots with a "combined" slot
-        addButton(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
-        addButton(new GuiProgress(() -> tile.operatingTicks / (double) tile.ticksRequired, ProgressType.TALL_RIGHT, this, 86, 43).jeiCrafting());
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        addButton(encodeFormulaButton = new MekanismImageButton(this, getGuiLeft() + 7, getGuiTop() + 45, 14, getButtonLocation("encode_formula"),
+        func_230480_a_(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
+        func_230480_a_(new GuiProgress(() -> tile.operatingTicks / (double) tile.ticksRequired, ProgressType.TALL_RIGHT, this, 86, 43).jeiCrafting());
+        func_230480_a_(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        func_230480_a_(encodeFormulaButton = new MekanismImageButton(this, getGuiLeft() + 7, getGuiTop() + 45, 14, getButtonLocation("encode_formula"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, tile)), getOnHover(MekanismLang.ENCODE_FORMULA)));
-        addButton(stockControlButton = new MekanismImageButton(this, getGuiLeft() + 26, getGuiTop() + 75, 16, getButtonLocation("stock_control"),
+        func_230480_a_(stockControlButton = new MekanismImageButton(this, getGuiLeft() + 26, getGuiTop() + 75, 16, getButtonLocation("stock_control"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.STOCK_CONTROL_BUTTON, tile)),
               getOnHover(() -> MekanismLang.STOCK_CONTROL.translate(OnOff.of(tile.stockControl)))));
-        addButton(fillEmptyButton = new MekanismImageButton(this, getGuiLeft() + 44, getGuiTop() + 75, 16, getButtonLocation("fill_empty"),
+        func_230480_a_(fillEmptyButton = new MekanismImageButton(this, getGuiLeft() + 44, getGuiTop() + 75, 16, getButtonLocation("fill_empty"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_ITEMS, tile)), getOnHover(MekanismLang.FILL_EMPTY)));
-        addButton(craftSingleButton = new MekanismImageButton(this, getGuiLeft() + 71, getGuiTop() + 75, 16, getButtonLocation("craft_single"),
+        func_230480_a_(craftSingleButton = new MekanismImageButton(this, getGuiLeft() + 71, getGuiTop() + 75, 16, getButtonLocation("craft_single"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_SINGLE, tile)), getOnHover(MekanismLang.CRAFT_SINGLE)));
-        addButton(craftAvailableButton = new MekanismImageButton(this, getGuiLeft() + 89, getGuiTop() + 75, 16, getButtonLocation("craft_available"),
+        func_230480_a_(craftAvailableButton = new MekanismImageButton(this, getGuiLeft() + 89, getGuiTop() + 75, 16, getButtonLocation("craft_available"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_ALL, tile)), getOnHover(MekanismLang.CRAFT_AVAILABLE)));
-        addButton(autoModeButton = new MekanismImageButton(this, getGuiLeft() + 107, getGuiTop() + 75, 16, getButtonLocation("auto_toggle"),
+        func_230480_a_(autoModeButton = new MekanismImageButton(this, getGuiLeft() + 107, getGuiTop() + 75, 16, getButtonLocation("auto_toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
               getOnHover(() -> MekanismLang.AUTO_MODE.translate(OnOff.of(tile.autoMode)))));
         updateEnabledButtons();
@@ -76,12 +76,12 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     private void updateEnabledButtons() {
-        encodeFormulaButton.active = !tile.autoMode && tile.isRecipe && canEncode();
-        stockControlButton.active = tile.formula != null && tile.formula.isValidFormula();
-        fillEmptyButton.active = !tile.autoMode;
-        craftSingleButton.active = !tile.autoMode && tile.isRecipe;
-        craftAvailableButton.active = !tile.autoMode && tile.isRecipe;
-        autoModeButton.active = tile.formula != null && tile.formula.isValidFormula();
+        encodeFormulaButton.field_230693_o_ = !tile.autoMode && tile.isRecipe && canEncode();
+        stockControlButton.field_230693_o_ = tile.formula != null && tile.formula.isValidFormula();
+        fillEmptyButton.field_230693_o_ = !tile.autoMode;
+        craftSingleButton.field_230693_o_ = !tile.autoMode && tile.isRecipe;
+        craftAvailableButton.field_230693_o_ = !tile.autoMode && tile.isRecipe;
+        autoModeButton.field_230693_o_ = tile.formula != null && tile.formula.isValidFormula();
     }
 
     @Override

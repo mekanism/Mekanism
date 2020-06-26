@@ -26,7 +26,7 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         int colorSlotY = getRelativeY() + slotOffset + 25;
         childAdder.accept(new GuiSlot(SlotType.NORMAL, gui, slotX, colorSlotY));
         childAdder.accept(new ColorButton(gui, gui.getLeft() + slotX + 1, gui.getTop() + colorSlotY + 1, 16, 16, () -> filter.color,
-              () -> filter.color = Screen.hasShiftDown() ? null : TransporterUtils.increment(filter.color), () -> filter.color = TransporterUtils.decrement(filter.color)));
+              () -> filter.color = Screen.func_231173_s_() ? null : TransporterUtils.increment(filter.color), () -> filter.color = TransporterUtils.decrement(filter.color)));
         childAdder.accept(new MekanismImageButton(gui, gui.getLeft() + getRelativeX() + 148, gui.getTop() + getRelativeY() + 19, 11,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "default.png"), () -> filter.allowDefault = !filter.allowDefault,
               (onHover, xAxis, yAxis) -> gui.displayTooltip(MekanismLang.FILTER_ALLOW_DEFAULT.translate(), xAxis, yAxis)));

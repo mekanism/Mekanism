@@ -26,14 +26,14 @@ public class GuiMetallurgicInfuser extends GuiConfigurableTile<TileEntityMetallu
     @Override
     public void init() {
         super.init();
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.RIGHT, this, 72, 47).jeiCategory(tile));
-        addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.infusionTank, tile.getInfusionTanks(null)), 7, 15, 4, 52, false));
-        addButton(new GuiDumpButton<>(this, tile, 140, 65));
+        func_230480_a_(new GuiRedstoneControlTab(this, tile));
+        func_230480_a_(new GuiUpgradeTab(this, tile));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        func_230480_a_(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        func_230480_a_(new GuiProgress(tile::getScaledProgress, ProgressType.RIGHT, this, 72, 47).jeiCategory(tile));
+        func_230480_a_(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.infusionTank, tile.getInfusionTanks(null)), 7, 15, 4, 52, false));
+        func_230480_a_(new GuiDumpButton<>(this, tile, 140, 65));
     }
 
     @Override

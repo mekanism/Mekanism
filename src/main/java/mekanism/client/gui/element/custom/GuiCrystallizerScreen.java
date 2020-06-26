@@ -36,10 +36,10 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
 
     public GuiCrystallizerScreen(IGuiWrapper gui, int x, int y, IOreInfo oreInfo) {
         super(SLOT.getTexture(), gui, x, y, 115, 42);
-        innerScreen = new GuiInnerScreen(gui, x, y, width, height);
+        innerScreen = new GuiInnerScreen(gui, x, y, field_230688_j_, field_230689_k_);
         this.oreInfo = oreInfo;
-        this.slotX = this.x + 115 - SLOT.getWidth();
-        active = false;
+        this.slotX = this.field_230690_l_ + 115 - SLOT.getWidth();
+        field_230693_o_ = false;
     }
 
     @Override
@@ -65,9 +65,9 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         innerScreen.renderButton(mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        blit(slotX, y, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
+        blit(slotX, field_230691_m_, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
         if (!renderStack.isEmpty()) {
-            guiObj.renderItem(renderStack, slotX + 1, y + 1);
+            guiObj.renderItem(renderStack, slotX + 1, field_230691_m_ + 1);
         }
     }
 

@@ -4,13 +4,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class TagTypeMap<TYPE extends IForgeRegistryEntry<TYPE>> {
 
-    private final Map<Tag<TYPE>, Tag.Builder> tagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<INamedTag<TYPE>, Tag.Builder> tagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
 
     private final TagType<TYPE> tagType;
 
@@ -22,7 +24,7 @@ public class TagTypeMap<TYPE extends IForgeRegistryEntry<TYPE>> {
         return tagType;
     }
 
-    public Tag.Builder getBuilder(Tag<TYPE> tag) {
+    public ITag.Builder getBuilder(INamedTag<TYPE> tag) {
         return tagToBuilder.computeIfAbsent(tag, ignored -> Tag.Builder.create());
     }
 

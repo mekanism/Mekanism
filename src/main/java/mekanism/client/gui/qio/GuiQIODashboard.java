@@ -22,7 +22,7 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiQIOFrequencyTab(this, tile));
+        func_230480_a_(new GuiQIOFrequencyTab(this, tile));
     }
 
     @Override

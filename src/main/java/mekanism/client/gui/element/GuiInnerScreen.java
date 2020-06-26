@@ -36,7 +36,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
 
     public GuiInnerScreen tooltip(Supplier<List<ITextComponent>> tooltipStrings) {
         this.tooltipStrings = tooltipStrings;
-        active = true;
+        field_230693_o_ = true;
         return this;
     }
 

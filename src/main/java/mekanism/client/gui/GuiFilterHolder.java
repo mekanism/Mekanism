@@ -42,15 +42,15 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 9, 17, 46, 140));
+        func_230480_a_(new GuiInnerScreen(this, 9, 17, 46, 140));
         //Filter holder
-        addButton(new GuiElementHolder(this, 55, 17, 98, 118));
+        func_230480_a_(new GuiElementHolder(this, 55, 17, 98, 118));
         //new filter button border
-        addButton(new GuiElementHolder(this, 55, 135, 98, 22));
-        addButton(scrollBar = new GuiScrollBar(this, 153, 17, 140, () -> getFilters().size(), () -> FILTER_COUNT));
+        func_230480_a_(new GuiElementHolder(this, 55, 135, 98, 22));
+        func_230480_a_(scrollBar = new GuiScrollBar(this, 153, 17, 140, () -> getFilters().size(), () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, index -> {
+            func_230480_a_(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, index -> {
                 if (index > 0) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
                 }

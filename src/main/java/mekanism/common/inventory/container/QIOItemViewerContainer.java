@@ -326,8 +326,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
-    public void onClick(IScrollableSlot slot, int button, boolean hasShiftDown, ItemStack heldItem) {
-        if (hasShiftDown) {
+    public void onClick(IScrollableSlot slot, int button, boolean func_231173_s_, ItemStack heldItem) {
+        if (func_231173_s_) {
             if (slot != null) {
                 Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.shiftTake(slot.getItem()));
             }

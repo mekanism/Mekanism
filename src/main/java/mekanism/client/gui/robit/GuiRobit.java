@@ -25,26 +25,26 @@ public abstract class GuiRobit<CONTAINER extends Container & IEntityContainer<En
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSideHolder(this, 176, 6, 106, false));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 10, 18, getButtonLocation("main"),
+        func_230480_a_(new GuiSideHolder(this, 176, 6, 106, false));
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 10, 18, getButtonLocation("main"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_MAIN, robit.getEntityId())),
               getOnHover(MekanismLang.ROBIT)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 30, 18, getButtonLocation("crafting"), () -> {
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 30, 18, getButtonLocation("crafting"), () -> {
             if (shouldOpenGui(RobitGuiType.CRAFTING)) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_CRAFTING, robit.getEntityId()));
             }
         }, getOnHover(MekanismLang.ROBIT_CRAFTING)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 50, 18, getButtonLocation("inventory"), () -> {
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 50, 18, getButtonLocation("inventory"), () -> {
             if (shouldOpenGui(RobitGuiType.INVENTORY)) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_INVENTORY, robit.getEntityId()));
             }
         }, getOnHover(MekanismLang.ROBIT_INVENTORY)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 70, 18, getButtonLocation("smelting"), () -> {
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 70, 18, getButtonLocation("smelting"), () -> {
             if (shouldOpenGui(RobitGuiType.SMELTING)) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_SMELTING, robit.getEntityId()));
             }
         }, getOnHover(MekanismLang.ROBIT_SMELTING)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 90, 18, getButtonLocation("repair"), () -> {
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 90, 18, getButtonLocation("repair"), () -> {
             if (shouldOpenGui(RobitGuiType.REPAIR)) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_REPAIR, robit.getEntityId()));
             }

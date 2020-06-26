@@ -41,23 +41,23 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     @Override
     public void init() {
         super.init();
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSortingTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), getXSize() - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        func_230480_a_(new GuiRedstoneControlTab(this, tile));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiUpgradeTab(this, tile));
+        func_230480_a_(new GuiSortingTab(this, tile));
+        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), getXSize() - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
+        func_230480_a_(new GuiEnergyTab(tile.getEnergyContainer(), this));
         if (tile.hasSecondaryResourceBar()) {
             if (tile instanceof TileEntityMetallurgicInfuserFactory) {
                 TileEntityMetallurgicInfuserFactory factory = (TileEntityMetallurgicInfuserFactory) this.tile;
-                addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getInfusionTank(), tile.getInfusionTanks(null)), 7, 76,
+                func_230480_a_(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getInfusionTank(), tile.getInfusionTanks(null)), 7, 76,
                       tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
-                addButton(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
+                func_230480_a_(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             } else if (tile instanceof TileEntityItemStackGasToItemStackFactory) {
                 TileEntityItemStackGasToItemStackFactory factory = (TileEntityItemStackGasToItemStackFactory) this.tile;
-                addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getGasTank(), tile.getGasTanks(null)), 7, 76,
+                func_230480_a_(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getGasTank(), tile.getGasTanks(null)), 7, 76,
                       tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
-                addButton(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
+                func_230480_a_(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             }
         }
 
@@ -71,23 +71,23 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
 
     private void addProgress(GuiProgress progressBar) {
         if (tile.getFactoryType() == FactoryType.SMELTING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.ENERGIZED_SMELTER.getRegistryName()));
+            func_230480_a_(progressBar.jeiCategories(MekanismBlocks.ENERGIZED_SMELTER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.ENRICHING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.ENRICHMENT_CHAMBER.getRegistryName()));
+            func_230480_a_(progressBar.jeiCategories(MekanismBlocks.ENRICHMENT_CHAMBER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.CRUSHING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.CRUSHER.getRegistryName()));
+            func_230480_a_(progressBar.jeiCategories(MekanismBlocks.CRUSHER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.COMPRESSING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.OSMIUM_COMPRESSOR.getRegistryName()));
+            func_230480_a_(progressBar.jeiCategories(MekanismBlocks.OSMIUM_COMPRESSOR.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.COMBINING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.COMBINER.getRegistryName()));
+            func_230480_a_(progressBar.jeiCategories(MekanismBlocks.COMBINER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.PURIFYING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.PURIFICATION_CHAMBER.getRegistryName()));
+            func_230480_a_(progressBar.jeiCategories(MekanismBlocks.PURIFICATION_CHAMBER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.INJECTING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER.getRegistryName()));
+            func_230480_a_(progressBar.jeiCategories(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.INFUSING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.METALLURGIC_INFUSER.getRegistryName()));
+            func_230480_a_(progressBar.jeiCategories(MekanismBlocks.METALLURGIC_INFUSER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.SAWING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.PRECISION_SAWMILL.getRegistryName()));
+            func_230480_a_(progressBar.jeiCategories(MekanismBlocks.PRECISION_SAWMILL.getRegistryName()));
         }
     }
 

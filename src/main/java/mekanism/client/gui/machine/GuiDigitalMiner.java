@@ -56,7 +56,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 7, 19, 77, 69, () -> {
+        func_230480_a_(new GuiInnerScreen(this, 7, 19, 77, 69, () -> {
             List<ITextComponent> list = new ArrayList<>();
             ILangEntry runningType;
             if (tile.getEnergyContainer().getEnergyPerTick().greaterThan(tile.getEnergyContainer().getMaxEnergy())) {
@@ -72,21 +72,21 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             list.add(MekanismLang.MINER_TO_MINE.translate(formatInt(tile.cachedToMine)));
             return list;
         }).spacing(1).clearFormat());
-        addButton(new GuiDigitalSwitch(this, 19, 56, eject, () -> tile.doEject, MekanismLang.AUTO_EJECT.translate(),
+        func_230480_a_(new GuiDigitalSwitch(this, 19, 56, eject, () -> tile.doEject, MekanismLang.AUTO_EJECT.translate(),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile)), SwitchType.LOWER_ICON));
-        addButton(new GuiDigitalSwitch(this, 38, 56, input, () -> tile.doPull, MekanismLang.AUTO_PULL.translate(),
+        func_230480_a_(new GuiDigitalSwitch(this, 38, 56, input, () -> tile.doPull, MekanismLang.AUTO_PULL.translate(),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_PULL_BUTTON, tile)), SwitchType.LOWER_ICON));
-        addButton(new GuiDigitalSwitch(this, 57, 56, silk, tile::getSilkTouch, MekanismLang.MINER_SILK.translate(),
+        func_230480_a_(new GuiDigitalSwitch(this, 57, 56, silk, tile::getSilkTouch, MekanismLang.MINER_SILK.translate(),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SILK_TOUCH_BUTTON, tile)), SwitchType.LOWER_ICON));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 39, 47));
-        addButton(new GuiVisualsTab(this, tile));
-        addButton(new GuiSlot(SlotType.DIGITAL, this, 64, 21).validity(() -> tile.missingStack)
+        func_230480_a_(new GuiRedstoneControlTab(this, tile));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiUpgradeTab(this, tile));
+        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 39, 47));
+        func_230480_a_(new GuiVisualsTab(this, tile));
+        func_230480_a_(new GuiSlot(SlotType.DIGITAL, this, 64, 21).validity(() -> tile.missingStack)
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
               .hover(getOnHover(() -> tile.missingStack.isEmpty() ? MekanismLang.MINER_WELL.translate() : MekanismLang.MINER_MISSING_BLOCK.translate())));
-        addButton(new GuiEnergyTab(() -> {
+        func_230480_a_(new GuiEnergyTab(() -> {
             MinerEnergyContainer energyContainer = tile.getEnergyContainer();
             FloatingLong perTick = energyContainer.getEnergyPerTick();
             ArrayList<ITextComponent> ret = new ArrayList<>(4);
@@ -100,13 +100,13 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         }, this));
 
         int buttonStart = getGuiTop() + 19;
-        addButton(startButton = new TranslationButton(this, getGuiLeft() + 87, buttonStart, 61, 18, MekanismLang.BUTTON_START,
+        func_230480_a_(startButton = new TranslationButton(this, getGuiLeft() + 87, buttonStart, 61, 18, MekanismLang.BUTTON_START,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.START_BUTTON, tile))));
-        addButton(stopButton = new TranslationButton(this, getGuiLeft() + 87, buttonStart + 17, 61, 18, MekanismLang.BUTTON_STOP,
+        func_230480_a_(stopButton = new TranslationButton(this, getGuiLeft() + 87, buttonStart + 17, 61, 18, MekanismLang.BUTTON_STOP,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.STOP_BUTTON, tile))));
-        addButton(configButton = new TranslationButton(this, getGuiLeft() + 87, buttonStart + 34, 61, 18, MekanismLang.BUTTON_CONFIG,
+        func_230480_a_(configButton = new TranslationButton(this, getGuiLeft() + 87, buttonStart + 34, 61, 18, MekanismLang.BUTTON_CONFIG,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tile))));
-        addButton(new TranslationButton(this, getGuiLeft() + 87, buttonStart + 51, 61, 18, MekanismLang.MINER_RESET,
+        func_230480_a_(new TranslationButton(this, getGuiLeft() + 87, buttonStart + 51, 61, 18, MekanismLang.MINER_RESET,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, tile))));
         updateEnabledButtons();
     }
@@ -118,9 +118,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     }
 
     private void updateEnabledButtons() {
-        startButton.active = tile.searcher.state == State.IDLE || !tile.running;
-        stopButton.active = tile.searcher.state != State.IDLE && tile.running;
-        configButton.active = tile.searcher.state == State.IDLE;
+        startButton.field_230693_o_ = tile.searcher.state == State.IDLE || !tile.running;
+        stopButton.field_230693_o_ = tile.searcher.state != State.IDLE && tile.running;
+        configButton.field_230693_o_ = tile.searcher.state == State.IDLE;
     }
 
     @Override

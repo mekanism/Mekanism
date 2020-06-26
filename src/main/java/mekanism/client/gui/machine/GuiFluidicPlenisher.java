@@ -31,7 +31,7 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 54, 23, 80, 41, () -> {
+        func_230480_a_(new GuiInnerScreen(this, 54, 23, 80, 41, () -> {
             List<ITextComponent> list = new ArrayList<>();
             list.add(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent());
             list.add(MekanismLang.FINISHED.translate(YesNo.of(tile.finishedCalc)));
@@ -43,13 +43,13 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
             }
             return list;
         }));
-        addButton(new GuiDownArrow(this, 32, 39));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
+        func_230480_a_(new GuiDownArrow(this, 32, 39));
+        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        func_230480_a_(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
+        func_230480_a_(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiRedstoneControlTab(this, tile));
+        func_230480_a_(new GuiUpgradeTab(this, tile));
     }
 
     @Override

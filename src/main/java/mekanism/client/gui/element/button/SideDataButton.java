@@ -21,7 +21,7 @@ public class SideDataButton extends MekanismButton {
     public SideDataButton(IGuiWrapper gui, int x, int y, RelativeSide slotPos, Supplier<DataType> dataTypeSupplier, Supplier<EnumColor> colorSupplier,
           TileEntity tile, Supplier<TransmissionType> transmissionType, ConfigurationPacket packetType, IHoverable onHover) {
         super(gui, x, y, 14, 14, "",
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, tile.getPos(), Screen.hasShiftDown() ? 2 : 0, slotPos, transmissionType.get())),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, tile.getPos(), Screen.func_231173_s_() ? 2 : 0, slotPos, transmissionType.get())),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, tile.getPos(), 1, slotPos, transmissionType.get())), onHover);
         this.dataTypeSupplier = dataTypeSupplier;
         this.colorSupplier = colorSupplier;

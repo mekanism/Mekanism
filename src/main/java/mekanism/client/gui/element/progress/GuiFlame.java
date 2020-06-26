@@ -11,10 +11,10 @@ public class GuiFlame extends GuiProgress {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        blit(x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
+        blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, type.getTextureWidth(), type.getTextureHeight());
         if (handler.isActive()) {
-            int displayInt = (int) (handler.getProgress() * height);
-            blit(x, y + height - displayInt, width, height - displayInt, width, displayInt, type.getTextureWidth(), type.getTextureHeight());
+            int displayInt = (int) (handler.getProgress() * field_230689_k_);
+            blit(field_230690_l_, field_230691_m_ + field_230689_k_ - displayInt, field_230688_j_, field_230689_k_ - displayInt, field_230688_j_, displayInt, type.getTextureWidth(), type.getTextureHeight());
         }
     }
 }

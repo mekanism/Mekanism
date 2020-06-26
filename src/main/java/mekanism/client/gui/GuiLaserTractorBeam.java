@@ -17,7 +17,7 @@ public class GuiLaserTractorBeam extends GuiMekanismTile<TileEntityLaserTractorB
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
     }
 
     @Override

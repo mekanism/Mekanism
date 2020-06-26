@@ -30,8 +30,8 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSlot(SlotType.NORMAL, this, 5, 5).setRenderHover(true));
-        addButton(scrollList = new GuiTextScrollList(this, 7, 29, 162, 42));
+        func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 5, 5).setRenderHover(true));
+        func_230480_a_(scrollList = new GuiTextScrollList(this, 7, 29, 162, 42));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
         double xAxis = mouseX - getGuiLeft();
         double yAxis = mouseY - getGuiTop();
         if (button == 0) {
-            if (hasShiftDown()) {
+            if (func_231173_s_()) {
                 Slot hovering = null;
                 for (int i = 0; i < container.inventorySlots.size(); i++) {
                     Slot slot = container.inventorySlots.get(i);
@@ -75,10 +75,10 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
             if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
                 ItemStack stack = minecraft.player.inventory.getItemStack();
-                if (!stack.isEmpty() && !hasShiftDown()) {
+                if (!stack.isEmpty() && !func_231173_s_()) {
                     itemType = StackUtils.size(stack, 1);
                     scrollList.setText(TagCache.getItemTags(itemType));
-                } else if (stack.isEmpty() && hasShiftDown()) {
+                } else if (stack.isEmpty() && func_231173_s_()) {
                     itemType = ItemStack.EMPTY;
                     scrollList.setText(null);
                 }

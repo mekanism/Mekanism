@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 
 public interface ISlotClickHandler {
 
-    void onClick(IScrollableSlot slot, int button, boolean hasShiftDown, ItemStack heldItem);
+    void onClick(IScrollableSlot slot, int button, boolean func_231173_s_, ItemStack heldItem);
 
     interface IScrollableSlot {
 

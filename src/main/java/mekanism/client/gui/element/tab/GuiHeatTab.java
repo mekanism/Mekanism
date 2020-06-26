@@ -22,7 +22,7 @@ public class GuiHeatTab extends GuiTexturedElement {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        blit(x, y, 0, 0, width, height, width, height);
+        blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
     }
 
     @Override

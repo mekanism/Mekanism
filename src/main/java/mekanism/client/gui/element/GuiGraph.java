@@ -40,7 +40,7 @@ public class GuiGraph extends GuiTexturedElement {
     }
 
     public void addData(long data) {
-        if (graphData.size() == width) {
+        if (graphData.size() == field_230688_j_) {
             graphData.removeLong(0);
         }
 
@@ -63,8 +63,8 @@ public class GuiGraph extends GuiTexturedElement {
         int size = graphData.size();
         for (int i = 0; i < size; i++) {
             long data = Math.min(currentScale, graphData.getLong(i));
-            int relativeHeight = (int) (data * height / (double) currentScale);
-            blit(x + i, y + height - relativeHeight, 0, 0, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            int relativeHeight = (int) (data * field_230689_k_ / (double) currentScale);
+            blit(field_230690_l_ + i, field_230691_m_ + field_230689_k_ - relativeHeight, 0, 0, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
             RenderSystem.shadeModel(GL11.GL_SMOOTH);
             RenderSystem.disableAlphaTest();
@@ -72,14 +72,14 @@ public class GuiGraph extends GuiTexturedElement {
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
             RenderSystem.color4f(1, 1, 1, 0.2F + 0.8F * i / size);
-            blit(x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            blit(field_230690_l_ + i, field_230691_m_ + field_230689_k_ - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
             int hoverIndex = mouseX - getButtonX();
-            if (hoverIndex == i && mouseY >= getButtonY() && mouseY < getButtonY() + height) {
+            if (hoverIndex == i && mouseY >= getButtonY() && mouseY < getButtonY() + field_230689_k_) {
                 RenderSystem.color4f(1, 1, 1, 0.5F);
-                blit(x + i, y, 2, 0, 1, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+                blit(field_230690_l_ + i, field_230691_m_, 2, 0, 1, field_230689_k_, TEXTURE_WIDTH, TEXTURE_HEIGHT);
                 MekanismRenderer.resetColor();
-                blit(x + i, y + height - relativeHeight, 0, 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+                blit(field_230690_l_ + i, field_230691_m_ + field_230689_k_ - relativeHeight, 0, 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             }
 
             MekanismRenderer.resetColor();

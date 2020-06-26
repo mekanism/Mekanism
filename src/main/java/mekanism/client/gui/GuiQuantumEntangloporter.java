@@ -53,19 +53,19 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
     @Override
     public void init() {
         super.init();
-        addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
+        func_230480_a_(new GuiUpgradeTab(this, tile));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
 
-        addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
+        func_230480_a_(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 14, 60, 20, MekanismLang.PRIVATE, () -> {
+        func_230480_a_(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 14, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
+        func_230480_a_(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(selection) : tile.getPublicCache(FrequencyType.INVENTORY).get(selection);
@@ -73,7 +73,7 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
+        func_230480_a_(deleteButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(selection) : tile.getPublicCache(FrequencyType.INVENTORY).get(selection);
@@ -82,18 +82,18 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
             }
             updateButtons();
         }));
-        addButton(frequencyField = new GuiTextField(this, 50, 103, 98, 11));
+        func_230480_a_(frequencyField = new GuiTextField(this, 50, 103, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);
         frequencyField.setInputValidator(InputValidator.or(InputValidator.DIGIT, InputValidator.LETTER, InputValidator.FREQUENCY_CHARS));
         frequencyField.addCheckmarkButton(this::setFrequency);
-        addButton(new GuiEnergyTab(() -> {
+        func_230480_a_(new GuiEnergyTab(() -> {
             EnergyDisplay storing = tile.getFreq() == null ? EnergyDisplay.ZERO : EnergyDisplay.of(tile.getFreq().storedEnergy.getEnergy(), tile.getFreq().storedEnergy.getMaxEnergy());
             EnergyDisplay rate = EnergyDisplay.of(tile.getInputRate());
             return Arrays.asList(MekanismLang.STORING.translate(storing), MekanismLang.MATRIX_INPUT_RATE.translate(rate));
         }, this));
-        addButton(new GuiHeatTab(() -> {
+        func_230480_a_(new GuiHeatTab(() -> {
             ITextComponent transfer = MekanismUtils.getTemperatureDisplay(tile.getLastTransferLoss(), TemperatureUnit.KELVIN, false);
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);
             return Arrays.asList(MekanismLang.TRANSFERRED_RATE.translate(transfer), MekanismLang.DISSIPATED_RATE.translate(environment));
@@ -130,20 +130,20 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
         }
         scrollList.setText(text);
         if (privateMode) {
-            publicButton.active = true;
-            privateButton.active = false;
+            publicButton.field_230693_o_ = true;
+            privateButton.field_230693_o_ = false;
         } else {
-            publicButton.active = false;
-            privateButton.active = true;
+            publicButton.field_230693_o_ = false;
+            privateButton.field_230693_o_ = true;
         }
         if (scrollList.hasSelection()) {
             Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(scrollList.getSelection()) :
                              tile.getPublicCache(FrequencyType.INVENTORY).get(scrollList.getSelection());
-            setButton.active = tile.getFrequency(null) == null || !tile.getFrequency(null).equals(freq);
-            deleteButton.active = tile.getSecurity().getOwnerUUID().equals(freq.getOwner());
+            setButton.field_230693_o_ = tile.getFrequency(null) == null || !tile.getFrequency(null).equals(freq);
+            deleteButton.field_230693_o_ = tile.getSecurity().getOwnerUUID().equals(freq.getOwner());
         } else {
-            setButton.active = false;
-            deleteButton.active = false;
+            setButton.field_230693_o_ = false;
+            deleteButton.field_230693_o_ = false;
         }
     }
 

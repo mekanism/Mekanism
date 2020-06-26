@@ -1,16 +1,16 @@
 package mekanism.common.recipe.builder;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.DataGenJsonConstants;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 
@@ -32,7 +32,7 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
         return new ExtendedShapelessRecipeBuilder(result, count);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(Tag<Item> tag) {
+    public ExtendedShapelessRecipeBuilder addIngredient(ITag<Item> tag) {
         return addIngredient(Ingredient.fromTag(tag));
     }
 

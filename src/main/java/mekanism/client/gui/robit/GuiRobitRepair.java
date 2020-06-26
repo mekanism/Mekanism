@@ -32,7 +32,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     public void init() {
         super.init();
         minecraft.keyboardListener.enableRepeatEvents(true);
-        addButton(itemNameField = new TextFieldWidget(font, getGuiLeft() + 62, getGuiTop() + 24, 103, 12, ""));
+        func_230480_a_(itemNameField = new TextFieldWidget(font, getGuiLeft() + 62, getGuiTop() + 24, 103, 12, ""));
         itemNameField.setCanLoseFocus(false);
         itemNameField.changeFocus(true);
         itemNameField.setTextColor(-1);

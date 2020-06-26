@@ -41,7 +41,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getSlotList() == null ? SLOTS_DARK : SLOTS);
-        blit(x, y, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
+        blit(field_230690_l_, field_230691_m_, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
 
         List<IScrollableSlot> list = getSlotList();
         if (list == null) {
@@ -54,7 +54,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
             if (slot >= list.size()) {
                 break;
             }
-            int slotX = x + (i % xSlots) * 18, slotY = y + (i / xSlots) * 18;
+            int slotX = field_230690_l_ + (i % xSlots) * 18, slotY = field_230691_m_ + (i / xSlots) * 18;
             renderSlot(list.get(slot), slotX, slotY);
         }
     }
@@ -90,8 +90,8 @@ public class GuiSlotScroll extends GuiRelativeElement {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         super.mouseReleased(mouseX, mouseY, button);
-        IScrollableSlot slot = getSlot(mouseX, mouseY, x, y);
-        clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.inventory.getItemStack());
+        IScrollableSlot slot = getSlot(mouseX, mouseY, field_230690_l_, field_230691_m_);
+        clickHandler.onClick(slot, button, Screen.func_231173_s_(), minecraft.player.inventory.getItemStack());
         return true;
     }
 

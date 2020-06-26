@@ -16,7 +16,7 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag.INamedTag;
 
 class RotaryRecipeProvider implements ISubRecipeProvider {
 
@@ -45,7 +45,7 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
         }, FluidTags.WATER);
     }
 
-    private void addRotaryCondensentratorRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput, Tag<Fluid> fluidInput) {
+    private void addRotaryCondensentratorRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput, INamedTag<Fluid> fluidInput) {
         RotaryRecipeBuilder.rotary(
               FluidStackIngredient.from(fluidInput, 1),
               GasStackIngredient.from(gas, 1),

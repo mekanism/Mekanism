@@ -29,15 +29,15 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
 
     @Override
     protected void initPreSlots() {
-        addButton(new GuiElementHolder(this, 141, 16, 26, 56));
+        func_230480_a_(new GuiElementHolder(this, 141, 16, 26, 56));
     }
 
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));
-        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
-        addButton(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {
+        func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));
+        func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
+        func_230480_a_(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {
             List<ITextComponent> ret = new ArrayList<>();
             switch (tile.getMultiblock().mergedTank.getCurrentType()) {
                 case EMPTY:
@@ -64,9 +64,9 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
             ret.add(MekanismLang.GENERIC_MB.translate(formatInt(tile.getMultiblock().getTankCapacity())));
             return ret;
         }).defaultFormat().spacing(2));
-        addButton(new GuiDownArrow(this, 150, 39));
-        addButton(new GuiContainerEditMode<>(this, tile));
-        addButton(new GuiMergedTankGauge<>(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));
+        func_230480_a_(new GuiDownArrow(this, 150, 39));
+        func_230480_a_(new GuiContainerEditMode<>(this, tile));
+        func_230480_a_(new GuiMergedTankGauge<>(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));
     }
 
     private void addStored(List<ITextComponent> ret, IChemicalTank<?, ?> tank) {

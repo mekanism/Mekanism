@@ -24,14 +24,14 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         this.curType = curType;
         this.handler = handler;
         this.options = enumClass.getEnumConstants();
-        this.active = true;
+        this.field_230693_o_ = true;
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
         super.onClick(mouseX, mouseY);
         isHolding = true;
-        setOpen(!isOpen || !(mouseY <= y + 11));
+        setOpen(!isOpen || !(mouseY <= field_230691_m_ + 11));
         minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
     }
 
@@ -41,7 +41,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
 
         if (isHolding) {
             isHolding = false;
-            if (isOpen && mouseY > y + 11) {
+            if (isOpen && mouseY > field_230691_m_ + 11) {
                 handler.accept(options[getHoveredIndex(mouseX, mouseY)]);
                 setOpen(false);
             }
@@ -68,13 +68,13 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
 
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
-            GuiUtils.drawOutline(x + 1, y + 12 + index * 10, width - 2, 10, screenTextColor());
+            GuiUtils.drawOutline(field_230690_l_ + 1, field_230691_m_ + 12 + index * 10, field_230688_j_ - 2, 10, screenTextColor());
         }
 
         TYPE current = curType.get();
         if (current.getIcon() != null) {
             minecraft.textureManager.bindTexture(current.getIcon());
-            blit(x + width - 9, y + 3, 0, 0, 6, 6, 6, 6);
+            blit(field_230690_l_ + field_230688_j_ - 9, field_230691_m_ + 3, 0, 0, 6, 6, 6, 6);
         }
 
         if (isOpen) {
@@ -82,7 +82,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
                 ResourceLocation icon = options[i].getIcon();
                 if (icon != null) {
                     minecraft.textureManager.bindTexture(options[i].getIcon());
-                    blit(x + width - 9, y + 12 + 2 + 10 * i, 0, 0, 6, 6, 6, 6);
+                    blit(field_230690_l_ + field_230688_j_ - 9, field_230691_m_ + 12 + 2 + 10 * i, 0, 0, 6, 6, 6, 6);
                 }
             }
         }
@@ -100,8 +100,8 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     }
 
     private int getHoveredIndex(double mouseX, double mouseY) {
-        if (isOpen && mouseX >= x && mouseX < x + width && mouseY >= y + 11 && mouseY < y + height) {
-            return Math.max(0, Math.min(options.length - 1, (int) ((mouseY - y - 11) / 10)));
+        if (isOpen && mouseX >= field_230690_l_ && mouseX < field_230690_l_ + field_230688_j_ && mouseY >= field_230691_m_ + 11 && mouseY < field_230691_m_ + field_230689_k_) {
+            return Math.max(0, Math.min(options.length - 1, (int) ((mouseY - field_230691_m_ - 11) / 10)));
         }
         return -1;
     }
@@ -109,9 +109,9 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     private void setOpen(boolean open) {
         if (isOpen != open) {
             if (open) {
-                height += options.length * 10 + 1;
+                field_230689_k_ += options.length * 10 + 1;
             } else {
-                height -= options.length * 10 + 1;
+                field_230689_k_ -= options.length * 10 + 1;
             }
         }
         isOpen = open;

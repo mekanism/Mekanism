@@ -37,7 +37,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
                 if (index != -1) {
                     DropperAction action;
                     if (button == 0) {
-                        action = Screen.hasShiftDown() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
+                        action = Screen.func_231173_s_() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
                     } else {
                         action = DropperAction.DRAIN_DROPPER;
                     }

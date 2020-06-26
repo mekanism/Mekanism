@@ -27,8 +27,8 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
     @Override
     public void init() {
         super.init();
-        addButton(new GuiFissionReactorTab(this, tile, FissionReactorTab.MAIN));
-        addButton(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
+        func_230480_a_(new GuiFissionReactorTab(this, tile, FissionReactorTab.MAIN));
+        func_230480_a_(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return GeneratorsLang.GAS_BURN_RATE.translate(tile.getMultiblock().lastBurnRate);
@@ -39,7 +39,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
                 return Math.min(1, tile.getMultiblock().lastBurnRate / tile.getMaxBurnRate());
             }
         }, 5, 114, xSize - 12));
-        addButton(rateLimitField = new GuiTextField(this, 77, 128, 49, 12));
+        func_230480_a_(rateLimitField = new GuiTextField(this, 77, 128, 49, 12));
         rateLimitField.setEnterHandler(this::setRateLimit);
         rateLimitField.setInputValidator(InputValidator.DECIMAL);
         rateLimitField.setMaxStringLength(4);

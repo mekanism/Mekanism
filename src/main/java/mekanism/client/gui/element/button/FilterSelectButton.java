@@ -43,8 +43,8 @@ public class FilterSelectButton extends MekanismButton {
     public boolean isMouseOver(double xAxis, double yAxis) {
         if (super.isMouseOver(xAxis, yAxis)) {
             //First we do a basic check to see if we are over the button if it was a rectangle rather than a triangle.
-            double xShifted = xAxis - x;
-            double yShifted = yAxis - y;
+            double xShifted = xAxis - field_230690_l_;
+            double yShifted = yAxis - field_230691_m_;
             //Next we check it against the shapes of the different buttons
             if (down) {
                 if (yShifted < 2) {

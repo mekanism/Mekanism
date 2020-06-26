@@ -18,8 +18,8 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected GuiScrollableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height,
           int barXShift, int barYShift, int barWidth, int barHeight, int maxBarHeight) {
         super(resource, gui, x, y, width, height);
-        this.barX = this.x + barXShift;
-        this.barY = this.y + barYShift;
+        this.barX = this.field_230690_l_ + barXShift;
+        this.barY = this.field_230691_m_ + barYShift;
         this.barWidth = barWidth;
         this.barHeight = barHeight;
         this.maxBarHeight = maxBarHeight;

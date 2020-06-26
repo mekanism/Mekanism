@@ -33,13 +33,13 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 60, 23, 96, 40, () -> Arrays.asList(
+        func_230480_a_(new GuiInnerScreen(this, 60, 23, 96, 40, () -> Arrays.asList(
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getMultiblock().getTotalTemperature(), TemperatureUnit.KELVIN, true)),
               MekanismLang.BOIL_RATE.translate(formatInt(tile.getMultiblock().lastBoilRate)),
               MekanismLang.MAX_BOIL_RATE.translate(formatInt(tile.getMultiblock().lastMaxBoil))
         )));
-        addButton(new GuiBoilerTab(this, tile, BoilerTab.STAT));
-        addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
+        func_230480_a_(new GuiBoilerTab(this, tile, BoilerTab.STAT));
+        func_230480_a_(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return MekanismLang.BOIL_RATE.translate(formatInt(tile.getMultiblock().lastBoilRate));
@@ -50,7 +50,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
                 return (double) tile.getMultiblock().lastBoilRate / (double) tile.getMultiblock().lastMaxBoil;
             }
         }, 44, 13));
-        addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
+        func_230480_a_(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return MekanismLang.MAX_BOIL_RATE.translate(formatInt(tile.getMultiblock().lastMaxBoil));
@@ -62,19 +62,19 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
                        (tile.getMultiblock().superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get());
             }
         }, 164, 13));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().superheatedCoolantTank,
+        func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().superheatedCoolantTank,
               () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 6, 13)
               .setLabel(MekanismLang.BOILER_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE)));
-        addButton(new GuiFluidGauge(() -> tile.getMultiblock().waterTank,
+        func_230480_a_(new GuiFluidGauge(() -> tile.getMultiblock().waterTank,
               () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 26, 13)
               .setLabel(MekanismLang.BOILER_WATER_TANK.translateColored(EnumColor.INDIGO)));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().steamTank,
+        func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().steamTank,
               () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 172, 13)
               .setLabel(MekanismLang.BOILER_STEAM_TANK.translateColored(EnumColor.GRAY)));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().cooledCoolantTank,
+        func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().cooledCoolantTank,
               () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 192, 13)
               .setLabel(MekanismLang.BOILER_COOLANT_TANK.translateColored(EnumColor.AQUA)));
-        addButton(new GuiHeatTab(() -> {
+        func_230480_a_(new GuiHeatTab(() -> {
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));

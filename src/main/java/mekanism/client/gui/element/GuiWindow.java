@@ -28,14 +28,14 @@ public class GuiWindow extends GuiTexturedElement {
     public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height) {
         super(GuiMekanism.BASE_BACKGROUND, gui, x, y, width, height);
         isOverlay = true;
-        active = true;
+        field_230693_o_ = true;
         if (!isFocusOverlay()) {
             addCloseButton();
         }
     }
 
     protected void addCloseButton() {
-        addChild(new GuiCloseButton(getGuiObj(), this.x + 6, this.y + 6, this));
+        addChild(new GuiCloseButton(getGuiObj(), this.field_230690_l_ + 6, this.field_230691_m_ + 6, this));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class GuiWindow extends GuiTexturedElement {
         boolean ret = super.mouseClicked(mouseX, mouseY, button);
         // drag 'safe area'
         if (isMouseOver(mouseX, mouseY)) {
-            if (mouseY < y + 18) {
+            if (mouseY < field_230691_m_ + 18) {
                 dragging = true;
                 dragX = mouseX;
                 dragY = mouseY;
@@ -69,8 +69,8 @@ public class GuiWindow extends GuiTexturedElement {
     public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
         if (dragging) {
             int newDX = (int) Math.round(mouseX - dragX), newDY = (int) Math.round(mouseY - dragY);
-            int changeX = Math.max(-x, Math.min(minecraft.getMainWindow().getScaledWidth() - (x + width), newDX - prevDX));
-            int changeY = Math.max(-y, Math.min(minecraft.getMainWindow().getScaledHeight() - (y + height), newDY - prevDY));
+            int changeX = Math.max(-field_230690_l_, Math.min(minecraft.getMainWindow().getScaledWidth() - (field_230690_l_ + field_230688_j_), newDX - prevDX));
+            int changeY = Math.max(-field_230691_m_, Math.min(minecraft.getMainWindow().getScaledHeight() - (field_230691_m_ + field_230689_k_), newDY - prevDY));
             prevDX = newDX;
             prevDY = newDY;
             move(changeX, changeY);
@@ -115,8 +115,8 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     public void setListenerTab(Supplier<? extends GuiElement> elementSupplier) {
-        closeListener = () -> elementSupplier.get().active = true;
-        reattachListener = () -> elementSupplier.get().active = false;
+        closeListener = () -> elementSupplier.get().field_230693_o_ = true;
+        reattachListener = () -> elementSupplier.get().field_230693_o_ = false;
     }
 
     @Override
@@ -131,7 +131,7 @@ public class GuiWindow extends GuiTexturedElement {
         RenderSystem.color4f(1, 1, 1, 0.3F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        GuiUtils.renderBackgroundTexture(GuiMekanism.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
+        GuiUtils.renderBackgroundTexture(GuiMekanism.BLUR, 4, 4, relativeX, relativeY, field_230688_j_, field_230689_k_, 256, 256);
         MekanismRenderer.resetColor();
     }
 

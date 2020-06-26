@@ -10,7 +10,7 @@ public abstract class GuiScalableElement extends GuiTexturedElement {
 
     protected GuiScalableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height, int sideWidth, int sideHeight) {
         super(resource, gui, x, y, width, height);
-        active = false;
+        field_230693_o_ = false;
         this.sideWidth = sideWidth;
         this.sideHeight = sideHeight;
     }

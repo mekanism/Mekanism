@@ -46,24 +46,24 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSlot(SlotType.NORMAL, this, 12, 136));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new TranslationButton(this, getGuiLeft() + 56, getGuiTop() + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
+        func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 12, 136));
+        func_230480_a_(new GuiRedstoneControlTab(this, tile));
+        func_230480_a_(new GuiUpgradeTab(this, tile));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new TranslationButton(this, getGuiLeft() + 56, getGuiTop() + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiSorterFilerSelect(this, tile))));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 58, 14, getButtonLocation("single"),
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 58, 14, getButtonLocation("single"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SINGLE_ITEM_BUTTON, tile)),
               getOnHover(MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 84, 14, getButtonLocation("round_robin"),
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 84, 14, getButtonLocation("round_robin"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.ROUND_ROBIN_BUTTON, tile)),
               getOnHover(MekanismLang.SORTER_ROUND_ROBIN_DESCRIPTION)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 110, 14, getButtonLocation("auto_eject"),
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 110, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile)),
               getOnHover(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION)));
-        addButton(new ColorButton(this, getGuiLeft() + 13, getGuiTop() + 137, 16, 16, () -> tile.color,
+        func_230480_a_(new ColorButton(this, getGuiLeft() + 13, getGuiTop() + 137, 16, 16, () -> tile.color,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CHANGE_COLOR, tile,
-                    hasShiftDown() ? -1 : TransporterUtils.getColorIndex(TransporterUtils.increment(tile.color)))),
+                    func_231173_s_() ? -1 : TransporterUtils.getColorIndex(TransporterUtils.increment(tile.color)))),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CHANGE_COLOR, tile,
                     TransporterUtils.getColorIndex(TransporterUtils.decrement(tile.color))))));
     }

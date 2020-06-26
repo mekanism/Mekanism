@@ -18,7 +18,7 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
         this.typeSupplier = typeSupplier;
         this.typeSetter = typeSetter;
         this.options = enumClass.getEnumConstants();
-        active = true;
+        field_230693_o_ = true;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
         super.renderButton(mouseX, mouseY, partialTicks);
         TYPE type = typeSupplier.get();
         minecraft.textureManager.bindTexture(type.getIcon());
-        blit(x + 3, y + 3, 0, 0, width - 6, height - 6, 6, 6);
+        blit(field_230690_l_ + 3, field_230691_m_ + 3, 0, 0, field_230688_j_ - 6, field_230689_k_ - 6, 6, 6);
     }
 
     @Override

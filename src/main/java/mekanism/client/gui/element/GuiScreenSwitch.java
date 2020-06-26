@@ -22,23 +22,23 @@ public class GuiScreenSwitch extends GuiInnerScreen {
         super(gui, x, y, width, BUTTON_SIZE_Y * 2 + 5, () -> Collections.singletonList(buttonName));
         this.stateSupplier = stateSupplier;
         this.onToggle = onToggle;
-        active = true;
+        field_230693_o_ = true;
     }
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         super.renderButton(mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(SWITCH);
-        blit(x + width - 2 - BUTTON_SIZE_X, y + 2, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-        blit(x + width - 2 - BUTTON_SIZE_X, y + 2 + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        blit(field_230690_l_ + field_230688_j_ - 2 - BUTTON_SIZE_X, field_230691_m_ + 2, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        blit(field_230690_l_ + field_230688_j_ - 2 - BUTTON_SIZE_X, field_230691_m_ + 2 + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
     }
 
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
 
-        drawScaledCenteredText(MekanismLang.ON.translate(), relativeX + width - 9, relativeY + 3, 0x101010, 0.5F);
-        drawScaledCenteredText(MekanismLang.OFF.translate(), relativeX + width - 9, relativeY + 12, 0x101010, 0.5F);
+        drawScaledCenteredText(MekanismLang.ON.translate(), relativeX + field_230688_j_ - 9, relativeY + 3, 0x101010, 0.5F);
+        drawScaledCenteredText(MekanismLang.OFF.translate(), relativeX + field_230688_j_ - 9, relativeY + 12, 0x101010, 0.5F);
     }
 
     @Override

@@ -62,7 +62,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         if (!isFocusOverlay()) {
             if (isNew && getFilterSelect(gui, tile) != null) {
                 //If it is a new filter and we have a filter select screen add a back button instead of a close button
-                addChild(new MekanismImageButton(gui, this.x + 6, this.y + 6, 11, 14, getButtonLocation("back"), this::openFilterSelect));
+                addChild(new MekanismImageButton(gui, this.field_230690_l_ + 6, this.field_230691_m_ + 6, 11, 14, getButtonLocation("back"), this::openFilterSelect));
             } else {
                 super.addCloseButton();
             }
@@ -90,7 +90,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     }
 
     protected int getLeftButtonX() {
-        return x + width / 2 - 61;
+        return field_230690_l_ + field_230688_j_ / 2 - 61;
     }
 
     protected void init() {
@@ -179,7 +179,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
             double yAxis = mouseY - gui.getTop();
             if (xAxis >= xMin && xAxis < xMin + 16 && yAxis >= yMin && yAxis < yMin + 16) {
                 ItemStack toSet;
-                if (Screen.hasShiftDown()) {
+                if (Screen.func_231173_s_()) {
                     toSet = ItemStack.EMPTY;
                 } else {
                     ItemStack stack = minecraft.player.inventory.getItemStack();

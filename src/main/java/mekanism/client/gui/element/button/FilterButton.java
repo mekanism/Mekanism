@@ -35,7 +35,7 @@ public class FilterButton extends MekanismButton {
     }
 
     protected void setVisibility(boolean visible) {
-        this.visible = visible;
+        this.field_230694_p_ = visible;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class FilterButton extends MekanismButton {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         colorButton();
         minecraft.textureManager.bindTexture(TEXTURE);
-        blit(x, y, width, height, 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(field_230690_l_, field_230691_m_, field_230688_j_, field_230689_k_, 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         MekanismRenderer.resetColor();
         slot.renderButton(mouseX, mouseY, partialTicks);
     }

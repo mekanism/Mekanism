@@ -20,9 +20,9 @@ public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, MekanismT
     @Override
     public void init() {
         super.init();
-        addButton(new GuiContainerEditMode<>(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 48, 18));
+        func_230480_a_(new GuiContainerEditMode<>(this, tile));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 48, 18));
     }
 
     @Override

@@ -1,13 +1,13 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
@@ -66,8 +66,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     public void resize(int prevLeft, int prevTop, int left, int top) {
-        x = x - prevLeft + left;
-        y = y - prevTop + top;
+        field_230690_l_ = field_230690_l_ - prevLeft + left;
+        field_230691_m_ = field_230691_m_ - prevTop + top;
         children.forEach(child -> child.resize(prevLeft, prevTop, left, top));
     }
 
@@ -78,8 +78,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     public void move(int changeX, int changeY) {
-        x += changeX;
-        y += changeY;
+        field_230690_l_ += changeX;
+        field_230691_m_ += changeY;
         if (this instanceof GuiRelativeElement) {
             ((GuiRelativeElement) this).relativeX += changeX;
             ((GuiRelativeElement) this).relativeY += changeY;
@@ -112,7 +112,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     public final void onRenderForeground(int mouseX, int mouseY, int zOffset, int totalOffset) {
-        if (visible) {
+        if (field_230694_p_) {
             RenderSystem.translatef(0, 0, zOffset);
             // update the max total offset to prevent clashing of future overlays
             GuiMekanism.maxZOffset = Math.max(totalOffset, GuiMekanism.maxZOffset);
@@ -187,7 +187,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Override
     public int getXSize() {
-        return width;
+        return field_230688_j_;
     }
 
     public void setButtonBackground(ButtonBackground buttonBackground) {
@@ -205,28 +205,28 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
      * Override this to render the button with a different x position than this GuiElement
      */
     protected int getButtonX() {
-        return x;
+        return field_230690_l_;
     }
 
     /**
      * Override this to render the button with a different y position than this GuiElement
      */
     protected int getButtonY() {
-        return y;
+        return field_230691_m_;
     }
 
     /**
      * Override this to render the button with a different width than this GuiElement
      */
     protected int getButtonWidth() {
-        return width;
+        return field_230688_j_;
     }
 
     /**
      * Override this to render the button with a different height than this GuiElement
      */
     protected int getButtonHeight() {
-        return height;
+        return field_230689_k_;
     }
 
     /**
@@ -273,8 +273,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         //Only attempt to draw the message if we have a message to draw
         if (!message.isEmpty()) {
             //TODO: Improve the math for this so that it calculates the y value better
-            int halfWidthLeft = width / 2;
-            drawCenteredString(getFont(), message, x - guiObj.getLeft() + halfWidthLeft, y - guiObj.getTop() + (height - 8) / 2,
+            int halfWidthLeft = field_230688_j_ / 2;
+            drawCenteredString(getFont(), message, field_230690_l_ - guiObj.getLeft() + halfWidthLeft, field_230691_m_ - guiObj.getTop() + (field_230689_k_ - 8) / 2,
                   getFGColor() | MathHelper.ceil(alpha * 255.0F) << 24);
         }
     }

@@ -15,13 +15,13 @@ public abstract class GuiFilterSelect extends GuiWindow {
     protected GuiFilterSelect(IGuiWrapper gui) {
         super(gui, (gui.getWidth() - 152) / 2, 20, 152, 110);
         addChild(new GuiElementHolder(gui, 23, relativeY + 18, 130, 82));
-        addChild(new TranslationButton(gui, gui.getLeft() + 24, this.y + 19, 128, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
+        addChild(new TranslationButton(gui, gui.getLeft() + 24, this.field_230691_m_ + 19, 128, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
               () -> openCreateFilterDialog(createNewItemStackFilter())));
-        addChild(new TranslationButton(gui, gui.getLeft() + 24, this.y + 39, 128, 20, MekanismLang.BUTTON_TAG_FILTER,
+        addChild(new TranslationButton(gui, gui.getLeft() + 24, this.field_230691_m_ + 39, 128, 20, MekanismLang.BUTTON_TAG_FILTER,
               () -> openCreateFilterDialog(createNewTagFilter())));
-        addChild(new TranslationButton(gui, gui.getLeft() + 24, this.y + 59, 128, 20, MekanismLang.BUTTON_MATERIAL_FILTER,
+        addChild(new TranslationButton(gui, gui.getLeft() + 24, this.field_230691_m_ + 59, 128, 20, MekanismLang.BUTTON_MATERIAL_FILTER,
               () -> openCreateFilterDialog(createNewMaterialFilter())));
-        addChild(new TranslationButton(gui, gui.getLeft() + 24, this.y + 79, 128, 20, MekanismLang.BUTTON_MODID_FILTER,
+        addChild(new TranslationButton(gui, gui.getLeft() + 24, this.field_230691_m_ + 79, 128, 20, MekanismLang.BUTTON_MODID_FILTER,
               () -> openCreateFilterDialog(createNewModIDFilter())));
     }
 

@@ -36,12 +36,12 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     public void init() {
         super.init();
 
-        addButton(moduleScreen = new GuiModuleScreen(this, 138, 20, stack -> {
+        func_230480_a_(moduleScreen = new GuiModuleScreen(this, 138, 20, stack -> {
             int slotId = container.inventorySlots.get(selected).getSlotIndex();
             Mekanism.packetHandler.sendToServer(new PacketUpdateInventorySlot(stack, slotId));
             playerInventory.player.inventory.setInventorySlotContents(slotId, stack);
         }));
-        addButton(scrollList = new GuiModuleScrollList(this, 30, 20, 108, 134, () -> getStack(selected), this::onModuleSelected));
+        func_230480_a_(scrollList = new GuiModuleScrollList(this, 30, 20, 108, 134, () -> getStack(selected), this::onModuleSelected));
         int size = container.inventorySlots.size();
         for (int i = 0; i < size; i++) {
             Slot slot = container.inventorySlots.get(i);
@@ -50,7 +50,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
             if (selected == -1 && isValidItem(index)) {
                 select(index);
             }
-            addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1)
+            func_230480_a_(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1)
                   .click((e, x, y) -> select(index))
                   .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                   .with(() -> index == selected ? SlotOverlay.SELECT : null));

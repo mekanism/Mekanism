@@ -20,25 +20,25 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiSideHo
         this.innerWidth = innerSize;
         this.innerHeight = innerSize;
         //TODO: decide what to do if this doesn't divide nicely
-        this.border = (width - innerWidth) / 2;
+        this.border = (field_230688_j_ - innerWidth) / 2;
         playClickSound = true;
-        active = true;
+        field_230693_o_ = true;
     }
 
     @Override
     public boolean isMouseOver(double xAxis, double yAxis) {
         //TODO: override isHovered
-        return this.active && this.visible && xAxis >= x + border && xAxis < x + width - border && yAxis >= y + border && yAxis < y + height - border;
+        return this.field_230693_o_ && this.field_230694_p_ && xAxis >= field_230690_l_ + border && xAxis < field_230690_l_ + field_230688_j_ - border && yAxis >= field_230691_m_ + border && yAxis < field_230691_m_ + field_230689_k_ - border;
     }
 
     @Override
     protected int getButtonX() {
-        return x + border + (left ? 1 : -1);
+        return field_230690_l_ + border + (left ? 1 : -1);
     }
 
     @Override
     protected int getButtonY() {
-        return y + border;
+        return field_230691_m_ + border;
     }
 
     @Override

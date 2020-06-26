@@ -14,7 +14,7 @@ public class GuiBigLight extends GuiTexturedElement {
 
     public GuiBigLight(IGuiWrapper gui, int x, int y, BooleanSupplier lightSupplier) {
         super(LIGHTS, gui, x, y, 14, 14);
-        this.screen = new GuiInnerScreen(gui, x, y, width, height);
+        this.screen = new GuiInnerScreen(gui, x, y, field_230688_j_, field_230689_k_);
         this.lightSupplier = lightSupplier;
     }
 
@@ -22,6 +22,6 @@ public class GuiBigLight extends GuiTexturedElement {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         screen.renderButton(mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        blit(x + 1, y + 1, lightSupplier.getAsBoolean() ? 0 : 12, 0, width - 2, height - 2, 24, 12);
+        blit(field_230690_l_ + 1, field_230691_m_ + 1, lightSupplier.getAsBoolean() ? 0 : 12, 0, field_230688_j_ - 2, field_230689_k_ - 2, 24, 12);
     }
 }

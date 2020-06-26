@@ -27,7 +27,7 @@ import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraftforge.common.Tags;
 
 @ParametersAreNonnullByDefault
@@ -136,7 +136,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     private void registerBalloon(Consumer<IFinishedRecipe> consumer, ItemRegistryObject<ItemBalloon> result, String basePath) {
         EnumColor color = result.getItem().getColor();
         String colorString = color.getRegistryPrefix();
-        Tag<Item> dye = color.getDyeTag();
+        ITag<Item> dye = color.getDyeTag();
         ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 2)
               .addIngredient(Tags.Items.LEATHER)
               .addIngredient(Tags.Items.STRING)
@@ -171,7 +171,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     private void registerGlowPanel(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
         EnumColor color = result.getBlock().getColor();
         String colorString = color.getRegistryPrefix();
-        Tag<Item> dye = color.getDyeTag();
+        ITag<Item> dye = color.getDyeTag();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 2)
               .pattern(GLOW_PANEL)
               .key(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)
@@ -465,7 +465,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         registerRecolor(consumer, result, AdditionsTags.Items.STAIRS_PLASTIC, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
-    private void registerRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, Tag<Item> blockType, Tag<Item> dye, String path) {
+    private void registerRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, INamedTag<Item> blockType, ITag<Item> dye, String path) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(BLOCK_RECOLOR)
               .key(Pattern.CONSTANT, blockType)

@@ -14,7 +14,7 @@ public class GuiSecurityLight extends GuiTexturedElement {
 
     public GuiSecurityLight(IGuiWrapper gui, int x, int y, IntSupplier lightSupplier) {
         super(LIGHTS, gui, x, y, 8, 8);
-        this.screen = new GuiInnerScreen(gui, x, y, width, height);
+        this.screen = new GuiInnerScreen(gui, x, y, field_230688_j_, field_230689_k_);
         this.lightSupplier = lightSupplier;
     }
 
@@ -22,6 +22,6 @@ public class GuiSecurityLight extends GuiTexturedElement {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         screen.renderButton(mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        blit(x + 1, y + 1, 6 * lightSupplier.getAsInt(), 0, width - 2, height - 2, 18, 6);
+        blit(field_230690_l_ + 1, field_230691_m_ + 1, 6 * lightSupplier.getAsInt(), 0, field_230688_j_ - 2, field_230689_k_ - 2, 18, 6);
     }
 }

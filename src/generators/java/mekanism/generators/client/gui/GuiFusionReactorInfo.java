@@ -19,7 +19,7 @@ public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFus
     @Override
     public void init() {
         super.init();
-        addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
     }
 }

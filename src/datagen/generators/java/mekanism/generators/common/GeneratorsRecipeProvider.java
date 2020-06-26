@@ -36,8 +36,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Items;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
 @ParametersAreNonnullByDefault
@@ -87,7 +87,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     }
 
     private void addRotaryCondensentratorRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput,
-          Tag<Fluid> fluidInput, Tag<Gas> gasInput) {
+          INamedTag<Fluid> fluidInput, INamedTag<Gas> gasInput) {
         RotaryRecipeBuilder.rotary(
               FluidStackIngredient.from(fluidInput, 1),
               GasStackIngredient.from(gasInput, 1),

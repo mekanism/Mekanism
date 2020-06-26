@@ -23,11 +23,11 @@ public class GuiQIOExporter extends GuiQIOFilterHandler<TileEntityQIOExporter> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiQIOFrequencyTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiScreenSwitch(this, 9, 122, xSize - 18, MekanismLang.QIO_EXPORT_WITHOUT_FILTER.translate(), tile::getExportWithoutFilter,
+        func_230480_a_(new GuiQIOFrequencyTab(this, tile));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiRedstoneControlTab(this, tile));
+        func_230480_a_(new GuiUpgradeTab(this, tile));
+        func_230480_a_(new GuiScreenSwitch(this, 9, 122, xSize - 18, MekanismLang.QIO_EXPORT_WITHOUT_FILTER.translate(), tile::getExportWithoutFilter,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_TOGGLE_EXPORT_WITHOUT_FILTER, tile))));
     }
 }

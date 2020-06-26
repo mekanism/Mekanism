@@ -8,7 +8,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
@@ -40,23 +40,23 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
         return generation;
     }
 
-    public static Tag<Gas> gasTag(ResourceLocation resourceLocation) {
+    public static INamedTag<Gas> gasTag(ResourceLocation resourceLocation) {
         return chemicalTag(resourceLocation, GAS);
     }
 
-    public static Tag<InfuseType> infusionTag(ResourceLocation resourceLocation) {
+    public static INamedTag<InfuseType> infusionTag(ResourceLocation resourceLocation) {
         return chemicalTag(resourceLocation, INFUSE_TYPE);
     }
 
-    public static Tag<Pigment> pigmentTag(ResourceLocation resourceLocation) {
+    public static INamedTag<Pigment> pigmentTag(ResourceLocation resourceLocation) {
         return chemicalTag(resourceLocation, PIGMENT);
     }
 
-    public static Tag<Slurry> slurryTag(ResourceLocation resourceLocation) {
+    public static INamedTag<Slurry> slurryTag(ResourceLocation resourceLocation) {
         return chemicalTag(resourceLocation, SLURRY);
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>> Tag<CHEMICAL> chemicalTag(ResourceLocation resourceLocation, ChemicalTags<CHEMICAL> chemicalTags) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>> INamedTag<CHEMICAL> chemicalTag(ResourceLocation resourceLocation, ChemicalTags<CHEMICAL> chemicalTags) {
         return new ChemicalTag<>(resourceLocation, chemicalTags);
     }
 

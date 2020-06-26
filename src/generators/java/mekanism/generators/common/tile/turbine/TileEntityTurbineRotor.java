@@ -178,8 +178,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         int prevBlades = blades;
         int prevPosition = position;
         NBTUtils.setIntIfPresent(tag, NBTConstants.BLADES, value -> blades = value);

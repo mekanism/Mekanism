@@ -12,6 +12,7 @@ import mekanism.common.particle.custom.SPSOrbitEffect;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData> {
@@ -72,8 +73,8 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
         if (getMultiblock().isFormed()) {
             getMultiblock().lastProcessed = tag.getDouble(NBTConstants.LAST_PROCESSED);

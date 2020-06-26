@@ -27,7 +27,7 @@ public class ColorButton extends MekanismButton {
         //Ensure the color gets reset. The default GuiButtonImage doesn't so other GuiButton's can have the color leak out of them
         EnumColor color = colorSupplier.get();
         if (color != null) {
-            fill(this.x, this.y, this.x + this.width, this.y + this.height, MekanismRenderer.getColorARGB(color, 1));
+            fill(this.field_230690_l_, this.field_230691_m_, this.field_230690_l_ + this.field_230688_j_, this.field_230691_m_ + this.field_230689_k_, MekanismRenderer.getColorARGB(color, 1));
             MekanismRenderer.resetColor();
         }
     }

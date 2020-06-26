@@ -14,10 +14,10 @@ public class GuiConfirmationDialog extends GuiWindow {
     public GuiConfirmationDialog(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent title, Runnable onConfirm, DialogType type) {
         super(gui, x, y, width, height);
         this.title = title;
-        active = true;
+        field_230693_o_ = true;
 
-        addChild(new TranslationButton(gui, this.x + width / 2 - 102 / 2, this.y + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, this::close));
-        addChild(new TranslationButton(gui, this.x + width / 2 + 1, this.y + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, () -> {
+        addChild(new TranslationButton(gui, this.field_230690_l_ + width / 2 - 102 / 2, this.field_230691_m_ + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, this::close));
+        addChild(new TranslationButton(gui, this.field_230690_l_ + width / 2 + 1, this.field_230691_m_ + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, () -> {
             onConfirm.run();
             close();
         }, null, type.getColorSupplier()));
@@ -30,7 +30,7 @@ public class GuiConfirmationDialog extends GuiWindow {
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
-        drawWrappedCenteredText(title.getString(), relativeX + (width / 2), relativeY + 10, titleTextColor(), width - 10);
+        drawWrappedCenteredText(title.getString(), relativeX + (field_230688_j_ / 2), relativeY + 10, titleTextColor(), field_230688_j_ - 10);
     }
 
     @Override

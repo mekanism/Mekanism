@@ -1,11 +1,11 @@
 package mekanism.tools.common.item;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.client.render.GlowArmor;
 import mekanism.tools.common.IHasRepairType;
@@ -15,9 +15,10 @@ import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
@@ -85,12 +86,12 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
      */
     @Nonnull
     @Override
-    public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot) {
-        Multimap<String, AttributeModifier> attributes = HashMultimap.create();
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot) {
+        Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
         if (slot == getEquipmentSlot()) {
             UUID modifier = ARMOR_MODIFIERS[slot.getIndex()];
-            attributes.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(modifier, "Armor modifier", getDamageReduceAmount(), Operation.ADDITION));
-            attributes.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
+            attributes.put(Attributes.field_233826_i_, new AttributeModifier(modifier, "Armor modifier", getDamageReduceAmount(), Operation.ADDITION));
+            attributes.put(Attributes.field_233827_j_, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
         }
         return attributes;
     }

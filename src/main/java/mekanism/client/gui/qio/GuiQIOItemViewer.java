@@ -49,7 +49,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         super.init();
         int slotsY = MekanismConfig.client.qioItemViewerSlotsY.get();
         minecraft.keyboardListener.enableRepeatEvents(true);
-        addButton(new GuiInnerScreen(this, 7, 15, xSize - 16, 12, () -> {
+        func_230480_a_(new GuiInnerScreen(this, 7, 15, xSize - 16, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             FrequencyIdentity freq = getFrequency();
             if (freq != null) {
@@ -68,7 +68,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             }
             return list;
         }));
-        addButton(searchField = new GuiTextField(this, 50, 15 + 12 + 3, xSize - 50 - 10, 10));
+        func_230480_a_(searchField = new GuiTextField(this, 50, 15 + 12 + 3, xSize - 50 - 10, 10));
         searchField.setOffset(0, -1);
         searchField.setInputValidator(this::isValidSearchChar);
         searchField.setResponder(container::updateSearch);
@@ -77,13 +77,13 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         searchField.setVisible(true);
         searchField.setTextColor(0xFFFFFF);
         searchField.setFocused(true);
-        addButton(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
+        func_230480_a_(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
               container::getQIOItemList, container));
-        addButton(new GuiDropdown<>(this, xSize - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+        func_230480_a_(new GuiDropdown<>(this, xSize - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               41, ListSortType.class, container::getSortType, container::setSortType));
-        addButton(new GuiDigitalIconToggle<>(this, xSize - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+        func_230480_a_(new GuiDigitalIconToggle<>(this, xSize - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, container::getSortDirection, container::setSortDirection));
-        addButton(new GuiResizeControls(this, (minecraft.getMainWindow().getScaledHeight() / 2) - 20 - getGuiTop(), this::resize));
+        func_230480_a_(new GuiResizeControls(this, (minecraft.getMainWindow().getScaledHeight() / 2) - 20 - getGuiTop(), this::resize));
     }
 
     @Override

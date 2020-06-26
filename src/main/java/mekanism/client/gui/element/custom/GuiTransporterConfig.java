@@ -38,7 +38,7 @@ public class GuiTransporterConfig extends GuiWindow {
         addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 136, gui.getTop() + relativeY + 6, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos())), getOnHover(MekanismLang.STRICT_INPUT)));
         addChild(new ColorButton(gui, gui.getLeft() + relativeX + 112, gui.getTop() + relativeY + 49, 16, 16, () -> getTile().getEjector().getOutputColor(),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos(), Screen.hasShiftDown() ? 2 : 0)),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos(), Screen.func_231173_s_() ? 2 : 0)),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos(), 1))));
         addSideDataButton(RelativeSide.BOTTOM, 44, 64);
         addSideDataButton(RelativeSide.TOP, 44, 34);

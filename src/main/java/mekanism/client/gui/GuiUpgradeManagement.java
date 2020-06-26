@@ -38,13 +38,13 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
     @Override
     public void init() {
         super.init();
-        addButton(scrollList = new GuiUpgradeScrollList(this, 24, 6, 66, 50, tile.getComponent()));
-        addButton(new GuiElementHolder(this, 24, 56, 125, 14));
-        addButton(new GuiInnerScreen(this, 90, 6, 59, 50));
-        addButton(new GuiProgress(() -> tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, this, 154, 26));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
+        func_230480_a_(scrollList = new GuiUpgradeScrollList(this, 24, 6, 66, 50, tile.getComponent()));
+        func_230480_a_(new GuiElementHolder(this, 24, 56, 125, 14));
+        func_230480_a_(new GuiInnerScreen(this, 90, 6, 59, 50));
+        func_230480_a_(new GuiProgress(() -> tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, this, 154, 26));
+        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
-        addButton(removeButton = new MekanismImageButton(this, getGuiLeft() + 136, getGuiTop() + 57, 12, getButtonLocation("remove_upgrade"), () -> {
+        func_230480_a_(removeButton = new MekanismImageButton(this, getGuiLeft() + 136, getGuiTop() + 57, 12, getButtonLocation("remove_upgrade"), () -> {
             if (scrollList.hasSelection()) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.REMOVE_UPGRADE, tile, scrollList.getSelection().ordinal()));
             }
@@ -65,7 +65,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
     }
 
     private void updateEnabledButtons() {
-        removeButton.active = scrollList.hasSelection();
+        removeButton.field_230693_o_ = scrollList.hasSelection();
     }
 
     @Override

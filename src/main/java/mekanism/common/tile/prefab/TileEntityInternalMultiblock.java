@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityInternalMultiblock extends TileEntityMekanism {
@@ -34,8 +35,8 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism {
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         if (tag.hasUniqueId(NBTConstants.INVENTORY_ID)) {
             setMultiblock(tag.getUniqueId(NBTConstants.INVENTORY_ID));
         } else {

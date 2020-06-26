@@ -48,9 +48,9 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                 MekanismRenderer.color(type);
                 TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(type);
                 if (horizontal) {
-                    drawTiledSprite(x + 1, y + 1, height - 2, (int) (level * (width - 2)), height - 2, icon);
+                    drawTiledSprite(field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, (int) (level * (field_230688_j_ - 2)), field_230689_k_ - 2, icon);
                 } else {
-                    drawTiledSprite(x + 1, y + 1, height - 2, width - 2, (int) (level * (height - 2)), icon);
+                    drawTiledSprite(field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, field_230688_j_ - 2, (int) (level * (field_230689_k_ - 2)), icon);
                 }
                 MekanismRenderer.resetColor();
             }
@@ -78,7 +78,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                     if (index != -1) {
                         DropperAction action;
                         if (button == 0) {
-                            action = Screen.hasShiftDown() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
+                            action = Screen.func_231173_s_() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
                         } else {
                             action = DropperAction.DRAIN_DROPPER;
                         }

@@ -27,15 +27,15 @@ public class GuiPrecisionSawmill extends GuiConfigurableTile<TileEntityPrecision
     @Override
     public void init() {
         super.init();
-        addButton(new GuiUpArrow(this, 60, 38));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        func_230480_a_(new GuiUpArrow(this, 60, 38));
+        func_230480_a_(new GuiRedstoneControlTab(this, tile));
+        func_230480_a_(new GuiUpgradeTab(this, tile));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        func_230480_a_(new GuiEnergyTab(tile.getEnergyContainer(), this));
         //Note: We just draw the wide slot on top of the normal slots so that it looks a bit better
-        addButton(new GuiSlot(SlotType.OUTPUT_WIDE, this, 111, 30));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 78, 38).jeiCategory(tile));
+        func_230480_a_(new GuiSlot(SlotType.OUTPUT_WIDE, this, 111, 30));
+        func_230480_a_(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 78, 38).jeiCategory(tile));
     }
 
     @Override

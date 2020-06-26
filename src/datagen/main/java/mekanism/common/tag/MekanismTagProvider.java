@@ -1,8 +1,7 @@
 package mekanism.common.tag;
 
-import com.google.common.collect.Table.Cell;
 import java.util.Map;
-import mekanism.api.chemical.slurry.Slurry;
+import com.google.common.collect.Table.Cell;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -23,7 +22,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraftforge.common.Tags;
 
 public class MekanismTagProvider extends BaseTagProvider {
@@ -286,8 +285,8 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {
-        Tag.Builder<Slurry> dirtyTagBuilder = getSlurryBuilder(MekanismTags.Slurries.DIRTY);
-        Tag.Builder<Slurry> cleanTagBuilder = getSlurryBuilder(MekanismTags.Slurries.CLEAN);
+        ITag.Builder dirtyTagBuilder = getSlurryBuilder(MekanismTags.Slurries.DIRTY);
+        ITag.Builder cleanTagBuilder = getSlurryBuilder(MekanismTags.Slurries.CLEAN);
         for (SlurryRegistryObject<?, ?> slurryRO : slurryRegistryObjects) {
             dirtyTagBuilder.add(slurryRO.getDirtySlurry());
             cleanTagBuilder.add(slurryRO.getCleanSlurry());

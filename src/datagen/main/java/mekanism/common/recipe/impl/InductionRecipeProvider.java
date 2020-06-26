@@ -17,7 +17,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag.INamedTag;
 
 class InductionRecipeProvider implements ISubRecipeProvider {
 
@@ -99,7 +99,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addTieredInductionProviderRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> provider,
-          IItemProvider previousProvider, IItemProvider energyCube, Tag<Item> circuitTag) {
+          IItemProvider previousProvider, IItemProvider energyCube, INamedTag<Item> circuitTag) {
         String tierName = Attribute.getBaseTier(provider.getBlock()).getLowerName();
         ExtendedShapedRecipeBuilder.shapedRecipe(provider)
               .pattern(INDUCTION_PROVIDER_PATTERN)

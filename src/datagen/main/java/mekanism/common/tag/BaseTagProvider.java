@@ -1,10 +1,5 @@
 package mekanism.common.tag;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,6 +9,13 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -36,13 +38,13 @@ import net.minecraft.data.IDataProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class BaseTagProvider implements IDataProvider {
 
@@ -130,57 +132,57 @@ public abstract class BaseTagProvider implements IDataProvider {
         return (TagTypeMap<TYPE>) supportedTagTypes.get(tagType);
     }
 
-    protected <TYPE extends IForgeRegistryEntry<TYPE>> Tag.Builder<TYPE> getBuilder(TagType<TYPE> tagType, Tag<TYPE> tag) {
+    protected <TYPE extends IForgeRegistryEntry<TYPE>> ITag.Builder getBuilder(TagType<TYPE> tagType, INamedTag<TYPE> tag) {
         return getTagTypeMap(tagType).getBuilder(tag);
     }
 
-    protected Tag.Builder<Item> getItemBuilder(Tag<Item> tag) {
+    protected ITag.Builder getItemBuilder(INamedTag<Item> tag) {
         return getBuilder(TagType.ITEM, tag);
     }
 
-    protected Tag.Builder<Block> getBlockBuilder(Tag<Block> tag) {
+    protected ITag.Builder getBlockBuilder(INamedTag<Block> tag) {
         return getBuilder(TagType.BLOCK, tag);
     }
 
-    protected Tag.Builder<EntityType<?>> getEntityTypeBuilder(Tag<EntityType<?>> tag) {
+    protected ITag.Builder getEntityTypeBuilder(INamedTag<EntityType<?>> tag) {
         return getBuilder(TagType.ENTITY_TYPE, tag);
     }
 
-    protected Tag.Builder<Fluid> getFluidBuilder(Tag<Fluid> tag) {
+    protected ITag.Builder getFluidBuilder(INamedTag<Fluid> tag) {
         return getBuilder(TagType.FLUID, tag);
     }
 
-    protected Tag.Builder<Gas> getGasBuilder(Tag<Gas> tag) {
+    protected ITag.Builder getGasBuilder(INamedTag<Gas> tag) {
         return getBuilder(TagType.GAS, tag);
     }
 
-    protected Tag.Builder<InfuseType> getInfuseTypeBuilder(Tag<InfuseType> tag) {
+    protected ITag.Builder getInfuseTypeBuilder(INamedTag<InfuseType> tag) {
         return getBuilder(TagType.INFUSE_TYPE, tag);
     }
 
-    protected Tag.Builder<Pigment> getPigmentBuilder(Tag<Pigment> tag) {
+    protected ITag.Builder getPigmentBuilder(INamedTag<Pigment> tag) {
         return getBuilder(TagType.PIGMENT, tag);
     }
 
-    protected Tag.Builder<Slurry> getSlurryBuilder(Tag<Slurry> tag) {
+    protected ITag.Builder getSlurryBuilder(INamedTag<Slurry> tag) {
         return getBuilder(TagType.SLURRY, tag);
     }
 
-    protected void addToTag(Tag<Item> tag, IItemProvider... itemProviders) {
-        Tag.Builder<Item> tagBuilder = getItemBuilder(tag);
+    protected void addToTag(INamedTag<Item> tag, IItemProvider... itemProviders) {
+        ITag.Builder tagBuilder = getItemBuilder(tag);
         for (IItemProvider itemProvider : itemProviders) {
             tagBuilder.add(itemProvider.getItem());
         }
     }
 
-    protected void addToTag(Tag<Block> tag, IBlockProvider... blockProviders) {
+    protected void addToTag(INamedTag<Block> tag, IBlockProvider... blockProviders) {
         Tag.Builder<Block> tagBuilder = getBlockBuilder(tag);
         for (IBlockProvider blockProvider : blockProviders) {
             tagBuilder.add(blockProvider.getBlock());
         }
     }
 
-    protected void addToTags(Tag<Item> itemTag, Tag<Block> blockTag, IBlockProvider... blockProviders) {
+    protected void addToTags(INamedTag<Item> itemTag, INamedTag<Block> blockTag, IBlockProvider... blockProviders) {
         Tag.Builder<Item> itemTagBuilder = getItemBuilder(itemTag);
         Tag.Builder<Block> blockTagBuilder = getBlockBuilder(blockTag);
         for (IBlockProvider blockProvider : blockProviders) {
@@ -189,33 +191,33 @@ public abstract class BaseTagProvider implements IDataProvider {
         }
     }
 
-    protected void addToTag(Tag<EntityType<?>> tag, IEntityTypeProvider... entityTypeProviders) {
+    protected void addToTag(INamedTag<EntityType<?>> tag, IEntityTypeProvider... entityTypeProviders) {
         Tag.Builder<EntityType<?>> tagBuilder = getEntityTypeBuilder(tag);
         for (IEntityTypeProvider entityTypeProvider : entityTypeProviders) {
             tagBuilder.add(entityTypeProvider.getEntityType());
         }
     }
 
-    protected void addToTag(Tag<Fluid> tag, FluidRegistryObject<?, ?, ?, ?>... fluidRegistryObjects) {
+    protected void addToTag(INamedTag<Fluid> tag, FluidRegistryObject<?, ?, ?, ?>... fluidRegistryObjects) {
         Tag.Builder<Fluid> tagBuilder = getFluidBuilder(tag);
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidRegistryObjects) {
             tagBuilder.add(fluidRO.getStillFluid(), fluidRO.getFlowingFluid());
         }
     }
 
-    protected void addToTag(Tag<Gas> tag, IGasProvider... gasProviders) {
+    protected void addToTag(INamedTag<Gas> tag, IGasProvider... gasProviders) {
         addToTag(getGasBuilder(tag), gasProviders);
     }
 
-    protected void addToTag(Tag<InfuseType> tag, IInfuseTypeProvider... infuseTypeProviders) {
+    protected void addToTag(INamedTag<InfuseType> tag, IInfuseTypeProvider... infuseTypeProviders) {
         addToTag(getInfuseTypeBuilder(tag), infuseTypeProviders);
     }
 
-    protected void addToTag(Tag<Pigment> tag, IPigmentProvider... pigmentProviders) {
+    protected void addToTag(INamedTag<Pigment> tag, IPigmentProvider... pigmentProviders) {
         addToTag(getPigmentBuilder(tag), pigmentProviders);
     }
 
-    protected void addToTag(Tag<Slurry> tag, ISlurryProvider... slurryProviders) {
+    protected void addToTag(INamedTag<Slurry> tag, ISlurryProvider... slurryProviders) {
         addToTag(getSlurryBuilder(tag), slurryProviders);
     }
 

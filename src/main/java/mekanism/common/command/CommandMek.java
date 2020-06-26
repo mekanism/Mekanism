@@ -1,13 +1,13 @@
 package mekanism.common.command;
 
 
+import java.util.Map;
+import java.util.Stack;
+import java.util.UUID;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
-import java.util.Stack;
-import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
@@ -24,9 +24,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.server.ServerWorld;
 
 public class CommandMek {
 
@@ -69,7 +69,7 @@ public class CommandMek {
                       rules.get(GameRules.DO_MOB_SPAWNING).set(false, server);
                       rules.get(GameRules.DO_DAYLIGHT_CYCLE).set(false, server);
                       rules.get(GameRules.DO_WEATHER_CYCLE).set(false, server);
-                      source.asPlayer().getEntityWorld().setDayTime(2_000);
+                      ((ServerWorld) source.asPlayer().getEntityWorld()).func_241114_a_(2_000);
                       source.sendFeedback(MekanismLang.COMMAND_TEST_RULES.translate(), true);
                       return 0;
                   });

@@ -33,19 +33,19 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     @Override
     public void init() {
         super.init();
-        addButton(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.STANDARD, this, 6, 10));
-        addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiAmplifierTab(this, tile));
-        addButton(timerField = new GuiTextField(this, 96, 28, 36, 11));
+        func_230480_a_(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.STANDARD, this, 6, 10));
+        func_230480_a_(new GuiSecurityTab<>(this, tile));
+        func_230480_a_(new GuiRedstoneControlTab(this, tile));
+        func_230480_a_(new GuiAmplifierTab(this, tile));
+        func_230480_a_(timerField = new GuiTextField(this, 96, 28, 36, 11));
         timerField.setMaxStringLength(4);
         timerField.setEnterHandler(this::setTime);
         timerField.setInputValidator(InputValidator.DIGIT);
-        addButton(minField = new GuiTextField(this, 96, 43, 72, 11));
+        func_230480_a_(minField = new GuiTextField(this, 96, 43, 72, 11));
         minField.setMaxStringLength(10);
         minField.setEnterHandler(this::setMinThreshold);
         minField.setInputValidator(InputValidator.SCI_NOTATION);
-        addButton(maxField = new GuiTextField(this, 96, 58, 72, 11));
+        func_230480_a_(maxField = new GuiTextField(this, 96, 58, 72, 11));
         maxField.setMaxStringLength(10);
         maxField.setEnterHandler(this::setMaxThreshold);
         maxField.setInputValidator(InputValidator.SCI_NOTATION);

@@ -37,10 +37,10 @@ public class MovableFilterButton extends FilterButton {
           Supplier<HashList<? extends IFilter<?>>> filters, IntConsumer upButtonPress, IntConsumer downButtonPress, BiConsumer<IFilter<?>, Integer> onPress,
           Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
         super(gui, x, y, width, height, index, filterIndex, filters, onPress);
-        int arrowX = this.x + width - 12;
-        upButton = new FilterSelectButton(gui, arrowX, this.y + 1, false, () -> upButtonPress.accept(index + filterIndex.getAsInt()),
+        int arrowX = this.field_230690_l_ + width - 12;
+        upButton = new FilterSelectButton(gui, arrowX, this.field_230691_m_ + 1, false, () -> upButtonPress.accept(index + filterIndex.getAsInt()),
               (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_UP.translate(), xAxis, yAxis));
-        downButton = new FilterSelectButton(gui, arrowX, this.y + height - 8, true, () -> downButtonPress.accept(index + filterIndex.getAsInt()),
+        downButton = new FilterSelectButton(gui, arrowX, this.field_230691_m_ + height - 8, true, () -> downButtonPress.accept(index + filterIndex.getAsInt()),
               (onHover, xAxis, yAxis) -> displayTooltip(MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis));
         addChild(slotDisplay = new GuiSequencedSlotDisplay(gui, x + 3, y + 3,
               () -> renderStackSupplier.apply(filters.get().getOrNull(filterIndex.getAsInt() + index))));
@@ -72,8 +72,8 @@ public class MovableFilterButton extends FilterButton {
             slotDisplay.updateStackList();
             prevFilter = filter;
         }
-        int x = this.x - guiObj.getLeft();
-        int y = this.y - guiObj.getTop();
+        int x = this.field_230690_l_ - guiObj.getLeft();
+        int y = this.field_230691_m_ - guiObj.getTop();
         if (filter instanceof IItemStackFilter) {
             drawTextScaledBound(MekanismLang.ITEM_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
         } else if (filter instanceof ITagFilter) {
@@ -91,13 +91,13 @@ public class MovableFilterButton extends FilterButton {
 
     @Override
     protected void setVisibility(boolean visible) {
-        this.visible = visible;
+        this.field_230694_p_ = visible;
         if (visible) {
             updateButtonVisibility();
         } else {
             //Ensure the sub components are not marked as visible
-            upButton.visible = false;
-            downButton.visible = false;
+            upButton.field_230694_p_ = false;
+            downButton.field_230694_p_ = false;
         }
     }
 
@@ -105,14 +105,14 @@ public class MovableFilterButton extends FilterButton {
         int index = filterIndex.getAsInt() + this.index;
         HashList<? extends IFilter<?>> filterList = filters.get();
         IFilter<?> filter = filterList.getOrNull(index);
-        upButton.visible = filter != null && index > 0;
-        downButton.visible = filter != null && index < filterList.size() - 1;
+        upButton.field_230694_p_ = filter != null && index > 0;
+        downButton.field_230694_p_ = filter != null && index < filterList.size() - 1;
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         super.render(mouseX, mouseY, partialTicks);
-        if (visible) {
+        if (field_230694_p_) {
             //Update visibility state of our buttons
             updateButtonVisibility();
             //Render our sub buttons and our slot

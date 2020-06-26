@@ -43,12 +43,12 @@ public class GuiGasMode extends MekanismImageButton {
     public void renderForeground(int mouseX, int mouseY) {
         //Draw the text next to the button
         ITextComponent component = gasModeSupplier.get().getTextComponent();
-        int xPos = x - guiObj.getLeft();
-        int yPos = y - guiObj.getTop();
+        int xPos = field_230690_l_ - guiObj.getLeft();
+        int yPos = field_230691_m_ - guiObj.getTop();
         if (left) {
             drawTextScaledBound(component, xPos - 3 - (int) (getStringWidth(component) * getNeededScale(component, 66)), yPos + 1, titleTextColor(), 66);
         } else {
-            drawTextScaledBound(component, xPos + width + 5, yPos + 1, titleTextColor(), 66);
+            drawTextScaledBound(component, xPos + field_230688_j_ + 5, yPos + 1, titleTextColor(), 66);
         }
         super.renderForeground(mouseX, mouseY);
     }

@@ -64,13 +64,13 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         TextureAtlasSprite icon = getIcon();
         if (scale > 0 && icon != null) {
             applyRenderColor();
-            drawTiledSprite(x + 1, y + 1, height - 2, width - 2, scale, icon);
+            drawTiledSprite(field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, field_230688_j_ - 2, scale, icon);
             MekanismRenderer.resetColor();
         }
         //Draw the bar overlay
         minecraft.textureManager.bindTexture(getResource());
         GaugeOverlay gaugeOverlay = gaugeType.getGaugeOverlay();
-        blit(x + 1, y + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
+        blit(field_230690_l_ + 1, field_230691_m_ + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }
 
     @Override

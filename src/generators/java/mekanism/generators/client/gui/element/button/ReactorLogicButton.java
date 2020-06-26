@@ -60,7 +60,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
         }
         MekanismRenderer.bindTexture(TEXTURE);
         MekanismRenderer.color(mode.getColor());
-        blit(x, y, 0, mode == tile.getMode() ? 22 : 0, width, height, 128, 44);
+        blit(field_230690_l_, field_230691_m_, 0, mode == tile.getMode() ? 22 : 0, field_230688_j_, field_230689_k_, 128, 44);
         MekanismRenderer.resetColor();
     }
 

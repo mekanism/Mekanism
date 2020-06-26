@@ -17,7 +17,7 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
     @Override
     public void init() {
         super.init();
-        addButton(new GuiQIOFrequencyTab(this, container.getHand()));
+        func_230480_a_(new GuiQIOFrequencyTab(this, container.getHand()));
     }
 
     @Override

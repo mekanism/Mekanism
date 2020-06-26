@@ -86,17 +86,17 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     @Override
     public int getScaledLevel() {
         if (dummy) {
-            return height - 2;
+            return field_230689_k_ - 2;
         }
         IExtendedFluidTank tank = getTank();
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
         if (tank.getFluidAmount() == Integer.MAX_VALUE) {
-            return height - 2;
+            return field_230689_k_ - 2;
         }
         float scale = (float) tank.getFluidAmount() / (float) tank.getCapacity();
-        return Math.round(scale * (height - 2));
+        return Math.round(scale * (field_230689_k_ - 2));
     }
 
     @Override

@@ -13,8 +13,8 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
 class TierInstallerRecipeProvider implements ISubRecipeProvider {
@@ -28,8 +28,8 @@ class TierInstallerRecipeProvider implements ISubRecipeProvider {
         addTierInstallerRecipe(consumer, basePath, MekanismItems.ULTIMATE_TIER_INSTALLER, Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC, MekanismTags.Items.CIRCUITS_ULTIMATE);
     }
 
-    private void addTierInstallerRecipe(Consumer<IFinishedRecipe> consumer, String basePath, ItemRegistryObject<ItemTierInstaller> tierInstaller, Tag<Item> ingotTag,
-          Tag<Item> alloyTag, Tag<Item> circuitTag) {
+    private void addTierInstallerRecipe(Consumer<IFinishedRecipe> consumer, String basePath, ItemRegistryObject<ItemTierInstaller> tierInstaller, INamedTag<Item> ingotTag,
+          INamedTag<Item> alloyTag, INamedTag<Item> circuitTag) {
         ExtendedShapedRecipeBuilder.shapedRecipe(tierInstaller)
               .pattern(MekanismRecipeProvider.TIER_PATTERN)
               .key(Pattern.PREVIOUS, ItemTags.PLANKS)

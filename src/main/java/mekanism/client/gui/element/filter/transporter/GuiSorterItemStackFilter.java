@@ -30,7 +30,7 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
 
     @Override
     protected int getLeftButtonX() {
-        return x + 24;
+        return field_230690_l_ + 24;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
         maxField.setMaxStringLength(2);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.setText("" + filter.max);
-        addChild(new MekanismImageButton(guiObj, x + 148, y + 57, 11, 14, getButtonLocation("silk_touch"),
+        addChild(new MekanismImageButton(guiObj, field_230690_l_ + 148, field_230691_m_ + 57, 11, 14, getButtonLocation("silk_touch"),
               () -> filter.sizeMode = !filter.sizeMode, (onHover, xAxis, yAxis) -> {
             if (tile.singleItem && filter.sizeMode) {
                 displayTooltip(MekanismLang.SIZE_MODE_CONFLICT.translate(), xAxis, yAxis);
@@ -53,7 +53,7 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
                 displayTooltip(MekanismLang.SIZE_MODE.translate(), xAxis, yAxis);
             }
         }));
-        addChild(new MekanismImageButton(guiObj, x + 148, y + 70, 11, 14, getButtonLocation("fuzzy"),
+        addChild(new MekanismImageButton(guiObj, field_230690_l_ + 148, field_230691_m_ + 70, 11, 14, getButtonLocation("fuzzy"),
               () -> filter.fuzzyMode = !filter.fuzzyMode, getOnHover(MekanismLang.FUZZY_MODE)));
     }
 

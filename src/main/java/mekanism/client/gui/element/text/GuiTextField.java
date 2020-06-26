@@ -1,8 +1,9 @@
 package mekanism.client.gui.element.text;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
+import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.functions.CharPredicate;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -12,7 +13,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * GuiElement wrapper of TextFieldWidget for more control
@@ -42,14 +42,14 @@ public class GuiTextField extends GuiRelativeElement {
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
         super(gui, x, y, width, height);
 
-        textField = new TextFieldWidget(getFont(), this.x, this.y, width, height, "");
+        textField = new TextFieldWidget(getFont(), this.field_230690_l_, this.field_230691_m_, width, height, "");
         textField.setEnableBackgroundDrawing(false);
         textField.setResponder(s -> {
             if (responder != null) {
                 responder.accept(s);
             }
             if (checkmarkButton != null) {
-                checkmarkButton.active = !textField.getText().isEmpty();
+                checkmarkButton.field_230693_o_ = !textField.getText().isEmpty();
             }
         });
         guiObj.addFocusListener(this);
@@ -60,8 +60,8 @@ public class GuiTextField extends GuiRelativeElement {
     public void resize(int prevLeft, int prevTop, int left, int top) {
         super.resize(prevLeft, prevTop, left, top);
         //Ensure we also update the positions of the text field
-        textField.x = textField.x - prevLeft + left;
-        textField.y = textField.y - prevTop + top;
+        textField.field_230690_l_ = textField.field_230690_l_ - prevLeft + left;
+        textField.field_230691_m_ = textField.field_230691_m_ - prevTop + top;
     }
 
     public GuiTextField setScale(float textScale) {
@@ -125,16 +125,16 @@ public class GuiTextField extends GuiRelativeElement {
             callback.run();
             setFocused(true);
         }));
-        checkmarkButton.active = false;
+        checkmarkButton.field_230693_o_ = false;
         updateTextField();
         return this;
     }
 
     private void updateTextField() {
         // width is scaled based on text scale
-        textField.setWidth(Math.round((width - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - (iconType != null ? iconType.getOffsetX() : 0)) * (1 / textScale)));
-        textField.x = x + textOffsetX + 2 + (iconType != null ? iconType.getOffsetX() : 0);
-        textField.y = y + textOffsetY + 1 + (int) ((height / 2F) - 4);
+        textField.setWidth(Math.round((field_230688_j_ - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - (iconType != null ? iconType.getOffsetX() : 0)) * (1 / textScale)));
+        textField.field_230690_l_ = field_230690_l_ + textOffsetX + 2 + (iconType != null ? iconType.getOffsetX() : 0);
+        textField.field_230691_m_ = field_230691_m_ + textOffsetY + 1 + (int) ((field_230689_k_ / 2F) - 4);
     }
 
     public boolean isTextFieldFocused() {
@@ -164,8 +164,8 @@ public class GuiTextField extends GuiRelativeElement {
         boolean prevFocus = isTextFieldFocused();
         double scaledX = mouseX;
         // figure out the proper mouse placement based on text scaling
-        if (textScale != 1.0F && scaledX > textField.x) {
-            scaledX = Math.min(scaledX, textField.x) + (scaledX - textField.x) * (1F / textScale);
+        if (textScale != 1.0F && scaledX > textField.field_230690_l_) {
+            scaledX = Math.min(scaledX, textField.field_230690_l_) + (scaledX - textField.field_230690_l_) * (1F / textScale);
         }
         boolean ret = textField.mouseClicked(scaledX, mouseY, button);
         // detect if we're now focused
@@ -184,7 +184,7 @@ public class GuiTextField extends GuiRelativeElement {
             float yAdd = 4 - (textScale * 8) / 2F;
             RenderSystem.pushMatrix();
             RenderSystem.scalef(textScale, textScale, textScale);
-            RenderSystem.translated(textField.x * reverse, (textField.y) * reverse + yAdd * (1 / textScale), 0);
+            RenderSystem.translated(textField.field_230690_l_ * reverse, (textField.field_230691_m_) * reverse + yAdd * (1 / textScale), 0);
             textField.render(mouseX, mouseY, 0);
             RenderSystem.popMatrix();
         } else {
@@ -193,7 +193,7 @@ public class GuiTextField extends GuiRelativeElement {
         MekanismRenderer.resetColor();
         if (iconType != null) {
             minecraft.textureManager.bindTexture(iconType.getIcon());
-            blit(x + 2, y + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
+            blit(field_230690_l_ + 2, field_230691_m_ + (field_230689_k_ / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }
     }
 

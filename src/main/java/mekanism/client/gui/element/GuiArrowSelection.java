@@ -26,7 +26,7 @@ public class GuiArrowSelection extends GuiTexturedElement {
     @Override
     public boolean isMouseOver(double xAxis, double yAxis) {
         //TODO: override isHovered
-        return this.active && this.visible && xAxis >= x + 16 && xAxis < x + width - 1 && yAxis >= y + 1 && yAxis < y + height - 1;
+        return this.field_230693_o_ && this.field_230694_p_ && xAxis >= field_230690_l_ + 16 && xAxis < field_230690_l_ + field_230688_j_ - 1 && yAxis >= field_230691_m_ + 1 && yAxis < field_230691_m_ + field_230689_k_ - 1;
     }
 
     @Override
@@ -49,6 +49,6 @@ public class GuiArrowSelection extends GuiTexturedElement {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        blit(x, y, 0, 0, width, height, width, height);
+        blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
     }
 }

@@ -36,7 +36,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 50, 18, 112, 50, () -> {
+        func_230480_a_(new GuiInnerScreen(this, 50, 18, 112, 50, () -> {
             List<ITextComponent> list = new ArrayList<>();
             if (tile.getMultiblock().isFormed()) {
                 FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
@@ -50,8 +50,8 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             }
             return list;
         }));
-        addButton(new GuiTurbineTab(this, tile, TurbineTab.STAT));
-        addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
+        func_230480_a_(new GuiTurbineTab(this, tile, TurbineTab.STAT));
+        func_230480_a_(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 if (!tile.getMultiblock().isFormed()) {
@@ -68,7 +68,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 return tile.getMultiblock().energyContainer.getEnergy().divideToLevel(tile.getMultiblock().energyContainer.getMaxEnergy());
             }
         }, 164, 16));
-        addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
+        func_230480_a_(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return GeneratorsLang.TURBINE_STEAM_INPUT_RATE.translate(formatInt(tile.getMultiblock().lastSteamInput));
@@ -87,9 +87,9 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 return tile.getMultiblock().lastSteamInput / rate;
             }
         }, 40, 13));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().gasTank,
+        func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().gasTank,
               () -> tile.getMultiblock().getGasTanks(null), GaugeType.MEDIUM, this, 6, 13));
-        addButton(new GuiEnergyTab(() -> {
+        func_230480_a_(new GuiEnergyTab(() -> {
             EnergyDisplay storing;
             EnergyDisplay producing;
             if (!tile.getMultiblock().isFormed()) {
@@ -103,7 +103,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             }
             return Arrays.asList(MekanismLang.STORING.translate(storing), GeneratorsLang.PRODUCING_AMOUNT.translate(producing));
         }, this));
-        addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.getMultiblock().dumpMode, tile.getPos(), 0));
+        func_230480_a_(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.getMultiblock().dumpMode, tile.getPos(), 0));
     }
 
     @Override

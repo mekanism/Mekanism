@@ -16,12 +16,12 @@ public class GuiTextureOnlyElement extends GuiTexturedElement {
         super(resource, gui, x, y, width, height);
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
-        active = false;
+        field_230693_o_ = false;
     }
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        blit(x, y, 0, 0, width, height, textureWidth, textureHeight);
+        blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, textureWidth, textureHeight);
     }
 }

@@ -23,8 +23,8 @@ public class GuiDigitalBar extends GuiBar<IBarInfoHandler> {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         //Render the bar
         minecraft.textureManager.bindTexture(DIGITAL_BAR);
-        blit(x, y, width, height, 1, 0, 1, 1, texWidth, texHeight);
-        blit(x + 1, y + 1, width - 2, 6, 1, 1, 1, 1, texWidth, texHeight);
-        blit(x + 1, y + 1, calculateScaled(getHandler().getLevel(), width - 2), 6, 0, 0, 1, 1, texWidth, texHeight);
+        blit(field_230690_l_, field_230691_m_, field_230688_j_, field_230689_k_, 1, 0, 1, 1, texWidth, texHeight);
+        blit(field_230690_l_ + 1, field_230691_m_ + 1, field_230688_j_ - 2, 6, 1, 1, 1, 1, texWidth, texHeight);
+        blit(field_230690_l_ + 1, field_230691_m_ + 1, calculateScaled(getHandler().getLevel(), field_230688_j_ - 2), 6, 0, 0, 1, 1, texWidth, texHeight);
     }
 }

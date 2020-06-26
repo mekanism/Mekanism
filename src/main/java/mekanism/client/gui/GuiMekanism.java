@@ -43,7 +43,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-//TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
+//TODO: Add our own "func_230480_a_" type thing for elements that are just "drawn" but don't actually have any logic behind them
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
 
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
@@ -308,9 +308,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                     int index = i;
                     guiSlot.validity(() -> checkValidity(index));
                 }
-                addButton(guiSlot);
+                func_230480_a_(guiSlot);
             } else {
-                addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
+                func_230480_a_(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
             }
         }
     }

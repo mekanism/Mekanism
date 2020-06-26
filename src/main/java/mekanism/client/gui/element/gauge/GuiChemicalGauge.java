@@ -77,14 +77,14 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
     @Override
     public int getScaledLevel() {
         if (dummy) {
-            return height - 2;
+            return field_230689_k_ - 2;
         }
         TANK tank = getTank();
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
         double scale = tank.getStored() / (double) tank.getCapacity();
-        return MathUtils.clampToInt(Math.round(scale * (height - 2)));
+        return MathUtils.clampToInt(Math.round(scale * (field_230689_k_ - 2)));
     }
 
     @Override

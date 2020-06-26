@@ -27,8 +27,8 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
     @Override
     public void init() {
         super.init();
-        addButton(new GuiTurbineTab(this, tile, TurbineTab.MAIN));
-        addButton(new GuiEnergyTab(() -> {
+        func_230480_a_(new GuiTurbineTab(this, tile, TurbineTab.MAIN));
+        func_230480_a_(new GuiEnergyTab(() -> {
             EnergyDisplay storing;
             EnergyDisplay producing;
             if (!tile.getMultiblock().isFormed()) {

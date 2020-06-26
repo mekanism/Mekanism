@@ -27,12 +27,12 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(
+        func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(
               EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getMultiblock().getPassiveGeneration(false, true)))),
               this));
-        addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
-        addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
+        func_230480_a_(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
+        func_230480_a_(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
     }
 
     @Override
