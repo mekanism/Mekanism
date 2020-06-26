@@ -3,7 +3,6 @@ package mekanism.additions.common.item;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.AdditionsLang;
-import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
@@ -28,7 +27,6 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
 
     public ItemWalkieTalkie(Item.Properties properties) {
         super(properties.maxStackSize(1));
-        this.addPropertyOverride(MekanismAdditions.rl("channel"), (stack, world, entity) -> getOn(stack) ? getChannel(stack) : 0);
     }
 
     @Override

@@ -10,5 +10,5 @@ public class MekanismPlacements {
 
     public static final PlacementDeferredRegister PLACEMENTS = new PlacementDeferredRegister(Mekanism.MODID);
 
-    public static final PlacementRegistryObject<FrequencyConfig, TopSolidRetrogenPlacement> TOP_SOLID_RETROGEN = PLACEMENTS.register("top_solid_retrogen", () -> new TopSolidRetrogenPlacement(FrequencyConfig::deserialize));
+    public static final PlacementRegistryObject<FrequencyConfig, TopSolidRetrogenPlacement> TOP_SOLID_RETROGEN = PLACEMENTS.register("top_solid_retrogen", () -> new TopSolidRetrogenPlacement(FrequencyConfig.field_236971_a_));
 }

@@ -1,10 +1,10 @@
 package mekanism.client;
 
-import com.google.common.collect.Table.Cell;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import com.google.common.collect.Table.Cell;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
@@ -105,6 +105,8 @@ import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
+import mekanism.common.item.ItemCraftingFormula;
+import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -135,9 +137,11 @@ import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -229,6 +233,25 @@ public class ClientRegistration {
 
         ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getSolid() || renderType == RenderType.getTranslucent(),
               MekanismBlocks.ISOTOPIC_CENTRIFUGE);
+
+        ItemModelsProperties.func_239418_a_(MekanismBlocks.CARDBOARD_BOX.asItem(), Mekanism.rl("storage"),
+              (stack, world, entity) -> ((ItemBlockCardboardBox) stack.getItem()).getBlockData(stack) == null ? 0 : 1);
+
+        ItemModelsProperties.func_239418_a_(MekanismItems.CRAFTING_FORMULA.asItem(), Mekanism.rl("invalid"), (stack, world, entity) -> {
+            ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
+            return formula.getInventory(stack) != null && formula.isInvalid(stack) ? 1 : 0;
+        });
+        ItemModelsProperties.func_239418_a_(MekanismItems.CRAFTING_FORMULA.asItem(), Mekanism.rl("encoded"), (stack, world, entity) -> {
+            ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
+            return formula.getInventory(stack) != null && !formula.isInvalid(stack) ? 1 : 0;
+        });
+
+        ItemModelsProperties.func_239418_a_(MekanismItems.GEIGER_COUNTER.asItem(), Mekanism.rl("radiation"), (stack, world, entity) -> {
+            if (entity instanceof PlayerEntity) {
+                return Mekanism.radiationManager.getClientScale().ordinal();
+            }
+            return 0;
+        });
 
         customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), (orig, evt) -> new DriveArrayBakedModel(orig));
         customModels.put(MekanismBlocks.MODIFICATION_STATION.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));

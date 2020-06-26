@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonPlayerTracker;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
@@ -38,7 +37,6 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
 
     public ItemBlockCardboardBox(BlockCardboardBox block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(16));
-        this.addPropertyOverride(Mekanism.rl("storage"), (stack, world, entity) -> getBlockData(stack) == null ? 0 : 1);
     }
 
     @Override
@@ -124,7 +122,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         ItemDataUtils.setCompound(stack, NBTConstants.DATA, data.write(new CompoundNBT()));
     }
 
-    private BlockData getBlockData(ItemStack stack) {
+    public BlockData getBlockData(ItemStack stack) {
         if (ItemDataUtils.hasData(stack, NBTConstants.DATA, NBT.TAG_COMPOUND)) {
             return BlockData.read(ItemDataUtils.getCompound(stack, NBTConstants.DATA));
         }

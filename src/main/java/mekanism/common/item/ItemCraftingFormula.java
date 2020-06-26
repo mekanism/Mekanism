@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -31,8 +30,6 @@ public class ItemCraftingFormula extends Item {
 
     public ItemCraftingFormula(Properties properties) {
         super(properties);
-        this.addPropertyOverride(Mekanism.rl("invalid"), (stack, world, entity) -> getInventory(stack) != null && isInvalid(stack) ? 1 : 0);
-        this.addPropertyOverride(Mekanism.rl("encoded"), (stack, world, entity) -> getInventory(stack) != null && !isInvalid(stack) ? 1 : 0);
     }
 
     @Override
