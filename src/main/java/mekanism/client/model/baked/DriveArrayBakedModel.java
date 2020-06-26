@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
+import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
@@ -40,7 +41,7 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
     @Override
     public List<BakedQuad> createQuads(QuadsKey<byte[]> key) {
         byte[] driveStatus = key.getData();
-        List<BakedQuad> ret = key.getQuads();
+        List<BakedQuad> ret = QuadUtils.transformBakedQuads(key.getQuads(), TextureFilteredTransformation.of(QuadTransformation.fullbright, rl -> rl.getPath().contains("led")));
         if (key.getSide() == Attribute.getFacing(key.getBlockState())) {
             ret = new ArrayList<>(ret);
             List<Quad> driveQuads = new ArrayList<>();

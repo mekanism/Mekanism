@@ -6,7 +6,6 @@
 		"1": "mekanism:block/qio_drive_array/bottom",
 		"2": "mekanism:block/qio_drive_array/front",
 		"5": "mekanism:block/qio_drive_array/top",
-		"6": "mekanism:block/qio_drive_array/drive_led",
 		"7": "mekanism:block/qio_drive_array/side",
 		"8": "mekanism:block/qio_drive_array/rack_glass",
 		"particle": "mekanism:block/qio_drive_array/top"
@@ -23,42 +22,6 @@
 				"west": {"uv": [0, 0, 9, 4], "texture": "#7"},
 				"up": {"uv": [0, 0, 16, 9], "texture": "#5"},
 				"down": {"uv": [0, 7, 16, 16], "texture": "#1"}
-			}
-		},
-		{
-			"name": "drive_status_led_1",
-			"from": [11, 5, 15.005],
-			"to": [12, 6, 16.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [19, 14, 31]},
-			"faces": {
-				"south": {"uv": [1, 1, 2, 2], "texture": "#6"}
-			}
-		},
-		{
-			"name": "drive_status_led_2",
-			"from": [11, 3, 15.005],
-			"to": [12, 4, 16.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [19, 12, 31]},
-			"faces": {
-				"south": {"uv": [1, 1, 2, 2], "texture": "#6"}
-			}
-		},
-		{
-			"name": "drive_frequency_led_right",
-			"from": [14, 10, 15.005],
-			"to": [15, 13, 16.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [14.5, 11.5, 15.505]},
-			"faces": {
-				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "tintindex": 0}
-			}
-		},
-		{
-			"name": "drive_frequency_led_left",
-			"from": [1, 10, 15.005],
-			"to": [2, 13, 16.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [1.5, 11.5, 15.505]},
-			"faces": {
-				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "tintindex": 0}
 			}
 		},
 		{
