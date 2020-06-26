@@ -99,7 +99,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 tile = ((IHasTileEntity<?>) block).getTileType().create();
             }
             if (Attribute.has(block, AttributeSecurity.class)) {
-                //TODO: Should we just save the entire security component? If not in 1.16 given Mojang is changing UUID saving this will need to be updated
+                //TODO - 1.16: Should we just save the entire security component? If not in 1.16 given Mojang is changing UUID saving this will need to be updated
                 nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID + "Most", NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID + "Most");
                 nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID + "Least", NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID + "Least");
                 nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.SECURITY_MODE, NBTConstants.MEK_DATA + "." + NBTConstants.SECURITY_MODE);

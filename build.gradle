@@ -286,7 +286,7 @@ dependencies {
     //compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     //runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
-    //runtimeOnly fg.deobf("team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}")
+    runtimeOnly fg.deobf("team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}")
 
     //compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}:api")
     //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}")

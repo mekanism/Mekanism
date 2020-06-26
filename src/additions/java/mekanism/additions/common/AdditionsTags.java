@@ -66,7 +66,7 @@ public class AdditionsTags {
         public static final INamedTag<EntityType<?>> ENDERMEN = forgeTag("endermen");
 
         private static INamedTag<EntityType<?>> forgeTag(String name) {
-            return EntityTypeTags.makeWrapperTag("forge:" + name);
+            return EntityTypeTags.func_232896_a_("forge:" + name);
         }
     }
 }

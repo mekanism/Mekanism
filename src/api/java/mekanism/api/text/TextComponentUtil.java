@@ -7,6 +7,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -15,27 +16,31 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TextComponentUtil {
 
+    public static IFormattableTextComponent getFormattableComponent(ITextComponent component) {
+        return component instanceof IFormattableTextComponent ? (IFormattableTextComponent) component : component.func_230532_e_();
+    }
+
     public static ITextComponent build(Object... components) {
         //TODO: Verify that just appending them to the first text component works properly.
         // My suspicion is we will need to chain downwards and append it that way so that the formatting matches
         // from call to call without resetting back to
-        ITextComponent result = null;
+        IFormattableTextComponent result = null;
         TextFormatting cachedFormat = null;
         for (Object component : components) {
             if (component == null) {
                 //If the component doesn't exist just skip it
                 continue;
             }
-            ITextComponent current = null;
+            IFormattableTextComponent current = null;
             if (component instanceof IHasTextComponent) {
-                current = ((IHasTextComponent) component).getTextComponent();
+                current = getFormattableComponent(((IHasTextComponent) component).getTextComponent());
             } else if (component instanceof IHasTranslationKey) {
                 current = translate(((IHasTranslationKey) component).getTranslationKey());
             } else if (component instanceof EnumColor) {
                 cachedFormat = ((EnumColor) component).textFormatting;
             } else if (component instanceof ITextComponent) {
                 //Just append if a text component is being passed
-                current = (ITextComponent) component;
+                current = getFormattableComponent((ITextComponent) component);
             } else if (component instanceof TextFormatting) {
                 cachedFormat = (TextFormatting) component;
             } else if (component instanceof Block) {
@@ -43,7 +48,7 @@ public class TextComponentUtil {
             } else if (component instanceof Item) {
                 current = translate(((Item) component).getTranslationKey());
             } else if (component instanceof ItemStack) {
-                current = ((ItemStack) component).getDisplayName();
+                current = getFormattableComponent(((ItemStack) component).getDisplayName());
             } else if (component instanceof FluidStack) {
                 current = translate(((FluidStack) component).getTranslationKey());
             } else if (component instanceof Fluid) {
@@ -63,13 +68,13 @@ public class TextComponentUtil {
             }
             if (cachedFormat != null) {
                 //Apply the formatting
-                current.applyTextStyle(cachedFormat);
+                current.func_240699_a_(cachedFormat);
                 cachedFormat = null;
             }
             if (result == null) {
                 result = current;
             } else {
-                result.appendSibling(current);
+                result.func_230529_a_(current);
             }
         }
         //TODO: Make this more like smartTranslate? Including back to back color codes treat the second as name?
@@ -77,7 +82,7 @@ public class TextComponentUtil {
         return result;
     }
 
-    private static ITextComponent getTranslatedDirection(Direction direction) {
+    private static IFormattableTextComponent getTranslatedDirection(Direction direction) {
         switch (direction) {
             case DOWN:
                 return APILang.DOWN.translate();
@@ -118,9 +123,9 @@ public class TextComponentUtil {
                 cachedFormat = null;
                 continue;
             }
-            ITextComponent current = null;
+            IFormattableTextComponent current = null;
             if (component instanceof IHasTextComponent) {
-                current = ((IHasTextComponent) component).getTextComponent();
+                current = getFormattableComponent(((IHasTextComponent) component).getTextComponent());
             } else if (component instanceof IHasTranslationKey) {
                 current = translate(((IHasTranslationKey) component).getTranslationKey());
             } else if (component instanceof Block) {
@@ -128,7 +133,7 @@ public class TextComponentUtil {
             } else if (component instanceof Item) {
                 current = translate(((Item) component).getTranslationKey());
             } else if (component instanceof ItemStack) {
-                current = ((ItemStack) component).getDisplayName();
+                current = getFormattableComponent(((ItemStack) component).getDisplayName());
             } else if (component instanceof FluidStack) {
                 current = translate(((FluidStack) component).getTranslationKey());
             } else if (component instanceof Fluid) {
@@ -140,7 +145,7 @@ public class TextComponentUtil {
                 // otherwise we are just going to want to use the raw text
                 if (component instanceof ITextComponent) {
                     //Just append if a text component is being passed
-                    current = (ITextComponent) component;
+                    current = getFormattableComponent((ITextComponent) component);
                 } else if (component instanceof String || component instanceof Boolean || component instanceof Number) {
                     //Put actual boolean or integer/double, etc value
                     current = getString(component.toString());
@@ -167,7 +172,7 @@ public class TextComponentUtil {
                     args.add(component);
                 } else {
                     //Otherwise we apply the formatting and then add it
-                    args.add(current.applyTextStyle(cachedFormat));
+                    args.add(current.func_240699_a_(cachedFormat));
                 }
                 cachedFormat = null;
             } else if (current == null) {
