@@ -58,16 +58,16 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (((IRedstoneControl) tile).getControlType() == RedstoneControl.PULSE) {
-            super.renderButton(mouseX, mouseY, partialTicks);
+            super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
             //Draw the button background
-            drawButton(mouseX, mouseY);
+            drawButton(matrix, mouseX, mouseY);
             //Draw the overlay onto the button
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GuiUtils.drawSprite(getButtonX(), getButtonY(), innerWidth, innerHeight, 0, MekanismRenderer.redstonePulse);
         } else {
-            super.renderButton(mouseX, mouseY, partialTicks);
+            super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         }
     }
 }

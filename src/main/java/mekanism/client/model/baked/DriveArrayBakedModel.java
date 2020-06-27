@@ -14,10 +14,7 @@ import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.data.IModelData;
 
 public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {

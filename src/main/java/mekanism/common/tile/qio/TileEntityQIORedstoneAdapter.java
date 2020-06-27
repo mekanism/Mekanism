@@ -87,8 +87,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(BlockState state,@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
         prevPowering = tag.getBoolean(NBTConstants.ACTIVE);
         requestModelDataUpdate();
         MekanismUtils.updateBlock(getWorld(), getPos());

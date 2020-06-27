@@ -262,7 +262,7 @@ public class ClientRegistration {
             ModelLoader.addSpecialModel(status.getModel());
         }
 
-        customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), (orig, evt) -> new DriveArrayBakedModel(orig, evt));
+        customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), DriveArrayBakedModel::new);
         customModels.put(MekanismBlocks.QIO_DASHBOARD.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismBlocks.QIO_EXPORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismBlocks.QIO_IMPORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
