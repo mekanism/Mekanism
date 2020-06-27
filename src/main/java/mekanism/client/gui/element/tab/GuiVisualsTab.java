@@ -1,6 +1,8 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
@@ -18,17 +20,17 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         ITextComponent visualsComponent = MekanismLang.MINER_VISUALS.translate(OnOff.of(tile.clientRendering));
         if (tile.getRadius() <= 64) {
-            displayTooltip(visualsComponent, mouseX, mouseY);
+            displayTooltip(matrix, visualsComponent, mouseX, mouseY);
         } else {
-            displayTooltips(Arrays.asList(visualsComponent, MekanismLang.MINER_VISUALS_TOO_BIG.translateColored(EnumColor.RED)), mouseX, mouseY);
+            displayTooltips(matrix, Arrays.asList(visualsComponent, MekanismLang.MINER_VISUALS_TOO_BIG.translateColored(EnumColor.RED)), mouseX, mouseY);
         }
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         tile.clientRendering = !tile.clientRendering;
     }
 }

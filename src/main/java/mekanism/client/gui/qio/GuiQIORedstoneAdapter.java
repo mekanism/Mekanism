@@ -1,7 +1,9 @@
 package mekanism.client.gui.qio;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -74,7 +76,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         func_230480_a_(text = new GuiTextField(this, 29, 70, xSize - 39, 12));
         text.setMaxStringLength(10);
         text.setInputValidator(InputValidator.DIGIT);
-        text.setFocused(true);
+        text.func_230996_d_(true);
         text.configureDigitalInput(this::setCount);
     }
 
@@ -87,13 +89,13 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText();
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         if (tile.getItemType() != null) {
-            renderItem(tile.getItemType(), 8, 31);
+            renderItem(matrix, tile.getItemType(), 8, 31);
         }
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     @Override

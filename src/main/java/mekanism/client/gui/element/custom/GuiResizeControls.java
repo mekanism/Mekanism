@@ -1,6 +1,8 @@
 package mekanism.client.gui.element.custom;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -37,22 +39,22 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        super.renderToolTip(mouseX, mouseY);
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.func_230443_a_(matrix, mouseX, mouseY);
         if (tooltipTicks > 0 && !expandButton.field_230693_o_) {
-            displayTooltip(MekanismLang.QIO_COMPENSATE_TOOLTIP.translate(), mouseX, mouseY);
+            displayTooltip(matrix, MekanismLang.QIO_COMPENSATE_TOOLTIP.translate(), mouseX, mouseY);
         }
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
-        drawScaledCenteredText(MekanismLang.HEIGHT.translate(), relativeX + 13.5F, relativeY + 15.5F, titleTextColor(), 0.7F);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
+        drawScaledCenteredText(matrix, MekanismLang.HEIGHT.translate(), relativeX + 13.5F, relativeY + 15.5F, titleTextColor(), 0.7F);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
+    public void func_230982_a_(double mouseX, double mouseY) {
+        super.func_230982_a_(mouseX, mouseY);
         if (!expandButton.field_230693_o_ && mouseX >= expandButton.field_230690_l_ && mouseX < expandButton.field_230690_l_ + expandButton.func_230998_h_() &&
             mouseY >= expandButton.field_230691_m_ && mouseY < expandButton.field_230691_m_ + expandButton.getHeight()) {
             tooltipTicks = 100;

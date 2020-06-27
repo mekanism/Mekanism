@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
@@ -17,21 +17,20 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public interface IGuiWrapper {
 
-    default void displayTooltip(ITextComponent component, int x, int y, int maxWidth) {
-        this.displayTooltips(Collections.singletonList(component), x, y, maxWidth);
+    default void displayTooltip(MatrixStack matrix, ITextComponent component, int x, int y, int maxWidth) {
+        this.displayTooltips(matrix, Collections.singletonList(component), x, y, maxWidth);
     }
 
-    default void displayTooltip(ITextComponent component, int x, int y) {
-        this.displayTooltips(Collections.singletonList(component), x, y);
+    default void displayTooltip(MatrixStack matrix, ITextComponent component, int x, int y) {
+        this.displayTooltips(matrix, Collections.singletonList(component), x, y);
     }
 
-    default void displayTooltips(List<ITextComponent> components, int xAxis, int yAxis) {
-        displayTooltips(components, xAxis, yAxis, -1);
+    default void displayTooltips(MatrixStack matrix, List<ITextComponent> components, int xAxis, int yAxis) {
+        displayTooltips(matrix, components, xAxis, yAxis, -1);
     }
 
-    default void displayTooltips(List<ITextComponent> components, int xAxis, int yAxis, int maxWidth) {
-        List<String> toolTips = components.stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
-        GuiUtils.drawHoveringText(toolTips, xAxis, yAxis, getWidth(), getHeight(), maxWidth, getFont());
+    default void displayTooltips(MatrixStack matrix, List<ITextComponent> components, int xAxis, int yAxis, int maxWidth) {
+        GuiUtils.drawHoveringText(matrix, components, xAxis, yAxis, getWidth(), getHeight(), maxWidth, getFont());
     }
 
     default int getLeft() {
@@ -79,19 +78,19 @@ public interface IGuiWrapper {
     @Nullable
     FontRenderer getFont();
 
-    default void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis) {
-        renderItem(stack, xAxis, yAxis, 1);
+    default void renderItem(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
+        renderItem(matrix, stack, xAxis, yAxis, 1);
     }
 
-    void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale);
+    void renderItem(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale);
 
     ItemRenderer getItemRenderer();
 
-    default void renderItemTooltip(@Nonnull ItemStack stack, int xAxis, int yAxis) {
+    default void renderItemTooltip(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
         Mekanism.logger.error("Tried to call 'renderItemTooltip' but unsupported in {}", getClass().getName());
     }
 
-    default void renderItemWithOverlay(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
+    default void renderItemWithOverlay(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
         Mekanism.logger.error("Tried to call 'renderItemWithOverlay' but unsupported in {}", getClass().getName());
     }
 

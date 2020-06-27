@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import java.util.function.Predicate;
@@ -22,7 +23,7 @@ public class GuiUtils {
     // Note: Does not validate that the passed in dimensions are valid
     // this strategy starts with a small texture and will expand it (by scaling) to meet the size requirements. good for small widgets
     // where the background texture is a single color
-    public static void renderExtendedTexture(ResourceLocation resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
+    public static void renderExtendedTexture(MatrixStack matrix, ResourceLocation resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
         int textureWidth = 2 * sideWidth + 1;
         int textureHeight = 2 * sideHeight + 1;
         int centerWidth = width - 2 * sideWidth;
@@ -34,40 +35,40 @@ public class GuiUtils {
         MekanismRenderer.bindTexture(resource);
         //Left Side
         //Top Left Corner
-        AbstractGui.blit(left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        AbstractGui.func_238463_a_(matrix, left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
         //Left Middle
         if (centerHeight > 0) {
-            AbstractGui.blit(left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
+            AbstractGui.func_238466_a_(matrix, left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
         }
         //Bottom Left Corner
-        AbstractGui.blit(left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+        AbstractGui.func_238463_a_(matrix, left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
 
         //Middle
         if (centerWidth > 0) {
             //Top Middle
-            AbstractGui.blit(leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
+            AbstractGui.func_238466_a_(matrix, leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
             if (centerHeight > 0) {
                 //Center
-                AbstractGui.blit(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
+                AbstractGui.func_238466_a_(matrix, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
             }
             //Bottom Middle
-            AbstractGui.blit(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
+            AbstractGui.func_238466_a_(matrix, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
         }
 
         //Right side
         //Top Right Corner
-        AbstractGui.blit(rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        AbstractGui.func_238463_a_(matrix, rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
         //Right Middle
         if (centerHeight > 0) {
-            AbstractGui.blit(rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
+            AbstractGui.func_238466_a_(matrix, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
         }
         //Bottom Right Corner
-        AbstractGui.blit(rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+        AbstractGui.func_238463_a_(matrix, rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
     }
 
     // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture; small textures will tank FPS due
     // to tiling
-    public static void renderBackgroundTexture(ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width, int height, int textureWidth, int textureHeight) {
+    public static void renderBackgroundTexture(MatrixStack matrix, ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width, int height, int textureWidth, int textureHeight) {
         // render as much side as we can, based on element dimensions
         int sideWidth = Math.min(texSideWidth, width / 2);
         int sideHeight = Math.min(texSideHeight, height / 2);
@@ -86,42 +87,42 @@ public class GuiUtils {
         MekanismRenderer.bindTexture(resource);
 
         //Top Left Corner
-        AbstractGui.blit(left, top, 0, 0, leftWidth, topHeight, textureWidth, textureHeight);
+        AbstractGui.func_238463_a_(matrix, left, top, 0, 0, leftWidth, topHeight, textureWidth, textureHeight);
         //Bottom Left Corner
-        AbstractGui.blit(left, bottomEdgeStart, 0, textureHeight - sideHeight, leftWidth, sideHeight, textureWidth, textureHeight);
+        AbstractGui.func_238463_a_(matrix, left, bottomEdgeStart, 0, textureHeight - sideHeight, leftWidth, sideHeight, textureWidth, textureHeight);
 
         //Middle
         if (centerWidth > 0) {
             //Top Middle
-            blitTiled(leftEdgeEnd, top, centerWidth, topHeight, texSideWidth, 0, texCenterWidth, texSideHeight, textureWidth, textureHeight);
+            blitTiled(matrix, leftEdgeEnd, top, centerWidth, topHeight, texSideWidth, 0, texCenterWidth, texSideHeight, textureWidth, textureHeight);
             if (centerHeight > 0) {
                 //Center
-                blitTiled(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, texSideWidth, texSideHeight, texCenterWidth, texCenterHeight, textureWidth, textureHeight);
+                blitTiled(matrix, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, texSideWidth, texSideHeight, texCenterWidth, texCenterHeight, textureWidth, textureHeight);
             }
             //Bottom Middle
-            blitTiled(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, texSideWidth, textureHeight - sideHeight, texCenterWidth, texSideHeight, textureWidth, textureHeight);
+            blitTiled(matrix, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, texSideWidth, textureHeight - sideHeight, texCenterWidth, texSideHeight, textureWidth, textureHeight);
         }
 
         if (centerHeight > 0) {
             //Left Middle
-            blitTiled(left, topEdgeEnd, leftWidth, centerHeight, 0, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
+            blitTiled(matrix, left, topEdgeEnd, leftWidth, centerHeight, 0, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
             //Right Middle
-            blitTiled(rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, textureWidth - sideWidth, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
+            blitTiled(matrix, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, textureWidth - sideWidth, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
         }
 
         //Top Right Corner
-        AbstractGui.blit(rightEdgeStart, top, textureWidth - sideWidth, 0, sideWidth, topHeight, textureWidth, textureHeight);
+        AbstractGui.func_238463_a_(matrix, rightEdgeStart, top, textureWidth - sideWidth, 0, sideWidth, topHeight, textureWidth, textureHeight);
         //Bottom Right Corner
-        AbstractGui.blit(rightEdgeStart, bottomEdgeStart, textureWidth - sideWidth, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
+        AbstractGui.func_238463_a_(matrix, rightEdgeStart, bottomEdgeStart, textureWidth - sideWidth, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
     }
 
-    public static void blitTiled(int x, int y, int width, int height, int texX, int texY, int texDrawWidth, int texDrawHeight, int textureWidth, int textureHeight) {
+    public static void blitTiled(MatrixStack matrix, int x, int y, int width, int height, int texX, int texY, int texDrawWidth, int texDrawHeight, int textureWidth, int textureHeight) {
         int xTiles = (int) Math.ceil((float) width / texDrawWidth), yTiles = (int) Math.ceil((float) height / texDrawHeight);
 
         int drawWidth = width, drawHeight = height;
         for (int tileX = 0; tileX < xTiles; tileX++) {
             for (int tileY = 0; tileY < yTiles; tileY++) {
-                AbstractGui.blit(x + texDrawWidth * tileX, y + texDrawHeight * tileY, texX, texY, Math.min(drawWidth, texDrawWidth), Math.min(drawHeight, texDrawHeight), textureWidth, textureHeight);
+                AbstractGui.func_238463_a_(matrix, x + texDrawWidth * tileX, y + texDrawHeight * tileY, texX, texY, Math.min(drawWidth, texDrawWidth), Math.min(drawHeight, texDrawHeight), textureWidth, textureHeight);
                 drawHeight -= texDrawHeight;
             }
             drawWidth -= texDrawWidth;
@@ -129,17 +130,17 @@ public class GuiUtils {
         }
     }
 
-    public static void drawOutline(int x, int y, int width, int height, int color) {
-        fill(x, y, width, 1, color);
-        fill(x, y + height - 1, width, 1, color);
+    public static void drawOutline(MatrixStack matrix, int x, int y, int width, int height, int color) {
+        fill(matrix, x, y, width, 1, color);
+        fill(matrix, x, y + height - 1, width, 1, color);
         if (height > 2) {
-            fill(x, y + 1, 1, height - 2, color);
-            fill(x + width - 1, y + 1, 1, height - 2, color);
+            fill(matrix, x, y + 1, 1, height - 2, color);
+            fill(matrix, x + width - 1, y + 1, 1, height - 2, color);
         }
     }
 
-    public static void fill(int x, int y, int width, int height, int color) {
-        AbstractGui.fill(x, y, x + width, y + height, Color.packOpaque(color));
+    public static void fill(MatrixStack matrix, int x, int y, int width, int height, int color) {
+        AbstractGui.func_238467_a_(matrix, x, y, x + width, y + height, Color.packOpaque(color));
     }
 
     public static void drawTiledSprite(int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite, int textureWidth,

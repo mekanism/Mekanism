@@ -1,9 +1,8 @@
 package mekanism.client.gui.element.text;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
-import org.lwjgl.glfw.GLFW;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.functions.CharPredicate;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -13,6 +12,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.text.StringTextComponent;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * GuiElement wrapper of TextFieldWidget for more control
@@ -42,7 +43,7 @@ public class GuiTextField extends GuiRelativeElement {
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
         super(gui, x, y, width, height);
 
-        textField = new TextFieldWidget(getFont(), this.field_230690_l_, this.field_230691_m_, width, height, "");
+        textField = new TextFieldWidget(getFont(), this.field_230690_l_, this.field_230691_m_, width, height, StringTextComponent.field_240750_d_);
         textField.setEnableBackgroundDrawing(false);
         textField.setResponder(s -> {
             if (responder != null) {
@@ -123,7 +124,7 @@ public class GuiTextField extends GuiRelativeElement {
     public GuiTextField addCheckmarkButton(ButtonType type, Runnable callback) {
         addChild(checkmarkButton = type.getButton(this, () -> {
             callback.run();
-            setFocused(true);
+            func_230996_d_(true);
         }));
         checkmarkButton.field_230693_o_ = false;
         updateTextField();
@@ -132,13 +133,13 @@ public class GuiTextField extends GuiRelativeElement {
 
     private void updateTextField() {
         // width is scaled based on text scale
-        textField.setWidth(Math.round((field_230688_j_ - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - (iconType != null ? iconType.getOffsetX() : 0)) * (1 / textScale)));
+        textField.func_230991_b_(Math.round((field_230688_j_ - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - (iconType != null ? iconType.getOffsetX() : 0)) * (1 / textScale)));
         textField.field_230690_l_ = field_230690_l_ + textOffsetX + 2 + (iconType != null ? iconType.getOffsetX() : 0);
         textField.field_230691_m_ = field_230691_m_ + textOffsetY + 1 + (int) ((field_230689_k_ / 2F) - 4);
     }
 
     public boolean isTextFieldFocused() {
-        return textField.isFocused();
+        return textField.func_230999_j_();
     }
 
     @Override
@@ -176,24 +177,24 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     @Override
-    public void drawButton(int mouseX, int mouseY) {
-        backgroundType.render(this);
+    public void drawButton(MatrixStack matrix, int mouseX, int mouseY) {
+        backgroundType.render(this, matrix);
         if (textScale != 1F) {
             // hacky. we should write our own renderer at some point.
             float reverse = (1 / textScale) - 1;
             float yAdd = 4 - (textScale * 8) / 2F;
-            RenderSystem.pushMatrix();
-            RenderSystem.scalef(textScale, textScale, textScale);
-            RenderSystem.translated(textField.field_230690_l_ * reverse, (textField.field_230691_m_) * reverse + yAdd * (1 / textScale), 0);
-            textField.render(mouseX, mouseY, 0);
-            RenderSystem.popMatrix();
+            matrix.push();
+            matrix.scale(textScale, textScale, textScale);
+            matrix.translate(textField.field_230690_l_ * reverse, (textField.field_230691_m_) * reverse + yAdd * (1 / textScale), 0);
+            textField.func_230430_a_(matrix, mouseX, mouseY, 0);
+            matrix.pop();
         } else {
-            textField.render(mouseX, mouseY, 0);
+            textField.func_230430_a_(matrix, mouseX, mouseY, 0);
         }
         MekanismRenderer.resetColor();
         if (iconType != null) {
             minecraft.textureManager.bindTexture(iconType.getIcon());
-            blit(field_230690_l_ + 2, field_230691_m_ + (field_230689_k_ / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
+            func_238463_a_(matrix, field_230690_l_ + 2, field_230691_m_ + (field_230689_k_ / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }
     }
 
@@ -205,7 +206,7 @@ public class GuiTextField extends GuiRelativeElement {
     @Override
     public void syncFrom(GuiElement element) {
         textField.setText(((GuiTextField) element).getText());
-        setFocused(element.isFocused());
+        func_230996_d_(element.func_230999_j_());
     }
 
     @Override
@@ -259,8 +260,8 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     @Override
-    public void setFocused(boolean focused) {
-        super.setFocused(focused);
+    public void func_230996_d_(boolean focused) {
+        super.func_230996_d_(focused);
         textField.setFocused2(focused);
         if (focused) {
             guiObj.focusChange(this);

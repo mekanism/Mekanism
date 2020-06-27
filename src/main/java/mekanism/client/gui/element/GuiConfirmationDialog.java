@@ -1,5 +1,6 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
@@ -28,13 +29,13 @@ public class GuiConfirmationDialog extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
-        drawWrappedCenteredText(title.getString(), relativeX + (field_230688_j_ / 2), relativeY + 10, titleTextColor(), field_230688_j_ - 10);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
+        drawWrappedCenteredText(matrix, title.getString(), relativeX + (field_230688_j_ / 2), relativeY + 10, titleTextColor(), field_230688_j_ - 10);
     }
 
     @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
+    public boolean func_231047_b_(double mouseX, double mouseY) {
         // only allow clicks here
         return true;
     }

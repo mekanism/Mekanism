@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.custom;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
@@ -68,16 +69,16 @@ public class GuiTransporterConfig extends GuiWindow {
     }
 
     private IHoverable getOnHover() {
-        return (onHover, xAxis, yAxis) -> {
+        return (onHover, matrix, xAxis, yAxis) -> {
             if (onHover instanceof SideDataButton) {
                 SideDataButton button = (SideDataButton) onHover;
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
                     EnumColor color = button.getColor();
                     if (color != null) {
-                        displayTooltip(color.getColoredName(), xAxis, yAxis);
+                        displayTooltip(matrix, color.getColoredName(), xAxis, yAxis);
                     } else {
-                        displayTooltip(MekanismLang.NONE.translate(), xAxis, yAxis);
+                        displayTooltip(matrix, MekanismLang.NONE.translate(), xAxis, yAxis);
                     }
                 }
             }
@@ -85,11 +86,11 @@ public class GuiTransporterConfig extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
-        drawTitleText(MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
-        drawTextScaledBound(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(getTile().getEjector().hasStrictInput())), relativeX + 43, relativeY + 17, screenTextColor(), 70);
-        drawString(MekanismLang.INPUT.translate(), relativeX + 38, relativeY + 81, 0x787878);
-        drawString(MekanismLang.OUTPUT.translate(), relativeX + 104, relativeY + 68, 0x787878);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
+        drawTitleText(matrix, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
+        drawTextScaledBound(matrix, MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(getTile().getEjector().hasStrictInput())), relativeX + 43, relativeY + 17, screenTextColor(), 70);
+        drawString(matrix, MekanismLang.INPUT.translate(), relativeX + 38, relativeY + 81, 0x787878);
+        drawString(matrix, MekanismLang.OUTPUT.translate(), relativeX + 104, relativeY + 68, 0x787878);
     }
 }

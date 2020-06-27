@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.item.Item;
@@ -40,7 +41,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
             @Nonnull
             @Override
             public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-                return super.getDisplayName(stack).applyTextStyle(color.textFormatting);
+                return TextComponentUtil.build(color, super.getDisplayName(stack));
             }
         });
     }

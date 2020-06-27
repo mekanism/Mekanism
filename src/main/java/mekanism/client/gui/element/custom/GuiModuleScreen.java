@@ -1,8 +1,10 @@
 package mekanism.client.gui.element.custom;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -74,46 +76,46 @@ public class GuiModuleScreen extends GuiRelativeElement {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        background.renderButton(mouseX, mouseY, partialTicks);
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        background.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         for (MiniElement element : miniElements) {
-            element.renderBackground(mouseX, mouseY);
+            element.renderBackground(matrix, mouseX, mouseY);
         }
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         for (MiniElement element : miniElements) {
             element.click(mouseX, mouseY);
         }
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
+    public void func_231000_a__(double mouseX, double mouseY) {
         for (MiniElement element : miniElements) {
             element.release(mouseX, mouseY);
         }
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
 
         if (currentModule != null) {
             int startY = relativeY + 5;
             if (currentModule.getData().isExclusive()) {
                 ITextComponent comp = MekanismLang.MODULE_EXCLUSIVE.translate();
-                drawTextWithScale(comp, relativeX + 5, startY, 0x635BD4, 0.8F);
+                drawTextWithScale(matrix, comp, relativeX + 5, startY, 0x635BD4, 0.8F);
                 startY += 13;
             }
             if (currentModule.getData().getMaxStackSize() > 1) {
-                drawTextWithScale(MekanismLang.MODULE_INSTALLED.translate(currentModule.getInstalledCount()), relativeX + 5, startY, TEXT_COLOR, 0.8F);
+                drawTextWithScale(matrix, MekanismLang.MODULE_INSTALLED.translate(currentModule.getInstalledCount()), relativeX + 5, startY, TEXT_COLOR, 0.8F);
                 startY += 13;
             }
         }
 
         for (MiniElement element : miniElements) {
-            element.renderForeground(mouseX, mouseY);
+            element.renderForeground(matrix, mouseX, mouseY);
         }
     }
 
@@ -126,9 +128,9 @@ public class GuiModuleScreen extends GuiRelativeElement {
             this.yPos = yPos;
         }
 
-        abstract void renderBackground(int mouseX, int mouseY);
+        abstract void renderBackground(MatrixStack matrix, int mouseX, int mouseY);
 
-        abstract void renderForeground(int mouseX, int mouseY);
+        abstract void renderForeground(MatrixStack matrix, int mouseX, int mouseY);
 
         abstract void click(double mouseX, double mouseY);
 
@@ -162,28 +164,28 @@ public class GuiModuleScreen extends GuiRelativeElement {
         }
 
         @Override
-        public void renderBackground(int mouseX, int mouseY) {
+        public void renderBackground(MatrixStack matrix, int mouseX, int mouseY) {
             minecraft.textureManager.bindTexture(RADIO);
 
             boolean hover = mouseX >= getX() + 4 && mouseX < getX() + 12 && mouseY >= getY() + 11 && mouseY < getY() + 19;
             if (data.get()) {
-                blit(getX() + 4, getY() + 11, 0, 8, 8, 8, 16, 16);
+                func_238463_a_(matrix, getX() + 4, getY() + 11, 0, 8, 8, 8, 16, 16);
             } else {
-                blit(getX() + 4, getY() + 11, hover ? 8 : 0, 0, 8, 8, 16, 16);
+                func_238463_a_(matrix, getX() + 4, getY() + 11, hover ? 8 : 0, 0, 8, 8, 16, 16);
             }
             hover = mouseX >= getX() + 50 && mouseX < getX() + 58 && mouseY >= getY() + 11 && mouseY < getY() + 19;
             if (!data.get()) {
-                blit(getX() + 50, getY() + 11, 8, 8, 8, 8, 16, 16);
+                func_238463_a_(matrix, getX() + 50, getY() + 11, 8, 8, 8, 8, 16, 16);
             } else {
-                blit(getX() + 50, getY() + 11, hover ? 8 : 0, 0, 8, 8, 16, 16);
+                func_238463_a_(matrix, getX() + 50, getY() + 11, hover ? 8 : 0, 0, 8, 8, 16, 16);
             }
         }
 
         @Override
-        public void renderForeground(int mouseX, int mouseY) {
-            drawTextWithScale(data.getDescription().translate(), getRelativeX() + 3, getRelativeY(), TEXT_COLOR, 0.8F);
-            drawTextWithScale(MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, TEXT_COLOR, 0.8F);
-            drawTextWithScale(MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, TEXT_COLOR, 0.8F);
+        public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+            drawTextWithScale(matrix, data.getDescription().translate(), getRelativeX() + 3, getRelativeY(), TEXT_COLOR, 0.8F);
+            drawTextWithScale(matrix, MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, TEXT_COLOR, 0.8F);
+            drawTextWithScale(matrix, MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, TEXT_COLOR, 0.8F);
         }
 
         @Override
@@ -214,25 +216,25 @@ public class GuiModuleScreen extends GuiRelativeElement {
         }
 
         @Override
-        public void renderBackground(int mouseX, int mouseY) {
+        public void renderBackground(MatrixStack matrix, int mouseX, int mouseY) {
             minecraft.textureManager.bindTexture(SLIDER);
             int count = ((EnumData<?>) data.getData()).getSelectableCount();
             int center = (BAR_LENGTH / (count - 1)) * data.get().ordinal();
-            blit(getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
-            blit(getX() + BAR_START, getY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
+            func_238463_a_(matrix, getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
+            func_238463_a_(matrix, getX() + BAR_START, getY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
         }
 
         @Override
-        public void renderForeground(int mouseX, int mouseY) {
+        public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
             EnumData<?> enumData = (EnumData<?>) data.getData();
-            drawTextWithScale(data.getDescription().translate(), getRelativeX() + 3, getRelativeY(), TEXT_COLOR, 0.8F);
+            drawTextWithScale(matrix, data.getDescription().translate(), getRelativeX() + 3, getRelativeY(), TEXT_COLOR, 0.8F);
             Enum<? extends IHasTextComponent>[] arr = enumData.getEnums();
             int count = enumData.getSelectableCount();
             for (int i = 0; i < count; i++) {
                 int diffFromCenter = ((BAR_LENGTH / (count - 1)) * i) - (BAR_LENGTH / 2);
                 float diffScale = 1 - (1 - TEXT_SCALE) / 2F;
                 int textCenter = getRelativeX() + BAR_START + (BAR_LENGTH / 2) + (int) (diffFromCenter * diffScale);
-                drawScaledCenteredText(((IHasTextComponent) arr[i]).getTextComponent(), textCenter, getRelativeY() + 20, TEXT_COLOR, TEXT_SCALE);
+                drawScaledCenteredText(matrix, ((IHasTextComponent) arr[i]).getTextComponent(), textCenter, getRelativeY() + 20, TEXT_COLOR, TEXT_SCALE);
             }
 
             if (dragging) {

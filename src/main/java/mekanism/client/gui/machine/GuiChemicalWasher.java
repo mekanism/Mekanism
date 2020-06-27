@@ -1,6 +1,8 @@
 package mekanism.client.gui.machine;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiSideHolder;
@@ -51,8 +53,8 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(4);
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix, 4);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 }

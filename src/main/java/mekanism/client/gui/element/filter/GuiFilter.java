@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.filter;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -155,9 +156,9 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     protected abstract List<ItemStack> getRenderStacks();
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
-        drawTextScaledBound((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), relativeX + 30, relativeY + 6, titleTextColor(), 110);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
+        drawTextScaledBound(matrix, (isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), relativeX + 30, relativeY + 6, titleTextColor(), 110);
     }
 
     @Override

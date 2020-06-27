@@ -1,6 +1,8 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.gui.element.custom.GuiTransporterConfig;
@@ -16,8 +18,8 @@ public class GuiTransporterConfigTab extends GuiWindowCreatorTab<GuiTransporterC
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(MekanismLang.TRANSPORTER_CONFIG.translate(), mouseX, mouseY);
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        displayTooltip(matrix, MekanismLang.TRANSPORTER_CONFIG.translate(), mouseX, mouseY);
     }
 
     @Override

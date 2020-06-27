@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,8 +10,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
@@ -42,6 +42,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import org.apache.commons.lang3.tuple.Pair;
 
 //TODO: Add our own "func_230480_a_" type thing for elements that are just "drawn" but don't actually have any logic behind them
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
@@ -86,7 +87,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     protected IHoverable getOnHover(Supplier<ITextComponent> componentSupplier) {
-        return (onHover, xAxis, yAxis) -> displayTooltip(componentSupplier.get(), xAxis, yAxis);
+        return (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, componentSupplier.get(), xAxis, yAxis);
     }
 
     protected ResourceLocation getButtonLocation(String name) {
@@ -105,7 +106,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public void focusChange(GuiElement changed) {
-        focusListeners.stream().filter(e -> e != changed).forEach(e -> e.setFocused(false));
+        focusListeners.stream().filter(e -> e != changed).forEach(e -> e.func_230996_d_(false));
     }
 
     @Override
@@ -113,7 +114,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int index = focusListeners.indexOf(current);
         if (index != -1) {
             GuiElement next = focusListeners.get((index + 1) % focusListeners.size());
-            next.setFocused(true);
+            next.func_230996_d_(true);
             focusChange(next);
         }
     }
@@ -124,7 +125,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void resize(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
+    public void func_231152_a_(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
         List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
         for (int i = 0; i < field_230710_m_.size(); i++) {
             Widget widget = field_230710_m_.get(i);
@@ -135,7 +136,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // flush the focus listeners list unless it's an overlay
         focusListeners.removeIf(element -> !element.isOverlay);
         int prevLeft = getGuiLeft(), prevTop = getGuiTop();
-        super.resize(minecraft, sizeX, sizeY);
+        super.func_231152_a_(minecraft, sizeX, sizeY);
 
         windows.forEach(window -> {
             window.resize(prevLeft, prevTop, getGuiLeft(), getGuiTop());
@@ -157,7 +158,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        //TODO - 1.16: Look at the super method for this and see if we should call it
+        //TODO - 1.16: Go through render system push and pop calls
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         // first render general foregrounds
@@ -165,9 +168,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int zOffset = 200;
         for (Widget widget : this.field_230710_m_) {
             if (widget instanceof GuiElement) {
-                RenderSystem.pushMatrix();
-                ((GuiElement) widget).onRenderForeground(mouseX, mouseY, zOffset, zOffset);
-                RenderSystem.popMatrix();
+                matrix.push();
+                ((GuiElement) widget).onRenderForeground(matrix, mouseX, mouseY, zOffset, zOffset);
+                matrix.pop();
             }
         }
         // now render overlays in reverse-order (i.e. back to front)
@@ -175,29 +178,31 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         for (LRU<GuiWindow>.LRUIterator iter = getWindowsDescendingIterator(); iter.hasNext(); ) {
             GuiWindow overlay = iter.next();
             zOffset += 150;
-            RenderSystem.pushMatrix();
-            overlay.onRenderForeground(mouseX, mouseY, zOffset, zOffset);
+            matrix.push();
+            overlay.onRenderForeground(matrix, mouseX, mouseY, zOffset, zOffset);
             if (iter.hasNext()) {
                 // if this isn't the focused window, render a 'blur' effect over it
-                overlay.renderBlur();
+                overlay.renderBlur(matrix);
             }
-            RenderSystem.popMatrix();
+            matrix.pop();
         }
         // then render tooltips, translating above max z offset to prevent clashing
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
         if (tooltipElement == null) {
             for (int i = field_230710_m_.size() - 1; i >= 0; i--) {
                 Widget widget = field_230710_m_.get(i);
-                if (widget instanceof GuiElement && widget.isMouseOver(mouseX, mouseY)) {
+                if (widget instanceof GuiElement && widget.func_231047_b_(mouseX, mouseY)) {
                     tooltipElement = (GuiElement) widget;
                     break;
                 }
             }
         }
         if (tooltipElement != null) {
-            RenderSystem.translated(0, 0, maxZOffset + 50);
-            tooltipElement.renderToolTip(xAxis, yAxis);
-            RenderSystem.translated(0, 0, maxZOffset - 50);
+            matrix.push();
+            matrix.translate(0, 0, maxZOffset + 50);
+            tooltipElement.func_230443_a_(matrix, xAxis, yAxis);
+            matrix.translate(0, 0, maxZOffset - 50);
+            matrix.pop();
         }
     }
 
@@ -214,9 +219,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // first try to send the mouse event to our overlays
         GuiWindow focused = windows.stream().filter(overlay -> overlay.func_231044_a_(mouseX, mouseY, button)).findFirst().orElse(null);
         if (focused != null) {
-            setFocused(focused);
+            func_231035_a_(focused);
             if (button == 0) {
-                setDragging(true);
+                func_231037_b__(true);
             }
             windows.moveUp(focused);
             return true;
@@ -225,9 +230,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         for (int i = field_230710_m_.size() - 1; i >= 0; i--) {
             IGuiEventListener listener = field_230710_m_.get(i);
             if (listener.func_231044_a_(mouseX, mouseY, button)) {
-                setFocused(listener);
+                func_231035_a_(listener);
                 if (button == 0) {
-                    setDragging(true);
+                    func_231037_b__(true);
                 }
                 return true;
             }
@@ -263,7 +268,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public boolean func_231045_a_(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         super.func_231045_a_(mouseX, mouseY, button, mouseXOld, mouseYOld);
-        return getFocused() != null && isDragging() && button == 0 && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+        return func_241217_q_() != null && func_231041_ay__() && button == 0 && func_241217_q_().func_231045_a_(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }
 
     protected boolean isMouseOverSlot(Slot slot, double mouseX, double mouseY) {
@@ -275,7 +280,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // overridden to prevent slot interactions when a GuiElement is blocking
         return super.isPointInRegion(x, y, width, height, mouseX, mouseY) &&
                getWindowHovering(mouseX, mouseY) == null &&
-               field_230710_m_.stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
+               field_230710_m_.stream().noneMatch(button -> button.func_231047_b_(mouseX, mouseY));
     }
 
     protected void addSlots() {
@@ -331,15 +336,15 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
+    protected void func_230450_a_(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
-        if (width < 8 || height < 8) {
+        if (field_230708_k_ < 8 || field_230709_l_ < 8) {
             Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;
         }
-        GuiUtils.renderBackgroundTexture(BASE_BACKGROUND, 4, 4, getGuiLeft(), getGuiTop(), getXSize(), getYSize(), 256, 256);
+        GuiUtils.renderBackgroundTexture(matrix, BASE_BACKGROUND, 4, 4, getGuiLeft(), getGuiTop(), getXSize(), getYSize(), 256, 256);
     }
 
     @Override
@@ -348,33 +353,35 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void func_230430_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         // shift back a whole lot so we can stack more windows
-        RenderSystem.translated(0, 0, -500D);
-        renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
-        renderHoveredToolTip(mouseX, mouseY);
-        RenderSystem.translated(0, 0, 500D);
+        matrix.push();
+        matrix.translate(0, 0, -500D);
+        func_230446_a_(matrix);
+        super.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
+        func_230459_a_(matrix, mouseX, mouseY);
+        matrix.translate(0, 0, 500D);
+        matrix.pop();
     }
 
     @Override
-    public void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
-        renderItem(stack, xAxis, yAxis, scale, null, false);
+    public void renderItem(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
+        renderItem(matrix, stack, xAxis, yAxis, scale, null, false);
     }
 
     @Override
-    public void renderItemWithOverlay(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
-        renderItem(stack, xAxis, yAxis, scale, text, true);
+    public void renderItemWithOverlay(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
+        renderItem(matrix, stack, xAxis, yAxis, scale, text, true);
     }
 
-    private void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text, boolean overlay) {
+    private void renderItem(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text, boolean overlay) {
         if (!stack.isEmpty()) {
             try {
-                RenderSystem.pushMatrix();
+                matrix.push();
                 RenderSystem.enableDepthTest();
                 RenderHelper.enableStandardItemLighting();
                 if (scale != 1) {
-                    RenderSystem.scalef(scale, scale, scale);
+                    matrix.scale(scale, scale, scale);
                 }
                 field_230707_j_.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 if (overlay) {
@@ -382,7 +389,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 }
                 RenderHelper.disableStandardItemLighting();
                 RenderSystem.disableDepthTest();
-                RenderSystem.popMatrix();
+                matrix.pop();
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
             }
@@ -390,8 +397,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void renderItemTooltip(@Nonnull ItemStack stack, int xAxis, int yAxis) {
-        renderTooltip(stack, xAxis, yAxis);
+    public void renderItemTooltip(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
+        func_230457_a_(matrix, stack, xAxis, yAxis);
     }
 
     @Override
@@ -416,7 +423,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Nullable
     @Override
     public GuiWindow getWindowHovering(double mouseX, double mouseY) {
-        return windows.stream().filter(w -> w.isMouseOver(mouseX, mouseY)).findFirst().orElse(null);
+        return windows.stream().filter(w -> w.func_231047_b_(mouseX, mouseY)).findFirst().orElse(null);
     }
 
     public Collection<GuiWindow> getWindows() {
@@ -428,12 +435,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     //Some blit param namings
-    //blit(int x, int y, int textureX, int textureY, int width, int height);
-    //blit(int x, int y, TextureAtlasSprite icon, int width, int height);
-    //blit(int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
-    //blit(int x, int y, int zLevel, float textureX, float textureY, int width, int height, int textureWidth, int textureHeight);
-    //blit(int x, int y, int desiredWidth, int desiredHeight, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
-    //innerBlit(int x, int endX, int y, int endY, int zLevel, int width, int height, float textureX, float textureY, int textureWidth, int textureHeight);
-    //    * calls innerBlit(x, endX, y, endY, zLevel, (textureX + 0.0F) / textureWidth, (textureX + width) / textureWidth, (textureY + 0.0F) / textureHeight, (textureY + height) / textureHeight);
-    //innerBlit(int x, int endX, int y, int endY, int zLevel, float uMin, float uMax, float vMin, float vMax);
+    //blit(matrix, int x, int y, int textureX, int textureY, int width, int height);
+    //blit(matrix, int x, int y, TextureAtlasSprite icon, int width, int height);
+    //blit(matrix, int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
+    //blit(matrix, int x, int y, int zLevel, float textureX, float textureY, int width, int height, int textureWidth, int textureHeight);
+    //blit(matrix, int x, int y, int desiredWidth, int desiredHeight, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
+    //innerblit(matrix, int x, int endX, int y, int endY, int zLevel, int width, int height, float textureX, float textureY, int textureWidth, int textureHeight);
+    //    * calls innerblit(matrix, x, endX, y, endY, zLevel, (textureX + 0.0F) / textureWidth, (textureX + width) / textureWidth, (textureY + 0.0F) / textureHeight, (textureY + height) / textureHeight);
+    //innerblit(matrix, int x, int endX, int y, int endY, int zLevel, float uMin, float uMax, float vMin, float vMax);
 }

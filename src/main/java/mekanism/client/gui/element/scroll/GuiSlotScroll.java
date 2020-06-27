@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -39,47 +40,45 @@ public class GuiSlotScroll extends GuiRelativeElement {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getSlotList() == null ? SLOTS_DARK : SLOTS);
-        blit(field_230690_l_, field_230691_m_, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
+        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
 
         List<IScrollableSlot> list = getSlotList();
-        if (list == null) {
-            return;
-        }
-        int slotStart = scrollBar.getCurrentSelection() * xSlots, max = xSlots * ySlots;
-        for (int i = 0; i < max; i++) {
-            int slot = slotStart + i;
-            // terminate if we've exceeded max slot pos
-            if (slot >= list.size()) {
-                break;
+        if (list != null) {
+            int slotStart = scrollBar.getCurrentSelection() * xSlots, max = xSlots * ySlots;
+            for (int i = 0; i < max; i++) {
+                int slot = slotStart + i;
+                // terminate if we've exceeded max slot pos
+                if (slot >= list.size()) {
+                    break;
+                }
+                int slotX = field_230690_l_ + (i % xSlots) * 18, slotY = field_230691_m_ + (i / xSlots) * 18;
+                renderSlot(matrix, list.get(slot), slotX, slotY);
             }
-            int slotX = field_230690_l_ + (i % xSlots) * 18, slotY = field_230691_m_ + (i / xSlots) * 18;
-            renderSlot(list.get(slot), slotX, slotY);
         }
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
         int xAxis = mouseX - guiObj.getLeft(), yAxis = mouseY - guiObj.getTop();
         int slotX = (xAxis - relativeX) / 18, slotY = (yAxis - relativeY) / 18;
         if (slotX >= 0 && slotY >= 0 && slotX < xSlots && slotY < ySlots) {
             int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
             if (xAxis >= slotStartX && xAxis < slotStartX + 16 && yAxis >= slotStartY && yAxis < slotStartY + 16) {
-                fill(slotStartX, slotStartY, slotStartX + 16, slotStartY + 16, GuiSlot.DEFAULT_HOVER_COLOR);
+                func_238467_a_(matrix, slotStartX, slotStartY, slotStartX + 16, slotStartY + 16, GuiSlot.DEFAULT_HOVER_COLOR);
                 MekanismRenderer.resetColor();
             }
         }
     }
 
     @Override
-    public void renderToolTip(int xAxis, int yAxis) {
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int xAxis, int yAxis) {
         IScrollableSlot slot = getSlot(xAxis, yAxis, relativeX, relativeY);
-        if (slot == null) {
-            return;
+        if (slot != null) {
+            renderSlotTooltip(matrix, slot, xAxis, yAxis);
         }
-        renderSlotTooltip(slot, xAxis, yAxis);
     }
 
     @Override
@@ -118,23 +117,23 @@ public class GuiSlotScroll extends GuiRelativeElement {
         return list.get(slot);
     }
 
-    private void renderSlot(IScrollableSlot slot, int slotX, int slotY) {
+    private void renderSlot(MatrixStack matrix, IScrollableSlot slot, int slotX, int slotY) {
         // sanity checks
         if (slot.getItem() == null || slot.getItem().getStack() == null || slot.getItem().getStack().isEmpty()) {
             return;
         }
-        guiObj.renderItemWithOverlay(slot.getItem().getStack(), slotX + 1, slotY + 1, 1.0F, "");
+        guiObj.renderItemWithOverlay(matrix, slot.getItem().getStack(), slotX + 1, slotY + 1, 1.0F, "");
         if (slot.getCount() > 1) {
             renderSlotText(getCountText(slot.getCount()), slotX + 1, slotY + 1);
         }
     }
 
-    private void renderSlotTooltip(IScrollableSlot slot, int slotX, int slotY) {
+    private void renderSlotTooltip(MatrixStack matrix, IScrollableSlot slot, int slotX, int slotY) {
         // sanity checks
         if (slot.getItem() == null || slot.getItem().getStack() == null || slot.getItem().getStack().isEmpty()) {
             return;
         }
-        guiObj.renderItemTooltip(slot.getItem().getStack(), slotX, slotY);
+        guiObj.renderItemTooltip(matrix, slot.getItem().getStack(), slotX, slotY);
     }
 
     private void renderSlotText(String text, int x, int y) {

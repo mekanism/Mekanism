@@ -1,6 +1,8 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -69,19 +71,19 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         // Write to info display
-        renderTitleText();
-        drawTextWithScale(MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 0.8F);
-        drawTextWithScale(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 14, 31, screenTextColor(), 0.8F);
-        drawTextWithScale(MekanismLang.SORTER_SINGLE_ITEM.translate(), 14, 48, screenTextColor(), 0.8F);
-        drawTextWithScale(OnOff.of(tile.singleItem).getTextComponent(), 27, 60, screenTextColor(), 0.8F);
-        drawTextWithScale(MekanismLang.SORTER_ROUND_ROBIN.translate(), 14, 74, screenTextColor(), 0.8F);
-        drawTextWithScale(OnOff.of(tile.roundRobin).getTextComponent(), 27, 86, screenTextColor(), 0.8F);
-        drawTextWithScale(MekanismLang.SORTER_AUTO_EJECT.translate(), 14, 100, screenTextColor(), 0.8F);
-        drawTextWithScale(OnOff.of(tile.autoEject).getTextComponent(), 27, 112, screenTextColor(), 0.8F);
-        drawTextWithScale(MekanismLang.SORTER_DEFAULT.translate(), 14, 126, screenTextColor(), 0.8F);
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        renderTitleText(matrix);
+        drawTextWithScale(matrix, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, MekanismLang.FILTER_COUNT.translate(getFilters().size()), 14, 31, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, MekanismLang.SORTER_SINGLE_ITEM.translate(), 14, 48, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, OnOff.of(tile.singleItem).getTextComponent(), 27, 60, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, MekanismLang.SORTER_ROUND_ROBIN.translate(), 14, 74, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, OnOff.of(tile.roundRobin).getTextComponent(), 27, 86, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, MekanismLang.SORTER_AUTO_EJECT.translate(), 14, 100, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, OnOff.of(tile.autoEject).getTextComponent(), 27, 112, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, MekanismLang.SORTER_DEFAULT.translate(), 14, 126, screenTextColor(), 0.8F);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     @Override

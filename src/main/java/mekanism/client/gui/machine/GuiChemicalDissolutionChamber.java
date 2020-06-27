@@ -1,5 +1,7 @@
 package mekanism.client.gui.machine;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -38,8 +40,8 @@ public class GuiChemicalDissolutionChamber extends GuiConfigurableTile<TileEntit
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawTitleText(MekanismLang.CHEMICAL_DISSOLUTION_CHAMBER_SHORT.translate(), 4);
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawTitleText(matrix, MekanismLang.CHEMICAL_DISSOLUTION_CHAMBER_SHORT.translate(), 4);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 }

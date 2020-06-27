@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.common.Mekanism;
@@ -33,12 +35,12 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(MekanismLang.REDSTONE_OUTPUT.translate(tile.outputMode), mouseX, mouseY);
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        displayTooltip(matrix, MekanismLang.REDSTONE_OUTPUT.translate(tile.outputMode), mouseX, mouseY);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile));
     }
 }

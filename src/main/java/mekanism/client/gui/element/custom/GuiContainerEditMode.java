@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.custom;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
@@ -35,12 +37,12 @@ public class GuiContainerEditMode<TILE extends TileEntityMekanism & IFluidContai
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(tile.getContainerEditMode().getTextComponent(), mouseX, mouseY);
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        displayTooltip(matrix, tile.getContainerEditMode().getTextComponent(), mouseX, mouseY);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile));
     }
 

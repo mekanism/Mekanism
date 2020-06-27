@@ -1,6 +1,8 @@
 package mekanism.client.gui.machine;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -34,9 +36,9 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText();
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 }

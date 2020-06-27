@@ -1,6 +1,8 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.BooleanSupplier;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
@@ -33,30 +35,29 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(tooltip, mouseX, mouseY);
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        displayTooltip(matrix, tooltip, mouseX, mouseY);
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        blit(field_230690_l_ + type.switchX, field_230691_m_ + type.switchY, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-        blit(field_230690_l_ + type.switchX, field_230691_m_ + type.switchY + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        func_238463_a_(matrix, field_230690_l_ + type.switchX, field_230691_m_ + type.switchY, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        func_238463_a_(matrix, field_230690_l_ + type.switchX, field_230691_m_ + type.switchY + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
 
         minecraft.textureManager.bindTexture(icon);
-        blit(field_230690_l_ + 6, field_230691_m_ + 21, 0, 0, 5, 5, 5, 5);
+        func_238463_a_(matrix, field_230690_l_ + 6, field_230691_m_ + 21, 0, 0, 5, 5, 5, 5);
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
-
-        drawScaledCenteredText(MekanismLang.ON.translate(), relativeX + 8, relativeY + 1, 0x101010, 0.5F);
-        drawScaledCenteredText(MekanismLang.OFF.translate(), relativeX + 8, relativeY + 10, 0x101010, 0.5F);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
+        drawScaledCenteredText(matrix, MekanismLang.ON.translate(), relativeX + 8, relativeY + 1, 0x101010, 0.5F);
+        drawScaledCenteredText(matrix, MekanismLang.OFF.translate(), relativeX + 8, relativeY + 10, 0x101010, 0.5F);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
         onToggle.run();
     }

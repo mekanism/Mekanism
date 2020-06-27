@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import net.minecraft.tileentity.TileEntity;
@@ -14,12 +16,12 @@ public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enu
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         tabType.onClick(tile);
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(tabType.getDescription(), mouseX, mouseY);
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        displayTooltip(matrix, tabType.getDescription(), mouseX, mouseY);
     }
 }

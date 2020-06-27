@@ -1,7 +1,9 @@
 package mekanism.client.gui.machine;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import java.util.Collections;
+import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -54,14 +56,14 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setInputValidator(InputValidator.DIGIT);
         energyUsageField.configureDigitalInput(this::setEnergyUsage);
-        energyUsageField.setFocused(true);
+        energyUsageField.func_230996_d_(true);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText();
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     private void setEnergyUsage() {

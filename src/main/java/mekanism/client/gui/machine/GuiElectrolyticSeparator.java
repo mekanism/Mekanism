@@ -1,6 +1,8 @@
 package mekanism.client.gui.machine;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.GuiGasMode;
@@ -45,8 +47,8 @@ public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElec
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText();
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 }

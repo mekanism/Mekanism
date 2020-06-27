@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.scroll;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -91,8 +92,8 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
         ItemStack stack = itemSupplier.get();
         if (!ItemStack.areItemStacksEqual(currentItem, stack)) {
             updateList(stack, false);
@@ -108,8 +109,8 @@ public class GuiModuleScrollList extends GuiScrollList {
             //Always render the name and module
             Module instance = Modules.load(currentItem, module);
             int color = module.isExclusive() ? (instance.isEnabled() ? 0x635BD4 : 0x2E2A69) : (instance.isEnabled() ? titleTextColor() : 0x5E1D1D);
-            drawScaledTextScaledBound(TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
-            renderModule(module, relativeX + 3, relativeY + 3 + multipliedElement, 0.5F);
+            drawScaledTextScaledBound(matrix, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
+            renderModule(matrix, module, relativeX + 3, relativeY + 3 + multipliedElement, 0.5F);
         }
         // next render tooltips
         for (int i = 0; i < getFocusedElements(); i++) {
@@ -122,13 +123,13 @@ public class GuiModuleScrollList extends GuiScrollList {
             int multipliedElement = elementHeight * i;
             if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= field_230691_m_ + 1 + multipliedElement && mouseY < field_230691_m_ + 1 + multipliedElement + elementHeight) {
                 ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
-                guiObj.displayTooltip(MekanismLang.MODULE_INSTALLED.translate(t), mouseX - guiObj.getLeft(), mouseY - guiObj.getTop(), guiObj.getWidth());
+                guiObj.displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX - guiObj.getLeft(), mouseY - guiObj.getTop(), guiObj.getWidth());
             }
         }
     }
 
     @Override
-    public void renderElements(int mouseX, int mouseY, float partialTicks) {
+    public void renderElements(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Draw elements
         minecraft.textureManager.bindTexture(MODULE_SELECTION);
         for (int i = 0; i < getFocusedElements(); i++) {
@@ -144,12 +145,12 @@ public class GuiModuleScrollList extends GuiScrollList {
             } else if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
                 j = 0;
             }
-            blit(field_230690_l_ + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            func_238463_a_(matrix, field_230690_l_ + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             MekanismRenderer.resetColor();
         }
     }
 
-    private void renderModule(ModuleData<?> type, int x, int y, float size) {
-        guiObj.renderItem(type.getStack(), (int) (x / size), (int) (y / size), size);
+    private void renderModule(MatrixStack matrix, ModuleData<?> type, int x, int y, float size) {
+        guiObj.renderItem(matrix, type.getStack(), (int) (x / size), (int) (y / size), size);
     }
 }

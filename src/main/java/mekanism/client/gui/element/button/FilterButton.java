@@ -1,8 +1,10 @@
 package mekanism.client.gui.element.button;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.BiConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -12,6 +14,7 @@ import mekanism.common.lib.HashList;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 
 //TODO: This almost seems more like it should be a more generic GuiElement, than a MekanismButton
 public class FilterButton extends MekanismButton {
@@ -27,7 +30,8 @@ public class FilterButton extends MekanismButton {
 
     public FilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, Supplier<HashList<? extends IFilter<?>>> filters,
           BiConsumer<IFilter<?>, Integer> onPress) {
-        super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, "", () -> onPress.accept(filters.get().getOrNull(filterIndex.getAsInt() + index), filterIndex.getAsInt() + index), null);
+        super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, StringTextComponent.field_240750_d_,
+              () -> onPress.accept(filters.get().getOrNull(filterIndex.getAsInt() + index), filterIndex.getAsInt() + index), null);
         this.index = index;
         this.filterIndex = filterIndex;
         this.filters = filters;
@@ -39,20 +43,20 @@ public class FilterButton extends MekanismButton {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void func_230430_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         setVisibility(filters.get().getOrNull(filterIndex.getAsInt() + index) != null);
-        super.render(mouseX, mouseY, partialTicks);
+        super.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
     }
 
     protected void colorButton() {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         colorButton();
         minecraft.textureManager.bindTexture(TEXTURE);
-        blit(field_230690_l_, field_230691_m_, field_230688_j_, field_230689_k_, 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        func_238466_a_(matrix, field_230690_l_, field_230691_m_, field_230688_j_, field_230689_k_, 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         MekanismRenderer.resetColor();
-        slot.renderButton(mouseX, mouseY, partialTicks);
+        slot.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
     }
 }

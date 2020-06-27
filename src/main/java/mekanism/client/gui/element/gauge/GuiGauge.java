@@ -1,8 +1,10 @@
 package mekanism.client.gui.element.gauge;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
@@ -51,15 +53,15 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         GaugeInfo color = getGaugeColor();
-        renderExtendedTexture(color.getResourceLocation(), color.getSideWidth(), color.getSideHeight());
+        renderExtendedTexture(matrix, color.getResourceLocation(), color.getSideWidth(), color.getSideHeight());
         if (!dummy) {
-            renderContents();
+            renderContents(matrix);
         }
     }
 
-    public void renderContents() {
+    public void renderContents(MatrixStack matrix) {
         int scale = getScaledLevel();
         TextureAtlasSprite icon = getIcon();
         if (scale > 0 && icon != null) {
@@ -70,11 +72,11 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         //Draw the bar overlay
         minecraft.textureManager.bindTexture(getResource());
         GaugeOverlay gaugeOverlay = gaugeType.getGaugeOverlay();
-        blit(field_230690_l_ + 1, field_230691_m_ + 1, func_230998_h_() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
+        func_238466_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1, func_230998_h_() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         ItemStack stack = minecraft.player.inventory.getItemStack();
         EnumColor color = gaugeType.getGaugeInfo().getColor();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
@@ -93,9 +95,9 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                         }
                     }
                     if (dataType == null) {
-                        guiObj.displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()), mouseX, mouseY);
+                        guiObj.displayTooltip(matrix, MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()), mouseX, mouseY);
                     } else {
-                        guiObj.displayTooltip(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, dataType, color.getName()), mouseX, mouseY);
+                        guiObj.displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, dataType, color.getName()), mouseX, mouseY);
                     }
                 }
             }
@@ -105,7 +107,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                 list.add(getLabel());
             }
             list.addAll(getTooltipText());
-            guiObj.displayTooltips(list, mouseX, mouseY);
+            guiObj.displayTooltips(matrix, list, mouseX, mouseY);
         }
     }
 

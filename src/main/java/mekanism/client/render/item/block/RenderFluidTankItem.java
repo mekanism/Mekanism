@@ -14,6 +14,7 @@ import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -29,7 +30,7 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
     }
 
     @Override
-    public void render(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    public void func_239207_a_(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         FluidTankTier tier = ((ItemBlockFluidTank) stack.getItem()).getTier();
         FluidStack fluid = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluid.isEmpty()) {

@@ -2,6 +2,7 @@ package mekanism.common.item.block;
 
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.ITier;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.block.Block;
@@ -45,6 +46,6 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
         if (color == null) {
             return super.getDisplayName(stack);
         }
-        return super.getDisplayName(stack).applyTextStyle(color.textFormatting);
+        return TextComponentUtil.build(color, super.getDisplayName(stack));
     }
 }

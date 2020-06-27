@@ -1,8 +1,11 @@
 package mekanism.client.gui.element.button;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 
 public class MekanismImageButton extends MekanismButton {
 
@@ -31,17 +34,17 @@ public class MekanismImageButton extends MekanismButton {
     }
 
     public MekanismImageButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, ResourceLocation resource, Runnable onPress, IHoverable onHover) {
-        super(gui, x, y, width, height, "", onPress, onHover);
+        super(gui, x, y, width, height, StringTextComponent.field_240750_d_, onPress, onHover);
         this.resourceLocation = resource;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        super.renderButton(mouseX, mouseY, partialTicks);
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         MekanismRenderer.bindTexture(getResource());
-        blit(field_230690_l_, field_230691_m_, field_230688_j_, field_230689_k_, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+        func_238466_a_(matrix, field_230690_l_, field_230691_m_, field_230688_j_, field_230689_k_, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
     }
 
     protected ResourceLocation getResource() {

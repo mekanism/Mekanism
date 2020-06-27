@@ -1,9 +1,10 @@
 package mekanism.client.gui.element.slot;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -76,17 +77,17 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
+        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
         if (hasValidityCheck) {
             ItemStack invalid = validityCheck.get();
             if (!invalid.isEmpty()) {
                 int xPos = field_230690_l_ + 1;
                 int yPos = field_230691_m_ + 1;
-                fill(xPos, yPos, xPos + 16, yPos + 16, INVALID_SLOT_COLOR);
+                func_238467_a_(matrix, xPos, yPos, xPos + 16, yPos + 16, INVALID_SLOT_COLOR);
                 MekanismRenderer.resetColor();
-                guiObj.renderItem(invalid, xPos, yPos);
+                guiObj.renderItem(matrix, invalid, xPos, yPos);
             }
         }
         if (overlaySupplier != null) {
@@ -94,42 +95,44 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
         }
         if (overlay != null) {
             minecraft.textureManager.bindTexture(overlay.getTexture());
-            blit(field_230690_l_, field_230691_m_, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
+            func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
         }
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        if (renderHover && isHovered()) {
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        if (renderHover && func_230449_g_()) {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
-            fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
+            func_238467_a_(matrix, xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
             MekanismRenderer.resetColor();
         }
         if (overlayColorSupplier != null) {
-            RenderSystem.translated(0, 0, 10);
+            matrix.push();
+            matrix.translate(0, 0, 10);
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
-            fill(xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
-            RenderSystem.translated(0, 0, -10);
+            func_238467_a_(matrix, xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
+            matrix.translate(0, 0, -10);
+            matrix.pop();
             MekanismRenderer.resetColor();
         }
-        if (isHovered()) {
+        if (func_230449_g_()) {
             //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
-            renderToolTip(mouseX - guiObj.getLeft(), mouseY - guiObj.getTop());
+            func_230443_a_(matrix, mouseX - guiObj.getLeft(), mouseY - guiObj.getTop());
         }
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         if (onHover != null) {
-            onHover.onHover(this, mouseX, mouseY);
+            onHover.onHover(this, matrix, mouseX, mouseY);
         }
     }
 
     @Override
     public boolean func_231044_a_(double mouseX, double mouseY, int button) {
-        if (onClick != null && isValidClickButton(button)) {
+        if (onClick != null && func_230987_a_(button)) {
             if (mouseX >= field_230690_l_ && mouseY >= field_230691_m_ && mouseX < field_230690_l_ + field_230688_j_ && mouseY < field_230691_m_ + field_230689_k_) {
                 onClick.onClick(this, (int) mouseX, (int) mouseY);
                 func_230988_a_(Minecraft.getInstance().getSoundHandler());

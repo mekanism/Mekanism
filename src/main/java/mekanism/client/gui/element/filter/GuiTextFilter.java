@@ -26,7 +26,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         text.setMaxStringLength(SorterFilter.MAX_LENGTH);
         text.setInputValidator(getInputValidator());
         text.setEnabled(true);
-        text.setFocused(true);
+        text.func_230996_d_(true);
         text.configureDigitalInput(this::setText);
     }
 

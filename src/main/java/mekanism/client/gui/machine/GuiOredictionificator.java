@@ -1,7 +1,9 @@
 package mekanism.client.gui.machine;
 
-import java.util.Map;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.FilterButton;
@@ -68,9 +70,9 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText();
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         HashList<OredictionificatorFilter> filters = getFilters();
         for (int i = 0; i < FILTER_COUNT; i++) {
             OredictionificatorFilter filter = filters.getOrNull(scrollBar.getCurrentSelection() + i);
@@ -79,12 +81,12 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
                     updateRenderStacks();
                 }
                 int yStart = i * 22 + 18;
-                renderItem(renderStacks.get(filter), 13, yStart + 3);
-                drawString(MekanismLang.FILTER.translate(), 32, yStart + 2, titleTextColor());
-                drawTextScaledBound(filter.getFilterText(), 32, yStart + 2 + 9, titleTextColor(), 117);
+                renderItem(matrix, renderStacks.get(filter), 13, yStart + 3);
+                drawString(matrix, MekanismLang.FILTER.translate(), 32, yStart + 2, titleTextColor());
+                drawTextScaledBound(matrix, filter.getFilterText(), 32, yStart + 2 + 9, titleTextColor(), 117);
             }
         }
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     @Override

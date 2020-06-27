@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.filter.transporter;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Consumer;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -29,7 +30,7 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
               () -> filter.color = Screen.func_231173_s_() ? null : TransporterUtils.increment(filter.color), () -> filter.color = TransporterUtils.decrement(filter.color)));
         childAdder.accept(new MekanismImageButton(gui, gui.getLeft() + getRelativeX() + 148, gui.getTop() + getRelativeY() + 19, 11,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "default.png"), () -> filter.allowDefault = !filter.allowDefault,
-              (onHover, xAxis, yAxis) -> gui.displayTooltip(MekanismLang.FILTER_ALLOW_DEFAULT.translate(), xAxis, yAxis)));
+              (onHover, matrix, xAxis, yAxis) -> gui.displayTooltip(matrix, MekanismLang.FILTER_ALLOW_DEFAULT.translate(), xAxis, yAxis)));
     }
 
     @Override
@@ -37,7 +38,7 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         return new GuiSorterFilerSelect(gui, tile);
     }
 
-    default void renderSorterForeground(SorterFilter<?> filter) {
-        drawString(OnOff.of(filter.allowDefault).getTextComponent(), getRelativeX() + 161, getRelativeY() + 21, titleTextColor());
+    default void renderSorterForeground(MatrixStack matrix, SorterFilter<?> filter) {
+        drawString(matrix, OnOff.of(filter.allowDefault).getTextComponent(), getRelativeX() + 161, getRelativeY() + 21, titleTextColor());
     }
 }

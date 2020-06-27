@@ -1,7 +1,9 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
@@ -70,14 +72,14 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         ITextComponent securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, isItem ? SecurityUtils.getSecurity(getItem(), Dist.CLIENT)
                                                                                                          : SecurityUtils.getSecurity(tile, Dist.CLIENT));
         ITextComponent ownerComponent = OwnerDisplay.of(minecraft.player, getOwner(), getOwnerUsername()).getTextComponent();
         if (isItem ? SecurityUtils.isOverridden(getItem(), Dist.CLIENT) : SecurityUtils.isOverridden(tile, Dist.CLIENT)) {
-            displayTooltips(Arrays.asList(securityComponent, ownerComponent, MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED)), mouseX, mouseY);
+            displayTooltips(matrix, Arrays.asList(securityComponent, ownerComponent, MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED)), mouseX, mouseY);
         } else {
-            displayTooltips(Arrays.asList(securityComponent, ownerComponent), mouseX, mouseY);
+            displayTooltips(matrix, Arrays.asList(securityComponent, ownerComponent), mouseX, mouseY);
         }
     }
 
@@ -126,7 +128,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         if (MekanismConfig.general.allowProtection.get()) {
             UUID owner = getOwner();
             if (owner != null && minecraft.player.getUniqueID().equals(owner)) {

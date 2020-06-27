@@ -1,13 +1,16 @@
 package mekanism.client.gui.element.button;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 
 public class FilterSelectButton extends MekanismButton {
 
@@ -18,12 +21,12 @@ public class FilterSelectButton extends MekanismButton {
     private final boolean down;
 
     public FilterSelectButton(IGuiWrapper gui, int x, int y, boolean down, Runnable onPress, IHoverable onHover) {
-        super(gui, x, y, 11, 7, "", onPress, onHover);
+        super(gui, x, y, 11, 7, StringTextComponent.field_240750_d_, onPress, onHover);
         this.down = down;
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (resetColorBeforeRender()) {
             MekanismRenderer.resetColor();
         }
@@ -35,13 +38,13 @@ public class FilterSelectButton extends MekanismButton {
         int x = getButtonX();
         int y = getButtonY();
         MekanismRenderer.bindTexture(ARROWS);
-        blit(x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        func_238463_a_(matrix, x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         RenderSystem.disableBlend();
     }
 
     @Override
-    public boolean isMouseOver(double xAxis, double yAxis) {
-        if (super.isMouseOver(xAxis, yAxis)) {
+    public boolean func_231047_b_(double xAxis, double yAxis) {
+        if (super.func_231047_b_(xAxis, yAxis)) {
             //First we do a basic check to see if we are over the button if it was a rectangle rather than a triangle.
             double xShifted = xAxis - field_230690_l_;
             double yShifted = yAxis - field_230691_m_;

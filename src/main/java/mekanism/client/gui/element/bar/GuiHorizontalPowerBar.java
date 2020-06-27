@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.bar;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -41,8 +42,8 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
+    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         int displayInt = (int) (getHandler().getLevel() * texWidth);
-        blit(field_230690_l_ + 1, field_230691_m_ + 1, calculateScaled(widthScale, displayInt), texHeight, 0, 0, displayInt, texHeight, texWidth, texHeight);
+        func_238466_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1, calculateScaled(widthScale, displayInt), texHeight, 0, 0, displayInt, texHeight, texWidth, texHeight);
     }
 }

@@ -249,7 +249,7 @@ public class StorageUtils {
         } else {
             color = EnumColor.BRIGHT_GREEN;
         }
-        return new StringTextComponent(TextUtils.getPercent(ratio)).applyTextStyle(color.textFormatting);
+        return new StringTextComponent(TextUtils.getPercent(ratio)).func_240699_a_(color.textFormatting);
     }
 
     public static double getDurabilityForDisplay(ItemStack stack) {

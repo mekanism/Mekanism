@@ -1,8 +1,10 @@
 package mekanism.client.gui.qio;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiConfirmationDialog;
@@ -158,24 +160,24 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawTitleText(MekanismLang.QIO_FREQUENCY_SELECT.translate(), 5);
-        drawString(OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, 143, titleTextColor());
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawTitleText(matrix, MekanismLang.QIO_FREQUENCY_SELECT.translate(), 5);
+        drawString(matrix, OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, 143, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
-        drawString(frequencyComponent, 32, 84, titleTextColor());
+        drawString(matrix, frequencyComponent, 32, 84, titleTextColor());
         ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
-        drawString(securityComponent, 32, 94, titleTextColor());
+        drawString(matrix, securityComponent, 32, 94, titleTextColor());
         Frequency frequency = getFrequency();
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (frequency == null) {
-            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 84, 0x797979);
-            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 94, 0x797979);
+            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 84, 0x797979);
+            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 94, 0x797979);
         } else {
-            drawTextScaledBound(frequency.getName(), 32 + frequencyOffset, 84, 0x797979, xSize - 32 - frequencyOffset - 4);
-            drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 94, 0x797979);
+            drawTextScaledBound(matrix, frequency.getName(), 32 + frequencyOffset, 84, 0x797979, xSize - 32 - frequencyOffset - 4);
+            drawString(matrix, getSecurity(frequency), 32 + getStringWidth(securityComponent), 94, 0x797979);
         }
-        drawTextScaledBound(MekanismLang.SET.translate(), 27, 107, titleTextColor(), 20);
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 107, titleTextColor(), 20);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     public abstract void sendSetFrequency(FrequencyIdentity identity);

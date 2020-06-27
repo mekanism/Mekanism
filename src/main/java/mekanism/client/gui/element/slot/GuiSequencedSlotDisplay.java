@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.slot;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -54,10 +55,10 @@ public class GuiSequencedSlotDisplay extends GuiRelativeElement {
     }
 
     @Override
-    public void drawButton(int mouseX, int mouseY) {
+    public void drawButton(MatrixStack matrix, int mouseX, int mouseY) {
         if (!renderStack.isEmpty()) {
             guiObj.getItemRenderer().zLevel += zOffset;
-            guiObj.renderItem(renderStack, field_230690_l_, field_230691_m_);
+            guiObj.renderItem(matrix, renderStack, field_230690_l_, field_230691_m_);
             guiObj.getItemRenderer().zLevel -= zOffset;
         }
     }

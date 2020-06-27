@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.bar;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.common.util.MekanismUtils;
@@ -16,15 +18,15 @@ public class GuiDigitalBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
+    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
         minecraft.textureManager.bindTexture(DIGITAL_BAR);
-        blit(field_230690_l_, field_230691_m_, field_230688_j_, field_230689_k_, 1, 0, 1, 1, texWidth, texHeight);
-        blit(field_230690_l_ + 1, field_230691_m_ + 1, field_230688_j_ - 2, 6, 1, 1, 1, 1, texWidth, texHeight);
-        blit(field_230690_l_ + 1, field_230691_m_ + 1, calculateScaled(getHandler().getLevel(), field_230688_j_ - 2), 6, 0, 0, 1, 1, texWidth, texHeight);
+        func_238466_a_(matrix, field_230690_l_, field_230691_m_, field_230688_j_, field_230689_k_, 1, 0, 1, 1, texWidth, texHeight);
+        func_238466_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1, field_230688_j_ - 2, 6, 1, 1, 1, 1, texWidth, texHeight);
+        func_238466_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1, calculateScaled(getHandler().getLevel(), field_230688_j_ - 2), 6, 0, 0, 1, 1, texWidth, texHeight);
     }
 }

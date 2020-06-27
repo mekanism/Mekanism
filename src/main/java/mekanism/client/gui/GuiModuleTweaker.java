@@ -1,8 +1,9 @@
 package mekanism.client.gui;
 
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.element.custom.GuiModuleScreen;
 import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -18,6 +19,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
@@ -94,14 +96,14 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     @Override
     public boolean func_231048_c_(double mouseX, double mouseY, int button) {
         // make sure we get the release event
-        moduleScreen.onRelease(mouseX, mouseY);
+        moduleScreen.func_231000_a__(mouseX, mouseY);
         return super.func_231048_c_(mouseX, mouseY, button);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawTitleText(MekanismLang.MODULE_TWEAKER.translate(), 6);
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawTitleText(matrix, MekanismLang.MODULE_TWEAKER.translate(), 6);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     private void select(int index) {

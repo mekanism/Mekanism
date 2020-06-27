@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIOFrequency;
@@ -37,7 +38,7 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
     @Nonnull
     @Override
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(tier.getBaseTier().getTextColor().textFormatting);
+        return TextComponentUtil.build(tier.getBaseTier().getTextColor(), super.getDisplayName(stack));
     }
 
     @Override

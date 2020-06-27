@@ -1,5 +1,6 @@
 package mekanism.generators.client.gui.element.button;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -36,7 +37,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         TYPE mode = getMode();
         if (mode != null) {
             onPress.accept(mode);
@@ -44,23 +45,22 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         TYPE mode = getMode();
-        if (mode == null) {
-            return;
+        if (mode != null) {
+            guiObj.displayTooltip(matrix, mode.getDescription(), mouseX, mouseY);
         }
-        guiObj.displayTooltip(mode.getDescription(), mouseX, mouseY);
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         TYPE mode = getMode();
         if (mode == null) {
             return;
         }
         MekanismRenderer.bindTexture(TEXTURE);
         MekanismRenderer.color(mode.getColor());
-        blit(field_230690_l_, field_230691_m_, 0, mode == tile.getMode() ? 22 : 0, field_230688_j_, field_230689_k_, 128, 44);
+        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, mode == tile.getMode() ? 22 : 0, field_230688_j_, field_230689_k_, 128, 44);
         MekanismRenderer.resetColor();
     }
 
@@ -70,14 +70,13 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         TYPE mode = getMode();
-        if (mode == null) {
-            return;
+        if (mode != null) {
+            int typeOffset = 22 * index;
+            guiObj.renderItem(matrix, mode.getRenderStack(), 20, 35 + typeOffset);
+            drawString(matrix, TextComponentUtil.build(EnumColor.WHITE, mode), 39, 34 + typeOffset, titleTextColor());
+            super.renderForeground(matrix, mouseX, mouseY);
         }
-        int typeOffset = 22 * index;
-        guiObj.renderItem(mode.getRenderStack(), 20, 35 + typeOffset);
-        drawString(TextComponentUtil.build(EnumColor.WHITE, mode), 39, 34 + typeOffset, titleTextColor());
-        super.renderForeground(mouseX, mouseY);
     }
 }

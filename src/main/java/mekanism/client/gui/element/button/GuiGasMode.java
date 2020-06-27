@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.button;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;
@@ -40,16 +41,16 @@ public class GuiGasMode extends MekanismImageButton {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         //Draw the text next to the button
         ITextComponent component = gasModeSupplier.get().getTextComponent();
         int xPos = field_230690_l_ - guiObj.getLeft();
         int yPos = field_230691_m_ - guiObj.getTop();
         if (left) {
-            drawTextScaledBound(component, xPos - 3 - (int) (getStringWidth(component) * getNeededScale(component, 66)), yPos + 1, titleTextColor(), 66);
+            drawTextScaledBound(matrix, component, xPos - 3 - (int) (getStringWidth(component) * getNeededScale(component, 66)), yPos + 1, titleTextColor(), 66);
         } else {
-            drawTextScaledBound(component, xPos + field_230688_j_ + 5, yPos + 1, titleTextColor(), 66);
+            drawTextScaledBound(matrix, component, xPos + field_230688_j_ + 5, yPos + 1, titleTextColor(), 66);
         }
-        super.renderForeground(mouseX, mouseY);
+        super.renderForeground(matrix, mouseX, mouseY);
     }
 }

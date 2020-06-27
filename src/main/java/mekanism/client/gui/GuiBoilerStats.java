@@ -1,6 +1,8 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collections;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.element.GuiGraph;
 import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
@@ -38,16 +40,16 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(MekanismLang.BOILER_STATS.translate(), 0, getXSize(), 6, titleTextColor());
-        drawString(MekanismLang.BOILER_MAX_WATER.translate(formatInt(tile.getMultiblock().waterTank.getCapacity())), 8, 26, titleTextColor());
-        drawString(MekanismLang.BOILER_MAX_STEAM.translate(formatInt(tile.getMultiblock().steamTank.getCapacity())), 8, 35, titleTextColor());
-        drawString(MekanismLang.BOILER_HEAT_TRANSFER.translate(), 8, 49, 0x797979);
-        drawString(MekanismLang.BOILER_HEATERS.translate(tile.getMultiblock().superheatingElements), 14, 58, titleTextColor());
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawCenteredText(matrix, MekanismLang.BOILER_STATS.translate(), 0, getXSize(), 6, titleTextColor());
+        drawString(matrix, MekanismLang.BOILER_MAX_WATER.translate(formatInt(tile.getMultiblock().waterTank.getCapacity())), 8, 26, titleTextColor());
+        drawString(matrix, MekanismLang.BOILER_MAX_STEAM.translate(formatInt(tile.getMultiblock().steamTank.getCapacity())), 8, 35, titleTextColor());
+        drawString(matrix, MekanismLang.BOILER_HEAT_TRANSFER.translate(), 8, 49, 0x797979);
+        drawString(matrix, MekanismLang.BOILER_HEATERS.translate(tile.getMultiblock().superheatingElements), 14, 58, titleTextColor());
         long boilCapacity = (long) ((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getMultiblock().superheatingElements / HeatUtils.getWaterThermalEnthalpy()));
         boilCapacity *= HeatUtils.getSteamEnergyEfficiency();
-        drawString(MekanismLang.BOILER_CAPACITY.translate(formatInt(boilCapacity)), 8, 72, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawString(matrix, MekanismLang.BOILER_CAPACITY.translate(formatInt(boilCapacity)), 8, 72, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     @Override

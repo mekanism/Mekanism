@@ -1,5 +1,7 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketGuiInteract;
@@ -21,13 +23,13 @@ public class GuiDumpButton<TILE extends TileEntity & IHasDumpButton> extends Gui
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
+        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.DUMP_BUTTON, tile));
     }
 }

@@ -1,11 +1,12 @@
 package mekanism.client.gui.element.scroll;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiScalableElement;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class GuiScrollList extends GuiScrollableElement {
@@ -34,28 +35,28 @@ public abstract class GuiScrollList extends GuiScrollableElement {
 
     public abstract void clearSelection();
 
-    protected abstract void renderElements(int mouseX, int mouseY, float partialTicks);
+    protected abstract void renderElements(MatrixStack matrix, int mouseX, int mouseY, float partialTicks);
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Draw the background
-        background.renderButton(mouseX, mouseY, partialTicks);
+        background.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         GuiElement.minecraft.textureManager.bindTexture(getResource());
         //Draw Scroll
         //Top border
-        AbstractGui.blit(barX - 1, barY - 1, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        func_238463_a_(matrix, barX - 1, barY - 1, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Middle border
-        AbstractGui.blit(barX - 1, barY, 6, maxBarHeight, 0, 1, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        func_238466_a_(matrix, barX - 1, barY, 6, maxBarHeight, 0, 1, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Bottom border
-        AbstractGui.blit(barX - 1, field_230691_m_ + maxBarHeight + 2, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        func_238463_a_(matrix, barX - 1, field_230691_m_ + maxBarHeight + 2, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Scroll bar
-        AbstractGui.blit(barX, barY + getScroll(), 0, 2, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        func_238463_a_(matrix, barX, barY + getScroll(), 0, 2, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Draw the elements
-        renderElements(mouseX, mouseY, partialTicks);
+        renderElements(matrix, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= field_230691_m_ + 1 && mouseY < field_230691_m_ + field_230689_k_ - 1) {
             int index = getCurrentSelection();
             clearSelection();
@@ -69,12 +70,12 @@ public abstract class GuiScrollList extends GuiScrollableElement {
                 }
             }
         } else {
-            super.onClick(mouseX, mouseY);
+            super.func_230982_a_(mouseX, mouseY);
         }
     }
 
     @Override
     public boolean func_231043_a_(double mouseX, double mouseY, double delta) {
-        return isMouseOver(mouseX, mouseY) && adjustScroll(delta);
+        return func_231047_b_(mouseX, mouseY) && adjustScroll(delta);
     }
 }

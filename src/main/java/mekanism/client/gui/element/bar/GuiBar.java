@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.bar;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -24,24 +26,24 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         return handler;
     }
 
-    protected abstract void renderBarOverlay(int mouseX, int mouseY, float partialTicks);
+    protected abstract void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks);
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
-        renderExtendedTexture(BAR, 2, 2);
+        renderExtendedTexture(matrix, BAR, 2, 2);
         //If there are any contents render them
         if (handler.getLevel() > 0) {
             minecraft.textureManager.bindTexture(getResource());
-            renderBarOverlay(mouseX, mouseY, partialTicks);
+            renderBarOverlay(matrix, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         ITextComponent tooltip = handler.getTooltip();
         if (tooltip != null) {
-            displayTooltip(tooltip, mouseX, mouseY);
+            displayTooltip(matrix, tooltip, mouseX, mouseY);
         }
     }
 

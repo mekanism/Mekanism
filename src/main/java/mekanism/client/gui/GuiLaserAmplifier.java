@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
@@ -52,17 +54,17 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText();
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         if (tile.time > 0) {
-            drawString(MekanismLang.DELAY.translate(tile.time), 26, 30, titleTextColor());
+            drawString(matrix, MekanismLang.DELAY.translate(tile.time), 26, 30, titleTextColor());
         } else {
-            drawString(MekanismLang.NO_DELAY.translate(), 26, 30, titleTextColor());
+            drawString(matrix, MekanismLang.NO_DELAY.translate(), 26, 30, titleTextColor());
         }
-        drawString(MekanismLang.MIN.translate(EnergyDisplay.of(tile.minThreshold)), 26, 45, titleTextColor());
-        drawString(MekanismLang.MAX.translate(EnergyDisplay.of(tile.maxThreshold)), 26, 60, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawString(matrix, MekanismLang.MIN.translate(EnergyDisplay.of(tile.minThreshold)), 26, 45, titleTextColor());
+        drawString(matrix, MekanismLang.MAX.translate(EnergyDisplay.of(tile.maxThreshold)), 26, 60, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     private void setMinThreshold() {

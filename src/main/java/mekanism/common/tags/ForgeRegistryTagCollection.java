@@ -1,14 +1,15 @@
 package mekanism.common.tags;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSet.Builder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITag.Builder;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -20,7 +21,7 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
     private final Consumer<TagCollection<T>> collectionSetter;
 
     public ForgeRegistryTagCollection(IForgeRegistry<T> registry, String location, String type, Consumer<TagCollection<T>> collectionSetter) {
-        super(key -> Optional.ofNullable(registry.getValue(key)), location, false, type);
+        super(key -> Optional.ofNullable(registry.getValue(key)), location, type);
         this.registry = registry;
         this.collectionSetter = collectionSetter;
     }
@@ -48,7 +49,7 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
         for (int i = 0; i < tagCount; ++i) {
             ResourceLocation resourceLocation = buffer.readResourceLocation();
             int elementCount = buffer.readVarInt();
-            Builder builder = Builder.create();
+            Builder<T> builder = ImmutableSet.builder();
             for (int j = 0; j < elementCount; ++j) {
                 T value = registry.getValue(buffer.readResourceLocation());
                 if (value != null) {
@@ -56,7 +57,7 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
                     builder.add(value);
                 }
             }
-            tagMap.put(resourceLocation, builder.build(resourceLocation));
+            tagMap.put(resourceLocation, ITag.func_232946_a_(builder.build()));
         }
         this.toImmutable(tagMap);
     }

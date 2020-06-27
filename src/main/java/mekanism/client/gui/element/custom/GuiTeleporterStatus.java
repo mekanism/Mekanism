@@ -1,6 +1,8 @@
 package mekanism.client.gui.element.custom;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.BooleanSupplier;
+import javax.annotation.Nonnull;
 import mekanism.api.functions.ByteSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
@@ -29,7 +31,7 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     }
 
     @Override
-    protected int getYImage(boolean hovering) {
+    protected int func_230989_a_(boolean hovering) {
         return 1;
     }
 
@@ -52,15 +54,15 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        super.renderButton(mouseX, mouseY, partialTicks);
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
+        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(getStatusDisplay(), mouseX, mouseY);
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        displayTooltip(matrix, getStatusDisplay(), mouseX, mouseY);
     }
 
     private ITextComponent getStatusDisplay() {

@@ -1,7 +1,9 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.MekanismLang;
@@ -20,20 +22,20 @@ public class GuiHeatTab extends GuiTexturedElement {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
+        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         List<ITextComponent> info = new ArrayList<>(infoHandler.getInfo());
         info.add(MekanismLang.UNIT.translate(MekanismConfig.general.tempUnit.get()));
-        displayTooltips(info, mouseX, mouseY);
+        displayTooltips(matrix, info, mouseX, mouseY);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         MekanismConfig.general.tempUnit.set(MekanismConfig.general.tempUnit.get().getNext());
     }
 }

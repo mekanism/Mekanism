@@ -1,11 +1,11 @@
 package mekanism.client.gui.element.scroll;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
-import net.minecraft.client.gui.AbstractGui;
 
 public class GuiTextScrollList extends GuiScrollList {
 
@@ -55,8 +55,8 @@ public class GuiTextScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
         if (!textEntries.isEmpty()) {
             //Render the text into the entries
             int scrollIndex = getCurrentSelection();
@@ -65,18 +65,18 @@ public class GuiTextScrollList extends GuiScrollList {
             for (int i = 0; i < focusedElements; i++) {
                 int index = scrollIndex + i;
                 if (index < maxElements) {
-                    drawScaledTextScaledBound(textEntries.get(index), relativeX + 2, relativeY + 2 + elementHeight * i, screenTextColor(), barX - field_230690_l_ - 2, 0.8F);
+                    drawScaledTextScaledBound(matrix, textEntries.get(index), relativeX + 2, relativeY + 2 + elementHeight * i, screenTextColor(), barX - field_230690_l_ - 2, 0.8F);
                 }
             }
         }
     }
 
     @Override
-    public void renderElements(int mouseX, int mouseY, float partialTicks) {
+    public void renderElements(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Draw Selected
         int scrollIndex = getCurrentSelection();
         if (selected != -1 && selected >= scrollIndex && selected <= scrollIndex + getFocusedElements() - 1) {
-            AbstractGui.blit(field_230690_l_ + 1, field_230691_m_ + 1 + (selected - scrollIndex) * elementHeight, barX - field_230690_l_ - 2, elementHeight,
+            func_238466_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1 + (selected - scrollIndex) * elementHeight, barX - field_230690_l_ - 2, elementHeight,
                   4, 2, 2, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
     }

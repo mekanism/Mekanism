@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.bar;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,7 +40,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     }
 
     @Override
-    protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
+    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         STACK stored = getHandler().getStack();
         if (!stored.isEmpty()) {
             double level = getHandler().getLevel();
@@ -59,7 +60,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
 
     @Override
     public boolean func_231044_a_(double mouseX, double mouseY, int button) {
-        if (isMouseOver(mouseX, mouseY)) {
+        if (func_231047_b_(mouseX, mouseY)) {
             ItemStack stack = Minecraft.getInstance().player.inventory.getItemStack();
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TankType tankType = null;

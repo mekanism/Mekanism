@@ -1,6 +1,8 @@
 package mekanism.client.gui.element.button;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
@@ -12,6 +14,7 @@ import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.StringTextComponent;
 
 public class SideDataButton extends MekanismButton {
 
@@ -20,7 +23,7 @@ public class SideDataButton extends MekanismButton {
 
     public SideDataButton(IGuiWrapper gui, int x, int y, RelativeSide slotPos, Supplier<DataType> dataTypeSupplier, Supplier<EnumColor> colorSupplier,
           TileEntity tile, Supplier<TransmissionType> transmissionType, ConfigurationPacket packetType, IHoverable onHover) {
-        super(gui, x, y, 14, 14, "",
+        super(gui, x, y, 14, 14, StringTextComponent.field_240750_d_,
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, tile.getPos(), Screen.func_231173_s_() ? 2 : 0, slotPos, transmissionType.get())),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, tile.getPos(), 1, slotPos, transmissionType.get())), onHover);
         this.dataTypeSupplier = dataTypeSupplier;
@@ -28,7 +31,7 @@ public class SideDataButton extends MekanismButton {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         DataType dataType = getDataType();
         EnumColor color = dataType == null ? null : getColor();
         boolean doColor = color != null && color != EnumColor.GRAY;
@@ -37,7 +40,7 @@ public class SideDataButton extends MekanismButton {
         } else {
             MekanismRenderer.resetColor();
         }
-        super.renderButton(mouseX, mouseY, partialTicks);
+        super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         if (doColor) {
             MekanismRenderer.resetColor();
         }

@@ -1,10 +1,11 @@
 package mekanism.client.gui.item;
 
-import java.util.ArrayList;
-import java.util.List;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.text.APILang;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiArrowSelection;
@@ -76,10 +77,10 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         int currentLayer = scrollBar.getCurrentSelection();
         //Render the layer text scaled, so that it does not start overlapping past 100
-        drawTextScaledBound(APILang.GENERIC.translate(currentLayer), 111, 87, screenTextColor(), 13);
+        drawTextScaledBound(matrix, APILang.GENERIC.translate(currentLayer), 111, 87, screenTextColor(), 13);
 
         //TODO - V11: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
         //Render the item stacks
@@ -91,18 +92,18 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 int renderX = 92;
                 int renderY = 147 - 16 * i;
                 if (i == 4) {
-                    renderItem(stack, renderX, renderY);
+                    renderItem(matrix, stack, renderX, renderY);
                 } else {
-                    RenderSystem.pushMatrix();
-                    RenderSystem.translatef(renderX, renderY, 0);
+                    matrix.push();
+                    matrix.translate(renderX, renderY, 0);
                     if (i < 4) {
-                        RenderSystem.translatef(1.7F, 2.5F, 0);
+                        matrix.translate(1.7F, 2.5F, 0);
                     } else {
-                        RenderSystem.translatef(1.5F, 0, 0);
+                        matrix.translate(1.5F, 0, 0);
                     }
-                    RenderSystem.scalef(0.8F, 0.8F, 0.8F);
-                    renderItem(stack, 0, 0);
-                    RenderSystem.popMatrix();
+                    matrix.scale(0.8F, 0.8F, 0.8F);
+                    renderItem(matrix, stack, 0, 0);
+                    matrix.pop();
                 }
             }
         }
@@ -111,17 +112,17 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         if (currentLayer >= 0) {
             Block block = blockList.get(currentLayer).getBlock();
             ITextComponent displayName = block.func_235333_g_();
-            drawTextScaledBound(displayName, 10, 16, screenTextColor(), 57);
+            drawTextScaledBound(matrix, displayName, 10, 16, screenTextColor(), 57);
             frequency = frequencies.computeIntIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
         }
-        drawTextScaledBound(MekanismLang.ABUNDANCY.translate(frequency), 10, 26, screenTextColor(), 57);
+        drawTextScaledBound(matrix, MekanismLang.ABUNDANCY.translate(frequency), 10, 26, screenTextColor(), 57);
         MekanismRenderer.resetColor();
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
+    public void func_231175_as__() {
+        super.func_231175_as__();
         blockList.clear();
     }
 

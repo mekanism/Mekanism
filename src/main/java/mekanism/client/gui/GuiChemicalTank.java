@@ -1,7 +1,9 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.text.ILangEntry;
@@ -63,9 +65,9 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText();
-        drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 96 + 2, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, getYSize() - 96 + 2, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 }

@@ -1,6 +1,8 @@
 package mekanism.generators.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
@@ -51,12 +53,11 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawTitleText(GeneratorsLang.FUSION_REACTOR.translate(), 5);
-        drawCenteredText(GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getMultiblock().getInjectionRate()),
-              0, getXSize(), 35, titleTextColor());
-        drawString(GeneratorsLang.REACTOR_EDIT_RATE.translate(), 50, 117, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawTitleText(matrix, GeneratorsLang.FUSION_REACTOR.translate(), 5);
+        drawCenteredText(matrix, GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getMultiblock().getInjectionRate()), 0, getXSize(), 35, titleTextColor());
+        drawString(matrix, GeneratorsLang.REACTOR_EDIT_RATE.translate(), 50, 117, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     private void setInjection() {

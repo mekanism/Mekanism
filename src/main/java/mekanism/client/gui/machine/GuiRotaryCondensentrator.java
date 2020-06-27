@@ -1,6 +1,8 @@
 package mekanism.client.gui.machine;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
@@ -75,9 +77,9 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(4);
-        drawString((tile.mode ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING).translate(), 6, (getYSize() - 94) + 2, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix, 4);
+        drawString(matrix, (tile.mode ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING).translate(), 6, (getYSize() - 94) + 2, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 }

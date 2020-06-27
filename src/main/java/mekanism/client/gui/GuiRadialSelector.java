@@ -1,15 +1,16 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.lwjgl.opengl.GL11;
-import com.mojang.blaze3d.systems.RenderSystem;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.StringTextComponent;
+import org.lwjgl.opengl.GL11;
 
 public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> extends Screen {
 
@@ -35,17 +36,17 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick) {
+    public void func_230430_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTick) {
         // center of screen
         float centerX = minecraft.getMainWindow().getScaledWidth() / 2F;
         float centerY = minecraft.getMainWindow().getScaledHeight() / 2F;
         // scaled mouse position
 
-        RenderSystem.pushMatrix();
+        matrix.push();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.defaultAlphaFunc();
-        RenderSystem.translatef(centerX, centerY, 0);
+        matrix.translate(centerX, centerY, 0);
         RenderSystem.disableTexture();
 
         // draw base
@@ -92,22 +93,22 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             float y = (float) Math.sin(angle) * (INNER + OUTER) / 2F;
             // draw icon
             minecraft.textureManager.bindTexture(types[i].getIcon());
-            AbstractGui.blit(Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
+            func_238466_a_(matrix, Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
             // draw label
-            RenderSystem.pushMatrix();
+            matrix.push();
             int width = minecraft.fontRenderer.getStringWidth(types[i].getShortText().getString());
-            RenderSystem.translatef(x, y, 0);
-            RenderSystem.scalef(0.6F, 0.6F, 0.6F);
-            minecraft.fontRenderer.drawString(types[i].getShortText().getFormattedText(), -width / 2F, 8, 0xCCFFFFFF);
-            RenderSystem.popMatrix();
+            matrix.translate(x, y, 0);
+            matrix.scale(0.6F, 0.6F, 0.6F);
+            minecraft.fontRenderer.func_238422_b_(matrix, types[i].getShortText(), -width / 2F, 8, 0xCCFFFFFF);
+            matrix.pop();
         }
 
         MekanismRenderer.resetColor();
-        RenderSystem.popMatrix();
+        matrix.pop();
     }
 
     @Override
-    public void removed() {
+    public void func_231164_f_() {
         updateSelection();
     }
 

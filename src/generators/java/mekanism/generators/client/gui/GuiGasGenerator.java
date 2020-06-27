@@ -1,6 +1,8 @@
 package mekanism.generators.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -36,11 +38,11 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText();
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         ITextComponent component = GeneratorsLang.GAS_BURN_RATE.translate(tile.getUsed());
-        drawString(component, getXSize() - 8 - getStringWidth(component), (getYSize() - 96) + 2, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawString(matrix, component, getXSize() - 8 - getStringWidth(component), (getYSize() - 96) + 2, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 }

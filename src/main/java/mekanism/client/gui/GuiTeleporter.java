@@ -1,8 +1,10 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
@@ -110,7 +112,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             }
         } else {
             for (Frequency freq : tile.getPublicCache(FrequencyType.TELEPORTER)) {
-                text.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(freq.getName(), freq.getClientOwner()).getFormattedText());
+                text.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(freq.getName(), freq.getClientOwner()).getString());//TODO - 1.16: Test
             }
         }
         scrollList.setText(text);
@@ -152,24 +154,24 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        renderTitleText(4);
-        drawString(OwnerDisplay.of(getOwner(), tile.getSecurity().getClientOwner()).getTextComponent(), 8, getYSize() - 92, titleTextColor());
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix, 4);
+        drawString(matrix, OwnerDisplay.of(getOwner(), tile.getSecurity().getClientOwner()).getTextComponent(), 8, getYSize() - 92, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
-        drawString(frequencyComponent, 32, 81, titleTextColor());
+        drawString(matrix, frequencyComponent, 32, 81, titleTextColor());
         ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
-        drawString(securityComponent, 32, 91, titleTextColor());
+        drawString(matrix, securityComponent, 32, 91, titleTextColor());
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         Frequency freq = tile.getFrequency(FrequencyType.TELEPORTER);
         if (freq != null) {
-            drawTextScaledBound(freq.getName(), 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
-            drawString(getSecurity(freq), 32 + getStringWidth(securityComponent), 91, 0x797979);
+            drawTextScaledBound(matrix, freq.getName(), 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
+            drawString(matrix, getSecurity(freq), 32 + getStringWidth(securityComponent), 91, 0x797979);
         } else {
-            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
-            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
+            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
+            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
-        drawTextScaledBound(MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     private UUID getOwner() {

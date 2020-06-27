@@ -1,5 +1,7 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.util.ResourceLocation;
 
@@ -16,7 +18,7 @@ public abstract class GuiScalableElement extends GuiTexturedElement {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        renderBackgroundTexture(getResource(), sideWidth, sideHeight);
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        renderBackgroundTexture(matrix, getResource(), sideWidth, sideHeight);
     }
 }

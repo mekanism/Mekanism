@@ -1,5 +1,7 @@
 package mekanism.client.gui.item;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
@@ -23,9 +25,9 @@ public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawTitleText(MekanismBlocks.PERSONAL_CHEST.getTextComponent(), 6);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawTitleText(matrix, MekanismBlocks.PERSONAL_CHEST.getTextComponent(), 6);
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 }

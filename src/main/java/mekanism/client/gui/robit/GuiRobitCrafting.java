@@ -1,5 +1,7 @@
 package mekanism.client.gui.robit;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.element.GuiRightArrow;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
@@ -20,10 +22,10 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.ROBIT_CRAFTING.translate(), 8, 6, titleTextColor());
-        drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 93, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawString(matrix, MekanismLang.ROBIT_CRAFTING.translate(), 8, 6, titleTextColor());
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, getYSize() - 93, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     @Override

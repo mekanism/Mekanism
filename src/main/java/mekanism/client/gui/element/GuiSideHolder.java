@@ -1,5 +1,7 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
@@ -26,18 +28,18 @@ public class GuiSideHolder extends GuiTexturedElement {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
         colorTab();
         //Top
-        blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Middle
         int middleHeight = field_230689_k_ - 8;
         if (middleHeight > 0) {
-            blit(field_230690_l_, field_230691_m_ + 4, field_230688_j_, middleHeight, 0, 4, field_230688_j_, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            func_238466_a_(matrix, field_230690_l_, field_230691_m_ + 4, field_230688_j_, middleHeight, 0, 4, field_230688_j_, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
         //Bottom
-        blit(field_230690_l_, field_230691_m_ + 4 + middleHeight, 0, 5, field_230688_j_, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        func_238463_a_(matrix, field_230690_l_, field_230691_m_ + 4 + middleHeight, 0, 5, field_230688_j_, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         MekanismRenderer.resetColor();
     }
 }

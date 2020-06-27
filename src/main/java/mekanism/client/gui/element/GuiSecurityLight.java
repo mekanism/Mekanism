@@ -1,6 +1,8 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.IntSupplier;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -19,9 +21,9 @@ public class GuiSecurityLight extends GuiTexturedElement {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        screen.renderButton(mouseX, mouseY, partialTicks);
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        screen.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        blit(field_230690_l_ + 1, field_230691_m_ + 1, 6 * lightSupplier.getAsInt(), 0, field_230688_j_ - 2, field_230689_k_ - 2, 18, 6);
+        func_238463_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1, 6 * lightSupplier.getAsInt(), 0, field_230688_j_ - 2, field_230689_k_ - 2, 18, 6);
     }
 }

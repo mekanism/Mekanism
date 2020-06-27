@@ -1,10 +1,12 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
@@ -55,16 +57,16 @@ public class GuiGraph extends GuiTexturedElement {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Draw Black and border
-        innerScreen.renderButton(mouseX, mouseY, partialTicks);
+        innerScreen.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
         //Draw the graph
         int size = graphData.size();
         for (int i = 0; i < size; i++) {
             long data = Math.min(currentScale, graphData.getLong(i));
             int relativeHeight = (int) (data * field_230689_k_ / (double) currentScale);
-            blit(field_230690_l_ + i, field_230691_m_ + field_230689_k_ - relativeHeight, 0, 0, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            func_238463_a_(matrix, field_230690_l_ + i, field_230691_m_ + field_230689_k_ - relativeHeight, 0, 0, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
             RenderSystem.shadeModel(GL11.GL_SMOOTH);
             RenderSystem.disableAlphaTest();
@@ -72,14 +74,14 @@ public class GuiGraph extends GuiTexturedElement {
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
             RenderSystem.color4f(1, 1, 1, 0.2F + 0.8F * i / size);
-            blit(field_230690_l_ + i, field_230691_m_ + field_230689_k_ - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            func_238463_a_(matrix, field_230690_l_ + i, field_230691_m_ + field_230689_k_ - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
             int hoverIndex = mouseX - getButtonX();
             if (hoverIndex == i && mouseY >= getButtonY() && mouseY < getButtonY() + field_230689_k_) {
                 RenderSystem.color4f(1, 1, 1, 0.5F);
-                blit(field_230690_l_ + i, field_230691_m_, 2, 0, 1, field_230689_k_, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+                func_238463_a_(matrix, field_230690_l_ + i, field_230691_m_, 2, 0, 1, field_230689_k_, TEXTURE_WIDTH, TEXTURE_HEIGHT);
                 MekanismRenderer.resetColor();
-                blit(field_230690_l_ + i, field_230691_m_ + field_230689_k_ - relativeHeight, 0, 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+                func_238463_a_(matrix, field_230690_l_ + i, field_230691_m_ + field_230689_k_ - relativeHeight, 0, 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             }
 
             MekanismRenderer.resetColor();
@@ -89,10 +91,10 @@ public class GuiGraph extends GuiTexturedElement {
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         int hoverIndex = mouseX - relativeX;
         if (hoverIndex >= 0 && hoverIndex < graphData.size()) {
-            displayTooltip(dataHandler.getDataDisplay(graphData.getLong(hoverIndex)), mouseX, mouseY);
+            displayTooltip(matrix, dataHandler.getDataDisplay(graphData.getLong(hoverIndex)), mouseX, mouseY);
         }
     }
 

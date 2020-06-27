@@ -1,5 +1,6 @@
 package mekanism.common.tile.machine;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
@@ -44,8 +44,8 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -243,7 +243,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     public static class OredictionificatorFilter extends BaseFilter<OredictionificatorFilter> {
 
         private ResourceLocation filterLocation;
-        private Tag<Item> filterTag;
+        private ITag<Item> filterTag;
         @Nonnull
         private Item selectedOutput = Items.AIR;
 
@@ -263,7 +263,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
         private void setFilterLocation(ResourceLocation location) {
             filterLocation = location;
-            filterTag = new ItemTags.Wrapper(filterLocation);
+            filterTag = ItemTags.makeWrapperTag(filterLocation.toString());
         }
 
         public boolean filterMatches(ResourceLocation location) {

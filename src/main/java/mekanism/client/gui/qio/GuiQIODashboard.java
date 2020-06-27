@@ -1,5 +1,7 @@
 package mekanism.client.gui.qio;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
@@ -27,13 +29,13 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
 
     @Override
     public GuiQIOItemViewer<QIODashboardContainer> recreate(QIODashboardContainer container) {
-        return new GuiQIODashboard(container, playerInventory, title);
+        return new GuiQIODashboard(container, playerInventory, field_230704_d_);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawTitleText(tile.getName(), 5);
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawTitleText(matrix, tile.getName(), 5);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     @Override

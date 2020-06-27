@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -91,7 +90,7 @@ public class RenderTickHandler {
                                                                                        EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS,
                                                                                        EquipmentSlotType.FEET};
 
-    private static final double HUD_SCALE = 0.6;
+    private static final float HUD_SCALE = 0.6F;
 
     private static final HUDRenderer hudRenderer = new HUDRenderer();
 
@@ -136,10 +135,10 @@ public class RenderTickHandler {
                 int x = event.getWindow().getScaledWidth() / 2 - 91;
                 int y = event.getWindow().getScaledHeight() - ForgeIngameGui.left_height + 2;
                 int length = (int) Math.round(stored.divide(capacity).doubleValue() * 79);
-
-                GuiUtils.renderExtendedTexture(GuiBar.BAR, 2, 2, x, y, 81, 6);
+                MatrixStack matrix = event.getMatrixStack();
+                GuiUtils.renderExtendedTexture(matrix, GuiBar.BAR, 2, 2, x, y, 81, 6);
                 minecraft.getTextureManager().bindTexture(POWER_BAR);
-                AbstractGui.blit(x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
+                AbstractGui.func_238466_a_(matrix, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
                 minecraft.getTextureManager().bindTexture(ForgeIngameGui.field_230665_h_);
                 ForgeIngameGui.left_height += 8;
             }
@@ -168,19 +167,20 @@ public class RenderTickHandler {
                 boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
                 MainWindow window = event.getWindow();
                 int y = window.getScaledHeight();
-                RenderSystem.pushMatrix();
-                RenderSystem.scaled(HUD_SCALE, HUD_SCALE, HUD_SCALE);
+                MatrixStack matrix = event.getMatrixStack();
+                matrix.push();
+                matrix.scale(HUD_SCALE, HUD_SCALE, HUD_SCALE);
                 for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
                     for (ITextComponent text : entry.getValue()) {
-                        drawString(window, text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
+                        drawString(window, matrix, text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
                         start -= 9;
                     }
                     start -= 2;
                 }
-                RenderSystem.popMatrix();
+                matrix.pop();
 
                 if (minecraft.player.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
-                    hudRenderer.renderHUD(event.getPartialTicks());
+                    hudRenderer.renderHUD(matrix, event.getPartialTicks());
                 }
             }
         }
@@ -192,7 +192,8 @@ public class RenderTickHandler {
             if (minecraft.player != null && minecraft.player.world != null && !minecraft.isGamePaused()) {
                 PlayerEntity player = minecraft.player;
                 World world = minecraft.player.world;
-                renderStatusBar(player);
+                //TODO - 1.16: Check if we have another matrix stack we should use
+                renderStatusBar(new MatrixStack(), player);
                 //Traverse active jetpacks and do animations
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
                     PlayerEntity p = world.getPlayerByUuid(uuid);
@@ -354,7 +355,7 @@ public class RenderTickHandler {
         }
     }
 
-    private void renderStatusBar(@Nonnull PlayerEntity player) {
+    private void renderStatusBar(MatrixStack matrix, @Nonnull PlayerEntity player) {
         //TODO: use vanilla status bar text? Note, the vanilla status bar text stays a lot longer than we have our message
         // display for, so we would need to somehow modify it. This can be done via ATs but does cause it to always appear
         // to be more faded in color, and blinks to full color just before disappearing
@@ -366,9 +367,8 @@ public class RenderTickHandler {
                     if (scrollTextComponent != null) {
                         int x = minecraft.getMainWindow().getScaledWidth();
                         int y = minecraft.getMainWindow().getScaledHeight();
-                        String text = scrollTextComponent.getFormattedText();
                         int color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F).argb();
-                        minecraft.fontRenderer.drawString(text, x / 2 - minecraft.fontRenderer.getStringWidth(text) / 2, y - 60, color);
+                        minecraft.fontRenderer.func_238422_b_(matrix, scrollTextComponent, x / 2 - minecraft.fontRenderer.func_238414_a_(scrollTextComponent) / 2, y - 60, color);
                     }
                 }
             }
@@ -381,15 +381,15 @@ public class RenderTickHandler {
         world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
     }
 
-    private void drawString(MainWindow window, ITextComponent textComponent, boolean leftSide, int y, int color) {
-        String s = textComponent.getFormattedText();
+    private void drawString(MainWindow window, MatrixStack matrix, ITextComponent text, boolean leftSide, int y, int color) {
         FontRenderer font = minecraft.fontRenderer;
         // Note that we always offset by 2 pixels when left or right aligned
+        //TODO - 1.16: Verify this renders properly
         if (leftSide) {
-            font.drawStringWithShadow(s, 2, y, color);
+            font.func_238407_a_(matrix, text, 2, y, color);
         } else {
-            int width = font.getStringWidth(s) + 2;
-            font.drawStringWithShadow(s, window.getScaledWidth() - width, y, color);
+            int width = font.func_238414_a_(text) + 2;
+            font.func_238407_a_(matrix, text, window.getScaledWidth() - width, y, color);
         }
     }
 

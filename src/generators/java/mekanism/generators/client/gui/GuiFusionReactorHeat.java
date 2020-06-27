@@ -1,6 +1,8 @@
 package mekanism.generators.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -96,8 +98,8 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawTitleText(GeneratorsLang.FUSION_REACTOR.translate(), 5);
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawTitleText(matrix, GeneratorsLang.FUSION_REACTOR.translate(), 5);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 }

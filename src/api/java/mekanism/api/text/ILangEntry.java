@@ -1,5 +1,6 @@
 package mekanism.api.text;
 
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -19,14 +20,14 @@ public interface ILangEntry extends IHasTranslationKey {
     /**
      * Translates this {@link ILangEntry} and applies the {@link TextFormatting} of the given {@link EnumColor} to the {@link ITextComponent}
      */
-    default ITextComponent translateColored(EnumColor color, Object... args) {
+    default IFormattableTextComponent translateColored(EnumColor color, Object... args) {
         return translateFormatted(color.textFormatting, args);
     }
 
     /**
      * Translates this {@link ILangEntry} and applies the given {@link TextFormatting} to the {@link ITextComponent}
      */
-    default ITextComponent translateFormatted(TextFormatting format, Object... args) {
+    default IFormattableTextComponent translateFormatted(TextFormatting format, Object... args) {
         return translate(args).func_240699_a_(format);
     }
 }

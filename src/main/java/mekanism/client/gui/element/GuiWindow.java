@@ -1,5 +1,6 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiMekanism;
@@ -42,7 +43,7 @@ public class GuiWindow extends GuiTexturedElement {
     public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         boolean ret = super.func_231044_a_(mouseX, mouseY, button);
         // drag 'safe area'
-        if (isMouseOver(mouseX, mouseY)) {
+        if (func_231047_b_(mouseX, mouseY)) {
             if (mouseY < field_230691_m_ + 18) {
                 dragging = true;
                 dragX = mouseX;
@@ -66,7 +67,7 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     @Override
-    public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
+    public void func_230983_a_(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
         if (dragging) {
             int newDX = (int) Math.round(mouseX - dragX), newDY = (int) Math.round(mouseY - dragY);
             int changeX = Math.max(-field_230690_l_, Math.min(minecraft.getMainWindow().getScaledWidth() - (field_230690_l_ + field_230688_j_), newDX - prevDX));
@@ -78,28 +79,28 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
-        super.onRelease(mouseX, mouseY);
+    public void func_231000_a__(double mouseX, double mouseY) {
+        super.func_231000_a__(mouseX, mouseY);
         dragging = false;
     }
 
     @Override
-    public void drawButton(int mouseX, int mouseY) {
+    public void drawButton(MatrixStack matrix, int mouseX, int mouseY) {
     }
 
     @Override
-    public void renderBackgroundOverlay(int mouseX, int mouseY) {
+    public void renderBackgroundOverlay(MatrixStack matrix, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
             MekanismRenderer.renderColorOverlay(0, 0, minecraft.getMainWindow().getScaledWidth(), minecraft.getMainWindow().getScaledHeight(), OVERLAY_COLOR.rgba());
         } else {
             RenderSystem.color4f(1, 1, 1, 0.75F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            GuiUtils.renderBackgroundTexture(GuiMekanism.SHADOW, 4, 4, getButtonX() - 3, getButtonY() - 3, getButtonWidth() + 6, getButtonHeight() + 6, 256, 256);
+            GuiUtils.renderBackgroundTexture(matrix, GuiMekanism.SHADOW, 4, 4, getButtonX() - 3, getButtonY() - 3, getButtonWidth() + 6, getButtonHeight() + 6, 256, 256);
             MekanismRenderer.resetColor();
         }
         minecraft.textureManager.bindTexture(getResource());
-        renderBackgroundTexture(getResource(), 4, 4);
+        renderBackgroundTexture(matrix, getResource(), 4, 4);
     }
 
     @Override
@@ -127,11 +128,11 @@ public class GuiWindow extends GuiTexturedElement {
         }
     }
 
-    public void renderBlur() {
+    public void renderBlur(MatrixStack matrix) {
         RenderSystem.color4f(1, 1, 1, 0.3F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        GuiUtils.renderBackgroundTexture(GuiMekanism.BLUR, 4, 4, relativeX, relativeY, field_230688_j_, field_230689_k_, 256, 256);
+        GuiUtils.renderBackgroundTexture(matrix, GuiMekanism.BLUR, 4, 4, relativeX, relativeY, field_230688_j_, field_230689_k_, 256, 256);
         MekanismRenderer.resetColor();
     }
 
@@ -139,7 +140,7 @@ public class GuiWindow extends GuiTexturedElement {
         children.forEach(GuiElement::onWindowClose);
         guiObj.removeWindow(this);
         if (guiObj instanceof GuiMekanism) {
-            ((GuiMekanism<?>) guiObj).setFocused(null);
+            ((GuiMekanism<?>) guiObj).func_231035_a_(null);
         }
         if (closeListener != null) {
             closeListener.run();

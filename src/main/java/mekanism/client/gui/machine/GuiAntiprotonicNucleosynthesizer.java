@@ -1,8 +1,9 @@
 package mekanism.client.gui.machine;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import java.util.function.Supplier;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -80,13 +81,11 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, titleTextColor());
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 3, titleTextColor());
-        drawTextScaledBound(MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-
-        MatrixStack matrix = new MatrixStack();
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawString(matrix, tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, titleTextColor());
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 3, titleTextColor());
+        drawTextScaledBound(matrix, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
+        super.func_230451_b_(matrix, mouseX, mouseY);
         matrix.push();
         IRenderTypeBuffer.Impl renderer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
         bolt.update(this, boltSupplier.get(), MekanismRenderer.getPartialTick());

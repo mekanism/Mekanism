@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.common.Mekanism;
@@ -33,12 +35,12 @@ public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(MekanismLang.SET_FREQUENCY.translate(), mouseX, mouseY);
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        displayTooltip(matrix, MekanismLang.SET_FREQUENCY.translate(), mouseX, mouseY);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         if (MekanismConfig.general.allowProtection.get()) {
             if (isItem) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedItemButton.QIO_FREQUENCY_SELECT, currentHand));

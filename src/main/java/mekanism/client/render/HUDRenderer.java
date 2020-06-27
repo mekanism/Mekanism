@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
@@ -9,6 +10,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public class HUDRenderer {
 
@@ -20,18 +24,18 @@ public class HUDRenderer {
 
     private final Minecraft minecraft = Minecraft.getInstance();
 
-    public void renderHUD(float partialTick) {
+    public void renderHUD(MatrixStack matrix, float partialTick) {
         checkTime();
 
-        RenderSystem.pushMatrix();
+        matrix.push();
         float yawJitter = -(minecraft.player.rotationYawHead - minecraft.player.prevRotationYawHead) * 0.25F;
         float pitchJitter = -(minecraft.player.rotationPitch - prevRotationPitch) * 0.25F;
-        RenderSystem.translated(yawJitter, pitchJitter, 0);
+        matrix.translate(yawJitter, pitchJitter, 0);
         int posX = 25;
         int posY = minecraft.getMainWindow().getScaledHeight() - 100;
-        RenderSystem.translatef(posX + 50, posY + 50, 0);
-        renderCompass(partialTick);
-        RenderSystem.popMatrix();
+        matrix.translate(posX + 50, posY + 50, 0);
+        renderCompass(matrix, partialTick);
+        matrix.pop();
 
         update();
     }
@@ -49,35 +53,36 @@ public class HUDRenderer {
         }
     }
 
-    private void renderCompass(float partialTick) {
-        RenderSystem.pushMatrix();
+    private void renderCompass(MatrixStack matrix, float partialTick) {
+        matrix.push();
         float angle = 180 - MathHelper.lerp(partialTick, minecraft.player.prevRotationYawHead, minecraft.player.rotationYawHead);
-        RenderSystem.pushMatrix();
-        RenderSystem.scaled(0.7, 0.7, 0.7);
-        String coords = MekanismLang.GENERIC_BLOCK_POS.translate((int) minecraft.player.getPosX(), (int) minecraft.player.getPosY(), (int) minecraft.player.getPosZ()).getString();
-        minecraft.fontRenderer.drawString(coords, -minecraft.fontRenderer.getStringWidth(coords) / 2F, -4, color.argb());
-        RenderSystem.popMatrix();
-        RenderSystem.rotatef(-60, 1, 0, 0);
-        RenderSystem.rotatef(angle, 0, 0, 1);
+        matrix.push();
+        matrix.scale(0.7F, 0.7F, 0.7F);
+        ITextComponent coords = MekanismLang.GENERIC_BLOCK_POS.translate((int) minecraft.player.getPosX(), (int) minecraft.player.getPosY(), (int) minecraft.player.getPosZ());
+        minecraft.fontRenderer.func_238422_b_(matrix, coords, -minecraft.fontRenderer.func_238414_a_(coords) / 2F, -4, color.argb());
+        matrix.pop();
+        matrix.rotate(Vector3f.XP.rotationDegrees(-60));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(angle));
         minecraft.getTextureManager().bindTexture(COMPASS);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         MekanismRenderer.color(color);
-        AbstractGui.blit(-50, -50, 100, 100, 0, 0, 256, 256, 256, 256);
-        rotateStr("N", angle, 0, color);
-        rotateStr("E", angle, 90, color);
-        rotateStr("S", angle, 180, color);
-        rotateStr("W", angle, 270, color);
+        AbstractGui.func_238466_a_(matrix, -50, -50, 100, 100, 0, 0, 256, 256, 256, 256);
+        //TODO - V10: Use lang keys for this
+        rotateStr(matrix, new StringTextComponent("N"), angle, 0, color);
+        rotateStr(matrix, new StringTextComponent("E"), angle, 90, color);
+        rotateStr(matrix, new StringTextComponent("S"), angle, 180, color);
+        rotateStr(matrix, new StringTextComponent("W"), angle, 270, color);
         MekanismRenderer.resetColor();
-        RenderSystem.popMatrix();
+        matrix.pop();
     }
 
-    private void rotateStr(String s, float rotation, float shift, Color color) {
-        RenderSystem.pushMatrix();
-        RenderSystem.rotatef(shift, 0, 0, 1);
-        RenderSystem.translatef(0, -50, 0);
-        RenderSystem.rotatef(-rotation - shift, 0, 0, 1);
-        minecraft.fontRenderer.drawString(s, -2.5F, -4, color.argb());
-        RenderSystem.popMatrix();
+    private void rotateStr(MatrixStack matrix, ITextComponent text, float rotation, float shift, Color color) {
+        matrix.push();
+        matrix.rotate(Vector3f.ZP.rotationDegrees(shift));
+        matrix.translate(0, -50, 0);
+        matrix.rotate(Vector3f.ZP.rotationDegrees(-rotation - shift));
+        minecraft.fontRenderer.func_238422_b_(matrix, text, -2.5F, -4, color.argb());
+        matrix.pop();
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -70,8 +71,8 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
 
         if (renderStrings != null) {
             List<ITextComponent> list = renderStrings.get();
@@ -81,26 +82,25 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
                 startY = relativeY + getHeight() / 2F - totalHeight / 2F;
             }
             for (ITextComponent text : renderStrings.get()) {
-                drawText(text, relativeX + padding, startY);
+                drawText(matrix, text, relativeX + padding, startY);
                 startY += 8 + spacing;
             }
         }
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        super.renderToolTip(mouseX, mouseY);
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.func_230443_a_(matrix, mouseX, mouseY);
         if (tooltipStrings != null) {
             List<ITextComponent> list = tooltipStrings.get();
-            if (list == null || list.isEmpty()) {
-                return;
+            if (list != null && !list.isEmpty()) {
+                displayTooltips(matrix, list, mouseX, mouseY);
             }
-            displayTooltips(list, mouseX, mouseY);
         }
     }
 
-    private void drawText(ITextComponent text, float x, float y) {
-        drawScaledTextScaledBound(text, x, y, screenTextColor(), func_230998_h_() - padding * 2, textScale);
+    private void drawText(MatrixStack matrix, ITextComponent text, float x, float y) {
+        drawScaledTextScaledBound(matrix, text, x, y, screenTextColor(), func_230998_h_() - padding * 2, textScale);
     }
 
     @Nonnull

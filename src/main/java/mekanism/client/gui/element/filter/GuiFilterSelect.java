@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.filter;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiWindow;
@@ -41,8 +42,8 @@ public abstract class GuiFilterSelect extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
-        drawString(MekanismLang.CREATE_FILTER_TITLE.translate(), relativeX + 38, relativeY + 6, titleTextColor());
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
+        drawString(matrix, MekanismLang.CREATE_FILTER_TITLE.translate(), relativeX + 38, relativeY + 6, titleTextColor());
     }
 }

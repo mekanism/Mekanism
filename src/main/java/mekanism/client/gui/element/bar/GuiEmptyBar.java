@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.bar;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 
@@ -13,6 +14,6 @@ public class GuiEmptyBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
+    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
     }
 }

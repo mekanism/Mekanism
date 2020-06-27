@@ -22,6 +22,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -76,7 +77,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
     @Nonnull
     @Override
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(EnumColor.AQUA.textFormatting);
+        return TextComponentUtil.build(EnumColor.AQUA, super.getDisplayName(stack));
     }
 
     @Nonnull

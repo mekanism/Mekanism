@@ -51,6 +51,7 @@ import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -106,10 +107,10 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
             for (Module module : Modules.loadAll(stack)) {
-                ITextComponent component = module.getData().getLangEntry().translateColored(EnumColor.GRAY);
+                IFormattableTextComponent component = module.getData().getLangEntry().translateColored(EnumColor.GRAY);
                 if (module.getInstalledCount() > 1) {
                     ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, module.getInstalledCount(), module.getData().getMaxStackSize());
-                    component.appendSibling(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, "", t));
+                    component.func_230529_a_(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, "", t));
                 }
                 tooltip.add(component);
             }

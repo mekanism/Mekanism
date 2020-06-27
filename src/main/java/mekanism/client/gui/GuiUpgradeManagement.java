@@ -1,7 +1,8 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -69,41 +70,41 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
-        drawString(MekanismLang.UPGRADES_SUPPORTED.translate(), 26, 59, titleTextColor());
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+        drawString(matrix, MekanismLang.UPGRADES_SUPPORTED.translate(), 26, 59, titleTextColor());
         if (scrollList.hasSelection()) {
             Upgrade selectedType = scrollList.getSelection();
             int amount = tile.getComponent().getUpgrades(selectedType);
-            renderText(MekanismLang.UPGRADE_TYPE.translate(selectedType), 92, 8, 0.6F);
-            renderText(MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), 92, 16, 0.6F);
+            renderText(matrix, MekanismLang.UPGRADE_TYPE.translate(selectedType), 92, 8, 0.6F);
+            renderText(matrix, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), 92, 16, 0.6F);
             int text = 0;
             for (ITextComponent component : UpgradeUtils.getInfo(tile, selectedType)) {
-                renderText(component, 92, 22 + (6 * text++), 0.6F);
+                renderText(matrix, component, 92, 22 + (6 * text++), 0.6F);
             }
         } else {
-            renderText(MekanismLang.UPGRADE_NO_SELECTION.translate(), 92, 8, 0.8F);
+            renderText(matrix, MekanismLang.UPGRADE_NO_SELECTION.translate(), 92, 8, 0.8F);
         }
         //TODO: Move this into a gui element
         Set<Upgrade> supportedTypes = tile.getComponent().getSupportedTypes();
         if (!supportedTypes.isEmpty()) {
             Upgrade[] supported = supportedTypes.toArray(new Upgrade[0]);
             if (supported.length > supportedIndex) {
-                renderUpgrade(supported[supportedIndex], 80, 57, 0.8F);
-                drawString(TextComponentUtil.build(supported[supportedIndex]), 96, 59, titleTextColor());
+                renderUpgrade(matrix, supported[supportedIndex], 80, 57, 0.8F);
+                drawString(matrix, TextComponentUtil.build(supported[supportedIndex]), 96, 59, titleTextColor());
             }
         }
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
-    private void renderText(ITextComponent component, int x, int y, float size) {
-        RenderSystem.pushMatrix();
-        RenderSystem.scalef(size, size, size);
-        drawString(component, (int) ((1F / size) * x), (int) ((1F / size) * y), screenTextColor());
-        RenderSystem.popMatrix();
+    private void renderText(MatrixStack matrix, ITextComponent component, int x, int y, float size) {
+        matrix.push();
+        matrix.scale(size, size, size);
+        drawString(matrix, component, (int) ((1F / size) * x), (int) ((1F / size) * y), screenTextColor());
+        matrix.pop();
     }
 
-    private void renderUpgrade(Upgrade type, int x, int y, float size) {
-        renderItem(UpgradeUtils.getStack(type), (int) (x / size), (int) (y / size), size);
+    private void renderUpgrade(MatrixStack matrix, Upgrade type, int x, int y, float size) {
+        renderItem(matrix, UpgradeUtils.getStack(type), (int) (x / size), (int) (y / size), size);
     }
 }

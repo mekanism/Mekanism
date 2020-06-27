@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.button;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiWindow;
@@ -15,15 +17,15 @@ public class GuiCloseButton extends MekanismImageButton {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         MekanismRenderer.color(EnumColor.RED);
-        super.renderButton(mouseX, mouseY, partialTicks);
+        super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         MekanismRenderer.resetColor();
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        this.displayTooltip(MekanismLang.CLOSE.translate(), mouseX, mouseY);
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        displayTooltip(matrix, MekanismLang.CLOSE.translate(), mouseX, mouseY);
     }
 
     @Override

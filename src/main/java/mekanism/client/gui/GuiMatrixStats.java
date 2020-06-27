@@ -1,6 +1,8 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
+import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
@@ -70,19 +72,19 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawTitleText(MekanismLang.MATRIX_STATS.translate(), 6);
-        drawString(MekanismLang.MATRIX_INPUT_AMOUNT.translate(), 53, 26, 0x797979);
-        drawString(EnergyDisplay.of(tile.getMultiblock().getLastInput(), tile.getMultiblock().getTransferCap()).getTextComponent(), 59, 35, titleTextColor());
-        drawString(MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(), 53, 46, 0x797979);
-        drawString(EnergyDisplay.of(tile.getMultiblock().getLastOutput(), tile.getMultiblock().getTransferCap()).getTextComponent(), 59, 55, titleTextColor());
-        drawString(MekanismLang.MATRIX_DIMENSIONS.translate(), 8, 82, 0x797979);
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawTitleText(matrix, MekanismLang.MATRIX_STATS.translate(), 6);
+        drawString(matrix, MekanismLang.MATRIX_INPUT_AMOUNT.translate(), 53, 26, 0x797979);
+        drawString(matrix, EnergyDisplay.of(tile.getMultiblock().getLastInput(), tile.getMultiblock().getTransferCap()).getTextComponent(), 59, 35, titleTextColor());
+        drawString(matrix, MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(), 53, 46, 0x797979);
+        drawString(matrix, EnergyDisplay.of(tile.getMultiblock().getLastOutput(), tile.getMultiblock().getTransferCap()).getTextComponent(), 59, 55, titleTextColor());
+        drawString(matrix, MekanismLang.MATRIX_DIMENSIONS.translate(), 8, 82, 0x797979);
         if (tile.getMultiblock().isFormed()) {
-            drawString(MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(tile.getMultiblock().width(), tile.getMultiblock().height(), tile.getMultiblock().length()), 14, 91, titleTextColor());
+            drawString(matrix, MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(tile.getMultiblock().width(), tile.getMultiblock().height(), tile.getMultiblock().length()), 14, 91, titleTextColor());
         }
-        drawString(MekanismLang.MATRIX_CONSTITUENTS.translate(), 8, 102, 0x797979);
-        drawString(MekanismLang.MATRIX_CELLS.translate(tile.getMultiblock().getCellCount()), 14, 111, titleTextColor());
-        drawString(MekanismLang.MATRIX_PROVIDERS.translate(tile.getMultiblock().getProviderCount()), 14, 120, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawString(matrix, MekanismLang.MATRIX_CONSTITUENTS.translate(), 8, 102, 0x797979);
+        drawString(matrix, MekanismLang.MATRIX_CELLS.translate(tile.getMultiblock().getCellCount()), 14, 111, titleTextColor());
+        drawString(matrix, MekanismLang.MATRIX_PROVIDERS.translate(tile.getMultiblock().getProviderCount()), 14, 120, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 }

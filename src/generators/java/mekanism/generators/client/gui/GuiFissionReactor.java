@@ -1,6 +1,8 @@
 package mekanism.generators.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiBigLight;
@@ -101,13 +103,13 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         updateButtons();
 
-        drawTitleText(GeneratorsLang.FISSION_REACTOR.translate(), 5);
-        drawString(MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, titleTextColor());
-        drawString(GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR.translate(), 5);
+        drawString(matrix, MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, titleTextColor());
+        drawString(matrix, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     @Override

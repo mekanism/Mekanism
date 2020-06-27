@@ -20,7 +20,7 @@ public abstract class GuiWindowCreatorTab<ELEMENT extends GuiWindowCreatorTab<EL
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         GuiWindow window = createWindow();
         window.setListenerTab(elementSupplier);
         field_230693_o_ = false;

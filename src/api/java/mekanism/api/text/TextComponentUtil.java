@@ -20,7 +20,7 @@ public class TextComponentUtil {
         return component instanceof IFormattableTextComponent ? (IFormattableTextComponent) component : component.func_230532_e_();
     }
 
-    public static ITextComponent build(Object... components) {
+    public static IFormattableTextComponent build(Object... components) {
         //TODO: Verify that just appending them to the first text component works properly.
         // My suspicion is we will need to chain downwards and append it that way so that the formatting matches
         // from call to call without resetting back to

@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.filter.miner;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -45,9 +46,9 @@ public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDi
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
-        renderReplaceStack(guiObj, filter);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
+        renderReplaceStack(matrix, guiObj, filter);
     }
 
     @Override

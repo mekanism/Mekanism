@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.progress;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
@@ -20,17 +21,17 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (handler.isActive()) {
             minecraft.textureManager.bindTexture(getResource());
-            blit(field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, type.getTextureWidth(), type.getTextureHeight());
+            func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, type.getTextureWidth(), type.getTextureHeight());
             if (type.isVertical()) {
                 int displayInt = (int) (handler.getProgress() * field_230689_k_);
-                blit(field_230690_l_, field_230691_m_, type.getOverlayX(), type.getOverlayY(), field_230688_j_, displayInt, type.getTextureWidth(), type.getTextureHeight());
+                func_238463_a_(matrix, field_230690_l_, field_230691_m_, type.getOverlayX(), type.getOverlayY(), field_230688_j_, displayInt, type.getTextureWidth(), type.getTextureHeight());
             } else {
                 int innerOffsetX = type == ProgressType.BAR ? 1 : 0;
                 int displayInt = (int) (handler.getProgress() * (field_230688_j_ - 2 * innerOffsetX));
-                blit(field_230690_l_ + innerOffsetX, field_230691_m_, type.getOverlayX() + innerOffsetX, type.getOverlayY(), displayInt, field_230689_k_, type.getTextureWidth(), type.getTextureHeight());
+                func_238463_a_(matrix, field_230690_l_ + innerOffsetX, field_230691_m_, type.getOverlayX() + innerOffsetX, type.getOverlayY(), displayInt, field_230689_k_, type.getTextureWidth(), type.getTextureHeight());
             }
         }
     }

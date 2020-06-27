@@ -1,10 +1,11 @@
 package mekanism.client.gui.qio;
 
+import com.google.common.collect.Sets;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import com.google.common.collect.Sets;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiDigitalIconToggle;
@@ -76,7 +77,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         searchField.setBackground(BackgroundType.ELEMENT_HOLDER);
         searchField.setVisible(true);
         searchField.setTextColor(0xFFFFFF);
-        searchField.setFocused(true);
+        searchField.func_230996_d_(true);
         func_230480_a_(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
               container::getQIOItemList, container));
         func_230480_a_(new GuiDropdown<>(this, xSize - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
@@ -87,18 +88,18 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
-        drawString(MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor());
+    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
+        drawString(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor());
         ITextComponent text = MekanismLang.LIST_SORT.translate();
         int width = getStringWidth(text);
-        drawString(text, xSize - 66 - width, (getYSize() - 96) + 4, titleTextColor());
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawString(matrix, text, xSize - 66 - width, (getYSize() - 96) + 4, titleTextColor());
+        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     @Override
-    public void resize(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
-        super.resize(minecraft, sizeX, sizeY);
+    public void func_231152_a_(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
+        super.func_231152_a_(minecraft, sizeX, sizeY);
         container.updateSearch(searchField.getText());
         //Validate the height is still valid, and if it isn't recreate it
         int maxY = QIOItemViewerContainer.getSlotsYMax();
@@ -112,8 +113,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void removed() {
-        super.removed();
+    public void func_231164_f_() {
+        super.func_231164_f_();
         getMinecraft().keyboardListener.enableRepeatEvents(false);
     }
 

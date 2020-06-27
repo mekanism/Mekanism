@@ -1,14 +1,14 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
@@ -73,9 +73,9 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
-    public void setFocused(boolean focused) {
+    public void func_230996_d_(boolean focused) {
         // change access modifier to public
-        super.setFocused(focused);
+        super.func_230996_d_(focused);
     }
 
     public void move(int changeX, int changeY) {
@@ -101,7 +101,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     protected IHoverable getOnHover(Supplier<ITextComponent> componentSupplier) {
-        return (onHover, xAxis, yAxis) -> displayTooltip(componentSupplier.get(), xAxis, yAxis);
+        return (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, componentSupplier.get(), xAxis, yAxis);
     }
 
     public boolean hasPersistentData() {
@@ -112,44 +112,44 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         children.forEach(child -> child.syncFrom(element));
     }
 
-    public final void onRenderForeground(int mouseX, int mouseY, int zOffset, int totalOffset) {
+    public final void onRenderForeground(MatrixStack matrix, int mouseX, int mouseY, int zOffset, int totalOffset) {
         if (field_230694_p_) {
-            RenderSystem.translatef(0, 0, zOffset);
+            matrix.translate(0, 0, zOffset);
             // update the max total offset to prevent clashing of future overlays
             GuiMekanism.maxZOffset = Math.max(totalOffset, GuiMekanism.maxZOffset);
             // fix render offset for background drawing
-            RenderSystem.translatef(-guiObj.getLeft(), -guiObj.getTop(), 0);
+            matrix.translate(-guiObj.getLeft(), -guiObj.getTop(), 0);
             // render background overlay and children above everything else
-            renderBackgroundOverlay(mouseX, mouseY);
+            renderBackgroundOverlay(matrix, mouseX, mouseY);
             // render children just above background overlay
-            children.forEach(child -> child.render(mouseX, mouseY, 0));
+            children.forEach(child -> child.func_230430_a_(matrix, mouseX, mouseY, 0));
             // translate back to top right corner and forward to render foregrounds
-            RenderSystem.translatef(guiObj.getLeft(), guiObj.getTop(), 0);
-            renderForeground(mouseX, mouseY);
+            matrix.translate(guiObj.getLeft(), guiObj.getTop(), 0);
+            renderForeground(matrix, mouseX, mouseY);
             // translate forward to render child foreground
-            children.forEach(child -> child.onRenderForeground(mouseX, mouseY, 50, totalOffset + 50));
+            children.forEach(child -> child.onRenderForeground(matrix, mouseX, mouseY, 50, totalOffset + 50));
         }
     }
 
-    public void renderForeground(int mouseX, int mouseY) {
-        drawButtonText();
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        drawButtonText(matrix);
     }
 
-    public void renderBackgroundOverlay(int mouseX, int mouseY) {
+    public void renderBackgroundOverlay(MatrixStack matrix, int mouseX, int mouseY) {
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        children.stream().filter(child -> child.isMouseOver(mouseX + guiObj.getLeft(), mouseY + guiObj.getTop()))
-              .forEach(child -> child.renderToolTip(mouseX, mouseY));
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        children.stream().filter(child -> child.func_231047_b_(mouseX + guiObj.getLeft(), mouseY + guiObj.getTop()))
+              .forEach(child -> child.func_230443_a_(matrix, mouseX, mouseY));
     }
 
-    public void displayTooltip(ITextComponent component, int xAxis, int yAxis) {
-        guiObj.displayTooltip(component, xAxis, yAxis);
+    public void displayTooltip(MatrixStack matrix, ITextComponent component, int xAxis, int yAxis) {
+        guiObj.displayTooltip(matrix, component, xAxis, yAxis);
     }
 
-    public void displayTooltips(List<ITextComponent> list, int xAxis, int yAxis) {
-        guiObj.displayTooltips(list, xAxis, yAxis);
+    public void displayTooltips(MatrixStack matrix, List<ITextComponent> list, int xAxis, int yAxis) {
+        guiObj.displayTooltips(matrix, list, xAxis, yAxis);
     }
 
     @Override
@@ -170,15 +170,15 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
-    public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
-        children.forEach(element -> element.onDrag(mouseX, mouseY, mouseXOld, mouseYOld));
-        super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
+    public void func_230983_a_(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
+        children.forEach(element -> element.func_230983_a_(mouseX, mouseY, mouseXOld, mouseYOld));
+        super.func_230983_a_(mouseX, mouseY, mouseXOld, mouseYOld);
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
-        children.forEach(element -> element.onRelease(mouseX, mouseY));
-        super.onRelease(mouseX, mouseY);
+    public void func_231000_a__(double mouseX, double mouseY) {
+        children.forEach(element -> element.func_231000_a__(mouseX, mouseY));
+        super.func_231000_a__(mouseX, mouseY);
     }
 
     @Override
@@ -196,10 +196,10 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
-    protected boolean clicked(double mouseX, double mouseY) {
+    protected boolean func_230992_c_(double mouseX, double mouseY) {
         //The code for clicked and isMouseOver is the same. Overriding it here lets us override isMouseOver in sub classes
         // and have it propagate to clicking
-        return isMouseOver(mouseX, mouseY);
+        return func_231047_b_(mouseX, mouseY);
     }
 
     /**
@@ -238,16 +238,16 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return super.isMouseOver(mouseX, mouseY) || children.stream().anyMatch(child -> child.isMouseOver(mouseX, mouseY));
+    public boolean func_231047_b_(double mouseX, double mouseY) {
+        return super.func_231047_b_(mouseX, mouseY) || children.stream().anyMatch(child -> child.func_231047_b_(mouseX, mouseY));
     }
 
     /**
-     * Does the same as {@link #isMouseOver(double, double)}, but validates there is no window in the way
+     * Does the same as {@link #func_231047_b_(double, double)}, but validates there is no window in the way
      */
     public final boolean isMouseOverCheckWindows(double mouseX, double mouseY) {
         //TODO: Ideally we would have the various places that call this instead check isHovered if we can properly override setting that
-        boolean isHovering = isMouseOver(mouseX, mouseY);
+        boolean isHovering = func_231047_b_(mouseX, mouseY);
         if (isHovering) {
             //If the mouse is over this element, check if there is a window that would intercept the mouse
             GuiWindow window = guiObj.getWindowHovering(mouseX, mouseY);
@@ -265,17 +265,17 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     // The benefit of drawing all four corners instead of just left and right halves, is that we ensure we include the bottom black bar of the texture
     // Math has also been added to fix rendering odd size buttons.
     @Override
-    public void func_230431_b_(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         drawButton(matrix, mouseX, mouseY);
     }
 
-    protected void drawButtonText() {
-        String message = getMessage();
+    protected void drawButtonText(MatrixStack matrix) {
+        ITextComponent message = func_230458_i_();
         //Only attempt to draw the message if we have a message to draw
-        if (!message.isEmpty()) {
+        if (!message.getString().isEmpty()) {//TODO - 1.16: Test this/Fix this maybe compare to the empty string one
             //TODO: Improve the math for this so that it calculates the y value better
             int halfWidthLeft = field_230688_j_ / 2;
-            drawCenteredString(getFont(), message, field_230690_l_ - guiObj.getLeft() + halfWidthLeft, field_230691_m_ - guiObj.getTop() + (field_230689_k_ - 8) / 2,
+            func_238472_a_(matrix, getFont(), message, field_230690_l_ - guiObj.getLeft() + halfWidthLeft, field_230691_m_ - guiObj.getTop() + (field_230689_k_ - 8) / 2,
                   getFGColor() | MathHelper.ceil(field_230695_q_ * 255.0F) << 24);
         }
     }
@@ -320,12 +320,12 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         RenderSystem.disableBlend();
     }
 
-    protected void renderExtendedTexture(ResourceLocation resource, int sideWidth, int sideHeight) {
-        GuiUtils.renderExtendedTexture(resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+    protected void renderExtendedTexture(MatrixStack matrix, ResourceLocation resource, int sideWidth, int sideHeight) {
+        GuiUtils.renderExtendedTexture(matrix, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
-    protected void renderBackgroundTexture(ResourceLocation resource, int sideWidth, int sideHeight) {
-        GuiUtils.renderBackgroundTexture(resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 256, 256);
+    protected void renderBackgroundTexture(MatrixStack matrix, ResourceLocation resource, int sideWidth, int sideHeight) {
+        GuiUtils.renderBackgroundTexture(matrix, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 256, 256);
     }
 
     @Override
@@ -336,7 +336,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     protected void drawTiledSprite(int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite) {
-        GuiUtils.drawTiledSprite(xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, getBlitOffset());
+        GuiUtils.drawTiledSprite(xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, func_230927_p_());
     }
 
     protected static String formatInt(long l) {
@@ -361,7 +361,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     @FunctionalInterface
     public interface IHoverable {
 
-        void onHover(GuiElement element, int mouseX, int mouseY);
+        void onHover(GuiElement element, MatrixStack matrix, int mouseX, int mouseY);
     }
 
     @FunctionalInterface

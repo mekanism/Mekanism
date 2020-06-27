@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
@@ -19,19 +21,19 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        super.renderButton(mouseX, mouseY, partialTicks);
-        drawString(OnOff.of(tile.isSorting()).getTextComponent(), field_230690_l_ + 5, field_230691_m_ + 24, 0x0404040);
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+        drawString(matrix, OnOff.of(tile.isSorting()).getTextComponent(), field_230690_l_ + 5, field_230691_m_ + 24, 0x0404040);
         MekanismRenderer.resetColor();
     }
 
     @Override
-    public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(MekanismLang.AUTO_SORT.translate(), mouseX, mouseY);
+    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        displayTooltip(matrix, MekanismLang.AUTO_SORT.translate(), mouseX, mouseY);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void func_230982_a_(double mouseX, double mouseY) {
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_SORT_BUTTON, tile));
     }
 }

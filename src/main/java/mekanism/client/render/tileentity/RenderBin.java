@@ -1,8 +1,10 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ProfilerConstants;
@@ -18,6 +20,7 @@ import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.text.IFormattableTextComponent;
 
 @ParametersAreNonnullByDefault
 public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
@@ -34,7 +37,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         //if the bin has an item stack and the face isn't covered by a solid side
         BinInventorySlot binSlot = tile.getBinSlot();
         if (!binSlot.isEmpty() && !tile.getWorld().getBlockState(coverPos).isSolidSide(tile.getWorld(), coverPos, facing.getOpposite())) {
-            String amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate().getFormattedText() : Integer.toString(binSlot.getCount());
+            IFormattableTextComponent amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.getCount());
             matrix.push();
             switch (facing) {
                 case NORTH:
@@ -75,7 +78,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
     }
 
     @SuppressWarnings("incomplete-switch")
-    private void renderText(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int overlayLight, String text, Direction side, float maxScale) {
+    private void renderText(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int overlayLight, IFormattableTextComponent text, Direction side, float maxScale) {
         matrix.push();
         matrix.translate(0, -0.3725, 0);
         switch (side) {
@@ -107,7 +110,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
 
         FontRenderer font = renderDispatcher.getFontRenderer();
 
-        int requiredWidth = Math.max(font.getStringWidth(text), 1);
+        int requiredWidth = Math.max(font.func_238414_a_(text), 1);
         int requiredHeight = font.FONT_HEIGHT + 2;
         float scaler = 0.4F;
         float scaleX = displayWidth / requiredWidth;
@@ -122,7 +125,8 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         int offsetX = (realWidth - requiredWidth) / 2;
         int offsetY = (realHeight - requiredHeight) / 2;
         //font.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
-        font.renderString("\u00a7f" + text, offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, overlayLight,
+        //TODO - 1.16: Verify the coloring, was "\u00a7f" + text
+        font.func_238416_a_(text.func_240699_a_(EnumColor.WHITE.textFormatting), offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, overlayLight,
               false, matrix.getLast().getMatrix(), renderer, false, 0, MekanismRenderer.FULL_LIGHT);
         matrix.pop();
     }

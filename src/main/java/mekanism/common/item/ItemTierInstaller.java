@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
@@ -49,7 +50,7 @@ public class ItemTierInstaller extends Item {
     @Nonnull
     @Override
     public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        return super.getDisplayName(stack).applyTextStyle(toTier.getTextColor().textFormatting);
+        return TextComponentUtil.build(toTier.getTextColor(), super.getDisplayName(stack));
     }
 
     @Nonnull

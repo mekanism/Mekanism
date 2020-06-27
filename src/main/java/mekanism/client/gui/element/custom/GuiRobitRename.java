@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.custom;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiWindow;
@@ -21,7 +22,7 @@ public class GuiRobitRename extends GuiWindow {
         addChild(new TranslationButton(gui, this.field_230690_l_ + 31, this.field_230691_m_ + 32, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
         addChild(nameChangeField = new GuiTextField(gui, relativeX + 21, relativeY + 17, 80, 12));
         nameChangeField.setMaxStringLength(12);
-        nameChangeField.setFocused(true);
+        nameChangeField.func_230996_d_(true);
         nameChangeField.setEnterHandler(this::changeName);
     }
 
@@ -33,8 +34,8 @@ public class GuiRobitRename extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
-        drawTitleText(MekanismLang.ROBIT_RENAME.translate(), 7);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
+        drawTitleText(matrix, MekanismLang.ROBIT_RENAME.translate(), 7);
     }
 }

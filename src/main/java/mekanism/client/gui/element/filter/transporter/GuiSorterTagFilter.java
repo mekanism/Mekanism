@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.filter.transporter;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.filter.GuiTagFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
@@ -31,8 +32,8 @@ public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntity
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
-        renderSorterForeground(filter);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
+        renderSorterForeground(matrix, filter);
     }
 }
