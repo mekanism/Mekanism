@@ -1,7 +1,7 @@
 package mekanism.client.lang;
 
-import com.google.common.collect.Table.Cell;
 import java.util.Map;
+import com.google.common.collect.Table.Cell;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
@@ -749,10 +749,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.NO_VIBRATIONS, "Unable to discover any vibrations");
         add(MekanismLang.ABUNDANCY, "Abundancy: %s");
         //Redstone Control
-        add(MekanismLang.REDSTONE_CONTROL_DISABLED, "Disabled");
-        add(MekanismLang.REDSTONE_CONTROL_HIGH, "High");
-        add(MekanismLang.REDSTONE_CONTROL_LOW, "Low");
-        add(MekanismLang.REDSTONE_CONTROL_PULSE, "Pulse");
+        add(MekanismLang.REDSTONE_CONTROL_DISABLED, "Redstone Detection: IGNORED");
+        add(MekanismLang.REDSTONE_CONTROL_HIGH, "Redstone Detection: NORMAL");
+        add(MekanismLang.REDSTONE_CONTROL_LOW, "Redstone Detection: INVERTED");
+        add(MekanismLang.REDSTONE_CONTROL_PULSE, "Redstone Detection: PULSE");
         //Security
         add(MekanismLang.SECURITY, "Security: %s");
         add(MekanismLang.SECURITY_OVERRIDDEN, "(Overridden)");

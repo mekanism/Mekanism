@@ -1,14 +1,14 @@
 package mekanism.common.tile.qio;
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
@@ -58,6 +58,11 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             }
             tryEject();
             delay = MAX_DELAY;
+        }
+
+        if (world.getGameTime() % 10 == 0) {
+            QIOFrequency frequency = getQIOFrequency();
+            setActive(frequency != null);
         }
     }
 

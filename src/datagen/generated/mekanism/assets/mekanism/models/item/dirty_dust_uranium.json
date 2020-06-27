@@ -1,8 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "mekanism:item/empty",
-    "layer1": "mekanism:item/dirty_dust",
-    "layer2": "mekanism:item/dirty_dust_overlay"
+    "layer0": "mekanism:item/dirty_dust_uranium"
   }
 }

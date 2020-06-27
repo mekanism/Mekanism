@@ -1,8 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "mekanism:item/empty",
-    "layer1": "mekanism:item/clump",
-    "layer2": "mekanism:item/clump_overlay"
+    "layer0": "mekanism:item/clump_uranium"
   }
 }

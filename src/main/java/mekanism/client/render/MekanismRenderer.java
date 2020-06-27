@@ -15,7 +15,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
-import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.item.block.RenderFluidTankItem;
@@ -65,6 +64,8 @@ public class MekanismRenderer {
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
+    public static TextureAtlasSprite redstoneTorch;
+    public static TextureAtlasSprite redstonePulse;
     public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
 
     //We ignore the warning, due to this actually being able to be null during runData
@@ -347,6 +348,8 @@ public class MekanismRenderer {
         event.addSprite(Mekanism.rl("liquid/energy"));
         event.addSprite(Mekanism.rl("liquid/heat"));
 
+        event.addSprite(Mekanism.rl("icon/redstone_control_pulse"));
+
         //MekaSuit
         event.addSprite(Mekanism.rl("entity/armor/blank"));
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_player"));
@@ -368,8 +371,6 @@ public class MekanismRenderer {
         RenderMechanicalPipe.onStitch();
         RenderTickHandler.resetCachedOverlays();
         RenderTeleporter.resetCachedModels();
-
-        DriveArrayBakedModel.preStitch(event);
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>> void addChemicalSprites(TextureStitchEvent.Pre event, IForgeRegistry<CHEMICAL> chemicalRegistry) {
@@ -391,11 +392,12 @@ public class MekanismRenderer {
         whiteIcon = map.getSprite(Mekanism.rl("block/overlay/overlay_white"));
         energyIcon = map.getSprite(Mekanism.rl("liquid/energy"));
         heatIcon = map.getSprite(Mekanism.rl("liquid/heat"));
+        redstoneTorch = map.getSprite(new ResourceLocation("minecraft:block/redstone_torch"));
+        redstonePulse = map.getSprite(Mekanism.rl("icon/redstone_control_pulse"));
 
         //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
         RenderLogisticalTransporter.onStitch(map);
         RenderTransmitterBase.onStitch();
-        DriveArrayBakedModel.onStitch(map);
     }
 
     public enum FluidType {

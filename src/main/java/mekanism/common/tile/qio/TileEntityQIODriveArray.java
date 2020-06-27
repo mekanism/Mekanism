@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.qio.IQIODriveHolder;
@@ -17,6 +18,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -56,6 +58,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
         if (world.getGameTime() % 10 == 0) {
             QIOFrequency frequency = getQIOFrequency();
+            setActive(frequency != null);
             for (int i = 0; i < DRIVE_SLOTS; i++) {
                 QIODriveSlot slot = (QIODriveSlot) driveSlots.get(i);
                 QIODriveData data = frequency != null ? frequency.getDriveData(slot.getKey()) : null;
@@ -130,16 +133,26 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     public enum DriveStatus {
-        NONE,
-        OFFLINE,
-        READY,
-        NEAR_FULL,
-        FULL;
+        NONE(null),
+        OFFLINE(Mekanism.rl("block/qio_drive/qio_drive_offline")),
+        READY(Mekanism.rl("block/qio_drive/qio_drive_empty")),
+        NEAR_FULL(Mekanism.rl("block/qio_drive/qio_drive_partial")),
+        FULL(Mekanism.rl("block/qio_drive/qio_drive_full"));
+
+        private ResourceLocation model;
+
+        private DriveStatus(ResourceLocation model) {
+            this.model = model;
+        }
 
         public static final DriveStatus[] STATUSES = values();
 
         public int ledIndex() {
             return ordinal() - READY.ordinal();
+        }
+
+        public ResourceLocation getModel() {
+            return model;
         }
     }
 }

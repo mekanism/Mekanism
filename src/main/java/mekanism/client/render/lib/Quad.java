@@ -45,6 +45,10 @@ public class Quad {
         return sprite;
     }
 
+    public void setTexture(TextureAtlasSprite sprite) {
+        this.sprite = sprite;
+    }
+
     public void vertexTransform(Consumer<Vertex> transformation) {
         for (Vertex v : vertices) {
             transformation.accept(v);

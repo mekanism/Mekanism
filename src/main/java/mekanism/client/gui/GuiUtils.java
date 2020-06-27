@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import java.util.function.Predicate;
+import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
@@ -16,7 +18,6 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class GuiUtils {
 
@@ -141,6 +142,22 @@ public class GuiUtils {
 
     public static void fill(MatrixStack matrix, int x, int y, int width, int height, int color) {
         AbstractGui.func_238467_a_(matrix, x, y, x + width, y + height, Color.packOpaque(color));
+    }
+
+    public static void drawSprite(int x, int y, int width, int height, int zLevel, TextureAtlasSprite sprite) {
+        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        RenderSystem.enableBlend();
+        RenderSystem.enableAlphaTest();
+        BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
+        vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        vertexBuffer.pos(x, y + height, zLevel).tex(sprite.getMinU(), sprite.getMaxV()).endVertex();
+        vertexBuffer.pos(x + width, y + height, zLevel).tex(sprite.getMaxU(), sprite.getMaxV()).endVertex();
+        vertexBuffer.pos(x + width, y, zLevel).tex(sprite.getMaxU(), sprite.getMinV()).endVertex();
+        vertexBuffer.pos(x, y, zLevel).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
+        vertexBuffer.finishDrawing();
+        WorldVertexBufferUploader.draw(vertexBuffer);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.disableBlend();
     }
 
     public static void drawTiledSprite(int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite, int textureWidth,

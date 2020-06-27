@@ -1,9 +1,9 @@
 package mekanism.common.registries;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import java.util.EnumSet;
 import java.util.function.Supplier;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
@@ -445,37 +445,38 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityQIODriveArray> QIO_DRIVE_ARRAY = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.QIO_DRIVE_ARRAY, MekanismLang.DESCRIPTION_QIO_DRIVE_ARRAY)
           .withGui(() -> MekanismContainerTypes.QIO_DRIVE_ARRAY)
-          .with(new AttributeStateFacing(), new AttributeSecurity(), new AttributeInventory())
+          .withCustomShape(BlockShapes.QIO_DRIVE_ARRAY)
+          .with(new AttributeStateFacing(), new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive())
           .build();
     // QIO Dashboard
     public static final BlockTypeTile<TileEntityQIODashboard> QIO_DASHBOARD = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.QIO_DASHBOARD, MekanismLang.DESCRIPTION_QIO_DASHBOARD)
           .withGui(() -> MekanismContainerTypes.QIO_DASHBOARD)
           .withCustomShape(BlockShapes.QIO_DASHBOARD)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity())
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeStateActive())
           .withCustomContainerProvider((tile) -> (i, inv, player) -> new QIODashboardContainer(i, inv, (TileEntityQIODashboard) tile))
           .build();
     // QIO Importer
     public static final BlockTypeTile<TileEntityQIOImporter> QIO_IMPORTER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.QIO_IMPORTER, MekanismLang.DESCRIPTION_QIO_IMPORTER)
           .withGui(() -> MekanismContainerTypes.QIO_IMPORTER)
-          .withCustomShape(BlockShapes.QIO_DASHBOARD)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeRedstone())
+          .withCustomShape(BlockShapes.QIO_IMPORTER)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeRedstone(), new AttributeStateActive())
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
           .build();
     // QIO Exporter
     public static final BlockTypeTile<TileEntityQIOExporter> QIO_EXPORTER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.QIO_EXPORTER, MekanismLang.DESCRIPTION_QIO_EXPORTER)
           .withGui(() -> MekanismContainerTypes.QIO_EXPORTER)
-          .withCustomShape(BlockShapes.QIO_DASHBOARD)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeRedstone())
+          .withCustomShape(BlockShapes.QIO_EXPORTER)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeRedstone(), new AttributeStateActive())
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
           .build();
     // QIO Redstone Adapter
     public static final BlockTypeTile<TileEntityQIORedstoneAdapter> QIO_REDSTONE_ADAPTER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.QIO_REDSTONE_ADAPTER, MekanismLang.DESCRIPTION_QIO_REDSTONE_ADAPTER)
           .withGui(() -> MekanismContainerTypes.QIO_REDSTONE_ADAPTER)
-          .withCustomShape(BlockShapes.QIO_DASHBOARD)
+          .withCustomShape(BlockShapes.QIO_REDSTONE_ADAPTER)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeStateActive())
           .with(new AttributeRedstoneEmitter<>((tile) -> tile.isPowering() ? 15 : 0))
           .build();
