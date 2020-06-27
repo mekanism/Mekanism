@@ -15,7 +15,7 @@ import mekanism.tools.common.item.ItemMekanismPickaxe;
 import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.item.ItemMekanismShovel;
 import mekanism.tools.common.item.ItemMekanismSword;
-import mekanism.tools.common.material.BaseMekanismMaterial;
+import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTier;
@@ -102,31 +102,31 @@ public class ToolsItems {
     public static final ItemRegistryObject<ItemMekanismArmor> STEEL_BOOTS = registerArmor(MekanismToolsConfig.tools.steel, EquipmentSlotType.FEET);
     public static final ItemRegistryObject<ItemMekanismShield> STEEL_SHIELD = registerShield(MekanismToolsConfig.tools.steel);
 
-    private static ItemRegistryObject<ItemMekanismShield> registerShield(BaseMekanismMaterial material) {
+    private static ItemRegistryObject<ItemMekanismShield> registerShield(MaterialCreator material) {
         return register(mat -> new ItemMekanismShield(mat, ToolsISTERProvider::shield), "_shield", material);
     }
 
-    private static ItemRegistryObject<ItemMekanismPickaxe> registerPickaxe(BaseMekanismMaterial material) {
+    private static ItemRegistryObject<ItemMekanismPickaxe> registerPickaxe(MaterialCreator material) {
         return register(ItemMekanismPickaxe::new, "_pickaxe", material);
     }
 
-    private static ItemRegistryObject<ItemMekanismAxe> registerAxe(BaseMekanismMaterial material) {
+    private static ItemRegistryObject<ItemMekanismAxe> registerAxe(MaterialCreator material) {
         return register(ItemMekanismAxe::new, "_axe", material);
     }
 
-    private static ItemRegistryObject<ItemMekanismShovel> registerShovel(BaseMekanismMaterial material) {
+    private static ItemRegistryObject<ItemMekanismShovel> registerShovel(MaterialCreator material) {
         return register(ItemMekanismShovel::new, "_shovel", material);
     }
 
-    private static ItemRegistryObject<ItemMekanismHoe> registerHoe(BaseMekanismMaterial material) {
+    private static ItemRegistryObject<ItemMekanismHoe> registerHoe(MaterialCreator material) {
         return register(ItemMekanismHoe::new, "_hoe", material);
     }
 
-    private static ItemRegistryObject<ItemMekanismSword> registerSword(BaseMekanismMaterial material) {
+    private static ItemRegistryObject<ItemMekanismSword> registerSword(MaterialCreator material) {
         return register(ItemMekanismSword::new, "_sword", material);
     }
 
-    private static ItemRegistryObject<ItemMekanismPaxel> registerPaxel(BaseMekanismMaterial material) {
+    private static ItemRegistryObject<ItemMekanismPaxel> registerPaxel(MaterialCreator material) {
         return register(ItemMekanismPaxel::new, "_paxel", material);
     }
 
@@ -134,7 +134,7 @@ public class ToolsItems {
         return ITEMS.register(material.name().toLowerCase(Locale.ROOT) + "_paxel", () -> new ItemMekanismPaxel(material));
     }
 
-    private static ItemRegistryObject<ItemMekanismArmor> registerArmor(BaseMekanismMaterial material, EquipmentSlotType slot) {
+    private static ItemRegistryObject<ItemMekanismArmor> registerArmor(MaterialCreator material, EquipmentSlotType slot) {
         String suffix;
         if (slot == EquipmentSlotType.HEAD) {
             suffix = "_helmet";
@@ -148,7 +148,7 @@ public class ToolsItems {
         return ITEMS.register(material.getRegistryPrefix() + suffix, () -> new ItemMekanismArmor(material, slot));
     }
 
-    private static <ITEM extends Item> ItemRegistryObject<ITEM> register(Function<BaseMekanismMaterial, ITEM> itemCreator, String suffix, BaseMekanismMaterial material) {
+    private static <ITEM extends Item> ItemRegistryObject<ITEM> register(Function<MaterialCreator, ITEM> itemCreator, String suffix, MaterialCreator material) {
         return ITEMS.register(material.getRegistryPrefix() + suffix, () -> itemCreator.apply(material));
     }
 }

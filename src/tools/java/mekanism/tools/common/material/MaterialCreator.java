@@ -18,36 +18,37 @@ public class MaterialCreator extends BaseMekanismMaterial {
     private final BaseMekanismMaterial fallBack;
 
     private final CachedIntValue shieldDurability;
-    private final CachedIntValue swordDamage;
-    private final CachedFloatValue swordAtkSpeed;
-    private final CachedFloatValue shovelDamage;
-    private final CachedFloatValue shovelAtkSpeed;
-    private final CachedFloatValue axeDamage;
-    private final CachedFloatValue axeAtkSpeed;
-    private final CachedIntValue pickaxeDamage;
-    private final CachedFloatValue pickaxeAtkSpeed;
-    private final CachedFloatValue hoeAtkSpeed;
+    public final CachedIntValue swordDamage;
+    public final CachedFloatValue swordAtkSpeed;
+    public final CachedFloatValue shovelDamage;
+    public final CachedFloatValue shovelAtkSpeed;
+    public final CachedFloatValue axeDamage;
+    public final CachedFloatValue axeAtkSpeed;
+    public final CachedIntValue pickaxeDamage;
+    public final CachedFloatValue pickaxeAtkSpeed;
+    public final CachedIntValue hoeDamage;
+    public final CachedFloatValue hoeAtkSpeed;
     private final CachedIntValue paxelHarvestLevel;
-    private final CachedFloatValue paxelDamage;
-    private final CachedFloatValue paxelAtkSpeed;
+    public final CachedFloatValue paxelDamage;
+    public final CachedFloatValue paxelAtkSpeed;
     private final CachedFloatValue paxelEfficiency;
     private final CachedIntValue paxelEnchantability;
     private final CachedIntValue paxelMaxUses;
     private final CachedIntValue toolMaxUses;
     private final CachedFloatValue efficiency;
-    private final CachedFloatValue attackDamage;
+    public final CachedFloatValue attackDamage;
     private final CachedIntValue harvestLevel;
     private final CachedIntValue enchantability;
-    private final CachedFloatValue toughness;
-    private final CachedFloatValue knockbackResistance;
+    public final CachedFloatValue toughness;
+    public final CachedFloatValue knockbackResistance;
     private final CachedIntValue bootDurability;
     private final CachedIntValue leggingDurability;
     private final CachedIntValue chestplateDurability;
     private final CachedIntValue helmetDurability;
-    private final CachedIntValue bootArmor;
-    private final CachedIntValue leggingArmor;
-    private final CachedIntValue chestplateArmor;
-    private final CachedIntValue helmetArmor;
+    public final CachedIntValue bootArmor;
+    public final CachedIntValue leggingArmor;
+    public final CachedIntValue chestplateArmor;
+    public final CachedIntValue helmetArmor;
 
     public MaterialCreator(IMekanismConfig config, ForgeConfigSpec.Builder builder, BaseMekanismMaterial materialDefaults) {
         fallBack = materialDefaults;
@@ -71,6 +72,8 @@ public class MaterialCreator extends BaseMekanismMaterial {
               .defineInRange(toolKey + "PickaxeDamage", materialDefaults.getPickaxeDamage(), 0, Integer.MAX_VALUE));
         pickaxeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " pickaxes.")
               .define(toolKey + "PickaxeAtkSpeed", (double) materialDefaults.getPickaxeAtkSpeed()));
+        hoeDamage = CachedIntValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " hoes.")
+              .defineInRange(toolKey + "HoeDamage", materialDefaults.getHoeDamage(), 0, Integer.MAX_VALUE));
         hoeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " hoes.")
               .define(toolKey + "HoeAtkSpeed", (double) materialDefaults.getHoeAtkSpeed()));
         toolMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " tools.")
@@ -98,7 +101,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
         toughness = CachedFloatValue.wrap(config, builder.comment("Base armor toughness value of " + toolKey + " armor.")
               .defineInRange(toolKey + "Toughness", materialDefaults.getToughness(), 0, Float.MAX_VALUE));
         knockbackResistance = CachedFloatValue.wrap(config, builder.comment("Base armor knockback resistance value of " + toolKey + " armor.")
-              .defineInRange(toolKey + "Toughness", materialDefaults.func_230304_f_(), 0, Float.MAX_VALUE));
+              .defineInRange(toolKey + "KnockbackResistance", materialDefaults.func_230304_f_(), 0, Float.MAX_VALUE));
         bootDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " boots.")
               .defineInRange(toolKey + "BootDurability", materialDefaults.getDurability(EquipmentSlotType.FEET), 1, Integer.MAX_VALUE));
         leggingDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " leggings.")
@@ -161,6 +164,11 @@ public class MaterialCreator extends BaseMekanismMaterial {
     @Override
     public float getPickaxeAtkSpeed() {
         return pickaxeAtkSpeed.get();
+    }
+
+    @Override
+    public int getHoeDamage() {
+        return hoeDamage.get();
     }
 
     @Override

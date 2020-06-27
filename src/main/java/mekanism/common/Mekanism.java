@@ -267,6 +267,7 @@ public class Mekanism {
     }
 
     private void serverAboutToStart(FMLServerAboutToStartEvent event) {
+        //TODO - 1.16: Rewrite once https://github.com/MinecraftForge/MinecraftForge/pull/6849 gets merged to add it to the correct place
         IResourceManager resourceManager = event.getServer().getDataPackRegistries().func_240970_h_();
         boolean added = false;
         if (resourceManager instanceof SimpleReloadableResourceManager) {

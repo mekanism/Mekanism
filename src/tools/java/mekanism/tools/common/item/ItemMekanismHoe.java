@@ -1,14 +1,16 @@
 package mekanism.tools.common.item;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
-import mekanism.tools.common.material.BaseMekanismMaterial;
+import mekanism.tools.common.item.attribute.AttributeCache;
+import mekanism.tools.common.item.attribute.IAttributeRefresher;
+import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -24,20 +26,26 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 
-public class ItemMekanismHoe extends HoeItem implements IHasRepairType {
+public class ItemMekanismHoe extends HoeItem implements IHasRepairType, IAttributeRefresher {
 
     private static final ToolType HOE_TOOL_TYPE = ToolType.get("hoe");
-    private final BaseMekanismMaterial material;
+    private final MaterialCreator material;
+    private final AttributeCache attributeCache;
 
-    public ItemMekanismHoe(BaseMekanismMaterial material) {
-        super(material, 0 /* //TODO - 1.16 add hoe attack damage defaults? */, material.getHoeAtkSpeed(), ItemDeferredRegister.getMekBaseProperties().addToolType(HOE_TOOL_TYPE, material.getHarvestLevel()));
+    public ItemMekanismHoe(MaterialCreator material) {
+        super(material, material.getHoeDamage(), material.getHoeAtkSpeed(), ItemDeferredRegister.getMekBaseProperties().addToolType(HOE_TOOL_TYPE, material.getHarvestLevel()));
         this.material = material;
+        this.attributeCache = new AttributeCache(this, material.attackDamage, material.hoeDamage, material.hoeAtkSpeed);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
+    }
+
+    public float getAttackDamage() {
+        return material.getHoeDamage() + getTier().getAttackDamage();
     }
 
     @Nonnull
@@ -64,12 +72,12 @@ public class ItemMekanismHoe extends HoeItem implements IHasRepairType {
     @Nonnull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {
-        //TODO - 1.16: Cache this, and update it when one of the values change
-        Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
-        if (slot == EquipmentSlotType.MAINHAND) {
-            attributes.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", 0, Operation.ADDITION));
-            attributes.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", material.getHoeAtkSpeed(), Operation.ADDITION));
-        }
-        return attributes;
+        return slot == EquipmentSlotType.MAINHAND ? attributeCache.getAttributes() : ImmutableMultimap.of();
+    }
+
+    @Override
+    public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
+        builder.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", getAttackDamage(), Operation.ADDITION));
+        builder.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", material.getHoeAtkSpeed(), Operation.ADDITION));
     }
 }

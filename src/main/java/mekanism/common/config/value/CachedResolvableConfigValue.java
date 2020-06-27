@@ -1,5 +1,7 @@
 package mekanism.common.config.value;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.IMekanismConfig;
@@ -12,12 +14,20 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 public abstract class CachedResolvableConfigValue<TYPE, REAL> {
 
     private final ConfigValue<REAL> internal;
+    private List<Runnable> invalidationListeners;
     @Nullable
     private TYPE cachedValue;
 
     protected CachedResolvableConfigValue(IMekanismConfig config, ConfigValue<REAL> internal) {
         this.internal = internal;
         config.addCachedValue(this);
+    }
+
+    public void addInvalidationListener(Runnable listener) {
+        if (invalidationListeners == null) {
+            invalidationListeners = new ArrayList<>();
+        }
+        invalidationListeners.add(listener);
     }
 
     protected abstract TYPE resolve(REAL encoded);
@@ -40,5 +50,8 @@ public abstract class CachedResolvableConfigValue<TYPE, REAL> {
 
     public void clearCache() {
         cachedValue = null;
+        if (invalidationListeners != null) {
+            invalidationListeners.forEach(Runnable::run);
+        }
     }
 }

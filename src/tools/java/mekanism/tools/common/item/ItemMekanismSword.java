@@ -1,14 +1,16 @@
 package mekanism.tools.common.item;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import mekanism.common.registration.impl.ItemDeferredRegister;
+import mekanism.tools.common.item.attribute.AttributeCache;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
-import mekanism.tools.common.material.BaseMekanismMaterial;
+import mekanism.tools.common.item.attribute.IAttributeRefresher;
+import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -23,13 +25,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemMekanismSword extends SwordItem implements IHasRepairType {
+public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAttributeRefresher {
 
-    private final BaseMekanismMaterial material;
+    private final MaterialCreator material;
+    private final AttributeCache attributeCache;
 
-    public ItemMekanismSword(BaseMekanismMaterial material) {
+    public ItemMekanismSword(MaterialCreator material) {
         super(material, material.getSwordDamage(), material.getSwordAtkSpeed(), ItemDeferredRegister.getMekBaseProperties());
         this.material = material;
+        this.attributeCache = new AttributeCache(this, material.attackDamage, material.swordDamage, material.swordAtkSpeed);
     }
 
     @Override
@@ -67,12 +71,12 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType {
     @Nonnull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {
-        //TODO - 1.16: Cache this, and update it when one of the values change
-        Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
-        if (slot == EquipmentSlotType.MAINHAND) {
-            attributes.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", getAttackDamage(), Operation.ADDITION));
-            attributes.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", material.getSwordAtkSpeed(), Operation.ADDITION));
-        }
-        return attributes;
+        return slot == EquipmentSlotType.MAINHAND ? attributeCache.getAttributes() : ImmutableMultimap.of();
+    }
+
+    @Override
+    public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
+        builder.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", getAttackDamage(), Operation.ADDITION));
+        builder.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", material.getSwordAtkSpeed(), Operation.ADDITION));
     }
 }

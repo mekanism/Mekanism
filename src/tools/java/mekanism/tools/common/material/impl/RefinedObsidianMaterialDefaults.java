@@ -130,6 +130,6 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public float func_230304_f_() {
-        return 0.1F; // TOOD 1.16 reevalulate this across the board (knockback resistance)
+        return 0.1F;
     }
 }

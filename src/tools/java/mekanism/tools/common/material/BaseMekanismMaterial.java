@@ -36,6 +36,10 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
         return -2.8F;
     }
 
+    public int getHoeDamage() {
+        return 0;
+    }
+
     public float getHoeAtkSpeed() {
         return getAttackDamage() - 3.0F;
     }

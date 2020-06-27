@@ -2,7 +2,6 @@ package mekanism.tools.common.config;
 
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.value.CachedDoubleValue;
-import mekanism.tools.common.material.BaseMekanismMaterial;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.material.impl.BronzeMaterialDefaults;
 import mekanism.tools.common.material.impl.LapisLazuliMaterialDefaults;
@@ -18,12 +17,12 @@ public class ToolsConfig extends BaseMekanismConfig {
     private final ForgeConfigSpec configSpec;
 
     public final CachedDoubleValue armorSpawnRate;
-    public final BaseMekanismMaterial bronze;
-    public final BaseMekanismMaterial lapisLazuli;
-    public final BaseMekanismMaterial osmium;
-    public final BaseMekanismMaterial refinedGlowstone;
-    public final BaseMekanismMaterial refinedObsidian;
-    public final BaseMekanismMaterial steel;
+    public final MaterialCreator bronze;
+    public final MaterialCreator lapisLazuli;
+    public final MaterialCreator osmium;
+    public final MaterialCreator refinedGlowstone;
+    public final MaterialCreator refinedObsidian;
+    public final MaterialCreator steel;
 
     ToolsConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();

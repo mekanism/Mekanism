@@ -1,16 +1,19 @@
 package mekanism.tools.common.item;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.client.render.GlowArmor;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
-import mekanism.tools.common.material.BaseMekanismMaterial;
+import mekanism.tools.common.item.attribute.AttributeCache;
+import mekanism.tools.common.item.attribute.IAttributeRefresher;
+import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
@@ -28,13 +31,27 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
+public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAttributeRefresher {
 
-    private final BaseMekanismMaterial material;
+    private final MaterialCreator material;
+    private final AttributeCache attributeCache;
 
-    public ItemMekanismArmor(BaseMekanismMaterial material, EquipmentSlotType slot) {
+    public ItemMekanismArmor(MaterialCreator material, EquipmentSlotType slot) {
         super(material, slot, ItemDeferredRegister.getMekBaseProperties());
         this.material = material;
+        CachedIntValue armorConfig;
+        if (slot == EquipmentSlotType.FEET) {
+            armorConfig = material.bootArmor;
+        } else if (slot == EquipmentSlotType.LEGS) {
+            armorConfig = material.leggingArmor;
+        } else if (slot == EquipmentSlotType.CHEST) {
+            armorConfig = material.chestplateArmor;
+        } else if (slot == EquipmentSlotType.HEAD) {
+            armorConfig = material.helmetArmor;
+        } else {
+            throw new IllegalArgumentException("Invalid slot type for armor");
+        }
+        this.attributeCache = new AttributeCache(this, material.toughness, material.knockbackResistance, armorConfig);
     }
 
     @Override
@@ -69,6 +86,10 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
         return getArmorMaterial().getToughness();
     }
 
+    public float getKnockbackResistance() {
+        return getArmorMaterial().func_230304_f_();
+    }
+
     @Override
     public int getMaxDamage(ItemStack stack) {
         return material.getDurability(getEquipmentSlot());
@@ -87,13 +108,14 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
     @Nonnull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {
-        //TODO - 1.16: Cache this, and update it when one of the values change
-        Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
-        if (slot == getEquipmentSlot()) {
-            UUID modifier = ARMOR_MODIFIERS[slot.getIndex()];
-            attributes.put(Attributes.field_233826_i_, new AttributeModifier(modifier, "Armor modifier", getDamageReduceAmount(), Operation.ADDITION));
-            attributes.put(Attributes.field_233827_j_, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
-        }
-        return attributes;
+        return slot == getEquipmentSlot() ? attributeCache.getAttributes() : ImmutableMultimap.of();
+    }
+
+    @Override
+    public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
+        UUID modifier = ARMOR_MODIFIERS[getEquipmentSlot().getIndex()];
+        builder.put(Attributes.field_233826_i_, new AttributeModifier(modifier, "Armor modifier", getDamageReduceAmount(), Operation.ADDITION));
+        builder.put(Attributes.field_233827_j_, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
+        builder.put(Attributes.field_233820_c_, new AttributeModifier(modifier, "Armor knockback resistance", getKnockbackResistance(), Operation.ADDITION));
     }
 }

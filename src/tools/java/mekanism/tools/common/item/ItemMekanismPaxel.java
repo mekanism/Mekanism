@@ -1,16 +1,19 @@
 package mekanism.tools.common.item;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import mekanism.api.functions.FloatSupplier;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
-import mekanism.tools.common.material.BaseMekanismMaterial;
+import mekanism.tools.common.item.attribute.AttributeCache;
+import mekanism.tools.common.item.attribute.IAttributeRefresher;
+import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -45,7 +48,7 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 
-public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
+public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttributeRefresher {
 
     private static final ToolType PAXEL_TOOL_TYPE = ToolType.get("paxel");
 
@@ -60,8 +63,9 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
     private final IntSupplier paxelEnchantability;
     private final IntSupplier paxelMaxDurability;
     private final IntSupplier paxelHarvestLevel;
+    private final AttributeCache attributeCache;
 
-    public ItemMekanismPaxel(BaseMekanismMaterial material) {
+    public ItemMekanismPaxel(MaterialCreator material) {
         super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, Collections.emptySet(), getItemProperties(material.getPaxelHarvestLevel()));
         paxelDamage = material::getPaxelDamage;
         paxelAtkSpeed = material::getPaxelAtkSpeed;
@@ -69,6 +73,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
         paxelEnchantability = material::getPaxelEnchantability;
         paxelMaxDurability = material::getPaxelMaxUses;
         paxelHarvestLevel = material::getPaxelHarvestLevel;
+        this.attributeCache = new AttributeCache(this, material.attackDamage, material.paxelDamage, material.paxelAtkSpeed);
     }
 
     public ItemMekanismPaxel(ItemTier material) {
@@ -79,6 +84,8 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
         paxelEnchantability = material::getEnchantability;
         paxelMaxDurability = material::getMaxUses;
         paxelHarvestLevel = material::getHarvestLevel;
+        //Don't add any listeners as all the values are "static"
+        attributeCache = new AttributeCache(this);
     }
 
     @Override
@@ -215,26 +222,12 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
     @Nonnull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {
-        //TODO - 1.16: Cache this, and update it when one of the values change
-        Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
-        if (slot == EquipmentSlotType.MAINHAND) {
-            attributes.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", getAttackDamage(), Operation.ADDITION));
-            attributes.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", paxelAtkSpeed.getAsFloat(), Operation.ADDITION));
-        }
-        return attributes;
+        return slot == EquipmentSlotType.MAINHAND ? attributeCache.getAttributes() : ImmutableMultimap.of();
     }
 
-    /**
-     * Primitive supplier helper for floats
-     */
-    @FunctionalInterface
-    private interface FloatSupplier {
-
-        /**
-         * Gets a result.
-         *
-         * @return a result
-         */
-        float getAsFloat();
+    @Override
+    public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
+        builder.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", getAttackDamage(), Operation.ADDITION));
+        builder.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", paxelAtkSpeed.getAsFloat(), Operation.ADDITION));
     }
 }
