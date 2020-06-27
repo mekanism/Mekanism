@@ -35,8 +35,8 @@ public class QuadUtils {
     }
 
     public static void remapUVs(Quad quad, TextureAtlasSprite newTexture) {
-        float uMin = quad.getTexture().getInterpolatedU(0), uMax = quad.getTexture().getInterpolatedU(16);
-        float vMin = quad.getTexture().getInterpolatedV(0), vMax = quad.getTexture().getInterpolatedV(16);
+        float uMin = quad.getTexture().getMinU(), uMax = quad.getTexture().getMaxU();
+        float vMin = quad.getTexture().getMinV(), vMax = quad.getTexture().getMaxV();
         for (Vertex v : quad.getVertices()) {
             float newU = (v.getTexU() - uMin) * 16F / (uMax - uMin);
             float newV = (v.getTexV() - vMin) * 16F / (vMax - vMin);

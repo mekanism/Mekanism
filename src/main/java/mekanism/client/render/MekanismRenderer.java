@@ -65,6 +65,7 @@ public class MekanismRenderer {
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
     public static TextureAtlasSprite redstoneTorch;
+    public static TextureAtlasSprite redstonePulse;
     public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
 
     //We ignore the warning, due to this actually being able to be null during runData
@@ -347,6 +348,8 @@ public class MekanismRenderer {
         event.addSprite(Mekanism.rl("liquid/energy"));
         event.addSprite(Mekanism.rl("liquid/heat"));
 
+        event.addSprite(Mekanism.rl("icon/redstone_control_pulse"));
+
         //MekaSuit
         event.addSprite(Mekanism.rl("entity/armor/blank"));
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_player"));
@@ -390,6 +393,7 @@ public class MekanismRenderer {
         energyIcon = map.getSprite(Mekanism.rl("liquid/energy"));
         heatIcon = map.getSprite(Mekanism.rl("liquid/heat"));
         redstoneTorch = map.getSprite(new ResourceLocation("minecraft:block/redstone_torch"));
+        redstonePulse = map.getSprite(Mekanism.rl("icon/redstone_control_pulse"));
 
         //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
         RenderLogisticalTransporter.onStitch(map);

@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.tab;
 
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
@@ -9,13 +10,15 @@ import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IRedstoneControl;
+import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
-    private static final ResourceLocation DISABLED = MekanismUtils.getResource(ResourceType.GUI, "gun_powder.png");
+    private static final ResourceLocation DISABLED = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_disabled.png");
     private static final ResourceLocation HIGH = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_high.png");
     private static final ResourceLocation LOW = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_low.png");
     private static final ResourceLocation PULSE = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_pulse.png");
@@ -50,5 +53,19 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     @Override
     protected void colorTab() {
         MekanismRenderer.color(EnumColor.DARK_RED);
+    }
+
+    @Override
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        if (((IRedstoneControl) tile).getControlType() == RedstoneControl.PULSE) {
+            super.renderButton(mouseX, mouseY, partialTicks);
+            //Draw the button background
+            drawButton(mouseX, mouseY);
+            //Draw the overlay onto the button
+            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            GuiUtils.drawSprite(getButtonX(), getButtonY(), innerWidth, innerHeight, 0, MekanismRenderer.redstonePulse);
+        } else {
+            super.renderButton(mouseX, mouseY, partialTicks);
+        }
     }
 }
