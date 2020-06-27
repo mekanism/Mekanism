@@ -11,11 +11,13 @@ import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.item.attribute.AttributeCache;
 import mekanism.tools.common.item.attribute.IAttributeRefresher;
 import mekanism.tools.common.material.MaterialCreator;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
@@ -62,6 +64,24 @@ public class ItemMekanismHoe extends HoeItem implements IHasRepairType, IAttribu
     @Override
     public boolean isDamageable() {
         return getTier().getMaxUses() > 0;
+    }
+
+    @Override
+    public int getHarvestLevel(@Nonnull ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState) {
+        return tool == HOE_TOOL_TYPE ? getTier().getHarvestLevel() : super.getHarvestLevel(stack, tool, player, blockState);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Wrap {@link net.minecraft.item.ToolItem#getDestroySpeed(ItemStack, BlockState)} to return our efficiency level
+     */
+    @Override
+    public float getDestroySpeed(@Nonnull ItemStack stack, BlockState state) {
+        if (getToolTypes(stack).stream().anyMatch(state::isToolEffective) || effectiveBlocks.contains(state.getBlock())) {
+            return getTier().getEfficiency();
+        }
+        return 1;
     }
 
     /**
