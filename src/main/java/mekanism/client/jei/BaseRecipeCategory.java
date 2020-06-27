@@ -1,5 +1,6 @@
-/*package mekanism.client.jei;
+package mekanism.client.jei;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.longs.Long2ObjectFunction;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -93,28 +94,28 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public String getTitle() {
-        return component.getFormattedText();
+        return component.getString();
     }
 
     @Override
-    public void draw(RECIPE recipe, double mouseX, double mouseY) {
-        guiElements.forEach(e -> e.render((int) mouseX, (int) mouseY, 0));
+    public void draw(RECIPE recipe, MatrixStack matrix, double mouseX, double mouseY) {
+        guiElements.forEach(e -> e.func_230430_a_(matrix, (int) mouseX, (int) mouseY, 0));
     }
 
     @Override
-    public void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
+    public void renderItem(@Nonnull MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
         if (!stack.isEmpty()) {
             try {
-                RenderSystem.pushMatrix();
+                matrix.push();
                 RenderSystem.enableDepthTest();
                 RenderHelper.enableStandardItemLighting();
                 if (scale != 1) {
-                    RenderSystem.scalef(scale, scale, scale);
+                    matrix.scale(scale, scale, scale);
                 }
                 Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();
                 RenderSystem.disableDepthTest();
-                RenderSystem.popMatrix();
+                matrix.pop();
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
             }
@@ -164,4 +165,4 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
             group.set(slot, stacks);
         }
     }
-}*/
+}

@@ -12,6 +12,7 @@ public interface IOwnerItem {
 
     @Nullable
     default UUID getOwnerUUID(ItemStack stack) {
+        //TODO - 1.16: Something is broken about displaying the owner of an item that a player pick blocked
         if (ItemDataUtils.hasUUID(stack, NBTConstants.OWNER_UUID)) {
             return ItemDataUtils.getUniqueID(stack, NBTConstants.OWNER_UUID);
         }

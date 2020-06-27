@@ -1,5 +1,6 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.providers.IBlockProvider;
@@ -57,11 +58,11 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
     }
 
     @Override
-    public void draw(SawmillRecipe recipe, double mouseX, double mouseY) {
-        super.draw(recipe, mouseX, mouseY);
+    public void draw(SawmillRecipe recipe, MatrixStack matrix, double mouseX, double mouseY) {
+        super.draw(recipe, matrix, mouseX, mouseY);
         double secondaryChance = recipe.getSecondaryChance();
         if (secondaryChance > 0) {
-            getFont().drawString(Math.round(secondaryChance * 100) + "%", 104, 41, 0x404040);
+            getFont().func_238421_b_(matrix, Math.round(secondaryChance * 100) + "%", 104, 41, 0x404040);
         }
     }
-}*/
+}

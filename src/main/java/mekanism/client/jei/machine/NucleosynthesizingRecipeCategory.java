@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,9 +80,9 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
     }
 
     @Override
-    public List<String> getTooltipStrings(NucleosynthesizingRecipe recipe, double mouseX, double mouseY) {
+    public List<ITextComponent> getTooltipStrings(NucleosynthesizingRecipe recipe, double mouseX, double mouseY) {
         if (mouseX >= 5 - 3 && mouseX < 5 + getWidth() - 6 - 3 && mouseY >= 88 - 12 && mouseY < 98 - 12) {
-            return Collections.singletonList(MekanismLang.TICKS_REQUIRED.translate(recipe.getDuration()).getString());
+            return Collections.singletonList(MekanismLang.TICKS_REQUIRED.translate(recipe.getDuration()));
         }
         return Collections.emptyList();
     }
@@ -119,4 +119,4 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initChemical(gasStacks, 0, true, 6 - xOffset, 19 - yOffset, 16, 46, scaledGases, true);
     }
-}*/
+}

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.util.math.vector.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -263,7 +264,7 @@ public class MekanismRenderer {
         return LightTexture.packLight(Math.max(blockLight, glow), Math.max(skyLight, glow));
     }
 
-    public static void renderColorOverlay(int x, int y, int width, int height, int color) {
+    public static void renderColorOverlay(MatrixStack matrix, int x, int y, int width, int height, int color) {
         float r = (color >> 24 & 255) / 255.0F;
         float g = (color >> 16 & 255) / 255.0F;
         float b = (color >> 8 & 255) / 255.0F;
@@ -276,10 +277,11 @@ public class MekanismRenderer {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.pos(width, y, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.pos(x, y, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.pos(x, height, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.pos(width, height, 0).color(r, g, b, a).endVertex();
+        Matrix4f matrix4f = matrix.getLast().getMatrix();
+        bufferbuilder.pos(matrix4f, width, y, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.pos(matrix4f, x, y, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.pos(matrix4f, x, height, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.pos(matrix4f, width, height, 0).color(r, g, b, a).endVertex();
         tessellator.draw();
         RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
@@ -289,24 +291,6 @@ public class MekanismRenderer {
 
     public static float getPartialTick() {
         return Minecraft.getInstance().getRenderPartialTicks();
-    }
-
-    @Deprecated
-    public static void rotate(Direction facing, float north, float south, float west, float east) {
-        switch (facing) {
-            case NORTH:
-                RenderSystem.rotatef(north, 0, 1, 0);
-                break;
-            case SOUTH:
-                RenderSystem.rotatef(south, 0, 1, 0);
-                break;
-            case WEST:
-                RenderSystem.rotatef(west, 0, 1, 0);
-                break;
-            case EAST:
-                RenderSystem.rotatef(east, 0, 1, 0);
-                break;
-        }
     }
 
     public static void rotate(MatrixStack matrix, Direction facing, float north, float south, float west, float east) {

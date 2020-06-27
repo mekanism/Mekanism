@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,4 +81,4 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initChemical(gasStacks, 0, true, 41, 21, 6, 12, scaledGases, false);
     }
-}*/
+}

@@ -65,7 +65,6 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
             matrix.rotate(Vector3f.ZP.rotationDegrees(180));
             matrix.translate(8, 8, 3);
             matrix.scale(16, -16, 16);
-            //TODO: The lighting seems a bit off but it is close enough for now
             Minecraft.getInstance().getItemRenderer().renderItem(binSlot.getStack(), TransformType.GUI, MekanismRenderer.FULL_LIGHT, overlayLight, matrix, renderer);
             matrix.pop();
             renderText(matrix, renderer, overlayLight, amount, facing, 0.02F);
@@ -83,21 +82,21 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         matrix.translate(0, -0.3725, 0);
         switch (side) {
             case SOUTH:
-                matrix.translate(0, 1, 0);
+                matrix.translate(0, 1, 0.0001);
                 matrix.rotate(Vector3f.XP.rotationDegrees(90));
                 break;
             case NORTH:
-                matrix.translate(1, 1, 1);
+                matrix.translate(1, 1, 0.9999);
                 matrix.rotate(Vector3f.YP.rotationDegrees(180));
                 matrix.rotate(Vector3f.XP.rotationDegrees(90));
                 break;
             case EAST:
-                matrix.translate(0, 1, 1);
+                matrix.translate(0.0001, 1, 1);
                 matrix.rotate(Vector3f.YP.rotationDegrees(90));
                 matrix.rotate(Vector3f.XP.rotationDegrees(90));
                 break;
             case WEST:
-                matrix.translate(1, 1, 0);
+                matrix.translate(0.9999, 1, 0);
                 matrix.rotate(Vector3f.YP.rotationDegrees(-90));
                 matrix.rotate(Vector3f.XP.rotationDegrees(90));
                 break;
@@ -124,8 +123,6 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         int realWidth = (int) Math.floor(displayWidth / scale);
         int offsetX = (realWidth - requiredWidth) / 2;
         int offsetY = (realHeight - requiredHeight) / 2;
-        //font.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
-        //TODO - 1.16: Verify the coloring, was "\u00a7f" + text
         font.func_238416_a_(text.func_240699_a_(EnumColor.WHITE.textFormatting), offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, overlayLight,
               false, matrix.getLast().getMatrix(), renderer, false, 0, MekanismRenderer.FULL_LIGHT);
         matrix.pop();

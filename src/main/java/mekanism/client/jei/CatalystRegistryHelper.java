@@ -1,4 +1,4 @@
-/*package mekanism.client.jei;
+package mekanism.client.jei;
 
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
@@ -35,4 +35,4 @@ public class CatalystRegistryHelper {
     public static void registerRecipeItem(IRecipeCatalystRegistration registry, IItemProvider mekanismItem, ResourceLocation... categories) {
         registry.addRecipeCatalyst(mekanismItem.getItemStack(), categories);
     }
-}*/
+}

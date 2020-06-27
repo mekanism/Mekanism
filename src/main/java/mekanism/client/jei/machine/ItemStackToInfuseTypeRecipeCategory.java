@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -32,4 +32,4 @@ public class ItemStackToInfuseTypeRecipeCategory extends ItemStackToChemicalReci
     public Class<? extends ItemStackToInfuseTypeRecipe> getRecipeClass() {
         return ItemStackToInfuseTypeRecipe.class;
     }
-}*/
+}

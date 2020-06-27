@@ -359,9 +359,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         matrix.translate(0, 0, -500D);
         func_230446_a_(matrix);
         super.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
-        func_230459_a_(matrix, mouseX, mouseY);
-        matrix.translate(0, 0, 500D);
         matrix.pop();
+        func_230459_a_(matrix, mouseX, mouseY);
     }
 
     @Override
@@ -428,6 +427,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     public Collection<GuiWindow> getWindows() {
         return windows;
+    }
+
+    public List<IGuiEventListener> children() {
+        return field_230705_e_;
     }
 
     public LRU<GuiWindow>.LRUIterator getWindowsDescendingIterator() {

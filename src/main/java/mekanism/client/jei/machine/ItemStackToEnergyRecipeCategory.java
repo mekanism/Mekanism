@@ -1,5 +1,6 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
@@ -20,6 +21,7 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStackToEnergyRecipe> {
 
@@ -58,20 +60,20 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     }
 
     @Override
-    public void draw(ItemStackToEnergyRecipe recipe, double mouseX, double mouseY) {
-        super.draw(recipe, mouseX, mouseY);
+    public void draw(ItemStackToEnergyRecipe recipe, MatrixStack matrix, double mouseX, double mouseY) {
+        super.draw(recipe, matrix, mouseX, mouseY);
         if (!recipe.getOutputDefinition().isZero()) {
             //Manually draw the contents of the recipe
-            gauge.renderContents();
+            gauge.renderContents(matrix);
         }
     }
 
     @Override
-    public List<String> getTooltipStrings(ItemStackToEnergyRecipe recipe, double mouseX, double mouseY) {
-        if (gauge.isMouseOver(mouseX, mouseY) && !recipe.getOutputDefinition().isZero()) {
+    public List<ITextComponent> getTooltipStrings(ItemStackToEnergyRecipe recipe, double mouseX, double mouseY) {
+        if (gauge.func_231047_b_(mouseX, mouseY) && !recipe.getOutputDefinition().isZero()) {
             //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
-            return Collections.singletonList(EnergyDisplay.of(recipe.getOutputDefinition()).getTextComponent().getFormattedText());
+            return Collections.singletonList(EnergyDisplay.of(recipe.getOutputDefinition()).getTextComponent());
         }
         return Collections.emptyList();
     }
-}*/
+}

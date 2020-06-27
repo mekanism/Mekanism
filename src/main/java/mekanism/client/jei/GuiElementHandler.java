@@ -1,4 +1,4 @@
-/*package mekanism.client.jei;
+package mekanism.client.jei;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,10 +20,10 @@ import net.minecraft.util.ResourceLocation;
 public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
 
     private static void addAreaIfOutside(List<Rectangle2d> areas, int parentX, int parentY, int parentWidth, int parentHeight, Widget element) {
-        if (element.visible) {
-            int x = element.x;
-            int y = element.y;
-            int width = element.getWidth();
+        if (element.field_230694_p_) {
+            int x = element.field_230690_l_;
+            int y = element.field_230691_m_;
+            int width = element.func_230998_h_();
             int height = element.getHeight();
             if (x < parentX || y < parentY || x + width > parentX + parentWidth || y + height > parentY + parentHeight) {
                 //If the element sticks out at all add it
@@ -74,7 +74,7 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
     @Nullable
     private Object getIngredientUnderMouse(List<? extends IGuiEventListener> children, double mouseX, double mouseY) {
         for (IGuiEventListener child : children) {
-            if (child instanceof IJEIIngredientHelper && child.isMouseOver(mouseX, mouseY)) {
+            if (child instanceof IJEIIngredientHelper && child.func_231047_b_(mouseX, mouseY)) {
                 return ((IJEIIngredientHelper) child).getIngredient();
             }
         }
@@ -103,10 +103,10 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
                 if (recipeArea.isActive()) {
                     ResourceLocation[] categories = recipeArea.getRecipeCategories();
                     //getRecipeCategory is a cheaper call than isMouseOver so we perform it first
-                    if (categories != null && child.isMouseOver(mouseX, mouseY)) {
+                    if (categories != null && child.func_231047_b_(mouseX, mouseY)) {
                         GuiRelativeElement element = (GuiRelativeElement) child;
                         //TODO: Decide if we want our own implementation to overwrite the getTooltipStrings and have it show something like "Crusher Recipes"
-                        IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(), element.getWidth(),
+                        IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(), element.func_230998_h_(),
                               element.getHeight(), categories);
                         return Collections.singleton(clickableArea);
                     }
@@ -115,4 +115,4 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
         }
         return Collections.emptyList();
     }
-}*/
+}

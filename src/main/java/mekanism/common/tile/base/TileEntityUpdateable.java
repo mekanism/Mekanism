@@ -102,7 +102,7 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
     }
 
     public void handleUpdatePacket(@Nonnull CompoundNBT tag) {
-        handleUpdateTag(getBlockState(), tag); //TODO - 1.16 reevaluate if this is correct, it may need to get the uncached block state?
+        handleUpdateTag(getBlockState(), tag);
     }
 
     public void sendUpdatePacket() {

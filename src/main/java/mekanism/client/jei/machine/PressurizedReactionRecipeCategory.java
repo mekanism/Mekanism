@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
@@ -81,4 +81,4 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
         initChemical(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, recipe.getInputGas().getRepresentations(), true);
         initChemical(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, Collections.singletonList(outputDefinition.getRight()), true);
     }
-}*/
+}

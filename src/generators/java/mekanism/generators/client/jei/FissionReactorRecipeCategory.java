@@ -1,4 +1,4 @@
-/*package mekanism.generators.client.jei;
+package mekanism.generators.client.jei;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,4 +86,4 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
         initChemical(gasStacks, 1, true, 153 - xOffset, 14 - yOffset, 16, 58, steamOutput, true);
         initChemical(gasStacks, 2, false, 172 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
-}*/
+}

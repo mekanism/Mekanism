@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
@@ -29,7 +29,7 @@ public class SPSRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
     private final IDrawable icon;
 
     public SPSRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.SPS_CASING, 3, 12, 168, 74);
+        super(helper, MekanismBlocks.SPS_CASING.getRegistryName(), MekanismLang.SPS.translate(), 3, 12, 168, 74);
         icon = helper.createDrawableIngredient(MekanismItems.ANTIMATTER_PELLET.getItemStack());
     }
 
@@ -49,12 +49,6 @@ public class SPSRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
                 return timer.getValue() / 20D;
             }
         }, 6, 75, getWidth() - 8, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
-    }
-
-    @Nonnull
-    @Override
-    public String getTitle() {
-        return MekanismLang.SPS.translate().getFormattedText();
     }
 
     @Nonnull
@@ -81,4 +75,4 @@ public class SPSRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
         initChemical(gasStacks, 0, true, 7 - xOffset, 14 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
         initChemical(gasStacks, 2, false, 151 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
-}*/
+}

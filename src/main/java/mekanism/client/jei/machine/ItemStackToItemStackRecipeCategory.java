@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import mekanism.api.providers.IBlockProvider;
@@ -51,4 +51,4 @@ public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemS
         itemStacks.init(1, false, 88, 19);
         itemStacks.set(ingredients);
     }
-}*/
+}

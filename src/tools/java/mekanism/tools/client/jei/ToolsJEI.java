@@ -1,4 +1,4 @@
-/*package mekanism.tools.client.jei;
+package mekanism.tools.client.jei;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 @JeiPlugin
-public class ToolsJEI implements IModPlugin {//TODO - JEI
+public class ToolsJEI implements IModPlugin {
 
     @Nonnull
     @Override
@@ -53,4 +53,4 @@ public class ToolsJEI implements IModPlugin {//TODO - JEI
             }
         }
     }
-}*/
+}

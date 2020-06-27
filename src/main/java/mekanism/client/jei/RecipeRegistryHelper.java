@@ -1,4 +1,4 @@
-/*package mekanism.client.jei;
+package mekanism.client.jei;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,4 +81,4 @@ public class RecipeRegistryHelper {
     private static ClientWorld getWorld() {
         return Minecraft.getInstance().world;
     }
-}*/
+}

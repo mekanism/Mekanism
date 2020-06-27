@@ -1,7 +1,6 @@
 package mekanism.client.render.lib.effect;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.lib.effect.CustomEffect;
@@ -20,7 +19,7 @@ public class BillboardingEffectRenderer {
     private static final Minecraft minecraft = Minecraft.getInstance();
 
     public static void render(CustomEffect effect, BlockPos renderPos, MatrixStack matrixStack, IRenderTypeBuffer renderer, long time, float partialTick) {
-        RenderSystem.pushMatrix();
+        matrixStack.push();
         int gridSize = effect.getTextureGridSize();
         IVertexBuilder buffer = getRenderBuffer(renderer, effect.getTexture());
         Matrix4f matrix = matrixStack.getLast().getMatrix();
@@ -48,7 +47,7 @@ public class BillboardingEffectRenderer {
         buffer.pos(matrix, vertexPos[1].getX(), vertexPos[1].getY(), vertexPos[1].getZ()).color(color[0], color[1], color[2], color[3]).tex(maxU, maxV).endVertex();
         buffer.pos(matrix, vertexPos[2].getX(), vertexPos[2].getY(), vertexPos[2].getZ()).color(color[0], color[1], color[2], color[3]).tex(maxU, minV).endVertex();
         buffer.pos(matrix, vertexPos[3].getX(), vertexPos[3].getY(), vertexPos[3].getZ()).color(color[0], color[1], color[2], color[3]).tex(minU, minV).endVertex();
-        RenderSystem.popMatrix();
+        matrixStack.pop();
     }
 
     protected static IVertexBuilder getRenderBuffer(IRenderTypeBuffer renderer, ResourceLocation texture) {

@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.scroll;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -124,7 +123,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
         }
         guiObj.renderItemWithOverlay(matrix, slot.getItem().getStack(), slotX + 1, slotY + 1, 1.0F, "");
         if (slot.getCount() > 1) {
-            renderSlotText(getCountText(slot.getCount()), slotX + 1, slotY + 1);
+            renderSlotText(matrix, getCountText(slot.getCount()), slotX + 1, slotY + 1);
         }
     }
 
@@ -136,11 +135,10 @@ public class GuiSlotScroll extends GuiRelativeElement {
         guiObj.renderItemTooltip(matrix, slot.getItem().getStack(), slotX, slotY);
     }
 
-    private void renderSlotText(String text, int x, int y) {
-        RenderSystem.pushMatrix();
+    private void renderSlotText(MatrixStack matrix, String text, int x, int y) {
+        matrix.push();
         MekanismRenderer.resetColor();
         float scale = 0.6F;
-        MatrixStack matrix = new MatrixStack();
         float yAdd = 4 - (scale * 8) / 2F;
         matrix.translate(x + 16 - getFont().getStringWidth(text) * scale, y + 9 + yAdd, 200F);
         matrix.scale(scale, scale, scale);
@@ -148,8 +146,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
         IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
         getFont().renderString(text, 0, 0, 0xFFFFFF, true, matrix.getLast().getMatrix(), buffer, false, 0, 15728880);
         buffer.finish();
-
-        RenderSystem.popMatrix();
+        matrix.pop();
     }
 
     private String getCountText(long count) {

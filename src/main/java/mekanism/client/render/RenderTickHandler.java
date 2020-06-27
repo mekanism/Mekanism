@@ -193,7 +193,8 @@ public class RenderTickHandler {
                 PlayerEntity player = minecraft.player;
                 World world = minecraft.player.world;
                 //TODO - 1.16: Check if we have another matrix stack we should use
-                renderStatusBar(new MatrixStack(), player);
+                MatrixStack matrix = new MatrixStack();
+                renderStatusBar(matrix, player);
                 //Traverse active jetpacks and do animations
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
                     PlayerEntity p = world.getPlayerByUuid(uuid);
@@ -263,7 +264,7 @@ public class RenderTickHandler {
                         if (severity > RadiationManager.BASELINE) {
                             int effect = (int) (prevRadiation * 255);
                             int color = (0x701E1E << 8) + effect;
-                            MekanismRenderer.renderColorOverlay(0, 0, minecraft.getMainWindow().getScaledWidth(), minecraft.getMainWindow().getScaledHeight(), color);
+                            MekanismRenderer.renderColorOverlay(matrix, 0, 0, minecraft.getMainWindow().getScaledWidth(), minecraft.getMainWindow().getScaledHeight(), color);
                         }
                     });
                 }

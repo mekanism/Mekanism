@@ -337,7 +337,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     public String getDataType() {
-        return getName().getString();//TODO - 1.16: Test
+        return getName().getString();
     }
 
     public boolean hasSecondaryResourceBar() {

@@ -91,7 +91,7 @@ public class GuiWindow extends GuiTexturedElement {
     @Override
     public void renderBackgroundOverlay(MatrixStack matrix, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
-            MekanismRenderer.renderColorOverlay(0, 0, minecraft.getMainWindow().getScaledWidth(), minecraft.getMainWindow().getScaledHeight(), OVERLAY_COLOR.rgba());
+            MekanismRenderer.renderColorOverlay(matrix, 0, 0, minecraft.getMainWindow().getScaledWidth(), minecraft.getMainWindow().getScaledHeight(), OVERLAY_COLOR.rgba());
         } else {
             RenderSystem.color4f(1, 1, 1, 0.75F);
             RenderSystem.enableBlend();

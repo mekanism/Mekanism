@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import mekanism.api.chemical.gas.GasStack;
@@ -50,4 +50,4 @@ public class GasToGasRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
         initChemical(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
         initChemical(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
-}*/
+}
