@@ -137,12 +137,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
 
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        if(material.getEnchantability() == 0) {
-            return false;
-        }
-        else {
-            return super.isBookEnchantable(stack, book);
-        }
+        return material.getEnchantability() > 0;
     }
 
     public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {

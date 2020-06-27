@@ -128,12 +128,7 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
 
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        if(material.getEnchantability() == 0) {
-            return false;
-        }
-        else {
-            return super.isBookEnchantable(stack, book);
-        }
+    	return material.getEnchantability() > 0;
     }
 
     public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent {

@@ -128,12 +128,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
 
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        if(material.getEnchantability() == 0) {
-            return false;
-        }
-        else {
-            return super.isBookEnchantable(stack, book);
-        }
+    	return material.getEnchantability() > 0;
     }
 
     @ParametersAreNonnullByDefault

@@ -44,12 +44,7 @@ public class ItemHazmatSuitArmor extends ArmorItem {
 
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        if(material.getEnchantability() == 0) {
-            return false;
-        }
-        else {
-            return super.isBookEnchantable(stack, book);
-        }
+    	return material.getEnchantability() > 0;
     }
 
     @ParametersAreNonnullByDefault
