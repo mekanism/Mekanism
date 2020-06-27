@@ -1,0 +1,33 @@
+{
+	"textures": {
+		"6": "mekanism:block/qio_drive_array/drive_led",
+		"7": "mekanism:block/qio_drive_array/side"
+	},
+	"elements": [
+		{
+			"name": "drive",
+			"from": [13, 3, 2],
+			"to": [14, 5, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [13, 4, 5]},
+			"faces": {
+				"north": {"uv": [1, 11, 2, 13], "texture": "#7"},
+				"east": {"uv": [9, 11, 2, 13], "texture": "#7"},
+				"west": {"uv": [2, 11, 9, 13], "texture": "#7"},
+				"up": {"uv": [2, 10, 9, 11], "rotation": 90, "texture": "#7"}
+			}
+		},
+		{
+			"name": "drive_led",
+			"from": [12.995, 3, 1.995],
+			"to": [14.045, 4, 3.045],
+			"rotation": {"angle": 0, "axis": "y", "origin": [13, 3, 3]},
+			"faces": {
+				"north": {"uv": [1, 1, 2, 2], "texture": "#6"},
+				"east": {"uv": [1, 1, 2, 2], "texture": "#6"},
+				"south": {"uv": [1, 1, 2, 2], "texture": "#6"},
+				"west": {"uv": [1, 1, 2, 2], "texture": "#6"},
+				"up": {"uv": [1, 1, 2, 2], "texture": "#6"}
+			}
+		}
+	]
+}

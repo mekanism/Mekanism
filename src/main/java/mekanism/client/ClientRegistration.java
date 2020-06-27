@@ -118,6 +118,7 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
+import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -144,6 +145,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -230,7 +232,17 @@ public class ClientRegistration {
         ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getSolid() || renderType == RenderType.getTranslucent(),
               MekanismBlocks.ISOTOPIC_CENTRIFUGE);
 
-        customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), (orig, evt) -> new DriveArrayBakedModel(orig));
+        for (DriveStatus status : DriveStatus.values()) {
+            if (status == DriveStatus.NONE)
+                continue;
+            ModelLoader.addSpecialModel(status.getModel());
+        }
+
+        customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), (orig, evt) -> new DriveArrayBakedModel(orig, evt));
+        customModels.put(MekanismBlocks.QIO_DASHBOARD.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        customModels.put(MekanismBlocks.QIO_EXPORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        customModels.put(MekanismBlocks.QIO_IMPORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        customModels.put(MekanismBlocks.QIO_REDSTONE_ADAPTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismBlocks.MODIFICATION_STATION.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismItems.MEKA_TOOL.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
     }

@@ -2,8 +2,6 @@
 	"credit": "Model by CyanideX",
 	"textures": {
 		"0": "mekanism:block/models/qio_dashboard",
-		"2": "mekanism:block/models/qio_dashboard_screen_led",
-		"3": "mekanism:block/models/leds",
 		"particle": "mekanism:block/models/qio_dashboard"
 	},
 	"elements": [
@@ -22,39 +20,23 @@
 			}
 		},
 		{
-			"name": "qio_led_right",
+			"name": "qio_offline_right",
 			"from": [0.995, -0.005, 11],
 			"to": [2.005, 1.005, 13],
 			"rotation": {"angle": 0, "axis": "x", "origin": [8, 1, 5]},
 			"faces": {
-				"north": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
-				"east": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
-				"south": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
-				"west": {"uv": [11, 1, 13, 2], "texture": "#3", "tintindex": 0},
-				"up": {"uv": [11, 1, 12, 3], "texture": "#3", "tintindex": 0}
+				"west": {"uv": [14, 0, 15, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"up": {"uv": [14, 0, 15, 1], "rotation": 90, "texture": "#0", "tintindex": 0}
 			}
 		},
 		{
-			"name": "qio_led_left",
+			"name": "qio_offline_left",
 			"from": [13.995, -0.005, 11],
 			"to": [15.005, 1.005, 13],
-			"rotation": {"angle": 0, "axis": "x", "origin": [14.5, 0.5, 12]},
+			"rotation": {"angle": 0, "axis": "x", "origin": [21, 1, 5]},
 			"faces": {
-				"north": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
-				"east": {"uv": [12, 1, 14, 2], "texture": "#3", "tintindex": 0},
-				"south": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
-				"west": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
-				"up": {"uv": [11, 1, 12, 3], "texture": "#3", "tintindex": 0},
-				"down": {"uv": [15, 0, 16, 1], "rotation": 90, "texture": "#0", "tintindex": 0}
-			}
-		},
-		{
-			"name": "qio_dashboard_screen_led",
-			"from": [2, 1.005, 2],
-			"to": [14, 1.005, 14],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 1, 8]},
-			"faces": {
-				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2"}
+				"east": {"uv": [14, 0, 15, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
+				"up": {"uv": [14, 0, 15, 1], "rotation": 90, "texture": "#0", "tintindex": 0}
 			}
 		}
 	],

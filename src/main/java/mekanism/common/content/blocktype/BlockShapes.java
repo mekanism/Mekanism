@@ -2,7 +2,6 @@ package mekanism.common.content.blocktype;
 
 import static mekanism.common.util.VoxelShapeUtils.setShape;
 import static net.minecraft.block.Block.makeCuboidShape;
-
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.util.Direction;
@@ -37,6 +36,10 @@ public final class BlockShapes {
     public static final VoxelShape[] CHEMICAL_TANK = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] INDUSTRIAL_ALARM = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] QIO_DASHBOARD = new VoxelShape[EnumUtils.DIRECTIONS.length];
+    public static final VoxelShape[] QIO_DRIVE_ARRAY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] QIO_IMPORTER = new VoxelShape[EnumUtils.DIRECTIONS.length];
+    public static final VoxelShape[] QIO_EXPORTER = new VoxelShape[EnumUtils.DIRECTIONS.length];
+    public static final VoxelShape[] QIO_REDSTONE_ADAPTER = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] RADIOACTIVE_WASTE_BARREL = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] MODIFICATION_STATION = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] ISOTOPIC_CENTRIFUGE = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -643,6 +646,84 @@ public final class BlockShapes {
         setShape(VoxelShapeUtils.combine(
               makeCuboidShape(1, 15, 1, 15, 16, 15)
         ), QIO_DASHBOARD, true);
+
+        setShape(VoxelShapeUtils.combine(
+              makeCuboidShape(0, 12, 0, 16, 16, 9), // drive_top
+              makeCuboidShape(11, 5, 15.005, 12, 6, 16.005), // drive_status_led_1
+              makeCuboidShape(11, 3, 15.005, 12, 4, 16.005), // drive_status_led_2
+              makeCuboidShape(14, 10, 15.005, 15, 13, 16.005), // drive_frequency_led_right
+              makeCuboidShape(1, 10, 15.005, 2, 13, 16.005), // drive_frequency_led_left
+              makeCuboidShape(0, 0, 9, 16, 16, 16), // drive_front
+              makeCuboidShape(0, 6, 0, 16, 9, 9), // rack_top
+              makeCuboidShape(0, 0, 0, 16, 3, 9), // rack_bottom
+              makeCuboidShape(0, 3, 0, 1, 6, 1), // post_bottom_right
+              makeCuboidShape(0, 9, 0, 1, 12, 1), // post_top_right
+              makeCuboidShape(15, 3, 0, 16, 6, 1), // post_bottom_left
+              makeCuboidShape(15, 9, 0, 16, 12, 1) // post_top_left
+        ), QIO_DRIVE_ARRAY);
+
+        setShape(VoxelShapeUtils.combine(
+              makeCuboidShape(4, 0, 4, 12, 1, 12), // disc_base
+              makeCuboidShape(5, 4, 5, 11, 5, 6), // ring_top_led_1
+              makeCuboidShape(5, 4, 10, 11, 5, 11), // ring_top_led_2
+              makeCuboidShape(5, 4, 6, 6, 5, 10), // ring_top_led_3
+              makeCuboidShape(10, 4, 6, 11, 5, 10), // ring_top_led_4
+              makeCuboidShape(10, 2, 6, 11, 3, 10), // ring_bottom_led_1
+              makeCuboidShape(5, 2, 6, 6, 3, 10), // ring_bottom_led_2
+              makeCuboidShape(5, 2, 10, 11, 3, 11), // ring_bottom_led_3
+              makeCuboidShape(5, 2, 5, 11, 3, 6), // ring_bottom_led_4
+              makeCuboidShape(9, 1, 6, 10, 6, 7), // post_1
+              makeCuboidShape(9, 1, 9, 10, 6, 10), // post_2
+              makeCuboidShape(6, 1, 9, 7, 6, 10), // post_3
+              makeCuboidShape(6, 1, 6, 7, 6, 7), // post_4
+              makeCuboidShape(9, 8, 9, 10, 9, 10), // top_post_led_1
+              makeCuboidShape(6, 9, 6, 7, 10, 7), // top_post_led_2
+              makeCuboidShape(7.5, 1, 7.5, 8.5, 6, 8.5), // core_led
+              makeCuboidShape(5, 6, 5, 11, 7, 11), // disc_mid
+              makeCuboidShape(9, 7, 9, 10, 8, 10), // antenna_1
+              makeCuboidShape(6, 7, 6, 7, 9, 7) // antenna_2
+        ), QIO_IMPORTER, true, true);
+
+        setShape(VoxelShapeUtils.combine(
+              makeCuboidShape(4, 0, 4, 12, 1, 12), // disc_base
+              makeCuboidShape(5, 4, 5, 11, 5, 6), // ring_top_led_1
+              makeCuboidShape(5, 4, 10, 11, 5, 11), // ring_top_led_2
+              makeCuboidShape(5, 4, 6, 6, 5, 10), // ring_top_led_3
+              makeCuboidShape(10, 4, 6, 11, 5, 10), // ring_top_led_4
+              makeCuboidShape(10, 2, 6, 11, 3, 10), // ring_bottom_led_1
+              makeCuboidShape(5, 2, 6, 6, 3, 10), // ring_bottom_led_2
+              makeCuboidShape(5, 2, 10, 11, 3, 11), // ring_bottom_led_3
+              makeCuboidShape(5, 2, 5, 11, 3, 6), // ring_bottom_led_4
+              makeCuboidShape(9, 1, 6, 10, 6, 7), // post_1
+              makeCuboidShape(9, 1, 9, 10, 6, 10), // post_2
+              makeCuboidShape(6, 1, 9, 7, 6, 10), // post_3
+              makeCuboidShape(6, 1, 6, 7, 6, 7), // post_4
+              makeCuboidShape(7, 7, 7, 9, 8, 9), // top_post_led_1
+              makeCuboidShape(7, 8.01, 7, 9, 9.01, 9), // top_post_led_2
+              makeCuboidShape(7.5, 1, 7.5, 8.5, 6, 8.5), // core_led
+              makeCuboidShape(5, 6, 5, 11, 7, 11), // disc_mid
+              makeCuboidShape(6, 8, 6, 10, 9, 10), // disc_top
+              makeCuboidShape(9, 9, 9, 10, 10, 10), // crown_1
+              makeCuboidShape(6, 9, 9, 7, 10, 10), // crown_2
+              makeCuboidShape(6, 9, 6, 7, 10, 7), // crown_3
+              makeCuboidShape(9, 9, 6, 10, 10, 7) // crown_4
+        ), QIO_EXPORTER, true, true);
+
+        setShape(VoxelShapeUtils.combine(
+              makeCuboidShape(4, 0, 4, 12, 1, 12), // disc_base
+              makeCuboidShape(5, 2, 5, 11, 3, 6), // ring_led_1
+              makeCuboidShape(5, 2, 10, 11, 3, 11), // ring_led_2
+              makeCuboidShape(5, 2, 6, 6, 3, 10), // ring_led_3
+              makeCuboidShape(10, 2, 6, 11, 3, 10), // ring_led_4
+              makeCuboidShape(9, 1, 6, 10, 4, 7), // post_1
+              makeCuboidShape(9, 1, 9, 10, 4, 10), // post_2
+              makeCuboidShape(6, 1, 9, 7, 4, 10), // post_3
+              makeCuboidShape(6, 1, 6, 7, 4, 7), // post_4
+              makeCuboidShape(7.5, 1, 7.5, 8.5, 4, 8.5), // core_led
+              makeCuboidShape(5, 4, 5, 11, 5, 11), // disc_mid
+              makeCuboidShape(6, 8, 6, 10, 9, 10), // disc_top
+              makeCuboidShape(7, 5, 7, 9, 11, 9) // torch
+        ), QIO_REDSTONE_ADAPTER, true, true);
 
         setShape(VoxelShapeUtils.combine(
               makeCuboidShape(-16, 13, 0, 16, 16, 16), // desk_top

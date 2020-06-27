@@ -1,12 +1,12 @@
 package mekanism.common.registries;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import mekanism.api.tier.ITier;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
@@ -55,6 +55,7 @@ import mekanism.common.item.block.ItemBlockInductionProvider;
 import mekanism.common.item.block.ItemBlockIndustrialAlarm;
 import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.item.block.ItemBlockModificationStation;
+import mekanism.common.item.block.ItemBlockPersonalChest;
 import mekanism.common.item.block.ItemBlockResource;
 import mekanism.common.item.block.ItemBlockSecurityDesk;
 import mekanism.common.item.block.ItemBlockTooltip;
@@ -70,7 +71,6 @@ import mekanism.common.item.block.machine.ItemBlockLaserTractorBeam;
 import mekanism.common.item.block.machine.ItemBlockLogisticalSorter;
 import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.item.block.machine.ItemBlockOredictionificator;
-import mekanism.common.item.block.ItemBlockPersonalChest;
 import mekanism.common.item.block.machine.ItemBlockQuantumEntangloporter;
 import mekanism.common.item.block.machine.ItemBlockSeismicVibrator;
 import mekanism.common.item.block.machine.ItemBlockSolarNeutronActivator;
@@ -283,7 +283,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntitySPSPort>, ItemBlockTooltip<BlockBasicMultiblock<TileEntitySPSPort>>> SPS_PORT = registerBlock("sps_port", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.SPS_PORT), Rarity.EPIC);
     public static final BlockRegistryObject<BlockTileModel<TileEntitySuperchargedCoil, BlockTypeTile<TileEntitySuperchargedCoil>>, ItemBlockTooltip<BlockTileModel<TileEntitySuperchargedCoil, BlockTypeTile<TileEntitySuperchargedCoil>>>> SUPERCHARGED_COIL = registerBlock("supercharged_coil", () -> new BlockTileModel<>(MekanismBlockTypes.SUPERCHARGED_COIL), Rarity.EPIC);
 
-    public static final BlockRegistryObject<BlockTile<TileEntityQIODriveArray, BlockTypeTile<TileEntityQIODriveArray>>, ItemBlockMachine> QIO_DRIVE_ARRAY = BLOCKS.register("qio_drive_array", () -> new BlockTile<>(MekanismBlockTypes.QIO_DRIVE_ARRAY), ItemBlockMachine::new);
+    public static final BlockRegistryObject<BlockTileModel<TileEntityQIODriveArray, BlockTypeTile<TileEntityQIODriveArray>>, ItemBlockMachine> QIO_DRIVE_ARRAY = BLOCKS.register("qio_drive_array", () -> new BlockTileModel<>(MekanismBlockTypes.QIO_DRIVE_ARRAY), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTile<TileEntityQIODashboard, BlockTypeTile<TileEntityQIODashboard>>, ItemBlockMachine> QIO_DASHBOARD = BLOCKS.register("qio_dashboard", () -> new BlockTile<>(MekanismBlockTypes.QIO_DASHBOARD), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTile<TileEntityQIOImporter, BlockTypeTile<TileEntityQIOImporter>>, ItemBlockMachine> QIO_IMPORTER = BLOCKS.register("qio_importer", () -> new BlockTile<>(MekanismBlockTypes.QIO_IMPORTER), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTile<TileEntityQIOExporter, BlockTypeTile<TileEntityQIOExporter>>, ItemBlockMachine> QIO_EXPORTER = BLOCKS.register("qio_exporter", () -> new BlockTile<>(MekanismBlockTypes.QIO_EXPORTER), ItemBlockMachine::new);
