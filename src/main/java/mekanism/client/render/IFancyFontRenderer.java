@@ -142,12 +142,12 @@ public interface IFancyFontRenderer {
 
         WrappedTextRenderer(IFancyFontRenderer font) {
             this.font = font;
-            SPACE_LENGTH = font.getFont().getCharWidth(' ');
+            SPACE_LENGTH = font.getFont().getStringWidth(" ");//TODO - 1.16: Evaluate this, used to use char width
         }
 
         void render(MatrixStack matrix, String text, float x, float y, int color, float maxLength) {
             for (char c : text.toCharArray()) {
-                float charLength = font.getFont().getCharWidth(c);
+                float charLength = font.getFont().getStringWidth(Character.toString(c));//TODO - 1.16: Evaluate this, used to use char width
                 if (c == ' ') {
                     addWord(maxLength);
                     continue;

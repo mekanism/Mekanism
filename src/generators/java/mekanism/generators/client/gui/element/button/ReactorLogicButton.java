@@ -15,6 +15,7 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 
 public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE>> extends MekanismButton {
 
@@ -28,7 +29,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
 
     public ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, @Nonnull IReactorLogic<TYPE> tile, IntSupplier indexSupplier,
           Supplier<TYPE[]> listSupplier, Consumer<TYPE> onPress) {
-        super(gui, x, y, 128, 22, "", null, null);
+        super(gui, x, y, 128, 22, StringTextComponent.field_240750_d_, null, null);
         this.index = index;
         this.indexSupplier = indexSupplier;
         this.modeList = listSupplier;

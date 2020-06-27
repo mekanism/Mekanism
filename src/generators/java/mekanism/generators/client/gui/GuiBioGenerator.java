@@ -44,7 +44,7 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
 
     @Override
     protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        renderTitleText();
+        renderTitleText(matrix);
         drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         super.func_230451_b_(matrix, mouseX, mouseY);
     }

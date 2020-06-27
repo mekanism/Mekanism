@@ -45,7 +45,7 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
 
     @Override
     protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        renderTitleText();
+        renderTitleText(matrix);
         drawTextScaledBound(matrix, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(tile.logicType.getColor(), tile.logicType), 16, 123, titleTextColor(), 144);
         drawCenteredText(matrix, MekanismLang.STATUS.translate(EnumColor.RED, tile.getStatus()), 0, getXSize(), 136, titleTextColor());
         super.func_230451_b_(matrix, mouseX, mouseY);

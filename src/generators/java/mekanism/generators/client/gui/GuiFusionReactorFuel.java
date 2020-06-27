@@ -46,7 +46,7 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
         func_230480_a_(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
         func_230480_a_(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
         func_230480_a_(injectionRateField = new GuiTextField(this, 98, 115, 26, 11));
-        injectionRateField.changeFocus(true);
+        injectionRateField.func_231049_c__(true);
         injectionRateField.setInputValidator(InputValidator.DIGIT);
         injectionRateField.setEnterHandler(this::setInjection);
         injectionRateField.setMaxStringLength(2);

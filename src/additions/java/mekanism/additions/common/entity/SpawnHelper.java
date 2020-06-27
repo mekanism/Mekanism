@@ -16,7 +16,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class SpawnHelper {
@@ -34,7 +33,8 @@ public class SpawnHelper {
                 addSpawn(AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityType.WITHER_SKELETON, MekanismAdditionsConfig.common.babyWitherSkeleton, monsterSpawns, biomeName);
             }
         }
-        addSpawn(AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityType.WITHER_SKELETON, MekanismAdditionsConfig.common.babyWitherSkeleton, Feature.NETHER_BRIDGE.getSpawnList());
+        //TODO - 1.16: Make sure the baby wither skeletons spawn on the bridges
+        //addSpawn(AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityType.WITHER_SKELETON, MekanismAdditionsConfig.common.babyWitherSkeleton, Feature.NETHER_BRIDGE.getSpawnList());
 
         //Register spawn controls for the baby entities based on the vanilla spawn controls
         registerSpawnControls(AdditionsEntityTypes.BABY_CREEPER, AdditionsEntityTypes.BABY_ENDERMAN, AdditionsEntityTypes.BABY_SKELETON,

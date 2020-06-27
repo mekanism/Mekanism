@@ -10,7 +10,6 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -101,11 +100,12 @@ public class GeneratorsConfig extends BaseMekanismConfig {
                   if (o instanceof String) {
                       ResourceLocation dim = ResourceLocation.tryCreate(((String) o).toLowerCase());
                       if (dim != null) {
-                          DimensionType dimensionType = DimensionType.byName(dim);
+                          //TODO - 1.16: FIXME
+                          /*DimensionType dimensionType = DimensionType.byName(dim);
                           //byName defaults to overworld if it does not match. So make sure overworld was actually the one specified
                           if (dimensionType == DimensionType.OVERWORLD) {
                               return dim.equals(DimensionType.OVERWORLD.getRegistryName());
-                          }
+                          }*/
                           return true;
                       }
                   }

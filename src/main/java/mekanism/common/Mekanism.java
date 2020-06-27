@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.mojang.authlib.GameProfile;
@@ -385,9 +387,10 @@ public class Mekanism {
     }
 
     private synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
-        if (event.getWorld() != null && !event.getWorld().isRemote()) {
+        IWorld world = event.getWorld();
+        if (world instanceof World && !world.isRemote()) {
             if (MekanismConfig.world.enableRegeneration.get() && event.getData().getInt(NBTConstants.WORLD_GEN_VERSION) < MekanismConfig.world.userGenVersion.get()) {
-                worldTickHandler.addRegenChunk(event.getWorld().func_230315_m_(), event.getChunk().getPos());
+                worldTickHandler.addRegenChunk(((World) world).func_234923_W_(), event.getChunk().getPos());
             }
         }
     }
