@@ -135,6 +135,16 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
         return super.initCapabilities(stack, nbt);
     }
 
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+        if(material.getEnchantability() == 0) {
+            return false;
+        }
+        else {
+            return super.isBookEnchantable(stack, book);
+        }
+    }
+
     public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
         NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN),
         HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA),

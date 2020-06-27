@@ -264,6 +264,16 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         return 0;
     }
 
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+        if(material.getEnchantability() == 0) {
+            return false;
+        }
+        else {
+            return super.isBookEnchantable(stack, book);
+        }
+    }
+
     // This is unused for the most part; toughness / damage reduction is handled manually
     protected static class MekaSuitMaterial extends BaseSpecialArmorMaterial {
 

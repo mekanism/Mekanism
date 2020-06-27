@@ -126,6 +126,16 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
         return slotType == getEquipmentSlot();
     }
 
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+        if(material.getEnchantability() == 0) {
+            return false;
+        }
+        else {
+            return super.isBookEnchantable(stack, book);
+        }
+    }
+
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
     protected static class ScubaTankMaterial extends BaseSpecialArmorMaterial {

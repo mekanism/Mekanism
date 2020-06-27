@@ -42,6 +42,16 @@ public class ItemHazmatSuitArmor extends ArmorItem {
         return new ItemCapabilityWrapper(stack, RadiationShieldingHandler.create(item -> getShieldingByArmor(slot)));
     }
 
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+        if(material.getEnchantability() == 0) {
+            return false;
+        }
+        else {
+            return super.isBookEnchantable(stack, book);
+        }
+    }
+
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
     protected static class HazmatMaterial extends BaseSpecialArmorMaterial {
