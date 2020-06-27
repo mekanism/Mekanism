@@ -9,6 +9,7 @@ import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,6 +26,11 @@ public class ItemArmoredJetpack extends ItemJetpack {
     @OnlyIn(Dist.CLIENT)
     public CustomArmor getGearModel() {
         return JetpackArmor.ARMORED_JETPACK;
+    }
+
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+        return true;
     }
 
     @ParametersAreNonnullByDefault
