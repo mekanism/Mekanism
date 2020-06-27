@@ -8,12 +8,18 @@ import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
+
+    public static final ModelProperty<Boolean> POWERING_PROPERTY = new ModelProperty<>();
 
     private boolean prevPowering;
     private HashedItem itemType = null;
@@ -55,13 +61,36 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             if (world != null) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType());
             }
+            prevPowering = powering;
+            sendUpdatePacket();
         }
-        prevPowering = powering;
 
         if (world.getGameTime() % 10 == 0) {
             QIOFrequency frequency = getQIOFrequency();
             setActive(frequency != null);
         }
+    }
+
+    @Nonnull
+    @Override
+    public IModelData getModelData() {
+        return new ModelDataMap.Builder().withInitial(POWERING_PROPERTY, prevPowering).build();
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
+        updateTag.putBoolean(NBTConstants.ACTIVE, prevPowering);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        prevPowering = tag.getBoolean(NBTConstants.ACTIVE);
+        requestModelDataUpdate();
+        MekanismUtils.updateBlock(getWorld(), getPos());
     }
 
     @Override

@@ -46,14 +46,11 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        EnumColor prev = lastColor;
         if (tag.contains(NBTConstants.COLOR)) {
             lastColor = EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR));
         } else {
             lastColor = null;
         }
-        if (prev != lastColor) {
-            MekanismUtils.updateBlock(getWorld(), getPos());
-        }
+        MekanismUtils.updateBlock(getWorld(), getPos());
     }
 }

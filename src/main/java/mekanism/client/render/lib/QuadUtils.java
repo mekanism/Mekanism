@@ -34,6 +34,16 @@ public class QuadUtils {
         return orig.stream().peek(transformation::transform).map(Quad::bake).collect(Collectors.toList());
     }
 
+    public static void remapUVs(Quad quad, TextureAtlasSprite newTexture) {
+        float uMin = quad.getTexture().getInterpolatedU(0), uMax = quad.getTexture().getInterpolatedU(16);
+        float vMin = quad.getTexture().getInterpolatedV(0), vMax = quad.getTexture().getInterpolatedV(16);
+        for (Vertex v : quad.getVertices()) {
+            float newU = (v.getTexU() - uMin) * 16F / (uMax - uMin);
+            float newV = (v.getTexV() - vMin) * 16F / (vMax - vMin);
+            v.texRaw(newTexture.getInterpolatedU(newU), newTexture.getInterpolatedV(newV));
+        }
+    }
+
     // this is an adaptation of fry's original UV contractor (pulled from BakedQuadBuilder).
     // ultimately this fixes UVs bleeding over the edge slightly when dealing with smaller models or tight UV bounds
     public static void contractUVs(Quad quad) {

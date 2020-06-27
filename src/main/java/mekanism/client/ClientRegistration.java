@@ -70,6 +70,7 @@ import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
 import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
+import mekanism.client.model.baked.QIORedstoneAdapterBakedModel;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
@@ -242,7 +243,7 @@ public class ClientRegistration {
         customModels.put(MekanismBlocks.QIO_DASHBOARD.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismBlocks.QIO_EXPORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismBlocks.QIO_IMPORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.QIO_REDSTONE_ADAPTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        customModels.put(MekanismBlocks.QIO_REDSTONE_ADAPTER.getRegistryName(), (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
         customModels.put(MekanismBlocks.MODIFICATION_STATION.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismItems.MEKA_TOOL.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
     }

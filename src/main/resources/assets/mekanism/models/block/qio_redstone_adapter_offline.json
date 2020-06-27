@@ -2,7 +2,7 @@
 	"credit": "Model by CyanideX",
 	"parent": "mekanism:block/flat_model",
 	"textures": {
-		"1": "minecraft:block/redstone_torch",
+		"1": "minecraft:block/redstone_torch_off",
 		"2": "mekanism:block/models/qio_bus",
 		"particle": "mekanism:block/models/qio_bus"
 	},

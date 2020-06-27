@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.math.Quaternion;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -72,6 +73,10 @@ public interface QuadTransformation {
 
     static QuadTransformation sideRotate(Direction side) {
         return new SideTransformation(side);
+    }
+
+    static QuadTransformation texture(TextureAtlasSprite texture) {
+        return new TextureTransformation(texture);
     }
 
     static QuadTransformation list(QuadTransformation... transforms) {
@@ -216,6 +221,34 @@ public interface QuadTransformation {
         @Override
         public int hashCode() {
             return translation.hashCode();
+        }
+    }
+
+    class TextureTransformation implements QuadTransformation {
+
+        private final TextureAtlasSprite texture;
+
+        public TextureTransformation(TextureAtlasSprite texture) {
+            this.texture = texture;
+        }
+
+        @Override
+        public void transform(Quad quad) {
+            if (texture == null) {
+                return;
+            }
+            QuadUtils.remapUVs(quad, texture);
+            quad.setTexture(texture);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof TextureTransformation && texture == ((TextureTransformation) other).texture;
+        }
+
+        @Override
+        public int hashCode() {
+            return texture != null ? texture.hashCode() : -1;
         }
     }
 
