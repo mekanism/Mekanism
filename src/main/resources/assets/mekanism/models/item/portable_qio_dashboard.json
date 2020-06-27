@@ -1,6 +1,7 @@
 {
     "parent": "mekanism:item/standard_item",
     "textures": { 
-        "layer0": "mekanism:item/portable_qio_dashboard"
+        "layer0": "mekanism:item/portable_qio_dashboard",
+        "layer1": "mekanism:item/portable_qio_dashboard_tint"
     }
 }

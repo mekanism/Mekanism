@@ -17,6 +17,7 @@ import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -66,6 +67,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         builder.addSlot(moduleSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleItem, this, 35, 118));
         builder.addSlot(containerSlot = InputInventorySlot.at(stack -> stack.getItem() instanceof IModuleContainerItem, this, 125, 118));
         moduleSlot.setSlotType(ContainerSlotType.NORMAL);
+        moduleSlot.setSlotOverlay(SlotOverlay.MODULE);
         containerSlot.setSlotType(ContainerSlotType.NORMAL);
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 149, 21));
         return builder.build();

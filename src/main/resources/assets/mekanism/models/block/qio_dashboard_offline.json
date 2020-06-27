@@ -18,26 +18,6 @@
 				"up": {"uv": [0, 0, 14, 14], "rotation": 180, "texture": "#0"},
 				"down": {"uv": [14, 1, 15, 2], "texture": "#0"}
 			}
-		},
-		{
-			"name": "qio_offline_right",
-			"from": [0.995, -0.005, 11],
-			"to": [2.005, 1.005, 13],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 1, 5]},
-			"faces": {
-				"west": {"uv": [14, 0, 15, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
-				"up": {"uv": [14, 0, 15, 1], "rotation": 90, "texture": "#0", "tintindex": 0}
-			}
-		},
-		{
-			"name": "qio_offline_left",
-			"from": [13.995, -0.005, 11],
-			"to": [15.005, 1.005, 13],
-			"rotation": {"angle": 0, "axis": "x", "origin": [21, 1, 5]},
-			"faces": {
-				"east": {"uv": [14, 0, 15, 1], "rotation": 90, "texture": "#0", "tintindex": 0},
-				"up": {"uv": [14, 0, 15, 1], "rotation": 90, "texture": "#0", "tintindex": 0}
-			}
 		}
 	],
 	"display": {
