@@ -295,7 +295,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                     repositionedEntity.setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
                     return repositionedEntity;
                 }
-            }); TODO 1.16 make sure this dimension logic is okay */
+            }); //TODO - 1.16 make sure this dimension logic is okay */
         }
         setMotion(0, 0, 0);
     }

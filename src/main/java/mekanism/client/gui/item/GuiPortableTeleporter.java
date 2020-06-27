@@ -180,7 +180,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
         } else {
             for (TeleporterFrequency freq : clientPublicCache) {
-                text.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(freq.getName(), freq.getClientOwner()).getString());//TODO - 1.16: Test
+                text.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(freq.getName(), freq.getClientOwner()).getString());
             }
         }
         scrollList.setText(text);

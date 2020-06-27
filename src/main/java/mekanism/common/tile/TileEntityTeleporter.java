@@ -231,7 +231,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     repositionedEntity.setPositionAndUpdate(coord.getX() + 0.5, coord.getY() + 1, coord.getZ() + 0.5);
                     return repositionedEntity;
                 }
-            }); TODO 1.16 make sure this dimension logic is okay */
+            }); //TODO - 1.16 make sure this dimension logic is okay */
         }
     }
 

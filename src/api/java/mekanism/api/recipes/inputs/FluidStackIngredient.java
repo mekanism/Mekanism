@@ -19,6 +19,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -92,7 +93,8 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
-            ITag<Fluid> tag = FluidTags.getCollection().get(resourceLocation); // TODO 1.16 make sure this works
+            //TODO - 1.16 Test using FluidTags.getCollection().get after https://github.com/MinecraftForge/MinecraftForge/pull/6842 is merged
+            ITag<Fluid> tag = TagCollectionManager.func_232928_e_().func_232926_c_().get(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown fluid tag '" + resourceLocation + "'");
             }

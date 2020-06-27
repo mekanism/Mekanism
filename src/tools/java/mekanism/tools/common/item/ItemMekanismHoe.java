@@ -30,7 +30,7 @@ public class ItemMekanismHoe extends HoeItem implements IHasRepairType {
     private final BaseMekanismMaterial material;
 
     public ItemMekanismHoe(BaseMekanismMaterial material) {
-        super(material, 0 /* TODO 1.16 add hoe attack damage defaults? */, material.getHoeAtkSpeed(), ItemDeferredRegister.getMekBaseProperties().addToolType(HOE_TOOL_TYPE, material.getHarvestLevel()));
+        super(material, 0 /* //TODO - 1.16 add hoe attack damage defaults? */, material.getHoeAtkSpeed(), ItemDeferredRegister.getMekBaseProperties().addToolType(HOE_TOOL_TYPE, material.getHarvestLevel()));
         this.material = material;
     }
 

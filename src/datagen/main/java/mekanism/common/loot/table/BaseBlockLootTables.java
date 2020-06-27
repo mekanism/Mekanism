@@ -1,12 +1,12 @@
 package mekanism.common.loot.table;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.BlockCardboardBox;
@@ -99,9 +99,9 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 tile = ((IHasTileEntity<?>) block).getTileType().create();
             }
             if (Attribute.has(block, AttributeSecurity.class)) {
-                //TODO - 1.16: Should we just save the entire security component? If not in 1.16 given Mojang is changing UUID saving this will need to be updated
-                nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID + "Most", NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID + "Most");
-                nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID + "Least", NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID + "Least");
+                //TODO: Should we just save the entire security component?
+                //TODO - 1.16: Test that this was properly updated to the new way UUIDs are stored in NBT
+                nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID, NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID);
                 nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.SECURITY_MODE, NBTConstants.MEK_DATA + "." + NBTConstants.SECURITY_MODE);
                 hasData = true;
             }

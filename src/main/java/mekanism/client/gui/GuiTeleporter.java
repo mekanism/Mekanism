@@ -112,7 +112,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             }
         } else {
             for (Frequency freq : tile.getPublicCache(FrequencyType.TELEPORTER)) {
-                text.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(freq.getName(), freq.getClientOwner()).getString());//TODO - 1.16: Test
+                text.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(freq.getName(), freq.getClientOwner()).getString());
             }
         }
         scrollList.setText(text);

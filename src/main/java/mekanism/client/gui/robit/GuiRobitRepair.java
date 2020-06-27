@@ -73,7 +73,6 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
 
     @Override
     protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        //TODO - 1.16: Update vanilla copy if need be
         RenderSystem.disableBlend();
         drawString(matrix, MekanismLang.ROBIT_REPAIR.translate(), 60, 6, titleTextColor());
         int maximumCost = container.getMaximumCost();

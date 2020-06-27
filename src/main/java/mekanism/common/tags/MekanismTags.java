@@ -33,10 +33,12 @@ public class MekanismTags {
         static {
             for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
                 for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
-                    if (type == ResourceType.INGOT || type == ResourceType.NUGGET || type == ResourceType.DUST) {
-                        PROCESSED_RESOURCES.put(type, resource, forgeTag(type.getRegistryPrefix() + "s/" + resource.getName()));
-                    } else {
-                        PROCESSED_RESOURCES.put(type, resource, tag(type.getRegistryPrefix() + "s/" + resource.getName()));
+                    if (type.usedByPrimary()) {
+                        if (type == ResourceType.INGOT || type == ResourceType.NUGGET || type == ResourceType.DUST) {
+                            PROCESSED_RESOURCES.put(type, resource, forgeTag(type.getPluralPrefix() + "/" + resource.getName()));
+                        } else {
+                            PROCESSED_RESOURCES.put(type, resource, tag(type.getPluralPrefix() + "/" + resource.getName()));
+                        }
                     }
                 }
                 if (!resource.isVanilla()) {
