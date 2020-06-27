@@ -25,7 +25,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     DARK_AQUA("\u00a73", APILang.COLOR_DARK_AQUA, "Cyan", "Cyan", "cyan", new int[]{0, 243, 208}, TextFormatting.DARK_AQUA, DyeColor.CYAN),
     DARK_RED("\u00a74", APILang.COLOR_DARK_RED, "Dark Red", null, "dark_red", new int[]{201, 7, 31}, TextFormatting.DARK_RED,
           MaterialColor.NETHERRACK, Tags.Items.DYES_RED),
-    PURPLE("\u00a75", APILang.COLOR_PURPLE, "Purple", "Purple", "purple", new int[]{208, 105, 184}, TextFormatting.DARK_PURPLE, DyeColor.PURPLE),
+    PURPLE("\u00a75", APILang.COLOR_PURPLE, "Purple", "Purple", "purple", new int[]{164, 96, 217}, TextFormatting.DARK_PURPLE, DyeColor.PURPLE),
     ORANGE("\u00a76", APILang.COLOR_ORANGE, "Orange", "Orange", "orange", new int[]{255, 161, 96}, TextFormatting.GOLD, DyeColor.ORANGE),
     GRAY("\u00a77", APILang.COLOR_GRAY, "Light Gray", "LightGray", "light_gray", new int[]{207, 207, 207}, TextFormatting.GRAY, DyeColor.LIGHT_GRAY),
     DARK_GRAY("\u00a78", APILang.COLOR_DARK_GRAY, "Gray", "Gray", "gray", new int[]{122, 122, 122}, TextFormatting.DARK_GRAY, DyeColor.GRAY),
