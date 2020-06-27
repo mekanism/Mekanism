@@ -86,7 +86,8 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
      */
     @Nonnull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot) {
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {
+        //TODO - 1.16: Cache this, and update it when one of the values change
         Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
         if (slot == getEquipmentSlot()) {
             UUID modifier = ARMOR_MODIFIERS[slot.getIndex()];

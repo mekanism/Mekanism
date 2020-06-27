@@ -104,7 +104,8 @@ public class ItemMekanismAxe extends AxeItem implements IHasRepairType {
      */
     @Nonnull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot) {
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {
+        //TODO - 1.16: Cache this, and update it when one of the values change
         Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
         if (slot == EquipmentSlotType.MAINHAND) {
             attributes.put(Attributes.field_233823_f_, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", getAttackDamage(), Operation.ADDITION));

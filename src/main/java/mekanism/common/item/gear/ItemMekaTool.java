@@ -1,5 +1,7 @@
 package mekanism.common.item.gear;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.Set;
@@ -68,10 +70,15 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem, IItemHUDProvider {
 
+    private final Multimap<Attribute, AttributeModifier> attributes;
+
     public ItemMekaTool(Properties properties) {
         super(MekanismConfig.gear.mekaToolBaseChargeRate, MekanismConfig.gear.mekaToolBaseEnergyCapacity, properties.rarity(Rarity.EPIC).setNoRepair().setISTER(ISTERProvider::disassembler));
         Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.ATTACK_AMPLIFICATION_UNIT, Modules.SILK_TOUCH_UNIT, Modules.VEIN_MINING_UNIT, Modules.FARMING_UNIT,
               Modules.TELEPORTATION_UNIT, Modules.EXCAVATION_ESCALATION_UNIT);
+        Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        builder.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4D, Operation.ADDITION));
+        this.attributes = builder.build();
     }
 
     @Override
@@ -248,13 +255,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Nonnull
     @Override
-    @Deprecated
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType equipmentSlot) {
-        Multimap<Attribute, AttributeModifier> multiMap = super.getAttributeModifiers(equipmentSlot);
-        if (equipmentSlot == EquipmentSlotType.MAINHAND) {
-            multiMap.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4D, Operation.ADDITION));
-        }
-        return multiMap;
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {
+        return slot == EquipmentSlotType.MAINHAND ? attributes : super.getAttributeModifiers(slot, stack);
     }
 
     @Nonnull
