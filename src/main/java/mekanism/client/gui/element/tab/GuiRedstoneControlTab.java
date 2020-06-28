@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.tab;
 
-import mekanism.api.text.EnumColor;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
@@ -52,7 +52,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(EnumColor.DARK_RED);
+        MekanismRenderer.color(SpecialColors.REDSTONE_CONTROL_TAB.get());
     }
 
     @Override

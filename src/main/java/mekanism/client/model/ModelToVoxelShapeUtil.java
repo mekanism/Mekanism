@@ -44,7 +44,7 @@ public class ModelToVoxelShapeUtil {
     }*/
 
     public static void main(String[] args) {
-        printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/main/resources/assets/mekanism/models/block/chemical_tank/base.json");
+        printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/main/resources/assets/mekanism/models/block/resistive_heater.json");
     }
 
     public static void printoutModelFile(String path) {

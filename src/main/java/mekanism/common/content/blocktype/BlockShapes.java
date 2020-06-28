@@ -158,16 +158,16 @@ public final class BlockShapes {
         ), CHEMICAL_CRYSTALLIZER);
 
         setShape(VoxelShapeUtils.combine(
-              makeCuboidShape(0, 0, 0, 16, 4, 16), // base
-              makeCuboidShape(1, 4, 1, 10, 15, 6), // front
               makeCuboidShape(0, 4, 6, 16, 16, 16), // body
-              makeCuboidShape(13, 3.5, 0.5, 15, 15.5, 6.5), // frontDivider1
-              makeCuboidShape(10, 3.5, 0.5, 12, 15.5, 6.5), // frontDivider2
-              makeCuboidShape(12, 5, 1, 13, 6, 6), // bar1
-              makeCuboidShape(12, 7, 1, 13, 8, 6), // bar2
-              makeCuboidShape(12, 9, 1, 13, 10, 6), // bar3
-              makeCuboidShape(12, 11, 1, 13, 12, 6), // bar4
-              makeCuboidShape(12, 13, 1, 13, 14, 6)// bar5
+              makeCuboidShape(10, 4, 1, 12, 15, 6), // front_div_1
+              makeCuboidShape(13, 4, 1, 15, 15, 6), // front_div_2
+              makeCuboidShape(1, 4, 2, 10, 14, 6), // front
+              makeCuboidShape(0, 0, 0, 16, 4, 16), // base
+              makeCuboidShape(12, 13, 2, 13, 14, 6), // bar1
+              makeCuboidShape(12, 11, 2, 13, 12, 6), // bar2
+              makeCuboidShape(12, 9, 2, 13, 10, 6), // bar3
+              makeCuboidShape(12, 7, 2, 13, 8, 6), // bar4
+              makeCuboidShape(12, 5, 2, 13, 6, 6) // bar5
         ), PRESSURIZED_REACTION_CHAMBER);
 
         setShape(VoxelShapeUtils.combine(
@@ -442,26 +442,25 @@ public final class BlockShapes {
         ), LASER_AMPLIFIER, true);
 
         setShape(VoxelShapeUtils.combine(
-              makeCuboidShape(0, 0, 0, 16, 7, 16),//base
-              makeCuboidShape(5, 6.5, 7.5, 11, 12.5, 8.5),//center
-              makeCuboidShape(15, 4, 4, 16, 12, 12),//portRight
-              makeCuboidShape(0, 4, 4, 1, 12, 12),//portLeft
-              makeCuboidShape(13, 7, 0, 16, 16, 16),//wallRight
-              makeCuboidShape(0, 7, 0, 3, 16, 16),//wallLeft
-              makeCuboidShape(11, 13.5, 1.5, 12, 14.5, 14.5),//bar1
-              makeCuboidShape(9, 13.5, 1.5, 10, 14.5, 14.5),//bar2
-              makeCuboidShape(6, 13.5, 1.5, 7, 14.5, 14.5),//bar3
-              makeCuboidShape(4, 13.5, 1.5, 5, 14.5, 14.5),//bar4
-              makeCuboidShape(3, 6.5, 14.5, 13, 15.5, 15.5),//fin1
-              makeCuboidShape(3, 6.5, 13, 13, 15.5, 14),//fin2
-              makeCuboidShape(3, 6.5, 11.5, 13, 15.5, 12.5),//fin3
-              makeCuboidShape(3, 6.5, 10, 13, 15.5, 11),//fin4
-              makeCuboidShape(3, 6.5, 8.5, 13, 15.5, 9.5),//fin5
-              makeCuboidShape(3, 6.5, 6.5, 13, 15.5, 7.5),//fin6
-              makeCuboidShape(3, 6.5, 5, 13, 15.5, 6),//fin7
-              makeCuboidShape(3, 6.5, 3.5, 13, 15.5, 4.5),//fin8
-              makeCuboidShape(3, 6.5, 2, 13, 15.5, 3),//fin9
-              makeCuboidShape(3, 6.5, 0.5, 13, 15.5, 1.5)//fin10
+              makeCuboidShape(-0.005, 4, 4, 0.995, 12, 12), // port_left
+              makeCuboidShape(-0.01, 5, 5, 0.99, 11, 11), // port_left_led
+              makeCuboidShape(15.005, 4, 4, 16.005, 12, 12), // port_right
+              makeCuboidShape(15.01, 5, 5, 16.01, 11, 11), // port_right_led
+              makeCuboidShape(4, 13, 1.5, 5, 14, 14.5), // bar1
+              makeCuboidShape(6, 13, 1.5, 7, 14, 14.5), // bar2
+              makeCuboidShape(9, 13, 1.5, 10, 14, 14.5), // bar3
+              makeCuboidShape(11, 13, 1.5, 12, 14, 14.5), // bar4
+              makeCuboidShape(0, 0, 0, 16, 7, 16), // base
+              makeCuboidShape(13, 7, 0, 16, 16, 16), // wall_right
+              makeCuboidShape(0, 7, 0, 3, 16, 16), // wall_left
+              makeCuboidShape(3, 6, 1, 13, 15, 2), // fin1
+              makeCuboidShape(3, 6, 3, 13, 15, 4), // fin2
+              makeCuboidShape(3, 6, 5, 13, 15, 6), // fin3
+              makeCuboidShape(3, 6, 7, 13, 15, 8), // fin4
+              makeCuboidShape(3, 6, 8, 13, 15, 9), // fin5
+              makeCuboidShape(3, 6, 10, 13, 15, 11), // fin6
+              makeCuboidShape(3, 6, 12, 13, 15, 13), // fin7
+              makeCuboidShape(3, 6, 14, 13, 15, 15) // fin8
         ), RESISTIVE_HEATER);
 
         setShape(VoxelShapeUtils.combine(

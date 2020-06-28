@@ -2,6 +2,7 @@ package mekanism.client.render;
 
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -15,9 +16,11 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
+import mekanism.client.SpecialColors;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.item.block.RenderFluidTankItem;
+import mekanism.client.render.lib.ColorAtlasLoader;
 import mekanism.client.render.obj.TransmitterLoader;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderTeleporter;
@@ -206,7 +209,7 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(EnumColor color, float alpha) {
-        return getColorARGB(color.rgbCode[0], color.rgbCode[1], color.rgbCode[2], alpha);
+        return getColorARGB(color.getRgbCode()[0], color.getRgbCode()[1], color.getRgbCode()[2], alpha);
     }
 
     public static int getColorARGB(@Nonnull FluidStack fluidStack) {
@@ -371,6 +374,21 @@ public class MekanismRenderer {
         RenderMechanicalPipe.onStitch();
         RenderTickHandler.resetCachedOverlays();
         RenderTeleporter.resetCachedModels();
+
+        parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"));
+        SpecialColors.parse(Mekanism.rl("textures/colormap/secondary.png"));
+    }
+
+    private static void parseColorAtlas(ResourceLocation rl) {
+        EnumColor[] colors = EnumColor.values();
+        List<Color> parsed = ColorAtlasLoader.load(rl, colors.length);
+        if (parsed.size() < colors.length) {
+            Mekanism.logger.error("Failed to parse primary color atlas.");
+            return;
+        }
+        for (int i = 0; i < colors.length; i++) {
+            colors[i].rgbCode = parsed.get(i).rgbArray();
+        }
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>> void addChemicalSprites(TextureStitchEvent.Pre event, IForgeRegistry<CHEMICAL> chemicalRegistry) {
