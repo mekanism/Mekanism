@@ -69,13 +69,13 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     private void updateEnabledButtons() {
         int currentLayer = scrollBar.getCurrentSelection();
-        upButton.active = currentLayer + 1 < blockList.size();
-        downButton.active = currentLayer > 0;
+        upButton.active = currentLayer > 0;
+        downButton.active = currentLayer + 1 < blockList.size();
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        int currentLayer = scrollBar.getCurrentSelection();
+        int currentLayer = blockList.size() - scrollBar.getCurrentSelection() - 1;
         //Render the layer text scaled, so that it does not start overlapping past 100
         renderScaledText(MekanismLang.GENERIC.translate(currentLayer), 111, 87, 0x00CD00, 13);
 
