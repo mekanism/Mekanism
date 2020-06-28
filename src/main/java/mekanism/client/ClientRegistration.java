@@ -249,6 +249,7 @@ public class ClientRegistration {
         customModels.put(MekanismBlocks.QIO_REDSTONE_ADAPTER.getRegistryName(), (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
         customModels.put(MekanismBlocks.MODIFICATION_STATION.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismBlocks.SECURITY_DESK.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        customModels.put(MekanismBlocks.LOGISTICAL_SORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismItems.MEKA_TOOL.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
     }
 
