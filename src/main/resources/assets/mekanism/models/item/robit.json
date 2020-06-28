@@ -3,7 +3,7 @@
 	"parent": "block/cube_all",
 	"texture_size": [32, 32],
 	"textures": {
-		"all": "mekanism:entity/robit"
+		"all": "mekanism:entity/robit_item"
 	},
 	"elements": [
 		{
