@@ -29,7 +29,7 @@ public class FluidElement extends TOPElement {
 
     @Override
     public void toBytes(PacketBuffer buf) {
-        new PacketBuffer(buf).writeFluidStack(stored);
+        buf.writeFluidStack(stored);
         buf.writeVarInt(capacity);
     }
 
