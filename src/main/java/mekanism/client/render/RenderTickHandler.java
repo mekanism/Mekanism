@@ -192,7 +192,7 @@ public class RenderTickHandler {
             if (minecraft.player != null && minecraft.player.world != null && !minecraft.isGamePaused()) {
                 PlayerEntity player = minecraft.player;
                 World world = minecraft.player.world;
-                //TODO - 1.16: Check if we have another matrix stack we should use
+                //TODO: Check if we have another matrix stack we should use
                 MatrixStack matrix = new MatrixStack();
                 renderStatusBar(matrix, player);
                 //Traverse active jetpacks and do animations
@@ -385,7 +385,6 @@ public class RenderTickHandler {
     private void drawString(MainWindow window, MatrixStack matrix, ITextComponent text, boolean leftSide, int y, int color) {
         FontRenderer font = minecraft.fontRenderer;
         // Note that we always offset by 2 pixels when left or right aligned
-        //TODO - 1.16: Verify this renders properly
         if (leftSide) {
             font.func_238407_a_(matrix, text, 2, y, color);
         } else {

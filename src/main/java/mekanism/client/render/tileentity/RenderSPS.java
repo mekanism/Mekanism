@@ -16,7 +16,7 @@ import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.lib.effect.CustomEffect;
 import mekanism.common.lib.math.Plane;
 import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
-import mekanism.common.particle.custom.SPSOrbitEffect;
+import mekanism.common.particle.SPSOrbitEffect;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

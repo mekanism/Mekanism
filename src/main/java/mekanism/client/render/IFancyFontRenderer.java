@@ -25,20 +25,12 @@ public interface IFancyFontRenderer {
         return MekanismConfig.client.guiScreenTextColor.get();
     }
 
-    default int drawString(MatrixStack matrix, String text, int x, int y, int color) {
-        return getFont().func_238421_b_(matrix, text, x, y, color);
-    }
-
     default int drawString(MatrixStack matrix, ITextComponent component, int x, int y, int color) {
         return getFont().func_238422_b_(matrix, component, x, y, color);
     }
 
     default int getStringWidth(ITextComponent component) {
         return getFont().func_238414_a_(component);
-    }
-
-    default int getStringWidth(String text) {
-        return getFont().getStringWidth(text);
     }
 
     default void drawCenteredText(MatrixStack matrix, ITextComponent component, float x, float y, int color) {
@@ -58,7 +50,7 @@ public interface IFancyFontRenderer {
     default void drawScaledCenteredText(MatrixStack matrix, ITextComponent text, float left, float y, int color, float scale) {
         int textWidth = getStringWidth(text);
         float centerX = left - (textWidth / 2F) * scale;
-        drawTextWithScale(matrix, text.getString(), centerX, y, color, scale);
+        drawTextWithScale(matrix, text, centerX, y, color, scale);
     }
 
     default void drawCenteredTextScaledBound(MatrixStack matrix, ITextComponent text, float maxLength, float y, int color) {
@@ -74,11 +66,6 @@ public interface IFancyFontRenderer {
     }
 
     default float getNeededScale(ITextComponent text, float maxLength) {
-        int length = getStringWidth(text);
-        return length <= maxLength ? 1 : maxLength / length;
-    }
-
-    default float getNeededScale(String text, float maxLength) {
         int length = getStringWidth(text);
         return length <= maxLength ? 1 : maxLength / length;
     }
@@ -105,16 +92,8 @@ public interface IFancyFontRenderer {
         drawTextWithScale(matrix, text, x, y, color, scale);
     }
 
-    default void drawScaledTextScaledBound(MatrixStack matrix, String text, float x, float y, int color, float maxX, float textScale) {
-        drawScaledTextScaledBound(matrix, new StringTextComponent(text), x, y, color, maxX, textScale);
-    }
-
     default void drawTextWithScale(MatrixStack matrix, ITextComponent text, float x, float y, int color, float scale) {
         prepTextScale(matrix, m -> drawString(m, text, 0, 0, color), x, y, scale);
-    }
-
-    default void drawTextWithScale(MatrixStack matrix, String text, float x, float y, int color, float scale) {
-        drawTextWithScale(matrix, new StringTextComponent(text), x, y, color, scale);
     }
 
     default void prepTextScale(MatrixStack matrix, Consumer<MatrixStack> runnable, float x, float y, float scale) {

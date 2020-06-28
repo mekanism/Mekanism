@@ -1,4 +1,4 @@
-package mekanism.common.particle.custom;
+package mekanism.common.particle;
 
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.lib.Color;

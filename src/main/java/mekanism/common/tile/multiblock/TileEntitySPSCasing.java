@@ -8,7 +8,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
-import mekanism.common.particle.custom.SPSOrbitEffect;
+import mekanism.common.particle.SPSOrbitEffect;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;

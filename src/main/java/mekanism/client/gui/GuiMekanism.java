@@ -159,8 +159,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        //TODO - 1.16: Look at the super method for this and see if we should call it
-        //TODO - 1.16: Go through render system push and pop calls
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         // first render general foregrounds

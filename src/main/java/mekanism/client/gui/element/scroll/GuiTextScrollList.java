@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
+import net.minecraft.util.text.StringTextComponent;
 
 public class GuiTextScrollList extends GuiScrollList {
 
@@ -65,7 +66,8 @@ public class GuiTextScrollList extends GuiScrollList {
             for (int i = 0; i < focusedElements; i++) {
                 int index = scrollIndex + i;
                 if (index < maxElements) {
-                    drawScaledTextScaledBound(matrix, textEntries.get(index), relativeX + 2, relativeY + 2 + elementHeight * i, screenTextColor(), barX - field_230690_l_ - 2, 0.8F);
+                    drawScaledTextScaledBound(matrix, new StringTextComponent(textEntries.get(index)), relativeX + 2, relativeY + 2 + elementHeight * i,
+                          screenTextColor(), barX - field_230690_l_ - 2, 0.8F);
                 }
             }
         }

@@ -95,22 +95,9 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         //TODO: Also see if we can somehow check world.getHeight()
         windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation.")
               .define("windGenerationMaxY", 255, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
+        //Note: Unlike in 1.15 we don't verify the dimension exists as dimensions are a lot more dynamic now
         windGenerationDimBlacklist = CachedResourceLocationListValue.wrap(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
-              .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> {
-                  if (o instanceof String) {
-                      ResourceLocation dim = ResourceLocation.tryCreate(((String) o).toLowerCase());
-                      if (dim != null) {
-                          //TODO - 1.16: FIXME
-                          /*DimensionType dimensionType = DimensionType.byName(dim);
-                          //byName defaults to overworld if it does not match. So make sure overworld was actually the one specified
-                          if (dimensionType == DimensionType.OVERWORLD) {
-                              return dim.equals(DimensionType.OVERWORLD.getRegistryName());
-                          }*/
-                          return true;
-                      }
-                  }
-                  return false;
-              }));
+              .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> o instanceof String && ResourceLocation.tryCreate(((String) o).toLowerCase()) != null));
         builder.pop();
 
         builder.comment("Hohlraum Settings").push(HOHLRAUM_CATEGORY);

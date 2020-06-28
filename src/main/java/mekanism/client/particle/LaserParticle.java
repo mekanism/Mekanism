@@ -1,7 +1,10 @@
 package mekanism.client.particle;
 
-import javax.annotation.Nonnull;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.particle.IAnimatedSprite;
@@ -9,14 +12,43 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
+import org.lwjgl.opengl.GL11;
 
 public class LaserParticle extends SpriteTexturedParticle {
+
+    private static final IParticleRenderType LASER_TYPE = new IParticleRenderType() {
+        @Override
+        public void beginRender(BufferBuilder buffer, TextureManager manager) {
+            //Copy of PARTICLE_SHEET_TRANSLUCENT but with cull disabled
+            RenderSystem.depthMask(true);
+            manager.bindTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
+            RenderSystem.disableCull();
+            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+        }
+
+        @Override
+        public void finishRender(Tessellator tesselator) {
+            tesselator.draw();
+        }
+
+        public String toString() {
+            return "MEK_LASER_PARTICLE_TYPE";
+        }
+    };
 
     private static final float RADIAN_45 = (float) Math.toRadians(45);
     private static final float RADIAN_90 = (float) Math.toRadians(90);
@@ -78,7 +110,7 @@ public class LaserParticle extends SpriteTexturedParticle {
     @Nonnull
     @Override
     public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+        return LASER_TYPE;
     }
 
     public static class Factory implements IParticleFactory<LaserParticleData> {
