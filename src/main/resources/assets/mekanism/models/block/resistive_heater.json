@@ -2,13 +2,13 @@
 	"credit": "Model by CyanideX",
 	"ambientocclusion": false,
 	"textures": {
-		"1": "NEW:resistive_heater/resistive_heater_sides",
-		"2": "NEW:resistive_heater/resistive_heater_sides_2",
-		"3": "NEW:resistive_heater/resistive_heater_top",
-		"4": "NEW:resistive_heater/resistive_heater_bottom",
-		"5": "NEW:resistive_heater/ports",
+		"1": "mekanism:block/models/resistive_heater_sides",
+		"2": "mekanism:block/models/resistive_heater_sides_2",
+		"3": "mekanism:block/models/resistive_heater_top",
+		"4": "mekanism:block/models/resistive_heater_bottom",
+		"5": "mekanism:block/models/ports",
 		"6": "resistive_heater/resistive_heater_led",
-		"particle": "NEW:resistive_heater/resistive_heater_sides_2"
+		"particle": "mekanism:block/models/resistive_heater_sides_2"
 	},
 	"elements": [
 		{
