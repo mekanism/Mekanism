@@ -20,7 +20,7 @@ import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.ITextComponent;
 
 @ParametersAreNonnullByDefault
 public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
@@ -37,7 +37,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         //if the bin has an item stack and the face isn't covered by a solid side
         BinInventorySlot binSlot = tile.getBinSlot();
         if (!binSlot.isEmpty() && !tile.getWorld().getBlockState(coverPos).isSolidSide(tile.getWorld(), coverPos, facing.getOpposite())) {
-            IFormattableTextComponent amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.getCount());
+            ITextComponent amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.getCount());
             matrix.push();
             switch (facing) {
                 case NORTH:
@@ -77,7 +77,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
     }
 
     @SuppressWarnings("incomplete-switch")
-    private void renderText(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int overlayLight, IFormattableTextComponent text, Direction side, float maxScale) {
+    private void renderText(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int overlayLight, ITextComponent text, Direction side, float maxScale) {
         matrix.push();
         matrix.translate(0, -0.3725, 0);
         switch (side) {
@@ -123,7 +123,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         int realWidth = (int) Math.floor(displayWidth / scale);
         int offsetX = (realWidth - requiredWidth) / 2;
         int offsetY = (realHeight - requiredHeight) / 2;
-        font.func_238416_a_(text.func_240699_a_(EnumColor.WHITE.textFormatting), offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, overlayLight,
+        font.func_238416_a_(TextComponentUtil.build(EnumColor.WHITE, text), offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, overlayLight,
               false, matrix.getLast().getMatrix(), renderer, false, 0, MekanismRenderer.FULL_LIGHT);
         matrix.pop();
     }

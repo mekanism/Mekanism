@@ -1,10 +1,10 @@
 package mekanism.common.recipe.builder;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.DataGenJsonConstants;
 import net.minecraft.item.Item;

@@ -8,9 +8,9 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ITag;
+import net.minecraft.util.text.Color;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.Tags;
 
@@ -20,26 +20,25 @@ import net.minecraftforge.common.Tags;
  * @author AidanBrady
  */
 public enum EnumColor implements IIncrementalEnum<EnumColor> {
-    BLACK("\u00a70", APILang.COLOR_BLACK, "Black", "Black", "black", new int[]{64, 64, 64}, TextFormatting.BLACK, DyeColor.BLACK),
-    DARK_BLUE("\u00a71", APILang.COLOR_DARK_BLUE, "Blue", "Blue", "blue", new int[]{54, 107, 208}, TextFormatting.DARK_BLUE, DyeColor.BLUE),
-    DARK_GREEN("\u00a72", APILang.COLOR_DARK_GREEN, "Green", "Green", "green", new int[]{89, 193, 95}, TextFormatting.DARK_GREEN, DyeColor.GREEN),
-    DARK_AQUA("\u00a73", APILang.COLOR_DARK_AQUA, "Cyan", "Cyan", "cyan", new int[]{0, 243, 208}, TextFormatting.DARK_AQUA, DyeColor.CYAN),
-    DARK_RED("\u00a74", APILang.COLOR_DARK_RED, "Dark Red", null, "dark_red", new int[]{201, 7, 31}, TextFormatting.DARK_RED,
-          MaterialColor.NETHERRACK, Tags.Items.DYES_RED),
-    PURPLE("\u00a75", APILang.COLOR_PURPLE, "Purple", "Purple", "purple", new int[]{164, 96, 217}, TextFormatting.DARK_PURPLE, DyeColor.PURPLE),
-    ORANGE("\u00a76", APILang.COLOR_ORANGE, "Orange", "Orange", "orange", new int[]{255, 161, 96}, TextFormatting.GOLD, DyeColor.ORANGE),
-    GRAY("\u00a77", APILang.COLOR_GRAY, "Light Gray", "LightGray", "light_gray", new int[]{207, 207, 207}, TextFormatting.GRAY, DyeColor.LIGHT_GRAY),
-    DARK_GRAY("\u00a78", APILang.COLOR_DARK_GRAY, "Gray", "Gray", "gray", new int[]{122, 122, 122}, TextFormatting.DARK_GRAY, DyeColor.GRAY),
-    INDIGO("\u00a79", APILang.COLOR_INDIGO, "Light Blue", "LightBlue", "light_blue", new int[]{85, 158, 255}, TextFormatting.BLUE, DyeColor.LIGHT_BLUE),
-    BRIGHT_GREEN("\u00a7a", APILang.COLOR_BRIGHT_GREEN, "Lime", "Lime", "lime", new int[]{117, 255, 137}, TextFormatting.GREEN, DyeColor.LIME),
-    AQUA("\u00a7b", APILang.COLOR_AQUA, "Aqua", null, "aqua", new int[]{48, 255, 249}, TextFormatting.AQUA, MaterialColor.LIGHT_BLUE, Tags.Items.DYES_LIGHT_BLUE),
-    RED("\u00a7c", APILang.COLOR_RED, "Red", "Red", "red", new int[]{255, 56, 60}, TextFormatting.RED, DyeColor.RED),
-    PINK("\u00a7d", APILang.COLOR_PINK, "Magenta", "Magenta", "magenta", new int[]{255, 164, 249}, TextFormatting.LIGHT_PURPLE, DyeColor.MAGENTA),
-    YELLOW("\u00a7e", APILang.COLOR_YELLOW, "Yellow", "Yellow", "yellow", new int[]{255, 221, 79}, TextFormatting.YELLOW, DyeColor.YELLOW),
-    WHITE("\u00a7f", APILang.COLOR_WHITE, "White", "White", "white", new int[]{255, 255, 255}, TextFormatting.WHITE, DyeColor.WHITE),
+    BLACK("\u00a70", APILang.COLOR_BLACK, "Black", "Black", "black", new int[]{64, 64, 64}, DyeColor.BLACK),
+    DARK_BLUE("\u00a71", APILang.COLOR_DARK_BLUE, "Blue", "Blue", "blue", new int[]{54, 107, 208}, DyeColor.BLUE),
+    DARK_GREEN("\u00a72", APILang.COLOR_DARK_GREEN, "Green", "Green", "green", new int[]{89, 193, 95}, DyeColor.GREEN),
+    DARK_AQUA("\u00a73", APILang.COLOR_DARK_AQUA, "Cyan", "Cyan", "cyan", new int[]{0, 243, 208}, DyeColor.CYAN),
+    DARK_RED("\u00a74", APILang.COLOR_DARK_RED, "Dark Red", null, "dark_red", new int[]{201, 7, 31}, MaterialColor.NETHERRACK, Tags.Items.DYES_RED),
+    PURPLE("\u00a75", APILang.COLOR_PURPLE, "Purple", "Purple", "purple", new int[]{164, 96, 217}, DyeColor.PURPLE),
+    ORANGE("\u00a76", APILang.COLOR_ORANGE, "Orange", "Orange", "orange", new int[]{255, 161, 96}, DyeColor.ORANGE),
+    GRAY("\u00a77", APILang.COLOR_GRAY, "Light Gray", "LightGray", "light_gray", new int[]{207, 207, 207}, DyeColor.LIGHT_GRAY),
+    DARK_GRAY("\u00a78", APILang.COLOR_DARK_GRAY, "Gray", "Gray", "gray", new int[]{122, 122, 122}, DyeColor.GRAY),
+    INDIGO("\u00a79", APILang.COLOR_INDIGO, "Light Blue", "LightBlue", "light_blue", new int[]{85, 158, 255}, DyeColor.LIGHT_BLUE),
+    BRIGHT_GREEN("\u00a7a", APILang.COLOR_BRIGHT_GREEN, "Lime", "Lime", "lime", new int[]{117, 255, 137}, DyeColor.LIME),
+    AQUA("\u00a7b", APILang.COLOR_AQUA, "Aqua", null, "aqua", new int[]{48, 255, 249}, MaterialColor.LIGHT_BLUE, Tags.Items.DYES_LIGHT_BLUE),
+    RED("\u00a7c", APILang.COLOR_RED, "Red", "Red", "red", new int[]{255, 56, 60}, DyeColor.RED),
+    PINK("\u00a7d", APILang.COLOR_PINK, "Magenta", "Magenta", "magenta", new int[]{255, 164, 249}, DyeColor.MAGENTA),
+    YELLOW("\u00a7e", APILang.COLOR_YELLOW, "Yellow", "Yellow", "yellow", new int[]{255, 221, 79}, DyeColor.YELLOW),
+    WHITE("\u00a7f", APILang.COLOR_WHITE, "White", "White", "white", new int[]{255, 255, 255}, DyeColor.WHITE),
     //Extras for dye-completeness
-    BROWN("\u00a76", APILang.COLOR_BROWN, "Brown", "Brown", "brown", new int[]{161, 118, 73}, TextFormatting.GOLD, DyeColor.BROWN),
-    BRIGHT_PINK("\u00a7d", APILang.COLOR_BRIGHT_PINK, "Pink", "Pink", "pink", new int[]{255, 188, 196}, TextFormatting.LIGHT_PURPLE, DyeColor.PINK);
+    BROWN("\u00a76", APILang.COLOR_BROWN, "Brown", "Brown", "brown", new int[]{161, 118, 73}, DyeColor.BROWN),
+    BRIGHT_PINK("\u00a7d", APILang.COLOR_BRIGHT_PINK, "Pink", "Pink", "pink", new int[]{255, 188, 196}, DyeColor.PINK);
 
     private static final EnumColor[] COLORS = values();
     /**
@@ -49,8 +48,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
 
     public final int[] rgbCode;
 
-    //TODO - 1.16: Apply the color directly instead?
-    public final TextFormatting textFormatting;
+    private final Color color;
     private final APILang langEntry;
     private final String englishName;
     private final String registryPrefix;
@@ -59,19 +57,18 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     private final MaterialColor mapColor;
     private final ITag<Item> dyeTag;
 
-    EnumColor(String s, APILang langEntry, String englishName, @Nullable String dyeName, String registryPrefix, int[] rgbCode, TextFormatting textFormatting, DyeColor dyeColor) {
-        this(s, langEntry, englishName, dyeName, registryPrefix, rgbCode, textFormatting, dyeColor.getMapColor(), dyeColor.getTag());
+    EnumColor(String s, APILang langEntry, String englishName, @Nullable String dyeName, String registryPrefix, int[] rgbCode, DyeColor dyeColor) {
+        this(s, langEntry, englishName, dyeName, registryPrefix, rgbCode, dyeColor.getMapColor(), dyeColor.getTag());
     }
 
-    EnumColor(String code, APILang langEntry, String englishName, @Nullable String dyeName, String registryPrefix, int[] rgbCode, TextFormatting textFormatting,
-          MaterialColor mapColor, ITag<Item> dyeTag) {
+    EnumColor(String code, APILang langEntry, String englishName, @Nullable String dyeName, String registryPrefix, int[] rgbCode, MaterialColor mapColor, ITag<Item> dyeTag) {
         this.code = code;
         this.langEntry = langEntry;
         this.englishName = englishName;
         this.dyeName = dyeName;
         this.registryPrefix = registryPrefix;
         this.rgbCode = rgbCode;
-        this.textFormatting = textFormatting;
+        this.color = Color.func_240743_a_(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
         this.mapColor = mapColor;
         this.dyeTag = dyeTag;
     }
@@ -102,7 +99,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      * @return the color's name and color prefix
      */
     public ITextComponent getColoredName() {
-        return getName().func_240699_a_(textFormatting);
+        return TextComponentUtil.build(this, getName());
     }
 
     /**
@@ -130,6 +127,10 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      */
     public float getColor(int index) {
         return rgbCode[index] / 255F;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     @Override

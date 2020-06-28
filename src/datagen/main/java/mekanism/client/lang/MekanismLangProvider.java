@@ -520,6 +520,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.SOUTH, "South");
         add(APILang.WEST, "West");
         add(APILang.EAST, "East");
+        add(MekanismLang.NORTH_SHORT, "N");
+        add(MekanismLang.SOUTH_SHORT, "S");
+        add(MekanismLang.WEST_SHORT, "W");
+        add(MekanismLang.EAST_SHORT, "E");
         //Hold for
         add(MekanismLang.HOLD_FOR_DETAILS, "Hold %s for details.");
         add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %s for a description.");
