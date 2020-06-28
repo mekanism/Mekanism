@@ -81,11 +81,15 @@ public class Color {
     }
 
     public int[] rgbaArray() {
-        return new int[]{r, g, b, a};
+        return new int[] {r, g, b, a};
     }
 
     public int[] argbArray() {
-        return new int[]{a, r, g, b};
+        return new int[] {a, r, g, b};
+    }
+
+    public int[] rgbArray() {
+        return new int[] {r, g, b};
     }
 
     /**

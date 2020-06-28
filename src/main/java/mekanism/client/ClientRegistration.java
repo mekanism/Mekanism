@@ -92,7 +92,6 @@ import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderIndustrialAlarm;
 import mekanism.client.render.tileentity.RenderPersonalChest;
 import mekanism.client.render.tileentity.RenderQuantumEntangloporter;
-import mekanism.client.render.tileentity.RenderResistiveHeater;
 import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderSolarNeutronActivator;
@@ -180,7 +179,6 @@ public class ClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(RenderDynamicTank::new, MekanismTileEntityTypes.DYNAMIC_TANK, MekanismTileEntityTypes.DYNAMIC_VALVE);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.PERSONAL_CHEST, RenderPersonalChest::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, RenderQuantumEntangloporter::new);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.RESISTIVE_HEATER, RenderResistiveHeater::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SEISMIC_VIBRATOR, RenderSeismicVibrator::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR, RenderSolarNeutronActivator::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.TELEPORTER, RenderTeleporter::new);
@@ -272,6 +270,8 @@ public class ClientRegistration {
         customModels.put(MekanismBlocks.QIO_REDSTONE_ADAPTER.getRegistryName(), (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
         customModels.put(MekanismBlocks.MODIFICATION_STATION.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismBlocks.SECURITY_DESK.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        customModels.put(MekanismBlocks.LOGISTICAL_SORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        customModels.put(MekanismBlocks.RESISTIVE_HEATER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismItems.MEKA_TOOL.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
     }
 

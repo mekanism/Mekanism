@@ -242,7 +242,7 @@
 			"scale": [0.35, 0.35, 0.35]
 		},
 		"gui": {
-			"rotation": [30, -45, 0],
+			"rotation": [30, 45, 0],
 			"translation": [0, 3.75, 0]
 		},
 		"head": {

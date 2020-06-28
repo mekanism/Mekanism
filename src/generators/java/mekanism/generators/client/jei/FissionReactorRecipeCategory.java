@@ -1,6 +1,7 @@
 package mekanism.generators.client.jei;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -32,8 +33,6 @@ import net.minecraftforge.fluids.FluidStack;
 public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
 
     private static final ResourceLocation iconRL = MekanismUtils.getResource(ResourceType.GUI, "radioactive.png");
-
-    private final List<GasStack> steamOutput = Collections.singletonList(MekanismGases.STEAM.getStack(1_000));
 
     public FissionReactorRecipeCategory(IGuiHelper helper) {
         super(helper, GeneratorsBlocks.FISSION_REACTOR_CASING.getRegistryName(), GeneratorsLang.FISSION_REACTOR.translate(), 3, 12, 189, 70);
@@ -73,7 +72,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
     public void setIngredients(GasToGasRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(getWaterInput()));
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.getOutputRepresentation());
+        ingredients.setOutputs(MekanismJEI.TYPE_GAS, Arrays.asList(MekanismGases.STEAM.getStack(1_000), recipe.getOutputRepresentation()));
     }
 
     @Override
@@ -83,7 +82,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
         fluidStacks.init(0, true, 7 - xOffset, 14 - yOffset, 16, 58, 1, false, fluidOverlayLarge);
         fluidStacks.set(0, getWaterInput());
         initChemical(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
-        initChemical(gasStacks, 1, true, 153 - xOffset, 14 - yOffset, 16, 58, steamOutput, true);
+        initChemical(gasStacks, 1, false, 153 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(MekanismGases.STEAM.getStack(1_000)), true);
         initChemical(gasStacks, 2, false, 172 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
 }

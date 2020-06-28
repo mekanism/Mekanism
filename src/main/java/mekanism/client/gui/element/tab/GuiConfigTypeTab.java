@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.element.custom.GuiSideConfiguration;
@@ -37,27 +38,28 @@ public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
     protected void colorTab() {
         switch (transmission) {
             case ENERGY:
-                MekanismRenderer.color(EnumColor.DARK_GREEN);
+                MekanismRenderer.color(SpecialColors.ENERGY_CONFIG_TAB.get());
                 break;
             case FLUID:
-                MekanismRenderer.color(EnumColor.DARK_BLUE);
+                MekanismRenderer.color(SpecialColors.FLUID_CONFIG_TAB.get());
                 break;
             case GAS:
-                MekanismRenderer.color(EnumColor.YELLOW);
+                MekanismRenderer.color(SpecialColors.GAS_CONFIG_TAB.get());
                 break;
             case INFUSION:
-                MekanismRenderer.color(EnumColor.DARK_RED);
+                MekanismRenderer.color(SpecialColors.INFUSION_CONFIG_TAB.get());
                 break;
             case PIGMENT:
-                MekanismRenderer.color(EnumColor.PINK);
+                MekanismRenderer.color(SpecialColors.PIGMENT_CONFIG_TAB.get());
                 break;
             case SLURRY:
-                MekanismRenderer.color(EnumColor.BROWN);
+                MekanismRenderer.color(SpecialColors.SLURRY_CONFIG_TAB.get());
                 break;
             case ITEM:
+                MekanismRenderer.color(SpecialColors.ITEM_CONFIG_TAB.get());
                 break;
             case HEAT:
-                MekanismRenderer.color(EnumColor.ORANGE);
+                MekanismRenderer.color(SpecialColors.HEAT_CONFIG_TAB.get());
                 break;
         }
     }

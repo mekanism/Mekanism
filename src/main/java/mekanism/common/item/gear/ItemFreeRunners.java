@@ -127,6 +127,11 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
         return slotType == getEquipmentSlot();
     }
 
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+    	return material.getEnchantability() > 0;
+    }
+
     public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent {
         NORMAL(MekanismLang.FREE_RUNNER_NORMAL, EnumColor.DARK_GREEN),
         DISABLED(MekanismLang.FREE_RUNNER_DISABLED, EnumColor.DARK_RED);

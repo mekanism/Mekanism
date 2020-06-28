@@ -46,7 +46,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      */
     public final String code;
 
-    public final int[] rgbCode;
+    public int[] rgbCode;
 
     private final Color color;
     private final APILang langEntry;
@@ -126,7 +126,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      * @return the color value
      */
     public float getColor(int index) {
-        return rgbCode[index] / 255F;
+        return getRgbCode()[index] / 255F;
     }
 
     public Color getColor() {
@@ -146,5 +146,13 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     @Override
     public EnumColor byIndex(int index) {
         return byIndexStatic(index);
+    }
+
+    public void setColorFromAtlas(int[] color) {
+        rgbCode = color;
+    }
+
+    public int[] getRgbCode() {
+        return rgbCode;
     }
 }

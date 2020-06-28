@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
@@ -52,7 +53,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(0xFFE8AA97);
+        MekanismRenderer.color(SpecialColors.SECURITY_TAB.get());
     }
 
     @Override

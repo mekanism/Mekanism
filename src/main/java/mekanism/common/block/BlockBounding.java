@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -242,5 +243,12 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
         return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+    }
+
+    @Override
+    @Deprecated
+    public boolean allowsMovement(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType type) {
+        //Mark that bounding blocks do not allow movement for use by AI pathing
+        return false;
     }
 }
