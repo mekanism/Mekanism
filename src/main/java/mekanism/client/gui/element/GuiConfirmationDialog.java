@@ -31,7 +31,7 @@ public class GuiConfirmationDialog extends GuiWindow {
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        drawWrappedCenteredText(matrix, title.getString(), relativeX + (field_230688_j_ / 2), relativeY + 10, titleTextColor(), field_230688_j_ - 10);
+        drawWrappedCenteredText(matrix, title, relativeX + (field_230688_j_ / 2), relativeY + 10, titleTextColor(), field_230688_j_ - 10);
     }
 
     @Override

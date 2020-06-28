@@ -82,7 +82,6 @@ public interface IGuiWrapper {
         renderItem(matrix, stack, xAxis, yAxis, 1);
     }
 
-    //TODO - 1.16: Validate this even works correctly as I am unsure if the matrix stack gets used
     void renderItem(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale);
 
     ItemRenderer getItemRenderer();

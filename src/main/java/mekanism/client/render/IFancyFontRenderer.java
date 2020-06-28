@@ -10,7 +10,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import org.apache.commons.lang3.tuple.Pair;
 
-//TODO - 1.16: Test this class to make sure it still works as intended
 public interface IFancyFontRenderer {
 
     int getXSize();
@@ -106,8 +105,8 @@ public interface IFancyFontRenderer {
         MekanismRenderer.resetColor();
     }
 
-    default void drawWrappedCenteredText(MatrixStack matrix, String text, float x, float y, int color, float maxLength) {
-        new WrappedTextRenderer(this).render(matrix, text, x, y, color, maxLength);
+    default void drawWrappedCenteredText(MatrixStack matrix, ITextComponent text, float x, float y, int color, float maxLength) {
+        new WrappedTextRenderer(this).render(matrix, text.getString(), x, y, color, maxLength);
     }
 
     // efficient tool to draw word-by-word wrapped text based on a horizontal bound. looks intimidating but runs in O(n)
@@ -121,7 +120,7 @@ public interface IFancyFontRenderer {
 
         WrappedTextRenderer(IFancyFontRenderer font) {
             this.font = font;
-            SPACE_LENGTH = font.getFont().getStringWidth(" ");//TODO - 1.16: Evaluate this, used to use char width
+            SPACE_LENGTH = font.getFont().getStringWidth(" ");
         }
 
         void render(MatrixStack matrix, String text, float x, float y, int color, float maxLength) {
@@ -131,7 +130,7 @@ public interface IFancyFontRenderer {
                     continue;
                 }
                 wordBuilder.append(c);
-                wordLength += font.getFont().getStringWidth(Character.toString(c));//TODO - 1.16: Evaluate this, used to use char width
+                wordLength += font.getFont().getStringWidth(Character.toString(c));
             }
             if (wordBuilder.length() > 0) {
                 addWord(maxLength);

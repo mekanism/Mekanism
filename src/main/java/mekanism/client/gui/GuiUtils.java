@@ -1,23 +1,40 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import java.util.function.Predicate;
-import org.lwjgl.opengl.GL11;
-import com.mojang.blaze3d.systems.RenderSystem;
+import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.crash.ReportedException;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
+import org.lwjgl.opengl.GL11;
 
 public class GuiUtils {
 
@@ -221,5 +238,117 @@ public class GuiUtils {
             }
         }
         return false;
+    }
+
+    //ItemRenderer Copies for use with matrix stacks
+    public static void renderItemAndEffectIntoGUI(ItemRenderer itemRenderer, MatrixStack matrix, ItemStack stack, int xPosition, int yPosition) {
+        //Copy of ItemRenderer#renderItemAndEffectIntoGUI and func_239387_b_ with added support for a matrix stack
+        if (!stack.isEmpty()) {
+            itemRenderer.zLevel += 50.0F;
+            try {
+                renderItemModelIntoGUI(itemRenderer, matrix, stack, xPosition, yPosition,
+                      itemRenderer.getItemModelWithOverrides(stack, null, Minecraft.getInstance().player));
+            } catch (Throwable throwable) {
+                CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Rendering item");
+                CrashReportCategory crashreportcategory = crashreport.makeCategory("Item being rendered");
+                crashreportcategory.addDetail("Item Type", () -> String.valueOf(stack.getItem()));
+                crashreportcategory.addDetail("Registry Name", () -> String.valueOf(stack.getItem().getRegistryName()));
+                crashreportcategory.addDetail("Item Damage", () -> String.valueOf(stack.getDamage()));
+                crashreportcategory.addDetail("Item NBT", () -> String.valueOf(stack.getTag()));
+                crashreportcategory.addDetail("Item Foil", () -> String.valueOf(stack.hasEffect()));
+                throw new ReportedException(crashreport);
+            }
+            itemRenderer.zLevel -= 50.0F;
+        }
+    }
+
+    private static void renderItemModelIntoGUI(ItemRenderer itemRenderer, MatrixStack matrix, ItemStack stack, int x, int y, IBakedModel model) {
+        //Copy of ItemRenderer#renderItemModelIntoGUI with added support for a matrix stack instead of using render system
+        matrix.push();
+        Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        Minecraft.getInstance().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmapDirect(false, false);
+        RenderSystem.enableRescaleNormal();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.defaultAlphaFunc();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        matrix.translate(x, y, 100.0F + itemRenderer.zLevel);
+        matrix.translate(8, 8, 0);
+        matrix.scale(1, -1, 1);
+        matrix.scale(16, 16, 16);
+        IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        boolean flag = !model.func_230044_c_();
+        if (flag) {
+            RenderHelper.setupGuiFlatDiffuseLighting();
+        }
+        itemRenderer.renderItem(stack, TransformType.GUI, false, matrix, buffer, MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY, model);
+        buffer.finish();
+        RenderSystem.enableDepthTest();
+        if (flag) {
+            RenderHelper.setupGui3DDiffuseLighting();
+        }
+        RenderSystem.disableAlphaTest();
+        RenderSystem.disableRescaleNormal();
+        matrix.pop();
+    }
+
+    public static void renderItemOverlayIntoGUI(ItemRenderer itemRenderer, MatrixStack matrix, FontRenderer font, ItemStack stack, int xPosition, int yPosition,
+          @Nullable String text) {
+        //Copy of ItemRenderer#renderItemOverlayIntoGUI with added support for a matrix stack instead of using render system
+        if (!stack.isEmpty()) {
+            if (stack.getCount() != 1 || text != null) {
+                matrix.push();
+                String s = text == null ? String.valueOf(stack.getCount()) : text;
+                matrix.translate(0, 0, itemRenderer.zLevel + 200);
+                IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+                font.renderString(s, xPosition + 17 - font.getStringWidth(s), yPosition + 9, 0xFFFFFF, true, matrix.getLast().getMatrix(),
+                      buffer, false, 0, MekanismRenderer.FULL_LIGHT);
+                buffer.finish();
+                matrix.pop();
+            }
+            if (stack.getItem().showDurabilityBar(stack)) {
+                RenderSystem.disableDepthTest();
+                RenderSystem.disableTexture();
+                RenderSystem.disableAlphaTest();
+                RenderSystem.disableBlend();
+                Tessellator tessellator = Tessellator.getInstance();
+                BufferBuilder buffer = tessellator.getBuffer();
+                double health = stack.getItem().getDurabilityForDisplay(stack);
+                int i = Math.round(13.0F - (float)health * 13.0F);
+                int j = stack.getItem().getRGBDurabilityForDisplay(stack);
+                Matrix4f matrix4f = matrix.getLast().getMatrix();
+                draw(matrix4f, buffer, xPosition + 2, yPosition + 13, 13, 2, 0, 0, 0, 255);
+                draw(matrix4f, buffer, xPosition + 2, yPosition + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
+                RenderSystem.enableBlend();
+                RenderSystem.enableAlphaTest();
+                RenderSystem.enableTexture();
+                RenderSystem.enableDepthTest();
+            }
+            ClientPlayerEntity player = Minecraft.getInstance().player;
+            float f3 = player == null ? 0 : player.getCooldownTracker().getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
+            if (f3 > 0) {
+                RenderSystem.disableDepthTest();
+                RenderSystem.disableTexture();
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                Tessellator tessellator = Tessellator.getInstance();
+                BufferBuilder buffer = tessellator.getBuffer();
+                draw(matrix.getLast().getMatrix(), buffer, xPosition, yPosition + MathHelper.floor(16F * (1F - f3)), 16,
+                      MathHelper.ceil(16F * f3), 255, 255, 255, 127);
+                RenderSystem.enableTexture();
+                RenderSystem.enableDepthTest();
+            }
+        }
+    }
+
+    private static void draw(Matrix4f matrix, BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
+        //Copy of ItemRenderer#draw with added support for a matrix stack instead of using render system
+        renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        renderer.pos(matrix, x, y, 0).color(red, green, blue, alpha).endVertex();
+        renderer.pos(matrix, x, y + height, 0).color(red, green, blue, alpha).endVertex();
+        renderer.pos(matrix, x + width, y + height, 0).color(red, green, blue, alpha).endVertex();
+        renderer.pos(matrix, x + width, y, 0).color(red, green, blue, alpha).endVertex();
+        Tessellator.getInstance().draw();
     }
 }

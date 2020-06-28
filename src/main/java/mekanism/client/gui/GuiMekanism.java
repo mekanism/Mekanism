@@ -380,9 +380,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 if (scale != 1) {
                     matrix.scale(scale, scale, scale);
                 }
-                field_230707_j_.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
+                GuiUtils.renderItemAndEffectIntoGUI(field_230707_j_, matrix, stack, xAxis, yAxis);
                 if (overlay) {
-                    field_230707_j_.renderItemOverlayIntoGUI(getFont(), stack, xAxis, yAxis, text);
+                    GuiUtils.renderItemOverlayIntoGUI(field_230707_j_, matrix, getFont(), stack, xAxis, yAxis, text);
                 }
                 RenderHelper.disableStandardItemLighting();
                 RenderSystem.disableDepthTest();

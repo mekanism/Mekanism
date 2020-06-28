@@ -272,7 +272,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     protected void drawButtonText(MatrixStack matrix) {
         ITextComponent message = func_230458_i_();
         //Only attempt to draw the message if we have a message to draw
-        if (!message.getString().isEmpty()) {//TODO - 1.16: Test this/Fix this maybe compare to the empty string one
+        if (!message.getString().isEmpty()) {
             //TODO: Improve the math for this so that it calculates the y value better
             int halfWidthLeft = field_230688_j_ / 2;
             func_238472_a_(matrix, getFont(), message, field_230690_l_ - guiObj.getLeft() + halfWidthLeft, field_230691_m_ - guiObj.getTop() + (field_230689_k_ - 8) / 2,

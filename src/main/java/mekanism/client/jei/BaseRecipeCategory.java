@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IBaseProvider;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.gauge.GaugeOverlay;
@@ -112,7 +113,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
                 if (scale != 1) {
                     matrix.scale(scale, scale, scale);
                 }
-                Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
+                GuiUtils.renderItemAndEffectIntoGUI(Minecraft.getInstance().getItemRenderer(), matrix, stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();
                 RenderSystem.disableDepthTest();
                 matrix.pop();
