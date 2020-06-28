@@ -161,23 +161,24 @@ public class GuiUtils {
         AbstractGui.func_238467_a_(matrix, x, y, x + width, y + height, Color.packOpaque(color));
     }
 
-    public static void drawSprite(int x, int y, int width, int height, int zLevel, TextureAtlasSprite sprite) {
+    public static void drawSprite(MatrixStack matrix, int x, int y, int width, int height, int zLevel, TextureAtlasSprite sprite) {
         MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         RenderSystem.enableBlend();
         RenderSystem.enableAlphaTest();
         BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
         vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        vertexBuffer.pos(x, y + height, zLevel).tex(sprite.getMinU(), sprite.getMaxV()).endVertex();
-        vertexBuffer.pos(x + width, y + height, zLevel).tex(sprite.getMaxU(), sprite.getMaxV()).endVertex();
-        vertexBuffer.pos(x + width, y, zLevel).tex(sprite.getMaxU(), sprite.getMinV()).endVertex();
-        vertexBuffer.pos(x, y, zLevel).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
+        Matrix4f matrix4f = matrix.getLast().getMatrix();
+        vertexBuffer.pos(matrix4f, x, y + height, zLevel).tex(sprite.getMinU(), sprite.getMaxV()).endVertex();
+        vertexBuffer.pos(matrix4f, x + width, y + height, zLevel).tex(sprite.getMaxU(), sprite.getMaxV()).endVertex();
+        vertexBuffer.pos(matrix4f, x + width, y, zLevel).tex(sprite.getMaxU(), sprite.getMinV()).endVertex();
+        vertexBuffer.pos(matrix4f, x, y, zLevel).tex(sprite.getMinU(), sprite.getMinV()).endVertex();
         vertexBuffer.finishDrawing();
         WorldVertexBufferUploader.draw(vertexBuffer);
         RenderSystem.disableAlphaTest();
         RenderSystem.disableBlend();
     }
 
-    public static void drawTiledSprite(int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite, int textureWidth,
+    public static void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite, int textureWidth,
           int textureHeight, int zLevel) {
         if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
             return;
@@ -198,6 +199,7 @@ public class GuiUtils {
         RenderSystem.enableAlphaTest();
         BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
         vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        Matrix4f matrix4f = matrix.getLast().getMatrix();
         for (int xTile = 0; xTile <= xTileCount; xTile++) {
             int width = (xTile == xTileCount) ? xRemainder : textureWidth;
             if (width == 0) {
@@ -217,10 +219,10 @@ public class GuiUtils {
                 int y = yStart - ((yTile + 1) * textureHeight);
                 int maskTop = textureHeight - height;
                 float vMaxLocal = vMax - (vDif * maskTop / textureHeight);
-                vertexBuffer.pos(x, y + textureHeight, zLevel).tex(uMin, vMaxLocal).endVertex();
-                vertexBuffer.pos(shiftedX, y + textureHeight, zLevel).tex(uMaxLocal, vMaxLocal).endVertex();
-                vertexBuffer.pos(shiftedX, y + maskTop, zLevel).tex(uMaxLocal, vMin).endVertex();
-                vertexBuffer.pos(x, y + maskTop, zLevel).tex(uMin, vMin).endVertex();
+                vertexBuffer.pos(matrix4f, x, y + textureHeight, zLevel).tex(uMin, vMaxLocal).endVertex();
+                vertexBuffer.pos(matrix4f, shiftedX, y + textureHeight, zLevel).tex(uMaxLocal, vMaxLocal).endVertex();
+                vertexBuffer.pos(matrix4f, shiftedX, y + maskTop, zLevel).tex(uMaxLocal, vMin).endVertex();
+                vertexBuffer.pos(matrix4f, x, y + maskTop, zLevel).tex(uMin, vMin).endVertex();
             }
         }
         vertexBuffer.finishDrawing();

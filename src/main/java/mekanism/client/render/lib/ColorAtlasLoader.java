@@ -20,10 +20,8 @@ public class ColorAtlasLoader {
         try {
             loadColorAtlas(rl, count, ret);
         } catch (Exception e) {
-            Mekanism.logger.error("Failed to load color atlas: " + rl);
-            e.printStackTrace();
+            Mekanism.logger.error("Failed to load color atlas: " + rl, e);
         }
-
         return ret;
     }
 

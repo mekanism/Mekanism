@@ -2,7 +2,6 @@ package mekanism.client.gui.element.tab;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
-import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
@@ -66,7 +65,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
             drawButton(matrix, mouseX, mouseY);
             //Draw the overlay onto the button
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            GuiUtils.drawSprite(getButtonX(), getButtonY(), innerWidth, innerHeight, 0, MekanismRenderer.redstonePulse);
+            GuiUtils.drawSprite(matrix, getButtonX(), getButtonY(), innerWidth, innerHeight, 0, MekanismRenderer.redstonePulse);
         } else {
             super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         }

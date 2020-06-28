@@ -49,9 +49,9 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                 MekanismRenderer.color(type);
                 TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(type);
                 if (horizontal) {
-                    drawTiledSprite(field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, (int) (level * (field_230688_j_ - 2)), field_230689_k_ - 2, icon);
+                    drawTiledSprite(matrix, field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, (int) (level * (field_230688_j_ - 2)), field_230689_k_ - 2, icon);
                 } else {
-                    drawTiledSprite(field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, field_230688_j_ - 2, (int) (level * (field_230689_k_ - 2)), icon);
+                    drawTiledSprite(matrix, field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, field_230688_j_ - 2, (int) (level * (field_230689_k_ - 2)), icon);
                 }
                 MekanismRenderer.resetColor();
             }

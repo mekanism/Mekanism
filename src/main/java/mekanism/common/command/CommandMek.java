@@ -142,7 +142,7 @@ public class CommandMek {
                                 Mekanism.radiationManager.radiate(location, magnitude);
                                 source.sendFeedback(MekanismLang.COMMAND_RADIATION_ADD.translate(location), true);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                Mekanism.logger.error("Failed to radiate", e);
                             }
                             return 0;
                         })))

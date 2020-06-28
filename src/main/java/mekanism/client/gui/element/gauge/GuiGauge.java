@@ -66,7 +66,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         TextureAtlasSprite icon = getIcon();
         if (scale > 0 && icon != null) {
             applyRenderColor();
-            drawTiledSprite(field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, field_230688_j_ - 2, scale, icon);
+            drawTiledSprite(matrix, field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, field_230688_j_ - 2, scale, icon);
             MekanismRenderer.resetColor();
         }
         //Draw the bar overlay

@@ -104,8 +104,7 @@ public class SyncMapper {
         try {
             collectScanDataUnsafe();
         } catch (Throwable e) {
-            Mekanism.logger.error("Failed to collect scan data and create sync maps");
-            e.printStackTrace();
+            Mekanism.logger.error("Failed to collect scan data and create sync maps", e);
         }
     }
 
