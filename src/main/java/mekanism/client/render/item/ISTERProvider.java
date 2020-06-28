@@ -9,7 +9,6 @@ import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.block.RenderIndustrialAlarmItem;
 import mekanism.client.render.item.block.RenderQuantumEntangloporterItem;
 import mekanism.client.render.item.block.RenderResistiveHeaterItem;
-import mekanism.client.render.item.block.RenderSecurityDeskItem;
 import mekanism.client.render.item.block.RenderSeismicVibratorItem;
 import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
 import mekanism.client.render.item.gear.RenderArmoredJetpack;
@@ -26,10 +25,6 @@ public class ISTERProvider {
 
     public static Callable<ItemStackTileEntityRenderer> energyCube() {
         return RenderEnergyCubeItem::new;
-    }
-
-    public static Callable<ItemStackTileEntityRenderer> securityDesk() {
-        return RenderSecurityDeskItem::new;
     }
 
     public static Callable<ItemStackTileEntityRenderer> crystallizer() {

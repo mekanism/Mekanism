@@ -14,7 +14,8 @@ public enum SlotOverlay {
     X("overlay_x.png", 18, 18),
     FORMULA("overlay_formula.png", 18, 18),
     UPGRADE("overlay_upgrade.png", 18, 18),
-    SELECT("overlay_select.png", 18, 18);
+    SELECT("overlay_select.png", 18, 18),
+    MODULE("overlay_module.png", 18, 18);
 
     private final ResourceLocation texture;
     private final int width;
