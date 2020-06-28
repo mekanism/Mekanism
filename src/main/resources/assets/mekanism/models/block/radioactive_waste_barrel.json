@@ -1,6 +1,6 @@
 {
 	"credit": "Model by CyanideX",
-        "parent": "block/cube_all",
+	"parent": "block/cube_all",
 	"textures": {
 		"0": "mekanism:block/models/radioactive_waste_barrel",
 		"particle": "mekanism:block/models/radioactive_waste_barrel"
@@ -11,10 +11,6 @@
 			"from": [3, 0, 3],
 			"to": [13, 15, 13],
 			"faces": {
-				"north": {"uv": [9, 8, 15, 16], "texture": "#0"},
-				"east": {"uv": [1, 0, 7, 8], "texture": "#0"},
-				"south": {"uv": [9, 8, 15, 16], "texture": "#0"},
-				"west": {"uv": [1, 0, 7, 8], "texture": "#0"},
 				"up": {"uv": [9, 1, 15, 7], "texture": "#0"},
 				"down": {"uv": [1.5, 9.5, 6.5, 14.5], "texture": "#0"}
 			}
@@ -26,7 +22,7 @@
 			"faces": {
 				"north": {"uv": [1, 0, 7, 8], "texture": "#0"},
 				"east": {"uv": [6.5, 0, 7, 8], "texture": "#0"},
-				"south": {"uv": [9, 8, 15, 16], "texture": "#0"},
+				"south": {"uv": [9, 8, 15, 8.5], "texture": "#0"},
 				"west": {"uv": [1, 0, 1.5, 8], "texture": "#0"},
 				"up": {"uv": [9, 1, 15, 1.5], "texture": "#0"},
 				"down": {"uv": [1, 9, 7, 9.5], "texture": "#0"}
@@ -37,9 +33,8 @@
 			"from": [13, 0, 3],
 			"to": [14, 16, 13],
 			"faces": {
-				"north": {"uv": [9, 8, 15, 16], "texture": "#0"},
 				"east": {"uv": [9.5, 8, 14.5, 16], "texture": "#0"},
-				"west": {"uv": [1.5, 0, 6.5, 8], "texture": "#0"},
+				"west": {"uv": [1.5, 0, 6.5, 0.5], "texture": "#0"},
 				"up": {"uv": [14.5, 1.5, 15, 6.5], "texture": "#0"},
 				"down": {"uv": [1, 9.5, 1.5, 14.5], "texture": "#0"}
 			}
@@ -49,7 +44,7 @@
 			"from": [2, 0, 13],
 			"to": [14, 16, 14],
 			"faces": {
-				"north": {"uv": [9, 8, 15, 16], "texture": "#0"},
+				"north": {"uv": [9, 8, 15, 8.5], "texture": "#0"},
 				"east": {"uv": [1, 0, 1.5, 8], "texture": "#0"},
 				"south": {"uv": [1, 0, 7, 8], "texture": "#0"},
 				"west": {"uv": [1, 0, 1.5, 8], "texture": "#0"},
@@ -62,12 +57,45 @@
 			"from": [2, 0, 3],
 			"to": [3, 16, 13],
 			"faces": {
-				"north": {"uv": [9, 8, 15, 16], "texture": "#0"},
-				"east": {"uv": [1, 0, 7, 8], "texture": "#0"},
+				"east": {"uv": [1, 0, 7, 0.5], "texture": "#0"},
 				"west": {"uv": [9.5, 8, 14.5, 16], "texture": "#0"},
 				"up": {"uv": [9, 1.5, 9.5, 6.5], "texture": "#0"},
 				"down": {"uv": [1, 9.5, 1.5, 14.5], "texture": "#0"}
 			}
 		}
-	]
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 225, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 135, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"head": {
+			"translation": [0, 14.5, 0]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
 }
