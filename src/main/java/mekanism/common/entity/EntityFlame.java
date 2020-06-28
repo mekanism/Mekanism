@@ -37,7 +37,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
@@ -73,17 +72,12 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
         Pos3D motion = new Pos3D(0.4, 0.4, 0.4).multiply(lookVec);
 
-        setHeading(motion);
-        setMotion(motion);
+        prevRotationPitch = rotationPitch = player.rotationPitch;
+        prevRotationYaw = rotationYaw = player.rotationYaw;
+        setMotion(motion.add(player.getMotion().x * 1.5, player.onGround ? 0 : player.getMotion().y * 0.75, player.getMotion().z * 1.5));
 
         owner = player;
         mode = ((ItemFlamethrower) player.inventory.getCurrentItem().getItem()).getMode(player.inventory.getCurrentItem());
-    }
-
-    public void setHeading(Pos3D motion) {
-        float d = MathHelper.sqrt((motion.x * motion.x) + (motion.z * motion.z));
-        prevRotationYaw = rotationYaw = (float) Math.toDegrees(Math.atan2(motion.x, motion.z));
-        prevRotationPitch = rotationPitch = (float) Math.toDegrees(Math.atan2(motion.y, d));
     }
 
     @Override
