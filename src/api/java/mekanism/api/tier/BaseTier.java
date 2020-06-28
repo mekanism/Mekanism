@@ -13,7 +13,7 @@ import net.minecraft.util.IStringSerializable;
 public enum BaseTier implements IStringSerializable {
     BASIC("Basic", EnumColor.BRIGHT_GREEN, EnumColor.BRIGHT_GREEN),
     ADVANCED("Advanced", EnumColor.DARK_RED, EnumColor.RED),
-    ELITE("Elite", EnumColor.DARK_BLUE, EnumColor.INDIGO),
+    ELITE("Elite", EnumColor.INDIGO, EnumColor.INDIGO),
     ULTIMATE("Ultimate", EnumColor.PURPLE, EnumColor.PURPLE),
     CREATIVE("Creative", EnumColor.BLACK, EnumColor.DARK_GRAY);
 
