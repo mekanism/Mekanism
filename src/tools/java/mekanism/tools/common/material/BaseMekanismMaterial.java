@@ -37,7 +37,8 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
     }
 
     public int getHoeDamage() {
-        return 0;
+        //Default to match the vanilla hoe's implementation of being negative the attack damage of the material
+        return (int) -getAttackDamage();
     }
 
     public float getHoeAtkSpeed() {

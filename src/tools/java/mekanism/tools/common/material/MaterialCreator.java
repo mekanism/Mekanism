@@ -1,5 +1,6 @@
 package mekanism.tools.common.material;
 
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -54,10 +55,24 @@ public class MaterialCreator extends BaseMekanismMaterial {
         fallBack = materialDefaults;
         String toolKey = materialDefaults.getRegistryPrefix();
         builder.comment(" Material Settings for " + toolKey).push(toolKey);
+        attackDamage = CachedFloatValue.wrap(config, builder.comment("Base attack damage of " + toolKey + " items.")
+              .defineInRange(toolKey + "AttackDamage", materialDefaults.getAttackDamage(), 0, Float.MAX_VALUE));
+        //Note: Currently we don't allow tools that have float damage values to go negative, this predicate is used for ones
+        // that have int values so the hoe can mimic vanilla and use negative the default attack damage value
+        Predicate<Object> damageModifierPredicate = value -> {
+            if (value instanceof Integer) {
+                int val = (int) value;
+                int baseDamageAsInt = (int) attackDamage.get();
+                //Note: We don't bother doing more accurate max value checking as it ends up
+                // getting combined together as a float so it won't end up overflowing anyways
+                return val >= -baseDamageAsInt && val <= Integer.MAX_VALUE;
+            }
+            return false;
+        };
         shieldDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " shields.")
               .defineInRange(toolKey + "ShieldDurability", materialDefaults.getShieldDurability(), 0, Integer.MAX_VALUE));
         swordDamage = CachedIntValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " swords.")
-              .defineInRange(toolKey + "SwordDamage", materialDefaults.getSwordDamage(), 0, Integer.MAX_VALUE));
+              .define(toolKey + "SwordDamage", materialDefaults.getSwordDamage(), damageModifierPredicate));
         swordAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " swords.")
               .define(toolKey + "SwordAtkSpeed", (double) materialDefaults.getSwordAtkSpeed()));
         shovelDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " shovels.")
@@ -69,11 +84,11 @@ public class MaterialCreator extends BaseMekanismMaterial {
         axeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " axes.")
               .define(toolKey + "AxeAtkSpeed", (double) materialDefaults.getAxeAtkSpeed()));
         pickaxeDamage = CachedIntValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " pickaxes.")
-              .defineInRange(toolKey + "PickaxeDamage", materialDefaults.getPickaxeDamage(), 0, Integer.MAX_VALUE));
+              .define(toolKey + "PickaxeDamage", materialDefaults.getPickaxeDamage(), damageModifierPredicate));
         pickaxeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " pickaxes.")
               .define(toolKey + "PickaxeAtkSpeed", (double) materialDefaults.getPickaxeAtkSpeed()));
         hoeDamage = CachedIntValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " hoes.")
-              .defineInRange(toolKey + "HoeDamage", materialDefaults.getHoeDamage(), 0, Integer.MAX_VALUE));
+              .define(toolKey + "HoeDamage", materialDefaults.getHoeDamage(), damageModifierPredicate));
         hoeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " hoes.")
               .define(toolKey + "HoeAtkSpeed", (double) materialDefaults.getHoeAtkSpeed()));
         toolMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " tools.")
@@ -92,8 +107,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
               .defineInRange(toolKey + "PaxelEnchantability", materialDefaults.getPaxelEnchantability(), 0, Integer.MAX_VALUE));
         paxelMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " paxels.")
               .defineInRange(toolKey + "PaxelMaxUses", materialDefaults.getPaxelMaxUses(), 1, Integer.MAX_VALUE));
-        attackDamage = CachedFloatValue.wrap(config, builder.comment("Base attack damage of " + toolKey + " items.")
-              .defineInRange(toolKey + "AttackDamage", materialDefaults.getAttackDamage(), 0, Float.MAX_VALUE));
         harvestLevel = CachedIntValue.wrap(config, builder.comment("Harvest level of " + toolKey + " tools.")
               .defineInRange(toolKey + "HarvestLevel", materialDefaults.getHarvestLevel(), 0, Integer.MAX_VALUE));
         enchantability = CachedIntValue.wrap(config, builder.comment("Natural enchantability factor of " + toolKey + " items.")

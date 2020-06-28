@@ -25,6 +25,11 @@ public enum MekanismLang implements ILangEntry {
     FEET("equipment", "feet"),
     MAINHAND("equipment", "mainhand"),
     OFFHAND("equipment", "offhand"),
+    //Compass Directions
+    NORTH_SHORT("direction", "north.short"),
+    SOUTH_SHORT("direction", "south.short"),
+    WEST_SHORT("direction", "west.short"),
+    EAST_SHORT("direction", "east.short"),
     //Multiblock Stuff
     MULTIBLOCK_INVALID_FRAME("multiblock", "invalid_frame"),
     MULTIBLOCK_INVALID_INNER("multiblock", "invalid_inner"),

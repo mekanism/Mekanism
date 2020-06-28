@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.registries.MekanismParticleTypes;
-import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
@@ -33,13 +33,11 @@ public class LaserParticleData implements IParticleData {
             return new LaserParticleData(buf.readEnumValue(Direction.class), buf.readDouble(), buf.readFloat());
         }
     };
-    //TODO: Try to do this better as I believe this is more of a mess than it needs to be
     public static final Codec<LaserParticleData> CODEC = RecordCodecBuilder.create(val -> val.group(
-          Codec.INT.fieldOf("direction").forGetter(data -> data.direction.ordinal()),
+          MekanismUtils.DIRECTION_CODEC.fieldOf("direction").forGetter(data -> data.direction),
           Codec.DOUBLE.fieldOf("distance").forGetter(data -> data.distance),
-          Codec.FLOAT.fieldOf("energyScale").forGetter(data -> data.energyScale))
-          .apply(val, (direction, distance, energyScale) -> new LaserParticleData(EnumUtils.DIRECTIONS[direction], distance, energyScale))
-    );
+          Codec.FLOAT.fieldOf("energyScale").forGetter(data -> data.energyScale)
+    ).apply(val, LaserParticleData::new));
 
     public final Direction direction;
     public final double distance;

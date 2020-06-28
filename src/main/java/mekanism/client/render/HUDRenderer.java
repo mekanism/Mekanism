@@ -2,6 +2,7 @@ package mekanism.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.MekanismUtils;
@@ -12,7 +13,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
 public class HUDRenderer {
 
@@ -68,21 +68,20 @@ public class HUDRenderer {
         RenderSystem.defaultBlendFunc();
         MekanismRenderer.color(color);
         AbstractGui.func_238466_a_(matrix, -50, -50, 100, 100, 0, 0, 256, 256, 256, 256);
-        //TODO - V10: Use lang keys for this
-        rotateStr(matrix, new StringTextComponent("N"), angle, 0, color);
-        rotateStr(matrix, new StringTextComponent("E"), angle, 90, color);
-        rotateStr(matrix, new StringTextComponent("S"), angle, 180, color);
-        rotateStr(matrix, new StringTextComponent("W"), angle, 270, color);
+        rotateStr(matrix, MekanismLang.NORTH_SHORT, angle, 0, color);
+        rotateStr(matrix, MekanismLang.EAST_SHORT, angle, 90, color);
+        rotateStr(matrix, MekanismLang.SOUTH_SHORT, angle, 180, color);
+        rotateStr(matrix, MekanismLang.WEST_SHORT, angle, 270, color);
         MekanismRenderer.resetColor();
         matrix.pop();
     }
 
-    private void rotateStr(MatrixStack matrix, ITextComponent text, float rotation, float shift, Color color) {
+    private void rotateStr(MatrixStack matrix, ILangEntry langEntry, float rotation, float shift, Color color) {
         matrix.push();
         matrix.rotate(Vector3f.ZP.rotationDegrees(shift));
         matrix.translate(0, -50, 0);
         matrix.rotate(Vector3f.ZP.rotationDegrees(-rotation - shift));
-        minecraft.fontRenderer.func_238422_b_(matrix, text, -2.5F, -4, color.argb());
+        minecraft.fontRenderer.func_238422_b_(matrix, langEntry.translate(), -2.5F, -4, color.argb());
         matrix.pop();
     }
 }
