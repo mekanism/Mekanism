@@ -46,9 +46,8 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      */
     public final String code;
 
-    public int[] rgbCode;
-
-    private final Color color;
+    private int[] rgbCode;
+    private Color color;
     private final APILang langEntry;
     private final String englishName;
     private final String registryPrefix;
@@ -67,8 +66,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
         this.englishName = englishName;
         this.dyeName = dyeName;
         this.registryPrefix = registryPrefix;
-        this.rgbCode = rgbCode;
-        this.color = Color.func_240743_a_(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
+        setColorFromAtlas(rgbCode);
         this.mapColor = mapColor;
         this.dyeTag = dyeTag;
     }
@@ -150,6 +148,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
 
     public void setColorFromAtlas(int[] color) {
         rgbCode = color;
+        this.color = Color.func_240743_a_(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
     }
 
     public int[] getRgbCode() {
