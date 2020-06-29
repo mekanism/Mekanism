@@ -105,6 +105,7 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_SQUARE_BRACKET("generic", "square_bracket"),
     GENERIC_PARENTHESIS("generic", "parenthesis"),
     GENERIC_WITH_PARENTHESIS("generic", "with_parenthesis"),
+    GENERIC_WITH_TWO_PARENTHESIS("generic", "with_two_parenthesis"),
     GENERIC_FRACTION("generic", "fraction"),
     GENERIC_TRANSFER("generic", "transfer"),
     GENERIC_PER_TICK("generic", "per_tick"),

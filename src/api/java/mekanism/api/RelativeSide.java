@@ -2,20 +2,34 @@ package mekanism.api;
 
 import javax.annotation.Nonnull;
 import mekanism.api.math.MathUtils;
+import mekanism.api.text.APILang;
+import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.ILangEntry;
 import net.minecraft.util.Direction;
 
-public enum RelativeSide {
-    FRONT,
-    LEFT,
-    RIGHT,
-    BACK,
-    TOP,
-    BOTTOM;
+public enum RelativeSide implements IHasTranslationKey {
+    FRONT(APILang.FRONT),
+    LEFT(APILang.LEFT),
+    RIGHT(APILang.RIGHT),
+    BACK(APILang.BACK),
+    TOP(APILang.TOP),
+    BOTTOM(APILang.BOTTOM);
 
     private final static RelativeSide[] SIDES = values();
 
     public static RelativeSide byIndex(int index) {
         return MathUtils.getByIndexMod(SIDES, index);
+    }
+
+    private final ILangEntry langEntry;
+
+    RelativeSide(ILangEntry langEntry) {
+        this.langEntry = langEntry;
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return langEntry.getTranslationKey();
     }
 
     /**

@@ -32,6 +32,13 @@ public enum APILang implements ILangEntry {
     SOUTH("direction", "south"),
     WEST("direction", "west"),
     EAST("direction", "east"),
+    //Relative Sides
+    FRONT("side", "front"),
+    LEFT("side", "left"),
+    RIGHT("side", "right"),
+    BACK("side", "back"),
+    TOP("side", "top"),
+    BOTTOM("side", "bottom"),
     //Colors
     COLOR_BLACK("color", "black"),
     COLOR_DARK_BLUE("color", "dark_blue"),

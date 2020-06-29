@@ -25,6 +25,7 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiTransporterConfig extends GuiWindow {
 
@@ -54,7 +55,7 @@ public class GuiTransporterConfig extends GuiWindow {
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
         addChild(new SideDataButton(guiObj, guiObj.getLeft() + relativeX + xPos, guiObj.getTop() + relativeY + yPos, side,
               () -> getTile().getConfig().getDataType(TransmissionType.ITEM, side), () -> getTile().getEjector().getInputColor(side), tile, () -> null,
-              ConfigurationPacket.INPUT_COLOR, getOnHover()));
+              ConfigurationPacket.INPUT_COLOR, getOnHover(side)));
     }
 
     @Override
@@ -68,18 +69,15 @@ public class GuiTransporterConfig extends GuiWindow {
         return (TILE) tile;
     }
 
-    private IHoverable getOnHover() {
+    private IHoverable getOnHover(RelativeSide side) {
         return (onHover, matrix, xAxis, yAxis) -> {
             if (onHover instanceof SideDataButton) {
                 SideDataButton button = (SideDataButton) onHover;
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
                     EnumColor color = button.getColor();
-                    if (color != null) {
-                        displayTooltip(matrix, color.getColoredName(), xAxis, yAxis);
-                    } else {
-                        displayTooltip(matrix, MekanismLang.NONE.translate(), xAxis, yAxis);
-                    }
+                    ITextComponent colorComponent = color == null ? MekanismLang.NONE.translate() : color.getColoredName();
+                    displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translate(colorComponent, side), xAxis, yAxis);
                 }
             }
         };

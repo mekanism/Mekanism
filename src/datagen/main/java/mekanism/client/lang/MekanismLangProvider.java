@@ -508,6 +508,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_SQUARE_BRACKET, "[%s]");
         add(MekanismLang.GENERIC_PARENTHESIS, "(%s)");
         add(MekanismLang.GENERIC_WITH_PARENTHESIS, "%s (%s)");
+        add(MekanismLang.GENERIC_WITH_TWO_PARENTHESIS, "%s (%s) (%s)");
         add(MekanismLang.GENERIC_FRACTION, "%s/%s");
         add(MekanismLang.GENERIC_TRANSFER, "- %s (%s)");
         add(MekanismLang.GENERIC_PER_TICK, "%s/t");
@@ -524,6 +525,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SOUTH_SHORT, "S");
         add(MekanismLang.WEST_SHORT, "W");
         add(MekanismLang.EAST_SHORT, "E");
+        //Relative sides
+        add(APILang.FRONT, "Front");
+        add(APILang.LEFT, "Left");
+        add(APILang.RIGHT, "Right");
+        add(APILang.BACK, "Back");
+        add(APILang.TOP, "Top");
+        add(APILang.BOTTOM, "Bottom");
         //Hold for
         add(MekanismLang.HOLD_FOR_DETAILS, "Hold %s for details.");
         add(MekanismLang.HOLD_FOR_DESCRIPTION, "Hold %s for a description.");

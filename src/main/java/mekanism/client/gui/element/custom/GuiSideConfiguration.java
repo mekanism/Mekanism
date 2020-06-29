@@ -64,7 +64,7 @@ public class GuiSideConfiguration extends GuiWindow {
               () -> getTile().getConfig().getDataType(currentType, side), () -> {
             DataType dataType = getTile().getConfig().getDataType(currentType, side);
             return dataType == null ? EnumColor.GRAY : dataType.getColor();
-        }, tile, () -> currentType, ConfigurationPacket.SIDE_DATA, getOnHover()));
+        }, tile, () -> currentType, ConfigurationPacket.SIDE_DATA, getOnHover(side)));
     }
 
     @Override
@@ -78,12 +78,13 @@ public class GuiSideConfiguration extends GuiWindow {
         return (TILE) tile;
     }
 
-    private IHoverable getOnHover() {
+    private IHoverable getOnHover(RelativeSide side) {
         return (onHover, matrix, xAxis, yAxis) -> {
             if (onHover instanceof SideDataButton) {
                 DataType dataType = ((SideDataButton) onHover).getDataType();
                 if (dataType != null) {
-                    displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(dataType.getColor(), dataType, dataType.getColor().getName()), xAxis, yAxis);
+                    displayTooltip(matrix, MekanismLang.GENERIC_WITH_TWO_PARENTHESIS.translateColored(dataType.getColor(), dataType,
+                          dataType.getColor().getName(), side), xAxis, yAxis);
                 }
             }
         };
