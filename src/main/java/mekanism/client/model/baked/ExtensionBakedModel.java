@@ -21,7 +21,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -136,7 +135,10 @@ public class ExtensionBakedModel<T> implements IBakedModel {
 
         @Override
         public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
-            return ForgeHooksClient.handlePerspective(this, cameraTransformType, mat);
+            // have the original model apply any perspective transforms onto the MatrixStack
+            original.handlePerspective(cameraTransformType, mat);
+            // return this model, as we want to draw the item variant quads ourselves
+            return this;
         }
     }
 

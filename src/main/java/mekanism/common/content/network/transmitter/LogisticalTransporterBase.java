@@ -1,14 +1,14 @@
 package mekanism.common.content.network.transmitter;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.function.IntConsumer;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -112,7 +112,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 for (Direction side : getConnections(ConnectionType.PULL)) {
                     TileEntity tile = MekanismUtils.getTileEntity(getTileWorld(), getTilePos().offset(side));
                     if (tile != null) {
-                        TransitRequest request = TransitRequest.anyItem(tile, side, tier.getPullAmount());
+                        TransitRequest request = TransitRequest.anyItem(tile, side.getOpposite(), tier.getPullAmount());
                         //There's a stack available to insert into the network...
                         if (!request.isEmpty()) {
                             TransitResponse response = insert(tile, request, getColor(), true, 0);

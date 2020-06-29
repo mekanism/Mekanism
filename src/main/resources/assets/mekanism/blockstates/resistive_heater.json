@@ -27,7 +27,7 @@
       "y": 90
     },
     "facing=west,active=true": {
-      "model": "mekanism:block/resistive_heater_actuve",
+      "model": "mekanism:block/resistive_heater_active",
       "y": -90
     },
   }

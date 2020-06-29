@@ -460,7 +460,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             }
         }
         if (doPull && getPullInv() != null) {
-            TransitRequest request = TransitRequest.definedItem(getPullInv(), Direction.UP, 1, Finder.strict(filter.replaceStack));
+            TransitRequest request = TransitRequest.definedItem(getPullInv(), Direction.DOWN, 1, Finder.strict(filter.replaceStack));
             if (!request.isEmpty()) {
                 return request.createSimpleResponse().useAll();
             }

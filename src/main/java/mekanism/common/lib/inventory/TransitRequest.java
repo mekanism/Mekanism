@@ -36,7 +36,7 @@ public abstract class TransitRequest {
 
     public static TransitRequest definedItem(TileEntity tile, Direction side, int min, int max, Finder finder) {
         TileTransitRequest ret = new TileTransitRequest(tile, side);
-        IItemHandler inventory = InventoryUtils.assertItemHandler("TransitRequest", tile, side.getOpposite());
+        IItemHandler inventory = InventoryUtils.assertItemHandler("TransitRequest", tile, side);
         if (inventory == null) {
             return ret;
         }
