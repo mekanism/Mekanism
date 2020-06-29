@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.custom;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -18,7 +19,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiCrystallizerScreen extends GuiTexturedElement {
@@ -37,7 +38,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
 
     public GuiCrystallizerScreen(IGuiWrapper gui, int x, int y, IOreInfo oreInfo) {
         super(SLOT.getTexture(), gui, x, y, 115, 42);
-        innerScreen = new GuiInnerScreen(gui, x, y, width, height, () -> {
+        innerScreen = new GuiInnerScreen(gui, x, y, field_230688_j_, field_230689_k_, () -> {
             List<ITextComponent> ret = new ArrayList<>();
             BoxedChemicalStack boxedChemical = oreInfo.getInputChemical();
             if (!boxedChemical.isEmpty()) {
@@ -56,23 +57,23 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
             return ret;
         });
         this.oreInfo = oreInfo;
-        this.slotX = this.x + 115 - SLOT.getWidth();
-        active = false;
+        this.slotX = this.field_230690_l_ + 115 - SLOT.getWidth();
+        field_230693_o_ = false;
     }
 
     @Override
-    public void renderForeground(int mouseX, int mouseY) {
-        super.renderForeground(mouseX, mouseY);
-        innerScreen.renderForeground(mouseX, mouseY);
+    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderForeground(matrix, mouseX, mouseY);
+        innerScreen.renderForeground(matrix, mouseX, mouseY);
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        innerScreen.renderButton(mouseX, mouseY, partialTicks);
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        innerScreen.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        blit(slotX, y, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
+        func_238463_a_(matrix, slotX, field_230691_m_, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
         if (!renderStack.isEmpty()) {
-            guiObj.renderItem(renderStack, slotX + 1, y + 1);
+            guiObj.renderItem(matrix, renderStack, slotX + 1, field_230691_m_ + 1);
         }
     }
 
@@ -86,9 +87,9 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
                 prevSlurry = inputSlurry;
                 iterStacks.clear();
                 if (!prevSlurry.isEmptyType() && !prevSlurry.isIn(MekanismTags.Slurries.DIRTY)) {
-                    Tag<Item> oreTag = prevSlurry.getOreTag();
+                    ITag<Item> oreTag = prevSlurry.getOreTag();
                     if (oreTag != null) {
-                        for (Item ore : oreTag.getAllElements()) {
+                        for (Item ore : oreTag.func_230236_b_()) {
                             iterStacks.add(new ItemStack(ore));
                         }
                     }
