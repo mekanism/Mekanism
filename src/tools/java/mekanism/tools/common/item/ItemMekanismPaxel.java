@@ -52,9 +52,13 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
 
     private static final ToolType PAXEL_TOOL_TYPE = ToolType.get("paxel");
 
-    private static Item.Properties getItemProperties(int harvestLevel) {
-        return ItemDeferredRegister.getMekBaseProperties().addToolType(ToolType.AXE, harvestLevel).addToolType(ToolType.PICKAXE, harvestLevel)
+    private static Item.Properties getItemProperties(int harvestLevel, boolean unburnable) {
+        Item.Properties properties = ItemDeferredRegister.getMekBaseProperties().addToolType(ToolType.AXE, harvestLevel).addToolType(ToolType.PICKAXE, harvestLevel)
               .addToolType(ToolType.SHOVEL, harvestLevel).addToolType(PAXEL_TOOL_TYPE, harvestLevel);
+        if (unburnable) {
+            properties = properties.func_234689_a_();
+        }
+        return properties;
     }
 
     private final FloatSupplier paxelDamage;
@@ -66,7 +70,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
     private final AttributeCache attributeCache;
 
     public ItemMekanismPaxel(MaterialCreator material) {
-        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, Collections.emptySet(), getItemProperties(material.getPaxelHarvestLevel()));
+        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, Collections.emptySet(), getItemProperties(material.getPaxelHarvestLevel(), false));
         paxelDamage = material::getPaxelDamage;
         paxelAtkSpeed = material::getPaxelAtkSpeed;
         paxelEfficiency = material::getPaxelEfficiency;
@@ -76,8 +80,8 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.paxelDamage, material.paxelAtkSpeed);
     }
 
-    public ItemMekanismPaxel(ItemTier material) {
-        super(4, -2.4F, material, Collections.emptySet(), getItemProperties(material.getHarvestLevel()));
+    public ItemMekanismPaxel(ItemTier material, boolean unburnable) {
+        super(4, -2.4F, material, Collections.emptySet(), getItemProperties(material.getHarvestLevel(), unburnable));
         paxelDamage = () -> 4;
         paxelAtkSpeed = () -> -2.4F;
         paxelEfficiency = material::getEfficiency;

@@ -27,6 +27,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
         add(ToolsItems.IRON_PAXEL, "Iron Paxel");
         add(ToolsItems.GOLD_PAXEL, "Gold Paxel");
         add(ToolsItems.DIAMOND_PAXEL, "Diamond Paxel");
+        add(ToolsItems.NETHERITE_PAXEL, "Netherite Paxel");
         //Tool sets
         addSet("Bronze", ToolsItems.BRONZE_HELMET, ToolsItems.BRONZE_CHESTPLATE, ToolsItems.BRONZE_LEGGINGS, ToolsItems.BRONZE_BOOTS, ToolsItems.BRONZE_SWORD,
               ToolsItems.BRONZE_PICKAXE, ToolsItems.BRONZE_AXE, ToolsItems.BRONZE_SHOVEL, ToolsItems.BRONZE_HOE, ToolsItems.BRONZE_PAXEL, ToolsItems.BRONZE_SHIELD);
