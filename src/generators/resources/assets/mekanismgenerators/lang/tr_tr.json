@@ -92,7 +92,7 @@
   "fission.mekanismgenerators.invalid_malformed_fuel_assembly": "Couldn't form, invalid Fission Fuel Assembly placement at %s.",
   "fission.mekanismgenerators.invalid_missing_fuel_assembly": "Couldn't form, no fuel assembly structures present.",
   "fission.mekanismgenerators.max_burn_rate": "Maks Yanma Oranı: %s mB/t",
-  "fission.mekanismgenerators.port_mode_change": "Port mode changed to: %s",
+  "fission.mekanismgenerators.port_mode_change": "Bağlantı noktası modu şuna değiştirildi: %s",
   "fission.mekanismgenerators.port_mode_input": "sadece giriş",
   "fission.mekanismgenerators.port_mode_output_coolant": "soğutma sıvısı çıkışı",
   "fission.mekanismgenerators.port_mode_output_waste": "atık çıkışı",
