@@ -1,25 +1,22 @@
 {
   "type": "mekanism:reaction",
   "itemInput": {
-    "amount": 16,
+    "amount": 32,
     "ingredient": {
       "tag": "forge:dusts/wood"
     }
   },
   "fluidInput": {
-    "amount": 200,
+    "amount": 100,
     "tag": "minecraft:water"
   },
   "gasInput": {
-    "amount": 200,
+    "amount": 100,
     "gas": "mekanism:oxygen"
   },
-  "duration": 300,
-  "itemOutput": {
-    "item": "mekanism:dust_charcoal"
-  },
+  "duration": 150,
   "gasOutput": {
     "gas": "mekanism:hydrogen",
-    "amount": 200
+    "amount": 100
   }
 }

@@ -6,16 +6,16 @@
     }
   },
   "fluidInput": {
-    "amount": 12,
+    "amount": 14,
     "tag": "minecraft:water"
   },
   "gasInput": {
-    "amount": 12,
+    "amount": 14,
     "gas": "mekanism:oxygen"
   },
-  "duration": 18,
+  "duration": 21,
   "gasOutput": {
     "gas": "mekanism:hydrogen",
-    "amount": 12
+    "amount": 14
   }
 }

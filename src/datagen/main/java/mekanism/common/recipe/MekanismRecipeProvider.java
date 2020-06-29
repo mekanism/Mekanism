@@ -1567,33 +1567,33 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     }
 
     private void addWoodGasificationRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        //Dusts
+        //Dusts, each worth a 32th of a log.
         PressurizedReactionRecipeBuilder.reaction(
-              ItemStackIngredient.from(MekanismTags.Items.DUSTS_WOOD, 16),
-              FluidStackIngredient.from(FluidTags.WATER, 200),
-              GasStackIngredient.from(MekanismGases.OXYGEN, 200),
-              300,
-              new ItemStack(MekanismItems.CHARCOAL_DUST),
-              MekanismGases.HYDROGEN.getGasStack(200)
+              ItemStackIngredient.from(MekanismTags.Items.DUSTS_WOOD, 32),
+              FluidStackIngredient.from(FluidTags.WATER, 100),
+              GasStackIngredient.from(MekanismGases.OXYGEN, 100),
+              150,
+              MekanismGases.HYDROGEN.getGasStack(100)
         ).build(consumer, Mekanism.rl(basePath + "dusts_wood"));
-        //Logs
+        //Logs, each worth one log.
         PressurizedReactionRecipeBuilder.reaction(
-              ItemStackIngredient.from(ItemTags.LOGS, 2),
-              FluidStackIngredient.from(FluidTags.WATER, 200),
-              GasStackIngredient.from(MekanismGases.OXYGEN, 200),
-              300,
+              ItemStackIngredient.from(ItemTags.LOGS, 4),
+              FluidStackIngredient.from(FluidTags.WATER, 400),
+              GasStackIngredient.from(MekanismGases.OXYGEN, 400),
+              600,
               new ItemStack(MekanismItems.CHARCOAL_DUST),
-              MekanismGases.HYDROGEN.getGasStack(200)
+              MekanismGases.HYDROGEN.getGasStack(400)
         ).build(consumer, Mekanism.rl(basePath + "logs"));
-        //Planks
+        //Planks, each worth a 5th of a log.
         PressurizedReactionRecipeBuilder.reaction(
-              ItemStackIngredient.from(ItemTags.PLANKS),
-              FluidStackIngredient.from(FluidTags.WATER, 16),
-              GasStackIngredient.from(MekanismGases.OXYGEN, 16),
-              25,
-              MekanismGases.HYDROGEN.getGasStack(16)
+              ItemStackIngredient.from(ItemTags.PLANKS, 20),
+              FluidStackIngredient.from(FluidTags.WATER, 400),
+              GasStackIngredient.from(MekanismGases.OXYGEN, 400),
+              600,
+              new ItemStack(MekanismItems.CHARCOAL_DUST),
+              MekanismGases.HYDROGEN.getGasStack(400)
         ).build(consumer, Mekanism.rl(basePath + "planks"));
-        //Rods
+        //Rods, each worth a 30th of a log.
         PressurizedReactionRecipeBuilder.reaction(
               ItemStackIngredient.from(Tags.Items.RODS_WOODEN),
               FluidStackIngredient.from(FluidTags.WATER, 3),
@@ -1601,21 +1601,21 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               4,
               MekanismGases.HYDROGEN.getGasStack(3)
         ).build(consumer, Mekanism.rl(basePath + "rods_wooden"));
-        //Slabs
+        //Slabs, each worth a 10th of a log.
         PressurizedReactionRecipeBuilder.reaction(
               ItemStackIngredient.from(ItemTags.WOODEN_SLABS),
-              FluidStackIngredient.from(FluidTags.WATER, 8),
-              GasStackIngredient.from(MekanismGases.OXYGEN, 8),
-              12,
-              MekanismGases.HYDROGEN.getGasStack(8)
+              FluidStackIngredient.from(FluidTags.WATER, 10),
+              GasStackIngredient.from(MekanismGases.OXYGEN, 10),
+              15,
+              MekanismGases.HYDROGEN.getGasStack(10)
         ).build(consumer, Mekanism.rl(basePath + "wooden_slabs"));
-        //Stairs
+        //Stairs, each worth a 7th of a log.
         PressurizedReactionRecipeBuilder.reaction(
               ItemStackIngredient.from(ItemTags.WOODEN_STAIRS),
-              FluidStackIngredient.from(FluidTags.WATER, 12),
-              GasStackIngredient.from(MekanismGases.OXYGEN, 12),
-              18,
-              MekanismGases.HYDROGEN.getGasStack(12)
+              FluidStackIngredient.from(FluidTags.WATER, 14),
+              GasStackIngredient.from(MekanismGases.OXYGEN, 14),
+              21,
+              MekanismGases.HYDROGEN.getGasStack(14)
         ).build(consumer, Mekanism.rl(basePath + "wooden_stairs"));
     }
 

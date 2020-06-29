@@ -1,21 +1,25 @@
 {
   "type": "mekanism:reaction",
   "itemInput": {
+    "amount": 20,
     "ingredient": {
       "tag": "minecraft:planks"
     }
   },
   "fluidInput": {
-    "amount": 16,
+    "amount": 400,
     "tag": "minecraft:water"
   },
   "gasInput": {
-    "amount": 16,
+    "amount": 400,
     "gas": "mekanism:oxygen"
   },
-  "duration": 25,
+  "duration": 600,
+  "itemOutput": {
+    "item": "mekanism:dust_charcoal"
+  },
   "gasOutput": {
     "gas": "mekanism:hydrogen",
-    "amount": 16
+    "amount": 400
   }
 }
