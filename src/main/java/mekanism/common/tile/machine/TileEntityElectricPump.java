@@ -1,12 +1,12 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
@@ -63,7 +63,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     /**
      * How many ticks it takes to run an operation.
      */
-    private static final int BASE_TICKS_REQUIRED = 20;
+    private static final int BASE_TICKS_REQUIRED = 10;
     /**
      * This pump's tank
      */

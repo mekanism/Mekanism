@@ -19,6 +19,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiCrystallizerScreen extends GuiTexturedElement {
 
@@ -36,7 +37,24 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
 
     public GuiCrystallizerScreen(IGuiWrapper gui, int x, int y, IOreInfo oreInfo) {
         super(SLOT.getTexture(), gui, x, y, 115, 42);
-        innerScreen = new GuiInnerScreen(gui, x, y, width, height);
+        innerScreen = new GuiInnerScreen(gui, x, y, width, height, () -> {
+            List<ITextComponent> ret = new ArrayList<>();
+            BoxedChemicalStack boxedChemical = oreInfo.getInputChemical();
+            if (!boxedChemical.isEmpty()) {
+                ret.add(TextComponentUtil.build(boxedChemical));
+                if (boxedChemical.getChemicalType() == ChemicalType.SLURRY && !renderStack.isEmpty()) {
+                    ret.add(MekanismLang.GENERIC_PARENTHESIS.translate(renderStack));
+                } else {
+                    ChemicalCrystallizerRecipe recipe = oreInfo.getRecipe();
+                    if (recipe == null) {
+                        ret.add(MekanismLang.NO_RECIPE.translate());
+                    } else {
+                        ret.add(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(boxedChemical)));
+                    }
+                }
+            }
+            return ret;
+        });
         this.oreInfo = oreInfo;
         this.slotX = this.x + 115 - SLOT.getWidth();
         active = false;
@@ -45,20 +63,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     @Override
     public void renderForeground(int mouseX, int mouseY) {
         super.renderForeground(mouseX, mouseY);
-        BoxedChemicalStack boxedChemical = oreInfo.getInputChemical();
-        if (!boxedChemical.isEmpty()) {
-            drawString(TextComponentUtil.build(boxedChemical), 33, 15, screenTextColor());
-            if (boxedChemical.getChemicalType() == ChemicalType.SLURRY && !renderStack.isEmpty()) {
-                drawString(MekanismLang.GENERIC_PARENTHESIS.translate(renderStack), 33, 24, screenTextColor());
-            } else {
-                ChemicalCrystallizerRecipe recipe = oreInfo.getRecipe();
-                if (recipe == null) {
-                    drawString(MekanismLang.NO_RECIPE.translate(), 33, 24, screenTextColor());
-                } else {
-                    drawString(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(boxedChemical)), 33, 24, screenTextColor());
-                }
-            }
-        }
+        innerScreen.renderForeground(mouseX, mouseY);
     }
 
     @Override
