@@ -232,7 +232,7 @@ public class ClientRegistration {
         }
 
         ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getSolid() || renderType == RenderType.getTranslucent(),
-              MekanismBlocks.ISOTOPIC_CENTRIFUGE);
+              MekanismBlocks.ISOTOPIC_CENTRIFUGE, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
 
         for (DriveStatus status : DriveStatus.values()) {
             if (status == DriveStatus.NONE)
@@ -249,6 +249,8 @@ public class ClientRegistration {
         customModels.put(MekanismBlocks.SECURITY_DESK.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismBlocks.LOGISTICAL_SORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismBlocks.RESISTIVE_HEATER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        customModels.put(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        customModels.put(MekanismItems.PORTABLE_QIO_DASHBOARD.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
         customModels.put(MekanismItems.MEKA_TOOL.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
     }
 
