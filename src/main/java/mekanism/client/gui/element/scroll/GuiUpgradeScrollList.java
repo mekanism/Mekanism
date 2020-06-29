@@ -112,7 +112,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
             } else if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
                 j = 0;
             }
-            MekanismRenderer.color(upgrade.getColor(), 1.0F, 2.5F);
+            MekanismRenderer.color(upgrade.getColor());
             func_238463_a_(matrix, field_230690_l_ + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             MekanismRenderer.resetColor();
         }

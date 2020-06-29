@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -19,7 +18,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiCrystallizerScreen extends GuiTexturedElement {
 
@@ -37,38 +37,42 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
 
     public GuiCrystallizerScreen(IGuiWrapper gui, int x, int y, IOreInfo oreInfo) {
         super(SLOT.getTexture(), gui, x, y, 115, 42);
-        innerScreen = new GuiInnerScreen(gui, x, y, field_230688_j_, field_230689_k_);
-        this.oreInfo = oreInfo;
-        this.slotX = this.field_230690_l_ + 115 - SLOT.getWidth();
-        field_230693_o_ = false;
-    }
-
-    @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        BoxedChemicalStack boxedChemical = oreInfo.getInputChemical();
-        if (!boxedChemical.isEmpty()) {
-            drawString(matrix, TextComponentUtil.build(boxedChemical), 33, 15, screenTextColor());
-            if (boxedChemical.getChemicalType() == ChemicalType.SLURRY && !renderStack.isEmpty()) {
-                drawString(matrix, MekanismLang.GENERIC_PARENTHESIS.translate(renderStack), 33, 24, screenTextColor());
-            } else {
-                ChemicalCrystallizerRecipe recipe = oreInfo.getRecipe();
-                if (recipe == null) {
-                    drawString(matrix, MekanismLang.NO_RECIPE.translate(), 33, 24, screenTextColor());
+        innerScreen = new GuiInnerScreen(gui, x, y, width, height, () -> {
+            List<ITextComponent> ret = new ArrayList<>();
+            BoxedChemicalStack boxedChemical = oreInfo.getInputChemical();
+            if (!boxedChemical.isEmpty()) {
+                ret.add(TextComponentUtil.build(boxedChemical));
+                if (boxedChemical.getChemicalType() == ChemicalType.SLURRY && !renderStack.isEmpty()) {
+                    ret.add(MekanismLang.GENERIC_PARENTHESIS.translate(renderStack));
                 } else {
-                    drawString(matrix, MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(boxedChemical)), 33, 24, screenTextColor());
+                    ChemicalCrystallizerRecipe recipe = oreInfo.getRecipe();
+                    if (recipe == null) {
+                        ret.add(MekanismLang.NO_RECIPE.translate());
+                    } else {
+                        ret.add(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getOutput(boxedChemical)));
+                    }
                 }
             }
-        }
+            return ret;
+        });
+        this.oreInfo = oreInfo;
+        this.slotX = this.x + 115 - SLOT.getWidth();
+        active = false;
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        innerScreen.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+    public void renderForeground(int mouseX, int mouseY) {
+        super.renderForeground(mouseX, mouseY);
+        innerScreen.renderForeground(mouseX, mouseY);
+    }
+
+    @Override
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        innerScreen.renderButton(mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        func_238463_a_(matrix, slotX, field_230691_m_, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
+        blit(slotX, y, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
         if (!renderStack.isEmpty()) {
-            guiObj.renderItem(matrix, renderStack, slotX + 1, field_230691_m_ + 1);
+            guiObj.renderItem(renderStack, slotX + 1, y + 1);
         }
     }
 
@@ -82,9 +86,9 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
                 prevSlurry = inputSlurry;
                 iterStacks.clear();
                 if (!prevSlurry.isEmptyType() && !prevSlurry.isIn(MekanismTags.Slurries.DIRTY)) {
-                    ITag<Item> oreTag = prevSlurry.getOreTag();
+                    Tag<Item> oreTag = prevSlurry.getOreTag();
                     if (oreTag != null) {
-                        for (Item ore : oreTag.func_230236_b_()) {
+                        for (Item ore : oreTag.getAllElements()) {
                             iterStacks.add(new ItemStack(ore));
                         }
                     }

@@ -64,7 +64,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     /**
      * How many ticks it takes to run an operation.
      */
-    private static final int BASE_TICKS_REQUIRED = 20;
+    private static final int BASE_TICKS_REQUIRED = 10;
     /**
      * This pump's tank
      */
