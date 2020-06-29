@@ -1,9 +1,5 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Iterator;
@@ -13,6 +9,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -460,7 +460,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             }
         }
         if (doPull && getPullInv() != null) {
-            TransitRequest request = TransitRequest.definedItem(getPullInv(), Direction.UP, 1, Finder.strict(filter.replaceStack));
+            TransitRequest request = TransitRequest.definedItem(getPullInv(), Direction.DOWN, 1, Finder.strict(filter.replaceStack));
             if (!request.isEmpty()) {
                 return request.createSimpleResponse().useAll();
             }

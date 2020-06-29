@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -88,7 +88,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 int min = 0;
 
                 for (SorterFilter<?> filter : filters) {
-                    TransitRequest request = filter.mapInventory(back, getOppositeDirection(), singleItem);
+                    TransitRequest request = filter.mapInventory(back, getDirection(), singleItem);
                     if (request.isEmpty()) {
                         continue;
                     }
@@ -109,7 +109,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 }
 
                 if (!sentItems && autoEject) {
-                    TransitRequest request = TransitRequest.definedItem(back, getOppositeDirection(), singleItem ? 1 : 64, strictFinder);
+                    TransitRequest request = TransitRequest.definedItem(back, getDirection(), singleItem ? 1 : 64, strictFinder);
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
                     if (!response.isEmpty()) {
                         response.useAll();
