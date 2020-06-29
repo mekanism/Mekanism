@@ -1,14 +1,17 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -16,13 +19,16 @@ import mekanism.client.MekanismClient;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.lib.Quad;
+import mekanism.client.render.lib.QuadUtils;
+import mekanism.client.render.lib.Vertex;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.Attributes.AttributeCustomSelectionBox;
+import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemConfigurator;
@@ -43,6 +49,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
@@ -54,6 +61,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
@@ -68,7 +76,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawHighlightEvent;
@@ -76,6 +86,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -85,6 +97,7 @@ public class RenderTickHandler {
     public final Minecraft minecraft = Minecraft.getInstance();
 
     private static final ResourceLocation POWER_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "horizontal_power_long.png");
+    private static final Map<BlockState, List<Vertex[]>> cachedWireFrames = new HashMap<>();
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static final EquipmentSlotType[] EQUIPMENT_ORDER = new EquipmentSlotType[]{EquipmentSlotType.OFFHAND, EquipmentSlotType.MAINHAND,
                                                                                        EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS,
@@ -99,8 +112,9 @@ public class RenderTickHandler {
 
     private static final BoltRenderer boltRenderer = new BoltRenderer();
 
-    public static void resetCachedOverlays() {
+    public static void resetCached() {
         cachedOverlays.clear();
+        cachedWireFrames.clear();
     }
 
     public static void renderBolt(Object renderer, BoltEffect bolt) {
@@ -273,7 +287,7 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void configurableMachine(DrawHighlightEvent.HighlightBlock event) {
+    public void onBlockHover(DrawHighlightEvent.HighlightBlock event) {
         PlayerEntity player = minecraft.player;
         if (player == null) {
             return;
@@ -300,17 +314,30 @@ public class RenderTickHandler {
                     }
                 }
                 if (Attribute.has(actualState.getBlock(), AttributeCustomSelectionBox.class)) {
-                    TileEntity tile = MekanismUtils.getTileEntity(world, actualPos);
-                    if (tile != null) {
-                        TileEntityRenderer<TileEntity> tileRenderer = TileEntityRendererDispatcher.instance.getRenderer(tile);
-                        if (tileRenderer instanceof IWireFrameRenderer) {
-                            matrix.push();
-                            Vector3d viewPosition = info.getProjectedView();
-                            matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
-                            ((IWireFrameRenderer) tileRenderer).renderWireFrame(tile, event.getPartialTicks(), matrix, renderer.getBuffer(RenderType.getLines()), 0, 0, 0, 0.4F);
-                            matrix.pop();
-                            shouldCancel = true;
+                    WireFrameRenderer renderWireFrame = null;
+                    if (Attribute.get(actualState.getBlock(), AttributeCustomSelectionBox.class).isJavaModel()) {
+                        //If we use a TER to render the wire frame, grab the tile
+                        TileEntity tile = MekanismUtils.getTileEntity(world, actualPos);
+                        if (tile != null) {
+                            TileEntityRenderer<TileEntity> tileRenderer = TileEntityRendererDispatcher.instance.getRenderer(tile);
+                            if (tileRenderer instanceof IWireFrameRenderer) {
+                                renderWireFrame = (buffer, matrixStack, red, green, blue, alpha) ->
+                                      ((IWireFrameRenderer) tileRenderer).renderWireFrame(tile, event.getPartialTicks(), matrixStack, buffer, red, green, blue, alpha);
+                            }
                         }
+                    } else {
+                        //Otherwise skip getting the tile and just grab the model
+                        BlockState finalActualState = actualState;
+                        renderWireFrame = (buffer, matrixStack, red, green, blue, alpha) ->
+                              renderQuadsWireFrame(finalActualState, buffer, matrixStack.getLast().getMatrix(), world.rand, red, green, blue, alpha);
+                    }
+                    if (renderWireFrame != null) {
+                        matrix.push();
+                        Vector3d viewPosition = info.getProjectedView();
+                        matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
+                        renderWireFrame.render(renderer.getBuffer(RenderType.getLines()), matrix, 0, 0, 0, 0.4F);
+                        matrix.pop();
+                        shouldCancel = true;
                     }
                 }
             }
@@ -354,6 +381,48 @@ public class RenderTickHandler {
                 event.setCanceled(true);
             }
         }
+    }
+
+    private void renderQuadsWireFrame(BlockState state, IVertexBuilder buffer, Matrix4f matrix, Random rand, float red, float green, float blue,
+          float alpha) {
+        List<Vertex[]> allVertices = cachedWireFrames.computeIfAbsent(state, s -> {
+            IBakedModel bakedModel = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(s);
+            //TODO: Eventually we may want to add support for Model data
+            IModelData modelData = EmptyModelData.INSTANCE;
+            List<Vertex[]> vertices = new ArrayList<>();
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                QuadUtils.unpack(bakedModel.getQuads(s, direction, rand, modelData)).stream().map(Quad::getVertices).forEach(vertices::add);
+            }
+            QuadUtils.unpack(bakedModel.getQuads(s, null, rand, modelData)).stream().map(Quad::getVertices).forEach(vertices::add);
+            return vertices;
+        });
+        for (Vertex[] vertices : allVertices) {
+            Vector4f vertex = getVertex(matrix, vertices[0]);
+            Vector3d normal = vertices[0].getNormal();
+            Vector4f vertex2 = getVertex(matrix, vertices[1]);
+            Vector3d normal2 = vertices[1].getNormal();
+            Vector4f vertex3 = getVertex(matrix, vertices[2]);
+            Vector3d normal3 = vertices[2].getNormal();
+            Vector4f vertex4 = getVertex(matrix, vertices[3]);
+            Vector3d normal4 = vertices[3].getNormal();
+            buffer.pos(vertex.getX(), vertex.getY(), vertex.getZ()).normal((float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).color(red, green, blue, alpha).endVertex();
+            buffer.pos(vertex2.getX(), vertex2.getY(), vertex2.getZ()).normal((float) normal2.getX(), (float) normal2.getY(), (float) normal2.getZ()).color(red, green, blue, alpha).endVertex();
+
+            buffer.pos(vertex3.getX(), vertex3.getY(), vertex3.getZ()).normal((float) normal3.getX(), (float) normal3.getY(), (float) normal3.getZ()).color(red, green, blue, alpha).endVertex();
+            buffer.pos(vertex4.getX(), vertex4.getY(), vertex4.getZ()).normal((float) normal4.getX(), (float) normal4.getY(), (float) normal4.getZ()).color(red, green, blue, alpha).endVertex();
+
+            buffer.pos(vertex2.getX(), vertex2.getY(), vertex2.getZ()).normal((float) normal2.getX(), (float) normal2.getY(), (float) normal2.getZ()).color(red, green, blue, alpha).endVertex();
+            buffer.pos(vertex3.getX(), vertex3.getY(), vertex3.getZ()).normal((float) normal3.getX(), (float) normal3.getY(), (float) normal3.getZ()).color(red, green, blue, alpha).endVertex();
+
+            buffer.pos(vertex.getX(), vertex.getY(), vertex.getZ()).normal((float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).color(red, green, blue, alpha).endVertex();
+            buffer.pos(vertex4.getX(), vertex4.getY(), vertex4.getZ()).normal((float) normal4.getX(), (float) normal4.getY(), (float) normal4.getZ()).color(red, green, blue, alpha).endVertex();
+        }
+    }
+
+    private static Vector4f getVertex(Matrix4f matrix4f, Vertex vertex) {
+        Vector4f vector4f = new Vector4f((float) vertex.getPos().getX(), (float) vertex.getPos().getY(), (float) vertex.getPos().getZ(), 1);
+        vector4f.transform(matrix4f);
+        return vector4f;
     }
 
     private void renderStatusBar(MatrixStack matrix, @Nonnull PlayerEntity player) {
@@ -459,5 +528,11 @@ public class RenderTickHandler {
                 break;
         }
         return toReturn;
+    }
+
+    @FunctionalInterface
+    private interface WireFrameRenderer {
+
+        void render(IVertexBuilder buffer, MatrixStack matrix, float red, float green, float blue, float alpha);
     }
 }

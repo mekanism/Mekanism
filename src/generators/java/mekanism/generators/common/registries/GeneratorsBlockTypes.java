@@ -4,7 +4,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
-import mekanism.common.block.attribute.Attributes.AttributeCustomSelectionBox;
+import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeMultiblock;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
@@ -87,7 +87,7 @@ public class GeneratorsBlockTypes {
           .withGui(() -> GeneratorsContainerTypes.WIND_GENERATOR)
           .withEnergyConfig(() -> STORAGE2)
           .withCustomShape(BlockShapes.WIND_GENERATOR)
-          .with(new AttributeCustomSelectionBox())
+          .with(new AttributeCustomSelectionBox(true))
           .withSound(GeneratorsSounds.WIND_GENERATOR)
           .build();
     // Gas Burning Generator
@@ -96,7 +96,7 @@ public class GeneratorsBlockTypes {
           .withGui(() -> GeneratorsContainerTypes.GAS_BURNING_GENERATOR)
           .withEnergyConfig(() -> MekanismConfig.general.FROM_H2.get().multiply(1_000))
           .withCustomShape(BlockShapes.GAS_BURNING_GENERATOR)
-          .with(new AttributeCustomSelectionBox())
+          .with(new AttributeCustomSelectionBox(true))
           .withSound(GeneratorsSounds.GAS_BURNING_GENERATOR)
           .build();
     // Advanced Solar Generator

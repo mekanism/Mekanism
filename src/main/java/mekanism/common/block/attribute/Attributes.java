@@ -21,9 +21,6 @@ public class Attributes {
     /** If mobs can spawn on the block. */
     public static class AttributeNoMobSpawn implements Attribute {}
 
-    /** If we should draw a custom selection box for the block. */
-    public static class AttributeCustomSelectionBox implements Attribute {}
-
     /** If this block is a part of a multiblock. */
     public static class AttributeMultiblock implements Attribute {}
 

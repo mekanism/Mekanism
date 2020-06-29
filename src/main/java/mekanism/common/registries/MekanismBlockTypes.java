@@ -17,7 +17,7 @@ import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
-import mekanism.common.block.attribute.Attributes.AttributeCustomSelectionBox;
+import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeMultiblock;
 import mekanism.common.block.attribute.Attributes.AttributeNoMobSpawn;
@@ -272,7 +272,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.digitalMiner, MekanismConfig.storage.digitalMiner)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR))
           .withCustomShape(BlockShapes.DIGITAL_MINER)
-          .with(new AttributeCustomSelectionBox())
+          .with(new AttributeCustomSelectionBox(true))
           .build();
     // Formulaic Assemblicator
     public static final Machine<TileEntityFormulaicAssemblicator> FORMULAIC_ASSEMBLICATOR = MachineBuilder
@@ -305,7 +305,7 @@ public class MekanismBlockTypes {
           .without(AttributeParticleFX.class)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
           .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
-          .with(new AttributeCustomSelectionBox())
+          .with(new AttributeCustomSelectionBox(true))
           .build();
     // Teleporter
     public static final Machine<TileEntityTeleporter> TELEPORTER = MachineBuilder
@@ -358,7 +358,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.seismicVibrator, MekanismConfig.storage.seismicVibrator)
           .without(AttributeComparator.class, AttributeParticleFX.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.SEISMIC_VIBRATOR)
-          .with(new AttributeCustomSelectionBox())
+          .with(new AttributeCustomSelectionBox(true))
           .build();
     // Personal Chest
     public static final BlockTypeTile<TileEntityPersonalChest> PERSONAL_CHEST = BlockTileBuilder
@@ -406,7 +406,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.SECURITY_DESK)
           .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeCustomResistance(-1F), new AttributeSecurity())
           .withCustomShape(BlockShapes.SECURITY_DESK)
-          .with(new AttributeCustomSelectionBox())
+          .with(new AttributeCustomSelectionBox(false))
           .build();
     // Modification Station
     public static final BlockTypeTile<TileEntityModificationStation> MODIFICATION_STATION = BlockTileBuilder
@@ -416,6 +416,7 @@ public class MekanismBlockTypes {
           .withCustomContainerProvider((tile) -> (i, inv, player) -> new ModificationStationContainer(i, inv, (TileEntityModificationStation) tile))
           .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeRedstone(), new AttributeSecurity())
           .withCustomShape(BlockShapes.MODIFICATION_STATION)
+          .with(new AttributeCustomSelectionBox(false))
           .build();
     // Isotopic Centrifuge
     public static final Machine<TileEntityIsotopicCentrifuge> ISOTOPIC_CENTRIFUGE = MachineBuilder

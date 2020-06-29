@@ -356,7 +356,7 @@ public class MekanismRenderer {
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
         RenderMechanicalPipe.onStitch();
-        RenderTickHandler.resetCachedOverlays();
+        RenderTickHandler.resetCached();
         RenderTeleporter.resetCachedModels();
 
         parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"));
