@@ -1,7 +1,6 @@
 package mekanism.client.jei;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.longs.Long2ObjectFunction;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
@@ -11,11 +10,9 @@ import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IBaseProvider;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.gauge.GaugeOverlay;
-import mekanism.common.Mekanism;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -24,8 +21,6 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -101,26 +96,6 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     @Override
     public void draw(RECIPE recipe, MatrixStack matrix, double mouseX, double mouseY) {
         guiElements.forEach(e -> e.func_230430_a_(matrix, (int) mouseX, (int) mouseY, 0));
-    }
-
-    @Override
-    public void renderItem(@Nonnull MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
-        if (!stack.isEmpty()) {
-            try {
-                matrix.push();
-                RenderSystem.enableDepthTest();
-                RenderHelper.enableStandardItemLighting();
-                if (scale != 1) {
-                    matrix.scale(scale, scale, scale);
-                }
-                GuiUtils.renderItemAndEffectIntoGUI(Minecraft.getInstance().getItemRenderer(), matrix, stack, xAxis, yAxis);
-                RenderHelper.disableStandardItemLighting();
-                RenderSystem.disableDepthTest();
-                matrix.pop();
-            } catch (Exception e) {
-                Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
-            }
-        }
     }
 
     @Override

@@ -33,6 +33,7 @@ public class ItemEnergized extends Item {
 
     public ItemEnergized(FloatingLongSupplier chargeRateSupplier, FloatingLongSupplier maxEnergySupplier, Properties properties) {
         this(chargeRateSupplier, maxEnergySupplier, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue, properties);
+        //TODO - 1.16: Fix this allowing energy to be extracted from things like the portable teleporter
     }
 
     public ItemEnergized(FloatingLongSupplier chargeRateSupplier, FloatingLongSupplier maxEnergySupplier, Predicate<@NonNull AutomationType> canExtract,

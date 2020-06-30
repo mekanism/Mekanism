@@ -35,7 +35,6 @@ import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
@@ -356,41 +355,15 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         matrix.push();
         matrix.translate(0, 0, -500D);
         func_230446_a_(matrix);
-        super.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
+        //Apply our matrix stack to the render system and pass an unmodified one to the super method
+        // Vanilla still renders the items into the GUI using render system transformations so this
+        // is required to not have tooltips of GuiElements rendering behind the items
+        RenderSystem.pushMatrix();
+        RenderSystem.multMatrix(matrix.getLast().getMatrix());
+        super.func_230430_a_(new MatrixStack(), mouseX, mouseY, partialTicks);
+        RenderSystem.popMatrix();
         matrix.pop();
         func_230459_a_(matrix, mouseX, mouseY);
-    }
-
-    @Override
-    public void renderItem(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
-        renderItem(matrix, stack, xAxis, yAxis, scale, null, false);
-    }
-
-    @Override
-    public void renderItemWithOverlay(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
-        renderItem(matrix, stack, xAxis, yAxis, scale, text, true);
-    }
-
-    private void renderItem(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text, boolean overlay) {
-        if (!stack.isEmpty()) {
-            try {
-                matrix.push();
-                RenderSystem.enableDepthTest();
-                RenderHelper.enableStandardItemLighting();
-                if (scale != 1) {
-                    matrix.scale(scale, scale, scale);
-                }
-                GuiUtils.renderItemAndEffectIntoGUI(field_230707_j_, matrix, stack, xAxis, yAxis);
-                if (overlay) {
-                    GuiUtils.renderItemOverlayIntoGUI(field_230707_j_, matrix, getFont(), stack, xAxis, yAxis, text);
-                }
-                RenderHelper.disableStandardItemLighting();
-                RenderSystem.disableDepthTest();
-                matrix.pop();
-            } catch (Exception e) {
-                Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
-            }
-        }
     }
 
     @Override

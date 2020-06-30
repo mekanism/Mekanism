@@ -13,7 +13,6 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public interface IGuiWrapper {
 
@@ -30,7 +29,7 @@ public interface IGuiWrapper {
     }
 
     default void displayTooltips(MatrixStack matrix, List<ITextComponent> components, int xAxis, int yAxis, int maxWidth) {
-        GuiUtils.drawHoveringText(matrix, components, xAxis, yAxis, getWidth(), getHeight(), maxWidth, getFont());
+        net.minecraftforge.fml.client.gui.GuiUtils.drawHoveringText(matrix, components, xAxis, yAxis, getWidth(), getHeight(), maxWidth, getFont());
     }
 
     default int getLeft() {
@@ -82,7 +81,9 @@ public interface IGuiWrapper {
         renderItem(matrix, stack, xAxis, yAxis, 1);
     }
 
-    void renderItem(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale);
+    default void renderItem(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
+        GuiUtils.renderItem(matrix, getItemRenderer(), stack, xAxis, yAxis, scale, getFont(), null, false);
+    }
 
     ItemRenderer getItemRenderer();
 
@@ -91,7 +92,7 @@ public interface IGuiWrapper {
     }
 
     default void renderItemWithOverlay(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
-        Mekanism.logger.error("Tried to call 'renderItemWithOverlay' but unsupported in {}", getClass().getName());
+        GuiUtils.renderItem(matrix, getItemRenderer(), stack, xAxis, yAxis, scale, getFont(), text, true);
     }
 
     default void addFocusListener(GuiElement element) {
