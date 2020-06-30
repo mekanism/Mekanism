@@ -3,7 +3,6 @@ package mekanism.client;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 import com.google.common.collect.Table.Cell;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.text.EnumColor;
@@ -105,10 +104,7 @@ import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
-import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.item.ItemPortableQIODashboard;
-import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -411,12 +407,8 @@ public class ClientRegistration {
         itemColors.register((stack, index) -> {
             if (index == 1) {
                 ItemPortableQIODashboard item = (ItemPortableQIODashboard) stack.getItem();
-                FrequencyIdentity identity = item.getFrequency(stack);
-                UUID uuid = item.getOwnerUUID(stack);
-                if (identity == null || uuid == null)
-                    return 0xFF555555;
-                QIOFrequency freq = FrequencyType.QIO.getFrequency(identity, uuid);
-                return freq != null ? MekanismRenderer.getColorARGB(freq.getColor(), 1) : 0xFF555555;
+                EnumColor color = item.getColor(stack);
+                return color == null ? 0xFF555555 : MekanismRenderer.getColorARGB(color, 1);
             }
             return -1;
         }, MekanismItems.PORTABLE_QIO_DASHBOARD);

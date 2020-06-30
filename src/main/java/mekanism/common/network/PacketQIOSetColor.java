@@ -3,10 +3,13 @@ package mekanism.common.network;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -48,6 +51,10 @@ public class PacketQIOSetColor {
             }
             freq.setColor(message.extra == 0 ? freq.getColor().getNext() : freq.getColor().getPrevious());
             if (message.type == Type.ITEM) {
+                ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+                if (stack.getItem() instanceof ItemPortableQIODashboard) {
+                    ((ItemPortableQIODashboard) stack.getItem()).setColor(stack, freq.getColor());
+                }
                 Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(message.currentHand, FrequencyType.QIO, player.getUniqueID(), freq), (ServerPlayerEntity) player);
             }
         });
