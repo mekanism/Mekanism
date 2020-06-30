@@ -1192,6 +1192,7 @@
   "tooltip.mekanism.stored.free_runners": "남은 에너지: %s",
   "tooltip.mekanism.stored.jetpack": "남은 연료: %s",
   "tooltip.mekanism.stored_energy": "저장된 에너지: %s",
+  "tooltip.mekanism.stored_mb_percentage": "Stored %s: %s mB (%s)",
   "transmission.mekanism.energy": "에너지",
   "transmission.mekanism.fluids": "액체",
   "transmission.mekanism.gases": "기체",
