@@ -18,7 +18,7 @@ public class GuiEnergyTab extends GuiTexturedElement {
     private final IInfoHandler infoHandler;
 
     public GuiEnergyTab(IInfoHandler handler, IGuiWrapper gui) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "energy_info.png"), gui, -26, 138, 26, 26);
+        super(MekanismUtils.getResource(ResourceType.GUI, "energy_info.png"), gui, -26, 137, 26, 26);
         infoHandler = handler;
     }
 
