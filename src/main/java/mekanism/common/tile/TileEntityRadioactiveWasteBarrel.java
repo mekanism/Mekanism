@@ -44,6 +44,8 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
     public void onUpdateServer() {
         super.onUpdateServer();
 
+
+
         float scale = getGasScale();
         if (Math.abs(scale - prevScale) > TOLERANCE) {
             sendUpdatePacket();

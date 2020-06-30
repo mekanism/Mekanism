@@ -21,7 +21,7 @@ public interface ISecurityTile {
     enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComponent {
         PUBLIC(MekanismLang.PUBLIC, EnumColor.BRIGHT_GREEN),
         PRIVATE(MekanismLang.PRIVATE, EnumColor.RED),
-        TRUSTED(MekanismLang.TRUSTED, EnumColor.ORANGE);
+        TRUSTED(MekanismLang.TRUSTED, EnumColor.INDIGO);
 
         private static final SecurityMode[] MODES = values();
 

@@ -1,6 +1,6 @@
-package mekanism.client.gui.element.custom;
+package mekanism.client.gui.element.tab;
 
-import mekanism.api.text.EnumColor;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
@@ -13,13 +13,13 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiContainerEditMode<TILE extends TileEntityMekanism & IFluidContainerManager> extends GuiInsetElement<TILE> {
+public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidContainerManager> extends GuiInsetElement<TILE> {
 
-    private static final ResourceLocation BOTH = MekanismUtils.getResource(ResourceType.GUI, "gun_powder.png");
+    private static final ResourceLocation BOTH = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_disabled.png");
     private static final ResourceLocation FILL = MekanismUtils.getResource(ResourceType.GUI, "container_edit_mode_fill.png");
     private static final ResourceLocation EMPTY = MekanismUtils.getResource(ResourceType.GUI, "container_edit_mode_empty.png");
 
-    public GuiContainerEditMode(IGuiWrapper gui, TILE tile) {
+    public GuiContainerEditModeTab(IGuiWrapper gui, TILE tile) {
         super(BOTH, gui, tile, gui.getWidth(), 138, 26, 18, false);
     }
 
@@ -46,6 +46,6 @@ public class GuiContainerEditMode<TILE extends TileEntityMekanism & IFluidContai
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(EnumColor.DARK_BLUE);
+        MekanismRenderer.color(SpecialColors.CONTAINER_EDIT_MODE_TAB.get());
     }
 }
