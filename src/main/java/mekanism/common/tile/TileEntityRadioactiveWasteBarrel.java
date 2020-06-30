@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -22,9 +23,11 @@ import net.minecraft.nbt.CompoundNBT;
 public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
 
     private static final float TOLERANCE = 0.05F;
+    private static final int MAX_PROCESS_TICKS = 1200;
 
     private IGasTank gasTank;
     private float prevScale;
+    private int processTicks;
 
     public TileEntityRadioactiveWasteBarrel() {
         super(MekanismBlocks.RADIOACTIVE_WASTE_BARREL);
@@ -44,7 +47,10 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
     public void onUpdateServer() {
         super.onUpdateServer();
 
-
+        if (++processTicks >= MAX_PROCESS_TICKS) {
+            processTicks = 0;
+            gasTank.shrinkStack(1, Action.EXECUTE);
+        }
 
         float scale = getGasScale();
         if (Math.abs(scale - prevScale) > TOLERANCE) {
@@ -66,6 +72,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.GAS_STORED, gasTank.serializeNBT());
+        updateTag.putInt(NBTConstants.PROGRESS, processTicks);
         return updateTag;
     }
 
@@ -73,6 +80,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.GAS_STORED, nbt -> gasTank.deserializeNBT(nbt));
+        NBTUtils.setIntIfPresent(tag, NBTConstants.PROGRESS, val -> processTicks = val);
     }
 
     @Override

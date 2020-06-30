@@ -1,7 +1,7 @@
 package mekanism.common.tag;
 
-import com.google.common.collect.Table.Cell;
 import java.util.Map;
+import com.google.common.collect.Table.Cell;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
@@ -103,7 +103,8 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.SECURITY_DESK,
               MekanismBlocks.DIGITAL_MINER,
               MekanismBlocks.SEISMIC_VIBRATOR,
-              MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR
+              MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR,
+              MekanismBlocks.RADIOACTIVE_WASTE_BARREL // closing all the loopholes!
         );
         getBlockBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST).add(
               Blocks.WHITE_BED,
