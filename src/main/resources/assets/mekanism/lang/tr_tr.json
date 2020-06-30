@@ -1192,6 +1192,7 @@
   "tooltip.mekanism.stored.free_runners": "Koşucular Enerji: %s",
   "tooltip.mekanism.stored.jetpack": "Jetpack Yakıtı: %s",
   "tooltip.mekanism.stored_energy": "Depolanmış Enerji: %s",
+  "tooltip.mekanism.stored_mb_percentage": "Stored %s: %s mB (%s)",
   "transmission.mekanism.energy": "Enerji",
   "transmission.mekanism.fluids": "Sıvılar",
   "transmission.mekanism.gases": "Gazlar",
