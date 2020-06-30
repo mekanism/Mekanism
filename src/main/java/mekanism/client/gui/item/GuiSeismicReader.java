@@ -1,10 +1,10 @@
 package mekanism.client.gui.item;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import java.util.ArrayList;
-import java.util.List;
 import mekanism.api.text.APILang;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiArrowSelection;
@@ -52,7 +52,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         addButton(new GuiArrowSelection(this, 76, 81, () -> {
             int currentLayer = scrollBar.getCurrentSelection();
             if (currentLayer >= 0) {
-                return blockList.get(currentLayer).getBlock().getNameTextComponent();
+                return blockList.get(blockList.size() - 1 - currentLayer).getBlock().getNameTextComponent();
             }
             return null;
         }));
