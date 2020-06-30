@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import mekanism.common.base.TagCache;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.mojang.authlib.GameProfile;
@@ -189,6 +191,7 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::serverAboutToStartLowest);
         MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
+        MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
@@ -264,6 +267,10 @@ public class Mekanism {
 
     public ReloadListener getRecipeCacheManager() {
         return recipeCacheManager;
+    }
+
+    private void onTagsReload(TagsUpdatedEvent event) {
+        TagCache.resetTagCaches();
     }
 
     private void serverAboutToStart(FMLServerAboutToStartEvent event) {

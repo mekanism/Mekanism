@@ -24,6 +24,11 @@ public final class TagCache {
     private static final Map<String, List<ItemStack>> itemTagStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<String, List<ItemStack>> modIDStacks = new Object2ObjectOpenHashMap<>();
 
+    public static void resetTagCaches() {
+        blockTagStacks.clear();
+        itemTagStacks.clear();
+    }
+
     public static List<String> getItemTags(ItemStack check) {
         if (check == null) {
             return new ArrayList<>();

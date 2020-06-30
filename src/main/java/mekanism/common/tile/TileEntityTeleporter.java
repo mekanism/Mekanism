@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -223,8 +223,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             ServerWorld newWorld = ((ServerWorld) teleporter.getWorld()).getServer().getWorld(coord.dimension);
             Entity newEntity = entity.func_241206_a_(newWorld);
             newEntity.setPositionAndUpdate(coord.getX() + 0.5, coord.getY() + 1, coord.getZ() + 0.5);
-            //TODO - 1.16: Reimplement some sort of ITeleporter thing, players can't be teleported properly from the end to the overworld
-            /*entity.changeDimension(coord.dimension, new ITeleporter() {
+            //TODO - 1.16: Use this method of teleporting the entity instead once https://github.com/MinecraftForge/MinecraftForge/pull/6886 is merged
+            /*entity.changeDimension(newWorld, new ITeleporter() {
                 @Override
                 public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
                     Entity repositionedEntity = repositionEntity.apply(false);

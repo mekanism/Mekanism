@@ -1,6 +1,5 @@
 package mekanism.api.chemical;
 
-import java.util.Set;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
@@ -18,7 +17,7 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
     public static final ChemicalTags<Pigment> PIGMENT = new ChemicalTags<>();
     public static final ChemicalTags<Slurry> SLURRY = new ChemicalTags<>();
 
-    //TODO - 1.16: Evaluate TagRegistry#func_232932_a_ (client side only??)
+    //TODO - 1.16: Evaluate TagRegistry#func_232932_a_, seems to be used for syncing when on client side only
     private final TagRegistry<CHEMICAL> collection = new TagRegistry<>();
 
     private ChemicalTags() {
@@ -34,11 +33,6 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
 
     public ResourceLocation lookupTag(ITag<CHEMICAL> tag) {
         return getCollection().func_232975_b_(tag);
-    }
-
-    //TODO - 1.16: Figure out what this should be called
-    public Set<ResourceLocation> func_232892_b_(TagCollection<CHEMICAL> collection) {
-        return this.collection.func_232940_b_(collection);
     }
 
     public static INamedTag<Gas> gasTag(ResourceLocation resourceLocation) {
