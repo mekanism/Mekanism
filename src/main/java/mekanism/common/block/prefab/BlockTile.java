@@ -71,10 +71,10 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         if (MekanismConfig.client.enableAmbientLighting.get() && type.has(AttributeStateActive.class)) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).getActive()) {
-                return MekanismConfig.client.ambientLightingLevel.get();
+                return ((IActiveState) tile).getActiveLightValue();
             }
         }
-        return 0;
+        return super.getLightValue(state, world, pos);
     }
 
     @Override

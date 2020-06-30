@@ -96,6 +96,16 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         return (float) Math.sqrt(soundScale);
     }
 
+    @Override
+    public boolean lightUpdate() {
+        return true;
+    }
+
+    @Override
+    public int getActiveLightValue() {
+        return 8;
+    }
+
     public MachineEnergyContainer<TileEntityResistiveHeater> getEnergyContainer() {
         return energyContainer;
     }

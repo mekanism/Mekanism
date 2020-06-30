@@ -1,5 +1,7 @@
 package mekanism.common.tile.interfaces;
 
+import mekanism.common.config.MekanismConfig;
+
 /**
  * Implement this if your machine/generator has some form of active state.
  *
@@ -30,4 +32,8 @@ public interface IActiveState {
 
     //TODO: Name this better
     boolean lightUpdate();
+
+    default int getActiveLightValue() {
+        return MekanismConfig.client.ambientLightingLevel.get();
+    }
 }

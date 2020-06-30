@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
+import mekanism.common.block.attribute.Attributes.AttributeLight;
 import mekanism.common.block.interfaces.ITypeBlock;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -104,6 +105,10 @@ public class BlockType {
 
         public T withCustomShape(VoxelShape[] shape) {
             return with(new AttributeCustomShape(shape));
+        }
+
+        public T withLight(int light) {
+            return with(new AttributeLight(light));
         }
 
         public BLOCK build() {
