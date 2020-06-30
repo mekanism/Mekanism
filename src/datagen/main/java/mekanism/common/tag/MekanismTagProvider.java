@@ -3,6 +3,7 @@ package mekanism.common.tag;
 import com.google.common.collect.Table.Cell;
 import java.util.Map;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.datagen.tag.ForgeRegistryTagBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.BlockRegistryObject;

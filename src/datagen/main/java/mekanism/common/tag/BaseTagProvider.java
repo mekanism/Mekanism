@@ -17,6 +17,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.datagen.tag.ForgeRegistryTagBuilder;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IEntityTypeProvider;

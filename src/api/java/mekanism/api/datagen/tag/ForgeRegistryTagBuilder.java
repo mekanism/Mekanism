@@ -1,4 +1,4 @@
-package mekanism.common.tag;
+package mekanism.api.datagen.tag;
 
 import java.util.Arrays;
 import java.util.Collection;
