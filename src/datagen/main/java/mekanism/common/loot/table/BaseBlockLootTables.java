@@ -100,7 +100,6 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             }
             if (Attribute.has(block, AttributeSecurity.class)) {
                 //TODO: Should we just save the entire security component?
-                //TODO - 1.16: Test that this was properly updated to the new way UUIDs are stored in NBT
                 nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID, NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID);
                 nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.SECURITY_MODE, NBTConstants.MEK_DATA + "." + NBTConstants.SECURITY_MODE);
                 hasData = true;
