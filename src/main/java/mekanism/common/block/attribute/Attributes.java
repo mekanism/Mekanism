@@ -3,6 +3,7 @@ package mekanism.common.block.attribute;
 import java.util.function.ToIntFunction;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.block.Block;
 
 public class Attributes {
 
@@ -64,8 +65,9 @@ public class Attributes {
             this.light = light;
         }
 
-        public int getLightValue() {
-            return light;
+        @Override
+        public void adjustProperties(Block.Properties props) {
+            props.lightValue(light);
         }
     }
 }
