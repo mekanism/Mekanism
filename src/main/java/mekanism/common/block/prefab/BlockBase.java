@@ -7,6 +7,7 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.attribute.AttributeCustomShape;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
+import mekanism.common.block.attribute.Attributes.AttributeLight;
 import mekanism.common.block.attribute.Attributes.AttributeNoMobSpawn;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.ITypeBlock;
@@ -66,6 +67,15 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     @Override
     public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType placement, @Nullable EntityType<?> entityType) {
         return !type.has(AttributeNoMobSpawn.class) && super.canCreatureSpawn(state, world, pos, placement, entityType);
+    }
+
+    @Override
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
+        if (type.has(AttributeLight.class)) {
+            AttributeLight attribute = type.get(AttributeLight.class);
+            return attribute.getLightValue();
+        }
+        return super.getLightValue(state, world, pos);
     }
 
     @Nonnull

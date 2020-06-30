@@ -54,4 +54,18 @@ public class Attributes {
             return resistance;
         }
     }
+
+    /** Light value attribute. */
+    public static class AttributeLight implements Attribute {
+
+        private final int light;
+
+        public AttributeLight(int light) {
+            this.light = light;
+        }
+
+        public int getLightValue() {
+            return light;
+        }
+    }
 }

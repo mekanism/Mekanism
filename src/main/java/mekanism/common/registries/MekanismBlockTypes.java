@@ -314,6 +314,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(() -> TELEPORTER_USAGE, MekanismConfig.storage.teleporter)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .without(AttributeStateActive.class, AttributeStateFacing.class, AttributeParticleFX.class)
+          .withLight(10)
           .build();
     // Chargepad
     public static final BlockTypeTile<TileEntityChargepad> CHARGEPAD = BlockTileBuilder
