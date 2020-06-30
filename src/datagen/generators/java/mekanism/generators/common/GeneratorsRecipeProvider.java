@@ -289,11 +289,12 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Glass
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.REACTOR_GLASS, 4)
               .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY),
-                    TripleLine.of(FRAME_CHAR, GLASS_CHAR, FRAME_CHAR),
-                    TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY))
+                    TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
+                    TripleLine.of(Pattern.INGOT, GLASS_CHAR, Pattern.INGOT),
+                    TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
               ).key(GLASS_CHAR, Tags.Items.GLASS)
-              .key(FRAME_CHAR, GeneratorsBlocks.FUSION_REACTOR_FRAME)
+              .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .key(Pattern.STEEL, MekanismItems.ENRICHED_IRON)
               .build(consumer, MekanismGenerators.rl("reactor/glass"));
         //Port
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FUSION_REACTOR_PORT, 2)
