@@ -148,6 +148,7 @@ public enum MekanismLang implements ILangEntry {
     BUCKET_MODE("tooltip", "bucket_mode"),
     STORED_ENERGY("tooltip", "stored_energy"),
     STORED("tooltip", "stored"),
+    STORED_MB_PERCENTAGE("tooltip", "stored_mb_percentage"),
     ITEM_AMOUNT("tooltip", "item_amount"),
     FLOWING("tooltip", "flowing"),
     INVALID("tooltip", "invalid"),

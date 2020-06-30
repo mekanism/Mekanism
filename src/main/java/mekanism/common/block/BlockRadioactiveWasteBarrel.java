@@ -1,5 +1,6 @@
 package mekanism.common.block;
 
+import java.text.NumberFormat;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
@@ -11,6 +12,7 @@ import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.BasicParticleType;
@@ -24,6 +26,8 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioactiveWasteBarrel, BlockTypeTile<TileEntityRadioactiveWasteBarrel>> {
+
+    private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
 
     public BlockRadioactiveWasteBarrel() {
         super(MekanismBlockTypes.RADIOACTIVE_WASTE_BARREL);
@@ -71,7 +75,8 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
             if (stored.isEmpty()) {
                 text = MekanismLang.NO_GAS.translateColored(EnumColor.GRAY);
             } else {
-                text = MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY, stored.getAmount());
+                String scale = TextUtils.getPercent(tile.getGasScale());
+                text = MekanismLang.STORED_MB_PERCENTAGE.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY, intFormatter.format(stored.getAmount()), scale);
             }
             player.sendMessage(text, Util.field_240973_b_);
         }

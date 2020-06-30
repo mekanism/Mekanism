@@ -10,7 +10,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.custom.GuiContainerEditMode;
+import mekanism.client.gui.element.tab.GuiContainerEditModeTab;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiMergedTankGauge;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -67,7 +67,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
             return ret;
         }).defaultFormat().spacing(2));
         func_230480_a_(new GuiDownArrow(this, 150, 39));
-        func_230480_a_(new GuiContainerEditMode<>(this, tile));
+        func_230480_a_(new GuiContainerEditModeTab<>(this, tile));
         func_230480_a_(new GuiMergedTankGauge<>(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));
     }
 

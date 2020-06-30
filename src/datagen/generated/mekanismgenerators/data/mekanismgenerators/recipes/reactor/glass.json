@@ -5,16 +5,19 @@
     "count": 4
   },
   "pattern": [
-    " F ",
-    "FGF",
-    " F "
+    "SIS",
+    "IGI",
+    "SIS"
   ],
   "key": {
     "G": {
       "tag": "forge:glass"
     },
-    "F": {
-      "item": "mekanismgenerators:fusion_reactor_frame"
+    "I": {
+      "tag": "forge:ingots/lead"
+    },
+    "S": {
+      "item": "mekanism:enriched_iron"
     }
   }
 }

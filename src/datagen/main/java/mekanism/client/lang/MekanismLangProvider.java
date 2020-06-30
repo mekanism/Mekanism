@@ -560,6 +560,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BUCKET_MODE, "Bucket Mode: %s");
         add(MekanismLang.STORED_ENERGY, "Stored energy: %s");
         add(MekanismLang.STORED, "Stored %s: %s");
+        add(MekanismLang.STORED_MB_PERCENTAGE, "Stored %s: %s mB (%s)");
         add(MekanismLang.ITEM_AMOUNT, "Item amount: %s");
         add(MekanismLang.FLOWING, "Flowing: %s");
         add(MekanismLang.INVALID, "(Invalid)");

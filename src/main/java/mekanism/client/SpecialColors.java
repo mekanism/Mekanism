@@ -23,6 +23,7 @@ public class SpecialColors {
 
     public static Supplier<Color> REDSTONE_CONTROL_TAB = register();
     public static Supplier<Color> SECURITY_TAB = register();
+    public static Supplier<Color> CONTAINER_EDIT_MODE_TAB = register();
 
     private static Supplier<Color> register() {
         ColorRegistryObject obj = new ColorRegistryObject();

@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
-import mekanism.client.gui.element.custom.GuiContainerEditMode;
+import mekanism.client.gui.element.custom.GuiContainerEditModeTab;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
@@ -22,7 +22,7 @@ public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, MekanismT
     @Override
     public void func_231160_c_() {
         super.func_231160_c_();
-        func_230480_a_(new GuiContainerEditMode<>(this, tile));
+        func_230480_a_(new GuiContainerEditModeTab<>(this, tile));
         func_230480_a_(new GuiSecurityTab<>(this, tile));
         func_230480_a_(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 48, 18));
     }

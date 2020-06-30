@@ -1192,6 +1192,7 @@
   "tooltip.mekanism.stored.free_runners": "%s :\u028E\u1D77\u0279\u01DDu\u018E s\u0279\u01DDuun\u1D1A",
   "tooltip.mekanism.stored.jetpack": "%s :\uA781\u01DDn\u2132 \u029E\u0254\u0250d\u0287\u01DD\u0550",
   "tooltip.mekanism.stored_energy": "%s :\u028E\u1D77\u0279\u01DDu\u01DD p\u01DD\u0279o\u0287S",
+  "tooltip.mekanism.stored_mb_percentage": "(%3$s) \u15FA\u026F %s :%1$s p\u01DD\u0279o\u0287S",
   "transmission.mekanism.energy": "\u028E\u1D77\u0279\u01DDu\u018E",
   "transmission.mekanism.fluids": "sp\u1D09n\uA781\u2132",
   "transmission.mekanism.gases": "s\u01DDs\u0250\u2141",
