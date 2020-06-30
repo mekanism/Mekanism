@@ -287,15 +287,16 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             ServerWorld newWorld = ((ServerWorld) world).getServer().getWorld(homeLocation.dimension);
             Entity newEntity = func_241206_a_(newWorld);
             newEntity.setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
-
-            /* changeDimension(homeLocation.dimension, new ITeleporter() {
+            //TODO - 1.16: Reimplement some sort of ITeleporter thing, for robits it doesn't matter as much but players can't be teleported
+            // properly from the end to the overworld
+            /*changeDimension(homeLocation.dimension, new ITeleporter() {
                 @Override
                 public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
                     Entity repositionedEntity = repositionEntity.apply(false);
                     repositionedEntity.setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
                     return repositionedEntity;
                 }
-            }); //TODO - 1.16 make sure this dimension logic is okay */
+            });*/
         }
         setMotion(0, 0, 0);
     }

@@ -72,8 +72,6 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     @Override
     public void func_231160_c_() {
         super.func_231160_c_();
-        //func_230480_a_(new GuiInnerScreen(this, 48, 102, 89, 13));
-        //func_230480_a_(new GuiInnerScreen(this, 136, 102, 13, 13));
         func_230480_a_(new GuiTeleporterStatus(this, () -> clientFreq != null, () -> clientStatus));
         func_230480_a_(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
@@ -126,11 +124,12 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        func_230480_a_(frequencyField = new GuiTextField(this, 50, 104, 86, 11));
+        func_230480_a_(frequencyField = new GuiTextField(this, 50, 103, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);
         frequencyField.setInputValidator(InputValidator.or(InputValidator.DIGIT, InputValidator.LETTER, InputValidator.FREQUENCY_CHARS));
+        frequencyField.addCheckmarkButton(this::setFrequency);
         func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 137, getGuiTop() + 103, 11, 12, getButtonLocation("checkmark"), this::setFrequency));
         updateButtons();
         if (isInit) {
@@ -193,7 +192,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }
         if (scrollList.hasSelection()) {
             TeleporterFrequency freq = privateMode ? clientPrivateCache.get(scrollList.getSelection()) : clientPublicCache.get(scrollList.getSelection());
-            setButton.field_230693_o_ = clientFreq == null || !clientFreq.equals(freq);
+            setButton.field_230693_o_ = clientFreq == null || !clientFreq.areIdentitiesEqual(freq);
             deleteButton.field_230693_o_ = getOwner().equals(freq.getOwner());
         } else {
             setButton.field_230693_o_ = false;
@@ -225,12 +224,12 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
         drawString(matrix, securityComponent, 32, 91, titleTextColor());
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
-        if (clientFreq != null) {
-            drawTextScaledBound(matrix, clientFreq.getName(), 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
-            drawString(matrix, getSecurity(clientFreq), 32 + getStringWidth(securityComponent), 91, 0x797979);
-        } else {
+        if (clientFreq == null) {
             drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
             drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
+        } else {
+            drawTextScaledBound(matrix, clientFreq.getName(), 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
+            drawString(matrix, getSecurity(clientFreq), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
         drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
         super.func_230451_b_(matrix, mouseX, mouseY);
@@ -245,12 +244,11 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     public void setFrequencyFromName(String name) {
-        if (name.isEmpty()) {
-            return;
+        if (!name.isEmpty()) {
+            TeleporterFrequency newFreq = new TeleporterFrequency(name, null);
+            newFreq.setPublic(!privateMode);
+            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.SET_FREQ, currentHand, newFreq));
         }
-        TeleporterFrequency newFreq = new TeleporterFrequency(name, null);
-        newFreq.setPublic(!privateMode);
-        Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.SET_FREQ, currentHand, newFreq));
     }
 
     private ITextComponent getName() {

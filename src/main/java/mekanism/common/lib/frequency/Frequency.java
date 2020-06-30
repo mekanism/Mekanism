@@ -122,11 +122,20 @@ public abstract class Frequency {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Frequency && ((Frequency) obj).name.equals(name) && ((Frequency) obj).ownerUUID.equals(ownerUUID) && ((Frequency) obj).publicFreq == publicFreq;
+        if (obj instanceof Frequency) {
+            Frequency other = (Frequency) obj;
+            return other.name.equals(name) && other.ownerUUID.equals(ownerUUID) && other.publicFreq == publicFreq;
+        }
+        return false;
     }
 
     public FrequencyIdentity getIdentity() {
         return new FrequencyIdentity(getKey(), publicFreq);
+    }
+
+    public boolean areIdentitiesEqual(Frequency other) {
+        //TODO: Decide if we want to "inline" this to not require creating new identity objects
+        return getIdentity().equals(other.getIdentity());
     }
 
     public CompoundNBT serializeIdentity() {
