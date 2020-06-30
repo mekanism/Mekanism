@@ -1192,6 +1192,7 @@
   "tooltip.mekanism.stored.free_runners": "フリーランナー残りエネルギー: %s",
   "tooltip.mekanism.stored.jetpack": "ジェットパックの燃料: %s",
   "tooltip.mekanism.stored_energy": "残りエネルギー: %s",
+  "tooltip.mekanism.stored_mb_percentage": "Stored %s: %s mB (%s)",
   "transmission.mekanism.energy": "エネルギー",
   "transmission.mekanism.fluids": "流体",
   "transmission.mekanism.gases": "ガス",
