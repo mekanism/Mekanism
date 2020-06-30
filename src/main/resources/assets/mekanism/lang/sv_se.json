@@ -1192,6 +1192,7 @@
   "tooltip.mekanism.stored.free_runners": "Runners Energi: %s",
   "tooltip.mekanism.stored.jetpack": "Jetpack Fuel: %s",
   "tooltip.mekanism.stored_energy": "Lagrad energi: %s",
+  "tooltip.mekanism.stored_mb_percentage": "Stored %s: %s mB (%s)",
   "transmission.mekanism.energy": "Energi",
   "transmission.mekanism.fluids": "Vätskor",
   "transmission.mekanism.gases": "Gases",
