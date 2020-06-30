@@ -1,95 +1,92 @@
 package mekanism.common.lib;
 
 import com.google.common.base.Objects;
+import mekanism.common.util.StatUtils;
 
 public class Color {
 
     public static final Color WHITE = rgbad(1F, 1F, 1F, 1F);
     public static final Color BLACK = rgbad(0F, 0F, 0F, 1F);
 
-    private final int r, g, b, a;
+    private final double r, g, b, a;
 
-    private Color(int r, int g, int b, int a) {
+    private Color(double r, double g, double b, double a) {
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a;
     }
 
-    private Color(double r, double g, double b, double a) {
-        this((int) Math.round(r * 255D), (int) Math.round(g * 255D), (int) Math.round(b * 255D), (int) Math.round(a * 255D));
-    }
-
     public int r() {
-        return r;
+        return (int) Math.round(r * 255D);
     }
 
     public int g() {
-        return g;
+        return (int) Math.round(g * 255D);
     }
 
     public int b() {
-        return b;
+        return (int) Math.round(b * 255D);
     }
 
     public int a() {
-        return a;
+        return (int) Math.round(a * 255D);
     }
 
     public float rf() {
-        return r / 255F;
+        return (float) r;
     }
 
     public float gf() {
-        return g / 255F;
+        return (float) g;
     }
 
     public float bf() {
-        return b / 255F;
+        return (float) b;
     }
 
     public float af() {
-        return a / 255F;
+        return (float) a;
     }
 
     public double rd() {
-        return r / 255D;
+        return r;
     }
 
     public double gd() {
-        return g / 255D;
+        return g;
     }
 
     public double bd() {
-        return b / 255D;
+        return b;
     }
 
     public double ad() {
-        return a / 255D;
+        return a;
     }
 
     public int rgba() {
-        return (r & 0xFF) << 24 | (g & 0xFF) << 16 | (b & 0xFF) << 8 | (a & 0xFF);
+        return (r() & 0xFF) << 24 | (g() & 0xFF) << 16 | (b() & 0xFF) << 8 | (a() & 0xFF);
     }
 
     public int argb() {
-        return (a & 0xFF) << 24 | (r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF);
+        return (a() & 0xFF) << 24 | (r() & 0xFF) << 16 | (g() & 0xFF) << 8 | (b() & 0xFF);
     }
 
     public int rgb() {
-        return (r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF);
+        return (r() & 0xFF) << 16 | (g() & 0xFF) << 8 | (b() & 0xFF);
     }
 
     public int[] rgbaArray() {
-        return new int[] {r, g, b, a};
+        return new int[] {r(), g(), b(), a()};
     }
 
     public int[] argbArray() {
-        return new int[] {a, r, g, b};
+        return new int[] {a(), r(), g(), b()};
     }
 
     public int[] rgbArray() {
-        return new int[] {r, g, b};
+        return new int[] {r(), g(), b()};
     }
 
     /**
@@ -119,10 +116,7 @@ public class Color {
     }
 
     public Color darken(double amount) {
-        return rgbai((int) Math.round(r * (1 - amount)),
-              (int) Math.round(g * (1 - amount)),
-              (int) Math.round(b * (1 - amount)),
-              a);
+        return rgbad(r * (1 - amount), g * (1 - amount), b * (1 - amount), a);
     }
 
     public static Color blend(Color src, Color dest) {
@@ -130,7 +124,7 @@ public class Color {
     }
 
     public static Color rgbai(int r, int g, int b, int a) {
-        return new Color(r, g, b, a);
+        return new Color(r / 255D, g / 255D, b / 255D, a / 255D);
     }
 
     public static Color rgbad(double r, double g, double b, double a) {
@@ -154,7 +148,7 @@ public class Color {
     }
 
     public static Color rgbi(int r, int g, int b) {
-        return rgbai(r, g, b, 255);
+        return rgbai(r , g, b, 255);
     }
 
     public static Color rgbd(double r, double g, double b) {
@@ -188,6 +182,27 @@ public class Color {
             default:
                 return rgbd(v, p, q);
         }
+    }
+
+    public double[] hsvArray() {
+        double min = StatUtils.min(r, g, b), max = StatUtils.max(r, g, b);
+        double delta = max - min;
+        double[] ret = new double[3];
+        if (delta == 0) {
+            ret[0] = 0;
+        } else if (max == r) {
+            ret[0] = ((g - b) / delta) % 6;
+        } else if (max == g) {
+            ret[0] = ((b - r) / delta) + 2;
+        } else {
+            ret[0] = ((r - g) / delta) + 4;
+        }
+        ret[0] *= 60;
+        if (ret[0] < 0)
+            ret[0] += 360;
+        ret[1] = max == 0 ? 0 : delta / max;
+        ret[2] = max;
+        return ret;
     }
 
     public static int packOpaque(int rgb) {

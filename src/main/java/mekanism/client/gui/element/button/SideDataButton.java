@@ -6,6 +6,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.lib.Color;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
@@ -33,7 +34,11 @@ public class SideDataButton extends MekanismButton {
         EnumColor color = dataType == null ? null : getColor();
         boolean doColor = color != null && color != EnumColor.GRAY;
         if (doColor) {
-            MekanismRenderer.color(color);
+            Color c = Color.rgbi(color.getRgbCode()[0], color.getRgbCode()[1], color.getRgbCode()[2]);
+            double[] hsv = c.hsvArray();
+            hsv[1] = Math.max(0, hsv[1] - 0.25F);
+            hsv[2] = Math.min(1, hsv[2] + 0.4F);
+            MekanismRenderer.color(Color.hsv(hsv[0], hsv[1], hsv[2]));
         } else {
             MekanismRenderer.resetColor();
         }
