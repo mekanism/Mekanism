@@ -46,7 +46,7 @@
   "description.mekanismgenerators.control_rod_assembly": "Набор стержней, используемых для контролирования процесса деления. Помещается на Ядерный Тепловыделяющий Элемент.",
   "description.mekanismgenerators.electromagnetic_coil": "Блок, превращающий кинетическую энергию от вращательного комплекса в электроэнергию.",
   "description.mekanismgenerators.fission_fuel_assembly": "Кластер топливных стержней, используемые для размещения топлива внутри Ядерного Реактора. Они могут быть размещены друг на друге.",
-  "description.mekanismgenerators.fission_reactor_casing": "Корпус из свинца и стали, используемый для создания Ядерного Реактора. Более жаростойкий, более радиационно-устойчивый, более безопасный!",
+  "description.mekanismgenerators.fission_reactor_casing": "Корпус из свинца и стали, используемый для создания ядерного реактора. Более жаростойкий, более радиационно-устойчивый, более безопасный!",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "Блок, который может использоваться для мониторинга или управления Ядерным Реактором с помощью редстоуна.",
   "description.mekanismgenerators.fission_reactor_port": "Порт, который может быть размещен на ядерном реакторе для передачи охлаждающей жидкости, топлива, отходов и энергии.",
   "description.mekanismgenerators.fusion_reactor_controller": "Блок управления для всего термоядерного реактора.",
