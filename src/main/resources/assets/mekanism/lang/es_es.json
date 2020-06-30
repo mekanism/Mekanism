@@ -1192,6 +1192,7 @@
   "tooltip.mekanism.stored.free_runners": "Energía de los Ejecutivos: %s",
   "tooltip.mekanism.stored.jetpack": "Jetpack Fuel: %s",
   "tooltip.mekanism.stored_energy": "Energía almacenada: %s",
+  "tooltip.mekanism.stored_mb_percentage": "Stored %s: %s mB (%s)",
   "transmission.mekanism.energy": "Energía",
   "transmission.mekanism.fluids": "Fluidos",
   "transmission.mekanism.gases": "Gases",
