@@ -1,16 +1,5 @@
 package mekanism.client.render.armor;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -21,6 +10,16 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Predicate;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.QuadTransformation;
@@ -40,6 +39,7 @@ import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IModelTransform;
@@ -56,6 +56,7 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class MekaSuitArmor extends CustomArmor {
 
@@ -107,7 +108,7 @@ public class MekaSuitArmor extends CustomArmor {
         cache.getUnchecked(key(entity)).getOpaqueMap().forEach((modelPos, quads) -> {
             matrix.push();
             modelPos.translate(this, matrix);
-            render(renderer, matrix, light, overlayLight, quads, false);
+            render(renderer, matrix, light, overlayLight, hasEffect, quads, false);
             matrix.pop();
         });
 
@@ -127,13 +128,14 @@ public class MekaSuitArmor extends CustomArmor {
         cache.getUnchecked(key(entity)).getTransparentMap().forEach((modelPos, quads) -> {
             matrix.push();
             modelPos.translate(this, matrix);
-            render(renderer, matrix, light, overlayLight, quads, true);
+            render(renderer, matrix, light, overlayLight, hasEffect, quads, true);
             matrix.pop();
         });
     }
 
-    private void render(IRenderTypeBuffer renderer, MatrixStack matrix, int light, int overlayLight, List<BakedQuad> quads, boolean transparent) {
-        IVertexBuilder builder = renderer.getBuffer(transparent ? RenderType.getEntityTranslucent(AtlasTexture.LOCATION_BLOCKS_TEXTURE) : MekanismRenderType.getMekaSuit());
+    private void render(IRenderTypeBuffer renderer, MatrixStack matrix, int light, int overlayLight, boolean hasEffect, List<BakedQuad> quads, boolean transparent) {
+        RenderType renderType = transparent ? RenderType.getEntityTranslucent(AtlasTexture.LOCATION_BLOCKS_TEXTURE) : MekanismRenderType.getMekaSuit();
+        IVertexBuilder builder = ItemRenderer.getBuffer(renderer, renderType, false, hasEffect);
         MatrixStack.Entry last = matrix.getLast();
         for (BakedQuad quad : quads) {
             builder.addVertexData(last, quad, 1, 1, 1, 1, light, overlayLight);
