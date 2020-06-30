@@ -9,12 +9,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.gas.Gas;
@@ -38,12 +34,7 @@ import net.minecraft.data.IDataProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.tags.ITag.Proxy;
-import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -93,36 +84,23 @@ public abstract class BaseTagProvider implements IDataProvider {
     @SuppressWarnings("UnstableApiUsage")
     private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull DirectoryCache cache, TagTypeMap<TYPE> tagTypeMap) {
         if (!tagTypeMap.isEmpty()) {
-            TagType<TYPE> tagType = tagTypeMap.getTagType();
-            IForgeRegistry<TYPE> registry = tagType.getRegistry();
-            ITag<TYPE> emptyTag = Tag.func_241284_a_();
-            Map<ResourceLocation, ITag.Builder> tagToBuilder = tagTypeMap.getBuilders();
-            //TODO - 1.16: Give this function a better name
-            Function<ResourceLocation, ITag<TYPE>> function = id -> tagToBuilder.containsKey(id) ? emptyTag : null;
-            for (Entry<ResourceLocation, ITag.Builder> entry : tagToBuilder.entrySet()) {
-                ResourceLocation id = entry.getKey();
-                ITag.Builder tagBuilder = entry.getValue();
-                List<Proxy> list = tagBuilder.func_232963_b_(function, registry::getValue).collect(Collectors.toList());
-                if (!list.isEmpty()) {
-                    throw new IllegalArgumentException(String.format("Couldn't define tag %s as it is missing following references: %s", id,
-                          list.stream().map(Objects::toString).collect(Collectors.joining(","))));
-                } else {
-                    Path path = gen.getOutputFolder().resolve("data/" + id.getNamespace() + "/tags/" + tagType.getPath() + "/" + id.getPath() + ".json");
-                    try {
-                        String json = GSON.toJson(cleanJsonTag(tagBuilder.func_232965_c_()));
-                        String hash = HASH_FUNCTION.hashUnencodedChars(json).toString();
-                        if (!Objects.equals(cache.getPreviousHash(path), hash) || !Files.exists(path)) {
-                            Files.createDirectories(path.getParent());
-                            try (BufferedWriter bufferedwriter = Files.newBufferedWriter(path)) {
-                                bufferedwriter.write(json);
-                            }
+            String tagTypePath = tagTypeMap.getTagType().getPath();
+            tagTypeMap.getBuilders().forEach((id, tagBuilder) -> {
+                Path path = gen.getOutputFolder().resolve("data/" + id.getNamespace() + "/tags/" + tagTypePath + "/" + id.getPath() + ".json");
+                try {
+                    String json = GSON.toJson(cleanJsonTag(tagBuilder.func_232965_c_()));
+                    String hash = HASH_FUNCTION.hashUnencodedChars(json).toString();
+                    if (!Objects.equals(cache.getPreviousHash(path), hash) || !Files.exists(path)) {
+                        Files.createDirectories(path.getParent());
+                        try (BufferedWriter bufferedwriter = Files.newBufferedWriter(path)) {
+                            bufferedwriter.write(json);
                         }
-                        cache.recordHash(path, hash);
-                    } catch (IOException exception) {
-                        LOGGER.error("Couldn't save tags to {}", path, exception);
                     }
+                    cache.recordHash(path, hash);
+                } catch (IOException exception) {
+                    LOGGER.error("Couldn't save tags to {}", path, exception);
                 }
-            }
+            });
         }
     }
 

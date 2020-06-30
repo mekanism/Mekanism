@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "result": {
+    "item": "mekanismtools:netherite_paxel"
+  },
+  "base": {
+    "item": "mekanismtools:diamond_paxel"
+  },
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  }
+}

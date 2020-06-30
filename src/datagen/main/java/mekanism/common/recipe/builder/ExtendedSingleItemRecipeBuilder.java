@@ -5,7 +5,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.common.DataGenJsonConstants;
-import net.minecraft.data.SingleItemRecipeBuilder;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IItemProvider;
@@ -22,12 +21,12 @@ public class ExtendedSingleItemRecipeBuilder extends BaseRecipeBuilder<ExtendedS
         this.ingredient = ingredient;
     }
 
-    public static SingleItemRecipeBuilder stonecutting(Ingredient ingredient, IItemProvider result) {
+    public static ExtendedSingleItemRecipeBuilder stonecutting(Ingredient ingredient, IItemProvider result) {
         return stonecutting(ingredient, result, 1);
     }
 
-    public static SingleItemRecipeBuilder stonecutting(Ingredient ingredient, IItemProvider result, int count) {
-        return new SingleItemRecipeBuilder(IRecipeSerializer.STONECUTTING, ingredient, result, count);
+    public static ExtendedSingleItemRecipeBuilder stonecutting(Ingredient ingredient, IItemProvider result, int count) {
+        return new ExtendedSingleItemRecipeBuilder(IRecipeSerializer.STONECUTTING, ingredient, result, count);
     }
 
     @Override

@@ -56,7 +56,8 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
     private boolean isVanilla(IItemProvider itemProvider) {
         if (itemProvider.getItem() instanceof ItemMekanismPaxel) {
             String name = itemProvider.getName();
-            return name.startsWith("diamond") || name.startsWith("gold") || name.startsWith("iron") || name.startsWith("stone") || name.startsWith("wood");
+            return name.startsWith("netherite") || name.startsWith("diamond") || name.startsWith("gold") || name.startsWith("iron") ||
+                   name.startsWith("stone") || name.startsWith("wood");
         }
         return false;
     }
