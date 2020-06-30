@@ -1192,6 +1192,7 @@
   "tooltip.mekanism.stored.free_runners": "Energia Alergătorilor: %s",
   "tooltip.mekanism.stored.jetpack": "Combustibil Jetpack: %s",
   "tooltip.mekanism.stored_energy": "Energie stocată: %s",
+  "tooltip.mekanism.stored_mb_percentage": "Stored %s: %s mB (%s)",
   "transmission.mekanism.energy": "Energie",
   "transmission.mekanism.fluids": "Fluide",
   "transmission.mekanism.gases": "Gaze",
