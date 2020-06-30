@@ -8,11 +8,16 @@ import mekanism.additions.common.block.plastic.BlockPlastic;
 import mekanism.additions.common.block.plastic.BlockPlasticFence;
 import mekanism.additions.common.block.plastic.BlockPlasticFenceGate;
 import mekanism.additions.common.block.plastic.BlockPlasticGlow;
+import mekanism.additions.common.block.plastic.BlockPlasticGlowSlab;
+import mekanism.additions.common.block.plastic.BlockPlasticGlowStairs;
 import mekanism.additions.common.block.plastic.BlockPlasticReinforced;
 import mekanism.additions.common.block.plastic.BlockPlasticRoad;
 import mekanism.additions.common.block.plastic.BlockPlasticSlab;
 import mekanism.additions.common.block.plastic.BlockPlasticSlick;
 import mekanism.additions.common.block.plastic.BlockPlasticStairs;
+import mekanism.additions.common.block.plastic.BlockPlasticTransparent;
+import mekanism.additions.common.block.plastic.BlockPlasticTransparentSlab;
+import mekanism.additions.common.block.plastic.BlockPlasticTransparentStairs;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -130,6 +135,23 @@ public class AdditionsBlocks {
     public static final BlockRegistryObject<BlockPlasticRoad, ItemBlockColoredName> ORANGE_PLASTIC_ROAD = registerPlasticRoad(EnumColor.ORANGE);
     public static final BlockRegistryObject<BlockPlasticRoad, ItemBlockColoredName> WHITE_PLASTIC_ROAD = registerPlasticRoad(EnumColor.WHITE);
 
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> BLACK_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.BLACK);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> RED_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.RED);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> GREEN_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.DARK_GREEN);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> BROWN_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.BROWN);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> BLUE_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.DARK_BLUE);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> PURPLE_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.PURPLE);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> CYAN_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.DARK_AQUA);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> LIGHT_GRAY_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.GRAY);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> GRAY_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.DARK_GRAY);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> PINK_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.BRIGHT_PINK);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> LIME_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.BRIGHT_GREEN);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> YELLOW_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.YELLOW);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> LIGHT_BLUE_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.INDIGO);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> MAGENTA_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.PINK);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> ORANGE_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.ORANGE);
+    public static final BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> WHITE_PLASTIC_TRANSPARENT_BLOCK = registerTransparentPlastic(EnumColor.WHITE);
+
     public static final BlockRegistryObject<BlockPlasticStairs, ItemBlockColoredName> BLACK_PLASTIC_STAIRS = registerPlasticStairs(BLACK_PLASTIC_BLOCK, EnumColor.BLACK);
     public static final BlockRegistryObject<BlockPlasticStairs, ItemBlockColoredName> RED_PLASTIC_STAIRS = registerPlasticStairs(RED_PLASTIC_BLOCK, EnumColor.RED);
     public static final BlockRegistryObject<BlockPlasticStairs, ItemBlockColoredName> GREEN_PLASTIC_STAIRS = registerPlasticStairs(GREEN_PLASTIC_BLOCK, EnumColor.DARK_GREEN);
@@ -198,6 +220,74 @@ public class AdditionsBlocks {
     public static final BlockRegistryObject<BlockPlasticFenceGate, ItemBlockColoredName> ORANGE_PLASTIC_FENCE_GATE = registerPlasticFenceGate(EnumColor.ORANGE);
     public static final BlockRegistryObject<BlockPlasticFenceGate, ItemBlockColoredName> WHITE_PLASTIC_FENCE_GATE = registerPlasticFenceGate(EnumColor.WHITE);
 
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> BLACK_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(BLACK_PLASTIC_GLOW_BLOCK, EnumColor.BLACK);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> RED_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(RED_PLASTIC_GLOW_BLOCK, EnumColor.RED);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> GREEN_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(GREEN_PLASTIC_GLOW_BLOCK, EnumColor.DARK_GREEN);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> BROWN_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(BROWN_PLASTIC_GLOW_BLOCK, EnumColor.BROWN);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> BLUE_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(BLUE_PLASTIC_GLOW_BLOCK, EnumColor.DARK_BLUE);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> PURPLE_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(PURPLE_PLASTIC_GLOW_BLOCK, EnumColor.PURPLE);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> CYAN_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(CYAN_PLASTIC_GLOW_BLOCK, EnumColor.DARK_AQUA);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> LIGHT_GRAY_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(LIGHT_GRAY_PLASTIC_GLOW_BLOCK, EnumColor.GRAY);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> GRAY_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(GRAY_PLASTIC_GLOW_BLOCK, EnumColor.DARK_GRAY);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> PINK_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(PINK_PLASTIC_GLOW_BLOCK, EnumColor.BRIGHT_PINK);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> LIME_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(LIME_PLASTIC_GLOW_BLOCK, EnumColor.BRIGHT_GREEN);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> YELLOW_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(YELLOW_PLASTIC_GLOW_BLOCK, EnumColor.YELLOW);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> LIGHT_BLUE_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(LIGHT_BLUE_PLASTIC_GLOW_BLOCK, EnumColor.INDIGO);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> MAGENTA_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(MAGENTA_PLASTIC_GLOW_BLOCK, EnumColor.PINK);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> ORANGE_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(ORANGE_PLASTIC_GLOW_BLOCK, EnumColor.ORANGE);
+    public static final BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> WHITE_PLASTIC_GLOW_STAIRS = registerGlowPlasticStairs(WHITE_PLASTIC_GLOW_BLOCK, EnumColor.WHITE);
+
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> BLACK_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.BLACK);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> RED_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.RED);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> GREEN_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.DARK_GREEN);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> BROWN_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.BROWN);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> BLUE_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.DARK_BLUE);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> PURPLE_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.PURPLE);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> CYAN_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.DARK_AQUA);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> LIGHT_GRAY_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.GRAY);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> GRAY_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.DARK_GRAY);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> PINK_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.BRIGHT_PINK);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> LIME_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.BRIGHT_GREEN);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> YELLOW_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.YELLOW);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> LIGHT_BLUE_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.INDIGO);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> MAGENTA_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.PINK);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> ORANGE_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.ORANGE);
+    public static final BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> WHITE_PLASTIC_GLOW_SLAB = registerGlowPlasticSlab(EnumColor.WHITE);
+
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> BLACK_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(BLACK_PLASTIC_TRANSPARENT_BLOCK, EnumColor.BLACK);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> RED_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(RED_PLASTIC_TRANSPARENT_BLOCK, EnumColor.RED);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> GREEN_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(GREEN_PLASTIC_TRANSPARENT_BLOCK, EnumColor.DARK_GREEN);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> BROWN_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(BROWN_PLASTIC_TRANSPARENT_BLOCK, EnumColor.BROWN);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> BLUE_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(BLUE_PLASTIC_TRANSPARENT_BLOCK, EnumColor.DARK_BLUE);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> PURPLE_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(PURPLE_PLASTIC_TRANSPARENT_BLOCK, EnumColor.PURPLE);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> CYAN_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(CYAN_PLASTIC_TRANSPARENT_BLOCK, EnumColor.DARK_AQUA);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> LIGHT_GRAY_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(LIGHT_GRAY_PLASTIC_TRANSPARENT_BLOCK, EnumColor.GRAY);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> GRAY_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(GRAY_PLASTIC_TRANSPARENT_BLOCK, EnumColor.DARK_GRAY);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> PINK_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(PINK_PLASTIC_TRANSPARENT_BLOCK, EnumColor.BRIGHT_PINK);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> LIME_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(LIME_PLASTIC_TRANSPARENT_BLOCK, EnumColor.BRIGHT_GREEN);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> YELLOW_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(YELLOW_PLASTIC_TRANSPARENT_BLOCK, EnumColor.YELLOW);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> LIGHT_BLUE_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(LIGHT_BLUE_PLASTIC_TRANSPARENT_BLOCK, EnumColor.INDIGO);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> MAGENTA_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(MAGENTA_PLASTIC_TRANSPARENT_BLOCK, EnumColor.PINK);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> ORANGE_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(ORANGE_PLASTIC_TRANSPARENT_BLOCK, EnumColor.ORANGE);
+    public static final BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> WHITE_PLASTIC_TRANSPARENT_STAIRS = registerTransparentPlasticStairs(WHITE_PLASTIC_TRANSPARENT_BLOCK, EnumColor.WHITE);
+
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> BLACK_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.BLACK);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> RED_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.RED);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> GREEN_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.DARK_GREEN);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> BROWN_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.BROWN);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> BLUE_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.DARK_BLUE);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> PURPLE_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.PURPLE);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> CYAN_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.DARK_AQUA);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> LIGHT_GRAY_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.GRAY);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> GRAY_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.DARK_GRAY);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> PINK_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.BRIGHT_PINK);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> LIME_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.BRIGHT_GREEN);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> YELLOW_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.YELLOW);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> LIGHT_BLUE_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.INDIGO);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> MAGENTA_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.PINK);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> ORANGE_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.ORANGE);
+    public static final BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> WHITE_PLASTIC_TRANSPARENT_SLAB = registerTransparentPlasticSlab(EnumColor.WHITE);
+
     private static BlockRegistryObject<BlockGlowPanel, ItemBlockColoredName> registerGlowPanel(EnumColor color) {
         return registerColoredBlock(BlockGlowPanel::new, "_glow_panel", color);
     }
@@ -222,6 +312,10 @@ public class AdditionsBlocks {
         return registerColoredBlock(BlockPlasticRoad::new, "_plastic_road", color);
     }
 
+    private static BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> registerTransparentPlastic(EnumColor color) {
+        return registerColoredBlock(BlockPlasticTransparent::new, "_plastic_transparent", color);
+    }
+
     private static BlockRegistryObject<BlockPlasticStairs, ItemBlockColoredName> registerPlasticStairs(IBlockProvider baseBlock, EnumColor color) {
         return BLOCKS.register(color.getRegistryPrefix() + "_plastic_stairs", () -> new BlockPlasticStairs(baseBlock, color), ItemBlockColoredName::new);
     }
@@ -236,6 +330,22 @@ public class AdditionsBlocks {
 
     private static BlockRegistryObject<BlockPlasticFenceGate, ItemBlockColoredName> registerPlasticFenceGate(EnumColor color) {
         return registerColoredBlock(BlockPlasticFenceGate::new, "_plastic_fence_gate", color);
+    }
+
+    private static BlockRegistryObject<BlockPlasticGlowStairs, ItemBlockColoredName> registerGlowPlasticStairs(IBlockProvider baseBlock, EnumColor color) {
+        return BLOCKS.register(color.getRegistryPrefix() + "_plastic_glow_stairs", () -> new BlockPlasticGlowStairs(baseBlock, color), ItemBlockColoredName::new);
+    }
+
+    private static BlockRegistryObject<BlockPlasticGlowSlab, ItemBlockColoredName> registerGlowPlasticSlab(EnumColor color) {
+        return registerColoredBlock(BlockPlasticGlowSlab::new, "_plastic_glow_slab", color);
+    }
+
+    private static BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> registerTransparentPlasticStairs(IBlockProvider baseBlock, EnumColor color) {
+        return BLOCKS.register(color.getRegistryPrefix() + "_plastic_transparent_stairs", () -> new BlockPlasticTransparentStairs(baseBlock, color), ItemBlockColoredName::new);
+    }
+
+    private static BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName> registerTransparentPlasticSlab(EnumColor color) {
+        return registerColoredBlock(BlockPlasticTransparentSlab::new, "_plastic_transparent_slab", color);
     }
 
     private static <BLOCK extends Block & IColoredBlock> BlockRegistryObject<BLOCK, ItemBlockColoredName> registerColoredBlock(Function<EnumColor, BLOCK> blockCreator,

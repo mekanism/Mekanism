@@ -40,18 +40,18 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     private static final char SAND_CHAR = 'S';
     private static final char SLIME_CHAR = 'S';
 
-    private static final RecipePattern BLOCK_RECOLOR = RecipePattern.createPattern(
+    private static final RecipePattern GLOW_PANEL = RecipePattern.createPattern(
+            TripleLine.of(GLASS_PANES_CHAR, PLASTIC_SHEET_CHAR, GLASS_PANES_CHAR),
+            TripleLine.of(PLASTIC_SHEET_CHAR, Pattern.DYE, PLASTIC_SHEET_CHAR),
+            TripleLine.of(Pattern.GLOWSTONE, PLASTIC_SHEET_CHAR, Pattern.GLOWSTONE));
+    private static final RecipePattern PLASTIC = RecipePattern.createPattern(
           TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
           TripleLine.of(Pattern.CONSTANT, Pattern.DYE, Pattern.CONSTANT),
           TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY));
-    private static final RecipePattern GLOW_PANEL = RecipePattern.createPattern(
-          TripleLine.of(GLASS_PANES_CHAR, PLASTIC_SHEET_CHAR, GLASS_PANES_CHAR),
-          TripleLine.of(PLASTIC_SHEET_CHAR, Pattern.DYE, PLASTIC_SHEET_CHAR),
-          TripleLine.of(Pattern.GLOWSTONE, PLASTIC_SHEET_CHAR, Pattern.GLOWSTONE));
-    private static final RecipePattern PLASTIC = RecipePattern.createPattern(
-          TripleLine.of(PLASTIC_SHEET_CHAR, PLASTIC_SHEET_CHAR, PLASTIC_SHEET_CHAR),
-          TripleLine.of(PLASTIC_SHEET_CHAR, Pattern.DYE, PLASTIC_SHEET_CHAR),
-          TripleLine.of(PLASTIC_SHEET_CHAR, PLASTIC_SHEET_CHAR, PLASTIC_SHEET_CHAR));
+    private static final RecipePattern PLASTIC_TRANSPARENT = RecipePattern.createPattern(
+            TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
+            TripleLine.of(Pattern.CONSTANT, Pattern.DYE, Pattern.CONSTANT),
+            TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
     private static final RecipePattern PLASTIC_FENCE = RecipePattern.createPattern(
           TripleLine.of(Pattern.CONSTANT, PLASTIC_ROD_CHAR, Pattern.CONSTANT),
           TripleLine.of(Pattern.CONSTANT, PLASTIC_ROD_CHAR, Pattern.CONSTANT));
@@ -66,11 +66,11 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(SAND_CHAR, SAND_CHAR, SAND_CHAR),
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
           TripleLine.of(SAND_CHAR, SAND_CHAR, SAND_CHAR));
-    private static final RecipePattern PLASTIC_SLAB = RecipePattern.createPattern(TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
     private static final RecipePattern SLICK_PLASTIC = RecipePattern.createPattern(
           TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
           TripleLine.of(Pattern.CONSTANT, SLIME_CHAR, Pattern.CONSTANT),
           TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY));
+    private static final RecipePattern PLASTIC_SLAB = RecipePattern.createPattern(TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
     private static final RecipePattern PLASTIC_STAIRS = RecipePattern.createPattern(
           TripleLine.of(Pattern.CONSTANT, Pattern.EMPTY, Pattern.EMPTY),
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.EMPTY),
@@ -102,14 +102,19 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         registerBalloons(consumer);
         registerGlowPanels(consumer);
         registerPlasticBlocks(consumer);
-        registerPlasticFences(consumer);
-        registerPlasticFenceGates(consumer);
         registerPlasticGlow(consumer);
         registerReinforcedPlastic(consumer);
         registerPlasticRoads(consumer);
-        registerPlasticSlabs(consumer);
         registerSlickPlastic(consumer);
+        registerPlasticTransparent(consumer);
+        registerPlasticFences(consumer);
+        registerPlasticFenceGates(consumer);
         registerPlasticStairs(consumer);
+        registerPlasticSlabs(consumer);
+        registerPlasticGlowStairs(consumer);
+        registerPlasticGlowSlabs(consumer);
+        registerPlasticTransparentStairs(consumer);
+        registerPlasticTransparentSlabs(consumer);
     }
 
     private void registerBalloons(Consumer<IFinishedRecipe> consumer) {
@@ -207,10 +212,42 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         ITag<Item> dye = color.getDyeTag();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(PLASTIC)
-              .key(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)
+              .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
               .key(Pattern.DYE, dye)
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_PLASTIC, dye, basePath + "recolor/" + colorString);
+    }
+
+    private void registerPlasticTransparent(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "plastic/transparent/";
+        registerPlasticTransparent(consumer, AdditionsBlocks.BLACK_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.RED_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.GREEN_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.BROWN_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.BLUE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.PURPLE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.CYAN_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.LIGHT_GRAY_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.GRAY_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.PINK_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.LIME_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.YELLOW_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.LIGHT_BLUE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.MAGENTA_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.ORANGE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparent(consumer, AdditionsBlocks.WHITE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+    }
+
+    private void registerPlasticTransparent(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
+        EnumColor color = result.getBlock().getColor();
+        String colorString = color.getRegistryPrefix();
+        Tag<Item> dye = color.getDyeTag();
+        ExtendedShapedRecipeBuilder.shapedRecipe(result, 8)
+              .pattern(PLASTIC_TRANSPARENT)
+              .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
+              .key(Pattern.DYE, dye)
+              .build(consumer, MekanismAdditions.rl(basePath + colorString));
+        registerTransparentRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_TRANSPARENT, dye, basePath + "recolor/" + colorString);
     }
 
     private void registerPlasticFences(Consumer<IFinishedRecipe> consumer) {
@@ -367,6 +404,66 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_ROAD, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
+    private void registerPlasticTransparentSlabs(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "plastic/slab/transparent/";
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.BLACK_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.BLACK_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.RED_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.RED_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.GREEN_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.GREEN_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.BROWN_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.BROWN_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.BLUE_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.BLUE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.PURPLE_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.PURPLE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.CYAN_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.CYAN_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.LIGHT_GRAY_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.LIGHT_GRAY_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.GRAY_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.GRAY_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.PINK_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.PINK_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.LIME_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.LIME_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.YELLOW_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.YELLOW_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.LIGHT_BLUE_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.LIGHT_BLUE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.MAGENTA_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.MAGENTA_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.ORANGE_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.ORANGE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentSlab(consumer, AdditionsBlocks.WHITE_PLASTIC_TRANSPARENT_SLAB, AdditionsBlocks.WHITE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+    }
+
+    private void registerPlasticTransparentSlab(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
+        EnumColor color = result.getBlock().getColor();
+        String colorString = color.getRegistryPrefix();
+        ExtendedShapedRecipeBuilder.shapedRecipe(result, 6)
+              .pattern(PLASTIC_SLAB)
+              .key(Pattern.CONSTANT, plastic)
+              .build(consumer, MekanismAdditions.rl(basePath + colorString));
+        registerTransparentRecolor(consumer, result, AdditionsTags.Items.SLABS_PLASTIC_TRANSPARENT, color.getDyeTag(), basePath + "recolor/" + colorString);
+    }
+
+    private void registerPlasticGlowSlabs(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "plastic/slab/glow/";
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.BLACK_PLASTIC_GLOW_SLAB, AdditionsBlocks.BLACK_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.RED_PLASTIC_GLOW_SLAB, AdditionsBlocks.RED_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.GREEN_PLASTIC_GLOW_SLAB, AdditionsBlocks.GREEN_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.BROWN_PLASTIC_GLOW_SLAB, AdditionsBlocks.BROWN_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.BLUE_PLASTIC_GLOW_SLAB, AdditionsBlocks.BLUE_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.PURPLE_PLASTIC_GLOW_SLAB, AdditionsBlocks.PURPLE_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.CYAN_PLASTIC_GLOW_SLAB, AdditionsBlocks.CYAN_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.LIGHT_GRAY_PLASTIC_GLOW_SLAB, AdditionsBlocks.LIGHT_GRAY_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.GRAY_PLASTIC_GLOW_SLAB, AdditionsBlocks.GRAY_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.PINK_PLASTIC_GLOW_SLAB, AdditionsBlocks.PINK_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.LIME_PLASTIC_GLOW_SLAB, AdditionsBlocks.LIME_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.YELLOW_PLASTIC_GLOW_SLAB, AdditionsBlocks.YELLOW_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.LIGHT_BLUE_PLASTIC_GLOW_SLAB, AdditionsBlocks.LIGHT_BLUE_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.MAGENTA_PLASTIC_GLOW_SLAB, AdditionsBlocks.MAGENTA_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.ORANGE_PLASTIC_GLOW_SLAB, AdditionsBlocks.ORANGE_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowSlab(consumer, AdditionsBlocks.WHITE_PLASTIC_GLOW_SLAB, AdditionsBlocks.WHITE_PLASTIC_GLOW_BLOCK, basePath);
+    }
+
+    private void registerPlasticGlowSlab(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
+        EnumColor color = result.getBlock().getColor();
+        String colorString = color.getRegistryPrefix();
+        ExtendedShapedRecipeBuilder.shapedRecipe(result, 6)
+              .pattern(PLASTIC_SLAB)
+              .key(Pattern.CONSTANT, plastic)
+              .build(consumer, MekanismAdditions.rl(basePath + colorString));
+        registerRecolor(consumer, result, AdditionsTags.Items.SLABS_PLASTIC_GLOW, color.getDyeTag(), basePath + "recolor/" + colorString);
+    }
+
     private void registerPlasticSlabs(Consumer<IFinishedRecipe> consumer) {
         String basePath = "plastic/slab/";
         registerPlasticSlab(consumer, AdditionsBlocks.BLACK_PLASTIC_SLAB, AdditionsBlocks.BLACK_PLASTIC_BLOCK, basePath);
@@ -434,6 +531,66 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, color.getDyeTag(), basePath + "recolor/" + colorString);
     }
 
+    private void registerPlasticTransparentStairs(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "plastic/stairs/transparent/";
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.BLACK_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.BLACK_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.RED_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.RED_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.GREEN_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.GREEN_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.BROWN_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.BROWN_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.BLUE_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.BLUE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.PURPLE_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.PURPLE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.CYAN_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.CYAN_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.LIGHT_GRAY_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.LIGHT_GRAY_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.GRAY_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.GRAY_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.PINK_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.PINK_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.LIME_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.LIME_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.YELLOW_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.YELLOW_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.LIGHT_BLUE_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.LIGHT_BLUE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.MAGENTA_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.MAGENTA_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.ORANGE_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.ORANGE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+        registerPlasticTransparentStairs(consumer, AdditionsBlocks.WHITE_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.WHITE_PLASTIC_TRANSPARENT_BLOCK, basePath);
+    }
+
+    private void registerPlasticTransparentStairs(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
+        EnumColor color = result.getBlock().getColor();
+        String colorString = color.getRegistryPrefix();
+        ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
+              .pattern(PLASTIC_STAIRS)
+              .key(Pattern.CONSTANT, plastic)
+              .build(consumer, MekanismAdditions.rl(basePath + colorString));
+        registerRecolor(consumer, result, AdditionsTags.Items.STAIRS_PLASTIC_TRANSPARENT, color.getDyeTag(), basePath + "recolor/" + colorString);
+    }
+
+    private void registerPlasticGlowStairs(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "plastic/stairs/glow/";
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.BLACK_PLASTIC_GLOW_STAIRS, AdditionsBlocks.BLACK_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.RED_PLASTIC_GLOW_STAIRS, AdditionsBlocks.RED_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.GREEN_PLASTIC_GLOW_STAIRS, AdditionsBlocks.GREEN_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.BROWN_PLASTIC_GLOW_STAIRS, AdditionsBlocks.BROWN_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.BLUE_PLASTIC_GLOW_STAIRS, AdditionsBlocks.BLUE_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.PURPLE_PLASTIC_GLOW_STAIRS, AdditionsBlocks.PURPLE_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.CYAN_PLASTIC_GLOW_STAIRS, AdditionsBlocks.CYAN_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.LIGHT_GRAY_PLASTIC_GLOW_STAIRS, AdditionsBlocks.LIGHT_GRAY_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.GRAY_PLASTIC_GLOW_STAIRS, AdditionsBlocks.GRAY_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.PINK_PLASTIC_GLOW_STAIRS, AdditionsBlocks.PINK_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.LIME_PLASTIC_GLOW_STAIRS, AdditionsBlocks.LIME_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.YELLOW_PLASTIC_GLOW_STAIRS, AdditionsBlocks.YELLOW_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.LIGHT_BLUE_PLASTIC_GLOW_STAIRS, AdditionsBlocks.LIGHT_BLUE_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.MAGENTA_PLASTIC_GLOW_STAIRS, AdditionsBlocks.MAGENTA_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.ORANGE_PLASTIC_GLOW_STAIRS, AdditionsBlocks.ORANGE_PLASTIC_GLOW_BLOCK, basePath);
+        registerPlasticGlowStairs(consumer, AdditionsBlocks.WHITE_PLASTIC_GLOW_STAIRS, AdditionsBlocks.WHITE_PLASTIC_GLOW_BLOCK, basePath);
+    }
+
+    private void registerPlasticGlowStairs(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
+        EnumColor color = result.getBlock().getColor();
+        String colorString = color.getRegistryPrefix();
+        ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
+              .pattern(PLASTIC_STAIRS)
+              .key(Pattern.CONSTANT, plastic)
+              .build(consumer, MekanismAdditions.rl(basePath + colorString));
+        registerRecolor(consumer, result, AdditionsTags.Items.STAIRS_PLASTIC_GLOW, color.getDyeTag(), basePath + "recolor/" + colorString);
+    }
+
     private void registerPlasticStairs(Consumer<IFinishedRecipe> consumer) {
         String basePath = "plastic/stairs/";
         registerPlasticStairs(consumer, AdditionsBlocks.BLACK_PLASTIC_STAIRS, AdditionsBlocks.BLACK_PLASTIC_BLOCK, basePath);
@@ -466,7 +623,15 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
 
     private void registerRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, ITag<Item> blockType, ITag<Item> dye, String path) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
-              .pattern(BLOCK_RECOLOR)
+              .pattern(PLASTIC)
+              .key(Pattern.CONSTANT, blockType)
+              .key(Pattern.DYE, dye)
+              .build(consumer, MekanismAdditions.rl(path));
+    }
+
+    private void registerTransparentRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, Tag<Item> blockType, Tag<Item> dye, String path) {
+        ExtendedShapedRecipeBuilder.shapedRecipe(result, 8)
+              .pattern(PLASTIC_TRANSPARENT)
               .key(Pattern.CONSTANT, blockType)
               .key(Pattern.DYE, dye)
               .build(consumer, MekanismAdditions.rl(path));

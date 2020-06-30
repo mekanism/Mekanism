@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:light_blue_plastic_transparent",
+    "count": 8
+  },
+  "pattern": [
+    "###",
+    "#D#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "mekanismadditions:plastic_blocks/transparent"
+    },
+    "D": {
+      "tag": "forge:dyes/light_blue"
+    }
+  }
+}

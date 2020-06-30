@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:gray_plastic_glow_slab",
+    "count": 6
+  },
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "mekanismadditions:gray_plastic_glow"
+    }
+  }
+}
