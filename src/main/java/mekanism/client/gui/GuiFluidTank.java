@@ -2,9 +2,9 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
-import mekanism.client.gui.element.custom.GuiContainerEditModeTab;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.tab.GuiContainerEditModeTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
