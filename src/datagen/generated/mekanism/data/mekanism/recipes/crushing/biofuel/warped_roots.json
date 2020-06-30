@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:warped_roots"
+    }
+  },
+  "output": {
+    "item": "mekanism:bio_fuel",
+    "count": 5
+  }
+}

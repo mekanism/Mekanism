@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:twisting_vines"
+    }
+  },
+  "output": {
+    "item": "mekanism:bio_fuel",
+    "count": 4
+  }
+}

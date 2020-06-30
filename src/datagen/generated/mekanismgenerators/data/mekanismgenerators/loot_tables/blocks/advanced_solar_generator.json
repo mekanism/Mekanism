@@ -12,13 +12,8 @@
               "source": "block_entity",
               "ops": [
                 {
-                  "source": "componentSecurity.ownerMost",
-                  "target": "mekData.ownerMost",
-                  "op": "replace"
-                },
-                {
-                  "source": "componentSecurity.ownerLeast",
-                  "target": "mekData.ownerLeast",
+                  "source": "componentSecurity.owner",
+                  "target": "mekData.owner",
                   "op": "replace"
                 },
                 {
