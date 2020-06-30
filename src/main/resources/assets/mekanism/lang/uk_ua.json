@@ -1192,6 +1192,7 @@
   "tooltip.mekanism.stored.free_runners": "Сила Runner'ів: %s",
   "tooltip.mekanism.stored.jetpack": "Jetpack Fuel: %s",
   "tooltip.mekanism.stored_energy": "Збережена енергія: %s",
+  "tooltip.mekanism.stored_mb_percentage": "Stored %s: %s mB (%s)",
   "transmission.mekanism.energy": "Енергія",
   "transmission.mekanism.fluids": "Рідини",
   "transmission.mekanism.gases": "Gases",
