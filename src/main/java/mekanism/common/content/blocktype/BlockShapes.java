@@ -44,6 +44,7 @@ public final class BlockShapes {
     public static final VoxelShape[] MODIFICATION_STATION = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] ISOTOPIC_CENTRIFUGE = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] SUPERCHARGED_COIL = new VoxelShape[EnumUtils.DIRECTIONS.length];
+    public static final VoxelShape[] ANTIPROTONIC_NUCLEOSYNTHESIZER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
@@ -764,6 +765,35 @@ public final class BlockShapes {
               makeCuboidShape(4, 3, 7, 6, 8, 9), // coil_3
               makeCuboidShape(10, 3, 7, 12, 8, 9) // coil_4
         ), SUPERCHARGED_COIL, true, true);
+
+        setShape(VoxelShapeUtils.combine(
+              makeCuboidShape(0, 5, 0, 16, 8, 16),
+              makeCuboidShape(1, 3, 1, 15, 5, 15),
+              makeCuboidShape(0, 0, 0, 16, 3, 16),
+              makeCuboidShape(12, 8, 0, 16, 16, 10),
+              makeCuboidShape(11, 9, 4, 12, 14, 9),
+              makeCuboidShape(4, 9, 4, 5, 14, 9),
+              makeCuboidShape(5, 11, 6, 6, 12, 7),
+              makeCuboidShape(10, 11, 6, 11, 12, 7),
+              makeCuboidShape(0, 8, 10, 16, 16, 13),
+              makeCuboidShape(0, 13, 13, 16, 16, 16),
+              makeCuboidShape(1, 11, 13, 15, 12, 15), // fin1
+              makeCuboidShape(1, 9, 13, 15, 10, 15), // fin2
+              makeCuboidShape(0, 8, 0, 4, 16, 10),
+              makeCuboidShape(4, 14, 1, 12, 15, 2), // glass_support
+              makeCuboidShape(6, 8, 13, 10, 13, 16), // divider
+              makeCuboidShape(6, 3, 15, 10, 5, 16), // divider
+              makeCuboidShape(2, 8, 13, 3, 13, 14), // fuel_rod_led1
+              makeCuboidShape(4, 8, 13, 5, 13, 14), // fuel_rod_led2
+              makeCuboidShape(11, 8, 13, 12, 13, 14), // fuel_rod_led3
+              makeCuboidShape(13, 8, 13, 14, 13, 14), // fuel_rod_led4
+              makeCuboidShape(4, 4, 15.005, 12, 12, 16.005), // port
+              makeCuboidShape(5, 10, 15.01, 11, 11, 16.01), // port_led1
+              makeCuboidShape(5, 5, 15.01, 11, 6, 16.01), // port_led2
+              makeCuboidShape(5, 6, 15.01, 6, 10, 16.01), // port_led3
+              makeCuboidShape(10, 6, 15.01, 11, 10, 16.01), // port_led4
+              makeCuboidShape(4, 7.99, 1.01, 12, 14.99, 10.01) // glass
+        ), ANTIPROTONIC_NUCLEOSYNTHESIZER);
 
         //TODO: Don't bother rotating the shape, it is the same for all rotations
         setShape(makeCuboidShape(2, 0, 2, 14, 16, 14), FLUID_TANK);

@@ -12,6 +12,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import mekanism.common.Mekanism;
 
 //TODO: JavaDoc - contains client side methods to help convert models to VoxelShapes
 public class ModelToVoxelShapeUtil {
@@ -44,7 +45,7 @@ public class ModelToVoxelShapeUtil {
     }*/
 
     public static void main(String[] args) {
-        printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/main/resources/assets/mekanism/models/block/resistive_heater.json");
+        printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/main/resources/assets/mekanism/models/block/antiprotonic_nucleosynthesizer.json");
     }
 
     public static void printoutModelFile(String path) {
@@ -55,6 +56,16 @@ public class ModelToVoxelShapeUtil {
             e.printStackTrace();
         }
         JsonObject obj = new JsonParser().parse(builder.toString()).getAsJsonObject();
+        if (obj.has("elements")) {
+            printoutObject(obj);
+        } else if (obj.has("layers")) {
+            obj.get("layers").getAsJsonObject().entrySet().forEach(e -> printoutObject(e.getValue().getAsJsonObject()));
+        } else {
+            Mekanism.logger.error("Unable to parse model file.");
+        }
+    }
+
+    private static void printoutObject(JsonObject obj) {
         JsonArray array = obj.get("elements").getAsJsonArray();
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
         DecimalFormat df = new DecimalFormat("#.####", otherSymbols);
