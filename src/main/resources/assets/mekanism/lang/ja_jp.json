@@ -458,7 +458,7 @@
   "description.mekanism.energy_cube": "エネルギーを貯蔵・分配する先進的な機械です。",
   "description.mekanism.energy_unit": "最大エネルギー容量を増やします。",
   "description.mekanism.enrichment_chamber": "鉱石を2つの粉に濃縮する簡単な機械です。 その他の処理も行います。",
-  "description.mekanism.excavation_escalation_unit": "Increases digging speed on any block.",
+  "description.mekanism.excavation_escalation_unit": "あらゆるブロックに対する採掘速度を増加します。",
   "description.mekanism.factory": "普通の機械を改良した機械です。 複数の処理を一度に平行して行うことが出来ます。",
   "description.mekanism.farming_unit": "Allows for soil tilling, log stripping, and soil flattening.",
   "description.mekanism.fluid_tank": "多くのバケツ分の流体を何処にでも持ち歩ける手軽で頑丈なタンクです。 バケツとしても扱えます。",
