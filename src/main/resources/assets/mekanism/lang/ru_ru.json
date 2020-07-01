@@ -1148,7 +1148,7 @@
   "slurry.mekanism.dirty_uranium": "Загрязнённая урановая взвесь",
   "slurry.mekanism.empty_slurry": "Не назначено",
   "sps.mekanism.energy_input": "Входная энергия: %s/t",
-  "sps.mekanism.invalid_disconnected_coil": "Couldn't form, found a coil without a connection to an SPS Port.",
+  "sps.mekanism.invalid_disconnected_coil": "Не удалось сформировать. Найдена неприсоединенная катушка к SPS Порту.",
   "sps.mekanism.port_mode": "Переключение режима SPS порта: %s.",
   "sps.mekanism.sps": "Сверхкритический фазовращатель",
   "status.mekanism.format": "Статус: %s",
