@@ -3,6 +3,8 @@ package mekanism.client.gui.element.tab;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.MekanismLang;
@@ -10,12 +12,15 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.text.EnergyDisplay;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiEnergyTab extends GuiTexturedElement {
 
     private final IInfoHandler infoHandler;
+    private final Map<EnergyType, ResourceLocation> icons = new Object2ObjectOpenHashMap<>();
 
     public GuiEnergyTab(IInfoHandler handler, IGuiWrapper gui) {
         super(MekanismUtils.getResource(ResourceType.GUI, "energy_info.png"), gui, -26, 137, 26, 26);
@@ -31,6 +36,12 @@ public class GuiEnergyTab extends GuiTexturedElement {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
         blit(x, y, 0, 0, width, height, width, height);
+    }
+
+    @Override
+    protected ResourceLocation getResource() {
+        return icons.computeIfAbsent(MekanismConfig.general.energyUnit.get(), (type) ->
+              MekanismUtils.getResource(ResourceType.GUI, "tabs/energy_info_" + type.name().toLowerCase() + ".png"));
     }
 
     @Override
