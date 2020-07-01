@@ -374,7 +374,7 @@ public class Mekanism {
         if (event.getWorld() != null && !event.getWorld().isRemote()) {
             //Note: ChunkDataLoad uses the level tag, but chunk save uses the parent compound
             // we need to get the level compound so that we read the correct value
-            CompoundNBT levelTag = event.getData().getCompound(NBTConstants.LEVEL);
+            CompoundNBT levelTag = event.getData().getCompound(NBTConstants.CHUNK_DATA_LEVEL);
             levelTag.putInt(NBTConstants.WORLD_GEN_VERSION, MekanismConfig.world.userGenVersion.get());
         }
     }
