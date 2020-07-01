@@ -74,6 +74,7 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTagManager;
 import mekanism.common.world.GenHandler;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.SimpleReloadableResourceManager;
@@ -371,7 +372,10 @@ public class Mekanism {
 
     private void chunkSave(ChunkDataEvent.Save event) {
         if (event.getWorld() != null && !event.getWorld().isRemote()) {
-            event.getData().putInt(NBTConstants.WORLD_GEN_VERSION, MekanismConfig.world.userGenVersion.get());
+            //Note: ChunkDataLoad uses the level tag, but chunk save uses the parent compound
+            // we need to get the level compound so that we read the correct value
+            CompoundNBT levelTag = event.getData().getCompound(NBTConstants.LEVEL);
+            levelTag.putInt(NBTConstants.WORLD_GEN_VERSION, MekanismConfig.world.userGenVersion.get());
         }
     }
 
