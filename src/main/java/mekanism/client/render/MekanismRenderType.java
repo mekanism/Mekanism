@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -9,7 +10,6 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class MekanismRenderType extends RenderType {
 
@@ -89,10 +89,10 @@ public class MekanismRenderType extends RenderType {
         RenderType.State state = RenderType.State.getBuilder()
               .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .shadeModel(SHADE_ENABLED)//shadeModel(GL11.GL_SMOOTH)
-              .transparency(TRANSLUCENT_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
+              .transparency(LIGHTNING_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
               .lightmap(LIGHTMAP_DISABLED)
-              .writeMask(WriteMaskState.COLOR_WRITE)
+              .alpha(CUBOID_ALPHA)
               .build(true);
-        return makeType("mek_sps", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, true, state);
+        return makeType("mek_sps", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, false, state);
     }
 }
