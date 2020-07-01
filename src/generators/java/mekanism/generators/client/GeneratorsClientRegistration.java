@@ -1,6 +1,8 @@
 package mekanism.generators.client;
 
+import mekanism.client.ClientRegistration;
 import mekanism.client.ClientRegistrationUtil;
+import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.generators.client.gui.GuiBioGenerator;
@@ -65,10 +67,14 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.WIND_GENERATOR, RenderWindGenerator::new);
         //Block render layers
         ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), GeneratorsBlocks.LASER_FOCUS_MATRIX, GeneratorsBlocks.REACTOR_GLASS);
+        ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getSolid() || renderType == RenderType.getTranslucent(),
+            GeneratorsBlocks.BIO_GENERATOR);
         //Fluids (translucent)
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : GeneratorsFluids.FLUIDS.getAllFluids()) {
             ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
         }
+
+        ClientRegistration.addCustomModel(GeneratorsBlocks.BIO_GENERATOR, (orig, evt) -> new LightedBakedModel(orig));
     }
 
     @SubscribeEvent

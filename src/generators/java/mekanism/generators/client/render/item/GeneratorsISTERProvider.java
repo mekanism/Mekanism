@@ -10,10 +10,6 @@ public class GeneratorsISTERProvider {
         return RenderAdvancedSolarGeneratorItem::new;
     }
 
-    public static Callable<ItemStackTileEntityRenderer> bio() {
-        return RenderBioGeneratorItem::new;
-    }
-
     public static Callable<ItemStackTileEntityRenderer> gasBurning() {
         return RenderGasGeneratorItem::new;
     }
