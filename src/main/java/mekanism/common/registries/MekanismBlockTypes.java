@@ -441,6 +441,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.antiprotonicNucleosynthesizer, MekanismConfig.storage.antiprotonicNucleosynthesizer)
           .withSound(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .withCustomShape(BlockShapes.ANTIPROTONIC_NUCLEOSYNTHESIZER)
           .build();
 
     // QIO Drive Array
