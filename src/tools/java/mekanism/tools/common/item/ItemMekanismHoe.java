@@ -30,12 +30,11 @@ import net.minecraftforge.common.ToolType;
 
 public class ItemMekanismHoe extends HoeItem implements IHasRepairType, IAttributeRefresher {
 
-    private static final ToolType HOE_TOOL_TYPE = ToolType.get("hoe");
     private final MaterialCreator material;
     private final AttributeCache attributeCache;
 
     public ItemMekanismHoe(MaterialCreator material) {
-        super(material, material.getHoeDamage(), material.getHoeAtkSpeed(), ItemDeferredRegister.getMekBaseProperties().addToolType(HOE_TOOL_TYPE, material.getHarvestLevel()));
+        super(material, material.getHoeDamage(), material.getHoeAtkSpeed(), ItemDeferredRegister.getMekBaseProperties());
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.hoeDamage, material.hoeAtkSpeed);
     }
@@ -68,7 +67,7 @@ public class ItemMekanismHoe extends HoeItem implements IHasRepairType, IAttribu
 
     @Override
     public int getHarvestLevel(@Nonnull ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState) {
-        return tool == HOE_TOOL_TYPE ? getTier().getHarvestLevel() : super.getHarvestLevel(stack, tool, player, blockState);
+        return tool == ToolType.HOE ? getTier().getHarvestLevel() : super.getHarvestLevel(stack, tool, player, blockState);
     }
 
     /**

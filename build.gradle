@@ -671,11 +671,11 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 relations {
                     optionalDependency "jei"
                     optionalDependency "ctm"
-                    optionalDependency "biomes-o-plenty"
-                    optionalDependency "flux-networks"
-                    optionalDependency "i-like-wood"
-                    optionalDependency "projecte"
-                    optionalDependency "the-one-probe"
+                    //optionalDependency "biomes-o-plenty"
+                    //optionalDependency "flux-networks"
+                    //optionalDependency "i-like-wood"
+                    //optionalDependency "projecte"
+                    //optionalDependency "the-one-probe"
                 }
             }
             addArtifact apiJar

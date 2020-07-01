@@ -263,7 +263,6 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
         private void setFilterLocation(ResourceLocation location) {
             filterLocation = location;
-            //TODO - 1.16: Test this, there is a chance that it make cause a crash if the tag doesn't actually exist
             filterTag = ItemTags.makeWrapperTag(filterLocation.toString());
         }
 

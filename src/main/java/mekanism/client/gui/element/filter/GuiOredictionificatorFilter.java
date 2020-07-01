@@ -82,7 +82,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             newFilter = split[1];
         }
         ResourceLocation filterLocation = new ResourceLocation(modid, newFilter);
-        if (filter.filterMatches(filterLocation)) {
+        if (filter.hasFilter() && filter.filterMatches(filterLocation)) {
             filterSaveFailed(MekanismLang.TAG_FILTER_SAME_TAG);
         } else {
             List<String> possibleFilters = TileEntityOredictionificator.possibleFilters.getOrDefault(modid, Collections.emptyList());
