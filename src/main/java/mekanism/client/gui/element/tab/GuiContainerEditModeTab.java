@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidContainerManager> extends GuiInsetElement<TILE> {
 
-    private static final ResourceLocation BOTH = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_disabled.png");
+    private static final ResourceLocation BOTH = MekanismUtils.getResource(ResourceType.GUI, "container_edit_mode_both.png");
     private static final ResourceLocation FILL = MekanismUtils.getResource(ResourceType.GUI, "container_edit_mode_fill.png");
     private static final ResourceLocation EMPTY = MekanismUtils.getResource(ResourceType.GUI, "container_edit_mode_empty.png");
 

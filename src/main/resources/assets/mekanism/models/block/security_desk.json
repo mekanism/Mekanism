@@ -12,7 +12,6 @@
 			"name": "desk_top",
 			"from": [0, 6, 0],
 			"to": [16, 13, 16],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [0, 8, 8, 11.5], "texture": "#2"},
@@ -27,7 +26,6 @@
 			"name": "desk_middle",
 			"from": [1, 5, 1],
 			"to": [15, 6, 15],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [8.5, 8, 15.5, 8.5], "texture": "#2"},
@@ -40,7 +38,6 @@
 			"name": "desk_base",
 			"from": [0, 0, 0],
 			"to": [16, 5, 16],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [8, 9, 16, 11.5], "texture": "#2"},
@@ -55,7 +52,6 @@
 			"name": "monitor",
 			"from": [1, 14, 11],
 			"to": [15, 24, 13],
-			"shade": false,
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 14]},
 			"faces": {
 				"north": {"uv": [0, 2.5, 7, 7.5], "texture": "#3"},
@@ -70,7 +66,6 @@
 			"name": "monitor_screen_led",
 			"from": [2, 15, 10.99],
 			"to": [14, 23, 10.99],
-			"shade": false,
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 14]},
 			"faces": {
 				"north": {"uv": [0, 0, 12, 8], "texture": "#4"}
@@ -80,7 +75,6 @@
 			"name": "button_led",
 			"from": [2, 13.5, 11.5],
 			"to": [3, 14.5, 12.5],
-			"shade": false,
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 14]},
 			"faces": {
 				"north": {"uv": [15, 0, 16, 1], "texture": "#4"},
@@ -94,7 +88,6 @@
 			"name": "monitor_back",
 			"from": [2, 16, 13],
 			"to": [14, 22, 14],
-			"shade": false,
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 14]},
 			"faces": {
 				"east": {"uv": [1, 13, 0.5, 16], "texture": "#3"},
@@ -108,7 +101,6 @@
 			"name": "stand_base",
 			"from": [4, 13, 10],
 			"to": [12, 14, 14],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [1, 14.5, 5, 15], "texture": "#3"},
@@ -122,7 +114,6 @@
 			"name": "stand_neck",
 			"from": [7, 14, 13],
 			"to": [9, 21, 14],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [1, 9, 2, 12.5], "texture": "#3"},
@@ -135,7 +126,6 @@
 			"name": "keyboard",
 			"from": [3, 13, 2],
 			"to": [13, 14, 7],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "x", "origin": [8, 13, 2]},
 			"faces": {
 				"north": {"uv": [0, 0, 5, 0.5], "texture": "#3"},
