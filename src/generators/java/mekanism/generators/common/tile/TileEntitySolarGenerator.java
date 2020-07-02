@@ -15,7 +15,6 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
@@ -57,7 +56,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             return;
         }
         Biome b = world.getBiomeManager().getBiome(getPos());
-
+        needsRainCheck = b.getPrecipitation() != RainType.NONE;
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
         // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
@@ -67,11 +66,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
         // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
         // (like the End) have rainfall set, but can't actually support rain.
-        float humidityEff = -0.3F * (b.getPrecipitation() != RainType.NONE ? b.getDownfall() : 0.0F);
-
+        float humidityEff = -0.3F * (needsRainCheck ? b.getDownfall() : 0.0F);
         peakOutput = getConfiguredMax().multiply(1.0F + tempEff + humidityEff);
-        needsRainCheck = b.getPrecipitation() != RainType.NONE;
-
         settingsChecked = true;
     }
 
@@ -110,33 +106,18 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (world == null) {
             return FloatingLong.ZERO;
         }
-        // Get the brightness of the sun; note that there are some implementations that depend on the base
+        //Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
-        float brightness = getSunBrightness(world, 1.0F);
-        //TODO: Galacticraft
-        /*if (MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel")) {
-            brightness *= ((ISolarLevel) world.provider).getSolarEnergyMultiplier();
-        }*/
+        float brightness = MekanismUtils.getSunBrightness(world, 1.0F);
+        //TODO: Galacticraft solar energy multiplier (see TileEntitySolarGenerator 1.12 branch). Also do that for the Solar Neutron Activator
 
-        // Production is a function of the peak possible output in this biome and sun's current brightness
+        //Production is a function of the peak possible output in this biome and sun's current brightness
         FloatingLong production = peakOutput.multiply(brightness);
-
-        // If the generator is in a biome where it can rain and it's raining penalize production by 80%
+        //If the generator is in a biome where it can rain and it's raining penalize production by 80%
         if (needsRainCheck && (world.isRaining() || world.isThundering())) {
             production = production.timesEqual(RAIN_MULTIPLIER);
         }
         return production;
-    }
-
-    //Vanilla copy of ClientWorld#getSunBrightness used to be World#getSunBrightness
-    private float getSunBrightness(World world, float partialTicks) {
-        float f = world.getCelestialAngle(partialTicks);
-        float f1 = 1.0F - (MathHelper.cos(f * ((float) Math.PI * 2F)) * 2.0F + 0.2F);
-        f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
-        f1 = 1.0F - f1;
-        f1 = (float) (f1 * (1.0D - world.getRainStrength(partialTicks) * 5.0F / 16.0D));
-        f1 = (float) (f1 * (1.0D - world.getThunderStrength(partialTicks) * 5.0F / 16.0D));
-        return f1 * 0.8F + 0.2F;
     }
 
     @Override
