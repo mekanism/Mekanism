@@ -134,7 +134,7 @@
   "reactor.mekanismgenerators.heat.case": "%s :\u01DDs\u0250\u0186",
   "reactor.mekanismgenerators.heat.plasma": "%s :\u0250\u026Fs\u0250\uA781\u0500",
   "reactor.mekanismgenerators.logic.activation": "uo\u1D09\u0287\u0250\u028C\u1D09\u0287\u0254\u2C6F",
-  "reactor.mekanismgenerators.logic.active_cooling": "\u1D77u\u1D09\uA781oo\u0254 \u01DD\u028C\u1D09\u0287\u0254\u2C6F",
+  "reactor.mekanismgenerators.logic.active_cooling": "%s :\u1D77u\u1D09\uA781oo\u0254 \u01DD\u028C\u1D09\u0287\u0254\u2C6F",
   "reactor.mekanismgenerators.logic.capacity": "\u0287\u01DDW \u028E\u0287\u1D09\u0254\u0250d\u0250\u0186 \u0287\u0250\u01DDH",
   "reactor.mekanismgenerators.logic.damaged": "\uA781\u0250\u0254\u1D09\u0287\u1D09\u0279\u0186 \u01DD\u1D77\u0250\u026F\u0250\u15E1",
   "reactor.mekanismgenerators.logic.depleted": "\uA781\u01DDn\u2132 \u0287u\u01DD\u1D09\u0254\u1D09\u025F\u025FnsuI",
