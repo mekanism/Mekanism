@@ -15,6 +15,7 @@ import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 @ParametersAreNonnullByDefault
@@ -38,7 +39,10 @@ public class MekanismTagManager implements IFutureReloadListener {
         }
         return reloadResults.thenCompose(stage::markCompleteAwaitingOthers).thenAcceptAsync(results -> {
             results.forEach(TagInfo::registerAndSet);
-            Mekanism.packetHandler.sendToAll(new PacketMekanismTags(Mekanism.instance.getTagManager()));
+            if (ServerLifecycleHooks.getCurrentServer() != null) {
+                //If the server has loaded, send to all players
+                Mekanism.packetHandler.sendToAll(new PacketMekanismTags(Mekanism.instance.getTagManager()));
+            }
         }, gameExecutor);
     }
 

@@ -1,17 +1,11 @@
 package mekanism.common;
 
+import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.common.base.TagCache;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.event.TagsUpdatedEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -24,6 +18,7 @@ import mekanism.common.base.IModule;
 import mekanism.common.base.KeySync;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.base.PlayerState;
+import mekanism.common.base.TagCache;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.command.CommandMek;
 import mekanism.common.command.builders.BuildCommand;
@@ -63,6 +58,7 @@ import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketHandler;
 import mekanism.common.network.PacketTransmitterUpdate;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
@@ -82,19 +78,20 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTagManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IFutureReloadListener;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.resources.SimpleReloadableResourceManager;
-import net.minecraft.tags.NetworkTagManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
@@ -104,10 +101,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(Mekanism.MODID)
 public class Mekanism {
@@ -189,8 +187,7 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::onWorldUnload);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
-        MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::serverAboutToStartLowest);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
         MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -216,6 +213,7 @@ public class Mekanism {
         modEventBus.addGenericListener(InfuseType.class, this::registerInfuseTypes);
         modEventBus.addGenericListener(Pigment.class, this::registerPigments);
         modEventBus.addGenericListener(Slurry.class, this::registerSlurries);
+        modEventBus.addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
 
@@ -240,6 +238,11 @@ public class Mekanism {
 
     private void registerSlurries(RegistryEvent.Register<Slurry> event) {
         event.getRegistry().register(MekanismAPI.EMPTY_SLURRY);
+    }
+
+    private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+        MekanismRecipeType.registerRecipeTypes(event.getRegistry());
+        Mekanism.instance.setRecipeCacheManager(new ReloadListener());
     }
 
     public static ResourceLocation rl(String path) {
@@ -274,36 +277,16 @@ public class Mekanism {
         TagCache.resetTagCaches();
     }
 
-    private void serverAboutToStart(FMLServerAboutToStartEvent event) {
-        //TODO - 1.16: Rewrite once https://github.com/MinecraftForge/MinecraftForge/pull/6849 gets merged to add it to the correct place
-        IResourceManager resourceManager = event.getServer().getDataPackRegistries().func_240970_h_();
-        boolean added = false;
-        if (resourceManager instanceof SimpleReloadableResourceManager) {
-            //Note: We "hack" it so that our tag manager gets registered directly after the normal tag manager
-            // to ensure that it is before the recipe manager and that the custom tags can be properly resolved
-            //TODO: It would make sense to eventually make a PR to forge to make custom tags easier to do
-            SimpleReloadableResourceManager manager = (SimpleReloadableResourceManager) resourceManager;
-            for (int i = 0; i < manager.reloadListeners.size(); i++) {
-                IFutureReloadListener listener = manager.reloadListeners.get(i);
-                if (listener instanceof NetworkTagManager) {
-                    manager.reloadListeners.add(i + 1, getTagManager());
-                    added = true;
-                    break;
-                }
-            }
-        }
-        if (!added && resourceManager instanceof IReloadableResourceManager) {
-            //Fallback to trying to just add it even though this is probably too late to do so properly
-            ((IReloadableResourceManager) resourceManager).addReloadListener(getTagManager());
+    //TODO - 1.16: Replace reference to this with the actual one from forge once https://github.com/MinecraftForge/MinecraftForge/pull/6849 gets merged
+    private class AddReloadListenerEvent extends Event {
+
+        public void addListener(IFutureReloadListener listener) {
         }
     }
 
-    private void serverAboutToStartLowest(FMLServerAboutToStartEvent event) {
+    private void addReloadListenersLowest(AddReloadListenerEvent event) {
         //Note: We register reload listeners here which we want to make sure run after CraftTweaker or any other mods that may modify recipes
-        IResourceManager resourceManager = event.getServer().getDataPackRegistries().func_240970_h_();
-        if (resourceManager instanceof IReloadableResourceManager) {
-            ((IReloadableResourceManager) resourceManager).addReloadListener(getRecipeCacheManager());
-        }
+        event.addListener(getRecipeCacheManager());
     }
 
     private void serverStarting(FMLServerStartingEvent event) {
@@ -340,6 +323,7 @@ public class Mekanism {
     private void commonSetup(FMLCommonSetupEvent event) {
         hooks.hookCommonSetup();
         Capabilities.registerCapabilities();
+        Mekanism.instance.setTagManager(new MekanismTagManager());
 
         DeferredWorkQueue.runLater(() -> {
             //Register the mod's world generators

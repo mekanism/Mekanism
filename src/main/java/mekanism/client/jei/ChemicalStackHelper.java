@@ -3,6 +3,7 @@ package mekanism.client.jei;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +32,7 @@ import mekanism.common.util.ChemicalUtil;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IIngredientHelper<STACK>,
@@ -88,6 +90,11 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     @Override
     public STACK copyIngredient(STACK ingredient) {
         return ChemicalUtil.copy(ingredient);
+    }
+
+    @Override
+    public Collection<ResourceLocation> getTags(STACK ingredient) {
+        return ingredient.getType().getTags();
     }
 
     @Override

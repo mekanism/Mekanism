@@ -212,7 +212,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         public List<@NonNull FluidStack> getRepresentations() {
             //TODO: Can this be cached some how
             List<@NonNull FluidStack> representations = new ArrayList<>();
-            for (Fluid fluid : tag.func_230236_b_()) {
+            for (Fluid fluid : TagResolverHelper.getRepresentations(tag)) {
                 representations.add(new FluidStack(fluid, amount));
             }
             return representations;

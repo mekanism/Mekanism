@@ -248,7 +248,7 @@ public class RadiationManager {
     public void createOrLoad() {
         if (dataHandler == null) {
             //Always associate the world with the over world as the frequencies are global
-            DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().getWorld(World.field_234918_g_).getSavedData();
+            DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().func_241755_D_().getSavedData();
             dataHandler = savedData.getOrCreate(RadiationDataHandler::new, DATA_HANDLER_NAME);
             dataHandler.setManager(this);
             dataHandler.syncManager();

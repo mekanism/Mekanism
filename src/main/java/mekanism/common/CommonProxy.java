@@ -81,6 +81,6 @@ public class CommonProxy {
 
     @Nullable
     public World tryGetMainWorld() {
-        return ServerLifecycleHooks.getCurrentServer().getWorld(World.field_234918_g_);
+        return ServerLifecycleHooks.getCurrentServer().func_241755_D_();
     }
 }
