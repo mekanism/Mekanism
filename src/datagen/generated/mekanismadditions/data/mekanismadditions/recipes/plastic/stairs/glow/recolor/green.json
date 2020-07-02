@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:green_plastic_glow_stairs",
+    "count": 4
+  },
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:stairs/plastic/glow"
+    },
+    "D": {
+      "tag": "forge:dyes/green"
+    }
+  }
+}
