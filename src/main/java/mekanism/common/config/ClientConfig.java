@@ -32,6 +32,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedIntValue radiationParticleRadius;
     public final CachedIntValue radiationParticleCount;
     public final CachedIntValue energyColor;
+    public final CachedBooleanValue mekaSuitHelmetCompassEnabled;
 
     public final CachedIntValue guiTitleTextColor;
     public final CachedIntValue guiScreenTextColor;
@@ -75,6 +76,8 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("radiationParticleCount", 100));
         energyColor = CachedIntValue.wrap(this, builder.comment("Color of energy in item durability display.")
               .define("energyColor", 0x3CFE9A));
+        mekaSuitHelmetCompassEnabled = CachedBooleanValue.wrap(this, builder.comment("Display a fancy compass when the MekaSuit is worn.")
+              .define("mekaSuitHelmetCompass", true));
 
         builder.comment("GUI Config").push(GUI_CATEGORY);
         guiTitleTextColor = CachedIntValue.wrap(this, builder.comment("Color of title text.")
