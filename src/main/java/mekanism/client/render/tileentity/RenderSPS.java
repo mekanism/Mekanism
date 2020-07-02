@@ -80,13 +80,13 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
 
             bolts.render(partialTick, matrix, renderer);
 
-            tile.orbitEffects.forEach(effect -> BillboardingEffectRenderer.render(effect, tile.getPos(), matrix, renderer, tile.getWorld().getGameTime(), partialTick));
-
             if (tile.getMultiblock().lastProcessed > 0) {
                 CORE.setPos(center);
                 CORE.setScale(getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE));
                 BillboardingEffectRenderer.render(CORE, tile.getPos(), matrix, renderer, tile.getWorld().getGameTime(), partialTick);
             }
+
+            tile.orbitEffects.forEach(effect -> BillboardingEffectRenderer.render(effect, tile.getPos(), matrix, renderer, tile.getWorld().getGameTime(), partialTick));
         }
     }
 
