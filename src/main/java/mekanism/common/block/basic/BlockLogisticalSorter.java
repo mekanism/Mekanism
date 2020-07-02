@@ -54,14 +54,14 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
     @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        if (world.isRemote) {
-            return ActionResultType.SUCCESS;
-        }
-        //TODO: Make this be moved into the logistical sorter tile
         TileEntityLogisticalSorter tile = MekanismUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
         }
+        if (world.isRemote) {
+            return getClientActivateResult(player, hand, hit);
+        }
+        //TODO: Make this be moved into the logistical sorter tile
         ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty()) {
             IMekWrench wrenchHandler = MekanismUtils.getWrench(stack);

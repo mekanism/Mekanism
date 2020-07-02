@@ -53,12 +53,12 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        if (world.isRemote) {
-            return ActionResultType.SUCCESS;
-        }
         TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
+        }
+        if (world.isRemote) {
+            return getClientActivateResult(player, hand, hit);
         }
         if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;

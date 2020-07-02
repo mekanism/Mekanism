@@ -17,7 +17,6 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
     public static final ChemicalTags<Pigment> PIGMENT = new ChemicalTags<>();
     public static final ChemicalTags<Slurry> SLURRY = new ChemicalTags<>();
 
-    //TODO - 1.16: Evaluate TagRegistry#func_232932_a_, seems to be used for syncing when on client side only
     private final TagRegistry<CHEMICAL> collection = new TagRegistry<>();
 
     private ChemicalTags() {

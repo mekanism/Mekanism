@@ -27,7 +27,7 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
         TileEntityStructuralMultiblock tile = MekanismUtils.getTileEntity(TileEntityStructuralMultiblock.class, world, pos);
         if (tile != null) {
             if (world.isRemote) {
-                return ActionResultType.SUCCESS;
+                return getClientActivateResult(player, hand, hit);
             }
             return tile.onActivate(player, hand, player.getHeldItem(hand));
         }

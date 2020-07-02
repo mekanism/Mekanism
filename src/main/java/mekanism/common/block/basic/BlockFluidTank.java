@@ -57,12 +57,12 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
     @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        if (world.isRemote) {
-            return ActionResultType.SUCCESS;
-        }
         TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, world, pos, true);
         if (tile == null) {
             return ActionResultType.PASS;
+        }
+        if (world.isRemote) {
+            return getClientActivateResult(player, hand, hit);
         }
         if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;

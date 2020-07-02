@@ -60,11 +60,7 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
         TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile != null) {
             if (world.isRemote) {
-                //TODO - V10: Re-evaluate after porting to 1.16. This being success causes issues where sounds don't work properly
-                // and also when blocks that when placed have side effects (such as placing bounding blocks), causes it to not
-                // happen on the client and then the positioning packet happens before the client knows the bounding block exists
-                // As the issue with sounds is supposedly fixed in 1.16, vanilla might have added a decent way to go about fixing it
-                return ActionResultType.SUCCESS;
+                return getClientActivateResult(player, hand, hit);
             }
             if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
                 return ActionResultType.SUCCESS;

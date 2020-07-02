@@ -54,7 +54,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
             return ActionResultType.PASS;
         }
         if (world.isRemote) {
-            return ActionResultType.SUCCESS;
+            return getClientActivateResult(player, hand, hit);
         }
         if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
