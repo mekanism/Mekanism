@@ -44,7 +44,7 @@ public abstract class ModuleMekaSuit extends Module {
 
         @Override
         public void tickServer(PlayerEntity player) {
-            if (player.isInWater()) {
+            if (player.getSubmergedHeight() > 1.8) {
                 FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
                 long maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(usage).intValue());
                 long hydrogenUsed = 0;
