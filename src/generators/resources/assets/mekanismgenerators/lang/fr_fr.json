@@ -134,7 +134,7 @@
   "reactor.mekanismgenerators.heat.case": "Sructure: %s",
   "reactor.mekanismgenerators.heat.plasma": "Plasma: %s",
   "reactor.mekanismgenerators.logic.activation": "Activation",
-  "reactor.mekanismgenerators.logic.active_cooling": "Active cooling: %s",
+  "reactor.mekanismgenerators.logic.active_cooling": "Refroidissement actif: %s",
   "reactor.mekanismgenerators.logic.capacity": "Capacité de chaleur atteinte",
   "reactor.mekanismgenerators.logic.damaged": "Dégâts critiques",
   "reactor.mekanismgenerators.logic.depleted": "Carburant insuffisant",
