@@ -59,7 +59,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
             return ActionResultType.PASS;
         }
         if (world.isRemote) {
-            return getClientActivateResult(player, hand, hit);
+            return ActionResultType.SUCCESS;
         }
         //TODO: Make this be moved into the logistical sorter tile
         ItemStack stack = player.getHeldItem(hand);

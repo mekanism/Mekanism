@@ -158,7 +158,8 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         stack.getTag().putInt("HideFlags", 2);
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
-        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack), BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue),
+        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack),
+              BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue),
               RadiationShieldingHandler.create(item -> isModuleEnabled(item, Modules.RADIATION_SHIELDING_UNIT) ? ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
         if (!gasTankSpecs.isEmpty()) {
             wrapper.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));

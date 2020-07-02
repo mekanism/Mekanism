@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:white_plastic_transparent_slab",
+    "count": 8
+  },
+  "pattern": [
+    "###",
+    "#D#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:slabs/plastic/transparent"
+    },
+    "D": {
+      "tag": "forge:dyes/white"
+    }
+  }
+}

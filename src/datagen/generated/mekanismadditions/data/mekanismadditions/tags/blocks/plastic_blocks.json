@@ -4,6 +4,7 @@
     "#mekanismadditions:plastic_blocks/plastic",
     "#mekanismadditions:plastic_blocks/reinforced",
     "#mekanismadditions:plastic_blocks/road",
-    "#mekanismadditions:plastic_blocks/slick"
+    "#mekanismadditions:plastic_blocks/slick",
+    "#mekanismadditions:plastic_blocks/transparent"
   ]
 }

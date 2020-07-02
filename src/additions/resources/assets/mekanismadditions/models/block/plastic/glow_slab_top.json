@@ -1,0 +1,8 @@
+{
+  "parent": "mekanismadditions:block/colored/slab_top",
+  "textures": {
+    "bottom": "mekanismadditions:block/plastic_glow_block",
+    "top": "mekanismadditions:block/plastic_glow_block",
+    "side": "mekanismadditions:block/plastic_glow_block"
+  }
+}

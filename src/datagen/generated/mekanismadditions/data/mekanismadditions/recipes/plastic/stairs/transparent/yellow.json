@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:yellow_plastic_transparent_stairs",
+    "count": 4
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "mekanismadditions:yellow_plastic_transparent"
+    }
+  }
+}

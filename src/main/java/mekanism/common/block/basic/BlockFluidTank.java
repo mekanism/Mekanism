@@ -62,7 +62,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
             return ActionResultType.PASS;
         }
         if (world.isRemote) {
-            return getClientActivateResult(player, hand, hit);
+            return ActionResultType.SUCCESS;
         }
         if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;

@@ -5,12 +5,12 @@
     "count": 4
   },
   "pattern": [
-    "HHH",
-    "HDH",
-    "HHH"
+    " # ",
+    "#D#",
+    " # "
   ],
   "key": {
-    "H": {
+    "#": {
       "item": "mekanism:hdpe_sheet"
     },
     "D": {

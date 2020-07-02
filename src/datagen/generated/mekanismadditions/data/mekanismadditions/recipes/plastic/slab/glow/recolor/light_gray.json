@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:light_gray_plastic_glow_slab",
+    "count": 4
+  },
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:slabs/plastic/glow"
+    },
+    "D": {
+      "tag": "forge:dyes/light_gray"
+    }
+  }
+}
