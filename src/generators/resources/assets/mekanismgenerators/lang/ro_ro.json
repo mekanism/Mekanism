@@ -134,7 +134,7 @@
   "reactor.mekanismgenerators.heat.case": "Caz: %s",
   "reactor.mekanismgenerators.heat.plasma": "Plasma: %s",
   "reactor.mekanismgenerators.logic.activation": "Activation",
-  "reactor.mekanismgenerators.logic.active_cooling": "Răcire activă",
+  "reactor.mekanismgenerators.logic.active_cooling": "Active cooling: %s",
   "reactor.mekanismgenerators.logic.capacity": "Capacitate termică Met",
   "reactor.mekanismgenerators.logic.damaged": "Damage Critical",
   "reactor.mekanismgenerators.logic.depleted": "Combustibil insuficient",
