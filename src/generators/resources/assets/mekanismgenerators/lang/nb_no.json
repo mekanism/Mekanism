@@ -134,7 +134,7 @@
   "reactor.mekanismgenerators.heat.case": "Sak: %s",
   "reactor.mekanismgenerators.heat.plasma": "Plasma: %s",
   "reactor.mekanismgenerators.logic.activation": "Activation",
-  "reactor.mekanismgenerators.logic.active_cooling": "Aktiv kjøling",
+  "reactor.mekanismgenerators.logic.active_cooling": "Active cooling: %s",
   "reactor.mekanismgenerators.logic.capacity": "Varmestapasitet Mett",
   "reactor.mekanismgenerators.logic.damaged": "Damage Critical",
   "reactor.mekanismgenerators.logic.depleted": "Utilstrekkelig brensel",
