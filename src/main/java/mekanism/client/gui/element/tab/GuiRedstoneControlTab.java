@@ -65,7 +65,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
             drawButton(matrix, mouseX, mouseY);
             //Draw the overlay onto the button
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            GuiUtils.drawSprite(matrix, getButtonX(), getButtonY(), innerWidth, innerHeight, 0, MekanismRenderer.redstonePulse);
+            GuiUtils.drawSprite(matrix, getButtonX() + 1, getButtonY() + 1, innerWidth - 2, innerHeight - 2, 0, MekanismRenderer.redstonePulse);
         }
     }
 }
