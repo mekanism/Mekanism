@@ -149,6 +149,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
+    public boolean lightUpdate() {
+        return false;
+    }
+
+    @Override
     public FloatingLong getMaxOutput() {
         return peakOutput;
     }

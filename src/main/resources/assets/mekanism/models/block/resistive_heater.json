@@ -14,7 +14,6 @@
 			"name": "port_left",
 			"from": [-0.005, 4, 4],
 			"to": [0.995, 12, 12],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [0.495, 8, 8]},
 			"faces": {
 				"west": {"uv": [16, 8, 8, 16], "texture": "#5"}
@@ -24,7 +23,6 @@
 			"name": "port_right",
 			"from": [15.005, 4, 4],
 			"to": [16.005, 12, 12],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [15.505, 8, 8]},
 			"faces": {
 				"east": {"uv": [8, 8, 16, 16], "texture": "#5"}
@@ -34,7 +32,6 @@
 			"name": "port_left_led_1",
 			"from": [-0.01, 10, 5],
 			"to": [0.99, 11, 11],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [0.495, 9, 9]},
 			"faces": {
 				"west": {"uv": [10, 10, 16, 11], "texture": "#6"}
@@ -44,7 +41,6 @@
 			"name": "port_left_led_2",
 			"from": [-0.01, 5, 5],
 			"to": [0.99, 6, 11],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [0.495, 4, 9]},
 			"faces": {
 				"west": {"uv": [10, 15, 16, 16], "texture": "#6"}
@@ -54,7 +50,6 @@
 			"name": "port_left_led_3",
 			"from": [-0.01, 6, 5],
 			"to": [0.99, 10, 6],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [0.495, 8, 9]},
 			"faces": {
 				"west": {"uv": [10, 11, 11, 15], "texture": "#6"}
@@ -64,7 +59,6 @@
 			"name": "port_left_led_4",
 			"from": [-0.01, 6, 10],
 			"to": [0.99, 10, 11],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [0.495, 8, 14]},
 			"faces": {
 				"west": {"uv": [15, 11, 16, 15], "texture": "#6"}
@@ -74,7 +68,6 @@
 			"name": "port_right_led_1",
 			"from": [15.01, 10, 5],
 			"to": [16.01, 11, 11],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [15.505, 9, 9]},
 			"faces": {
 				"east": {"uv": [10, 10, 16, 11], "texture": "#6"}
@@ -84,7 +77,6 @@
 			"name": "port_right_led_2",
 			"from": [15.01, 5, 5],
 			"to": [16.01, 6, 11],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [15.505, 4, 9]},
 			"faces": {
 				"east": {"uv": [10, 15, 16, 16], "texture": "#6"}
@@ -94,7 +86,6 @@
 			"name": "port_right_led_3",
 			"from": [15.01, 6, 10],
 			"to": [16.01, 10, 11],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [15.505, 8, 9]},
 			"faces": {
 				"east": {"uv": [10, 11, 11, 15], "texture": "#6"}
@@ -104,7 +95,6 @@
 			"name": "port_right_led_4",
 			"from": [15.01, 6, 5],
 			"to": [16.01, 10, 6],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [15.505, 8, 4]},
 			"faces": {
 				"east": {"uv": [15, 11, 16, 15], "texture": "#6"}
@@ -114,7 +104,6 @@
 			"name": "bar1",
 			"from": [4, 13, 1.5],
 			"to": [5, 14, 14.5],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"east": {"uv": [1, 1, 2, 15], "rotation": 90, "texture": "#3"},
@@ -127,7 +116,6 @@
 			"name": "bar2",
 			"from": [6, 13, 1.5],
 			"to": [7, 14, 14.5],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [10, 0, 8]},
 			"faces": {
 				"east": {"uv": [1, 1, 2, 15], "rotation": 90, "texture": "#3"},
@@ -140,7 +128,6 @@
 			"name": "bar3",
 			"from": [9, 13, 1.5],
 			"to": [10, 14, 14.5],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [13, 0, 8]},
 			"faces": {
 				"east": {"uv": [1, 1, 2, 15], "rotation": 90, "texture": "#3"},
@@ -153,7 +140,6 @@
 			"name": "bar4",
 			"from": [11, 13, 1.5],
 			"to": [12, 14, 14.5],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [15, 0, 8]},
 			"faces": {
 				"east": {"uv": [1, 1, 2, 15], "rotation": 90, "texture": "#3"},
@@ -166,7 +152,6 @@
 			"name": "base",
 			"from": [0, 0, 0],
 			"to": [16, 7, 16],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [0, 9, 16, 16], "texture": "#1"},
@@ -181,7 +166,6 @@
 			"name": "wall_right",
 			"from": [13, 7, 0],
 			"to": [16, 16, 16],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [21, 0, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 3, 9], "texture": "#1"},
@@ -195,7 +179,6 @@
 			"name": "wall_left",
 			"from": [0, 7, 0],
 			"to": [3, 16, 16],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 3, 9], "texture": "#1"},
@@ -209,7 +192,6 @@
 			"name": "fin1",
 			"from": [3, 6, 1],
 			"to": [13, 15, 2],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [3, 0, 13, 9], "texture": "#1"},
@@ -221,7 +203,6 @@
 			"name": "fin2",
 			"from": [3, 6, 3],
 			"to": [13, 15, 4],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 10]},
 			"faces": {
 				"north": {"uv": [3, 0, 13, 9], "texture": "#1"},
@@ -233,7 +214,6 @@
 			"name": "fin3",
 			"from": [3, 6, 5],
 			"to": [13, 15, 6],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 12]},
 			"faces": {
 				"north": {"uv": [3, 0, 13, 9], "texture": "#1"},
@@ -245,7 +225,6 @@
 			"name": "fin4",
 			"from": [3, 6, 7],
 			"to": [13, 15, 8],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 14]},
 			"faces": {
 				"north": {"uv": [3, 0, 13, 9], "texture": "#1"},
@@ -256,7 +235,6 @@
 			"name": "fin5",
 			"from": [3, 6, 8],
 			"to": [13, 15, 9],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 15]},
 			"faces": {
 				"south": {"uv": [3, 0, 13, 9], "texture": "#1"},
@@ -267,7 +245,6 @@
 			"name": "fin6",
 			"from": [3, 6, 10],
 			"to": [13, 15, 11],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 17]},
 			"faces": {
 				"north": {"uv": [3, 0, 13, 9], "texture": "#1"},
@@ -279,7 +256,6 @@
 			"name": "fin7",
 			"from": [3, 6, 12],
 			"to": [13, 15, 13],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 19]},
 			"faces": {
 				"north": {"uv": [3, 0, 13, 9], "texture": "#1"},
@@ -291,7 +267,6 @@
 			"name": "fin8",
 			"from": [3, 6, 14],
 			"to": [13, 15, 15],
-			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 21]},
 			"faces": {
 				"north": {"uv": [3, 0, 13, 9], "texture": "#1"},
