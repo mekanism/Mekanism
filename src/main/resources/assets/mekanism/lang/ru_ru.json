@@ -1192,7 +1192,7 @@
   "tooltip.mekanism.stored.free_runners": "Энергия бегунков: %s",
   "tooltip.mekanism.stored.jetpack": "Топливо ранца: %s",
   "tooltip.mekanism.stored_energy": "Накопленная энергия: %s",
-  "tooltip.mekanism.stored_mb_percentage": "Stored %s: %s mB (%s)",
+  "tooltip.mekanism.stored_mb_percentage": "Хранится %s: %s mB (%s)",
   "transmission.mekanism.energy": "Энергия",
   "transmission.mekanism.fluids": "Жидкости",
   "transmission.mekanism.gases": "Газы",
