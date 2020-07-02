@@ -10,9 +10,9 @@
 	"elements": [
 		{
 			"name": "pole",
-			"from": [6, 12, 6],
-			"to": [10, 41, 10],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 14, 8]},
+			"from": [6, -4, 6],
+			"to": [10, 25, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -2, 8]},
 			"faces": {
 				"north": {"uv": [11, 0, 10, 7.25], "texture": "#0"},
 				"east": {"uv": [10, 0, 9, 7.25], "texture": "#0"},
@@ -22,9 +22,9 @@
 		},
 		{
 			"name": "tube1",
-			"from": [4, 38, 2],
-			"to": [6, 40, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [5, 39, 8]},
+			"from": [4, 22, 2],
+			"to": [6, 24, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 23, 8]},
 			"faces": {
 				"north": {"uv": [12, 5.25, 12.5, 5.75], "texture": "#0"},
 				"east": {"uv": [12.5, 5.25, 15, 5.75], "texture": "#0"},
@@ -36,9 +36,9 @@
 		},
 		{
 			"name": "tube2",
-			"from": [10, 38, 2],
-			"to": [12, 40, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [11, 39, 8]},
+			"from": [10, 22, 2],
+			"to": [12, 24, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [11, 23, 8]},
 			"faces": {
 				"north": {"uv": [12, 5.25, 12.5, 5.75], "texture": "#0"},
 				"east": {"uv": [12.5, 5.25, 15, 5.75], "texture": "#0"},
@@ -50,9 +50,9 @@
 		},
 		{
 			"name": "barrel",
-			"from": [4, 41, 5],
-			"to": [12, 47, 11],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 15, 8]},
+			"from": [4, 25, 5],
+			"to": [12, 31, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -1, 8]},
 			"faces": {
 				"north": {"uv": [13.5, 0, 15.5, 1.5], "texture": "#0"},
 				"east": {"uv": [12, 0, 13.5, 1.5], "texture": "#0"},
@@ -64,9 +64,9 @@
 		},
 		{
 			"name": "ring1",
-			"from": [5, 40, 4],
-			"to": [6, 48, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [5.5, 44, 8]},
+			"from": [5, 24, 4],
+			"to": [6, 32, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5.5, 28, 8]},
 			"faces": {
 				"north": {"uv": [14, 6, 14.25, 8], "texture": "#0"},
 				"east": {"uv": [12, 6, 14, 8], "texture": "#0"},
@@ -77,9 +77,9 @@
 		},
 		{
 			"name": "ring2",
-			"from": [10, 40, 4],
-			"to": [11, 48, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [10.5, 44, 8]},
+			"from": [10, 24, 4],
+			"to": [11, 32, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [10.5, 28, 8]},
 			"faces": {
 				"north": {"uv": [14, 6, 14.25, 8], "texture": "#0"},
 				"east": {"uv": [12, 6, 14, 8], "texture": "#0"},
@@ -90,9 +90,9 @@
 		},
 		{
 			"name": "connector",
-			"from": [5, 5, 1],
-			"to": [11, 11, 4],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"from": [5, -11, 1],
+			"to": [11, -5, 4],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -16, 8]},
 			"faces": {
 				"east": {"uv": [12.75, 10.5, 13.5, 12], "texture": "#0"},
 				"west": {"uv": [12, 10.5, 12.75, 12], "texture": "#0"},
@@ -102,9 +102,9 @@
 		},
 		{
 			"name": "base",
-			"from": [0, 0, 0],
-			"to": [16, 2, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"from": [0, -16, 0],
+			"to": [16, -14, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -16, 8]},
 			"faces": {
 				"north": {"uv": [4, 12, 4.5, 16], "rotation": 90, "texture": "#0"},
 				"east": {"uv": [4, 12, 4.5, 16], "rotation": 90, "texture": "#0"},
@@ -116,9 +116,9 @@
 		},
 		{
 			"name": "base2",
-			"from": [3, 2, 3],
-			"to": [13, 4, 13],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 1, 8]},
+			"from": [3, -14, 3],
+			"to": [13, -12, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -15, 8]},
 			"faces": {
 				"north": {"uv": [9, 11.5, 11.5, 12], "texture": "#0"},
 				"east": {"uv": [9, 11.5, 11.5, 12], "texture": "#0"},
@@ -129,9 +129,9 @@
 		},
 		{
 			"name": "base3",
-			"from": [4, 4, 4],
-			"to": [12, 12, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 2, 8]},
+			"from": [4, -12, 4],
+			"to": [12, -4, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -14, 8]},
 			"faces": {
 				"north": {"uv": [12, 3, 14, 5], "texture": "#0"},
 				"east": {"uv": [12, 3, 14, 5], "texture": "#0"},
@@ -142,9 +142,9 @@
 		},
 		{
 			"name": "port",
-			"from": [4, 4, 0],
-			"to": [12, 12, 1],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"from": [4, -12, 0],
+			"to": [12, -4, 1],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -16, 8]},
 			"faces": {
 				"north": {"uv": [8, 8, 16, 16], "texture": "#1"},
 				"east": {"uv": [15, 8, 16, 16], "texture": "#1"},
@@ -156,45 +156,45 @@
 		},
 		{
 			"name": "port_led1",
-			"from": [5, 10, -0.005],
-			"to": [11, 11, -0.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+			"from": [5, -6, -0.005],
+			"to": [11, -5, -0.005],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -16, 8]},
 			"faces": {
 				"north": {"uv": [9, 9, 15, 10], "texture": "#2"}
 			}
 		},
 		{
 			"name": "port_led2",
-			"from": [5, 5, -0.005],
-			"to": [11, 6, -0.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -5, 8]},
+			"from": [5, -11, -0.005],
+			"to": [11, -10, -0.005],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -21, 8]},
 			"faces": {
 				"north": {"uv": [9, 14, 15, 15], "texture": "#2"}
 			}
 		},
 		{
 			"name": "port_led3",
-			"from": [10, 6, -0.005],
-			"to": [11, 10, -0.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -1, 8]},
+			"from": [10, -10, -0.005],
+			"to": [11, -6, -0.005],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, -17, 8]},
 			"faces": {
 				"north": {"uv": [9, 10, 10, 14], "texture": "#2"}
 			}
 		},
 		{
 			"name": "port_led4",
-			"from": [5, 6, -0.005],
-			"to": [6, 10, -0.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [3, -1, 8]},
+			"from": [5, -10, -0.005],
+			"to": [6, -6, -0.005],
+			"rotation": {"angle": 0, "axis": "y", "origin": [3, -17, 8]},
 			"faces": {
 				"north": {"uv": [14, 10, 15, 14], "texture": "#2"}
 			}
 		},
 		{
 			"name": "solar_panel_east",
-			"from": [14, 46, -16],
-			"to": [32, 47, 32],
-			"rotation": {"angle": 0, "axis": "y", "origin": [23, 46.5, 8]},
+			"from": [14, 30, -16],
+			"to": [32, 31, 32],
+			"rotation": {"angle": 0, "axis": "y", "origin": [23, 30.5, 8]},
 			"faces": {
 				"north": {"uv": [0, 11.75, 4.5, 12], "texture": "#0"},
 				"east": {"uv": [0, 0, 0.25, 12], "rotation": 90, "texture": "#0"},
@@ -206,9 +206,9 @@
 		},
 		{
 			"name": "solar_panel_east_base",
-			"from": [15, 45, -15],
-			"to": [31, 46, 31],
-			"rotation": {"angle": 0, "axis": "y", "origin": [23, 45.5, 8]},
+			"from": [15, 29, -15],
+			"to": [31, 30, 31],
+			"rotation": {"angle": 0, "axis": "y", "origin": [23, 29.5, 8]},
 			"faces": {
 				"north": {"uv": [4.75, 0.25, 8.75, 0.5], "texture": "#0"},
 				"east": {"uv": [4.75, 0.25, 5, 11.75], "rotation": 90, "texture": "#0"},
@@ -219,9 +219,9 @@
 		},
 		{
 			"name": "solar_panel_east_arm",
-			"from": [12, 43, 7],
-			"to": [28, 45, 9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [20, 44, 8]},
+			"from": [12, 27, 7],
+			"to": [28, 29, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [20, 28, 8]},
 			"faces": {
 				"north": {"uv": [15.5, 6.5, 16, 10.5], "rotation": 270, "texture": "#0"},
 				"east": {"uv": [15.5, 6, 16, 6.5], "rotation": 270, "texture": "#0"},
@@ -232,9 +232,9 @@
 		},
 		{
 			"name": "solar_panel_west",
-			"from": [-16, 46, -16],
-			"to": [2, 47, 32],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-7, 46.5, 8]},
+			"from": [-16, 30, -16],
+			"to": [2, 31, 32],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-7, 30.5, 8]},
 			"faces": {
 				"north": {"uv": [0, 11.75, 4.5, 12], "texture": "#0"},
 				"east": {"uv": [0, 0, 0.25, 12], "rotation": 90, "texture": "#0"},
@@ -246,9 +246,9 @@
 		},
 		{
 			"name": "solar_panel_west_base",
-			"from": [-15, 45, -15],
-			"to": [1, 46, 31],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-7, 45.5, 8]},
+			"from": [-15, 29, -15],
+			"to": [1, 30, 31],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-7, 29.5, 8]},
 			"faces": {
 				"north": {"uv": [4.75, 11.5, 8.75, 11.75], "texture": "#0"},
 				"east": {"uv": [4.75, 0.25, 5, 11.75], "rotation": 90, "texture": "#0"},
@@ -259,9 +259,9 @@
 		},
 		{
 			"name": "solar_panel_west_arm",
-			"from": [-12, 43, 7],
-			"to": [4, 45, 9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-4, 44, 8]},
+			"from": [-12, 27, 7],
+			"to": [4, 29, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-4, 28, 8]},
 			"faces": {
 				"north": {"uv": [15.5, 6.5, 16, 10.5], "rotation": 90, "texture": "#0"},
 				"south": {"uv": [15.5, 6.5, 16, 10.5], "rotation": 270, "texture": "#0"},

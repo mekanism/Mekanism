@@ -83,7 +83,6 @@ import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.obj.OBJModelCache;
 import mekanism.client.render.tileentity.RenderBin;
-import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDynamicTank;
@@ -169,7 +168,6 @@ public class ClientRegistration {
 
         //Register TileEntityRenderers
         ClientRegistrationUtil.bindTileEntityRenderer(RenderThermoelectricBoiler::new, MekanismTileEntityTypes.BOILER_CASING, MekanismTileEntityTypes.BOILER_VALVE);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CHEMICAL_CRYSTALLIZER, RenderChemicalCrystallizer::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CHEMICAL_DISSOLUTION_CHAMBER, RenderChemicalDissolutionChamber::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.DIGITAL_MINER, RenderDigitalMiner::new);
         ClientRegistrationUtil.bindTileEntityRenderer(RenderDynamicTank::new, MekanismTileEntityTypes.DYNAMIC_TANK, MekanismTileEntityTypes.DYNAMIC_VALVE);
@@ -230,9 +228,9 @@ public class ClientRegistration {
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : MekanismFluids.FLUIDS.getAllFluids()) {
             ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
         }
-
+        // Multi-Layer blocks (requiring both sold & translucent render layers)
         ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getSolid() || renderType == RenderType.getTranslucent(),
-              MekanismBlocks.ISOTOPIC_CENTRIFUGE, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
+              MekanismBlocks.ISOTOPIC_CENTRIFUGE, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
 
         ClientRegistrationUtil.setPropertyOverride(MekanismBlocks.CARDBOARD_BOX, Mekanism.rl("storage"),
               (stack, world, entity) -> ((ItemBlockCardboardBox) stack.getItem()).getBlockData(stack) == null ? 0 : 1);
@@ -266,17 +264,11 @@ public class ClientRegistration {
         }
 
         addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig, evt));
-        addCustomModel(MekanismBlocks.QIO_DASHBOARD, (orig, evt) -> new LightedBakedModel(orig));
-        addCustomModel(MekanismBlocks.QIO_EXPORTER, (orig, evt) -> new LightedBakedModel(orig));
-        addCustomModel(MekanismBlocks.QIO_IMPORTER, (orig, evt) -> new LightedBakedModel(orig));
         addCustomModel(MekanismBlocks.QIO_REDSTONE_ADAPTER, (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
-        addCustomModel(MekanismBlocks.MODIFICATION_STATION, (orig, evt) -> new LightedBakedModel(orig));
-        addCustomModel(MekanismBlocks.SECURITY_DESK, (orig, evt) -> new LightedBakedModel(orig));
-        addCustomModel(MekanismBlocks.LOGISTICAL_SORTER, (orig, evt) -> new LightedBakedModel(orig));
-        addCustomModel(MekanismBlocks.RESISTIVE_HEATER, (orig, evt) -> new LightedBakedModel(orig));
-        addCustomModel(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, (orig, evt) -> new LightedBakedModel(orig));
-        addCustomModel(MekanismItems.PORTABLE_QIO_DASHBOARD, (orig, evt) -> new LightedBakedModel(orig));
-        addCustomModel(MekanismItems.MEKA_TOOL, (orig, evt) -> new LightedBakedModel(orig));
+
+        addLitModel(MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.MODIFICATION_STATION,
+            MekanismBlocks.SECURITY_DESK,  MekanismBlocks.LOGISTICAL_SORTER, MekanismBlocks.RESISTIVE_HEATER, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER,
+            MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItems.MEKA_TOOL, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
     }
 
     @SubscribeEvent
@@ -473,6 +465,12 @@ public class ClientRegistration {
 
     public static void addCustomModel(IItemProvider provider, CustomModelRegistryObject object) {
         customModels.put(provider.getRegistryName(), object);
+    }
+
+    public static void addLitModel(IItemProvider... providers) {
+        for (IItemProvider provider : providers) {
+            addCustomModel(provider, (orig, evt) -> new LightedBakedModel(orig));
+        }
     }
 
     @FunctionalInterface

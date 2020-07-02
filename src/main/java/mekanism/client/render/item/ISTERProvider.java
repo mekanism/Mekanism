@@ -1,7 +1,6 @@
 package mekanism.client.render.item;
 
 import java.util.concurrent.Callable;
-import mekanism.client.render.item.block.RenderChemicalCrystallizerItem;
 import mekanism.client.render.item.block.RenderChemicalDissolutionChamberItem;
 import mekanism.client.render.item.block.RenderDigitalMinerItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
@@ -24,10 +23,6 @@ public class ISTERProvider {
 
     public static Callable<ItemStackTileEntityRenderer> energyCube() {
         return RenderEnergyCubeItem::new;
-    }
-
-    public static Callable<ItemStackTileEntityRenderer> crystallizer() {
-        return RenderChemicalCrystallizerItem::new;
     }
 
     public static Callable<ItemStackTileEntityRenderer> dissolution() {

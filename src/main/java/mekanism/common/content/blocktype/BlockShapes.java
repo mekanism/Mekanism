@@ -142,20 +142,27 @@ public final class BlockShapes {
         ), DIGITAL_MINER);
 
         setShape(VoxelShapeUtils.combine(
+              makeCuboidShape(0, 5, 14, 16, 7, 16), // rim_south
+              makeCuboidShape(0, 5, 2, 2, 7, 14), // rim_west
+              makeCuboidShape(0, 5, 0, 16, 7, 2), // rim_north
+              makeCuboidShape(14, 5, 2, 16, 7, 14), // rim_east
+              makeCuboidShape(3, 5, 3, 13, 6, 13), // tray
+              makeCuboidShape(-0.005, 4, 4, 0.995, 12, 12), // port_west
+              makeCuboidShape(-0.01, 10, 5, 0.99, 11, 11), // port_west_led1
+              makeCuboidShape(-0.01, 5, 5, 0.99, 6, 11), // port_west_led2
+              makeCuboidShape(-0.01, 6, 5, 0.99, 10, 6), // port_west_led3
+              makeCuboidShape(-0.01, 6, 10, 0.99, 10, 11), // port_west_led4
+              makeCuboidShape(15.005, 4, 4, 16.005, 12, 12), // port_east
+              makeCuboidShape(0, 7, 0, 1, 11, 1), // support1
+              makeCuboidShape(0, 7, 15, 1, 11, 16), // support2
+              makeCuboidShape(15, 7, 15, 16, 11, 16), // support3
+              makeCuboidShape(15, 7, 0, 16, 11, 1), // support4
               makeCuboidShape(0, 0, 0, 16, 5, 16), // base
               makeCuboidShape(0, 11, 0, 16, 16, 16), // tank
-              makeCuboidShape(3, 4.5, 3, 13, 5.5, 13), // tray
-              makeCuboidShape(1, 7, 1, 15, 11, 15), // Shape1
-              makeCuboidShape(0, 3, 3, 1, 13, 13), // portRight
-              makeCuboidShape(15, 4, 4, 16, 12, 12), // portLeft
-              makeCuboidShape(0, 5, 0, 16, 7, 2), // rimBack
-              makeCuboidShape(0, 5, 2, 2, 7, 14), // rimRight
-              makeCuboidShape(14, 5, 2, 16, 7, 14), // rimLeft
-              makeCuboidShape(0, 5, 14, 16, 7, 16), // rimFront
-              makeCuboidShape(14.5, 6, 14.5, 15.5, 11, 15.5), // support1
-              makeCuboidShape(0.5, 6, 14.5, 1.5, 11, 15.5), // support2
-              makeCuboidShape(14.5, 6, 0.5, 15.5, 11, 1.5), // support3
-              makeCuboidShape(0.5, 6, 0.5, 1.5, 11, 1.5)// support4
+              makeCuboidShape(6, 9, 8, 7, 11, 9), // rod1
+              makeCuboidShape(9, 8, 9, 10, 11, 10), // rod2
+              makeCuboidShape(7.5, 7, 6, 8.5, 11, 7), // rod3
+              makeCuboidShape(1, 7, 1, 15, 11, 15) // glass
         ), CHEMICAL_CRYSTALLIZER);
 
         setShape(VoxelShapeUtils.combine(
