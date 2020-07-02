@@ -24,6 +24,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     public static final Predicate<@NonNull AutomationType> alwaysTrue = automationType -> true;
     public static final Predicate<@NonNull AutomationType> alwaysFalse = automationType -> false;
     public static final Predicate<@NonNull AutomationType> internalOnly = automationType -> automationType == AutomationType.INTERNAL;
+    public static final Predicate<@NonNull AutomationType> manualOnly = automationType -> automationType == AutomationType.MANUAL;
     public static final Predicate<@NonNull AutomationType> notExternal = automationType -> automationType != AutomationType.EXTERNAL;
 
     public static BasicEnergyContainer create(FloatingLong maxEnergy, @Nullable IContentsListener listener) {

@@ -24,10 +24,6 @@ import mekanism.common.tier.EnergyCubeTier;
 @MethodsReturnNonnullByDefault
 public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
 
-    public static RateLimitEnergyHandler create(FloatingLongSupplier rate, FloatingLongSupplier capacity) {
-        return create(rate, capacity, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue);
-    }
-
     public static RateLimitEnergyHandler create(EnergyCubeTier tier) {
         Objects.requireNonNull(tier, "Energy cube tier cannot be null");
         return new RateLimitEnergyHandler(handler -> new EnergyCubeRateLimitEnergyContainer(tier, handler));

@@ -170,7 +170,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
         return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(MekanismConfig.gear.electricBowChargeRate, MekanismConfig.gear.electricBowMaxEnergy,
-              BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
+              BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
     }
 
     @Override

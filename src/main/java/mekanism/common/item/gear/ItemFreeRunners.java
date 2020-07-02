@@ -90,7 +90,7 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy,
-              BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
+              BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
     }
 
     public FreeRunnerMode getMode(ItemStack itemStack) {

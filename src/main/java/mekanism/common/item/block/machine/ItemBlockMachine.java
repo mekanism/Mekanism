@@ -86,7 +86,7 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         if (Attribute.has(getBlock(), AttributeEnergy.class)) {
             FloatingLong maxEnergy = MekanismUtils.getMaxEnergy(stack, Attribute.get(getBlock(), AttributeEnergy.class).getStorage());
-            return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> maxEnergy, BasicEnergyContainer.notExternal, BasicEnergyContainer.alwaysTrue));
+            return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
         }
         return super.initCapabilities(stack, nbt);
     }
