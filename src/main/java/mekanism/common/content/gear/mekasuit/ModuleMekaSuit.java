@@ -48,17 +48,17 @@ public abstract class ModuleMekaSuit extends Module {
                 FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
                 long maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(usage).intValue());
                 long hydrogenUsed = 0;
-                GasStack hydrogenStack = new GasStack(MekanismGases.HYDROGEN.get(), maxRate * 2);
+                GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2);
                 ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
                 Optional<IGasHandler> chestCapability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
                 if (chestCapability.isPresent()) {
                     hydrogenUsed = maxRate * 2 - chestCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                    hydrogenStack.shrink(hydrogenUsed);
                 }
-                hydrogenStack.setAmount(maxRate * 2 - hydrogenUsed);
                 ItemStack handStack = player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
                 Optional<IGasHandler> handCapability = MekanismUtils.toOptional(handStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
                 if (handCapability.isPresent()) {
-                	hydrogenUsed -= handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                    hydrogenUsed = maxRate * 2 - handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                 }
                 long oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
                 long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
