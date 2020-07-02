@@ -1,7 +1,5 @@
 package mekanism.additions.common.block.plastic;
 
-import javax.annotation.Nonnull;
-
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -9,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -52,15 +51,8 @@ public class BlockPlasticTransparentStairs extends StairsBlock implements IColor
     }
 
     @Override
-    @Deprecated
-    public boolean isNormalCube(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    @Deprecated
-    public boolean canEntitySpawn(BlockState state, IBlockReader worldIn, BlockPos pos, EntityType<?> type) {
-        return false;
+    public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, PlacementType type, EntityType<?> entityType) {
+    	return false;
     }
 
     @Override

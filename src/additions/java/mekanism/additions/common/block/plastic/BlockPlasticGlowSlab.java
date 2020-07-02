@@ -10,7 +10,7 @@ public class BlockPlasticGlowSlab extends SlabBlock implements IColoredBlock {
     private final EnumColor color;
 
     public BlockPlasticGlowSlab(EnumColor color) {
-        super(Block.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).lightValue(10));
+        super(Block.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).func_235838_a_(state -> 10));
         this.color = color;
     }
 

@@ -241,7 +241,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     private void registerPlasticTransparent(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
         EnumColor color = result.getBlock().getColor();
         String colorString = color.getRegistryPrefix();
-        Tag<Item> dye = color.getDyeTag();
+        ITag<Item> dye = color.getDyeTag();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 8)
               .pattern(PLASTIC_TRANSPARENT)
               .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
@@ -629,7 +629,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               .build(consumer, MekanismAdditions.rl(path));
     }
 
-    private void registerTransparentRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, Tag<Item> blockType, Tag<Item> dye, String path) {
+    private void registerTransparentRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, ITag<Item> blockType, ITag<Item> dye, String path) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 8)
               .pattern(PLASTIC_TRANSPARENT)
               .key(Pattern.CONSTANT, blockType)
