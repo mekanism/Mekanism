@@ -34,6 +34,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -44,7 +45,7 @@ public abstract class ModuleMekaSuit extends Module {
 
         @Override
         public void tickServer(PlayerEntity player) {
-            if (player.getSubmergedHeight() > 1.8) {
+            if (player.func_233571_b_(FluidTags.WATER) > 1.8) {
                 FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
                 long maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(usage).intValue());
                 long hydrogenUsed = 0;
