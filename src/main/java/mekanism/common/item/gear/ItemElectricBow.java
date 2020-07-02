@@ -44,7 +44,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.ForgeEventFactory;
 
-//TODO - 1.16: FIXME, check vanilla copy
 public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvider {
 
     public ItemElectricBow(Properties properties) {
