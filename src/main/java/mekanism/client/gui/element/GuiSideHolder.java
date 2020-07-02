@@ -1,7 +1,7 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
@@ -21,6 +21,7 @@ public class GuiSideHolder extends GuiTexturedElement {
         super(left ? HOLDER_LEFT : HOLDER_RIGHT, gui, x, y, TEXTURE_WIDTH, height);
         this.left = left;
         field_230693_o_ = false;
+        setButtonBackground(ButtonBackground.DEFAULT);
     }
 
     protected void colorTab() {
@@ -28,7 +29,8 @@ public class GuiSideHolder extends GuiTexturedElement {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
         colorTab();
         //Top

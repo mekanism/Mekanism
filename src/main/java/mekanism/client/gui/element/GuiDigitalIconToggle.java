@@ -24,8 +24,8 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         TYPE type = typeSupplier.get();
         minecraft.textureManager.bindTexture(type.getIcon());
         func_238463_a_(matrix, field_230690_l_ + 3, field_230691_m_ + 3, 0, 0, field_230688_j_ - 6, field_230689_k_ - 6, 6, 6);

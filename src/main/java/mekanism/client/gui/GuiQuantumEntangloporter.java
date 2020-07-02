@@ -168,7 +168,7 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix, 4);
         drawString(matrix, OwnerDisplay.of(tile.getSecurity().getOwnerUUID(), tile.getSecurity().getClientOwner()).getTextComponent(), 8, (getYSize() - 96) + 4, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
@@ -185,6 +185,6 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
             drawString(matrix, getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
         drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

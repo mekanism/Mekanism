@@ -53,11 +53,11 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, GeneratorsLang.FUSION_REACTOR.translate(), 5);
         drawCenteredText(matrix, GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getMultiblock().getInjectionRate()), 0, getXSize(), 35, titleTextColor());
         drawString(matrix, GeneratorsLang.REACTOR_EDIT_RATE.translate(), 50, 117, titleTextColor());
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     private void setInjection() {

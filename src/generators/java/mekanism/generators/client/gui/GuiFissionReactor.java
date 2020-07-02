@@ -103,13 +103,13 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         updateButtons();
 
         drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR.translate(), 5);
         drawString(matrix, MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, titleTextColor());
         drawString(matrix, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, titleTextColor());
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override

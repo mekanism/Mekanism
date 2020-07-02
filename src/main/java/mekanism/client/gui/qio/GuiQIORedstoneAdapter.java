@@ -24,6 +24,7 @@ import mekanism.common.network.PacketGuiInteract.GuiInteractionItem;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.StackUtils;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -58,18 +59,18 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             QIOFrequency freq = tile.getQIOFrequency();
             if (freq != null) {
                 list.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      QIOFrequency.formatItemCount(freq.getTotalItemCount()), QIOFrequency.formatItemCount(freq.getTotalItemCountCapacity())));
+                      TextUtils.format(freq.getTotalItemCount()), TextUtils.format(freq.getTotalItemCountCapacity())));
                 list.add(MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      QIOFrequency.formatItemCount(freq.getTotalItemTypes(true)), QIOFrequency.formatItemCount(freq.getTotalItemTypeCapacity())));
+                      TextUtils.format(freq.getTotalItemTypes(true)), TextUtils.format(freq.getTotalItemTypeCapacity())));
             }
             return list;
         }));
         func_230480_a_(new GuiInnerScreen(this, 27, 30, xSize - 27 - 8, 54, () -> {
             List<ITextComponent> list = new ArrayList<>();
             list.add(!tile.getItemType().isEmpty() ? tile.getItemType().getStack().getDisplayName() : MekanismLang.QIO_ITEM_TYPE_UNDEFINED.translate());
-            list.add(MekanismLang.QIO_TRIGGER_COUNT.translate(QIOFrequency.formatItemCount(tile.getCount())));
+            list.add(MekanismLang.QIO_TRIGGER_COUNT.translate(TextUtils.format(tile.getCount())));
             if (!tile.getItemType().isEmpty() && tile.getQIOFrequency() != null) {
-                list.add(MekanismLang.QIO_STORED_COUNT.translate(QIOFrequency.formatItemCount(tile.getStoredCount())));
+                list.add(MekanismLang.QIO_STORED_COUNT.translate(TextUtils.format(tile.getStoredCount())));
             }
             return list;
         }).clearFormat());
@@ -89,13 +90,13 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         if (tile.getItemType() != null) {
             renderItem(matrix, tile.getItemType(), 8, 31);
         }
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override

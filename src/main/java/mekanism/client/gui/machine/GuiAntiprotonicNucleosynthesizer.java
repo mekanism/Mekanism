@@ -81,11 +81,11 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawString(matrix, tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, titleTextColor());
         drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 3, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
         matrix.push();
         IRenderTypeBuffer.Impl renderer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
         bolt.update(this, boltSupplier.get(), MekanismRenderer.getPartialTick());

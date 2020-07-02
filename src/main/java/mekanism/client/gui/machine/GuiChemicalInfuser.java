@@ -44,9 +44,9 @@ public class GuiChemicalInfuser extends GuiConfigurableTile<TileEntityChemicalIn
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawString(matrix, MekanismLang.CHEMICAL_INFUSER_SHORT.translate(), 5, 5, titleTextColor());
         drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

@@ -18,12 +18,12 @@ import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.SearchQueryParser.QueryType;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.entity.player.PlayerInventory;
@@ -63,9 +63,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             List<ITextComponent> list = new ArrayList<>();
             if (getFrequency() != null) {
                 list.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      QIOFrequency.formatItemCount(container.getTotalItems()), QIOFrequency.formatItemCount(container.getCountCapacity())));
+                      TextUtils.format(container.getTotalItems()), TextUtils.format(container.getCountCapacity())));
                 list.add(MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      QIOFrequency.formatItemCount(container.getTotalTypes()), QIOFrequency.formatItemCount(container.getTypeCapacity())));
+                      TextUtils.format(container.getTotalTypes()), TextUtils.format(container.getTypeCapacity())));
             }
             return list;
         }));
@@ -88,13 +88,13 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
         drawString(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor());
         ITextComponent text = MekanismLang.LIST_SORT.translate();
         int width = getStringWidth(text);
         drawString(matrix, text, xSize - 66 - width, (getYSize() - 96) + 4, titleTextColor());
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override

@@ -216,7 +216,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, getName(), 4);
         drawString(matrix, OwnerDisplay.of(getOwner(), getOwnerUsername()).getTextComponent(), 8, !itemStack.isEmpty() ? getYSize() - 12 : (getYSize() - 96) + 4, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
@@ -232,7 +232,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             drawString(matrix, getSecurity(clientFreq), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
         drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     private UUID getOwner() {

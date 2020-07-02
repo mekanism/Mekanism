@@ -70,7 +70,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         drawString(matrix, MekanismLang.UPGRADES_SUPPORTED.translate(), 26, 59, titleTextColor());
         if (scrollList.hasSelection()) {
@@ -94,7 +94,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
                 drawString(matrix, TextComponentUtil.build(supported[supportedIndex]), 96, 59, titleTextColor());
             }
         }
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     private void renderText(MatrixStack matrix, ITextComponent component, int x, int y, float size) {

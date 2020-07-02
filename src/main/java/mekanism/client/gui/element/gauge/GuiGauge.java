@@ -1,11 +1,11 @@
 package mekanism.client.gui.element.gauge;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
@@ -53,7 +53,8 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         GaugeInfo color = getGaugeColor();
         renderExtendedTexture(matrix, color.getResourceLocation(), color.getSideWidth(), color.getSideHeight());
         if (!dummy) {

@@ -77,7 +77,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         int currentLayer = blockList.size() - scrollBar.getCurrentSelection() - 1;
         //Render the layer text scaled, so that it does not start overlapping past 100
         drawTextScaledBound(matrix, APILang.GENERIC.translate(currentLayer), 111, 87, screenTextColor(), 13);
@@ -117,7 +117,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         }
         drawTextScaledBound(matrix, MekanismLang.ABUNDANCY.translate(frequency), 10, 26, screenTextColor(), 57);
         MekanismRenderer.resetColor();
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override

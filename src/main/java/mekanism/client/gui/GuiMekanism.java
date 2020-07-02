@@ -1,7 +1,5 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +8,9 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
@@ -41,7 +42,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import org.apache.commons.lang3.tuple.Pair;
 
 //TODO: Add our own "func_230480_a_" type thing for elements that are just "drawn" but don't actually have any logic behind them
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
@@ -158,6 +158,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        matrix.translate(0, 0, 300);
+        RenderSystem.translatef(-guiLeft, -guiTop, 0);
+        children().stream().filter(c -> c instanceof GuiElement).forEach(c -> ((GuiElement) c).onDrawBackground(matrix, mouseX, mouseY, MekanismRenderer.getPartialTick()));
+        RenderSystem.translatef(guiLeft, guiTop, 0);
+        drawForegroundText(matrix, mouseX, mouseY);
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         // first render general foregrounds
@@ -202,6 +207,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             matrix.pop();
         }
     }
+
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {}
 
     @Nonnull
     @Override
@@ -352,18 +359,16 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void func_230430_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         // shift back a whole lot so we can stack more windows
+        RenderSystem.translated(0, 0, -500);
         matrix.push();
-        matrix.translate(0, 0, -500D);
         func_230446_a_(matrix);
         //Apply our matrix stack to the render system and pass an unmodified one to the super method
         // Vanilla still renders the items into the GUI using render system transformations so this
         // is required to not have tooltips of GuiElements rendering behind the items
-        RenderSystem.pushMatrix();
-        RenderSystem.multMatrix(matrix.getLast().getMatrix());
-        super.func_230430_a_(new MatrixStack(), mouseX, mouseY, partialTicks);
-        RenderSystem.popMatrix();
+        super.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
         matrix.pop();
         func_230459_a_(matrix, mouseX, mouseY);
+        RenderSystem.translated(0, 0, 500);
     }
 
     @Override

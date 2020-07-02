@@ -1,8 +1,8 @@
 package mekanism.client.gui.element.progress;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
@@ -21,7 +21,8 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
             minecraft.textureManager.bindTexture(getResource());
             func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, type.getTextureWidth(), type.getTextureHeight());

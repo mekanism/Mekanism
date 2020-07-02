@@ -1,14 +1,14 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
@@ -33,7 +33,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
-    protected ButtonBackground buttonBackground = ButtonBackground.DEFAULT;
+    protected ButtonBackground buttonBackground = ButtonBackground.NONE;
 
     protected final List<GuiElement> children = new ArrayList<>();
 
@@ -122,7 +122,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
             // render background overlay and children above everything else
             renderBackgroundOverlay(matrix, mouseX, mouseY);
             // render children just above background overlay
-            children.forEach(child -> child.func_230430_a_(matrix, mouseX, mouseY, 0));
+            children.forEach(child -> child.func_230431_b_(matrix, mouseX, mouseY, 0));
+            children.forEach(child -> child.onDrawBackground(matrix, mouseX, mouseY, 0));
             // translate back to top right corner and forward to render foregrounds
             matrix.translate(guiObj.getLeft(), guiObj.getTop(), 0);
             renderForeground(matrix, mouseX, mouseY);
@@ -264,10 +265,20 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     //Based off how it is drawn in Widget, except that instead of drawing left half and right half, we draw all four corners individually
     // The benefit of drawing all four corners instead of just left and right halves, is that we ensure we include the bottom black bar of the texture
     // Math has also been added to fix rendering odd size buttons.
-    @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        drawButton(matrix, mouseX, mouseY);
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        if (buttonBackground != ButtonBackground.NONE) {
+            drawButton(matrix, mouseX, mouseY);
+        }
     }
+
+    public void onDrawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        if (field_230694_p_) {
+            drawBackground(matrix, mouseX, mouseY, partialTicks);
+        }
+    }
+
+    @Override
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {}
 
     protected void drawButtonText(MatrixStack matrix) {
         ITextComponent message = func_230458_i_();
@@ -345,7 +356,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     public enum ButtonBackground {
         DEFAULT(MekanismUtils.getResource(ResourceType.GUI, "button.png")),
-        DIGITAL(MekanismUtils.getResource(ResourceType.GUI, "button_digital.png"));
+        DIGITAL(MekanismUtils.getResource(ResourceType.GUI, "button_digital.png")),
+        NONE(null);
 
         private final ResourceLocation texture;
 

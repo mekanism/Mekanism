@@ -1,18 +1,18 @@
 package mekanism.client.gui.element;
 
+import javax.annotation.Nonnull;
+import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
-import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.opengl.GL11;
 
 public class GuiGraph extends GuiTexturedElement {
 
@@ -57,9 +57,10 @@ public class GuiGraph extends GuiTexturedElement {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw Black and border
-        innerScreen.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+        innerScreen.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
         //Draw the graph
         int size = graphData.size();

@@ -10,6 +10,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.transmitter.BlockPressurizedTube;
 import mekanism.common.item.block.ItemBlockMultipartAble;
 import mekanism.common.tier.TubeTier;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -37,8 +38,8 @@ public class ItemBlockPressurizedTube extends ItemBlockMultipartAble<BlockPressu
             tooltip.add(MekanismLang.GASES.translateColored(EnumColor.PURPLE, MekanismLang.MEKANISM));
         } else {
             TubeTier tier = getTier();
-            tooltip.add(MekanismLang.CAPACITY_MB_PER_TICK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getTubeCapacity()));
-            tooltip.add(MekanismLang.PUMP_RATE_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getTubePullAmount()));
+            tooltip.add(MekanismLang.CAPACITY_MB_PER_TICK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getTubeCapacity())));
+            tooltip.add(MekanismLang.PUMP_RATE_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getTubePullAmount())));
             tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.func_238171_j_()));
         }
     }

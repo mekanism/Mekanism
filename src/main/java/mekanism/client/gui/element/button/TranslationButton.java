@@ -1,8 +1,8 @@
 package mekanism.client.gui.element.button;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
@@ -23,15 +23,15 @@ public class TranslationButton extends MekanismButton {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (colorSupplier == null) {
             MekanismRenderer.resetColor();
-            super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+            super.drawBackground(matrix, mouseX, mouseY, partialTicks);
             return;
         }
 
         MekanismRenderer.color(colorSupplier.get());
-        super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         MekanismRenderer.resetColor();
     }
 

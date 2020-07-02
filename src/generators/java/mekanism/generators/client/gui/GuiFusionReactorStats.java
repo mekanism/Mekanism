@@ -38,7 +38,7 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, GeneratorsLang.FUSION_REACTOR.translate(), 5);
         if (tile.getMultiblock().isFormed()) {
             drawString(matrix, GeneratorsLang.REACTOR_PASSIVE.translateColored(EnumColor.DARK_GREEN), 6, 26, titleTextColor());
@@ -64,6 +64,6 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
                   16, 142, titleTextColor(), 156);
             drawTextScaledBound(matrix, GeneratorsLang.REACTOR_STEAM_PRODUCTION.translate(nf.format(tile.getMultiblock().getSteamPerTick(false))), 16, 152, titleTextColor(), 156);
         }
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

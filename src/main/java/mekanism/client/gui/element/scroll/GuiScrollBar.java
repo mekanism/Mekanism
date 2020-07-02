@@ -1,8 +1,8 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -28,9 +28,10 @@ public class GuiScrollBar extends GuiScrollableElement {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw background and border
-        holder.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+        holder.drawBackground(matrix, mouseX, mouseY, partialTicks);
         GuiElement.minecraft.textureManager.bindTexture(getResource());
         func_238463_a_(matrix, barX, barY + getScroll(), needsScrollBars() ? 0 : barWidth, 0, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }

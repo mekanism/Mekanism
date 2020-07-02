@@ -1,10 +1,10 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
@@ -68,8 +68,9 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        innerScreen.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+        innerScreen.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
         func_238463_a_(matrix, slotX, field_230691_m_, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
         if (!renderStack.isEmpty()) {

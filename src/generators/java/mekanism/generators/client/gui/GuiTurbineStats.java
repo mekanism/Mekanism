@@ -47,7 +47,7 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, GeneratorsLang.TURBINE_STATS.translate(), 6);
         if (tile.getMultiblock().isFormed()) {
             ITextComponent limiting = GeneratorsLang.IS_LIMITING.translateColored(EnumColor.DARK_RED);
@@ -74,6 +74,6 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
             drawString(matrix, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(energyMultiplier.multiply(rate))), 8, 104, titleTextColor());
             drawString(matrix, GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(tile.getMultiblock().condensers * MekanismGeneratorsConfig.generators.condenserRate.get()), 8, 113, titleTextColor());
         }
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

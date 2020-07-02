@@ -70,7 +70,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         HashList<OredictionificatorFilter> filters = getFilters();
@@ -86,7 +86,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
                 drawTextScaledBound(matrix, filter.getFilterText(), 32, yStart + 2 + 9, titleTextColor(), 117);
             }
         }
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override

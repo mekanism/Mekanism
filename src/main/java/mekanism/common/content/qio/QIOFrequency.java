@@ -35,7 +35,7 @@ import net.minecraft.tileentity.TileEntity;
 
 public class QIOFrequency extends Frequency {
 
-    private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
+    public static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     private static final Random rand = new Random();
 
     private final Map<QIODriveKey, QIODriveData> driveMap = new LinkedHashMap<>();
@@ -469,13 +469,5 @@ public class QIOFrequency extends Frequency {
         public long getCount() {
             return count;
         }
-    }
-
-    public static String formatItemCount(long count) {
-        return intFormatter.format(count);
-    }
-
-    public static String formatItemTypes(int types) {
-        return intFormatter.format(types);
     }
 }

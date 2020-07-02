@@ -1,8 +1,9 @@
 package mekanism.client.gui.element.text;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
+import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.functions.CharPredicate;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -13,7 +14,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.text.StringTextComponent;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * GuiElement wrapper of TextFieldWidget for more control
@@ -177,7 +177,8 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     @Override
-    public void drawButton(MatrixStack matrix, int mouseX, int mouseY) {
+    public void drawBackground(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         backgroundType.render(this, matrix);
         if (textScale != 1F) {
             // hacky. we should write our own renderer at some point.

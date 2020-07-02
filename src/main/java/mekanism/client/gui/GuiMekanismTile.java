@@ -34,8 +34,8 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        super.func_230451_b_(matrix, mouseX, mouseY);
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.drawForegroundText(matrix, mouseX, mouseY);
         if (tile instanceof ISideConfiguration) {
             ItemStack stack = getMinecraft().player.inventory.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {

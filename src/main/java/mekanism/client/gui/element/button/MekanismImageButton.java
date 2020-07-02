@@ -41,8 +41,8 @@ public class MekanismImageButton extends MekanismButton {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         MekanismRenderer.bindTexture(getResource());
         func_238466_a_(matrix, field_230690_l_, field_230691_m_, field_230688_j_, field_230689_k_, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
     }

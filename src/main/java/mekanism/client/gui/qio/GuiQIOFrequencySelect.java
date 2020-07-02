@@ -160,7 +160,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, MekanismLang.QIO_FREQUENCY_SELECT.translate(), 5);
         drawString(matrix, OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, 143, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
@@ -177,7 +177,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             drawString(matrix, getSecurity(frequency), 32 + getStringWidth(securityComponent), 94, 0x797979);
         }
         drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 107, titleTextColor(), 20);
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     public abstract void sendSetFrequency(FrequencyIdentity identity);

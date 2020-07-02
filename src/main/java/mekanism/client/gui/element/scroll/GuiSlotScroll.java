@@ -1,9 +1,9 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -39,7 +39,8 @@ public class GuiSlotScroll extends GuiRelativeElement {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getSlotList() == null ? SLOTS_DARK : SLOTS);
         func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
 

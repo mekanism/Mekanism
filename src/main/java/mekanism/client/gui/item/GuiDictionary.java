@@ -37,11 +37,11 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, MekanismItems.DICTIONARY.getTextComponent(), 5);
         drawString(matrix, MekanismLang.INVENTORY.translate(), 8, getYSize() - 96 + 2, titleTextColor());
         renderItem(matrix, itemType, 6, 6);
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override

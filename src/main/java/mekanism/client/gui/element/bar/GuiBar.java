@@ -29,7 +29,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     protected abstract void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks);
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
         renderExtendedTexture(matrix, BAR, 2, 2);
         //If there are any contents render them

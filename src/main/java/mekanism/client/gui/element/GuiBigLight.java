@@ -1,8 +1,8 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -21,8 +21,9 @@ public class GuiBigLight extends GuiTexturedElement {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        screen.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+        screen.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
         func_238463_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1, lightSupplier.getAsBoolean() ? 0 : 12, 0, field_230688_j_ - 2, field_230689_k_ - 2, 24, 12);
     }

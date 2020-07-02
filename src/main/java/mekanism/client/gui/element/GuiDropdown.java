@@ -1,9 +1,9 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
@@ -65,7 +65,8 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     }
 
     @Override
-    public void drawButton(MatrixStack matrix, int mouseX, int mouseY) {
+    public void drawBackground(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         renderBackgroundTexture(matrix, getResource(), 4, 4);
 
         int index = getHoveredIndex(mouseX, mouseY);

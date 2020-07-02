@@ -1,8 +1,8 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.functions.ByteSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
@@ -28,6 +28,7 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
         super(NO_FREQUENCY, gui, 6, 6, 18, 18);
         this.hasFrequency = hasFrequency;
         this.statusSupplier = statusSupplier;
+        setButtonBackground(ButtonBackground.DEFAULT);
     }
 
     @Override
@@ -54,8 +55,8 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
         func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
     }

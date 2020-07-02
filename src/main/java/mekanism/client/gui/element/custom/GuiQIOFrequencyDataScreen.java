@@ -9,6 +9,7 @@ import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDigitalBar;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
@@ -30,7 +31,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
             public ITextComponent getTooltip() {
                 QIOFrequency freq = frequencySupplier.get();
                 return freq == null ? null : MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      QIOFrequency.formatItemCount(freq.getTotalItemCount()), QIOFrequency.formatItemCount(freq.getTotalItemCountCapacity()));
+                      TextUtils.format(freq.getTotalItemCount()), TextUtils.format(freq.getTotalItemCountCapacity()));
             }
         }, relativeX + (width / 4) - (50 / 2), relativeY + 20, 50));
         addChild(new GuiDigitalBar(gui, new IBarInfoHandler() {
@@ -44,7 +45,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
             public ITextComponent getTooltip() {
                 QIOFrequency freq = frequencySupplier.get();
                 return freq == null ? null : MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      QIOFrequency.formatItemCount(freq.getTotalItemTypes(true)), QIOFrequency.formatItemCount(freq.getTotalItemTypeCapacity()));
+                      TextUtils.format(freq.getTotalItemTypes(true)), TextUtils.format(freq.getTotalItemTypeCapacity()));
             }
         }, relativeX + (3 * width / 4) - (50 / 2), relativeY + 20, 50));
     }

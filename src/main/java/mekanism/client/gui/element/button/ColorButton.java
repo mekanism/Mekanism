@@ -26,7 +26,7 @@ public class ColorButton extends MekanismButton {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Ensure the color gets reset. The default GuiButtonImage doesn't so other GuiButton's can have the color leak out of them
         EnumColor color = colorSupplier.get();
         if (color != null) {

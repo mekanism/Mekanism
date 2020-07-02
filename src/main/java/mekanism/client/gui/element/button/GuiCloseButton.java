@@ -17,9 +17,9 @@ public class GuiCloseButton extends MekanismImageButton {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         MekanismRenderer.color(EnumColor.RED);
-        super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         MekanismRenderer.resetColor();
     }
 

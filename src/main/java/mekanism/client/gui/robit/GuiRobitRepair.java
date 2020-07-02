@@ -72,7 +72,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         RenderSystem.disableBlend();
         drawString(matrix, MekanismLang.ROBIT_REPAIR.translate(), 60, 6, titleTextColor());
         int maximumCost = container.getMaximumCost();
@@ -99,7 +99,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
                 MekanismRenderer.resetColor();
             }
         }
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override

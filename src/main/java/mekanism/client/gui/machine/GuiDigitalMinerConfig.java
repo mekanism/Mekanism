@@ -1,8 +1,8 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.GuiFilterHolder;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -70,7 +70,8 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.drawForegroundText(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.MINER_CONFIG.translate(), 6);
         drawTextWithScale(matrix, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.FILTER_COUNT.translate(getFilters().size()), 14, 31, screenTextColor(), 0.8F);
@@ -78,7 +79,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         drawTextWithScale(matrix, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 58, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.MIN.translate(tile.getMinY()), 14, 83, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.MAX.translate(tile.getMaxY()), 14, 108, screenTextColor(), 0.8F);
-        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     @Override

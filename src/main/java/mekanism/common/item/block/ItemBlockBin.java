@@ -12,6 +12,7 @@ import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.BinTier;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -40,13 +41,13 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSus
                 if (tier == BinTier.CREATIVE) {
                     tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, MekanismLang.INFINITE));
                 } else {
-                    tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, slot.getCount()));
+                    tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, TextUtils.format(slot.getCount())));
                 }
             }
             if (tier == BinTier.CREATIVE) {
                 tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
             } else {
-                tooltip.add(MekanismLang.CAPACITY_ITEMS.translateColored(EnumColor.INDIGO, EnumColor.GRAY, tier.getStorage()));
+                tooltip.add(MekanismLang.CAPACITY_ITEMS.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getStorage())));
             }
         }
     }

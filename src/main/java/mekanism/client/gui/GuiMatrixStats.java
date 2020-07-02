@@ -72,7 +72,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, MekanismLang.MATRIX_STATS.translate(), 6);
         drawString(matrix, MekanismLang.MATRIX_INPUT_AMOUNT.translate(), 53, 26, 0x797979);
         drawString(matrix, EnergyDisplay.of(tile.getMultiblock().getLastInput(), tile.getMultiblock().getTransferCap()).getTextComponent(), 59, 35, titleTextColor());
@@ -85,6 +85,6 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
         drawString(matrix, MekanismLang.MATRIX_CONSTITUENTS.translate(), 8, 102, 0x797979);
         drawString(matrix, MekanismLang.MATRIX_CELLS.translate(tile.getMultiblock().getCellCount()), 14, 111, titleTextColor());
         drawString(matrix, MekanismLang.MATRIX_PROVIDERS.translate(tile.getMultiblock().getProviderCount()), 14, 120, titleTextColor());
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

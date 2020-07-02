@@ -1,8 +1,9 @@
 package mekanism.client.gui.element;
 
+import java.util.function.Supplier;
+import org.lwjgl.glfw.GLFW;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.function.Supplier;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
@@ -11,7 +12,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.lib.Color;
 import net.minecraft.inventory.container.Container;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiWindow extends GuiTexturedElement {
 
@@ -82,10 +82,6 @@ public class GuiWindow extends GuiTexturedElement {
     public void func_231000_a__(double mouseX, double mouseY) {
         super.func_231000_a__(mouseX, mouseY);
         dragging = false;
-    }
-
-    @Override
-    public void drawButton(MatrixStack matrix, int mouseX, int mouseY) {
     }
 
     @Override

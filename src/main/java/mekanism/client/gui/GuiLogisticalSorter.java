@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -71,7 +71,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.drawForegroundText(matrix, mouseX, mouseY);
         // Write to info display
         renderTitleText(matrix);
         drawTextWithScale(matrix, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 0.8F);
@@ -83,7 +84,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
         drawTextWithScale(matrix, MekanismLang.SORTER_AUTO_EJECT.translate(), 14, 100, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, OnOff.of(tile.autoEject).getTextComponent(), 27, 112, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.SORTER_DEFAULT.translate(), 14, 126, screenTextColor(), 0.8F);
-        super.func_230451_b_(matrix, mouseX, mouseY);
     }
 
     @Override

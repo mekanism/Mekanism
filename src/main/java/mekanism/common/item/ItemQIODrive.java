@@ -6,8 +6,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.IQIODriveItem;
-import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.tier.QIODriveTier;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,9 +30,9 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         DriveMetadata meta = DriveMetadata.load(stack);
         tooltip.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-              QIOFrequency.formatItemCount(meta.getCount()), QIOFrequency.formatItemCount(getCountCapacity(stack))));
+              TextUtils.format(meta.getCount()), TextUtils.format(getCountCapacity(stack))));
         tooltip.add(MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-              QIOFrequency.formatItemCount(meta.getTypes()), QIOFrequency.formatItemCount(getTypeCapacity(stack))));
+              TextUtils.format(meta.getTypes()), TextUtils.format(getTypeCapacity(stack))));
     }
 
     @Nonnull

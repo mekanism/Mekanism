@@ -1,10 +1,10 @@
 package mekanism.client.gui.element.slot;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -98,6 +98,9 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
             func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
         }
     }
+
+    @Override
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {}
 
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {

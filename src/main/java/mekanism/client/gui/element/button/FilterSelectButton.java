@@ -26,7 +26,7 @@ public class FilterSelectButton extends MekanismButton {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (resetColorBeforeRender()) {
             MekanismRenderer.resetColor();
         }

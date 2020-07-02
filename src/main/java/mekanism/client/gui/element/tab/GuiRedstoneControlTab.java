@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
@@ -58,16 +58,14 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (((IRedstoneControl) tile).getControlType() == RedstoneControl.PULSE) {
-            super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
             //Draw the button background
             drawButton(matrix, mouseX, mouseY);
             //Draw the overlay onto the button
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GuiUtils.drawSprite(matrix, getButtonX(), getButtonY(), innerWidth, innerHeight, 0, MekanismRenderer.redstonePulse);
-        } else {
-            super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
         }
     }
 }

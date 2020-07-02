@@ -64,7 +64,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR_STATS.translate(), 6);
         // heat stats
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_HEAT_STATISTICS.translate(), 6, 20, 0x202020, xSize - 12);
@@ -77,6 +77,6 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_RATE_LIMIT.translate(tile.getMultiblock().rateLimit), 6, 90, titleTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 6, 104, titleTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 6, 130, titleTextColor(), 69);
-        super.func_230451_b_(matrix, mouseX, mouseY);
+        super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

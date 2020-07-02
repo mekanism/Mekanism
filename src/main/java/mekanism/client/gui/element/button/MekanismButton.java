@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.button;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.Minecraft;
@@ -27,6 +27,7 @@ public class MekanismButton extends GuiElement {
         this.onLeftClick = onLeftClick;
         this.onRightClick = onRightClick;
         playClickSound = true;
+        setButtonBackground(ButtonBackground.DEFAULT);
     }
 
     private void onLeftClick() {

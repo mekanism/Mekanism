@@ -32,7 +32,7 @@ public class SideDataButton extends MekanismButton {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         DataType dataType = getDataType();
         EnumColor color = dataType == null ? null : getColor();
         boolean doColor = color != null && color != EnumColor.GRAY;
@@ -45,7 +45,7 @@ public class SideDataButton extends MekanismButton {
         } else {
             MekanismRenderer.resetColor();
         }
-        super.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (doColor) {
             MekanismRenderer.resetColor();
         }

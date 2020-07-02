@@ -69,7 +69,8 @@ public class StorageUtils {
             if (stored.isEmpty()) {
                 return MekanismLang.NO_GAS.translateColored(EnumColor.GRAY);
             }
-            return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY, stored.getAmount());
+            return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
+                  MekanismLang.GENERIC_MB.translate(TextUtils.format(stored.getAmount())));
         }, Capabilities.GAS_HANDLER_CAPABILITY);
     }
 
@@ -143,7 +144,7 @@ public class StorageUtils {
         if (isCreative) {
             tooltip.add(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED.translate(contents, EnumColor.GRAY, MekanismLang.INFINITE)));
         } else {
-            tooltip.add(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED_MB.translate(contents, EnumColor.GRAY, amount)));
+            tooltip.add(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED_MB.translate(contents, EnumColor.GRAY, TextUtils.format(amount))));
         }
     }
 
