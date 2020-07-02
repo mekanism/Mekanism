@@ -2,6 +2,8 @@ package mekanism.generators.client;
 
 import mekanism.client.ClientRegistration;
 import mekanism.client.ClientRegistrationUtil;
+import mekanism.client.model.baked.ExtensionBakedModel.TransformedBakedModel;
+import mekanism.client.render.lib.QuadTransformation;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.generators.client.gui.GuiBioGenerator;
@@ -35,6 +37,7 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -67,8 +70,10 @@ public class GeneratorsClientRegistration {
             ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
         }
 
-        ClientRegistration.addLitModel(GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.GAS_BURNING_GENERATOR, GeneratorsBlocks.HEAT_GENERATOR,
-              GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR);
+        ClientRegistration.addLitModel(GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.GAS_BURNING_GENERATOR, GeneratorsBlocks.HEAT_GENERATOR);
+        // adv solar gen requires to be translated up 1 block, so handle the model separately
+        ClientRegistration.addCustomModel(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, (orig, evt) -> new TransformedBakedModel<Void>(orig,
+              QuadTransformation.list(QuadTransformation.filtered_fullbright, QuadTransformation.translate(new Vec3d(0, 1, 0)))));
     }
 
     @SubscribeEvent

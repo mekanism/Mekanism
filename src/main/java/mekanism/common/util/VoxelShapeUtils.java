@@ -390,6 +390,15 @@ public final class VoxelShapeUtils {
         return combine(shapes, false);
     }
 
+    public static VoxelShape translate(VoxelShape shape, Vec3d translation) {
+        List<VoxelShape> rotatedPieces = new ArrayList<>();
+        List<AxisAlignedBB> sourceBoundingBoxes = shape.toBoundingBoxList();
+        for (AxisAlignedBB sourceBoundingBox : sourceBoundingBoxes) {
+            rotatedPieces.add(VoxelShapes.create(sourceBoundingBox.offset(translation)));
+        }
+        return combine(rotatedPieces);
+    }
+
     public static void setShape(VoxelShape shape, VoxelShape[] dest, boolean verticalAxis) {
         setShape(shape, dest, verticalAxis, false);
     }
