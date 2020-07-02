@@ -134,7 +134,7 @@
   "reactor.mekanismgenerators.heat.case": "Nhiệt độ vỏ: %s",
   "reactor.mekanismgenerators.heat.plasma": "Nhiệt độ plasma: %s",
   "reactor.mekanismgenerators.logic.activation": "Activation",
-  "reactor.mekanismgenerators.logic.active_cooling": "Làm mát chủ động",
+  "reactor.mekanismgenerators.logic.active_cooling": "Active cooling: %s",
   "reactor.mekanismgenerators.logic.capacity": "Đủ điều kiện nhiệt độ",
   "reactor.mekanismgenerators.logic.damaged": "Damage Critical",
   "reactor.mekanismgenerators.logic.depleted": "Không đủ nhiên liệu",
