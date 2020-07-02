@@ -46,6 +46,8 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -263,7 +265,12 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
         private void setFilterLocation(ResourceLocation location) {
             filterLocation = location;
-            filterTag = ItemTags.makeWrapperTag(filterLocation.toString());
+            if (TagCollectionManager.func_232928_e_().func_232925_b_().getRegisteredTags().contains(filterLocation)) {
+                filterTag = ItemTags.makeWrapperTag(filterLocation.toString());
+            } else {
+                //If the filter doesn't exist (because we loaded a tag that is no longer valid), then just set the filter to being empty
+                filterTag = Tag.func_241284_a_();
+            }
         }
 
         public boolean filterMatches(ResourceLocation location) {
