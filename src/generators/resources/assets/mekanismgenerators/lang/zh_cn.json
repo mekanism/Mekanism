@@ -134,7 +134,7 @@
   "reactor.mekanismgenerators.heat.case": "外壳：%s",
   "reactor.mekanismgenerators.heat.plasma": "等离子体：%s",
   "reactor.mekanismgenerators.logic.activation": "激活",
-  "reactor.mekanismgenerators.logic.active_cooling": "激活冷却",
+  "reactor.mekanismgenerators.logic.active_cooling": "Active cooling: %s",
   "reactor.mekanismgenerators.logic.capacity": "热满足",
   "reactor.mekanismgenerators.logic.damaged": "损伤临界值",
   "reactor.mekanismgenerators.logic.depleted": "燃料不足",
