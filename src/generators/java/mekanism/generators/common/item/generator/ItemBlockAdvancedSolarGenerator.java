@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.client.render.item.GeneratorsISTERProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.math.BlockPos;
@@ -13,7 +12,7 @@ import net.minecraft.world.World;
 public class ItemBlockAdvancedSolarGenerator extends ItemBlockMachine {
 
     public ItemBlockAdvancedSolarGenerator(BlockTile<?, ?> block) {
-        super(block, GeneratorsISTERProvider::advancedSolar);
+        super(block);
     }
 
     @Override

@@ -2,7 +2,6 @@ package mekanism.generators.client;
 
 import mekanism.client.ClientRegistration;
 import mekanism.client.ClientRegistrationUtil;
-import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.generators.client.gui.GuiBioGenerator;
@@ -20,12 +19,9 @@ import mekanism.generators.client.gui.GuiIndustrialTurbine;
 import mekanism.generators.client.gui.GuiSolarGenerator;
 import mekanism.generators.client.gui.GuiTurbineStats;
 import mekanism.generators.client.gui.GuiWindGenerator;
-import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
 import mekanism.generators.client.render.RenderFissionReactor;
 import mekanism.generators.client.render.RenderFusionReactor;
-import mekanism.generators.client.render.RenderGasGenerator;
-import mekanism.generators.client.render.RenderHeatGenerator;
 import mekanism.generators.client.render.RenderIndustrialTurbine;
 import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindGenerator;
@@ -52,10 +48,7 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.ADVANCED_SOLAR_GENERATOR, RenderAdvancedSolarGenerator::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.BIO_GENERATOR, RenderBioGenerator::new);
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR, RenderGasGenerator::new);
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.HEAT_GENERATOR, RenderHeatGenerator::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.FUSION_REACTOR_CONTROLLER, RenderFusionReactor::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.FISSION_REACTOR_CASING, RenderFissionReactor::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, RenderFissionReactor::new);
@@ -68,13 +61,14 @@ public class GeneratorsClientRegistration {
         //Block render layers
         ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), GeneratorsBlocks.LASER_FOCUS_MATRIX, GeneratorsBlocks.REACTOR_GLASS);
         ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getSolid() || renderType == RenderType.getTranslucent(),
-            GeneratorsBlocks.BIO_GENERATOR);
+              GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.HEAT_GENERATOR);
         //Fluids (translucent)
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : GeneratorsFluids.FLUIDS.getAllFluids()) {
             ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
         }
 
-        ClientRegistration.addCustomModel(GeneratorsBlocks.BIO_GENERATOR, (orig, evt) -> new LightedBakedModel(orig));
+        ClientRegistration.addLitModel(GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.GAS_BURNING_GENERATOR, GeneratorsBlocks.HEAT_GENERATOR,
+              GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR);
     }
 
     @SubscribeEvent

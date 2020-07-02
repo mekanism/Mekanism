@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=north": {
+    "facing=north,active=false": {
       "model": "mekanismgenerators:block/heat_generator"
     },
-    "facing=south": {
+    "facing=south,active=false": {
       "model": "mekanismgenerators:block/heat_generator",
       "y": 180
     },
-    "facing=west": {
+    "facing=west,active=false": {
       "model": "mekanismgenerators:block/heat_generator",
       "y": -90
     },
-    "facing=east": {
+    "facing=east,active=false": {
       "model": "mekanismgenerators:block/heat_generator",
+      "y": 90
+    },
+    "facing=north,active=true": {
+      "model": "mekanismgenerators:block/heat_generator_active"
+    },
+    "facing=south,active=true": {
+      "model": "mekanismgenerators:block/heat_generator_active",
+      "y": 180
+    },
+    "facing=west,active=true": {
+      "model": "mekanismgenerators:block/heat_generator_active",
+      "y": -90
+    },
+    "facing=east,active=true": {
+      "model": "mekanismgenerators:block/heat_generator_active",
       "y": 90
     }
   }
