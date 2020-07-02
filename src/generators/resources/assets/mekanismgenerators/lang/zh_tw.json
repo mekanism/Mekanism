@@ -134,7 +134,7 @@
   "reactor.mekanismgenerators.heat.case": "Case: %s",
   "reactor.mekanismgenerators.heat.plasma": "等離子體: %s",
   "reactor.mekanismgenerators.logic.activation": "啟動",
-  "reactor.mekanismgenerators.logic.active_cooling": "啟用冷卻",
+  "reactor.mekanismgenerators.logic.active_cooling": "啟用冷卻: %s",
   "reactor.mekanismgenerators.logic.capacity": "熱滿足",
   "reactor.mekanismgenerators.logic.damaged": "損壞嚴重",
   "reactor.mekanismgenerators.logic.depleted": "燃料不足",
