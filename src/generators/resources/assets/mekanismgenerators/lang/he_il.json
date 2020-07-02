@@ -134,7 +134,7 @@
   "reactor.mekanismgenerators.heat.case": "מעטפת: %s",
   "reactor.mekanismgenerators.heat.plasma": "פלזמה: %s",
   "reactor.mekanismgenerators.logic.activation": "Activation",
-  "reactor.mekanismgenerators.logic.active_cooling": "קירור פעיל",
+  "reactor.mekanismgenerators.logic.active_cooling": "Active cooling: %s",
   "reactor.mekanismgenerators.logic.capacity": "קיבולת חום הושגה",
   "reactor.mekanismgenerators.logic.damaged": "Damage Critical",
   "reactor.mekanismgenerators.logic.depleted": "דלק לא מספיק",
