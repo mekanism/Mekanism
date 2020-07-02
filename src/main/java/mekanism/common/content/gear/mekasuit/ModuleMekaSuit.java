@@ -18,11 +18,13 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
+import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.lib.radiation.capability.IRadiationEntity;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -51,7 +53,7 @@ public abstract class ModuleMekaSuit extends Module {
                 GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2);
                 ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
                 Optional<IGasHandler> chestCapability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-                if (chestCapability.isPresent()) {
+                if (checkChestPlate(chestStack) && chestCapability.isPresent()) {
                     hydrogenUsed = maxRate * 2 - chestCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                     hydrogenStack.shrink(hydrogenUsed);
                 }
@@ -64,6 +66,21 @@ public abstract class ModuleMekaSuit extends Module {
                 long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
                 useEnergy(player, usage.multiply(used));
                 player.setAir(player.getAir() + (int) oxygenUsed);
+            }
+        }
+
+        /**
+         * Checks whether the given chestplate should be filled with hydrogen, if it can store hydrogen.
+         * Does not check whether the chestplate can store hydrogen.
+         * 
+         * @param chestPlate the chestplate to check
+         * @return whether the given chestplate should be filled with hydrogen.
+         */
+        private boolean checkChestPlate(ItemStack chestPlate) {
+            if(chestPlate.getItem() == MekanismItems.MEKASUIT_BODYARMOR.get()) {
+                return Modules.load(chestPlate, Modules.JETPACK_UNIT) != null;
+            } else {
+                return true;
             }
         }
 
