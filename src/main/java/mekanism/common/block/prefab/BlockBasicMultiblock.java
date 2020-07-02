@@ -13,6 +13,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -60,7 +63,11 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
         TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile != null) {
             if (world.isRemote) {
-                return getClientActivateResult(player, hand, hit);
+                ItemStack stack = player.getHeldItem(hand);
+                if (!tile.getMultiblock().isFormed() || stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace()) {
+                    return ActionResultType.PASS;
+                }
+                return ActionResultType.SUCCESS;
             }
             if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
                 return ActionResultType.SUCCESS;

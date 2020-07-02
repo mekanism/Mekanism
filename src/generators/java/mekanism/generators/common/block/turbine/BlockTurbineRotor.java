@@ -11,6 +11,8 @@ import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -54,7 +56,11 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
             return ActionResultType.PASS;
         }
         if (world.isRemote) {
-            return getClientActivateResult(player, hand, hit);
+            ItemStack stack = player.getHeldItem(hand);
+            if (stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace()) {
+                return ActionResultType.PASS;
+            }
+            return ActionResultType.SUCCESS;
         }
         if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;

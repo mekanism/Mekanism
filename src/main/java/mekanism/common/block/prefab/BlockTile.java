@@ -58,7 +58,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
             return ActionResultType.PASS;
         }
         if (world.isRemote) {
-            return getClientActivateResult(player, hand, hit);
+            return ActionResultType.SUCCESS;
         }
         if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
