@@ -4,7 +4,6 @@ import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
-import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -35,7 +34,6 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
@@ -49,6 +47,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     private CachedRecipe<GasToGasRecipe> cachedRecipe;
 
+    private float peakProductionRate;
+    private float productionRate;
     private boolean settingsChecked;
     private boolean needsRainCheck;
 
@@ -88,9 +88,24 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         return builder.build();
     }
 
-    protected void recheckSettings() {
+    private void recheckSettings() {
+        World world = getWorld();
+        if (world == null) {
+            return;
+        }
         Biome b = world.getBiomeManager().getBiome(getPos());
         needsRainCheck = b.getPrecipitation() != RainType.NONE;
+        // Consider the best temperature to be 0.8; biomes that are higher than that
+        // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
+        // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
+        float tempEff = 0.3F * (0.8F - b.getTemperature(getPos()));
+
+        // Treat rainfall as a proxy for humidity; any humidity works as a drag on overall efficiency.
+        // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
+        // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
+        // (like the End) have rainfall set, but can't actually support rain.
+        float humidityEff = -0.3F * (needsRainCheck ? b.getDownfall() : 0.0F);
+        peakProductionRate = MekanismConfig.general.maxSolarNeutronActivatorRate.get() * (1.0F + tempEff + humidityEff);
         settingsChecked = true;
     }
 
@@ -102,6 +117,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         }
         inputSlot.fillTank();
         outputSlot.drainTank();
+        productionRate = recalculateProductionRate();
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();
@@ -131,32 +147,45 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         return findFirstRecipe(recipe -> recipe.test(gas));
     }
 
-    private boolean canFunction(BlockPos positionAbove) {
-        //TODO - V10: Ideally the neutron activator should use the sky brightness to determine throughput; but
-        // changing this would dramatically affect a lot of setups with Fusion reactors which can take
-        // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
-        // rain checks.
-        boolean seesSun = world.isDaytime() && world.canBlockSeeSky(positionAbove) && world.func_230315_m_().hasSkyLight();
-        if (needsRainCheck) {
-            seesSun &= !(world.isRaining() || world.isThundering());
-        }
+    private boolean canFunction() {
+        // Sort out if the solar neutron activator can see the sun; we no longer check if it's raining here,
+        // since under the new rules, we can still function when it's raining, albeit at a significant penalty.
+        boolean seesSun = world.isDaytime() && world.canBlockSeeSky(pos.up()) && world.func_230315_m_().hasSkyLight();
         return seesSun && MekanismUtils.canFunction(this);
+    }
+
+    private float recalculateProductionRate() {
+        World world = getWorld();
+        if (world == null || !canFunction()) {
+            return 0;
+        }
+        //Get the brightness of the sun; note that there are some implementations that depend on the base
+        // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
+        float brightness = MekanismUtils.getSunBrightness(world, 1.0F);
+        //Production is a function of the peak possible output in this biome and sun's current brightness
+        float production = peakProductionRate * brightness;
+        //If the solar neutron activator is in a biome where it can rain and it's raining penalize production by 80%
+        if (needsRainCheck && (world.isRaining() || world.isThundering())) {
+            production *= 0.2;
+        }
+        return production;
     }
 
     @Nullable
     @Override
     public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
-        BlockPos positionAbove = getPos().up();
         return new GasToGasCachedRecipe(recipe, inputHandler, outputHandler)
-              .setCanHolderFunction(() -> canFunction(positionAbove))
+              .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setOnFinish(() -> markDirty(false))
+              //Edge case handling, this should almost always end up being 1
+              .setRequiredTicks(() -> productionRate > 0 && productionRate < 1 ? (int) Math.ceil(1 / productionRate) : 1)
               .setPostProcessOperations(currentMax -> {
                   if (currentMax <= 0) {
                       //Short circuit that if we already can't perform any outputs, just return
                       return currentMax;
                   }
-                  return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
+                  return Math.min(currentMax, productionRate > 0 && productionRate < 1 ? 1 : (int) productionRate);
               });
     }
 

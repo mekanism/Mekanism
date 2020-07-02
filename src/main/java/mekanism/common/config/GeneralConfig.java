@@ -48,6 +48,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue resistiveHeaterEfficiency;
     public final CachedDoubleValue superheatingHeatTransfer;
     public final CachedEnumValue<TempType> tempUnit;
+    public final CachedIntValue maxSolarNeutronActivatorRate;
     //Auto eject
     public final CachedIntValue fluidAutoEjectRate;
     public final CachedLongValue chemicalAutoEjectRate;
@@ -135,6 +136,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("superheatingHeatTransfer", 16_000_000D));
         tempUnit = CachedEnumValue.wrap(this, builder.comment("Displayed temperature unit in Mekanism GUIs.")
               .defineEnum("temperatureUnit", TempType.K));
+        maxSolarNeutronActivatorRate = CachedIntValue.wrap(this, builder.comment("Peak processing rate for the Solar Neutron Activator. Note: It can go higher than this value in some extreme environments.")
+              .define("maxSolarNeutronActivatorRate", 64));
 
         builder.comment("Auto Eject Settings").push(EJECT_CATEGORY);
         fluidAutoEjectRate = CachedIntValue.wrap(this, builder.comment("Rate at which fluid gets auto ejected from tiles.")

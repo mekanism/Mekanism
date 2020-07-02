@@ -302,8 +302,7 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntitySolarNeutronActivator> SOLAR_NEUTRON_ACTIVATOR = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR, MekanismLang.DESCRIPTION_SOLAR_NEUTRON_ACTIVATOR)
           .withGui(() -> MekanismContainerTypes.SOLAR_NEUTRON_ACTIVATOR)
-          .without(AttributeParticleFX.class)
-          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
+          .without(AttributeParticleFX.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
           .with(new AttributeCustomSelectionBox(true))
           .build();
