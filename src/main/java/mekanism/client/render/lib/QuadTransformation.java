@@ -26,6 +26,7 @@ public interface QuadTransformation {
     };
 
     QuadTransformation fullbright = light(1);
+    QuadTransformation filtered_fullbright = TextureFilteredTransformation.of(fullbright, rl -> rl.getPath().contains("led"));
 
     static QuadTransformation color(Color color) {
         return new ColorTransformation(color);

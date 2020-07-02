@@ -6,6 +6,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 
 public final class BlockShapes {
 
@@ -66,24 +67,29 @@ public final class BlockShapes {
               makeCuboidShape(3, 3, 3, 13, 15, 13)
         ), WIND_GENERATOR);
 
-        setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
-              makeCuboidShape(4, 4, 15, 12, 12, 16),//port
-              makeCuboidShape(5, 5, 5, 11, 11, 15),//portBase
-              makeCuboidShape(4, 38, 5, 12, 44, 11),//jointBox
-              makeCuboidShape(6, 0, 6, 10, 40, 10),//verticalBar
-              makeCuboidShape(-12, 40, 7, 28, 42, 9),//crossBar
-              makeCuboidShape(5, 36, 2, 7, 38, 14),//sideBar1
-              makeCuboidShape(9, 36, 2, 11, 38, 14),//sideBar2
-              makeCuboidShape(5.5, 37.5, 4.5, 6.5, 44.5, 11.5),//wire1
-              makeCuboidShape(9.5, 37.5, 4.5, 10.5, 44.5, 11.5),//wire2
-              makeCuboidShape(-16, 42, -16, 2, 43, 32),//panel1Top
-              makeCuboidShape(14, 42, -16, 32, 43, 32),//panel2Top
-              makeCuboidShape(-15, 41, -14, 1, 42, 31),//panel1Bottom
-              makeCuboidShape(15, 41, -14, 31, 42, 31),//panel2Bottom
-              makeCuboidShape(0, 0, 0, 16, 2, 16),//base1
-              makeCuboidShape(3, 1, 3, 13, 3, 13),//base2
-              makeCuboidShape(4, 2, 4, 12, 10, 12)//base3
-        ), Rotation.CLOCKWISE_180), ADVANCED_SOLAR_GENERATOR);
+        setShape(VoxelShapeUtils.translate(VoxelShapeUtils.combine(
+              makeCuboidShape(6, -4, 6, 10, 25, 10), // pole
+              makeCuboidShape(4, 22, 2, 6, 24, 14), // tube1
+              makeCuboidShape(10, 22, 2, 12, 24, 14), // tube2
+              makeCuboidShape(4, 25, 5, 12, 31, 11), // barrel
+              makeCuboidShape(5, 24, 4, 6, 32, 12), // ring1
+              makeCuboidShape(10, 24, 4, 11, 32, 12), // ring2
+              makeCuboidShape(5, -11, 1, 11, -5, 4), // connector
+              makeCuboidShape(0, -16, 0, 16, -14, 16), // base
+              makeCuboidShape(3, -14, 3, 13, -12, 13), // base2
+              makeCuboidShape(4, -12, 4, 12, -4, 12), // base3
+              makeCuboidShape(4, -12, 0, 12, -4, 1), // port
+              makeCuboidShape(5, -6, -0.005, 11, -5, -0.005), // port_led1
+              makeCuboidShape(5, -11, -0.005, 11, -10, -0.005), // port_led2
+              makeCuboidShape(10, -10, -0.005, 11, -6, -0.005), // port_led3
+              makeCuboidShape(5, -10, -0.005, 6, -6, -0.005), // port_led4
+              makeCuboidShape(14, 30, -16, 32, 31, 32), // solar_panel_east
+              makeCuboidShape(15, 29, -15, 31, 30, 31), // solar_panel_east_base
+              makeCuboidShape(12, 27, 7, 28, 29, 9), // solar_panel_east_arm
+              makeCuboidShape(-16, 30, -16, 2, 31, 32), // solar_panel_west
+              makeCuboidShape(-15, 29, -15, 1, 30, 31), // solar_panel_west_base
+              makeCuboidShape(-12, 27, 7, 4, 29, 9) // solar_panel_west_arm
+        ), new Vector3d(0, 1, 0)), ADVANCED_SOLAR_GENERATOR);
 
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
               makeCuboidShape(0, 0, 0, 16, 7, 16), // base
