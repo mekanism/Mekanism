@@ -18,7 +18,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
-import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
@@ -45,15 +44,21 @@ public abstract class ModuleMekaSuit extends Module {
 
         @Override
         public void tickServer(PlayerEntity player) {
-            if (player.func_233571_b_(FluidTags.WATER) > 1.8) {
+            if (player.func_233571_b_(FluidTags.WATER) > 1.6) {
                 FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
                 long maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(usage).intValue());
                 long hydrogenUsed = 0;
                 GasStack hydrogenStack = new GasStack(MekanismGases.HYDROGEN.get(), maxRate * 2);
                 ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-                Optional<IGasHandler> capability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-                if (Modules.load(chestStack, Modules.JETPACK_UNIT) != null && capability.isPresent()) {
-                    hydrogenUsed = maxRate * 2 - capability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                Optional<IGasHandler> chestCapability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+                if (chestCapability.isPresent()) {
+                    hydrogenUsed = maxRate * 2 - chestCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                }
+                hydrogenStack.setAmount(maxRate * 2 - hydrogenUsed);
+                ItemStack handStack = player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+                Optional<IGasHandler> handCapability = MekanismUtils.toOptional(handStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+                if (handCapability.isPresent()) {
+                	hydrogenUsed -= handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                 }
                 long oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
                 long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
