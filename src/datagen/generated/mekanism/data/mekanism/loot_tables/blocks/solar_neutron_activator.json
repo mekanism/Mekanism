@@ -22,11 +22,6 @@
                   "op": "replace"
                 },
                 {
-                  "source": "componentUpgrade",
-                  "target": "mekData.componentUpgrade",
-                  "op": "replace"
-                },
-                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"

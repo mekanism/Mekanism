@@ -63,6 +63,13 @@ public abstract class BaseSoundProvider implements IDataProvider {
     }
 
     /**
+     * Helper method for {@link #addSoundEvent(SoundEventBuilder)}, for when we just have a single sound and want make it have a subtitle
+     */
+    protected void addSoundEventWithSubtitle(SoundEventRegistryObject<?> soundEventRO, ResourceLocation location) {
+        addSoundEvent(SoundEventBuilder.create(soundEventRO).subtitle(soundEventRO).addSounds(createSoundBuilder(location)));
+    }
+
+    /**
      * Helper method for {@link #addSoundEvent(SoundEventBuilder)}, for when we just have a single sound and a subtitle
      */
     protected void addSoundEvent(SoundEventRegistryObject<?> soundEventRO, ResourceLocation location, ILangEntry subtitle) {
