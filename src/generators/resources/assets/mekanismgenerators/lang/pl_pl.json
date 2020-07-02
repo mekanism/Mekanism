@@ -134,7 +134,7 @@
   "reactor.mekanismgenerators.heat.case": "Obudowa: %s",
   "reactor.mekanismgenerators.heat.plasma": "Plazma: %s",
   "reactor.mekanismgenerators.logic.activation": "Activation",
-  "reactor.mekanismgenerators.logic.active_cooling": "Aktywne chłodzenie",
+  "reactor.mekanismgenerators.logic.active_cooling": "Active cooling: %s",
   "reactor.mekanismgenerators.logic.capacity": "Wydajność cieplna",
   "reactor.mekanismgenerators.logic.damaged": "Damage Critical",
   "reactor.mekanismgenerators.logic.depleted": "Zbyt mało paliwa",
