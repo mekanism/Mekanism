@@ -194,8 +194,6 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
         if (slotType == getEquipmentSlot()) {
-            list.add(MekanismLang.GENERIC_PRE_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, MekanismLang.get(slotType),
-                  EnumColor.GRAY, MekanismLang.TRANSMISSION_TYPE_ENERGY, StorageUtils.getEnergyPercent(stack)));
             for (Module module : Modules.loadAll(stack)) {
                 if (module.renderHUD()) {
                     module.addHUDStrings(list);

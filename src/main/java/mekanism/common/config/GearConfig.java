@@ -293,7 +293,7 @@ public class GearConfig extends BaseMekanismConfig {
         mekaSuitEnergyUsageDamage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per unit of damage applied.",
               "energyUsageDamage", FloatingLong.createConst(10_000));
         mekaSuitEnergyUsageItemAttraction = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of attracting a single item.",
-              "energyUsageDamage", FloatingLong.createConst(50));
+              "energyUsageItemAttraction", FloatingLong.createConst(50));
         builder.pop();
 
         builder.pop();

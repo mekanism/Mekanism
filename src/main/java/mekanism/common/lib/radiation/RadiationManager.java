@@ -319,7 +319,7 @@ public class RadiationManager {
             }
         }
 
-        private static final double LOG_BASELINE = Math.log10(BASELINE);
+        private static final double LOG_BASELINE = Math.log10(MIN_MAGNITUDE);
         private static final double LOG_MAX = Math.log10(100); // 100 Sv
         private static final double SCALE = LOG_MAX - LOG_BASELINE;
 
@@ -327,7 +327,7 @@ public class RadiationManager {
          * Gets the severity of a dose (between 0 and 1) from a provided dosage in Sv.
          */
         public static double getScaledDoseSeverity(double magnitude) {
-            if (magnitude < BASELINE) {
+            if (magnitude < MIN_MAGNITUDE) {
                 return 0;
             }
             return Math.min(1, Math.max(0, (-LOG_BASELINE + Math.log10(magnitude)) / SCALE));
