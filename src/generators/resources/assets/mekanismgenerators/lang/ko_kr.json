@@ -134,7 +134,7 @@
   "reactor.mekanismgenerators.heat.case": "케이싱 열: %s",
   "reactor.mekanismgenerators.heat.plasma": "플라즈마: %s",
   "reactor.mekanismgenerators.logic.activation": "Activation",
-  "reactor.mekanismgenerators.logic.active_cooling": "자동 냉각",
+  "reactor.mekanismgenerators.logic.active_cooling": "Active cooling: %s",
   "reactor.mekanismgenerators.logic.capacity": "열 용량 충족됨",
   "reactor.mekanismgenerators.logic.damaged": "Damage Critical",
   "reactor.mekanismgenerators.logic.depleted": "연료 부족",
