@@ -193,6 +193,13 @@ public class BasicInventorySlot implements IInventorySlot {
         return validator.test(stack);
     }
 
+    /**
+     * Ignores current contents
+     */
+    public boolean isItemValidForInsertion(ItemStack stack, AutomationType automationType) {
+        return validator.test(stack) && canInsert.test(stack, automationType);
+    }
+
     @Override
     public void onContentsChanged() {
         if (listener != null) {

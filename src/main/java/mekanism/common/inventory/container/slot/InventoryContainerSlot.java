@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
@@ -16,11 +17,11 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     private static final IInventory emptyInventory = new Inventory(0);
     private final ContainerSlotType slotType;
-    private final IInventorySlot slot;
+    private final BasicInventorySlot slot;
     @Nullable
     private final SlotOverlay slotOverlay;
 
-    public InventoryContainerSlot(IInventorySlot slot, int x, int y, ContainerSlotType slotType, @Nullable SlotOverlay slotOverlay) {
+    public InventoryContainerSlot(BasicInventorySlot slot, int x, int y, ContainerSlotType slotType, @Nullable SlotOverlay slotOverlay) {
         super(emptyInventory, 0, x, y);
         this.slot = slot;
         this.slotType = slotType;
@@ -43,7 +44,20 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Override
     public boolean isItemValid(@Nonnull ItemStack stack) {
-        return !stack.isEmpty() && insertItem(stack, Action.SIMULATE).getCount() < stack.getCount();
+        if (stack.isEmpty()) {
+            return false;
+        }
+        if (slot.isEmpty()) {
+            //If the slot is currently empty, just try simulating the insertion
+            return insertItem(stack, Action.SIMULATE).getCount() < stack.getCount();
+        }
+        //Otherwise we need to check if we can extract the current item
+        if (slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
+            //If we can't, fail
+            return false;
+        }
+        //If we can check if we can insert the item ignoring the current contents
+        return slot.isItemValidForInsertion(stack, AutomationType.MANUAL);
     }
 
     @Nonnull
