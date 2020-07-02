@@ -48,6 +48,11 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
         }
     }
 
+    @Override
+    public int getActiveLightValue() {
+        return 8;
+    }
+
     public FloatingLong getMaxOutput() {
         return output;
     }

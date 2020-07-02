@@ -11,7 +11,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
-import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -27,7 +26,6 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
 
     private static final Map<Direction, Int2ObjectMap<Model3D>> energyDisplays = new EnumMap<>(Direction.class);
     private static final int stages = 40;
-    private final ModelBioGenerator model = new ModelBioGenerator();
 
     public static void resetCachedModels() {
         energyDisplays.clear();
@@ -49,12 +47,6 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
                   MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid));
             matrix.pop();
         }
-        matrix.push();
-        matrix.translate(0.5, 1.5, 0.5);
-        MekanismRenderer.rotate(matrix, tile.getDirection(), 180, 0, 270, 90);
-        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
-        model.render(matrix, renderer, light, overlayLight, false);
-        matrix.pop();
     }
 
     @Override

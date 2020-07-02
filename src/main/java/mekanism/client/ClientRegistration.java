@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import com.google.common.collect.Table.Cell;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
@@ -260,18 +261,18 @@ public class ClientRegistration {
             ModelLoader.addSpecialModel(status.getModel());
         }
 
-        customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), DriveArrayBakedModel::new);
-        customModels.put(MekanismBlocks.QIO_DASHBOARD.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.QIO_EXPORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.QIO_IMPORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.QIO_REDSTONE_ADAPTER.getRegistryName(), (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
-        customModels.put(MekanismBlocks.MODIFICATION_STATION.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.SECURITY_DESK.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.LOGISTICAL_SORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.RESISTIVE_HEATER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismItems.PORTABLE_QIO_DASHBOARD.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismItems.MEKA_TOOL.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig, evt));
+        addCustomModel(MekanismBlocks.QIO_DASHBOARD, (orig, evt) -> new LightedBakedModel(orig));
+        addCustomModel(MekanismBlocks.QIO_EXPORTER, (orig, evt) -> new LightedBakedModel(orig));
+        addCustomModel(MekanismBlocks.QIO_IMPORTER, (orig, evt) -> new LightedBakedModel(orig));
+        addCustomModel(MekanismBlocks.QIO_REDSTONE_ADAPTER, (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
+        addCustomModel(MekanismBlocks.MODIFICATION_STATION, (orig, evt) -> new LightedBakedModel(orig));
+        addCustomModel(MekanismBlocks.SECURITY_DESK, (orig, evt) -> new LightedBakedModel(orig));
+        addCustomModel(MekanismBlocks.LOGISTICAL_SORTER, (orig, evt) -> new LightedBakedModel(orig));
+        addCustomModel(MekanismBlocks.RESISTIVE_HEATER, (orig, evt) -> new LightedBakedModel(orig));
+        addCustomModel(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, (orig, evt) -> new LightedBakedModel(orig));
+        addCustomModel(MekanismItems.PORTABLE_QIO_DASHBOARD, (orig, evt) -> new LightedBakedModel(orig));
+        addCustomModel(MekanismItems.MEKA_TOOL, (orig, evt) -> new LightedBakedModel(orig));
     }
 
     @SubscribeEvent
@@ -466,8 +467,12 @@ public class ClientRegistration {
         }
     }
 
+    public static void addCustomModel(IItemProvider provider, CustomModelRegistryObject object) {
+        customModels.put(provider.getRegistryName(), object);
+    }
+
     @FunctionalInterface
-    private interface CustomModelRegistryObject {
+    public interface CustomModelRegistryObject {
 
         IBakedModel createModel(IBakedModel original, ModelBakeEvent event);
     }
