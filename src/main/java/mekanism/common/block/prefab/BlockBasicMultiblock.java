@@ -64,8 +64,10 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
         if (tile != null) {
             if (world.isRemote) {
                 ItemStack stack = player.getHeldItem(hand);
-                if (!tile.getMultiblock().isFormed() || stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace()) {
-                    return ActionResultType.PASS;
+                if (stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace()) {
+                    if (!tile.getMultiblock().isFormed() || !tile.hasGui()) {
+                        return ActionResultType.PASS;
+                    }
                 }
                 return ActionResultType.SUCCESS;
             }
