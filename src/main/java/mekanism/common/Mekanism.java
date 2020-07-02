@@ -242,14 +242,13 @@ public class Mekanism {
 
     private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         MekanismRecipeType.registerRecipeTypes(event.getRegistry());
-        Mekanism.instance.setRecipeCacheManager(new ReloadListener());
     }
 
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(Mekanism.MODID, path);
     }
 
-    public void setTagManager(MekanismTagManager manager) {
+    private void setTagManager(MekanismTagManager manager) {
         if (mekanismTagManager == null) {
             mekanismTagManager = manager;
         } else {
@@ -261,7 +260,7 @@ public class Mekanism {
         return mekanismTagManager;
     }
 
-    public void setRecipeCacheManager(ReloadListener manager) {
+    private void setRecipeCacheManager(ReloadListener manager) {
         if (recipeCacheManager == null) {
             recipeCacheManager = manager;
         } else {
@@ -323,21 +322,21 @@ public class Mekanism {
     private void commonSetup(FMLCommonSetupEvent event) {
         hooks.hookCommonSetup();
         Capabilities.registerCapabilities();
-        Mekanism.instance.setTagManager(new MekanismTagManager());
+        setTagManager(new MekanismTagManager());
+        setRecipeCacheManager(new ReloadListener());
 
         DeferredWorkQueue.runLater(() -> {
             //Register the mod's world generators
             GenHandler.setupWorldGeneration();
             //Collect sync mapper scan data
             SyncMapper.collectScanData();
+            //Entity attribute assignments
+            GlobalEntityTypeAttributes.put(MekanismEntityTypes.ROBIT.get(), EntityRobit.getDefaultAttributes().func_233813_a_());
         });
 
         //Register player tracker
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTracker());
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTickHandler());
-
-        //Entity attribute assignments
-        GlobalEntityTypeAttributes.put(MekanismEntityTypes.ROBIT.get(), EntityRobit.getDefaultAttributes().func_233813_a_());
 
         //Initialization notification
         logger.info("Version {} initializing...", versionNumber);
