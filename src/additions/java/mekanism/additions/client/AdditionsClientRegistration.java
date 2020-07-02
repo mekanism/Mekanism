@@ -22,7 +22,6 @@ import net.minecraft.client.renderer.entity.StrayRenderer;
 import net.minecraft.client.renderer.entity.WitherSkeletonRenderer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemModelsProperties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -45,7 +44,7 @@ public class AdditionsClientRegistration {
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_STRAY, StrayRenderer::new);
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_WITHER_SKELETON, WitherSkeletonRenderer::new);
 
-        ItemModelsProperties.func_239418_a_(AdditionsItems.WALKIE_TALKIE.asItem(), MekanismAdditions.rl("channel"), (stack, world, entity) -> {
+        ClientRegistrationUtil.setPropertyOverride(AdditionsItems.WALKIE_TALKIE, MekanismAdditions.rl("channel"), (stack, world, entity) -> {
             ItemWalkieTalkie item = (ItemWalkieTalkie) stack.getItem();
             return item.getOn(stack) ? item.getChannel(stack) : 0;
         });

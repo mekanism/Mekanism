@@ -44,6 +44,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.ForgeEventFactory;
 
+//TODO - 1.16: FIXME, check vanilla copy
 public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvider {
 
     public ItemElectricBow(Properties properties) {
@@ -90,7 +91,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                     ArrowItem arrowitem = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
                     AbstractArrowEntity arrowEntity = arrowitem.createArrow(world, ammo, player);
                     arrowEntity = customArrow(arrowEntity);
-                    arrowEntity.shoot(player.rotationPitch, player.rotationYaw, 0, 3 * velocity, 1);
+                    arrowEntity.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 3 * velocity, 1);
                     if (velocity == 1) {
                         arrowEntity.setIsCritical(true);
                     }

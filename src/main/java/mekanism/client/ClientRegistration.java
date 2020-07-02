@@ -1,10 +1,10 @@
 package mekanism.client;
 
+import com.google.common.collect.Table.Cell;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
-import com.google.common.collect.Table.Cell;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
@@ -106,9 +106,8 @@ import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.item.ItemCraftingFormula;
-import mekanism.common.item.block.ItemBlockCardboardBox;
-import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.item.ItemPortableQIODashboard;
+import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -144,7 +143,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -236,19 +234,24 @@ public class ClientRegistration {
         ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getSolid() || renderType == RenderType.getTranslucent(),
               MekanismBlocks.ISOTOPIC_CENTRIFUGE, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
 
-        ItemModelsProperties.func_239418_a_(MekanismBlocks.CARDBOARD_BOX.asItem(), Mekanism.rl("storage"),
+        ClientRegistrationUtil.setPropertyOverride(MekanismBlocks.CARDBOARD_BOX, Mekanism.rl("storage"),
               (stack, world, entity) -> ((ItemBlockCardboardBox) stack.getItem()).getBlockData(stack) == null ? 0 : 1);
 
-        ItemModelsProperties.func_239418_a_(MekanismItems.CRAFTING_FORMULA.asItem(), Mekanism.rl("invalid"), (stack, world, entity) -> {
+        ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity) -> {
             ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
             return formula.getInventory(stack) != null && formula.isInvalid(stack) ? 1 : 0;
         });
-        ItemModelsProperties.func_239418_a_(MekanismItems.CRAFTING_FORMULA.asItem(), Mekanism.rl("encoded"), (stack, world, entity) -> {
+        ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("encoded"), (stack, world, entity) -> {
             ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
             return formula.getInventory(stack) != null && !formula.isInvalid(stack) ? 1 : 0;
         });
 
-        ItemModelsProperties.func_239418_a_(MekanismItems.GEIGER_COUNTER.asItem(), Mekanism.rl("radiation"), (stack, world, entity) -> {
+        ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, new ResourceLocation("pull"),
+              (stack, world, entity) -> entity != null && entity.getActiveItemStack() == stack ? (float) (stack.getUseDuration() - entity.getItemInUseCount()) / 20.0F : 0);
+        ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, new ResourceLocation("pulling"),
+              (stack, world, entity) -> entity != null && entity.isHandActive() && entity.getActiveItemStack() == stack ? 1.0F : 0.0F);
+
+        ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, Mekanism.rl("radiation"), (stack, world, entity) -> {
             if (entity instanceof PlayerEntity) {
                 return Mekanism.radiationManager.getClientScale().ordinal();
             }
@@ -256,8 +259,9 @@ public class ClientRegistration {
         });
 
         for (DriveStatus status : DriveStatus.values()) {
-            if (status == DriveStatus.NONE)
+            if (status == DriveStatus.NONE) {
                 continue;
+            }
             ModelLoader.addSpecialModel(status.getModel());
         }
 
