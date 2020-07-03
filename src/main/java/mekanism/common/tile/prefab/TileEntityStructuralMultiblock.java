@@ -52,6 +52,18 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
+    public boolean hasFormedMultiblock() {
+        //TODO - 1.16: Implement me
+        return false;
+    }
+
+    @Override
+    public boolean structuralGuiAccessAllowed() {
+        //TODO - 1.16: Implement me
+        return true;
+    }
+
+    @Override
     public Map<MultiblockManager<?>, Structure> getStructureMap() {
         return structures;
     }
