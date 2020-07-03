@@ -69,8 +69,6 @@ public class HUDRenderer {
 
     private void renderMekaSuitEnergyIcons(MatrixStack matrix, float partialTick) {
         matrix.push();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         matrix.translate(10, 10, 0);
         int posX = 0;
         if (getStack(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
@@ -97,11 +95,13 @@ public class HUDRenderer {
     }
 
     private void renderIcon(MatrixStack matrix, ResourceLocation icon, int x, int y, ITextComponent text) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         RenderSystem.color4f(1, 1, 1, 0.6F);
         minecraft.getTextureManager().bindTexture(icon);
         AbstractGui.func_238463_a_(matrix, x, y, 0, 0, 16, 16, 16, 16);
-        minecraft.fontRenderer.func_238422_b_(matrix, text, x + 18, y + 5, color.argb());
         MekanismRenderer.resetColor();
+        minecraft.fontRenderer.func_238422_b_(matrix, text, x + 18, y + 5, color.argb());
     }
 
     private void renderCompass(MatrixStack matrix, float partialTick) {

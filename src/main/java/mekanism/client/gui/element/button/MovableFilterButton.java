@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.button;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -8,6 +7,7 @@ import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
@@ -112,14 +112,14 @@ public class MovableFilterButton extends FilterButton {
     }
 
     @Override
-    public void func_230430_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (field_230694_p_) {
             //Update visibility state of our buttons
             updateButtonVisibility();
             //Render our sub buttons and our slot
-            upButton.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
-            downButton.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
+            upButton.drawBackground(matrix, mouseX, mouseY, partialTicks);
+            downButton.drawBackground(matrix, mouseX, mouseY, partialTicks);
         }
     }
 
