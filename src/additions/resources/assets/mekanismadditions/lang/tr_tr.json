@@ -272,6 +272,7 @@
   "item.mekanismadditions.white_balloon": "Beyaz Balon",
   "item.mekanismadditions.yellow_balloon": "Sarı Balon",
   "key.mekanismadditions.voice": "Ses",
+  "sound_event.mekanismadditions.entity.balloon.pop": "Balloon pops",
   "walkie.mekanismadditions.channel": "Kanal: %s",
   "walkie.mekanismadditions.channel.change": "Kanal değiştirildi: %s",
   "walkie.mekanismadditions.disabled": "Ses sunucusu devre dışı bırakıldı."
