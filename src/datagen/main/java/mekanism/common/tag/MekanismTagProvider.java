@@ -172,9 +172,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Items.ENRICHED_DIAMOND, MekanismItems.ENRICHED_DIAMOND);
         addToTag(MekanismTags.Items.ENRICHED_OBSIDIAN, MekanismItems.ENRICHED_OBSIDIAN);
         addToTag(MekanismTags.Items.ENRICHED_REDSTONE, MekanismItems.ENRICHED_REDSTONE);
+        addToTag(MekanismTags.Items.ENRICHED_GOLD, MekanismItems.ENRICHED_GOLD);
         addToTag(MekanismTags.Items.ENRICHED_TIN, MekanismItems.ENRICHED_TIN);
         getItemBuilder(MekanismTags.Items.ENRICHED).add(MekanismTags.Items.ENRICHED_CARBON, MekanismTags.Items.ENRICHED_DIAMOND, MekanismTags.Items.ENRICHED_OBSIDIAN,
-              MekanismTags.Items.ENRICHED_REDSTONE, MekanismTags.Items.ENRICHED_TIN);
+              MekanismTags.Items.ENRICHED_REDSTONE, MekanismTags.Items.ENRICHED_GOLD, MekanismTags.Items.ENRICHED_TIN);
     }
 
     private void addChests() {
@@ -234,6 +235,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Items.DUSTS_COAL, MekanismItems.COAL_DUST);
         addToTag(MekanismTags.Items.DUSTS_DIAMOND, MekanismItems.DIAMOND_DUST);
         addToTag(MekanismTags.Items.DUSTS_EMERALD, MekanismItems.EMERALD_DUST);
+        addToTag(MekanismTags.Items.DUSTS_NETHERITE, MekanismItems.NETHERITE_DUST);
         addToTag(MekanismTags.Items.DUSTS_LAPIS_LAZULI, MekanismItems.LAPIS_LAZULI_DUST);
         addToTag(MekanismTags.Items.DUSTS_LITHIUM, MekanismItems.LITHIUM_DUST);
         addToTag(MekanismTags.Items.DUSTS_OBSIDIAN, MekanismItems.OBSIDIAN_DUST);
@@ -245,9 +247,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Items.DUSTS_WOOD, MekanismItems.SAWDUST);
         addToTag(MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_DUST);
         getItemBuilder(Tags.Items.DUSTS).add(MekanismTags.Items.DUSTS_BRONZE, MekanismTags.Items.DUSTS_CHARCOAL, MekanismTags.Items.DUSTS_COAL,
-              MekanismTags.Items.DUSTS_DIAMOND, MekanismTags.Items.DUSTS_EMERALD, MekanismTags.Items.DUSTS_LAPIS_LAZULI, MekanismTags.Items.DUSTS_LITHIUM,
-              MekanismTags.Items.DUSTS_OBSIDIAN, MekanismTags.Items.DUSTS_QUARTZ, MekanismTags.Items.DUSTS_REFINED_OBSIDIAN, MekanismTags.Items.DUSTS_SALT,
-              MekanismTags.Items.DUSTS_STEEL, MekanismTags.Items.DUSTS_SULFUR, MekanismTags.Items.DUSTS_WOOD, MekanismTags.Items.DUSTS_FLUORITE);
+              MekanismTags.Items.DUSTS_DIAMOND, MekanismTags.Items.DUSTS_EMERALD, MekanismTags.Items.DUSTS_NETHERITE, MekanismTags.Items.DUSTS_LAPIS_LAZULI,
+              MekanismTags.Items.DUSTS_LITHIUM, MekanismTags.Items.DUSTS_OBSIDIAN, MekanismTags.Items.DUSTS_QUARTZ, MekanismTags.Items.DUSTS_REFINED_OBSIDIAN,
+              MekanismTags.Items.DUSTS_SALT, MekanismTags.Items.DUSTS_STEEL, MekanismTags.Items.DUSTS_SULFUR, MekanismTags.Items.DUSTS_WOOD,
+              MekanismTags.Items.DUSTS_FLUORITE);
 
         addToTag(Tags.Items.DYES_YELLOW, MekanismItems.SULFUR_DUST);
 
@@ -305,6 +308,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.InfuseTypes.REDSTONE, MekanismInfuseTypes.REDSTONE);
         addToTag(MekanismTags.InfuseTypes.DIAMOND, MekanismInfuseTypes.DIAMOND);
         addToTag(MekanismTags.InfuseTypes.REFINED_OBSIDIAN, MekanismInfuseTypes.REFINED_OBSIDIAN);
+        addToTag(MekanismTags.InfuseTypes.GOLD, MekanismInfuseTypes.GOLD);
         addToTag(MekanismTags.InfuseTypes.TIN, MekanismInfuseTypes.TIN);
         addToTag(MekanismTags.InfuseTypes.FUNGI, MekanismInfuseTypes.FUNGI);
         addToTag(MekanismTags.InfuseTypes.BIO, MekanismInfuseTypes.BIO);

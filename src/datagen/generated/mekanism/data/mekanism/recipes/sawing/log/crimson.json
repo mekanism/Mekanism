@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "tag": "minecraft:crimson_stems"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:crimson_planks",
+    "count": 6
+  },
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  },
+  "secondaryChance": 0.25
+}

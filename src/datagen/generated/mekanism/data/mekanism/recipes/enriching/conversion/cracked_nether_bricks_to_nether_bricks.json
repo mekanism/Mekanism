@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cracked_nether_bricks"
+    }
+  },
+  "output": {
+    "item": "minecraft:nether_bricks"
+  }
+}

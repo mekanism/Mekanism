@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:warped_trapdoor"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:warped_planks",
+    "count": 3
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:crimson_pressure_plate"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:crimson_planks",
+    "count": 2
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cracked_polished_blackstone_bricks"
+    }
+  },
+  "output": {
+    "item": "minecraft:polished_blackstone_bricks"
+  }
+}

@@ -10,6 +10,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -57,11 +58,9 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addEnrichingConversionRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        //Cracked stone bricks -> stone bricks
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.CRACKED_STONE_BRICKS),
-              new ItemStack(Items.STONE_BRICKS)
-        ).build(consumer, Mekanism.rl(basePath + "cracked_stone_bricks_to_stone_bricks"));
+        addEnrichingStoneConversionRecipes(consumer, basePath + "stone/");
+        addEnrichingBlackstoneConversionRecipes(consumer, basePath + "blackstone/");
+        addEnrichingMossyConversionRecipes(consumer, basePath + "mossy/");
         //Gravel -> flint
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Tags.Items.GRAVEL),
@@ -72,31 +71,16 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Tags.Items.GUNPOWDER),
               new ItemStack(Items.FLINT)
         ).build(consumer, Mekanism.rl(basePath + "gunpowder_to_flint"));
-        //Mossy stone bricks -> stone bricks
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.MOSSY_STONE_BRICKS),
-              new ItemStack(Items.STONE_BRICKS)
-        ).build(consumer, Mekanism.rl(basePath + "mossy_stone_bricks_to_stone_bricks"));
-        //Mossy -> cobblestone
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.MOSSY_COBBLESTONE),
-              new ItemStack(Items.COBBLESTONE)
-        ).build(consumer, Mekanism.rl(basePath + "mossy_to_cobblestone"));
         //Sand -> gravel
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Tags.Items.SAND),
               new ItemStack(Items.GRAVEL)
         ).build(consumer, Mekanism.rl(basePath + "sand_to_gravel"));
-        //Stone bricks -> chiseled stone bricks
+        //Soul Sand -> soul soil
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.STONE_BRICKS),
-              new ItemStack(Items.CHISELED_STONE_BRICKS)
-        ).build(consumer, Mekanism.rl(basePath + "stone_bricks_to_chiseled_stone_bricks"));
-        //Stone -> cracked stone bricks
-        ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.STONE),
-              new ItemStack(Items.CRACKED_STONE_BRICKS)
-        ).build(consumer, Mekanism.rl(basePath + "stone_to_cracked_stone_bricks"));
+              ItemStackIngredient.from(Blocks.SOUL_SAND),
+              new ItemStack(Blocks.field_235336_cN_)
+        ).build(consumer, Mekanism.rl(basePath + "soul_sand_to_soul_soil"));
         //Sulfur -> gunpowder
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_SULFUR),
@@ -107,6 +91,94 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Tags.Items.OBSIDIAN),
               MekanismItems.OBSIDIAN_DUST.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "obsidian_to_obsidian_dust"));
+        //Basalt -> polished basalt
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.field_235337_cO_),
+              new ItemStack(Blocks.field_235338_cP_)
+        ).build(consumer, Mekanism.rl(basePath + "basalt_to_polished_basalt"));
+        //Cracked nether bricks -> nether bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.field_235394_nH_),
+              new ItemStack(Blocks.NETHER_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "cracked_nether_bricks_to_nether_bricks"));
+        //Nether bricks -> chiseled nether bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.NETHER_BRICKS),
+              new ItemStack(Blocks.field_235393_nG_)
+        ).build(consumer, Mekanism.rl(basePath + "nether_bricks_to_chiseled_nether_bricks"));
+    }
+
+    private void addEnrichingStoneConversionRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Stone -> cracked stone bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.STONE),
+              new ItemStack(Blocks.CRACKED_STONE_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "to_cracked_bricks"));
+        //Cracked stone bricks -> stone bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.CRACKED_STONE_BRICKS),
+              new ItemStack(Blocks.STONE_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "cracked_bricks_to_bricks"));
+        //Stone bricks -> chiseled stone bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.STONE_BRICKS),
+              new ItemStack(Blocks.CHISELED_STONE_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "bricks_to_chiseled_bricks"));
+    }
+
+    private void addEnrichingBlackstoneConversionRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Polished blackstone -> cracked polished blackstone bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.field_235410_nt_),
+              new ItemStack(Blocks.field_235412_nv_)
+        ).build(consumer, Mekanism.rl(basePath + "to_cracked_bricks"));
+        //Cracked polished blackstone bricks -> polished blackstone bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.field_235412_nv_),
+              new ItemStack(Blocks.field_235411_nu_)
+        ).build(consumer, Mekanism.rl(basePath + "cracked_bricks_to_bricks"));
+        //Polished blackstone bricks -> chiseled polished blackstone bricks
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.field_235411_nu_),
+              new ItemStack(Blocks.field_235413_nw_)
+        ).build(consumer, Mekanism.rl(basePath + "bricks_to_chiseled_bricks"));
+    }
+
+    private void addEnrichingMossyConversionRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Mossy Stone Brick -> Stone Brick recipes
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.MOSSY_STONE_BRICKS),
+              new ItemStack(Blocks.STONE_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "stone_bricks"));
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.MOSSY_STONE_BRICK_STAIRS),
+              new ItemStack(Blocks.STONE_BRICK_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "stone_brick_stairs"));
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.MOSSY_STONE_BRICK_SLAB),
+              new ItemStack(Blocks.STONE_BRICK_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "stone_brick_slabs"));
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.MOSSY_STONE_BRICK_WALL),
+              new ItemStack(Blocks.STONE_BRICK_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "stone_brick_walls"));
+        //Mossy Cobblestone -> Cobblestone recipes
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.MOSSY_COBBLESTONE),
+              new ItemStack(Blocks.COBBLESTONE)
+        ).build(consumer, Mekanism.rl(basePath + "cobblestone"));
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.MOSSY_COBBLESTONE_STAIRS),
+              new ItemStack(Blocks.COBBLESTONE_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "cobblestone_stairs"));
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.MOSSY_COBBLESTONE_SLAB),
+              new ItemStack(Blocks.COBBLESTONE_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "cobblestone_slabs"));
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.MOSSY_COBBLESTONE_WALL),
+              new ItemStack(Blocks.COBBLESTONE_WALL)
+        ).build(consumer, Mekanism.rl(basePath + "cobblestone_walls"));
     }
 
     private void addEnrichingDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
@@ -211,6 +283,11 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_REFINED_OBSIDIAN),
               MekanismItems.ENRICHED_OBSIDIAN.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "refined_obsidian"));
+        //Gold
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD)),
+              MekanismItems.ENRICHED_GOLD.getItemStack()
+        ).build(consumer, Mekanism.rl(basePath + "gold"));
         //Tin
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.TIN)),

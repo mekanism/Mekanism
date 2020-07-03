@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
-import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.render.MekanismRenderer;
@@ -51,7 +50,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     public ChemicalStackRenderer(long capacityMb, int width, int height) {
-        this(capacityMb, TooltipMode.SHOW_AMOUNT_NO_UNITS, width, height, null);
+        this(capacityMb, TooltipMode.SHOW_AMOUNT, width, height, null);
     }
 
     public ChemicalStackRenderer(long capacityMb, boolean showCapacity, int width, int height, @Nullable IDrawable overlay) {
@@ -161,8 +160,6 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
             component = MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, nf.format(stack.getAmount()), nf.format(capacityMb));
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
             component = MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, nf.format(stack.getAmount()));
-        } else if (tooltipMode == TooltipMode.SHOW_AMOUNT_NO_UNITS) {
-            component = APILang.GENERIC.translateColored(EnumColor.GRAY, nf.format(stack.getAmount()));
         }
         if (component != null) {
             tooltip.add(component);
@@ -177,7 +174,6 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
 
     enum TooltipMode {
         SHOW_AMOUNT,
-        SHOW_AMOUNT_NO_UNITS,
         SHOW_AMOUNT_AND_CAPACITY,
         ITEM_LIST
     }

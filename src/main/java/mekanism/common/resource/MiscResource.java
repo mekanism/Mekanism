@@ -7,6 +7,7 @@ public enum MiscResource implements IResource {
     COAL("coal"),
     DIAMOND("diamond"),
     EMERALD("emerald"),
+    NETHERITE("netherite"),
     LAPIS_LAZULI("lapis_lazuli"),
     LITHIUM("lithium"),
     OBSIDIAN("obsidian"),

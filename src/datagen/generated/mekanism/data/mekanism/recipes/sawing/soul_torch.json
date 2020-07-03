@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "amount": 4,
+    "ingredient": {
+      "item": "minecraft:soul_torch"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:torch",
+    "count": 4
+  },
+  "secondaryOutput": {
+    "item": "minecraft:soul_soil"
+  },
+  "secondaryChance": 1.0
+}

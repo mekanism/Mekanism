@@ -113,6 +113,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.ENRICHED_REDSTONE, "Enriched Redstone");
         add(MekanismItems.ENRICHED_DIAMOND, "Enriched Diamond");
         add(MekanismItems.ENRICHED_OBSIDIAN, "Enriched Obsidian");
+        add(MekanismItems.ENRICHED_GOLD, "Enriched Gold");
         add(MekanismItems.ENRICHED_TIN, "Enriched Tin");
         //Upgrades
         add(MekanismItems.SPEED_UPGRADE, "Speed Upgrade");
@@ -143,12 +144,15 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.QUARTZ_DUST, "Quartz Dust");
         add(MekanismItems.EMERALD_DUST, "Emerald Dust");
         add(MekanismItems.DIAMOND_DUST, "Diamond Dust");
+        add(MekanismItems.NETHERITE_DUST, "Netherite Dust");
         add(MekanismItems.STEEL_DUST, "Steel Dust");
         add(MekanismItems.SULFUR_DUST, "Sulfur Dust");
         add(MekanismItems.LITHIUM_DUST, "Lithium Dust");
         add(MekanismItems.REFINED_OBSIDIAN_DUST, "Refined Obsidian Dust");
         add(MekanismItems.OBSIDIAN_DUST, "Obsidian Dust");
         add(MekanismItems.FLUORITE_DUST, "Fluorite Dust");
+        //Scrap
+        add(MekanismItems.DIRTY_NETHERITE_SCRAP, "Dirty Netherite Scrap");
         //Tiered stuff
         addTiered(MekanismItems.BASIC_CONTROL_CIRCUIT, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismItems.ELITE_CONTROL_CIRCUIT, MekanismItems.ULTIMATE_CONTROL_CIRCUIT, "Control Circuit");
         addTiered(MekanismItems.BASIC_TIER_INSTALLER, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismItems.ELITE_TIER_INSTALLER, MekanismItems.ULTIMATE_TIER_INSTALLER, "Tier Installer");
@@ -362,6 +366,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismInfuseTypes.REDSTONE, "Redstone");
         add(MekanismInfuseTypes.DIAMOND, "Diamond");
         add(MekanismInfuseTypes.REFINED_OBSIDIAN, "Refined Obsidian");
+        add(MekanismInfuseTypes.GOLD, "Gold");
         add(MekanismInfuseTypes.TIN, "Tin");
         add(MekanismInfuseTypes.FUNGI, "Fungi");
         add(MekanismInfuseTypes.BIO, "Biomass");

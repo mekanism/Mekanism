@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:mossy_cobblestone_stairs"
+    }
+  },
+  "output": {
+    "item": "minecraft:cobblestone_stairs"
+  }
+}

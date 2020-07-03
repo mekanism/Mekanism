@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:crimson_nylium"
+    }
+  },
+  "infusionInput": {
+    "amount": 10,
+    "tag": "mekanism:fungi"
+  },
+  "output": {
+    "item": "minecraft:warped_nylium"
+  }
+}

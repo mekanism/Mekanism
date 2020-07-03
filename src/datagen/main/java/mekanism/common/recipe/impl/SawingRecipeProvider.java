@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismItems;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -21,18 +22,22 @@ class SawingRecipeProvider implements ISubRecipeProvider {
         // or maybe move some from the wood types out like pressure plates
         String basePath = "sawing/";
         addPrecisionSawmillBedRecipes(consumer, basePath + "bed/");
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Items.ACACIA_PLANKS, Items.ACACIA_BOAT, Items.ACACIA_DOOR, Items.ACACIA_FENCE_GATE,
-              ItemTags.ACACIA_LOGS, Items.ACACIA_PRESSURE_PLATE, Items.ACACIA_TRAPDOOR, "acacia");
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Items.BIRCH_PLANKS, Items.BIRCH_BOAT, Items.BIRCH_DOOR, Items.BIRCH_FENCE_GATE,
-              ItemTags.BIRCH_LOGS, Items.BIRCH_PRESSURE_PLATE, Items.BIRCH_TRAPDOOR, "birch");
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Items.DARK_OAK_PLANKS, Items.DARK_OAK_BOAT, Items.DARK_OAK_DOOR, Items.DARK_OAK_FENCE_GATE,
-              ItemTags.DARK_OAK_LOGS, Items.DARK_OAK_PRESSURE_PLATE, Items.DARK_OAK_TRAPDOOR, "dark_oak");
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Items.JUNGLE_PLANKS, Items.JUNGLE_BOAT, Items.JUNGLE_DOOR, Items.JUNGLE_FENCE_GATE,
-              ItemTags.JUNGLE_LOGS, Items.JUNGLE_PRESSURE_PLATE, Items.JUNGLE_TRAPDOOR, "jungle");
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Items.OAK_PLANKS, Items.OAK_BOAT, Items.OAK_DOOR, Items.OAK_FENCE_GATE, ItemTags.OAK_LOGS,
-              Items.OAK_PRESSURE_PLATE, Items.OAK_TRAPDOOR, "oak");
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Items.SPRUCE_PLANKS, Items.SPRUCE_BOAT, Items.SPRUCE_DOOR, Items.SPRUCE_FENCE_GATE,
-              ItemTags.SPRUCE_LOGS, Items.SPRUCE_PRESSURE_PLATE, Items.SPRUCE_TRAPDOOR, "spruce");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.ACACIA_PLANKS, Items.ACACIA_BOAT, Items.ACACIA_DOOR, Blocks.ACACIA_FENCE_GATE,
+              ItemTags.ACACIA_LOGS, Blocks.ACACIA_PRESSURE_PLATE, Blocks.ACACIA_TRAPDOOR, "acacia");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.BIRCH_PLANKS, Items.BIRCH_BOAT, Items.BIRCH_DOOR, Blocks.BIRCH_FENCE_GATE,
+              ItemTags.BIRCH_LOGS, Blocks.BIRCH_PRESSURE_PLATE, Blocks.BIRCH_TRAPDOOR, "birch");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.DARK_OAK_PLANKS, Items.DARK_OAK_BOAT, Items.DARK_OAK_DOOR, Blocks.DARK_OAK_FENCE_GATE,
+              ItemTags.DARK_OAK_LOGS, Blocks.DARK_OAK_PRESSURE_PLATE, Blocks.DARK_OAK_TRAPDOOR, "dark_oak");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.JUNGLE_PLANKS, Items.JUNGLE_BOAT, Items.JUNGLE_DOOR, Blocks.JUNGLE_FENCE_GATE,
+              ItemTags.JUNGLE_LOGS, Blocks.JUNGLE_PRESSURE_PLATE, Blocks.JUNGLE_TRAPDOOR, "jungle");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.OAK_PLANKS, Items.OAK_BOAT, Items.OAK_DOOR, Blocks.OAK_FENCE_GATE, ItemTags.OAK_LOGS,
+              Blocks.OAK_PRESSURE_PLATE, Blocks.OAK_TRAPDOOR, "oak");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.SPRUCE_PLANKS, Items.SPRUCE_BOAT, Items.SPRUCE_DOOR, Blocks.SPRUCE_FENCE_GATE,
+              ItemTags.SPRUCE_LOGS, Blocks.SPRUCE_PRESSURE_PLATE, Blocks.SPRUCE_TRAPDOOR, "spruce");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.field_235344_mC_, null, Items.field_234752_jS_, Blocks.field_235354_mM_,
+              ItemTags.field_232913_w_, Blocks.field_235348_mG_, Blocks.field_235352_mK_, "crimson");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.field_235345_mD_, null, Items.field_234753_jT_, Blocks.field_235355_mN_,
+              ItemTags.field_232914_x_, Blocks.field_235349_mH_, Blocks.field_235353_mL_, "warped");
         //Barrel
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(Items.BARREL),
@@ -126,6 +131,13 @@ class SawingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.COAL),
               1
         ).build(consumer, Mekanism.rl(basePath + "torch"));
+        //Soul Torch
+        SawmillRecipeBuilder.sawing(
+              ItemStackIngredient.from(Items.field_234737_dp_, 4),
+              new ItemStack(Items.TORCH, 4),
+              new ItemStack(Blocks.field_235336_cN_),
+              1
+        ).build(consumer, Mekanism.rl(basePath + "soul_torch"));
         //Trapped chest
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(Items.TRAPPED_CHEST),

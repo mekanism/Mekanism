@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:crimson_trapdoor"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:crimson_planks",
+    "count": 3
+  }
+}

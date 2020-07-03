@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:mossy_stone_brick_slab"
+    }
+  },
+  "output": {
+    "item": "minecraft:stone_brick_slab"
+  }
+}

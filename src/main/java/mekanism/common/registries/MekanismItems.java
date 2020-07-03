@@ -138,6 +138,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> ENRICHED_REDSTONE = registerResource(ResourceType.ENRICHED, MiscResource.REDSTONE);
     public static final ItemRegistryObject<Item> ENRICHED_DIAMOND = registerResource(ResourceType.ENRICHED, MiscResource.DIAMOND);
     public static final ItemRegistryObject<Item> ENRICHED_OBSIDIAN = registerResource(ResourceType.ENRICHED, MiscResource.REFINED_OBSIDIAN);
+    public static final ItemRegistryObject<Item> ENRICHED_GOLD = registerResource(ResourceType.ENRICHED, PrimaryResource.GOLD);
     public static final ItemRegistryObject<Item> ENRICHED_TIN = registerResource(ResourceType.ENRICHED, PrimaryResource.TIN);
 
     public static final ItemRegistryObject<Item> HDPE_PELLET = ITEMS.register("hdpe_pellet", Rarity.UNCOMMON);
@@ -159,6 +160,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> BIO_FUEL = ITEMS.register("bio_fuel");
     public static final ItemRegistryObject<Item> FLUORITE_GEM = ITEMS.register("fluorite_gem");
     public static final ItemRegistryObject<Item> YELLOW_CAKE_URANIUM = ITEMS.register("yellow_cake_uranium", Rarity.UNCOMMON);
+    public static final ItemRegistryObject<Item> DIRTY_NETHERITE_SCRAP = ITEMS.registerUnburnable("dirty_netherite_scrap");
 
     public static final ItemRegistryObject<Item> BRONZE_DUST = registerResource(ResourceType.DUST, MiscResource.BRONZE);
     public static final ItemRegistryObject<Item> LAPIS_LAZULI_DUST = registerResource(ResourceType.DUST, MiscResource.LAPIS_LAZULI);
@@ -167,6 +169,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> QUARTZ_DUST = registerResource(ResourceType.DUST, MiscResource.QUARTZ);
     public static final ItemRegistryObject<Item> EMERALD_DUST = registerResource(ResourceType.DUST, MiscResource.EMERALD);
     public static final ItemRegistryObject<Item> DIAMOND_DUST = registerResource(ResourceType.DUST, MiscResource.DIAMOND);
+    public static final ItemRegistryObject<Item> NETHERITE_DUST = registerResource(ResourceType.DUST, MiscResource.NETHERITE);
     public static final ItemRegistryObject<Item> STEEL_DUST = registerResource(ResourceType.DUST, MiscResource.STEEL);
     public static final ItemRegistryObject<Item> SULFUR_DUST = registerResource(ResourceType.DUST, MiscResource.SULFUR);
     public static final ItemRegistryObject<Item> LITHIUM_DUST = registerResource(ResourceType.DUST, MiscResource.LITHIUM);
@@ -199,7 +202,7 @@ public class MekanismItems {
     }
 
     private static ItemRegistryObject<Item> registerUnburnableResource(ResourceType type, IResource resource) {
-        return ITEMS.register(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix(), properties -> new Item(properties.func_234689_a_()));
+        return ITEMS.registerUnburnable(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix());
     }
 
     private static ItemRegistryObject<Item> registerCircuit(BaseTier tier) {

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:nether_bricks"
+    }
+  },
+  "output": {
+    "item": "minecraft:cracked_nether_bricks"
+  }
+}

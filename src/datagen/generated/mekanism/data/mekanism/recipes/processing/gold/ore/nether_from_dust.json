@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "amount": 8,
+    "ingredient": {
+      "item": "mekanism:dust_gold"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:netherrack"
+    }
+  },
+  "output": {
+    "item": "minecraft:nether_gold_ore"
+  }
+}

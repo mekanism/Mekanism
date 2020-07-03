@@ -75,6 +75,7 @@ public class MekanismTags {
         public static final INamedTag<Item> DUSTS_COAL = forgeTag("dusts/coal");
         public static final INamedTag<Item> DUSTS_DIAMOND = forgeTag("dusts/diamond");
         public static final INamedTag<Item> DUSTS_EMERALD = forgeTag("dusts/emerald");
+        public static final INamedTag<Item> DUSTS_NETHERITE = forgeTag("dusts/netherite");
         public static final INamedTag<Item> DUSTS_LAPIS_LAZULI = forgeTag("dusts/lapis_lazuli");
         public static final INamedTag<Item> DUSTS_LITHIUM = forgeTag("dusts/lithium");
         public static final INamedTag<Item> DUSTS_OBSIDIAN = forgeTag("dusts/obsidian");
@@ -124,6 +125,7 @@ public class MekanismTags {
         public static final INamedTag<Item> ENRICHED_DIAMOND = tag("enriched/diamond");
         public static final INamedTag<Item> ENRICHED_OBSIDIAN = tag("enriched/obsidian");
         public static final INamedTag<Item> ENRICHED_REDSTONE = tag("enriched/redstone");
+        public static final INamedTag<Item> ENRICHED_GOLD = tag("enriched/gold");
         public static final INamedTag<Item> ENRICHED_TIN = tag("enriched/tin");
 
         public static final INamedTag<Item> DIRTY_DUSTS = tag("dirty_dusts");
@@ -218,6 +220,7 @@ public class MekanismTags {
         public static final INamedTag<InfuseType> REFINED_OBSIDIAN = tag("refined_obsidian");
         public static final INamedTag<InfuseType> BIO = tag("bio");
         public static final INamedTag<InfuseType> FUNGI = tag("fungi");
+        public static final INamedTag<InfuseType> GOLD = tag("gold");
         public static final INamedTag<InfuseType> TIN = tag("tin");
 
         private static INamedTag<InfuseType> tag(String name) {

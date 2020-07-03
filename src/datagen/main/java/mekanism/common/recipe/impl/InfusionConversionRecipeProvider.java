@@ -9,6 +9,7 @@ import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Items;
 import net.minecraftforge.common.Tags;
@@ -25,6 +26,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         addInfusionConversionFungiRecipes(consumer, basePath + "fungi/");
         addInfusionConversionRedstoneRecipes(consumer, basePath + "redstone/");
         addInfusionConversionRefinedObsidianRecipes(consumer, basePath + "refined_obsidian/");
+        addInfusionConversionGoldRecipes(consumer, basePath + "gold/");
         addInfusionConversionTinRecipes(consumer, basePath + "tin/");
     }
 
@@ -88,7 +90,12 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
     private void addInfusionConversionFungiRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Mushrooms
         ItemStackToChemicalRecipeBuilder.infusionConversion(
-              ItemStackIngredient.from(Tags.Items.MUSHROOMS),
+              ItemStackIngredient.createMulti(
+                    ItemStackIngredient.from(Tags.Items.MUSHROOMS),
+                    //TODO: If these get added to the mushroom tag then we can remove them from here
+                    ItemStackIngredient.from(Blocks.field_235373_mm_),
+                    ItemStackIngredient.from(Blocks.field_235382_mv_)
+              ),
               MekanismInfuseTypes.FUNGI.getStack(10)
         ).build(consumer, Mekanism.rl(basePath + "from_mushrooms"));
     }
@@ -121,6 +128,19 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         ItemStackToChemicalRecipeBuilder.infusionConversion(
               ItemStackIngredient.from(MekanismTags.Items.ENRICHED_OBSIDIAN),
               MekanismInfuseTypes.REFINED_OBSIDIAN.getStack(80)
+        ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
+    }
+
+    private void addInfusionConversionGoldRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Dust
+        ItemStackToChemicalRecipeBuilder.infusionConversion(
+              ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD)),
+              MekanismInfuseTypes.GOLD.getStack(10)
+        ).build(consumer, Mekanism.rl(basePath + "from_dust"));
+        //Enriched
+        ItemStackToChemicalRecipeBuilder.infusionConversion(
+              ItemStackIngredient.from(MekanismTags.Items.ENRICHED_GOLD),
+              MekanismInfuseTypes.GOLD.getStack(80)
         ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
     }
 

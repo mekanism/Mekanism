@@ -3,6 +3,7 @@ package mekanism.common.recipe;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -38,63 +39,57 @@ public class RecipeProviderUtil {
         smeltingRecipe.build(consumer, smeltingLocation);
     }
 
-    public static void addPrecisionSawmillWoodTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, IItemProvider boat, IItemProvider door,
-          IItemProvider fenceGate, ITag<Item> log, IItemProvider pressurePlate, IItemProvider trapdoor, String name) {
+    public static void addPrecisionSawmillWoodTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, @Nullable IItemProvider boat,
+          IItemProvider door, IItemProvider fenceGate, ITag<Item> log, IItemProvider pressurePlate, IItemProvider trapdoor, String name) {
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, log, pressurePlate, trapdoor, name, null);
     }
 
-    public static void addPrecisionSawmillWoodTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, IItemProvider boat, IItemProvider door,
-          IItemProvider fenceGate, ITag<Item> log, IItemProvider pressurePlate, IItemProvider trapdoor, String name, @Nullable ICondition condition) {
-        //Boat
-        SawmillRecipeBuilder boatRecipeBuilder = SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(boat.asItem()),
-              new ItemStack(planks, 5)
-        );
+    public static void addPrecisionSawmillWoodTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, @Nullable IItemProvider boat,
+          IItemProvider door, IItemProvider fenceGate, ITag<Item> log, IItemProvider pressurePlate, IItemProvider trapdoor, String name, @Nullable ICondition condition) {
+        if (boat != null) {
+            //Boat
+            build(consumer, SawmillRecipeBuilder.sawing(
+                  ItemStackIngredient.from(boat.asItem()),
+                  new ItemStack(planks, 5)
+            ), basePath + "boat/" + name, condition);
+        }
         //Door
-        SawmillRecipeBuilder doorRecipeBuilder = SawmillRecipeBuilder.sawing(
+        build(consumer, SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(door.asItem()),
               new ItemStack(planks, 2)
-        );
+        ), basePath + "door/" + name, condition);
         //Fence Gate
-        SawmillRecipeBuilder fenceGateRecipeBuilder = SawmillRecipeBuilder.sawing(
+        build(consumer, SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(fenceGate.asItem()),
               new ItemStack(planks, 2),
               new ItemStack(Items.STICK, 4),
               1
-        );
+        ), basePath + "fence_gate/" + name, condition);
         //Log
-        SawmillRecipeBuilder logRecipeBuilder = SawmillRecipeBuilder.sawing(
+        build(consumer, SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(log),
               new ItemStack(planks, 6),
               MekanismItems.SAWDUST.getItemStack(),
               0.25
-        );
+        ), basePath + "log/" + name, condition);
         //Pressure plate
-        SawmillRecipeBuilder pressurePlateRecipeBuilder = SawmillRecipeBuilder.sawing(
+        build(consumer, SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(pressurePlate.asItem()),
               new ItemStack(planks, 2)
-        );
+        ), basePath + "pressure_plate/" + name, condition);
         //Trapdoor
-        SawmillRecipeBuilder trapdoorRecipeBuilder = SawmillRecipeBuilder.sawing(
+        build(consumer, SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(trapdoor.asItem()),
               new ItemStack(planks, 3)
-        );
+        ), basePath + "trapdoor/" + name, condition);
+    }
+
+    private static void build(Consumer<IFinishedRecipe> consumer, MekanismRecipeBuilder<?> builder, String path, @Nullable ICondition condition) {
         if (condition != null) {
-            //If there is a condition, add it to the various recipe builders
-            boatRecipeBuilder.addCondition(condition);
-            doorRecipeBuilder.addCondition(condition);
-            fenceGateRecipeBuilder.addCondition(condition);
-            logRecipeBuilder.addCondition(condition);
-            pressurePlateRecipeBuilder.addCondition(condition);
-            trapdoorRecipeBuilder.addCondition(condition);
+            //If there is a condition, add it to the recipe builder
+            builder.addCondition(condition);
         }
-        //build the recipes
-        boatRecipeBuilder.build(consumer, Mekanism.rl(basePath + "boat/" + name));
-        doorRecipeBuilder.build(consumer, Mekanism.rl(basePath + "door/" + name));
-        fenceGateRecipeBuilder.build(consumer, Mekanism.rl(basePath + "fence_gate/" + name));
-        logRecipeBuilder.build(consumer, Mekanism.rl(basePath + "log/" + name));
-        pressurePlateRecipeBuilder.build(consumer, Mekanism.rl(basePath + "pressure_plate/" + name));
-        trapdoorRecipeBuilder.build(consumer, Mekanism.rl(basePath + "trapdoor/" + name));
+        builder.build(consumer, Mekanism.rl(path));
     }
 
     public static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, String basePath, Item bed, Item wool, String name) {

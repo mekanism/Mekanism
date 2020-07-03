@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "amount": 2,
+    "ingredient": {
+      "tag": "forge:dusts/netherite"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "item": "minecraft:basalt"
+    }
+  },
+  "output": {
+    "item": "minecraft:ancient_debris"
+  }
+}

@@ -51,6 +51,12 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
             addDynamicOreProcessingIngotRecipes(consumer, basePath + resource.getRegistrySuffix() + "/", resource);
         }
+        //Gold Dust plus netherrack to nether gold ore
+        CombinerRecipeBuilder.combining(
+              ItemStackIngredient.from(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 8),
+              ItemStackIngredient.from(Tags.Items.NETHERRACK),
+              new ItemStack(Blocks.field_235334_I_)
+        ).build(consumer, Mekanism.rl(basePath + "gold/ore/nether_from_dust"));
 
         //Iron -> enriched iron
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
@@ -58,6 +64,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.CARBON, 10),
               MekanismItems.ENRICHED_IRON.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "iron/enriched"));
+        addNetheriteProcessingRecipes(consumer, basePath + "netherite/");
         addBronzeProcessingRecipes(consumer, basePath + "bronze/");
         addCoalOreProcessingRecipes(consumer, basePath + "coal/");
         addOreProcessingGemRecipes(consumer, basePath + "diamond/", Items.DIAMOND_ORE, Tags.Items.ORES_DIAMOND, MekanismItems.DIAMOND_DUST,
@@ -250,6 +257,38 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(combineType),
               new ItemStack(ore)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
+    }
+
+    //TODO: Once forge figures out default tags for netherite stuff, start using them and maybe add one for dirty netherite scram
+    private void addNetheriteProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Ancient Debris to Dirty Netherite Scrap
+        ItemStackToItemStackRecipeBuilder.crushing(ItemStackIngredient.from(Blocks.field_235398_nh_), MekanismItems.DIRTY_NETHERITE_SCRAP.getItemStack(3))
+              .build(consumer, Mekanism.rl(basePath + "ancient_debris_to_dirty_scrap"));
+        //Dirty Netherite Scrap to Netherite Scrap
+        ItemStackToItemStackRecipeBuilder.enriching(ItemStackIngredient.from(MekanismItems.DIRTY_NETHERITE_SCRAP), new ItemStack(Items.field_234760_kn_))
+              .build(consumer, Mekanism.rl(basePath + "dirty_scrap_to_scrap"));
+        //Ancient Debris to Netherite Scrap
+        ItemStackToItemStackRecipeBuilder.enriching(ItemStackIngredient.from(Blocks.field_235398_nh_), new ItemStack(Items.field_234760_kn_, 2))
+              .build(consumer, Mekanism.rl(basePath + "ancient_debris_to_scrap"));
+        //Netherite scrap to netherite dust
+        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+              ItemStackIngredient.from(Items.field_234760_kn_, 4),
+              InfusionStackIngredient.from(MekanismTags.InfuseTypes.GOLD, 40),
+              MekanismItems.NETHERITE_DUST.getItemStack()
+        ).build(consumer, Mekanism.rl(basePath + "scrap_to_dust"));
+        //Netherite Dust to Netherite Ingot
+        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(MekanismTags.Items.DUSTS_NETHERITE), Items.field_234759_km_, 2, 200,
+              Mekanism.rl(basePath + "ingot_from_dust_blasting"), Mekanism.rl(basePath + "ingot_from_dust_smelting"));
+        //Netherite Ingot to Netherite Dust
+        ItemStackToItemStackRecipeBuilder.crushing(ItemStackIngredient.from(Items.field_234759_km_), MekanismItems.NETHERITE_DUST.getItemStack())
+              .build(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
+        //Netherite Dust to Ancient Debris
+        // Note: We only require two dust as that is equivalent to 8 scrap
+        CombinerRecipeBuilder.combining(
+              ItemStackIngredient.from(MekanismTags.Items.DUSTS_NETHERITE, 2),
+              ItemStackIngredient.from(Blocks.field_235337_cO_),
+              new ItemStack(Blocks.field_235398_nh_)
+        ).build(consumer, Mekanism.rl(basePath + "dust_to_ancient_debris"));
     }
 
     private void addBronzeProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {

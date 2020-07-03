@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:chiseled_polished_blackstone"
+    }
+  },
+  "output": {
+    "item": "minecraft:polished_blackstone_bricks"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:nether_bricks"
+    }
+  },
+  "output": {
+    "item": "minecraft:chiseled_nether_bricks"
+  }
+}

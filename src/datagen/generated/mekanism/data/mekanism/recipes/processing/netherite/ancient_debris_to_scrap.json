@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:ancient_debris"
+    }
+  },
+  "output": {
+    "item": "minecraft:netherite_scrap",
+    "count": 2
+  }
+}

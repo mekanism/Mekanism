@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": {
+    "ingredient": {
+      "tag": "forge:dusts/gold"
+    }
+  },
+  "output": {
+    "infuse_type": "mekanism:gold",
+    "amount": 10
+  }
+}

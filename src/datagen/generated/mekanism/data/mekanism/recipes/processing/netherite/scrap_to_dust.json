@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "itemInput": {
+    "amount": 4,
+    "ingredient": {
+      "item": "minecraft:netherite_scrap"
+    }
+  },
+  "infusionInput": {
+    "amount": 40,
+    "tag": "mekanism:gold"
+  },
+  "output": {
+    "item": "mekanism:dust_netherite"
+  }
+}

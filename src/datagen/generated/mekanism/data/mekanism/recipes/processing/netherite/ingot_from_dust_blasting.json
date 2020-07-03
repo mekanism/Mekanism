@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "result": "minecraft:netherite_ingot",
+  "ingredient": {
+    "tag": "forge:dusts/netherite"
+  },
+  "cookingtime": 100,
+  "experience": 2.0
+}
