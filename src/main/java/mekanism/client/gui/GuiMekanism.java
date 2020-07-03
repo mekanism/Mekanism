@@ -175,6 +175,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 matrix.pop();
             }
         }
+
         // now render overlays in reverse-order (i.e. back to front)
         zOffset = maxZOffset;
         for (LRU<GuiWindow>.LRUIterator iter = getWindowsDescendingIterator(); iter.hasNext(); ) {
@@ -206,6 +207,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             matrix.translate(0, 0, maxZOffset - 50);
             matrix.pop();
         }
+
+        // render item tooltips
+        RenderSystem.translatef(-guiLeft, -guiTop, 0);
+        func_230459_a_(matrix, mouseX, mouseY);
+        RenderSystem.translatef(guiLeft, guiTop, 0);
     }
 
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {}
@@ -367,7 +373,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // is required to not have tooltips of GuiElements rendering behind the items
         super.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
         matrix.pop();
-        func_230459_a_(matrix, mouseX, mouseY);
         RenderSystem.translated(0, 0, 500);
     }
 
