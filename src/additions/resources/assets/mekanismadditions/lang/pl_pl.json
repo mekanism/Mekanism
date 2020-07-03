@@ -272,6 +272,7 @@
   "item.mekanismadditions.white_balloon": "Biały Balon",
   "item.mekanismadditions.yellow_balloon": "Żółty Balon",
   "key.mekanismadditions.voice": "Głos",
+  "sound_event.mekanismadditions.entity.balloon.pop": "Balloon pops",
   "walkie.mekanismadditions.channel": "Kanał: %s",
   "walkie.mekanismadditions.channel.change": "Kanał zmieniony na: %s",
   "walkie.mekanismadditions.disabled": "Serwer głosowy wyłączony."
