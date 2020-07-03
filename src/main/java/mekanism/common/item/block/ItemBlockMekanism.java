@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.ITier;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -15,10 +14,6 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
     @Nonnull
     private final BLOCK block;
-
-    public ItemBlockMekanism(@Nonnull BLOCK block) {
-        this(block, ItemDeferredRegister.getMekBaseProperties());
-    }
 
     public ItemBlockMekanism(@Nonnull BLOCK block, Item.Properties properties) {
         super(block, properties);

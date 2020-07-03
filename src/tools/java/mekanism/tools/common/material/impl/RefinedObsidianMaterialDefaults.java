@@ -71,6 +71,11 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
+    public boolean burnsInFire() {
+        return false;
+    }
+
+    @Override
     public float getToughness() {
         return 4;
     }

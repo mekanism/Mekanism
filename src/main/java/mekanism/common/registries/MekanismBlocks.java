@@ -1,12 +1,12 @@
 package mekanism.common.registries;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import mekanism.api.tier.ITier;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
@@ -230,7 +230,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityBoilerCasing>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityBoilerCasing>>> BOILER_CASING = registerBlock("boiler_casing", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.BOILER_CASING));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityBoilerValve>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityBoilerValve>>> BOILER_VALVE = registerBlock("boiler_valve", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.BOILER_VALVE));
     public static final BlockRegistryObject<BlockSecurityDesk, ItemBlockSecurityDesk> SECURITY_DESK = BLOCKS.register("security_desk", BlockSecurityDesk::new, ItemBlockSecurityDesk::new);
-    public static final BlockRegistryObject<BlockRadioactiveWasteBarrel, ItemBlockMekanism<BlockRadioactiveWasteBarrel>> RADIOACTIVE_WASTE_BARREL = BLOCKS.register("radioactive_waste_barrel", BlockRadioactiveWasteBarrel::new, ItemBlockMekanism::new);
+    public static final BlockRegistryObject<BlockRadioactiveWasteBarrel, ItemBlockMekanism<BlockRadioactiveWasteBarrel>> RADIOACTIVE_WASTE_BARREL = BLOCKS.registerDefaultProperties("radioactive_waste_barrel", BlockRadioactiveWasteBarrel::new, ItemBlockMekanism::new);
     public static final BlockRegistryObject<BlockIndustrialAlarm, ItemBlockTooltip<BlockIndustrialAlarm>> INDUSTRIAL_ALARM = BLOCKS.register("industrial_alarm", BlockIndustrialAlarm::new, ItemBlockIndustrialAlarm::new);
 
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityEnrichmentChamber, FactoryMachine<TileEntityEnrichmentChamber>>, ItemBlockMachine> ENRICHMENT_CHAMBER = BLOCKS.register("enrichment_chamber", () -> new BlockFactoryMachine<>(MekanismBlockTypes.ENRICHMENT_CHAMBER), ItemBlockMachine::new);
@@ -340,7 +340,12 @@ public class MekanismBlocks {
     }
 
     private static BlockRegistryObject<BlockResource, ItemBlockResource> registerResourceBlock(BlockResourceInfo resource) {
-        return BLOCKS.register("block_" + resource.getRegistrySuffix(), () -> new BlockResource(resource), ItemBlockResource::new);
+        return BLOCKS.registerDefaultProperties("block_" + resource.getRegistrySuffix(), () -> new BlockResource(resource), (block, properties) -> {
+            if (!block.getResourceInfo().burnsInFire()) {
+                properties = properties.func_234689_a_();
+            }
+            return new ItemBlockResource(block, properties);
+        });
     }
 
     private static BlockRegistryObject<BlockBin, ItemBlockBin> registerBin(BlockTypeTile<TileEntityBin> type) {
@@ -401,11 +406,13 @@ public class MekanismBlocks {
         return BLOCKS.registerDefaultProperties(ore.getResource().getRegistrySuffix() + "_ore", () -> new BlockOre(ore), ItemBlockTooltip::new);
     }
 
-    private static <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerBlock(String name, Supplier<? extends BLOCK> blockSupplier) {
+    private static <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerBlock(String name,
+          Supplier<? extends BLOCK> blockSupplier) {
         return BLOCKS.registerDefaultProperties(name, blockSupplier, ItemBlockTooltip::new);
     }
 
-    private static <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerBlock(String name, Supplier<? extends BLOCK> blockSupplier, Rarity rarity) {
+    private static <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerBlock(String name,
+          Supplier<? extends BLOCK> blockSupplier, Rarity rarity) {
         return BLOCKS.registerDefaultProperties(name, blockSupplier, (block, props) -> new ItemBlockTooltip<>(block, props.rarity(rarity)));
     }
 

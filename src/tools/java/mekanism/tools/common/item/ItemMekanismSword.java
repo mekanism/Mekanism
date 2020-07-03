@@ -5,10 +5,9 @@ import com.google.common.collect.Multimap;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.registration.impl.ItemDeferredRegister;
-import mekanism.tools.common.item.attribute.AttributeCache;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
+import mekanism.tools.common.item.attribute.AttributeCache;
 import mekanism.tools.common.item.attribute.IAttributeRefresher;
 import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.client.util.ITooltipFlag;
@@ -17,6 +16,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.crafting.Ingredient;
@@ -30,8 +30,8 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAtt
     private final MaterialCreator material;
     private final AttributeCache attributeCache;
 
-    public ItemMekanismSword(MaterialCreator material) {
-        super(material, material.getSwordDamage(), material.getSwordAtkSpeed(), ItemDeferredRegister.getMekBaseProperties());
+    public ItemMekanismSword(MaterialCreator material, Item.Properties properties) {
+        super(material, material.getSwordDamage(), material.getSwordAtkSpeed(), properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.swordDamage, material.swordAtkSpeed);
     }

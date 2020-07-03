@@ -65,6 +65,10 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
     //Recombine the methods that are split in such a way as to make it so the compiler can reobfuscate them properly
     public abstract int getCommonEnchantability();
 
+    public boolean burnsInFire() {
+        return true;
+    }
+
     @Override
     public int getItemEnchantability() {
         return getCommonEnchantability();

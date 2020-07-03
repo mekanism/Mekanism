@@ -270,6 +270,11 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
+    public boolean burnsInFire() {
+        return fallBack.burnsInFire();
+    }
+
+    @Override
     public float getToughness() {
         return toughness.get();
     }

@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.item.attribute.AttributeCache;
@@ -21,6 +20,7 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.text.ITextComponent;
@@ -34,8 +34,8 @@ public class ItemMekanismAxe extends AxeItem implements IHasRepairType, IAttribu
     private final MaterialCreator material;
     private final AttributeCache attributeCache;
 
-    public ItemMekanismAxe(MaterialCreator material) {
-        super(material, material.getAxeDamage(), material.getAxeAtkSpeed(), ItemDeferredRegister.getMekBaseProperties());
+    public ItemMekanismAxe(MaterialCreator material, Item.Properties properties) {
+        super(material, material.getAxeDamage(), material.getAxeAtkSpeed(), properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.axeDamage, material.axeAtkSpeed);
     }
