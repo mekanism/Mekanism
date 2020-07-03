@@ -14,6 +14,6 @@ public class AdditionsSoundProvider extends BaseSoundProvider {
 
     @Override
     protected void addSoundEvents() {
-        addSoundEvent(AdditionsSounds.POP, MekanismAdditions.rl("pop"));
+        addSoundEventWithSubtitle(AdditionsSounds.POP, MekanismAdditions.rl("pop"));
     }
 }

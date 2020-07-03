@@ -14,17 +14,17 @@ public class GeneratorsSoundProvider extends BaseSoundProvider {
 
     @Override
     protected void addSoundEvents() {
-        addSoundEvent(GeneratorsSounds.FUSION_REACTOR, MekanismGenerators.rl("fusion_reactor"));
-        addSoundEvent(GeneratorsSounds.FISSION_REACTOR, MekanismGenerators.rl("fission_reactor"));
+        addSoundEventWithSubtitle(GeneratorsSounds.FUSION_REACTOR, MekanismGenerators.rl("fusion_reactor"));
+        addSoundEventWithSubtitle(GeneratorsSounds.FISSION_REACTOR, MekanismGenerators.rl("fission_reactor"));
         addGeneratorSoundEvents();
     }
 
     private void addGeneratorSoundEvents() {
         String basePath = "generator/";
-        addSoundEvent(GeneratorsSounds.BIO_GENERATOR, MekanismGenerators.rl(basePath + "bio"));
-        addSoundEvent(GeneratorsSounds.GAS_BURNING_GENERATOR, MekanismGenerators.rl(basePath + "gas_burning"));
-        addSoundEvent(GeneratorsSounds.HEAT_GENERATOR, MekanismGenerators.rl(basePath + "heat"));
-        addSoundEvent(GeneratorsSounds.SOLAR_GENERATOR, MekanismGenerators.rl(basePath + "solar"));
-        addSoundEvent(GeneratorsSounds.WIND_GENERATOR, MekanismGenerators.rl(basePath + "wind"));
+        addSoundEventWithSubtitle(GeneratorsSounds.BIO_GENERATOR, MekanismGenerators.rl(basePath + "bio"));
+        addSoundEventWithSubtitle(GeneratorsSounds.GAS_BURNING_GENERATOR, MekanismGenerators.rl(basePath + "gas_burning"));
+        addSoundEventWithSubtitle(GeneratorsSounds.HEAT_GENERATOR, MekanismGenerators.rl(basePath + "heat"));
+        addSoundEventWithSubtitle(GeneratorsSounds.SOLAR_GENERATOR, MekanismGenerators.rl(basePath + "solar"));
+        addSoundEventWithSubtitle(GeneratorsSounds.WIND_GENERATOR, MekanismGenerators.rl(basePath + "wind"));
     }
 }

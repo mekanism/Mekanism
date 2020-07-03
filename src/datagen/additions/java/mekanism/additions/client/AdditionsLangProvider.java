@@ -6,6 +6,7 @@ import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
+import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.item.block.ItemBlockColoredName;
@@ -25,6 +26,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         addItems();
         addBlocks();
         addEntities();
+        addSubtitles();
         addMisc();
     }
 
@@ -151,6 +153,10 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         add(AdditionsEntityTypes.BABY_WITHER_SKELETON, "Baby Wither Skeleton");
         add(AdditionsEntityTypes.BALLOON, "Balloon");
         add(AdditionsEntityTypes.OBSIDIAN_TNT, "Obsidian TNT");
+    }
+
+    private void addSubtitles() {
+        add(AdditionsSounds.POP, "Balloon pops");
     }
 
     private void addMisc() {

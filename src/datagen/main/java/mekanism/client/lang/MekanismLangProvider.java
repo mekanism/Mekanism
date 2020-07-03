@@ -1,7 +1,7 @@
 package mekanism.client.lang;
 
-import java.util.Map;
 import com.google.common.collect.Table.Cell;
+import java.util.Map;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
@@ -21,6 +21,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismSlurries;
+import mekanism.common.registries.MekanismSounds;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -46,6 +47,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addPigments();
         addSlurries();
         addDamageSources();
+        addSubtitles();
         addMisc();
     }
 
@@ -384,6 +386,48 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addDamageSources() {
         add(MekanismDamageSource.LASER, "%s was incinerated.");
         add(MekanismDamageSource.RADIATION, "%s was killed by radiation poisoning.");
+    }
+
+    private void addSubtitles() {
+        //Tiles
+        add(MekanismSounds.CHARGEPAD, "Chargepad hums");
+        add(MekanismSounds.CHEMICAL_CRYSTALLIZER, "Crystallizer hums");
+        add(MekanismSounds.CHEMICAL_DISSOLUTION_CHAMBER, "Dissolution Chamber hums");
+        add(MekanismSounds.CHEMICAL_INFUSER, "Chemical Infuser hums");
+        add(MekanismSounds.CHEMICAL_INJECTION_CHAMBER, "Injection Chamber processes");
+        add(MekanismSounds.CHEMICAL_OXIDIZER, "Oxidizer hums");
+        add(MekanismSounds.CHEMICAL_WASHER, "Washer hums");
+        add(MekanismSounds.COMBINER, "Combiner hums");
+        add(MekanismSounds.OSMIUM_COMPRESSOR, "Compressor hums");
+        add(MekanismSounds.CRUSHER, "Crusher clangs");
+        add(MekanismSounds.ELECTROLYTIC_SEPARATOR, "Separator separates");
+        add(MekanismSounds.ENRICHMENT_CHAMBER, "Enricher hums");
+        add(MekanismSounds.LASER, "Laser hums");
+        add(MekanismSounds.LOGISTICAL_SORTER, "Sorter clicks");
+        add(MekanismSounds.METALLURGIC_INFUSER, "Metallurgic infuser hums");
+        add(MekanismSounds.PRECISION_SAWMILL, "Sawmill cuts");
+        add(MekanismSounds.PRESSURIZED_REACTION_CHAMBER, "Reaction chamber hums");
+        add(MekanismSounds.PURIFICATION_CHAMBER, "Purifier hums");
+        add(MekanismSounds.RESISTIVE_HEATER, "Heater hums");
+        add(MekanismSounds.ROTARY_CONDENSENTRATOR, "Condensentrator rotates");
+        add(MekanismSounds.ENERGIZED_SMELTER, "Smelter whines");
+        add(MekanismSounds.ISOTOPIC_CENTRIFUGE, "Centrifuge spins");
+        add(MekanismSounds.NUTRITIONAL_LIQUIFIER, "Nutrients liquified");
+        add(MekanismSounds.INDUSTRIAL_ALARM, "Alarm sounds");
+        add(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER, "Nucleosynthesizer hums");
+        add(MekanismSounds.SPS, "SPS hums");
+        //Gear
+        add(MekanismSounds.FLAMETHROWER_IDLE, "Flamethrower hisses");
+        add(MekanismSounds.FLAMETHROWER_ACTIVE, "Flamethrower burns");
+        add(MekanismSounds.SCUBA_MASK, "Air flows");
+        add(MekanismSounds.JETPACK, "Jetpack burns");
+        add(MekanismSounds.HYDRAULIC, "Hydraulic shifts");
+        add(MekanismSounds.GRAVITATIONAL_MODULATION_UNIT, "Gravity modulates");
+        //Geiger
+        add(MekanismSounds.GEIGER_SLOW, "Geiger counter clicks slowly");
+        add(MekanismSounds.GEIGER_MEDIUM, "Geiger Counter clicks");
+        add(MekanismSounds.GEIGER_ELEVATED, "Elevated Geiger Counter clicks");
+        add(MekanismSounds.GEIGER_FAST, "Constant Geiger Counter clicks");
     }
 
     private void addMisc() {

@@ -7,6 +7,7 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsItems;
+import mekanism.generators.common.registries.GeneratorsSounds;
 import net.minecraft.data.DataGenerator;
 
 public class GeneratorsLangProvider extends BaseLanguageProvider {
@@ -21,6 +22,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         addBlocks();
         addFluids();
         addGases();
+        addSubtitles();
         addMisc();
     }
 
@@ -68,6 +70,16 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsGases.DEUTERIUM, "Deuterium");
         add(GeneratorsGases.FUSION_FUEL, "D-T Fuel");
         add(GeneratorsGases.TRITIUM, "Tritium");
+    }
+
+    private void addSubtitles() {
+        add(GeneratorsSounds.BIO_GENERATOR, "Bio generator hums");
+        add(GeneratorsSounds.GAS_BURNING_GENERATOR, "Gas generator hums");
+        add(GeneratorsSounds.FISSION_REACTOR, "Fission reactor hums");
+        add(GeneratorsSounds.FUSION_REACTOR, "Fusion reactor hums");
+        add(GeneratorsSounds.HEAT_GENERATOR, "Heat generator hums");
+        add(GeneratorsSounds.SOLAR_GENERATOR, "Solar generator hums");
+        add(GeneratorsSounds.WIND_GENERATOR, "Wind generator wooshes");
     }
 
     private void addMisc() {
