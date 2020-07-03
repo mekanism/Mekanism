@@ -272,6 +272,7 @@
   "item.mekanismadditions.white_balloon": "白色 氣球",
   "item.mekanismadditions.yellow_balloon": "黃色 氣球",
   "key.mekanismadditions.voice": "語音",
+  "sound_event.mekanismadditions.entity.balloon.pop": "Balloon pops",
   "walkie.mekanismadditions.channel": "頻道: %s",
   "walkie.mekanismadditions.channel.change": "頻道切換至: %s",
   "walkie.mekanismadditions.disabled": "語音伺服器禁用"
