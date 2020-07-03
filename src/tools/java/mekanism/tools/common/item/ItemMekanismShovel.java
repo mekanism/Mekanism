@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.item.attribute.AttributeCache;
@@ -19,6 +18,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.crafting.Ingredient;
@@ -33,8 +33,8 @@ public class ItemMekanismShovel extends ShovelItem implements IHasRepairType, IA
     private final MaterialCreator material;
     private final AttributeCache attributeCache;
 
-    public ItemMekanismShovel(MaterialCreator material) {
-        super(material, material.getShovelDamage(), material.getShovelAtkSpeed(), ItemDeferredRegister.getMekBaseProperties());
+    public ItemMekanismShovel(MaterialCreator material, Item.Properties properties) {
+        super(material, material.getShovelDamage(), material.getShovelAtkSpeed(), properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.shovelDamage, material.shovelAtkSpeed);
     }

@@ -1,17 +1,14 @@
 package mekanism.tools.common.item;
 
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.material.BaseMekanismMaterial;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShieldItem;
 import net.minecraft.item.crafting.Ingredient;
@@ -24,8 +21,8 @@ public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
 
     private final BaseMekanismMaterial material;
 
-    public ItemMekanismShield(BaseMekanismMaterial material, Supplier<Callable<ItemStackTileEntityRenderer>> ister) {
-        super(ItemDeferredRegister.getMekBaseProperties().maxDamage(material.getShieldDurability()).setISTER(ister));
+    public ItemMekanismShield(BaseMekanismMaterial material, Item.Properties properties) {
+        super(properties.maxDamage(material.getShieldDurability()));
         this.material = material;
     }
 

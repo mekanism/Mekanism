@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.item.attribute.AttributeCache;
@@ -20,6 +19,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.crafting.Ingredient;
@@ -34,8 +34,8 @@ public class ItemMekanismPickaxe extends PickaxeItem implements IHasRepairType, 
     private final MaterialCreator material;
     private final AttributeCache attributeCache;
 
-    public ItemMekanismPickaxe(MaterialCreator material) {
-        super(material, material.getPickaxeDamage(), material.getPickaxeAtkSpeed(), ItemDeferredRegister.getMekBaseProperties());
+    public ItemMekanismPickaxe(MaterialCreator material, Item.Properties properties) {
+        super(material, material.getPickaxeDamage(), material.getPickaxeAtkSpeed(), properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.pickaxeDamage, material.pickaxeAtkSpeed);
     }

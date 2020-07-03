@@ -1,6 +1,7 @@
 package mekanism.common.item.block;
 
 import javax.annotation.Nonnull;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -21,7 +22,7 @@ import net.minecraft.world.World;
 public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBlockMekanism<BLOCK> {
 
     public ItemBlockMultipartAble(BLOCK block) {
-        super(block);
+        super(block, ItemDeferredRegister.getMekBaseProperties());
     }
 
     /**

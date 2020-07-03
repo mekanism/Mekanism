@@ -174,12 +174,12 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> OBSIDIAN_DUST = registerResource(ResourceType.DUST, MiscResource.OBSIDIAN);
     public static final ItemRegistryObject<Item> FLUORITE_DUST = registerResource(ResourceType.DUST, MiscResource.FLUORITE);
 
-    public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_INGOT = registerResource(ResourceType.INGOT, MiscResource.REFINED_OBSIDIAN);
+    public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_INGOT = registerUnburnableResource(ResourceType.INGOT, MiscResource.REFINED_OBSIDIAN);
     public static final ItemRegistryObject<Item> BRONZE_INGOT = registerResource(ResourceType.INGOT, MiscResource.BRONZE);
     public static final ItemRegistryObject<Item> REFINED_GLOWSTONE_INGOT = registerResource(ResourceType.INGOT, MiscResource.REFINED_GLOWSTONE);
     public static final ItemRegistryObject<Item> STEEL_INGOT = registerResource(ResourceType.INGOT, MiscResource.STEEL);
 
-    public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.REFINED_OBSIDIAN);
+    public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_NUGGET = registerUnburnableResource(ResourceType.NUGGET, MiscResource.REFINED_OBSIDIAN);
     public static final ItemRegistryObject<Item> BRONZE_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.BRONZE);
     public static final ItemRegistryObject<Item> REFINED_GLOWSTONE_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.REFINED_GLOWSTONE);
     public static final ItemRegistryObject<Item> STEEL_NUGGET = registerResource(ResourceType.NUGGET, MiscResource.STEEL);
@@ -196,6 +196,10 @@ public class MekanismItems {
 
     private static ItemRegistryObject<Item> registerResource(ResourceType type, IResource resource) {
         return ITEMS.register(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix());
+    }
+
+    private static ItemRegistryObject<Item> registerUnburnableResource(ResourceType type, IResource resource) {
+        return ITEMS.register(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix(), properties -> new Item(properties.func_234689_a_()));
     }
 
     private static ItemRegistryObject<Item> registerCircuit(BaseTier tier) {

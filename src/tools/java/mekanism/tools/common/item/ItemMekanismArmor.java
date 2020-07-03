@@ -7,7 +7,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.value.CachedIntValue;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.client.render.GlowArmor;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
@@ -24,6 +23,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.text.ITextComponent;
@@ -36,8 +36,8 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
     private final MaterialCreator material;
     private final AttributeCache attributeCache;
 
-    public ItemMekanismArmor(MaterialCreator material, EquipmentSlotType slot) {
-        super(material, slot, ItemDeferredRegister.getMekBaseProperties());
+    public ItemMekanismArmor(MaterialCreator material, EquipmentSlotType slot, Item.Properties properties) {
+        super(material, slot, properties);
         this.material = material;
         CachedIntValue armorConfig;
         if (slot == EquipmentSlotType.FEET) {

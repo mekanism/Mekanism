@@ -33,7 +33,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     }
 
     public ItemRegistryObject<Item> register(String name, Rarity rarity) {
-        return register(name, (props) -> new Item(props.rarity(rarity)));
+        return register(name, properties -> new Item(properties.rarity(rarity)));
     }
 
     public ItemRegistryObject<Item> register(String name, EnumColor color) {

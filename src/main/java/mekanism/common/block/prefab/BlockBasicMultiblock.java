@@ -61,21 +61,22 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
-        if (tile != null) {
-            if (world.isRemote) {
-                ItemStack stack = player.getHeldItem(hand);
-                if (stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace()) {
-                    if (!tile.getMultiblock().isFormed() || !tile.hasGui()) {
-                        return ActionResultType.PASS;
-                    }
-                }
-                return ActionResultType.SUCCESS;
-            }
-            if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
-                return ActionResultType.SUCCESS;
-            }
-            return tile.onActivate(player, hand, player.getHeldItem(hand));
+        if (tile == null) {
+            return ActionResultType.PASS;
         }
-        return ActionResultType.PASS;
+        if (world.isRemote) {
+            ItemStack stack = player.getHeldItem(hand);
+            if (stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace()) {
+                if (!tile.hasGui() || !tile.getMultiblock().isFormed()) {
+                    //If the block doesn't have a gui (frames of things like the evaporation plant), or the multiblock is not formed then pass
+                    return ActionResultType.PASS;
+                }
+            }
+            return ActionResultType.SUCCESS;
+        }
+        if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+            return ActionResultType.SUCCESS;
+        }
+        return tile.onActivate(player, hand, player.getHeldItem(hand));
     }
 }

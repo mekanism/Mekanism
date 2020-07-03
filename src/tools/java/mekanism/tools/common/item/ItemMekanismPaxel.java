@@ -52,13 +52,17 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
 
     private static final ToolType PAXEL_TOOL_TYPE = ToolType.get("paxel");
 
-    private static Item.Properties getItemProperties(int harvestLevel, boolean unburnable) {
-        Item.Properties properties = ItemDeferredRegister.getMekBaseProperties().addToolType(ToolType.AXE, harvestLevel).addToolType(ToolType.PICKAXE, harvestLevel)
-              .addToolType(ToolType.SHOVEL, harvestLevel).addToolType(PAXEL_TOOL_TYPE, harvestLevel);
-        if (unburnable) {
+    private static Item.Properties getItemProperties(ItemTier material) {
+        Item.Properties properties = ItemDeferredRegister.getMekBaseProperties();
+        if (material == ItemTier.NETHERITE) {
             properties = properties.func_234689_a_();
         }
-        return properties;
+        return addHarvestLevel(properties, material.getHarvestLevel());
+    }
+
+    private static Item.Properties addHarvestLevel(Item.Properties properties, int harvestLevel) {
+        return properties.addToolType(ToolType.AXE, harvestLevel).addToolType(ToolType.PICKAXE, harvestLevel)
+              .addToolType(ToolType.SHOVEL, harvestLevel).addToolType(PAXEL_TOOL_TYPE, harvestLevel);
     }
 
     private final FloatSupplier paxelDamage;
@@ -69,8 +73,8 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
     private final IntSupplier paxelHarvestLevel;
     private final AttributeCache attributeCache;
 
-    public ItemMekanismPaxel(MaterialCreator material) {
-        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, Collections.emptySet(), getItemProperties(material.getPaxelHarvestLevel(), false));
+    public ItemMekanismPaxel(MaterialCreator material, Item.Properties properties) {
+        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, Collections.emptySet(), addHarvestLevel(properties, material.getPaxelHarvestLevel()));
         paxelDamage = material::getPaxelDamage;
         paxelAtkSpeed = material::getPaxelAtkSpeed;
         paxelEfficiency = material::getPaxelEfficiency;
@@ -80,8 +84,8 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.paxelDamage, material.paxelAtkSpeed);
     }
 
-    public ItemMekanismPaxel(ItemTier material, boolean unburnable) {
-        super(4, -2.4F, material, Collections.emptySet(), getItemProperties(material.getHarvestLevel(), unburnable));
+    public ItemMekanismPaxel(ItemTier material) {
+        super(4, -2.4F, material, Collections.emptySet(), getItemProperties(material));
         paxelDamage = () -> 4;
         paxelAtkSpeed = () -> -2.4F;
         paxelEfficiency = material::getEfficiency;
