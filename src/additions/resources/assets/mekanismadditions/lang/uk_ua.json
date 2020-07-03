@@ -272,6 +272,7 @@
   "item.mekanismadditions.white_balloon": "Біла куля",
   "item.mekanismadditions.yellow_balloon": "Жовта куля",
   "key.mekanismadditions.voice": "Голос",
+  "sound_event.mekanismadditions.entity.balloon.pop": "Balloon pops",
   "walkie.mekanismadditions.channel": "Канал: %s",
   "walkie.mekanismadditions.channel.change": "Канал змінено на: %s",
   "walkie.mekanismadditions.disabled": "Голосовий сервер вимкнено."
