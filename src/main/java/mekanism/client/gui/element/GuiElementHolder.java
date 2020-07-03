@@ -1,5 +1,7 @@
 package mekanism.client.gui.element;
 
+import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -12,4 +14,12 @@ public class GuiElementHolder extends GuiScalableElement {
     public GuiElementHolder(IGuiWrapper gui, int x, int y, int width, int height) {
         super(HOLDER, gui, x, y, width, height, 2, 2);
     }
+
+    @Override
+    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        renderBackgroundTexture(matrix, getResource(), sideWidth, sideHeight);
+    }
+
+    @Override
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {}
 }

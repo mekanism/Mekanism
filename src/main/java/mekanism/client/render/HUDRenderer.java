@@ -69,6 +69,8 @@ public class HUDRenderer {
 
     private void renderMekaSuitEnergyIcons(MatrixStack matrix, float partialTick) {
         matrix.push();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         matrix.translate(10, 10, 0);
         int posX = 0;
         if (getStack(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
