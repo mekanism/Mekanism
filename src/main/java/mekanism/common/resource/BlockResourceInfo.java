@@ -78,7 +78,7 @@ public enum BlockResourceInfo implements IResource {
     }
 
     public boolean isBeaconBase() {
-        //TODO: Remove this and handle it via tags once https://github.com/MinecraftForge/MinecraftForge/issues/6910 is resolved
+        //TODO: Remove this once https://github.com/MinecraftForge/MinecraftForge/issues/6910 is resolved as we add to vanilla's beacon base tag
         return beaconBase;
     }
 

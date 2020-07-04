@@ -1,0 +1,13 @@
+{
+  "values": [
+    "mekanism:block_osmium",
+    "mekanism:block_copper",
+    "mekanism:block_tin",
+    "mekanism:block_lead",
+    "mekanism:block_uranium",
+    "mekanism:block_bronze",
+    "mekanism:block_refined_obsidian",
+    "mekanism:block_refined_glowstone",
+    "mekanism:block_steel"
+  ]
+}

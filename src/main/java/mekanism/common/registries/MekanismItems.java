@@ -177,8 +177,9 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> OBSIDIAN_DUST = registerResource(ResourceType.DUST, MiscResource.OBSIDIAN);
     public static final ItemRegistryObject<Item> FLUORITE_DUST = registerResource(ResourceType.DUST, MiscResource.FLUORITE);
 
-    public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_INGOT = registerUnburnableResource(ResourceType.INGOT, MiscResource.REFINED_OBSIDIAN);
     public static final ItemRegistryObject<Item> BRONZE_INGOT = registerResource(ResourceType.INGOT, MiscResource.BRONZE);
+    public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_INGOT = registerUnburnableResource(ResourceType.INGOT, MiscResource.REFINED_OBSIDIAN);
+    //TODO - 1.16: Make the refined glowstone ingot override IForgeItem#isPiglingCurreny(ItemStack)
     public static final ItemRegistryObject<Item> REFINED_GLOWSTONE_INGOT = registerResource(ResourceType.INGOT, MiscResource.REFINED_GLOWSTONE);
     public static final ItemRegistryObject<Item> STEEL_INGOT = registerResource(ResourceType.INGOT, MiscResource.STEEL);
 

@@ -22,8 +22,8 @@ public class DefenseDataGenerator {
         }
         if (event.includeServer()) {
             //Server side data generators
-            gen.addProvider(new DefenseLootProvider(gen));
             gen.addProvider(new DefenseTagProvider(gen));
+            gen.addProvider(new DefenseLootProvider(gen));
             gen.addProvider(new DefenseRecipeProvider(gen));
         }
     }

@@ -30,8 +30,8 @@ public class MekanismDataGenerator {
         }
         if (event.includeServer()) {
             //Server side data generators
-            gen.addProvider(new MekanismLootProvider(gen));
             gen.addProvider(new MekanismTagProvider(gen));
+            gen.addProvider(new MekanismLootProvider(gen));
             gen.addProvider(new MekanismRecipeProvider(gen));
         }
     }

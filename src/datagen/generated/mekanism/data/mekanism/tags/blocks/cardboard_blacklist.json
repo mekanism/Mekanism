@@ -7,6 +7,8 @@
     "mekanism:digital_miner",
     "mekanism:seismic_vibrator",
     "mekanism:solar_neutron_activator",
+    "mekanism:modification_station",
+    "mekanism:isotopic_centrifuge",
     "mekanism:radioactive_waste_barrel",
     "minecraft:white_bed",
     "minecraft:orange_bed",
@@ -30,6 +32,8 @@
     "minecraft:jungle_door",
     "minecraft:acacia_door",
     "minecraft:dark_oak_door",
+    "minecraft:crimson_door",
+    "minecraft:warped_door",
     "minecraft:iron_door"
   ]
 }

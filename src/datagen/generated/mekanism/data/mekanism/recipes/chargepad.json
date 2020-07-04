@@ -9,7 +9,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:stone_pressure_plate"
+      "item": "minecraft:polished_blackstone_pressure_plate"
     },
     "S": {
       "tag": "forge:ingots/steel"

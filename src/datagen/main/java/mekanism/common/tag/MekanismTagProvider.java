@@ -1,7 +1,7 @@
 package mekanism.common.tag;
 
-import java.util.Map;
 import com.google.common.collect.Table.Cell;
+import java.util.Map;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.datagen.tag.ForgeRegistryTagBuilder;
 import mekanism.api.providers.IItemProvider;
@@ -10,6 +10,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
@@ -24,6 +25,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 
 public class MekanismTagProvider extends BaseTagProvider {
@@ -35,6 +38,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     @Override
     protected void registerTags() {
         addProcessedResources();
+        addBeaconTags();
         addBoxBlacklist();
         addToTag(MekanismTags.Items.WRENCHES, MekanismItems.CONFIGURATOR);
         addToTag(MekanismTags.Items.BATTERIES, MekanismItems.ENERGY_TABLET);
@@ -57,12 +61,15 @@ public class MekanismTagProvider extends BaseTagProvider {
         addInfuseTags();
         addPellets();
         getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
+        addToTag(BlockTags.field_232883_ay_, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismBlocks.PERSONAL_CHEST);
+        addToTag(BlockTags.field_232879_au_, MekanismBlocks.TELEPORTER, MekanismBlocks.QUANTUM_ENTANGLOPORTER);
+        addToTag(ItemTags.field_232903_N_, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismItems.REFINED_GLOWSTONE_INGOT);
+        addToTag(EntityTypeTags.field_232893_e_, MekanismEntityTypes.FLAME);
     }
 
     private void addProcessedResources() {
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             addToTag(item.getRowKey(), item.getColumnKey(), item.getValue());
-
             switch (item.getRowKey()) {
                 case SHARD:
                     addToTag(MekanismTags.Items.SHARDS, item.getValue());
@@ -95,6 +102,33 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Items.PROCESSED_RESOURCES.get(type, resource), items);
     }
 
+    private void addBeaconTags() {
+        //Beacon bases
+        addToTag(BlockTags.field_232875_ap_,
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.COPPER),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.TIN),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.URANIUM),
+              MekanismBlocks.BRONZE_BLOCK,
+              MekanismBlocks.REFINED_OBSIDIAN_BLOCK,
+              MekanismBlocks.REFINED_GLOWSTONE_BLOCK,
+              MekanismBlocks.STEEL_BLOCK
+        );
+        //Beacon payment items
+        addToTag(ItemTags.field_232908_Z_,
+              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
+              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER),
+              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN),
+              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD),
+              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM),
+              MekanismItems.BRONZE_INGOT,
+              MekanismItems.REFINED_OBSIDIAN_INGOT,
+              MekanismItems.REFINED_GLOWSTONE_INGOT,
+              MekanismItems.STEEL_INGOT
+        );
+    }
+
     private void addBoxBlacklist() {
         addToTag(MekanismTags.Blocks.CARDBOARD_BLACKLIST,
               MekanismBlocks.CARDBOARD_BOX,
@@ -104,6 +138,8 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.DIGITAL_MINER,
               MekanismBlocks.SEISMIC_VIBRATOR,
               MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR,
+              MekanismBlocks.MODIFICATION_STATION,
+              MekanismBlocks.ISOTOPIC_CENTRIFUGE,
               MekanismBlocks.RADIOACTIVE_WASTE_BARREL // closing all the loopholes!
         );
         getBlockBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST).add(
@@ -129,6 +165,8 @@ public class MekanismTagProvider extends BaseTagProvider {
               Blocks.JUNGLE_DOOR,
               Blocks.ACACIA_DOOR,
               Blocks.DARK_OAK_DOOR,
+              Blocks.field_235360_mS_,
+              Blocks.field_235361_mT_,
               Blocks.IRON_DOOR
         );
     }
