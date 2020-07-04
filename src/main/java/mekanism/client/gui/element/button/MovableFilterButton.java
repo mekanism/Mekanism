@@ -118,8 +118,8 @@ public class MovableFilterButton extends FilterButton {
             //Update visibility state of our buttons
             updateButtonVisibility();
             //Render our sub buttons and our slot
-            upButton.drawBackground(matrix, mouseX, mouseY, partialTicks);
-            downButton.drawBackground(matrix, mouseX, mouseY, partialTicks);
+            upButton.onDrawBackground(matrix, mouseX, mouseY, partialTicks);
+            downButton.onDrawBackground(matrix, mouseX, mouseY, partialTicks);
         }
     }
 

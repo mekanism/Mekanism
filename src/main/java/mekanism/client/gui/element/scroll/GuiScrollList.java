@@ -41,7 +41,7 @@ public abstract class GuiScrollList extends GuiScrollableElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw the background
-        background.func_230431_b_(matrix, mouseX, mouseY, partialTicks);
+        background.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
         background.drawBackground(matrix, mouseX, mouseY, partialTicks);
         GuiElement.minecraft.textureManager.bindTexture(getResource());
         //Draw Scroll

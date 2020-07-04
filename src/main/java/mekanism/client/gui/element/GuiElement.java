@@ -122,7 +122,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
             // render background overlay and children above everything else
             renderBackgroundOverlay(matrix, mouseX, mouseY);
             // render children just above background overlay
-            children.forEach(child -> child.func_230431_b_(matrix, mouseX, mouseY, 0));
+            children.forEach(child -> child.func_230430_a_(matrix, mouseX, mouseY, 0));
             children.forEach(child -> child.onDrawBackground(matrix, mouseX, mouseY, 0));
             // translate back to top right corner and forward to render foregrounds
             matrix.translate(guiObj.getLeft(), guiObj.getTop(), 0);

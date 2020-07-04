@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.bar;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -81,7 +81,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar != null) {
-            currentBar.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
+            currentBar.drawBackground(matrix, mouseX, mouseY, partialTicks);
         }
     }
 
