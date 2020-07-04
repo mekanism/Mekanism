@@ -2,7 +2,10 @@ package mekanism.common.tile.prefab;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import javax.annotation.Nonnull;
 import mekanism.api.IConfigurable;
+import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
@@ -13,8 +16,10 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -25,6 +30,8 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     private final Map<MultiblockManager<?>, Structure> structures = new HashMap<>();
     private final Structure invalidStructure = Structure.INVALID;
     private final MultiblockData defaultMultiblock = new MultiblockData(this);
+
+    private String clientActiveMultiblock = null;
 
     public TileEntityStructuralMultiblock(IBlockProvider provider) {
         super(provider);
@@ -53,14 +60,12 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     @Override
     public boolean hasFormedMultiblock() {
-        //TODO - 1.16: Implement me
-        return false;
+        return clientActiveMultiblock != null;
     }
 
     @Override
     public boolean structuralGuiAccessAllowed() {
-        //TODO - 1.16: Implement me
-        return true;
+        return hasFormedMultiblock() && !clientActiveMultiblock.contains("fusion") && !clientActiveMultiblock.contains("evaporation");
     }
 
     @Override
@@ -74,6 +79,19 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
         structures.entrySet().removeIf(entry -> !entry.getValue().isValid());
         if (ticker >= 3 && structures.isEmpty()) {
             invalidStructure.tick(this);
+        }
+        // this could potentially fail if this structural multiblock tracks multiple structures, but 99.99% of the time this will be accurate
+        String activeMultiblock = null;
+        for (Structure s : structures.values()) {
+            IMultiblock<?> master = s.getController();
+            if (master != null && getMultiblockData(s.getManager()).isFormed()) {
+                activeMultiblock = master.getManager().getName().toLowerCase();
+                break;
+            }
+        }
+        if (!Objects.equals(activeMultiblock, clientActiveMultiblock)) {
+            clientActiveMultiblock = activeMultiblock;
+            sendUpdatePacket();
         }
     }
 
@@ -111,6 +129,22 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         return ActionResultType.PASS;
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
+        if (clientActiveMultiblock != null) {
+            updateTag.putString(NBTConstants.ACTIVE_STATE, clientActiveMultiblock);
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
+        clientActiveMultiblock = tag.contains(NBTConstants.ACTIVE_STATE) ? tag.getString(NBTConstants.ACTIVE_STATE) : null;
     }
 
     @Override

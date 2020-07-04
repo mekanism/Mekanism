@@ -1,10 +1,10 @@
 package mekanism.client;
 
-import com.google.common.collect.Table.Cell;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import com.google.common.collect.Table.Cell;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
@@ -245,7 +245,7 @@ public class ClientRegistration {
         });
 
         ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, new ResourceLocation("pull"),
-              (stack, world, entity) -> entity != null && entity.getActiveItemStack() == stack ? (float) (stack.getUseDuration() - entity.getItemInUseCount()) / 20.0F : 0);
+              (stack, world, entity) -> entity != null && entity.getActiveItemStack() == stack ? (stack.getUseDuration() - entity.getItemInUseCount()) / 20.0F : 0);
         ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, new ResourceLocation("pulling"),
               (stack, world, entity) -> entity != null && entity.isHandActive() && entity.getActiveItemStack() == stack ? 1.0F : 0.0F);
 
@@ -268,7 +268,7 @@ public class ClientRegistration {
 
         addLitModel(MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.MODIFICATION_STATION,
             MekanismBlocks.SECURITY_DESK,  MekanismBlocks.LOGISTICAL_SORTER, MekanismBlocks.RESISTIVE_HEATER, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER,
-            MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItems.MEKA_TOOL, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
+            MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItems.MEKA_TOOL, MekanismBlocks.CHEMICAL_CRYSTALLIZER, MekanismBlocks.CHARGEPAD);
     }
 
     @SubscribeEvent

@@ -39,7 +39,6 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
                     // or if the multiblock is not formed then pass
                     return ActionResultType.PASS;
                 }
-                return ActionResultType.PASS;
             }
             return ActionResultType.SUCCESS;
         }
