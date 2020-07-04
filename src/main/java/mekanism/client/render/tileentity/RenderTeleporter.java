@@ -2,7 +2,7 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,8 +21,8 @@ import net.minecraft.util.Direction;
 @ParametersAreNonnullByDefault
 public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTeleporter> {
 
-    private static Map<Direction, Model3D> modelCache = new HashMap<>();
-    private static Map<Direction, Model3D> rotatedModelCache = new HashMap<>();
+    private static Map<Direction, Model3D> modelCache = new EnumMap<>(Direction.class);
+    private static Map<Direction, Model3D> rotatedModelCache = new EnumMap<>(Direction.class);
 
     public static void resetCachedModels() {
         modelCache.clear();
