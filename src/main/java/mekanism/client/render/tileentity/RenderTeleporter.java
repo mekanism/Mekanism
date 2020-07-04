@@ -1,6 +1,10 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderType;
@@ -12,16 +16,18 @@ import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Tuple;
 
 @ParametersAreNonnullByDefault
 public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTeleporter> {
 
-    private static Model3D EAST_WEST;
-    private static Model3D NORTH_SOUTH;
+    private static Map<Direction, Model3D> modelCache = new HashMap<>();
+    private static Map<Direction, Model3D> rotatedModelCache = new HashMap<>();
 
     public static void resetCachedModels() {
-        EAST_WEST = null;
-        NORTH_SOUTH = null;
+        modelCache.clear();
+        rotatedModelCache.clear();
     }
 
     public RenderTeleporter(TileEntityRendererDispatcher renderer) {
@@ -31,8 +37,11 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     @Override
     protected void render(TileEntityTeleporter tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.shouldRender && tile.getWorld() != null) {
-            MekanismRenderer.renderObject(getOverlayModel(tile.hasEastWestFrame()), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
-                  MekanismRenderer.getColorARGB(EnumColor.PURPLE, 0.75F), MekanismRenderer.FULL_LIGHT);
+        	Tuple<Direction, Boolean> rotation = tile.getFrameDirection();
+        	if (rotation != null) {
+        		MekanismRenderer.renderObject(getOverlayModel(rotation.getA(), rotation.getB()), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
+                      MekanismRenderer.getColorARGB(EnumColor.PURPLE, 0.75F), MekanismRenderer.FULL_LIGHT);
+        	}
         }
     }
 
@@ -41,31 +50,170 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         return ProfilerConstants.TELEPORTER;
     }
 
-    private Model3D getOverlayModel(boolean eastWest) {
-        if (eastWest) {
-            if (EAST_WEST == null) {
-                EAST_WEST = new Model3D();
-                EAST_WEST.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                EAST_WEST.minY = 1;
-                EAST_WEST.maxY = 3;
-                EAST_WEST.minX = 0;
-                EAST_WEST.minZ = 0.46;
-                EAST_WEST.maxX = 1;
-                EAST_WEST.maxZ = 0.54;
-            }
-            return EAST_WEST;
-        }
-        if (NORTH_SOUTH == null) {
-            NORTH_SOUTH = new Model3D();
-            NORTH_SOUTH.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-            NORTH_SOUTH.minY = 1;
-            NORTH_SOUTH.maxY = 3;
-            NORTH_SOUTH.minX = 0.46;
-            NORTH_SOUTH.minZ = 0;
-            NORTH_SOUTH.maxX = 0.54;
-            NORTH_SOUTH.maxZ = 1;
-        }
-        return NORTH_SOUTH;
+    private Model3D getOverlayModel(Direction direction, boolean rotated) {
+    	Map<Direction, Model3D> cache = rotated ? rotatedModelCache : modelCache;
+		if (!cache.containsKey(direction)) {
+			switch (direction) {
+			case UP:
+				if (rotated) {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = 1;
+					model.maxY = 3;
+					model.minX = 0.46;
+					model.maxX = 0.54;
+					model.minZ = 0;
+					model.maxZ = 1;
+					cache.put(direction, model);
+				} else {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = 1;
+					model.maxY = 3;
+					model.minX = 0;
+					model.maxX = 1;
+					model.minZ = 0.46;
+					model.maxZ = 0.54;
+					cache.put(direction, model);
+				}
+			break;
+
+			case DOWN:
+				if (rotated) {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = -2;
+					model.maxY = 0;
+					model.minX = 0.46;
+					model.maxX = 0.54;
+					model.minZ = 0;
+					model.maxZ = 1;
+					cache.put(direction, model);
+				} else {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = -2;
+					model.maxY = 0;
+					model.minX = 0;
+					model.maxX = 1;
+					model.minZ = 0.46;
+					model.maxZ = 0.54;
+					cache.put(direction, model);
+				}
+				break;
+
+			case EAST:
+				if (rotated) {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = 0.46;
+					model.maxY = 0.54;
+					model.minX = 1;
+					model.maxX = 3;
+					model.minZ = 0;
+					model.maxZ = 1;
+					cache.put(direction, model);
+				} else {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = 0;
+					model.maxY = 1;
+					model.minX = 1;
+					model.maxX = 3;
+					model.minZ = 0.46;
+					model.maxZ = 0.54;
+					cache.put(direction, model);
+				}
+				break;
+
+			case WEST:
+				if (rotated) {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = 0.46;
+					model.maxY = 0.54;
+					model.minX = -2;
+					model.maxX = 0;
+					model.minZ = 0;
+					model.maxZ = 1;
+					cache.put(direction, model);
+				} else {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = 0;
+					model.maxY = 1;
+					model.minX = -2;
+					model.maxX = 0;
+					model.minZ = 0.46;
+					model.maxZ = 0.54;
+					cache.put(direction, model);
+				}
+				break;
+
+			case NORTH:
+				if (rotated) {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = 0.46;
+					model.maxY = 0.54;
+					model.minX = 0;
+					model.maxX = 1;
+					model.minZ = -2;
+					model.maxZ = 0;
+					cache.put(direction, model);
+				} else {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = 0;
+					model.maxY = 1;
+					model.minX = 0.46;
+					model.maxX = 0.54;
+					model.minZ = -2;
+					model.maxZ = 0;
+					cache.put(direction, model);
+				}
+				break;
+
+			case SOUTH:
+				if (rotated) {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = 0.46;
+					model.maxY = 0.54;
+					model.minX = 0;
+					model.maxX = 1;
+					model.minZ = 0;
+					model.maxZ = 3;
+					cache.put(direction, model);
+				} else {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = 0;
+					model.maxY = 1;
+					model.minX = 0.46;
+					model.maxX = 0.54;
+					model.minZ = 0;
+					model.maxZ = 3;
+					cache.put(direction, model);
+				}
+				break;
+
+			default:
+				if (!cache.containsKey(Direction.UP)) {
+					Model3D model = new Model3D();
+					model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+					model.minY = 1;
+					model.maxY = 3;
+					model.minX = 0;
+					model.maxX = 1;
+					model.minZ = 0.46;
+					model.maxZ = 0.54;
+					cache.put(Direction.UP, model);
+				}
+				return cache.get(Direction.UP);
+			}
+		}
+        return cache.get(direction);
     }
 
     @Override
