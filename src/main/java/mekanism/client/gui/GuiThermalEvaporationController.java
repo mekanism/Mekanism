@@ -36,7 +36,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
               MekanismLang.EVAPORATION_HEIGHT.translate(tile.getMultiblock().height()),
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getMultiblock().getTemp(), TemperatureUnit.KELVIN, true)),
               MekanismLang.FLUID_PRODUCTION.translate(Math.round(tile.getMultiblock().lastGain * 100D) / 100D)
-        )).spacing(1));
+        )).spacing(1).jeiCategory(tile));
         func_230480_a_(new GuiDownArrow(this, 32, 39));
         func_230480_a_(new GuiDownArrow(this, 136, 39));
         func_230480_a_(new GuiHorizontalRateBar(this, new IBarInfoHandler() {
@@ -49,7 +49,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
             public double getLevel() {
                 return Math.min(1, tile.getMultiblock().getTemp() / EvaporationMultiblockData.MAX_MULTIPLIER_TEMP);
             }
-        }, 48, 63).jeiCategory(tile));
+        }, 48, 63));
         func_230480_a_(new GuiFluidGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
         func_230480_a_(new GuiFluidGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 152, 13));
         func_230480_a_(new GuiHeatTab(() -> {

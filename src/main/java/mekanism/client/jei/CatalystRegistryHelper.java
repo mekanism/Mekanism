@@ -13,8 +13,11 @@ import net.minecraft.util.ResourceLocation;
 
 public class CatalystRegistryHelper {
 
-    public static void register(IRecipeCatalystRegistration registry, IBlockProvider mekanismBlock) {
-        registerRecipeItem(registry, mekanismBlock, mekanismBlock.getRegistryName());
+    public static void register(IRecipeCatalystRegistration registry, IBlockProvider mekanismBlock, ResourceLocation... additionalCategories) {
+        ResourceLocation[] categories = new ResourceLocation[additionalCategories.length + 1];
+        categories[0] = mekanismBlock.getRegistryName();
+        System.arraycopy(additionalCategories, 0, categories, 1, additionalCategories.length);
+        registerRecipeItem(registry, mekanismBlock, categories);
     }
 
     public static void registerCondensentrator(IRecipeCatalystRegistration registry) {
