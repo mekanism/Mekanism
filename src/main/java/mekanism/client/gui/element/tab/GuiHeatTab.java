@@ -1,14 +1,13 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
@@ -17,7 +16,7 @@ import mekanism.common.util.UnitDisplayUtils.TempType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiHeatTab extends GuiTexturedElement {
+public class GuiHeatTab extends GuiBiDirectionalTab {
 
     private final IInfoHandler infoHandler;
     private final Map<TempType, ResourceLocation> icons = new Object2ObjectOpenHashMap<>();
@@ -50,5 +49,11 @@ public class GuiHeatTab extends GuiTexturedElement {
     @Override
     public void func_230982_a_(double mouseX, double mouseY) {
         MekanismConfig.general.tempUnit.set(MekanismConfig.general.tempUnit.get().getNext());
+    }
+
+
+    @Override
+    protected void onRightClick(double mouseX, double mouseY) {
+        MekanismConfig.general.tempUnit.set(MekanismConfig.general.tempUnit.get().getPrevious());
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -7,9 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
@@ -20,7 +19,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiEnergyTab extends GuiTexturedElement {
+public class GuiEnergyTab extends GuiBiDirectionalTab {
 
     private final IInfoHandler infoHandler;
     private final Map<EnergyType, ResourceLocation> icons = new EnumMap<>(EnergyType.class);
@@ -58,5 +57,10 @@ public class GuiEnergyTab extends GuiTexturedElement {
     @Override
     public void func_230982_a_(double mouseX, double mouseY) {
         MekanismConfig.general.energyUnit.set(MekanismConfig.general.energyUnit.get().getNext());
+    }
+
+    @Override
+    protected void onRightClick(double mouseX, double mouseY) {
+        MekanismConfig.general.energyUnit.set(MekanismConfig.general.energyUnit.get().getPrevious());
     }
 }
