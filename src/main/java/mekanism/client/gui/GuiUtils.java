@@ -1,14 +1,14 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.lib.Color;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
@@ -23,7 +23,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 public class GuiUtils {
 
@@ -147,7 +146,7 @@ public class GuiUtils {
     }
 
     public static void fill(MatrixStack matrix, int x, int y, int width, int height, int color) {
-        AbstractGui.func_238467_a_(matrix, x, y, x + width, y + height, Color.packOpaque(color));
+        AbstractGui.func_238467_a_(matrix, x, y, x + width, y + height, color);
     }
 
     public static void drawSprite(MatrixStack matrix, int x, int y, int width, int height, int zLevel, TextureAtlasSprite sprite) {

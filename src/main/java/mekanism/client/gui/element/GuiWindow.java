@@ -68,6 +68,7 @@ public class GuiWindow extends GuiTexturedElement {
 
     @Override
     public void func_230983_a_(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
+        super.func_230983_a_(mouseX, mouseY, mouseXOld, mouseYOld);
         if (dragging) {
             int newDX = (int) Math.round(mouseX - dragX), newDY = (int) Math.round(mouseY - dragY);
             int changeX = Math.max(-field_230690_l_, Math.min(minecraft.getMainWindow().getScaledWidth() - (field_230690_l_ + field_230688_j_), newDX - prevDX));

@@ -22,8 +22,8 @@ import net.minecraft.util.text.StringTextComponent;
  */
 public class GuiTextField extends GuiRelativeElement {
 
-    public static final int DEFAULT_BORDER_COLOR = 0xA0A0A0;
-    public static final int DEFAULT_BACKGROUND_COLOR = 0x000000;
+    public static final int DEFAULT_BORDER_COLOR = 0xFFA0A0A0;
+    public static final int DEFAULT_BACKGROUND_COLOR = 0xFF000000;
     public static final IntSupplier SCREEN_COLOR = () -> Color.packOpaque(MekanismConfig.client.guiScreenTextColor.get());
     public static final IntSupplier DARK_SCREEN_COLOR = () -> Color.argb(SCREEN_COLOR.getAsInt()).darken(0.4).argb();
 
@@ -217,7 +217,9 @@ public class GuiTextField extends GuiRelativeElement {
                 //Manually handle hitting escape to make the whole interface go away
                 return false;
             } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                enterHandler.run();
+                if (enterHandler != null) {
+                    enterHandler.run();
+                }
                 return true;
             } else if (keyCode == GLFW.GLFW_KEY_TAB) {
                 guiObj.incrementFocus(this);
