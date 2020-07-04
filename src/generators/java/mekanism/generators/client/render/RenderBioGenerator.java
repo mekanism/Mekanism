@@ -1,11 +1,11 @@
 package mekanism.generators.client.render;
 
-import java.util.EnumMap;
-import java.util.Map;
-import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import java.util.EnumMap;
+import java.util.Map;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fluids.FluidStack;
 
 @ParametersAreNonnullByDefault
@@ -41,8 +40,6 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             matrix.push();
             FluidStack fluid = tile.bioFuelTank.getFluid();
             float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
-            //TODO: FIXME, you can see through the back. Might have to make the main "model" into json and then just render the fluid as a TER
-            // Note: This issue is much less noticeable now that we have a proper fluid that we are using for biofuel
             MekanismRenderer.renderObject(getModel(tile.getDirection(), (int) (fluidScale * (stages - 1))), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
                   MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid));
             matrix.pop();
@@ -63,32 +60,32 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         model.setTexture(MekanismRenderer.getFluidTexture(GeneratorsFluids.BIOETHANOL.getFluidStack(1), FluidType.STILL));
         switch (side) {
             case NORTH:
-                model.minZ = 0.5;
+                model.minZ = 0.499;
                 model.maxZ = 0.875;
 
-                model.minX = 0.1875;
-                model.maxX = 0.8215;
+                model.minX = 0.188;
+                model.maxX = 0.821;
                 break;
             case SOUTH:
                 model.minZ = 0.125;
-                model.maxZ = 0.5;
+                model.maxZ = 0.499;
 
-                model.minX = 0.1875;
-                model.maxX = 0.8215;
+                model.minX = 0.188;
+                model.maxX = 0.821;
                 break;
             case WEST:
-                model.minX = 0.5;
+                model.minX = 0.499;
                 model.maxX = 0.875;
 
-                model.minZ = 0.1875;
-                model.maxZ = 0.8215;
+                model.minZ = 0.187;
+                model.maxZ = 0.821;
                 break;
             case EAST:
                 model.minX = 0.125;
-                model.maxX = 0.5;
+                model.maxX = 0.499;
 
-                model.minZ = 0.1875;
-                model.maxZ = 0.8215;
+                model.minZ = 0.186;
+                model.maxZ = 0.821;
                 break;
         }
         model.minY = 0.4375 + 0.001;  //prevent z fighting at low fuel levels
