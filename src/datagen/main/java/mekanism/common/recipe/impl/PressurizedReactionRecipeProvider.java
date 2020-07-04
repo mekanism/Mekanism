@@ -64,6 +64,8 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addWoodGasificationRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //TODO: Figure out a way to specify only the woods that burn. Vanilla has a logs_that_burn tag
+        // but doe snot have one for the other types of wood
         //Dusts, each worth a 32th of a log.
         PressurizedReactionRecipeBuilder.reaction(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_WOOD, 8),
