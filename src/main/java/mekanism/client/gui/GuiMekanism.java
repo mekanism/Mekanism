@@ -200,18 +200,23 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 }
             }
         }
+
+        // translate forwards using RenderSystem. this should never have to happen as we do all the necessary translations with MatrixStacks,
+        // but Minecraft has decided to not fully adopt MatrixStacks for many crucial ContainerScreen render operations. should be re-evaluated
+        // when mc updates related logic on their end (IMPORTANT)
+        RenderSystem.translatef(0, 0, maxZOffset);
+
         if (tooltipElement != null) {
-            matrix.push();
-            matrix.translate(0, 0, maxZOffset + 50);
             tooltipElement.func_230443_a_(matrix, xAxis, yAxis);
-            matrix.translate(0, 0, maxZOffset - 50);
-            matrix.pop();
         }
 
         // render item tooltips
         RenderSystem.translatef(-guiLeft, -guiTop, 0);
         func_230459_a_(matrix, mouseX, mouseY);
         RenderSystem.translatef(guiLeft, guiTop, 0);
+
+        // IMPORTANT: additional hacky translation so held items render okay. re-evaluate as discussed above
+        RenderSystem.translatef(0, 0, 200);
     }
 
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {}
