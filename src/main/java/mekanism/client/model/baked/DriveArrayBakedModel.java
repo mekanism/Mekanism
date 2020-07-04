@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.render.lib.QuadTransformation;
-import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
@@ -51,7 +50,7 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
             }
             ret.addAll(QuadUtils.transformBakedQuads(driveQuads, QuadTransformation.rotate(key.getSide())));
         }
-        return QuadUtils.transformBakedQuads(ret, TextureFilteredTransformation.of(QuadTransformation.fullbright, rl -> rl.getPath().contains("led")));
+        return QuadUtils.transformBakedQuads(ret, QuadTransformation.filtered_fullbright);
     }
 
     private List<BakedQuad> getDriveQuads(int index, DriveStatus status, QuadsKey<byte[]> key) {

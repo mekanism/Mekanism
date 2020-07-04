@@ -2,6 +2,7 @@ package mekanism.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.common.MekanismLang;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -27,10 +28,12 @@ public class HUDRenderer {
         float yawJitter = -(minecraft.player.rotationYawHead - minecraft.player.prevRotationYawHead) * 0.25F;
         float pitchJitter = -(minecraft.player.rotationPitch - prevRotationPitch) * 0.25F;
         RenderSystem.translated(yawJitter, pitchJitter, 0);
-        int posX = 25;
-        int posY = minecraft.getMainWindow().getScaledHeight() - 100;
-        RenderSystem.translatef(posX + 50, posY + 50, 0);
-        renderCompass(partialTick);
+        if (MekanismConfig.client.mekaSuitHelmetCompassEnabled.get()) {
+            int posX = 25;
+            int posY = minecraft.getMainWindow().getScaledHeight() - 100;
+            RenderSystem.translatef(posX + 50, posY + 50, 0);
+            renderCompass(partialTick);
+        }
         RenderSystem.popMatrix();
 
         update();

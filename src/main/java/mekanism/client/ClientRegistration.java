@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import com.google.common.collect.Table.Cell;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
@@ -82,7 +83,6 @@ import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.obj.OBJModelCache;
 import mekanism.client.render.tileentity.RenderBin;
-import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDynamicTank;
@@ -165,7 +165,6 @@ public class ClientRegistration {
 
         //Register TileEntityRenderers
         ClientRegistrationUtil.bindTileEntityRenderer(RenderThermoelectricBoiler::new, MekanismTileEntityTypes.BOILER_CASING, MekanismTileEntityTypes.BOILER_VALVE);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CHEMICAL_CRYSTALLIZER, RenderChemicalCrystallizer::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CHEMICAL_DISSOLUTION_CHAMBER, RenderChemicalDissolutionChamber::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.DIGITAL_MINER, RenderDigitalMiner::new);
         ClientRegistrationUtil.bindTileEntityRenderer(RenderDynamicTank::new, MekanismTileEntityTypes.DYNAMIC_TANK, MekanismTileEntityTypes.DYNAMIC_VALVE);
@@ -226,9 +225,9 @@ public class ClientRegistration {
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : MekanismFluids.FLUIDS.getAllFluids()) {
             ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
         }
-
+        // Multi-Layer blocks (requiring both sold & translucent render layers)
         ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getSolid() || renderType == RenderType.getTranslucent(),
-              MekanismBlocks.ISOTOPIC_CENTRIFUGE, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
+              MekanismBlocks.ISOTOPIC_CENTRIFUGE, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
 
         for (DriveStatus status : DriveStatus.values()) {
             if (status == DriveStatus.NONE)
@@ -236,18 +235,12 @@ public class ClientRegistration {
             ModelLoader.addSpecialModel(status.getModel());
         }
 
-        customModels.put(MekanismBlocks.QIO_DRIVE_ARRAY.getRegistryName(), (orig, evt) -> new DriveArrayBakedModel(orig, evt));
-        customModels.put(MekanismBlocks.QIO_DASHBOARD.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.QIO_EXPORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.QIO_IMPORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.QIO_REDSTONE_ADAPTER.getRegistryName(), (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
-        customModels.put(MekanismBlocks.MODIFICATION_STATION.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.SECURITY_DESK.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.LOGISTICAL_SORTER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.RESISTIVE_HEATER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismItems.PORTABLE_QIO_DASHBOARD.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
-        customModels.put(MekanismItems.MEKA_TOOL.getRegistryName(), (orig, evt) -> new LightedBakedModel(orig));
+        addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig, evt));
+        addCustomModel(MekanismBlocks.QIO_REDSTONE_ADAPTER, (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
+
+        addLitModel(MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.MODIFICATION_STATION,
+            MekanismBlocks.SECURITY_DESK,  MekanismBlocks.LOGISTICAL_SORTER, MekanismBlocks.RESISTIVE_HEATER, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER,
+            MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItems.MEKA_TOOL, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
     }
 
     @SubscribeEvent
@@ -442,8 +435,18 @@ public class ClientRegistration {
         }
     }
 
+    public static void addCustomModel(IItemProvider provider, CustomModelRegistryObject object) {
+        customModels.put(provider.getRegistryName(), object);
+    }
+
+    public static void addLitModel(IItemProvider... providers) {
+        for (IItemProvider provider : providers) {
+            addCustomModel(provider, (orig, evt) -> new LightedBakedModel(orig));
+        }
+    }
+
     @FunctionalInterface
-    private interface CustomModelRegistryObject {
+    public interface CustomModelRegistryObject {
 
         IBakedModel createModel(IBakedModel original, ModelBakeEvent event);
     }

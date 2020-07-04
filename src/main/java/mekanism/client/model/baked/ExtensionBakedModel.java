@@ -11,7 +11,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.render.lib.QuadTransformation;
-import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
@@ -100,7 +99,11 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     }
 
     protected List<BakedQuad> createQuads(QuadsKey<T> key) {
-        return key.getQuads();
+        List<BakedQuad> ret = key.getQuads();
+        if (key.getTransformation() != null) {
+            ret = QuadUtils.transformBakedQuads(ret, key.getTransformation());
+        }
+        return ret;
     }
 
     @Nonnull
@@ -114,23 +117,27 @@ public class ExtensionBakedModel<T> implements IBakedModel {
         return cache.getUnchecked(key);
     }
 
-    public static class LightedBakedModel extends ExtensionBakedModel<Void> {
+    public static class LightedBakedModel extends TransformedBakedModel<Void> {
 
         public LightedBakedModel(IBakedModel original) {
-            super(original);
+            super(original, QuadTransformation.filtered_fullbright);
         }
+    }
 
-        @Override
-        protected List<BakedQuad> createQuads(QuadsKey<Void> key) {
-            return QuadUtils.transformBakedQuads(key.getQuads(), TextureFilteredTransformation.of(QuadTransformation.fullbright, rl -> rl.getPath().contains("led")));
+    public static class TransformedBakedModel<T> extends ExtensionBakedModel<T> {
+
+        private QuadTransformation transform;
+
+        public TransformedBakedModel(IBakedModel original, QuadTransformation transform) {
+            super(original);
+            this.transform = transform;
         }
 
         @Nonnull
         @Override
         @Deprecated
         public List<BakedQuad> getQuads(BlockState state, Direction side, @Nonnull Random rand) {
-            List<BakedQuad> origQuads = original.getQuads(state, side, rand);
-            return QuadUtils.transformBakedQuads(origQuads, TextureFilteredTransformation.of(QuadTransformation.fullbright, rl -> rl.getPath().contains("led")));
+            return QuadUtils.transformBakedQuads(original.getQuads(state, side, rand), transform);
         }
 
         @Override
@@ -139,6 +146,11 @@ public class ExtensionBakedModel<T> implements IBakedModel {
             original.handlePerspective(cameraTransformType, mat);
             // return this model, as we want to draw the item variant quads ourselves
             return this;
+        }
+
+        @Override
+        protected QuadsKey<T> createKey(QuadsKey<T> key, IModelData data) {
+            return key.transform(transform);
         }
     }
 

@@ -44,19 +44,21 @@ public abstract class ModuleMekaSuit extends Module {
 
         @Override
         public void tickServer(PlayerEntity player) {
-            FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
-            long maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(usage).intValue());
-            long hydrogenUsed = 0;
-            GasStack hydrogenStack = new GasStack(MekanismGases.HYDROGEN.get(), maxRate * 2);
-            ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-            Optional<IGasHandler> capability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-            if (Modules.load(chestStack, Modules.JETPACK_UNIT) != null && capability.isPresent()) {
-                hydrogenUsed = maxRate * 2 - capability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+            if (player.getSubmergedHeight() > 1.8) {
+                FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
+                long maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(usage).intValue());
+                long hydrogenUsed = 0;
+                GasStack hydrogenStack = new GasStack(MekanismGases.HYDROGEN.get(), maxRate * 2);
+                ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+                Optional<IGasHandler> capability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+                if (Modules.load(chestStack, Modules.JETPACK_UNIT) != null && capability.isPresent()) {
+                    hydrogenUsed = maxRate * 2 - capability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                }
+                long oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
+                long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
+                useEnergy(player, usage.multiply(used));
+                player.setAir(player.getAir() + (int) oxygenUsed);
             }
-            long oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
-            long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
-            useEnergy(player, usage.multiply(used));
-            player.setAir(player.getAir() + (int) oxygenUsed);
         }
 
         private int getMaxRate() {

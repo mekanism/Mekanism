@@ -20,7 +20,7 @@ public class QIORedstoneAdapterBakedModel extends ExtensionBakedModel<Boolean> {
 
     @Override
     public List<BakedQuad> createQuads(QuadsKey<Boolean> key) {
-        QuadTransformation transform = TextureFilteredTransformation.of(QuadTransformation.fullbright, rl -> rl.getPath().contains("led"));
+        QuadTransformation transform = QuadTransformation.filtered_fullbright;
         if (key.getData()) {
             transform = transform.and(TextureFilteredTransformation.of(TORCH_TRANSFORM, s -> s.getPath().contains("redstone")));
         }
