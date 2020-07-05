@@ -1008,7 +1008,7 @@
   "module.mekanism.farming_unit": "Unità d'Agricoltura",
   "module.mekanism.gravitational_modulating_unit": "Unità di Modulazione Gravitazionale",
   "module.mekanism.gravitational_modulation": "Modulazione Gravitazionale",
-  "module.mekanism.handle_mode_change": "Handle Mode Key",
+  "module.mekanism.handle_mode_change": "Tasto cambio d'uso",
   "module.mekanism.hydraulic_propulsion_unit": "Unità di Propulsione Idraulica",
   "module.mekanism.inhalation_purification_unit": "Unità di Inalazione Purificata",
   "module.mekanism.installed": "Installato: %s",
