@@ -10,6 +10,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -58,6 +59,7 @@ public class TileComponentSecurity implements ITileComponent {
         manager.addFrequency(freq);
         frequency = (SecurityFrequency) freq;
         tile.markDirty(false);
+        Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate());
     }
 
     public UUID getOwnerUUID() {
