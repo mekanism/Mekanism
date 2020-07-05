@@ -148,7 +148,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        return StorageUtils.getDurabilityForDisplay(stack);
+        return StorageUtils.getEnergyDurabilityForDisplay(stack);
     }
 
     @Override

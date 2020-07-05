@@ -51,7 +51,7 @@ public class ItemEnergized extends Item {
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        return StorageUtils.getDurabilityForDisplay(stack);
+        return StorageUtils.getEnergyDurabilityForDisplay(stack);
     }
 
     @Override
