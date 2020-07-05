@@ -1,6 +1,9 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.EnumMap;
+import java.util.Map;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderType;
@@ -12,16 +15,17 @@ import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
+import net.minecraft.util.Direction;
 
 @ParametersAreNonnullByDefault
 public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTeleporter> {
 
-    private static Model3D EAST_WEST;
-    private static Model3D NORTH_SOUTH;
+    private static final Map<Direction, Model3D> modelCache = new EnumMap<>(Direction.class);
+    private static final Map<Direction, Model3D> rotatedModelCache = new EnumMap<>(Direction.class);
 
     public static void resetCachedModels() {
-        EAST_WEST = null;
-        NORTH_SOUTH = null;
+        modelCache.clear();
+        rotatedModelCache.clear();
     }
 
     public RenderTeleporter(TileEntityRendererDispatcher renderer) {
@@ -31,7 +35,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     @Override
     protected void render(TileEntityTeleporter tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.shouldRender && tile.getWorld() != null) {
-            MekanismRenderer.renderObject(getOverlayModel(tile.hasEastWestFrame()), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
+            MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
                   MekanismRenderer.getColorARGB(EnumColor.PURPLE, 0.75F), MekanismRenderer.FULL_LIGHT);
         }
     }
@@ -41,31 +45,84 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         return ProfilerConstants.TELEPORTER;
     }
 
-    private Model3D getOverlayModel(boolean eastWest) {
-        if (eastWest) {
-            if (EAST_WEST == null) {
-                EAST_WEST = new Model3D();
-                EAST_WEST.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                EAST_WEST.minY = 1;
-                EAST_WEST.maxY = 3;
-                EAST_WEST.minX = 0;
-                EAST_WEST.minZ = 0.46;
-                EAST_WEST.maxX = 1;
-                EAST_WEST.maxZ = 0.54;
+    private Model3D getOverlayModel(@Nullable Direction direction, boolean rotated) {
+        if (direction == null) {
+            direction = Direction.UP;
+        }
+        Map<Direction, Model3D> cache = rotated ? rotatedModelCache : modelCache;
+        if (!cache.containsKey(direction)) {
+            Model3D model = new Model3D();
+            model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+            cache.put(direction, model);
+            if (direction == Direction.UP) {
+                model.minY = 1;
+                model.maxY = 3;
+                setUpDownDimensions(model, rotated);
+            } else if (direction == Direction.DOWN) {
+                model.minY = -2;
+                model.maxY = 0;
+                setUpDownDimensions(model, rotated);
+            } else if (direction == Direction.EAST) {
+                model.minX = 1;
+                model.maxX = 3;
+                setEastWestDimensions(model, rotated);
+            } else if (direction == Direction.WEST) {
+                model.minX = -2;
+                model.maxX = 0;
+                setEastWestDimensions(model, rotated);
+            } else if (direction == Direction.NORTH) {
+                model.minZ = -2;
+                model.maxZ = 0;
+                setNorthSouthDimensions(model, rotated);
+            } else if (direction == Direction.SOUTH) {
+                model.minZ = 0;
+                model.maxZ = 3;
+                setNorthSouthDimensions(model, rotated);
             }
-            return EAST_WEST;
         }
-        if (NORTH_SOUTH == null) {
-            NORTH_SOUTH = new Model3D();
-            NORTH_SOUTH.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-            NORTH_SOUTH.minY = 1;
-            NORTH_SOUTH.maxY = 3;
-            NORTH_SOUTH.minX = 0.46;
-            NORTH_SOUTH.minZ = 0;
-            NORTH_SOUTH.maxX = 0.54;
-            NORTH_SOUTH.maxZ = 1;
+        return cache.get(direction);
+    }
+
+    private void setUpDownDimensions(Model3D model, boolean rotated) {
+        if (rotated) {
+            model.minX = 0.46;
+            model.maxX = 0.54;
+            model.minZ = 0;
+            model.maxZ = 1;
+        } else {
+            model.minX = 0;
+            model.maxX = 1;
+            model.minZ = 0.46;
+            model.maxZ = 0.54;
         }
-        return NORTH_SOUTH;
+    }
+
+    private void setEastWestDimensions(Model3D model, boolean rotated) {
+        if (rotated) {
+            model.minY = 0.46;
+            model.maxY = 0.54;
+            model.minZ = 0;
+            model.maxZ = 1;
+        } else {
+            model.minY = 0;
+            model.maxY = 1;
+            model.minZ = 0.46;
+            model.maxZ = 0.54;
+        }
+    }
+
+    private void setNorthSouthDimensions(Model3D model, boolean rotated) {
+        if (rotated) {
+            model.minY = 0.46;
+            model.maxY = 0.54;
+            model.minX = 0;
+            model.maxX = 1;
+        } else {
+            model.minY = 0;
+            model.maxY = 1;
+            model.minX = 0.46;
+            model.maxX = 0.54;
+        }
     }
 
     @Override

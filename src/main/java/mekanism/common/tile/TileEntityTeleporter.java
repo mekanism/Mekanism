@@ -30,6 +30,7 @@ import mekanism.common.network.PacketPortalFX;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
@@ -49,9 +50,12 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
 
     public final Set<UUID> didTeleport = new ObjectOpenHashSet<>();
-    private AxisAlignedBB teleportBounds = null;
+    private AxisAlignedBB teleportBounds;
     public int teleDelay = 0;
     public boolean shouldRender;
+    @Nullable
+    private Direction frameDirection;
+    private boolean frameRotated;
 
     /**
      * This teleporter's current status.
@@ -120,7 +124,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (teleportBounds == null) {
+        if (teleportBounds == null && frameDirection != null) {
             resetBounds();
         }
 
@@ -162,15 +166,26 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     private void resetBounds() {
-        teleportBounds = new AxisAlignedBB(getPos(), getPos().add(1, 3, 1));
+        if (frameDirection == null) {
+            teleportBounds = null;
+        } else {
+            teleportBounds = getTeleporterBoundingBox(frameDirection);
+        }
     }
 
     /**
+     * Checks whether, or why not, this teleporter can teleport entities.
+     *
      * @return 1: yes, 2: no frame, 3: no link found, 4: not enough electricity
      */
     private byte canTeleport() {
-        if (!hasEastWestFrame() && !hasNorthSouthFrame()) {
+        Direction direction = getFrameDirection();
+        if (direction == null) {
+            frameDirection = null;
             return 2;
+        } else if (frameDirection != direction) {
+            frameDirection = direction;
+            resetBounds();
         }
         Coord4D closestCoords = getClosest();
         if (closestCoords == null) {
@@ -200,7 +215,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         TileEntityTeleporter teleporter = MekanismUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestPos);
         if (teleporter != null) {
             for (Entity entity : getToTeleport()) {
-                teleporter.didTeleport.add(entity.getUniqueID());
+                entity.getSelfAndPassengers().forEach(e -> teleporter.didTeleport.add(e.getUniqueID()));
                 teleporter.teleDelay = 5;
                 teleportEntityTo(entity, closestCoords, teleporter);
                 if (entity instanceof ServerPlayerEntity) {
@@ -208,7 +223,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 }
                 for (Coord4D coords : getFrequency(FrequencyType.TELEPORTER).getActiveCoords()) {
                     BlockPos coordsPos = coords.getPos();
-                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), currentServer.getWorld(coords.dimension), coordsPos);
+                    TileEntityTeleporter tile = MekanismUtils.getTileEntity(TileEntityTeleporter.class, world, coordsPos);
+                    if (tile != null) {
+                        if (tile.frameDirection != null) {
+                            coordsPos = coordsPos.down().offset(tile.frameDirection);
+                        }
+                        Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), currentServer.getWorld(coords.dimension), coordsPos);
+                    }
                 }
                 energyContainer.extract(calculateEnergyCost(entity, closestCoords), Action.EXECUTE, AutomationType.INTERNAL);
                 world.playSound(entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
@@ -217,18 +238,26 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     public static void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter) {
+        BlockPos target = coord.getPos();
+        if (teleporter.frameDirection == null) {
+            target = target.up();
+        } else if (teleporter.frameDirection == Direction.DOWN) {
+            target = target.add(0.5, -2, 0.5);
+        } else {
+            target = target.offset(teleporter.frameDirection);
+        }
         if (entity.world.func_234923_W_() == coord.dimension) {
-            entity.setPositionAndUpdate(coord.getX() + 0.5, coord.getY() + 1, coord.getZ() + 0.5);
+            entity.setPositionAndUpdate(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
         } else {
             ServerWorld newWorld = ((ServerWorld) teleporter.getWorld()).getServer().getWorld(coord.dimension);
             Entity newEntity = entity.func_241206_a_(newWorld);
-            newEntity.setPositionAndUpdate(coord.getX() + 0.5, coord.getY() + 1, coord.getZ() + 0.5);
+            newEntity.setPositionAndUpdate(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
             //TODO - 1.16: Use this method of teleporting the entity instead once https://github.com/MinecraftForge/MinecraftForge/pull/6886 is merged
             /*entity.changeDimension(newWorld, new ITeleporter() {
                 @Override
                 public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
                     Entity repositionedEntity = repositionEntity.apply(false);
-                    repositionedEntity.setPositionAndUpdate(coord.getX() + 0.5, coord.getY() + 1, coord.getZ() + 0.5);
+                    repositionedEntity.setPositionAndUpdate(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
                     return repositionedEntity;
                 }
             });*/
@@ -251,32 +280,148 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return energyCost;
     }
 
-    public boolean hasEastWestFrame() {
+    /**
+     * Checks in what direction there is a frame.
+     *
+     * @return in what direction there is a frame, null if none.
+     */
+    @Nullable
+    private Direction getFrameDirection() {
+        for (Direction direction : EnumUtils.DIRECTIONS) {
+            if (hasFrame(direction, false)) {
+                frameRotated = false;
+                return direction;
+            } else if (hasFrame(direction, true)) {
+                frameRotated = true;
+                return direction;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks whether this Teleporter has a Frame in the given Direction.
+     *
+     * @param direction the direction from the Teleporter block in which the frame should be.
+     * @param rotated   whether the frame is rotated by 90 degrees.
+     *
+     * @return whether the frame exists.
+     */
+    private boolean hasFrame(Direction direction, boolean rotated) {
         int x = getPos().getX();
         int y = getPos().getY();
         int z = getPos().getZ();
-        return isFrame(x - 1, y, z) && isFrame(x + 1, y, z) && isFrame(x - 1, y + 1, z) && isFrame(x + 1, y + 1, z) && isFrame(x - 1, y + 2, z)
-               && isFrame(x + 1, y + 2, z) && isFrame(x - 1, y + 3, z) && isFrame(x + 1, y + 3, z) && isFrame(x, y + 3, z);
+        switch (direction) {
+            case UP:
+                if (rotated) {
+                    return isFrame(x, y, z - 1) && isFrame(x, y, z + 1) && isFrame(x, y + 1, z - 1) && isFrame(x, y + 1, z + 1)
+                           && isFrame(x, y + 2, z - 1) && isFrame(x, y + 2, z + 1) && isFrame(x, y + 3, z - 1) && isFrame(x, y + 3, z + 1)
+                           && isFrame(x, y + 3, z);
+                }
+                return isFrame(x - 1, y, z) && isFrame(x + 1, y, z) && isFrame(x - 1, y + 1, z) && isFrame(x + 1, y + 1, z)
+                       && isFrame(x - 1, y + 2, z) && isFrame(x + 1, y + 2, z) && isFrame(x - 1, y + 3, z) && isFrame(x + 1, y + 3, z)
+                       && isFrame(x, y + 3, z);
+            case DOWN:
+                if (rotated) {
+                    return isFrame(x, y, z - 1) && isFrame(x, y, z + 1) && isFrame(x, y - 1, z - 1) && isFrame(x, y - 1, z + 1)
+                           && isFrame(x, y - 2, z - 1) && isFrame(x, y - 2, z + 1) && isFrame(x, y - 3, z - 1) && isFrame(x, y - 3, z + 1)
+                           && isFrame(x, y - 3, z);
+                }
+                return isFrame(x - 1, y, z) && isFrame(x + 1, y, z) && isFrame(x - 1, y - 1, z) && isFrame(x + 1, y - 1, z)
+                       && isFrame(x - 1, y - 2, z) && isFrame(x + 1, y - 2, z) && isFrame(x - 1, y - 3, z) && isFrame(x + 1, y - 3, z)
+                       && isFrame(x, y - 3, z);
+            case EAST:
+                if (rotated) {
+                    return isFrame(x, y, z - 1) && isFrame(x, y, z + 1) && isFrame(x + 1, y, z - 1) && isFrame(x + 1, y, z + 1)
+                           && isFrame(x + 2, y, z - 1) && isFrame(x + 2, y, z + 1) && isFrame(x + 3, y, z - 1) && isFrame(x + 3, y, z + 1)
+                           && isFrame(x + 3, y, z);
+                }
+                return isFrame(x, y - 1, z) && isFrame(x, y + 1, z) && isFrame(x + 1, y - 1, z) && isFrame(x + 1, y + 1, z)
+                       && isFrame(x + 2, y - 1, z) && isFrame(x + 2, y + 1, z) && isFrame(x + 3, y - 1, z) && isFrame(x + 3, y + 1, z)
+                       && isFrame(x + 3, y, z);
+            case WEST:
+                if (rotated) {
+                    return isFrame(x, y, z - 1) && isFrame(x, y, z + 1) && isFrame(x - 1, y, z - 1) && isFrame(x - 1, y, z + 1)
+                           && isFrame(x - 2, y, z - 1) && isFrame(x - 2, y, z + 1) && isFrame(x - 3, y, z - 1) && isFrame(x - 3, y, z + 1)
+                           && isFrame(x - 3, y, z);
+                }
+                return isFrame(x, y - 1, z) && isFrame(x, y + 1, z) && isFrame(x - 1, y - 1, z) && isFrame(x - 1, y + 1, z)
+                       && isFrame(x - 2, y - 1, z) && isFrame(x - 2, y + 1, z) && isFrame(x - 3, y - 1, z) && isFrame(x - 3, y + 1, z)
+                       && isFrame(x - 3, y, z);
+            case NORTH:
+                if (rotated) {
+                    return isFrame(x - 1, y, z) && isFrame(x + 1, y, z) && isFrame(x - 1, y, z - 1) && isFrame(x + 1, y, z - 1)
+                           && isFrame(x - 1, y, z - 2) && isFrame(x + 1, y, z - 2) && isFrame(x - 1, y, z - 3) && isFrame(x + 1, y, z - 3)
+                           && isFrame(x, y, z - 3);
+                }
+                return isFrame(x, y - 1, z) && isFrame(x, y + 1, z) && isFrame(x, y - 1, z - 1) && isFrame(x, y + 1, z - 1)
+                       && isFrame(x, y - 1, z - 2) && isFrame(x, y + 1, z - 2) && isFrame(x, y - 1, z - 3) && isFrame(x, y + 1, z - 3)
+                       && isFrame(x, y, z - 3);
+            case SOUTH:
+                if (rotated) {
+                    return isFrame(x - 1, y, z) && isFrame(x + 1, y, z) && isFrame(x - 1, y, z + 1) && isFrame(x + 1, y, z + 1)
+                           && isFrame(x - 1, y, z + 2) && isFrame(x + 1, y, z + 2) && isFrame(x - 1, y, z + 3) && isFrame(x + 1, y, z + 3)
+                           && isFrame(x, y, z + 3);
+                }
+                return isFrame(x, y - 1, z) && isFrame(x, y + 1, z) && isFrame(x, y - 1, z + 1) && isFrame(x, y + 1, z + 1)
+                       && isFrame(x, y - 1, z + 2) && isFrame(x, y + 1, z + 2) && isFrame(x, y - 1, z + 3) && isFrame(x, y + 1, z + 3)
+                       && isFrame(x, y, z + 3);
+            default:
+                return false;
+        }
     }
 
-    public boolean hasNorthSouthFrame() {
-        int x = getPos().getX();
-        int y = getPos().getY();
-        int z = getPos().getZ();
-        return isFrame(x, y, z - 1) && isFrame(x, y, z + 1) && isFrame(x, y + 1, z - 1) && isFrame(x, y + 1, z + 1) && isFrame(x, y + 2, z - 1)
-               && isFrame(x, y + 2, z + 1) && isFrame(x, y + 3, z - 1) && isFrame(x, y + 3, z + 1) && isFrame(x, y + 3, z);
-    }
-
-    public boolean isFrame(int x, int y, int z) {
+    private boolean isFrame(int x, int y, int z) {
         return world.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockTeleporterFrame;
+    }
+
+    /**
+     * Gets the direction from the teleporter in which the frame is.
+     *
+     * @return the direction of the frame.
+     */
+    @Nullable
+    public Direction frameDirection() {
+        if (frameDirection == null) {
+            return getFrameDirection();
+        }
+        return frameDirection;
+    }
+
+    /**
+     * Gets whether the frame is rotated by 90 degrees around the direction axis.
+     *
+     * @return whether the frame is rotated by 90 degrees.
+     */
+    public boolean frameRotated() {
+        return frameRotated;
     }
 
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        //The render bounding box goes where the portal is, we can ignore rendering it
-        // if the only thing that is in view is the teleporter itself
-        return new AxisAlignedBB(pos.up(), pos.add(1, 3, 1));
+        //Note: If the frame direction is "null" we instead just only mark the teleporter itself.
+        Direction frameDirection = getFrameDirection();
+        return frameDirection == null ? new AxisAlignedBB(pos, pos.add(1, 1, 1)) : getTeleporterBoundingBox(frameDirection);
+    }
+
+    private AxisAlignedBB getTeleporterBoundingBox(@Nonnull Direction frameDirection) {
+        //Note: We only include the area inside the frame, we don't bother including the teleporter's block itself
+        switch (frameDirection) {
+            case UP:
+                return new AxisAlignedBB(pos.up(), pos.add(1, 3, 1));
+            case DOWN:
+                return new AxisAlignedBB(pos, pos.add(1, -2, 1));
+            case EAST:
+                return new AxisAlignedBB(pos.east(), pos.add(3, 1, 1));
+            case WEST:
+                return new AxisAlignedBB(pos, pos.add(-2, 1, 1));
+            case NORTH:
+                return new AxisAlignedBB(pos, pos.add(1, 1, -2));
+            case SOUTH:
+                return new AxisAlignedBB(pos.south(), pos.add(1, 1, 3));
+        }
+        throw new IllegalArgumentException("Invalid frame direction");
     }
 
     @Override
