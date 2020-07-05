@@ -407,18 +407,19 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     private AxisAlignedBB getTeleporterBoundingBox(@Nonnull Direction frameDirection) {
         //Note: We only include the area inside the frame, we don't bother including the teleporter's block itself
-        if (frameDirection == Direction.UP) {
-            return new AxisAlignedBB(pos.up(), pos.add(1, 3, 1));
-        } else if (frameDirection == Direction.DOWN) {
-            return new AxisAlignedBB(pos, pos.add(1, -2, 1));
-        } else if (frameDirection == Direction.EAST) {
-            return new AxisAlignedBB(pos.east(), pos.add(3, 1, 1));
-        } else if (frameDirection == Direction.WEST) {
-            return new AxisAlignedBB(pos, pos.add(-2, 1, 1));
-        } else if (frameDirection == Direction.NORTH) {
-            return new AxisAlignedBB(pos, pos.add(1, 1, -2));
-        } else if (frameDirection == Direction.SOUTH) {
-            return new AxisAlignedBB(pos.south(), pos.add(1, 1, 3));
+        switch (frameDirection) {
+            case UP:
+                return new AxisAlignedBB(pos.up(), pos.add(1, 3, 1));
+            case DOWN:
+                return new AxisAlignedBB(pos, pos.add(1, -2, 1));
+            case EAST:
+                return new AxisAlignedBB(pos.east(), pos.add(3, 1, 1));
+            case WEST:
+                return new AxisAlignedBB(pos, pos.add(-2, 1, 1));
+            case NORTH:
+                return new AxisAlignedBB(pos, pos.add(1, 1, -2));
+            case SOUTH:
+                return new AxisAlignedBB(pos.south(), pos.add(1, 1, 3));
         }
         throw new IllegalArgumentException("Invalid frame direction");
     }

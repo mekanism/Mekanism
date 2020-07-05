@@ -92,6 +92,9 @@ public class PacketPortableTeleporterGui {
                                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.func_233580_cy_()), player.world, coords.getPos());
                                     TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
                                     BlockPos coordsPos = coords.getPos();
+                                    if (teleporter.frameDirection() != null) {
+                                        coordsPos = coordsPos.down().offset(teleporter.frameDirection());
+                                    }
                                     if (player instanceof ServerPlayerEntity) {
                                         TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coordsPos);
                                     }
