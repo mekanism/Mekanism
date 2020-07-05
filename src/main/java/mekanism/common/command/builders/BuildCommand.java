@@ -8,7 +8,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
@@ -31,7 +30,7 @@ public class BuildCommand {
                         ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
                         BlockRayTraceResult result = MekanismUtils.rayTrace(player, 100);
                         if (result.getType() != RayTraceResult.Type.MISS) {
-                            destroy(player.getEntityWorld(), result.getPos());
+                            destroy(source.getWorld(), result.getPos());
                         }
                     }
                     return 0;
@@ -48,7 +47,7 @@ public class BuildCommand {
                       BlockRayTraceResult result = MekanismUtils.rayTrace(player, 100);
                       if (result.getType() != RayTraceResult.Type.MISS) {
                           BlockPos pos = result.getPos().offset(Direction.UP);
-                          builder.build(player.getEntityWorld(), pos);
+                          builder.build(source.getWorld(), pos);
                       }
                   }
                   return 0;
@@ -64,7 +63,7 @@ public class BuildCommand {
             BlockPos ptr = openSet.pop();
             BlockState state = world.getBlockState(ptr);
             if (state.getBlock().getRegistryName().getNamespace().contains(Mekanism.MODID)) {
-                world.setBlockState(ptr, Blocks.AIR.getDefaultState());
+                world.removeBlock(ptr, false);
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     BlockPos offset = ptr.offset(side);
                     if (!traversed.contains(offset)) {

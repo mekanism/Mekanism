@@ -22,7 +22,7 @@ import net.minecraftforge.common.ToolType;
 public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockTile<TILE, TYPE> {
 
     public BlockTileGlass(TYPE type) {
-        super(type, Block.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 16F).notSolid().harvestTool(ToolType.PICKAXE));
+        super(type, Block.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 16F).notSolid().func_235861_h_().harvestTool(ToolType.PICKAXE));
     }
 
     @Override
@@ -47,8 +47,10 @@ public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockT
         return true;
     }
 
+    @Nonnull
     @Override
-    public VoxelShape func_230322_a_(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext ctx) {
+    @Deprecated
+    public VoxelShape func_230322_a_(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos, @Nonnull ISelectionContext ctx) {
         return VoxelShapes.empty();
     }
 

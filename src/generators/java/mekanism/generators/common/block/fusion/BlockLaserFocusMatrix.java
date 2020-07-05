@@ -52,8 +52,10 @@ public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserF
         return true;
     }
 
+    @Nonnull
     @Override
-    public VoxelShape func_230322_a_(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext ctx) {
+    @Deprecated
+    public VoxelShape func_230322_a_(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos, @Nonnull ISelectionContext ctx) {
         return VoxelShapes.empty();
     }
 

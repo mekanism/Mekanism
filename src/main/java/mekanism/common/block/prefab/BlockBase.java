@@ -29,7 +29,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     protected final TYPE type;
 
     public BlockBase(TYPE type) {
-        this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
+        this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).func_235861_h_());
     }
 
     public BlockBase(TYPE type, Block.Properties properties) {

@@ -36,7 +36,7 @@ import net.minecraft.world.World;
 public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockBase<TYPE> implements IHasTileEntity<TILE> {
 
     public BlockTile(TYPE type) {
-        this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
+        this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).func_235861_h_());
     }
 
     public BlockTile(TYPE type, Block.Properties properties) {
