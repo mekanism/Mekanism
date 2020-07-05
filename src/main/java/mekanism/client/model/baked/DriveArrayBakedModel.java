@@ -2,9 +2,9 @@ package mekanism.client.model.baked;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.block.attribute.Attribute;
@@ -18,20 +18,19 @@ import net.minecraftforge.client.model.data.IModelData;
 
 public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
 
-    private static float[][] DRIVE_PLACEMENTS = new float[][] {
+    private static final float[][] DRIVE_PLACEMENTS = new float[][] {
         {0, 6F/16}, {-2F/16, 6F/16}, {-4F/16, 6F/16}, {-7F/16, 6F/16}, {-9F/16, 6F/16}, {-11F/16, 6F/16},
         {0, 0}, {-2F/16, 0}, {-4F/16, 0}, {-7F/16, 0}, {-9F/16, 0}, {-11F/16, 0}
     };
 
-    private Map<DriveStatus, IBakedModel> driveModels = new Object2ObjectOpenHashMap<>();
+    private final Map<DriveStatus, IBakedModel> driveModels = new EnumMap<>(DriveStatus.class);
 
     public DriveArrayBakedModel(IBakedModel original, ModelBakeEvent evt) {
         super(original);
-
         for (DriveStatus status : DriveStatus.values()) {
-            if (status == DriveStatus.NONE)
-                continue;
-            driveModels.put(status, evt.getModelRegistry().get(status.getModel()));
+            if (status != DriveStatus.NONE) {
+                driveModels.put(status, evt.getModelRegistry().get(status.getModel()));
+            }
         }
     }
 

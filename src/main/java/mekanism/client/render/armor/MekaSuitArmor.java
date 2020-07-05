@@ -135,7 +135,7 @@ public class MekaSuitArmor extends CustomArmor {
 
     private void render(IRenderTypeBuffer renderer, MatrixStack matrix, int light, int overlayLight, boolean hasEffect, List<BakedQuad> quads, boolean transparent) {
         RenderType renderType = transparent ? RenderType.getEntityTranslucent(AtlasTexture.LOCATION_BLOCKS_TEXTURE) : MekanismRenderType.getMekaSuit();
-        IVertexBuilder builder = ItemRenderer.getBuffer(renderer, renderType, false, hasEffect);
+        IVertexBuilder builder = ItemRenderer.func_239391_c_(renderer, renderType, false, hasEffect);
         MatrixStack.Entry last = matrix.getLast();
         for (BakedQuad quad : quads) {
             builder.addVertexData(last, quad, 1, 1, 1, 1, light, overlayLight);

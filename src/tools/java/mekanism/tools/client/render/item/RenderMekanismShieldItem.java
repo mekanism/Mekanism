@@ -47,7 +47,7 @@ public class RenderMekanismShieldItem extends ItemStackTileEntityRenderer {
         RenderMaterial material = textures.getBase();
         matrix.push();
         matrix.scale(1, -1, -1);
-        IVertexBuilder buffer = material.getSprite().wrapBuffer(ItemRenderer.getBuffer(renderer, modelShield.getRenderType(material.getAtlasLocation()), false, stack.hasEffect()));
+        IVertexBuilder buffer = material.getSprite().wrapBuffer(ItemRenderer.func_239391_c_(renderer, modelShield.getRenderType(material.getAtlasLocation()), false, stack.hasEffect()));
         if (stack.getChildTag(NBTConstants.BLOCK_ENTITY_TAG) != null) {
             modelShield.func_228294_b_().render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
             List<Pair<BannerPattern, DyeColor>> list = BannerTileEntity.func_230138_a_(ShieldItem.getColor(stack), BannerTileEntity.func_230139_a_(stack));

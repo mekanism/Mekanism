@@ -141,7 +141,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
         private ResourceLocation model;
 
-        private DriveStatus(ResourceLocation model) {
+        DriveStatus(ResourceLocation model) {
             this.model = model;
         }
 

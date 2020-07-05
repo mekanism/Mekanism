@@ -1,15 +1,19 @@
 package mekanism.client.model.baked;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import net.minecraft.block.BlockState;
@@ -19,6 +23,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.IModelData;
@@ -33,6 +38,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
             return createQuads(key);
         }
     });
+    private final Map<List<Pair<IBakedModel, RenderType>>, List<Pair<IBakedModel, RenderType>>> cachedLayerRedirects = new Object2ObjectOpenHashMap<>();
 
     public ExtensionBakedModel(IBakedModel original) {
         this.original = original;
@@ -117,16 +123,44 @@ public class ExtensionBakedModel<T> implements IBakedModel {
         return cache.getUnchecked(key);
     }
 
+    @Override
+    public boolean isLayered() {
+        return original.isLayered();
+    }
+
+    @Nonnull
+    @Override
+    public List<Pair<IBakedModel, RenderType>> getLayerModels(ItemStack stack, boolean fabulous) {
+        //Cache the remappings so then the inner wrapped ones can cache their quads
+        return cachedLayerRedirects.computeIfAbsent(original.getLayerModels(stack, fabulous), originalLayerModels -> {
+            List<Pair<IBakedModel, RenderType>> layerModels = new ArrayList<>();
+            for (Pair<IBakedModel, RenderType> layerModel : originalLayerModels) {
+                layerModels.add(Pair.of(wrapModel(layerModel.getFirst()), layerModel.getSecond()));
+            }
+            return layerModels;
+        });
+    }
+
+    protected ExtensionBakedModel<T> wrapModel(IBakedModel model) {
+        //Note: DriveArrayBakedModel does not override this
+        return new ExtensionBakedModel<>(model);
+    }
+
     public static class LightedBakedModel extends TransformedBakedModel<Void> {
 
         public LightedBakedModel(IBakedModel original) {
             super(original, QuadTransformation.filtered_fullbright);
         }
+
+        @Override
+        protected LightedBakedModel wrapModel(IBakedModel model) {
+            return new LightedBakedModel(model);
+        }
     }
 
     public static class TransformedBakedModel<T> extends ExtensionBakedModel<T> {
 
-        private QuadTransformation transform;
+        private final QuadTransformation transform;
 
         public TransformedBakedModel(IBakedModel original, QuadTransformation transform) {
             super(original);
@@ -151,6 +185,11 @@ public class ExtensionBakedModel<T> implements IBakedModel {
         @Override
         protected QuadsKey<T> createKey(QuadsKey<T> key, IModelData data) {
             return key.transform(transform);
+        }
+
+        @Override
+        protected TransformedBakedModel<T> wrapModel(IBakedModel model) {
+            return new TransformedBakedModel<>(model, transform);
         }
     }
 

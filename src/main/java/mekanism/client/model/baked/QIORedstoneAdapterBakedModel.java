@@ -35,4 +35,9 @@ public class QIORedstoneAdapterBakedModel extends ExtensionBakedModel<Boolean> {
         }
         return key.data(powering, Boolean.hashCode(powering), Boolean::equals);
     }
+
+    @Override
+    protected QIORedstoneAdapterBakedModel wrapModel(IBakedModel model) {
+        return new QIORedstoneAdapterBakedModel(model);
+    }
 }
