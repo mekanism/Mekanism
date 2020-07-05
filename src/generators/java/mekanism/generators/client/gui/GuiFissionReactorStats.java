@@ -1,7 +1,7 @@
 package mekanism.generators.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
@@ -67,12 +67,12 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR_STATS.translate(), 6);
         // heat stats
-        drawTextScaledBound(matrix, GeneratorsLang.FISSION_HEAT_STATISTICS.translate(), 6, 20, 0x202020, xSize - 12);
+        drawTextScaledBound(matrix, GeneratorsLang.FISSION_HEAT_STATISTICS.translate(), 6, 20, headingTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_HEAT_CAPACITY.translate(formatInt((int) tile.getMultiblock().heatCapacitor.getHeatCapacity())), 6, 32, titleTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_SURFACE_AREA.translate(formatInt(tile.getMultiblock().surfaceArea)), 6, 42, titleTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_BOIL_EFFICIENCY.translate(tile.getBoilEfficiency()), 6, 52, titleTextColor(), xSize - 12);
         // fuel stats
-        drawTextScaledBound(matrix, GeneratorsLang.FISSION_FUEL_STATISTICS.translate(), 6, 68, 0x202020, xSize - 12);
+        drawTextScaledBound(matrix, GeneratorsLang.FISSION_FUEL_STATISTICS.translate(), 6, 68, headingTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_MAX_BURN_RATE.translate(formatInt(tile.getMaxBurnRate())), 6, 80, titleTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_RATE_LIMIT.translate(tile.getMultiblock().rateLimit), 6, 90, titleTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 6, 104, titleTextColor(), xSize - 12);

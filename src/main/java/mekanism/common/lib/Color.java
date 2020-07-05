@@ -65,6 +65,10 @@ public class Color {
         return a;
     }
 
+    public Color alpha(double alpha) {
+        return new Color(r, g, b, alpha);
+    }
+
     public int rgba() {
         return (r() & 0xFF) << 24 | (g() & 0xFF) << 16 | (b() & 0xFF) << 8 | (a() & 0xFF);
     }

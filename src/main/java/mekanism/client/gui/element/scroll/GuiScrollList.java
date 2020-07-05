@@ -59,6 +59,7 @@ public abstract class GuiScrollList extends GuiScrollableElement {
 
     @Override
     public void func_230982_a_(double mouseX, double mouseY) {
+        super.func_230982_a_(mouseX, mouseY);
         if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= field_230691_m_ + 1 && mouseY < field_230691_m_ + field_230689_k_ - 1) {
             int index = getCurrentSelection();
             clearSelection();
@@ -71,8 +72,6 @@ public abstract class GuiScrollList extends GuiScrollableElement {
                     }
                 }
             }
-        } else {
-            super.func_230982_a_(mouseX, mouseY);
         }
     }
 

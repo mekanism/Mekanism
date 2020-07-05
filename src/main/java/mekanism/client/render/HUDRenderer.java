@@ -28,7 +28,6 @@ public class HUDRenderer {
                                           BOOTS_ICON = Mekanism.rl("gui/hud/hud_mekasuit_boots.png");
 
     private static final ResourceLocation COMPASS = MekanismUtils.getResource(ResourceType.GUI, "compass.png");
-    private static final Color color = Color.rgbad(0.25, 0.96, 0.94, 0.3);
 
     private long lastTick = -1;
     private float prevRotationPitch; // must track manually, for some reason it's already synced in the entity
@@ -37,17 +36,19 @@ public class HUDRenderer {
 
     public void renderHUD(MatrixStack matrix, float partialTick) {
         checkTime();
-
+        int color = MekanismConfig.client.hudColor.get();
+        if (Color.argb(color).a() <= 1)
+            return;
         matrix.push();
         float yawJitter = -(minecraft.player.rotationYawHead - minecraft.player.prevRotationYawHead) * 0.25F;
         float pitchJitter = -(minecraft.player.rotationPitch - prevRotationPitch) * 0.25F;
         matrix.translate(yawJitter, pitchJitter, 0);
         if (MekanismConfig.client.mekaSuitHelmetCompassEnabled.get()) {
-            renderCompass(matrix, partialTick);
+            renderCompass(matrix, partialTick, color);
         }
 
-        renderMekaSuitEnergyIcons(matrix, partialTick);
-        renderMekaSuitModuleIcons(matrix, partialTick);
+        renderMekaSuitEnergyIcons(matrix, partialTick, color);
+        renderMekaSuitModuleIcons(matrix, partialTick, color);
 
         matrix.pop();
 
@@ -67,44 +68,44 @@ public class HUDRenderer {
         }
     }
 
-    private void renderMekaSuitEnergyIcons(MatrixStack matrix, float partialTick) {
+    private void renderMekaSuitEnergyIcons(MatrixStack matrix, float partialTick, int color) {
         matrix.push();
         matrix.translate(10, 10, 0);
         int posX = 0;
         if (getStack(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
-            renderIcon(matrix, HEAD_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.HEAD)));
+            renderIcon(matrix, HEAD_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.HEAD)), color);
             posX += 48;
         }
         if (getStack(EquipmentSlotType.CHEST).getItem() instanceof ItemMekaSuitArmor) {
-            renderIcon(matrix, CHEST_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.CHEST)));
+            renderIcon(matrix, CHEST_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.CHEST)), color);
             posX += 48;
         }
         if (getStack(EquipmentSlotType.LEGS).getItem() instanceof ItemMekaSuitArmor) {
-            renderIcon(matrix, LEGS_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.LEGS)));
+            renderIcon(matrix, LEGS_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.LEGS)), color);
             posX += 48;
         }
         if (getStack(EquipmentSlotType.FEET).getItem() instanceof ItemMekaSuitArmor) {
-            renderIcon(matrix, BOOTS_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.FEET)));
+            renderIcon(matrix, BOOTS_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.FEET)), color);
         }
         matrix.pop();
     }
 
-    private void renderMekaSuitModuleIcons(MatrixStack matrix, float partialTick) {
+    private void renderMekaSuitModuleIcons(MatrixStack matrix, float partialTick, int color) {
         matrix.push();
         matrix.pop();
     }
 
-    private void renderIcon(MatrixStack matrix, ResourceLocation icon, int x, int y, ITextComponent text) {
+    private void renderIcon(MatrixStack matrix, ResourceLocation icon, int x, int y, ITextComponent text, int color) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.color4f(1, 1, 1, 0.6F);
+        MekanismRenderer.color(color);
         minecraft.getTextureManager().bindTexture(icon);
         AbstractGui.func_238463_a_(matrix, x, y, 0, 0, 16, 16, 16, 16);
         MekanismRenderer.resetColor();
-        minecraft.fontRenderer.func_238422_b_(matrix, text, x + 18, y + 5, color.argb());
+        minecraft.fontRenderer.func_238422_b_(matrix, text, x + 18, y + 5, color);
     }
 
-    private void renderCompass(MatrixStack matrix, float partialTick) {
+    private void renderCompass(MatrixStack matrix, float partialTick, int color) {
         matrix.push();
         int posX = 25;
         int posY = minecraft.getMainWindow().getScaledHeight() - 100;
@@ -114,7 +115,7 @@ public class HUDRenderer {
         matrix.push();
         matrix.scale(0.7F, 0.7F, 0.7F);
         ITextComponent coords = MekanismLang.GENERIC_BLOCK_POS.translate((int) minecraft.player.getPosX(), (int) minecraft.player.getPosY(), (int) minecraft.player.getPosZ());
-        minecraft.fontRenderer.func_238422_b_(matrix, coords, -minecraft.fontRenderer.func_238414_a_(coords) / 2F, -4, color.argb());
+        minecraft.fontRenderer.func_238422_b_(matrix, coords, -minecraft.fontRenderer.func_238414_a_(coords) / 2F, -4, color);
         matrix.pop();
         matrix.rotate(Vector3f.XP.rotationDegrees(-60));
         matrix.rotate(Vector3f.ZP.rotationDegrees(angle));
@@ -132,12 +133,12 @@ public class HUDRenderer {
         matrix.pop();
     }
 
-    private void rotateStr(MatrixStack matrix, ILangEntry langEntry, float rotation, float shift, Color color) {
+    private void rotateStr(MatrixStack matrix, ILangEntry langEntry, float rotation, float shift, int color) {
         matrix.push();
         matrix.rotate(Vector3f.ZP.rotationDegrees(shift));
         matrix.translate(0, -50, 0);
         matrix.rotate(Vector3f.ZP.rotationDegrees(-rotation - shift));
-        minecraft.fontRenderer.func_238422_b_(matrix, langEntry.translate(), -2.5F, -4, color.argb());
+        minecraft.fontRenderer.func_238422_b_(matrix, langEntry.translate(), -2.5F, -4, color);
         matrix.pop();
     }
 

@@ -86,6 +86,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
     @Override
     public void func_230982_a_(double mouseX, double mouseY) {
+        super.func_230982_a_(mouseX, mouseY);
         for (MiniElement element : miniElements) {
             element.click(mouseX, mouseY);
         }
@@ -93,6 +94,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
     @Override
     public void func_231000_a__(double mouseX, double mouseY) {
+        super.func_231000_a__(mouseX, mouseY);
         for (MiniElement element : miniElements) {
             element.release(mouseX, mouseY);
         }

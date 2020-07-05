@@ -9,6 +9,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected double scroll;
     private boolean isDragging;
     private int dragOffset;
+    protected final int barXShift;
     protected final int barX;
     protected final int barY;
     protected final int barWidth;
@@ -18,6 +19,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected GuiScrollableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height,
           int barXShift, int barYShift, int barWidth, int barHeight, int maxBarHeight) {
         super(resource, gui, x, y, width, height);
+        this.barXShift = barXShift;
         this.barX = this.field_230690_l_ + barXShift;
         this.barY = this.field_230691_m_ + barYShift;
         this.barWidth = barWidth;
@@ -31,6 +33,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
 
     @Override
     public void func_230982_a_(double mouseX, double mouseY) {
+        super.func_230982_a_(mouseX, mouseY);
         int scroll = getScroll();
         if (mouseX >= barX && mouseX <= barX + barWidth && mouseY >= barY + scroll && mouseY <= barY + scroll + barHeight) {
             if (needsScrollBars()) {
@@ -46,6 +49,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
 
     @Override
     public void func_230983_a_(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
+        super.func_230983_a_(mouseX, mouseY, mouseXOld, mouseYOld);
         if (needsScrollBars() && isDragging) {
             double yAxis = mouseY - guiObj.getTop();
             this.scroll = Math.min(Math.max((yAxis - barY - dragOffset) / getMax(), 0), 1);
@@ -54,6 +58,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
 
     @Override
     public void func_231000_a__(double mouseX, double mouseY) {
+        super.func_231000_a__(mouseX, mouseY);
         dragOffset = 0;
         isDragging = false;
     }

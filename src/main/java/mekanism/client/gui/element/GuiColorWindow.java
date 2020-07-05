@@ -1,24 +1,28 @@
 package mekanism.client.gui.element;
 
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiColorWindow extends GuiWindow {
 
@@ -26,44 +30,51 @@ public class GuiColorWindow extends GuiWindow {
 
     private GuiTextField textField;
 
+    private GuiShadePicker shadePicker;
+    private GuiHuePicker huePicker;
+
     private float hue;
     private float saturation = 0.5F;
     private float value = 0.5F;
 
-    private final Consumer<Color> callback = color -> {};
-
-    public GuiColorWindow(IGuiWrapper gui, int x, int y) {
+    public GuiColorWindow(IGuiWrapper gui, int x, int y, Consumer<Color> callback) {
         super(gui, x, y, 160, 140);
+        interactionStrategy = InteractionStrategy.NONE;
         addChild(new GuiElementHolder(gui, x + 6, y + 17, 43, 82));
+        addChild(new GuiColorView(gui, x + 7, y + 18, 41, 80));
 
         addChild(new GuiElementHolder(gui, x + 52, y + 17, 102, 82));
-        addChild(new GuiShadePicker(gui, x + 53, y + 18, 100, 80));
+        addChild(shadePicker = new GuiShadePicker(gui, x + 53, y + 18, 100, 80));
 
         addChild(new GuiElementHolder(gui, x + 6, y + 103, 148, 10));
-        addChild(new GuiHuePicker(gui, x + 7, y + 104, 146, 8));
+        addChild(huePicker = new GuiHuePicker(gui, x + 7, y + 104, 146, 8));
 
         addChild(textField = new GuiTextField(gui, x + 30, y + getButtonHeight() - 20, 67, 12));
         textField.setMaxStringLength(11);
         textField.setInputValidator(InputValidator.DIGIT.or(c -> c == ','));
+        textField.setBackground(BackgroundType.ELEMENT_HOLDER);
         addChild(new TranslationButton(gui, field_230690_l_ + 100, field_230691_m_ + getButtonHeight() - 21, 54, 14, MekanismLang.BUTTON_CONFIRM, () -> {
             callback.accept(getColor());
             close();
         }));
+        setColor(Color.rgbi(128, 70, 70));
     }
 
     public Color getColor() {
         return Color.hsv(hue, saturation, value);
     }
 
+    public void setColor(Color color) {
+        setFromColor(color);
+        updateTextFromColor();
+    }
+
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
 
-        Color c = Color.hsv(hue, saturation, value);
-        GuiUtils.fill(matrix, relativeX + 7, relativeY + 18, 41, 80, c.argb());
-
-        drawCenteredTextScaledBound(matrix, new StringTextComponent("Color Picker"), 120, 6, titleTextColor());
-        drawTextScaledBound(matrix, new StringTextComponent("RGB:"), relativeX + 7, relativeY + getButtonHeight() - 17.5F, titleTextColor(), 20);
+        drawCenteredTextScaledBound(matrix, MekanismLang.COLOR_PICKER.translate(), 120, 6, titleTextColor());
+        drawTextScaledBound(matrix, MekanismLang.RGB.translate(), relativeX + 7, relativeY + getButtonHeight() - 17.5F, titleTextColor(), 20);
     }
 
     private static final int S_TILES = 10, V_TILES = 10;
@@ -146,6 +157,35 @@ public class GuiColorWindow extends GuiWindow {
         return ret;
     }
 
+    @Override
+    public void func_231000_a__(double mouseX, double mouseY) {
+        super.func_231000_a__(mouseX, mouseY);
+        huePicker.isDragging = false;
+        shadePicker.isDragging = false;
+    }
+
+    public class GuiColorView extends GuiRelativeElement {
+
+        public GuiColorView(IGuiWrapper gui, int x, int y, int width, int height) {
+            super(gui, x, y, width, height);
+        }
+
+        @Override
+        public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+            super.func_230443_a_(matrix, mouseX, mouseY);
+            ITextComponent hex = MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, getColor().rgb()));
+            guiObj.displayTooltip(matrix, hex, mouseX, mouseY);
+        }
+
+        @Override
+        public void drawBackground(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+            super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+
+            Color c = Color.hsv(hue, saturation, value);
+            GuiUtils.fill(matrix, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), c.argb());
+        }
+    }
+
     public class GuiShadePicker extends GuiRelativeElement {
 
         private boolean isDragging;
@@ -166,8 +206,10 @@ public class GuiColorWindow extends GuiWindow {
 
         @Override
         public void func_230982_a_(double mouseX, double mouseY) {
-            set(mouseX, mouseY);
-            isDragging = true;
+            if (func_230992_c_(mouseX, mouseY)) {
+                set(mouseX, mouseY);
+                isDragging = true;
+            }
         }
 
         @Override
@@ -183,11 +225,6 @@ public class GuiColorWindow extends GuiWindow {
             float newV = (float) (mouseY - getButtonY()) / getButtonHeight();
             value = 1 - Math.min(1, Math.max(newV, 0));
             updateTextFromColor();
-        }
-
-        @Override
-        public void func_231000_a__(double mouseX, double mouseY) {
-            isDragging = false;
         }
     }
 
@@ -211,8 +248,10 @@ public class GuiColorWindow extends GuiWindow {
 
         @Override
         public void func_230982_a_(double mouseX, double mouseY) {
-            set(mouseX, mouseY);
-            isDragging = true;
+            if (func_230992_c_(mouseX, mouseY)) {
+                set(mouseX, mouseY);
+                isDragging = true;
+            }
         }
 
         @Override
@@ -226,11 +265,6 @@ public class GuiColorWindow extends GuiWindow {
             float val = (float) (mouseX - getButtonX()) / getButtonWidth();
             hue = Math.min(1, Math.max(val, 0)) * 360F;
             updateTextFromColor();
-        }
-
-        @Override
-        public void func_231000_a__(double mouseX, double mouseY) {
-            isDragging = false;
         }
     }
 }

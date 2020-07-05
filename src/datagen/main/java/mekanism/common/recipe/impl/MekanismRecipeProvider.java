@@ -1145,6 +1145,15 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.CONSTANT, MekanismItems.ATOMIC_ALLOY)
               .build(consumer);
+        //Radioactive Waste Barrel
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RADIOACTIVE_WASTE_BARREL)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
+                    TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT),
+                    TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
+              ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
+              .build(consumer);
     }
 
     private void addGearModuleRecipes(Consumer<IFinishedRecipe> consumer) {

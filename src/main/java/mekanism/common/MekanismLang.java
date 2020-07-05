@@ -111,6 +111,7 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_PER_TICK("generic", "per_tick"),
     GENERIC_PRE_STORED("generic", "pre_pre_colon"),
     GENERIC_BLOCK_POS("generic", "block_pos"),
+    GENERIC_HEX("generic", "hex"),
     //Hold for
     HOLD_FOR_DETAILS("tooltip", "hold_for_details"),
     HOLD_FOR_DESCRIPTION("tooltip", "hold_for_description"),
@@ -207,6 +208,11 @@ public enum MekanismLang implements ILangEntry {
     CLOSE("gui", "close"),
     RADIATION_DOSE("gui", "radiation_dose"),
     RADIATION_EXPOSURE("gui", "radiation_exposure"),
+    COLOR_PICKER("gui", "color_picker"),
+    RGB("gui", "rgb"),
+    HELMET_OPTIONS("gui", "helmet_options"),
+    HUD_OVERLAY("gui", "hud_overlay"),
+    OPACITY("gui", "opacity"),
     //Laser Amplifier
     ENTITY_DETECTION("laser_amplifier", "entity_detection"),
     ENERGY_CONTENTS("laser_amplifier", "energy_contents"),
@@ -401,6 +407,7 @@ public enum MekanismLang implements ILangEntry {
     BUTTON_SAVE("button", "save"),
     BUTTON_SET("button", "set"),
     BUTTON_DELETE("button", "delete"),
+    BUTTON_OPTIONS("button", "options"),
     BUTTON_TELEPORT("button", "teleport"),
     BUTTON_NEW_FILTER("button", "new_filter"),
     BUTTON_ITEMSTACK_FILTER("button", "itemstack_filter"),

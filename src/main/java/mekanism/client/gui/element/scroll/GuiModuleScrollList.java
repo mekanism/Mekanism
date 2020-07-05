@@ -1,12 +1,12 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
@@ -98,7 +98,6 @@ public class GuiModuleScrollList extends GuiScrollList {
         if (!ItemStack.areItemStacksEqual(currentItem, stack)) {
             updateList(stack, false);
         }
-        // first render text
         for (int i = 0; i < getFocusedElements(); i++) {
             int index = getCurrentSelection() + i;
             if (index > currentList.size() - 1) {
@@ -112,7 +111,11 @@ public class GuiModuleScrollList extends GuiScrollList {
             drawScaledTextScaledBound(matrix, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
             renderModule(matrix, module, relativeX + 3, relativeY + 3 + multipliedElement, 0.5F);
         }
-        // next render tooltips
+    }
+
+    @Override
+    public void func_230443_a_(MatrixStack matrix, int mouseX, int mouseY) {
+        super.func_230443_a_(matrix, mouseX, mouseY);
         for (int i = 0; i < getFocusedElements(); i++) {
             int index = getCurrentSelection() + i;
             if (index > currentList.size() - 1) {
@@ -121,9 +124,9 @@ public class GuiModuleScrollList extends GuiScrollList {
             ModuleData<?> module = currentList.get(index);
             Module instance = Modules.load(currentItem, module);
             int multipliedElement = elementHeight * i;
-            if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= field_230691_m_ + 1 + multipliedElement && mouseY < field_230691_m_ + 1 + multipliedElement + elementHeight) {
+            if (mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1 && mouseY >= relativeY + 1 + multipliedElement && mouseY < relativeY + 1 + multipliedElement + elementHeight) {
                 ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
-                guiObj.displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX - guiObj.getLeft(), mouseY - guiObj.getTop(), guiObj.getWidth());
+                guiObj.displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX, mouseY, guiObj.getWidth());
             }
         }
     }

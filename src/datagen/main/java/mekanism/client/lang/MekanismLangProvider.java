@@ -1,7 +1,7 @@
 package mekanism.client.lang;
 
-import com.google.common.collect.Table.Cell;
 import java.util.Map;
+import com.google.common.collect.Table.Cell;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
@@ -563,6 +563,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_PER_TICK, "%s/t");
         add(MekanismLang.GENERIC_PRE_STORED, "%s %s: %s");
         add(MekanismLang.GENERIC_BLOCK_POS, "%s, %s, %s");
+        add(MekanismLang.GENERIC_HEX, "#%s");
         //Directions
         add(APILang.DOWN, "Down");
         add(APILang.UP, "Up");
@@ -668,6 +669,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.CLOSE, "Close");
         add(MekanismLang.RADIATION_DOSE, "Radiation Dose: %s");
         add(MekanismLang.RADIATION_EXPOSURE, "Radiation Exposure: %s");
+        add(MekanismLang.RGB, "RGB:");
+        add(MekanismLang.COLOR_PICKER, "Color Picker");
+        add(MekanismLang.HELMET_OPTIONS, "Helmet Options");
+        add(MekanismLang.HUD_OVERLAY, "HUD Overlay:");
+        add(MekanismLang.OPACITY, "Opacity");
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");
@@ -871,6 +877,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BUTTON_SAVE, "Save");
         add(MekanismLang.BUTTON_SET, "Set");
         add(MekanismLang.BUTTON_DELETE, "Delete");
+        add(MekanismLang.BUTTON_OPTIONS, "Options");
         add(MekanismLang.BUTTON_TELEPORT, "Teleport");
         add(MekanismLang.BUTTON_NEW_FILTER, "New Filter");
         add(MekanismLang.BUTTON_ITEMSTACK_FILTER, "ItemStack");

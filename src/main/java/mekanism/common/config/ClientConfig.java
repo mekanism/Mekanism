@@ -35,7 +35,11 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedBooleanValue mekaSuitHelmetCompassEnabled;
 
     public final CachedIntValue guiTitleTextColor;
+    public final CachedIntValue guiHeadingTextColor;
+    public final CachedIntValue guiSubheadingTextColor;
     public final CachedIntValue guiScreenTextColor;
+
+    public final CachedIntValue hudColor;
 
     public final CachedEnumValue<ListSortType> qioItemViewerSortType;
     public final CachedEnumValue<SortDirection> qioItemViewerSortDirection;
@@ -82,8 +86,14 @@ public class ClientConfig extends BaseMekanismConfig {
         builder.comment("GUI Config").push(GUI_CATEGORY);
         guiTitleTextColor = CachedIntValue.wrap(this, builder.comment("Color of title text.")
               .define("titleTextColor", 0x404040));
+        guiHeadingTextColor = CachedIntValue.wrap(this, builder.comment("Color of heading text.")
+              .define("headingTextColor", 0x202020));
+        guiSubheadingTextColor = CachedIntValue.wrap(this, builder.comment("Color of subheading text.")
+              .define("subheadingTextColor", 0x787878));
         guiScreenTextColor = CachedIntValue.wrap(this, builder.comment("Color of text in black background/green text GUI elements.")
               .define("screenTextColor", 0x3CFE9A));
+        hudColor = CachedIntValue.wrap(this, builder.comment("Color of HUD used by MekaSuit.")
+              .define("hudColor", 0x5040F5F0));
         builder.pop();
 
         builder.comment("QIO Config").push(QIO_CATEGORY);

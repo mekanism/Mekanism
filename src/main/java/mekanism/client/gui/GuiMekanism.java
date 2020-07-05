@@ -232,13 +232,17 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     public boolean func_231044_a_(double mouseX, double mouseY, int button) {
         hasClicked = true;
         // first try to send the mouse event to our overlays
+        GuiWindow top = windows.size() > 0 ? windows.iterator().next() : null;
         GuiWindow focused = windows.stream().filter(overlay -> overlay.func_231044_a_(mouseX, mouseY, button)).findFirst().orElse(null);
         if (focused != null) {
             func_231035_a_(focused);
             if (button == 0) {
                 func_231037_b__(true);
             }
-            windows.moveUp(focused);
+            // this check prevents us from moving the window to the top of the stack if the clicked window opened up an additional window
+            if (top != focused) {
+                windows.moveUp(focused);
+            }
             return true;
         }
         // otherwise we send it to the current element
@@ -258,6 +262,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public boolean func_231048_c_(double mouseX, double mouseY, int button) {
         if (hasClicked) {
+            // always pass mouse released events to windows for drag checks
+            windows.forEach(w -> w.func_231000_a__(mouseX, mouseY));
             return super.func_231048_c_(mouseX, mouseY, button);
         }
         return false;
