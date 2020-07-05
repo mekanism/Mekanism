@@ -115,4 +115,9 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     public ResourceLocation[] getRecipeCategories() {
         return recipeCategories;
     }
+
+    @Override
+    public boolean isMouseOverJEIArea(double mouseX, double mouseY) {
+        return field_230694_p_ && mouseX >= field_230690_l_ && mouseY >= field_230691_m_ && mouseX < field_230690_l_ + field_230688_j_ && mouseY < field_230691_m_ + field_230689_k_;
+    }
 }

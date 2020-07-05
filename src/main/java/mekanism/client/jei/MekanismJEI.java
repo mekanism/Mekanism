@@ -278,13 +278,13 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CRUSHER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.COMBINER);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.PURIFICATION_CHAMBER);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.OSMIUM_COMPRESSOR);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.PURIFICATION_CHAMBER, GAS_CONVERSION);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.OSMIUM_COMPRESSOR, GAS_CONVERSION);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, GAS_CONVERSION);
         CatalystRegistryHelper.register(registry, MekanismBlocks.PRECISION_SAWMILL);
-        CatalystRegistryHelper.registerRecipeItem(registry, MekanismBlocks.METALLURGIC_INFUSER, MekanismBlocks.METALLURGIC_INFUSER.getRegistryName(), INFUSION_CONVERSION);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.METALLURGIC_INFUSER, INFUSION_CONVERSION);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, GAS_CONVERSION);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INFUSER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_OXIDIZER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_WASHER);
@@ -294,9 +294,9 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
         CatalystRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, GAS_CONVERSION);
         CatalystRegistryHelper.registerCondensentrator(registry);
-        CatalystRegistryHelper.registerRecipeItem(registry, MekanismBlocks.ENERGIZED_SMELTER, MekanismBlocks.ENERGIZED_SMELTER.getRegistryName(), VanillaRecipeCategoryUid.FURNACE);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.ENERGIZED_SMELTER, VanillaRecipeCategoryUid.FURNACE);
         CatalystRegistryHelper.registerRecipeItem(registry, MekanismBlocks.FORMULAIC_ASSEMBLICATOR, VanillaRecipeCategoryUid.CRAFTING);
         CatalystRegistryHelper.registerRecipeItem(registry, MekanismItems.ROBIT, MekanismBlocks.ENERGIZED_SMELTER.getRegistryName(), VanillaRecipeCategoryUid.ANVIL,
               VanillaRecipeCategoryUid.CRAFTING, VanillaRecipeCategoryUid.FURNACE);

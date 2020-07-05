@@ -5,9 +5,10 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.util.ResourceLocation;
 
-public interface IJEIRecipeArea<ELEMENT extends GuiElement> {
+public interface IJEIRecipeArea<ELEMENT extends GuiElement> extends IGuiEventListener {
 
     /**
      * @return null if not an active recipe area, otherwise the category
@@ -30,5 +31,9 @@ public interface IJEIRecipeArea<ELEMENT extends GuiElement> {
             return jeiCategories(VanillaRecipeCategoryUid.CRAFTING);
         }
         return jeiCategories((ResourceLocation) null);
+    }
+
+    default boolean isMouseOverJEIArea(double mouseX, double mouseY) {
+        return func_231047_b_(mouseX, mouseY);
     }
 }

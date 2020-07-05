@@ -103,7 +103,9 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
                 if (recipeArea.isActive()) {
                     ResourceLocation[] categories = recipeArea.getRecipeCategories();
                     //getRecipeCategory is a cheaper call than isMouseOver so we perform it first
-                    if (categories != null && child.func_231047_b_(mouseX, mouseY)) {
+                    //TODO - 1.16: Fix this? It doesn't work on things that have active as false
+                    // test SPS if it works or not
+                    if (categories != null && recipeArea.isMouseOverJEIArea(mouseX, mouseY)) {
                         GuiRelativeElement element = (GuiRelativeElement) child;
                         //TODO: Decide if we want our own implementation to overwrite the getTooltipStrings and have it show something like "Crusher Recipes"
                         IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(), element.func_230998_h_(),
