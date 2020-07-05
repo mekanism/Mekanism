@@ -1,10 +1,9 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-
 import java.util.EnumMap;
 import java.util.Map;
-
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderType;
@@ -21,8 +20,8 @@ import net.minecraft.util.Direction;
 @ParametersAreNonnullByDefault
 public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTeleporter> {
 
-    private static Map<Direction, Model3D> modelCache = new EnumMap<>(Direction.class);
-    private static Map<Direction, Model3D> rotatedModelCache = new EnumMap<>(Direction.class);
+    private static final Map<Direction, Model3D> modelCache = new EnumMap<>(Direction.class);
+    private static final Map<Direction, Model3D> rotatedModelCache = new EnumMap<>(Direction.class);
 
     public static void resetCachedModels() {
         modelCache.clear();
@@ -46,173 +45,84 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         return ProfilerConstants.TELEPORTER;
     }
 
-    private Model3D getOverlayModel(Direction direction, boolean rotated) {
-    	if(direction == null) {
-    		direction = Direction.UP;
-    	}
+    private Model3D getOverlayModel(@Nullable Direction direction, boolean rotated) {
+        if (direction == null) {
+            direction = Direction.UP;
+        }
         Map<Direction, Model3D> cache = rotated ? rotatedModelCache : modelCache;
         if (!cache.containsKey(direction)) {
-            switch (direction) {
-            case UP:
-                if (rotated) {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = 1;
-                    model.maxY = 3;
-                    model.minX = 0.46;
-                    model.maxX = 0.54;
-                    model.minZ = 0;
-                    model.maxZ = 1;
-                    cache.put(direction, model);
-                } else {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = 1;
-                    model.maxY = 3;
-                    model.minX = 0;
-                    model.maxX = 1;
-                    model.minZ = 0.46;
-                    model.maxZ = 0.54;
-                    cache.put(direction, model);
-                }
-            break;
-
-            case DOWN:
-                if (rotated) {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = -2;
-                    model.maxY = 0;
-                    model.minX = 0.46;
-                    model.maxX = 0.54;
-                    model.minZ = 0;
-                    model.maxZ = 1;
-                    cache.put(direction, model);
-                } else {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = -2;
-                    model.maxY = 0;
-                    model.minX = 0;
-                    model.maxX = 1;
-                    model.minZ = 0.46;
-                    model.maxZ = 0.54;
-                    cache.put(direction, model);
-                }
-                break;
-
-            case EAST:
-                if (rotated) {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = 0.46;
-                    model.maxY = 0.54;
-                    model.minX = 1;
-                    model.maxX = 3;
-                    model.minZ = 0;
-                    model.maxZ = 1;
-                    cache.put(direction, model);
-                } else {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = 0;
-                    model.maxY = 1;
-                    model.minX = 1;
-                    model.maxX = 3;
-                    model.minZ = 0.46;
-                    model.maxZ = 0.54;
-                    cache.put(direction, model);
-                }
-                break;
-
-            case WEST:
-                if (rotated) {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = 0.46;
-                    model.maxY = 0.54;
-                    model.minX = -2;
-                    model.maxX = 0;
-                    model.minZ = 0;
-                    model.maxZ = 1;
-                    cache.put(direction, model);
-                } else {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = 0;
-                    model.maxY = 1;
-                    model.minX = -2;
-                    model.maxX = 0;
-                    model.minZ = 0.46;
-                    model.maxZ = 0.54;
-                    cache.put(direction, model);
-                }
-                break;
-
-            case NORTH:
-                if (rotated) {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = 0.46;
-                    model.maxY = 0.54;
-                    model.minX = 0;
-                    model.maxX = 1;
-                    model.minZ = -2;
-                    model.maxZ = 0;
-                    cache.put(direction, model);
-                } else {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = 0;
-                    model.maxY = 1;
-                    model.minX = 0.46;
-                    model.maxX = 0.54;
-                    model.minZ = -2;
-                    model.maxZ = 0;
-                    cache.put(direction, model);
-                }
-                break;
-
-            case SOUTH:
-                if (rotated) {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = 0.46;
-                    model.maxY = 0.54;
-                    model.minX = 0;
-                    model.maxX = 1;
-                    model.minZ = 0;
-                    model.maxZ = 3;
-                    cache.put(direction, model);
-                } else {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = 0;
-                    model.maxY = 1;
-                    model.minX = 0.46;
-                    model.maxX = 0.54;
-                    model.minZ = 0;
-                    model.maxZ = 3;
-                    cache.put(direction, model);
-                }
-                break;
-
-            default:
-                if (!cache.containsKey(Direction.UP)) {
-                    Model3D model = new Model3D();
-                    model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
-                    model.minY = 1;
-                    model.maxY = 3;
-                    model.minX = 0;
-                    model.maxX = 1;
-                    model.minZ = 0.46;
-                    model.maxZ = 0.54;
-                    cache.put(Direction.UP, model);
-                }
-                return cache.get(Direction.UP);
+            Model3D model = new Model3D();
+            model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+            cache.put(direction, model);
+            if (direction == Direction.UP) {
+                model.minY = 1;
+                model.maxY = 3;
+                setUpDownDimensions(model, rotated);
+            } else if (direction == Direction.DOWN) {
+                model.minY = -2;
+                model.maxY = 0;
+                setUpDownDimensions(model, rotated);
+            } else if (direction == Direction.EAST) {
+                model.minX = 1;
+                model.maxX = 3;
+                setEastWestDimensions(model, rotated);
+            } else if (direction == Direction.WEST) {
+                model.minX = -2;
+                model.maxX = 0;
+                setEastWestDimensions(model, rotated);
+            } else if (direction == Direction.NORTH) {
+                model.minZ = -2;
+                model.maxZ = 0;
+                setNorthSouthDimensions(model, rotated);
+            } else if (direction == Direction.SOUTH) {
+                model.minZ = 0;
+                model.maxZ = 3;
+                setNorthSouthDimensions(model, rotated);
             }
         }
         return cache.get(direction);
+    }
+
+    private void setUpDownDimensions(Model3D model, boolean rotated) {
+        if (rotated) {
+            model.minX = 0.46;
+            model.maxX = 0.54;
+            model.minZ = 0;
+            model.maxZ = 1;
+        } else {
+            model.minX = 0;
+            model.maxX = 1;
+            model.minZ = 0.46;
+            model.maxZ = 0.54;
+        }
+    }
+
+    private void setEastWestDimensions(Model3D model, boolean rotated) {
+        if (rotated) {
+            model.minY = 0.46;
+            model.maxY = 0.54;
+            model.minZ = 0;
+            model.maxZ = 1;
+        } else {
+            model.minY = 0;
+            model.maxY = 1;
+            model.minZ = 0.46;
+            model.maxZ = 0.54;
+        }
+    }
+
+    private void setNorthSouthDimensions(Model3D model, boolean rotated) {
+        if (rotated) {
+            model.minY = 0.46;
+            model.maxY = 0.54;
+            model.minX = 0;
+            model.maxX = 1;
+        } else {
+            model.minY = 0;
+            model.maxY = 1;
+            model.minX = 0.46;
+            model.maxX = 0.54;
+        }
     }
 
     @Override
