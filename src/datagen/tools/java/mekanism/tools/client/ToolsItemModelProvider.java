@@ -70,7 +70,7 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
               .parent(new ExistingModelFile(mcLoc(folder + "/shield"), existingFileHelper))
               .texture("particle", particle)
               .override()
-              .predicate(mcLoc("blocking"), 1)
+              .predicate(modLoc("blocking"), 1)
               .model(blockingModel)
               .end();
     }

@@ -6,7 +6,7 @@
   "overrides": [
     {
       "predicate": {
-        "blocking": 1.0
+        "mekanismtools:blocking": 1.0
       },
       "model": "mekanismtools:item/osmium_shield_blocking"
     }

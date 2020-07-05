@@ -4,11 +4,11 @@
         "layer0": "mekanism:item/geiger_counter_0"
     },
     "overrides": [
-        { "predicate": { "radiation": 0 }, "model": "mekanism:item/geiger_counter_0" },
-        { "predicate": { "radiation": 1 }, "model": "mekanism:item/geiger_counter_1" },
-        { "predicate": { "radiation": 2 }, "model": "mekanism:item/geiger_counter_2" },
-        { "predicate": { "radiation": 3 }, "model": "mekanism:item/geiger_counter_3" },
-        { "predicate": { "radiation": 4 }, "model": "mekanism:item/geiger_counter_4" },
-        { "predicate": { "radiation": 5 }, "model": "mekanism:item/geiger_counter_5" }
+        { "predicate": { "mekanism:radiation": 0 }, "model": "mekanism:item/geiger_counter_0" },
+        { "predicate": { "mekanism:radiation": 1 }, "model": "mekanism:item/geiger_counter_1" },
+        { "predicate": { "mekanism:radiation": 2 }, "model": "mekanism:item/geiger_counter_2" },
+        { "predicate": { "mekanism:radiation": 3 }, "model": "mekanism:item/geiger_counter_3" },
+        { "predicate": { "mekanism:radiation": 4 }, "model": "mekanism:item/geiger_counter_4" },
+        { "predicate": { "mekanism:radiation": 5 }, "model": "mekanism:item/geiger_counter_5" }
     ]
 }

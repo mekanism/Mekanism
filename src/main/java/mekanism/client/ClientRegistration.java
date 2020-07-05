@@ -244,12 +244,12 @@ public class ClientRegistration {
             return formula.getInventory(stack) != null && !formula.isInvalid(stack) ? 1 : 0;
         });
 
-        ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, new ResourceLocation("pull"),
+        ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pull"),
               (stack, world, entity) -> entity != null && entity.getActiveItemStack() == stack ? (stack.getUseDuration() - entity.getItemInUseCount()) / 20.0F : 0);
-        ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, new ResourceLocation("pulling"),
+        ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pulling"),
               (stack, world, entity) -> entity != null && entity.isHandActive() && entity.getActiveItemStack() == stack ? 1.0F : 0.0F);
 
-        ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, new ResourceLocation("radiation"), (stack, world, entity) -> {
+        ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, Mekanism.rl("radiation"), (stack, world, entity) -> {
             if (entity instanceof PlayerEntity) {
                 return Mekanism.radiationManager.getClientScale().ordinal();
             }
