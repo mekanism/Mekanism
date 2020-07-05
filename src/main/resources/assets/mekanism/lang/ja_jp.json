@@ -473,7 +473,7 @@
   "description.mekanism.induction_port": "インダクションマトリックスの組み立てに用い、インダクションマトリックスのエネルギーの搬入出を行います。",
   "description.mekanism.induction_provider": "発展的な、冷却システム及び伝導体と変圧器の統合体です。 インダクションマトリックスの内部に組み込み、エネルギーの入出力上限を増やすのに使用します。",
   "description.mekanism.industrial_alarm": "Not just your everyday alarm... this is an 'industrial' alarm!",
-  "description.mekanism.inhalation_purification_unit": "Applies a miniature electromagnetic field around the breathing apparatus, preventing negative potion effects.",
+  "description.mekanism.inhalation_purification_unit": "呼吸装置周りに小型電磁界を生成し、悪いポーション効果から身を守ります。",
   "description.mekanism.isotopic_centrifuge": "A machine with one single purpose: to spin its contents really, REALLY fast.",
   "description.mekanism.jetpack_unit": "水素燃料のジェットパックをMekaSuitに追加します。",
   "description.mekanism.laser": "極端に平行な光線を利用した、線形エネルギー転送の発展型です。",
