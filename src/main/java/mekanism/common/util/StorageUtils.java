@@ -260,7 +260,7 @@ public class StorageUtils {
     public static double getDurabilityForDisplay(ItemStack stack) {
         //Note we ensure the capabilities are not null, as the first call to getDurabilityForDisplay happens before capability injection
         if (Capabilities.GAS_HANDLER_CAPABILITY == null || Capabilities.INFUSION_HANDLER_CAPABILITY == null || Capabilities.PIGMENT_HANDLER_CAPABILITY == null ||
-            Capabilities.SLURRY_HANDLER_CAPABILITY == null || CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null || Capabilities.STRICT_ENERGY_CAPABILITY == null) {
+            Capabilities.SLURRY_HANDLER_CAPABILITY == null || CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null) {
             return 1;
         }
         double bestRatio = 0;
@@ -276,6 +276,15 @@ public class StorageUtils {
                 bestRatio = Math.max(bestRatio, getRatio(fluidHandlerItem.getFluidInTank(tank).getAmount(), fluidHandlerItem.getTankCapacity(tank)));
             }
         }
+        return 1 - bestRatio;
+    }
+
+    public static double getEnergyDurabilityForDisplay(ItemStack stack) {
+        //Note we ensure the capabilities are not null, as the first call to getDurabilityForDisplay happens before capability injection
+        if (Capabilities.STRICT_ENERGY_CAPABILITY == null) {
+            return 1;
+        }
+        double bestRatio = 0;
         Optional<IStrictEnergyHandler> energyCapability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
         if (energyCapability.isPresent()) {
             IStrictEnergyHandler energyHandlerItem = energyCapability.get();

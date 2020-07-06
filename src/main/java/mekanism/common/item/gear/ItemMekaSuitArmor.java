@@ -134,7 +134,13 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        return StorageUtils.getDurabilityForDisplay(stack);
+        //TODO: Eventually look into making it so that we can have a "secondary durability" bar for rendering things like stored gas
+        return StorageUtils.getEnergyDurabilityForDisplay(stack);
+    }
+
+    @Override
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
+        return MekanismConfig.client.energyColor.get();
     }
 
     @Override
