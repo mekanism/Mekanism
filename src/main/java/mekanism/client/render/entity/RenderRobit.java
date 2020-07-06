@@ -11,6 +11,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderRobit extends MobRenderer<EntityRobit, ModelRobit> {
 
+    private static final ResourceLocation ROBIT = MekanismUtils.getResource(ResourceType.RENDER, "robit.png");
+    private static final ResourceLocation ROBIT_ALT = MekanismUtils.getResource(ResourceType.RENDER, "robit2.png");
+
     public RenderRobit(EntityRendererManager renderManager) {
         super(renderManager, new ModelRobit(), 0.5F);
     }
@@ -23,6 +26,6 @@ public class RenderRobit extends MobRenderer<EntityRobit, ModelRobit> {
                 robit.texTick = !robit.texTick;
             }
         }
-        return MekanismUtils.getResource(ResourceType.RENDER, "robit" + (robit.texTick ? "2" : "") + ".png");
+        return robit.texTick ? ROBIT_ALT : ROBIT;
     }
 }
