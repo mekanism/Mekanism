@@ -53,7 +53,7 @@
   "description.mekanismgenerators.fusion_reactor_frame": "Verstärkte Hülle, welche im Fusionsreaktor-Multiblock verwendet werden kann.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Ein Block, welcher verwendet werden kann, um einen Reaktor mit Redstone zu überwachen.",
   "description.mekanismgenerators.fusion_reactor_port": "Ein Block aus verstärktem Material, welcher sowohl den Gas- als auch den Energietransfer des Fusionsreaktors regeln kann.",
-  "description.mekanismgenerators.gas_burning_generator": "A generator that harnesses the varying molecular gases to produce energy.",
+  "description.mekanismgenerators.gas_burning_generator": "Ein Generator, der die verschiedenen Molekulargase zur Energieerzeugung nutzt.",
   "description.mekanismgenerators.heat_generator": "Ein Generator, der die Wärme aus Lava oder anderen Brennstoffen zur Energieerzeugung nutzt.",
   "description.mekanismgenerators.laser_focus_matrix": "Eine Scheibe aus Reaktorglas, welche fähig ist, optische Energy zu absorbieren, und so den Fusionsreaktor aufheizt.",
   "description.mekanismgenerators.reactor.logic.activation": "Activate the reactor when powered, and deactivate when unpowered",
