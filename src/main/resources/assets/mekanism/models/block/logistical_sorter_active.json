@@ -1,6 +1,7 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "mekanism:block/logistical_sorter",
+	"loader": "mekanism:mekanism",
 	"texture_size": [32, 32],
 	"textures": {
 		"leds": "mekanism:block/models/leds",
@@ -286,11 +287,11 @@
 			"to": [12.5, 8.5, 9],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 11]},
 			"faces": {
-				"north": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"east": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"south": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"up": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"down": {"uv": [0, 0, 1, 1], "texture": "#leds"}
+				"north": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15}
 			}
 		},
 		{
@@ -299,11 +300,11 @@
 			"to": [4.5, 8.5, 9],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 12]},
 			"faces": {
-				"north": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"south": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"west": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"up": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"down": {"uv": [0, 0, 1, 1], "texture": "#leds"}
+				"north": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15}
 			}
 		},
 		{
@@ -312,11 +313,11 @@
 			"to": [4.5, 8.5, 7],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 10]},
 			"faces": {
-				"north": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"south": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"west": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"up": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"down": {"uv": [0, 0, 1, 1], "texture": "#leds"}
+				"north": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15}
 			}
 		},
 		{
@@ -325,11 +326,11 @@
 			"to": [12.5, 8.5, 7],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 9]},
 			"faces": {
-				"north": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"east": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"south": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"up": {"uv": [0, 0, 1, 1], "texture": "#leds"},
-				"down": {"uv": [0, 0, 1, 1], "texture": "#leds"}
+				"north": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#leds", "lightLevel": 15}
 			}
 		}
 	]

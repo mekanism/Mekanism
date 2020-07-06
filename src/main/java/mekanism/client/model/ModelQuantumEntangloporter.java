@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelQuantumEntangloporter extends MekanismModel {
+public class ModelQuantumEntangloporter extends MekanismJavaModel {
 
     private static final ResourceLocation ENTANGLOPORTER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "quantum_entangloporter.png");
     private static final ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "quantum_entangloporter_overlay.png");

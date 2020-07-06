@@ -266,9 +266,7 @@ public class ClientRegistration {
         addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig, evt));
         addCustomModel(MekanismBlocks.QIO_REDSTONE_ADAPTER, (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
 
-        addLitModel(MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.MODIFICATION_STATION,
-            MekanismBlocks.SECURITY_DESK,  MekanismBlocks.LOGISTICAL_SORTER, MekanismBlocks.RESISTIVE_HEATER, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER,
-            MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItems.MEKA_TOOL, MekanismBlocks.CHEMICAL_CRYSTALLIZER, MekanismBlocks.CHARGEPAD);
+        addLitModel(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItems.MEKA_TOOL);
     }
 
     @SubscribeEvent

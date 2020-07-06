@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ExtendedModelRenderer;
-import mekanism.client.model.MekanismModel;
+import mekanism.client.model.MekanismJavaModel;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelWindGenerator extends MekanismModel {
+public class ModelWindGenerator extends MekanismJavaModel {
 
     private static final ResourceLocation GENERATOR_TEXTURE = MekanismGenerators.rl("render/wind_generator.png");
     private final RenderType RENDER_TYPE = getRenderType(GENERATOR_TEXTURE);

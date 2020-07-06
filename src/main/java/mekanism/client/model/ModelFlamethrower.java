@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelFlamethrower extends MekanismModel {
+public class ModelFlamethrower extends MekanismJavaModel {
 
     private static final ResourceLocation FLAMETHROWER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "flamethrower.png");
     private final RenderType RENDER_TYPE = getRenderType(FLAMETHROWER_TEXTURE);

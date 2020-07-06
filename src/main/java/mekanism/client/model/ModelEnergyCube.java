@@ -28,7 +28,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class ModelEnergyCube extends MekanismModel {
+public class ModelEnergyCube extends MekanismJavaModel {
 
     private static final ResourceLocation CUBE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube.png");
     private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube_overlay_on.png");
@@ -478,7 +478,7 @@ public class ModelEnergyCube extends MekanismModel {
         }
     }
 
-    public static class ModelEnergyCore extends MekanismModel {
+    public static class ModelEnergyCore extends MekanismJavaModel {
 
         private static final ResourceLocation CORE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");
 

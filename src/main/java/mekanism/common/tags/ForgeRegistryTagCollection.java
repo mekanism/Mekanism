@@ -48,8 +48,8 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
         int tagCount = buffer.readVarInt();
         for (int i = 0; i < tagCount; ++i) {
             ResourceLocation resourceLocation = buffer.readResourceLocation();
-            int elementCount = buffer.readVarInt();
             Builder<T> builder = ImmutableSet.builder();
+            int elementCount = buffer.readVarInt();
             for (int j = 0; j < elementCount; ++j) {
                 T value = registry.getValue(buffer.readResourceLocation());
                 if (value != null) {
@@ -59,7 +59,7 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
             }
             tagMap.put(resourceLocation, ITag.func_232946_a_(builder.build()));
         }
-        this.toImmutable(tagMap);
+        toImmutable(tagMap);
     }
 
     public void setCollection() {

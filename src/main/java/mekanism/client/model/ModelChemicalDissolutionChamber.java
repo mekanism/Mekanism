@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelChemicalDissolutionChamber extends MekanismModel {
+public class ModelChemicalDissolutionChamber extends MekanismJavaModel {
 
     private static final ResourceLocation DISSOLUTION_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "chemical_dissolution_chamber.png");
     private final RenderType RENDER_TYPE = getRenderType(DISSOLUTION_TEXTURE);
