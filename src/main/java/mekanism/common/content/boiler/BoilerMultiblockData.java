@@ -244,7 +244,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         waterVolume = volume;
 
         waterTankCapacity = getWaterVolume() * BoilerMultiblockData.WATER_PER_VOLUME;
-        superheatedCoolantCapacity = getWaterVolume() * BoilerMultiblockData.SUPERHEATED_COOLANT_PER_VOLUME;
+        superheatedCoolantCapacity = (long) getWaterVolume() * BoilerMultiblockData.SUPERHEATED_COOLANT_PER_VOLUME;
     }
 
     public int getSteamVolume() {
@@ -255,6 +255,6 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         steamVolume = volume;
 
         steamTankCapacity = getSteamVolume() * BoilerMultiblockData.STEAM_PER_VOLUME;
-        cooledCoolantCapacity = getSteamVolume() * BoilerMultiblockData.COOLED_COOLANT_PER_VOLUME;
+        cooledCoolantCapacity = (long) getSteamVolume() * BoilerMultiblockData.COOLED_COOLANT_PER_VOLUME;
     }
 }

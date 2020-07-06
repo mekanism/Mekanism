@@ -9,6 +9,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
@@ -58,7 +59,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     private long getMaxInputGas() {
-        return MekanismConfig.general.spsInputPerAntimatter.get() * 2;
+        return MekanismConfig.general.spsInputPerAntimatter.get() * 2L;
     }
 
     @Override
@@ -111,7 +112,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             return;
         }
         final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
-        inputProcessed += operations;
+        inputProcessed += MathUtils.clampToInt(operations);
         inputTank.shrinkStack(operations, Action.EXECUTE);
         if (inputProcessed >= inputPerAntimatter) {
             GasStack toAdd = MekanismGases.ANTIMATTER.getStack(inputProcessed / inputPerAntimatter);

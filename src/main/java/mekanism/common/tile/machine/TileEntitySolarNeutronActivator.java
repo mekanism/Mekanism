@@ -166,7 +166,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         float production = peakProductionRate * brightness;
         //If the solar neutron activator is in a biome where it can rain and it's raining penalize production by 80%
         if (needsRainCheck && (world.isRaining() || world.isThundering())) {
-            production *= 0.2;
+            production *= 0.2F;
         }
         return production;
     }

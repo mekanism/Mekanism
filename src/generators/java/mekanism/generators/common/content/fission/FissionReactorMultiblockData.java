@@ -98,7 +98,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
               fluid -> fluid.getFluid().isIn(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
         fluidTanks.add(fluidCoolantTank);
-        gasCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
+        gasCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> (long) getVolume() * COOLANT_PER_VOLUME,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
               gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty());
         fuelTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,

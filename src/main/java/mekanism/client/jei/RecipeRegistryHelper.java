@@ -55,7 +55,7 @@ public class RecipeRegistryHelper {
 
     public static void registerNutritionalLiquifier(IRecipeRegistration registry) {
         registry.addRecipes(ForgeRegistries.ITEMS.getValues().stream().filter(Item::isFood)
-              .map(item -> new NutritionalLiquifierIRecipe(item, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(item.getFood().getHealing() * 50)))
+              .map(item -> new NutritionalLiquifierIRecipe(item, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(item.getFood().getHealing() * 50L)))
               .collect(Collectors.toList()), MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
     }
 
