@@ -34,6 +34,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -142,17 +143,19 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     }
 
     public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
-        NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN),
-        HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA),
-        DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED);
+        NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, Mekanism.rl("gui/hud/jetpack_normal.png")),
+        HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, Mekanism.rl("gui/hud/jetpack_hover.png")),
+        DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, Mekanism.rl("gui/hud/jetpack_off.png"));
 
         private static final JetpackMode[] MODES = values();
         private final ILangEntry langEntry;
         private final EnumColor color;
+        private ResourceLocation hudIcon;
 
-        JetpackMode(ILangEntry langEntry, EnumColor color) {
+        JetpackMode(ILangEntry langEntry, EnumColor color, ResourceLocation hudIcon) {
             this.langEntry = langEntry;
             this.color = color;
+            this.hudIcon = hudIcon;
         }
 
         @Override
@@ -164,6 +167,10 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
         @Override
         public JetpackMode byIndex(int index) {
             return byIndexStatic(index);
+        }
+
+        public ResourceLocation getHUDIcon() {
+            return hudIcon;
         }
 
         public static JetpackMode byIndexStatic(int index) {

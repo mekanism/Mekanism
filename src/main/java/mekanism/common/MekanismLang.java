@@ -270,6 +270,8 @@ public enum MekanismLang implements ILangEntry {
     OUTPUT("boolean", "output"),
     ACTIVE("boolean", "active"),
     DISABLED("boolean", "disabled"),
+    ON_CAPS("boolean", "on_caps"),
+    OFF_CAPS("boolean", "off_caps"),
     //Capacity
     CAPACITY("capacity", "generic"),
     CAPACITY_ITEMS("capacity", "items"),

@@ -9,12 +9,14 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.ILangEntry;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.HUDElement;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
@@ -30,12 +32,14 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -72,7 +76,7 @@ public abstract class ModuleMekaSuit extends Module {
         /**
          * Checks whether the given chestplate should be filled with hydrogen, if it can store hydrogen.
          * Does not check whether the chestplate can store hydrogen.
-         * 
+         *
          * @param chestPlate the chestplate to check
          * @return whether the given chestplate should be filled with hydrogen.
          */
@@ -107,6 +111,8 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleVisionEnhancementUnit extends ModuleMekaSuit {
 
+        private static final ResourceLocation icon = Mekanism.rl("gui/hud/vision_enhancement_unit.png");
+
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
@@ -114,10 +120,8 @@ public abstract class ModuleMekaSuit extends Module {
         }
 
         @Override
-        public void addHUDStrings(List<ITextComponent> list) {
-            ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
-            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.DARK_GRAY, MekanismLang.MODULE_VISION_ENHANCEMENT,
-                  isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate()));
+        public void addHUDElements(List<HUDElement> list) {
+            list.add(HUDElement.of(icon, OnOff.caps(isEnabled(), true).getTextComponent()));
         }
 
         @Override
@@ -130,6 +134,8 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleGravitationalModulatingUnit extends ModuleMekaSuit {
 
+        private static final ResourceLocation icon = Mekanism.rl("gui/hud/gravitational_modulation_unit.png");
+
         // we share with locomotive boosting unit
         private ModuleConfigItem<SprintBoost> speedBoost;
 
@@ -140,10 +146,8 @@ public abstract class ModuleMekaSuit extends Module {
         }
 
         @Override
-        public void addHUDStrings(List<ITextComponent> list) {
-            ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
-            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.DARK_GRAY, MekanismLang.MODULE_GRAVITATIONAL_MODULATION,
-                  isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate()));
+        public void addHUDElements(List<HUDElement> list) {
+            list.add(HUDElement.of(icon, OnOff.caps(isEnabled(), true).getTextComponent()));
         }
 
         @Override
@@ -214,6 +218,8 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleNutritionalInjectionUnit extends ModuleMekaSuit {
 
+        private static final ResourceLocation icon = Mekanism.rl("gui/hud/nutritional_injection_unit.png");
+
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
@@ -230,25 +236,32 @@ public abstract class ModuleMekaSuit extends Module {
         }
 
         @Override
-        public void addHUDStrings(List<ITextComponent> list) {
+        public void addHUDElements(List<HUDElement> list) {
             if (!isEnabled()) {
                 return;
             }
             GasStack stored = ((ItemMekaSuitArmor) getContainer().getItem()).getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get());
-            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.NUTRITIONAL_PASTE, EnumColor.PINK, stored.getAmount()));
+            double ratio = StorageUtils.getRatio(stored.getAmount(), ItemMekaSuitArmor.MAX_NUTRITIONAL_PASTE);
+            list.add(HUDElement.of(icon, StorageUtils.getStoragePercent(ratio)));
         }
     }
 
     public static class ModuleDosimeterUnit extends ModuleMekaSuit {
 
+        private static final ResourceLocation icon = Mekanism.rl("gui/hud/dosimeter.png");
+
         @Override
-        public void addHUDStrings(List<ITextComponent> list) {
+        public void addHUDElements(List<HUDElement> list) {
+            if (!isEnabled()) {
+                return;
+            }
             Optional<IRadiationEntity> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(Minecraft.getInstance().player,
                   Capabilities.RADIATION_ENTITY_CAPABILITY, null));
             if (capability.isPresent()) {
                 double radiation = capability.get().getRadiation();
-                list.add(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(radiation),
-                      UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)));
+                ITextComponent text = APILang.GENERIC.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(radiation),
+                      UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2));
+                list.add(HUDElement.of(icon, text));
             }
         }
     }

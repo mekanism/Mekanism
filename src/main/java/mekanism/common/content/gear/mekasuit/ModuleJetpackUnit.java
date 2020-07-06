@@ -3,16 +3,16 @@ package mekanism.common.content.gear.mekasuit;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.gear.HUDElement;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
 
 public class ModuleJetpackUnit extends ModuleMekaSuit {
 
@@ -25,13 +25,13 @@ public class ModuleJetpackUnit extends ModuleMekaSuit {
     }
 
     @Override
-    public void addHUDStrings(List<ITextComponent> list) {
+    public void addHUDElements(List<HUDElement> list) {
         if (!isEnabled()) {
             return;
         }
-        list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpackMode.get()));
         GasStack stored = ((ItemMekaSuitArmor) getContainer().getItem()).getContainedGas(getContainer(), MekanismGases.HYDROGEN.get());
-        list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount()));
+        double ratio = StorageUtils.getRatio(stored.getAmount(), ItemMekaSuitArmor.MAX_JETPACK_FUEL);
+        list.add(HUDElement.of(jetpackMode.get().getHUDIcon(), StorageUtils.getStoragePercent(ratio)));
     }
 
     @Override

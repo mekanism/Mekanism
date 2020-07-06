@@ -238,6 +238,10 @@ public class StorageUtils {
         if (container != null) {
             ratio = container.getEnergy().divideToLevel(container.getMaxEnergy());
         }
+        return getStoragePercent(ratio);
+    }
+
+    public static ITextComponent getStoragePercent(double ratio) {
         EnumColor color;
         if (ratio < 0.01F) {
             color = EnumColor.DARK_RED;
@@ -294,7 +298,7 @@ public class StorageUtils {
         return bestRatio;
     }
 
-    private static double getRatio(long amount, long capacity) {
+    public static double getRatio(long amount, long capacity) {
         return capacity == 0 ? 1 : amount / (double) capacity;
     }
 

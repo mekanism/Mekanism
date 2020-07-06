@@ -158,6 +158,9 @@ public abstract class Module {
     public void addHUDStrings(List<ITextComponent> list) {
     }
 
+    public void addHUDElements(List<HUDElement> list) {
+    }
+
     public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
     }
 

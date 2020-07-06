@@ -1,16 +1,21 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldVertexBufferUploader;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.StringTextComponent;
-import org.lwjgl.opengl.GL11;
 
 public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> extends Screen {
 
@@ -40,7 +45,6 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         // center of screen
         float centerX = minecraft.getMainWindow().getScaledWidth() / 2F;
         float centerY = minecraft.getMainWindow().getScaledHeight() / 2F;
-        // scaled mouse position
 
         matrix.push();
         RenderSystem.enableBlend();
@@ -51,7 +55,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
 
         // draw base
         RenderSystem.color4f(0.3F, 0.3F, 0.3F, 0.5F);
-        drawTorus(0, 360);
+        drawTorus(matrix, 0, 360);
 
         TYPE cur = curSupplier.get();
         if (cur != null) {
@@ -61,7 +65,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             } else {
                 MekanismRenderer.color(cur.getColor(), 0.3F);
             }
-            drawTorus(-90F + 360F * (-0.5F + cur.ordinal()) / types.length, 360F / types.length);
+            drawTorus(matrix, -90F + 360F * (-0.5F + cur.ordinal()) / types.length, 360F / types.length);
 
             double xDiff = mouseX - centerX;
             double yDiff = mouseY - centerY;
@@ -69,7 +73,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
                 // draw mouse selection highlight
                 float angle = (float) Math.toDegrees(Math.atan2(yDiff, xDiff));
                 RenderSystem.color4f(0.8F, 0.8F, 0.8F, 0.3F);
-                drawTorus(360F * (-0.5F / types.length) + angle, 360F / types.length);
+                drawTorus(matrix, 360F * (-0.5F / types.length) + angle, 360F / types.length);
 
                 float selectionAngle = angle + 90F + (360F * (0.5F / types.length));
                 while (selectionAngle < 0) {
@@ -78,7 +82,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
                 selection = types[(int) (selectionAngle * (types.length / 360F))];
                 // draw hovered selection
                 RenderSystem.color4f(0.6F, 0.6F, 0.6F, 0.7F);
-                drawTorus(-90F + 360F * (-0.5F + selection.ordinal()) / types.length, 360F / types.length);
+                drawTorus(matrix, -90F + 360F * (-0.5F + selection.ordinal()) / types.length, 360F / types.length);
             } else {
                 selection = null;
             }
@@ -129,15 +133,18 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         return false;
     }
 
-    private void drawTorus(float startAngle, float sizeAngle) {
-        GL11.glBegin(GL11.GL_QUAD_STRIP);
+    private void drawTorus(MatrixStack matrix, float startAngle, float sizeAngle) {
+        BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
+        Matrix4f matrix4f = matrix.getLast().getMatrix();
+        vertexBuffer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION);
         float draws = DRAWS * (sizeAngle / 360F);
         for (int i = 0; i <= draws; i++) {
-            double angle = Math.toRadians(startAngle + (i / DRAWS) * 360);
-            GL11.glVertex2d(INNER * Math.cos(angle), INNER * Math.sin(angle));
-            GL11.glVertex2d(OUTER * Math.cos(angle), OUTER * Math.sin(angle));
+            float angle = (float) Math.toRadians(startAngle + (i / DRAWS) * 360);
+            vertexBuffer.pos(matrix4f, (float) (OUTER * Math.cos(angle)), (float) (OUTER * Math.sin(angle)), 0).endVertex();
+            vertexBuffer.pos(matrix4f, (float) (INNER * Math.cos(angle)), (float) (INNER * Math.sin(angle)), 0).endVertex();
         }
-        GL11.glEnd();
+        vertexBuffer.finishDrawing();
+        WorldVertexBufferUploader.draw(vertexBuffer);
     }
 
     public void updateSelection() {

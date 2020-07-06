@@ -1,5 +1,6 @@
 package mekanism.common.item.gear;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -29,11 +30,11 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.HUDElement;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
-import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.ISpecialGear;
 import mekanism.common.registries.MekanismGases;
@@ -58,7 +59,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem, IModeItem, IItemHUDProvider, ISpecialGear {
+public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem, IModeItem, ISpecialGear {
 
     // TODO separate these into individual modules maybe (specifically fire-related - on_fire, in_fire, lava)
     private static final Set<DamageSource> ALWAYS_SUPPORTED_SOURCES = new HashSet<>(Arrays.asList(
@@ -71,6 +72,9 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     //TODO: Make this a config option?
     private static final int GAS_TRANSFER_RATE = 256;
 
+    public static final int MAX_JETPACK_FUEL = 24_000;
+    public static final int MAX_NUTRITIONAL_PASTE = 16_000;
+
     private final Set<GasTankSpec> gasTankSpecs = new HashSet<>();
     private float absorption;
 
@@ -81,11 +85,11 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         if (slot == EquipmentSlotType.HEAD) {
             Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT, Modules.VISION_ENHANCEMENT_UNIT,
                   Modules.SOLAR_RECHARGING_UNIT, Modules.NUTRITIONAL_INJECTION_UNIT);
-            gasTankSpecs.add(GasTankSpec.createFillOnly(() -> GAS_TRANSFER_RATE, () -> 16_000, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
+            gasTankSpecs.add(GasTankSpec.createFillOnly(() -> GAS_TRANSFER_RATE, () -> MAX_NUTRITIONAL_PASTE, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
             absorption = 0.15F;
         } else if (slot == EquipmentSlotType.CHEST) {
             Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT, Modules.DOSIMETER_UNIT);
-            gasTankSpecs.add(GasTankSpec.createFillOnly(() -> GAS_TRANSFER_RATE, () -> 24_000, gas -> gas == MekanismGases.HYDROGEN.get()));
+            gasTankSpecs.add(GasTankSpec.createFillOnly(() -> GAS_TRANSFER_RATE, () -> MAX_JETPACK_FUEL, gas -> gas == MekanismGases.HYDROGEN.get()));
             absorption = 0.4F;
         } else if (slot == EquipmentSlotType.LEGS) {
             Modules.setSupported(this, Modules.LOCOMOTIVE_BOOSTING_UNIT);
@@ -192,17 +196,6 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     }
 
     @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
-        if (slotType == getEquipmentSlot()) {
-            for (Module module : Modules.loadAll(stack)) {
-                if (module.renderHUD()) {
-                    module.addHUDStrings(list);
-                }
-            }
-        }
-    }
-
-    @Override
     public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
         for (Module module : Modules.loadAll(stack)) {
             if (module.handlesModeChange()) {
@@ -267,6 +260,16 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
     	return material.getEnchantability() > 0;
+    }
+
+    public List<HUDElement> getHUDElements(ItemStack stack) {
+        List<HUDElement> ret = new ArrayList<>();
+        for (Module module : Modules.loadAll(stack)) {
+            if (module.renderHUD()) {
+                module.addHUDElements(ret);
+            }
+        }
+        return ret;
     }
 
     // This is unused for the most part; toughness / damage reduction is handled manually

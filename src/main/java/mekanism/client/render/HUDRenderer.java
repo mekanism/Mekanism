@@ -1,13 +1,17 @@
 package mekanism.client.render;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.HUDElement;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.Color;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
@@ -73,36 +77,59 @@ public class HUDRenderer {
         matrix.translate(10, 10, 0);
         int posX = 0;
         if (getStack(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
-            renderIcon(matrix, HEAD_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.HEAD)), color);
+            renderIcon(matrix, HEAD_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.HEAD)), color, false);
             posX += 48;
         }
         if (getStack(EquipmentSlotType.CHEST).getItem() instanceof ItemMekaSuitArmor) {
-            renderIcon(matrix, CHEST_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.CHEST)), color);
+            renderIcon(matrix, CHEST_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.CHEST)), color, false);
             posX += 48;
         }
         if (getStack(EquipmentSlotType.LEGS).getItem() instanceof ItemMekaSuitArmor) {
-            renderIcon(matrix, LEGS_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.LEGS)), color);
+            renderIcon(matrix, LEGS_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.LEGS)), color, false);
             posX += 48;
         }
         if (getStack(EquipmentSlotType.FEET).getItem() instanceof ItemMekaSuitArmor) {
-            renderIcon(matrix, BOOTS_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.FEET)), color);
+            renderIcon(matrix, BOOTS_ICON, posX, 0, StorageUtils.getEnergyPercent(getStack(EquipmentSlotType.FEET)), color, false);
         }
         matrix.pop();
     }
 
     private void renderMekaSuitModuleIcons(MatrixStack matrix, float partialTick, int color) {
+        // create list of all elements to render
+        List<HUDElement> elements = new ArrayList<>();
+        for (EquipmentSlotType type : EnumUtils.ARMOR_SLOTS) {
+            ItemStack stack = getStack(type);
+            if (stack.getItem() instanceof ItemMekaSuitArmor) {
+                elements.addAll(((ItemMekaSuitArmor) stack.getItem()).getHUDElements(stack));
+            }
+        }
+
+        int startX = minecraft.getMainWindow().getScaledWidth() - 10;
+        int curY = minecraft.getMainWindow().getScaledHeight() - 10;
+
         matrix.push();
+        for (HUDElement element : elements) {
+            int elementWidth = 24 + minecraft.fontRenderer.func_238414_a_(element.getText());
+            curY -= 18;
+            renderIcon(matrix, element.getIcon(), startX - elementWidth, curY, element.getText(), color, true);
+        }
         matrix.pop();
     }
 
-    private void renderIcon(MatrixStack matrix, ResourceLocation icon, int x, int y, ITextComponent text, int color) {
+    private void renderIcon(MatrixStack matrix, ResourceLocation icon, int x, int y, ITextComponent text, int color, boolean iconRight) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         MekanismRenderer.color(color);
         minecraft.getTextureManager().bindTexture(icon);
-        AbstractGui.func_238463_a_(matrix, x, y, 0, 0, 16, 16, 16, 16);
-        MekanismRenderer.resetColor();
-        minecraft.fontRenderer.func_238422_b_(matrix, text, x + 18, y + 5, color);
+        if (!iconRight) {
+            AbstractGui.func_238463_a_(matrix, x, y, 0, 0, 16, 16, 16, 16);
+            MekanismRenderer.resetColor();
+            minecraft.fontRenderer.func_238422_b_(matrix, text, x + 18, y + 5, color);
+        } else {
+            AbstractGui.func_238463_a_(matrix, x + minecraft.fontRenderer.func_238414_a_(text) + 2, y, 0, 0, 16, 16, 16, 16);
+            MekanismRenderer.resetColor();
+            minecraft.fontRenderer.func_238422_b_(matrix, text, x, y + 5, color);
+        }
     }
 
     private void renderCompass(MatrixStack matrix, float partialTick, int color) {

@@ -731,6 +731,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.OUTPUT, "Output");
         add(MekanismLang.ACTIVE, "Active");
         add(MekanismLang.DISABLED, "Disabled");
+        add(MekanismLang.ON_CAPS, "ON");
+        add(MekanismLang.OFF_CAPS, "OFF");
         //Capacity
         add(MekanismLang.CAPACITY, "Capacity: %s");
         add(MekanismLang.CAPACITY_ITEMS, "Capacity: %s Items");

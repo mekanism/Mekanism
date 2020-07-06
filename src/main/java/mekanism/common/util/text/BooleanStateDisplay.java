@@ -21,7 +21,7 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
     @Override
     public ITextComponent getTextComponent() {
         if (colored) {
-            return getLangEntry().translateColored(value ? EnumColor.DARK_GREEN : EnumColor.DARK_RED);
+            return getLangEntry().translateColored(value ? EnumColor.BRIGHT_GREEN : EnumColor.RED);
         }
         return getLangEntry().translate();
     }
@@ -48,8 +48,11 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
 
     public static class OnOff extends BooleanStateDisplay {
 
-        private OnOff(boolean value, boolean colored) {
+        private boolean caps;
+
+        private OnOff(boolean value, boolean colored, boolean caps) {
             super(value, colored);
+            this.caps = caps;
         }
 
         public static OnOff of(boolean value) {
@@ -57,12 +60,16 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
         }
 
         public static OnOff of(boolean value, boolean colored) {
-            return new OnOff(value, colored);
+            return new OnOff(value, colored, false);
+        }
+
+        public static OnOff caps(boolean value, boolean colored) {
+            return new OnOff(value, colored, true);
         }
 
         @Override
         protected ILangEntry getLangEntry() {
-            return value ? MekanismLang.ON : MekanismLang.OFF;
+            return value ? (caps ? MekanismLang.ON_CAPS : MekanismLang.ON) : (caps ? MekanismLang.OFF_CAPS : MekanismLang.OFF);
         }
     }
 
