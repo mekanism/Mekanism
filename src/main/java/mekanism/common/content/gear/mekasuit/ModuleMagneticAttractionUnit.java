@@ -51,7 +51,7 @@ public class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
             if (!getContainerEnergy().greaterOrEqual(usage)) {
                 break;
             }
-            if (item.getDistance(player) > 0.1) {
+            if (item.getDistance(player) > 0.001) {
                 useEnergy(player, usage);
                 Vector3d diff = player.getPositionVec().subtract(item.getPositionVec());
                 Vector3d motionNeeded = new Vector3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));

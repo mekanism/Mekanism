@@ -275,25 +275,25 @@ public class GearConfig extends BaseMekanismConfig {
         mekaSuitBaseJumpEnergyUsage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to jump motion.",
               "baseJumpEnergyUsage", FloatingLong.createConst(1_000));
         mekaSuitEnergyUsagePotionTick = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when lessening a potion effect.",
-              "energyUsagePotionTick", FloatingLong.createConst(1_000));
+              "energyUsagePotionTick", FloatingLong.createConst(40_000));
         mekaSuitEnergyUsageMagicPrevent = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when preventing a negative potion effect.",
               "energyUsageMagicPrevent", FloatingLong.createConst(10_000));
         mekaSuitEnergyUsageSprintBoost = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to sprint motion.",
               "energyUsageSprintBoost", FloatingLong.createConst(100));
         mekaSuitEnergyUsageGravitationalModulation = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick when flying via Gravitational Modulation.",
-              "energyUsageSprintBoost", FloatingLong.createConst(500));
+              "energyUsageGravitationalModulation", FloatingLong.createConst(1_000));
         mekaSuitInventoryChargeRate = CachedFloatingLongValue.define(this, builder, "Charge rate of inventory items (Joules) per tick.",
               "inventoryChargeRate", FloatingLong.createConst(10_000));
         mekaSuitSolarRechargingRate = CachedFloatingLongValue.define(this, builder, "Solar recharging rate (Joules) of helmet per tick, per upgrade installed.",
               "solarRechargingRate", FloatingLong.createConst(500));
         mekaSuitEnergyUsageVisionEnhancement = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of using vision enhancement.",
-              "energyUsageVisionEnhancement", FloatingLong.createConst(50));
+              "energyUsageVisionEnhancement", FloatingLong.createConst(500));
         mekaSuitEnergyUsageNutritionalInjection = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per half-food of nutritional injection.",
-              "energyUsageNutritionalInjection", FloatingLong.createConst(500));
+              "energyUsageNutritionalInjection", FloatingLong.createConst(20_000));
         mekaSuitEnergyUsageDamage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per unit of damage applied.",
-              "energyUsageDamage", FloatingLong.createConst(10_000));
+              "energyUsageDamage", FloatingLong.createConst(100_000));
         mekaSuitEnergyUsageItemAttraction = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of attracting a single item.",
-              "energyUsageItemAttraction", FloatingLong.createConst(50));
+              "energyUsageItemAttraction", FloatingLong.createConst(250));
         builder.pop();
 
         builder.pop();
