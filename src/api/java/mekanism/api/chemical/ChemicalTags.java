@@ -1,5 +1,7 @@
 package mekanism.api.chemical;
 
+import java.util.List;
+import java.util.Map.Entry;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
@@ -31,7 +33,24 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
     }
 
     public ResourceLocation lookupTag(ITag<CHEMICAL> tag) {
-        return getCollection().func_232975_b_(tag);
+        //Manual and slightly modified implementation of TagCollection#func_232975_b_ to have better reverse lookup handling
+        TagCollection<CHEMICAL> collection = getCollection();
+        ResourceLocation resourceLocation = collection.func_232973_a_(tag);
+        if (resourceLocation == null) {
+            //If we failed to get the resource location, try manually looking it up by a "matching" entry
+            // as the objects are different and neither Tag nor NamedTag override equals and hashCode
+            List<CHEMICAL> chemicals = tag.func_230236_b_();
+            for (Entry<ResourceLocation, ITag<CHEMICAL>> entry : collection.getTagMap().entrySet()) {
+                if (chemicals.equals(entry.getValue().func_230236_b_())) {
+                    resourceLocation = entry.getKey();
+                    break;
+                }
+            }
+        }
+        if (resourceLocation == null) {
+            throw new IllegalStateException("Unrecognized tag");
+        }
+        return resourceLocation;
     }
 
     public static INamedTag<Gas> gasTag(ResourceLocation resourceLocation) {
