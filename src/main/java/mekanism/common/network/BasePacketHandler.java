@@ -97,6 +97,20 @@ public abstract class BasePacketHandler {
     }
 
     /**
+     * Send this message to everyone connected to the server if the server has loaded.
+     *
+     * @param message - message to send
+     *
+     * @apiNote This is useful for reload listeners
+     */
+    public <MSG> void sendToAllIfLoaded(MSG message) {
+        if (ServerLifecycleHooks.getCurrentServer() != null) {
+            //If the server has loaded, send to all players
+            sendToAll(message);
+        }
+    }
+
+    /**
      * Send this message to everyone within the supplied dimension.
      *
      * @param message   - the message to send

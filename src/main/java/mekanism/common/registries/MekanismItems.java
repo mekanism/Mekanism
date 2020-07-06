@@ -29,6 +29,7 @@ import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemQIODrive;
+import mekanism.common.item.ItemRefinedGlowstoneIngot;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemTierInstaller;
@@ -179,8 +180,7 @@ public class MekanismItems {
 
     public static final ItemRegistryObject<Item> BRONZE_INGOT = registerResource(ResourceType.INGOT, MiscResource.BRONZE);
     public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_INGOT = registerUnburnableResource(ResourceType.INGOT, MiscResource.REFINED_OBSIDIAN);
-    //TODO - 1.16: Make the refined glowstone ingot override IForgeItem#isPiglingCurreny(ItemStack)
-    public static final ItemRegistryObject<Item> REFINED_GLOWSTONE_INGOT = registerResource(ResourceType.INGOT, MiscResource.REFINED_GLOWSTONE);
+    public static final ItemRegistryObject<Item> REFINED_GLOWSTONE_INGOT =  ITEMS.register(ResourceType.INGOT.getRegistryPrefix() + "_" + MiscResource.REFINED_GLOWSTONE.getRegistrySuffix(), ItemRefinedGlowstoneIngot::new);
     public static final ItemRegistryObject<Item> STEEL_INGOT = registerResource(ResourceType.INGOT, MiscResource.STEEL);
 
     public static final ItemRegistryObject<Item> REFINED_OBSIDIAN_NUGGET = registerUnburnableResource(ResourceType.NUGGET, MiscResource.REFINED_OBSIDIAN);

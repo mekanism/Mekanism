@@ -43,6 +43,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
@@ -125,6 +126,16 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
             }
             tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.func_238171_j_()));
         }
+    }
+
+    @Override
+    public boolean makesPiglinsNeutral(@Nonnull ItemStack stack, @Nonnull LivingEntity wearer) {
+        return true;
+    }
+
+    @Override
+    public boolean isEnderMask(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nonnull EndermanEntity enderman) {
+        return getEquipmentSlot() == EquipmentSlotType.HEAD;
     }
 
     @Override
@@ -265,7 +276,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-    	return material.getEnchantability() > 0;
+        return material.getEnchantability() > 0;
     }
 
     public List<HUDElement> getHUDElements(ItemStack stack) {

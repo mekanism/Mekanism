@@ -68,17 +68,16 @@ public class ToolsItems {
     public static final ItemRegistryObject<ItemMekanismArmor> OSMIUM_BOOTS = registerArmor(MekanismToolsConfig.tools.osmium, EquipmentSlotType.FEET);
     public static final ItemRegistryObject<ItemMekanismShield> OSMIUM_SHIELD = registerShield(MekanismToolsConfig.tools.osmium);
 
-    //TODO - 1.16: Make the refined glowstone armor override IForgeItem#pacifiesPiglins(ItemStack, LivingEntity). Also maybe make mekasuit override it?
     public static final ItemRegistryObject<ItemMekanismPickaxe> REFINED_GLOWSTONE_PICKAXE = registerPickaxe(MekanismToolsConfig.tools.refinedGlowstone);
     public static final ItemRegistryObject<ItemMekanismAxe> REFINED_GLOWSTONE_AXE = registerAxe(MekanismToolsConfig.tools.refinedGlowstone);
     public static final ItemRegistryObject<ItemMekanismShovel> REFINED_GLOWSTONE_SHOVEL = registerShovel(MekanismToolsConfig.tools.refinedGlowstone);
     public static final ItemRegistryObject<ItemMekanismHoe> REFINED_GLOWSTONE_HOE = registerHoe(MekanismToolsConfig.tools.refinedGlowstone);
     public static final ItemRegistryObject<ItemMekanismSword> REFINED_GLOWSTONE_SWORD = registerSword(MekanismToolsConfig.tools.refinedGlowstone);
     public static final ItemRegistryObject<ItemMekanismPaxel> REFINED_GLOWSTONE_PAXEL = registerPaxel(MekanismToolsConfig.tools.refinedGlowstone);
-    public static final ItemRegistryObject<ItemMekanismArmor> REFINED_GLOWSTONE_HELMET = registerArmor(MekanismToolsConfig.tools.refinedGlowstone, EquipmentSlotType.HEAD);
-    public static final ItemRegistryObject<ItemMekanismArmor> REFINED_GLOWSTONE_CHESTPLATE = registerArmor(MekanismToolsConfig.tools.refinedGlowstone, EquipmentSlotType.CHEST);
-    public static final ItemRegistryObject<ItemMekanismArmor> REFINED_GLOWSTONE_LEGGINGS = registerArmor(MekanismToolsConfig.tools.refinedGlowstone, EquipmentSlotType.LEGS);
-    public static final ItemRegistryObject<ItemMekanismArmor> REFINED_GLOWSTONE_BOOTS = registerArmor(MekanismToolsConfig.tools.refinedGlowstone, EquipmentSlotType.FEET);
+    public static final ItemRegistryObject<ItemMekanismArmor> REFINED_GLOWSTONE_HELMET = registerArmor(MekanismToolsConfig.tools.refinedGlowstone, EquipmentSlotType.HEAD, true);
+    public static final ItemRegistryObject<ItemMekanismArmor> REFINED_GLOWSTONE_CHESTPLATE = registerArmor(MekanismToolsConfig.tools.refinedGlowstone, EquipmentSlotType.CHEST, true);
+    public static final ItemRegistryObject<ItemMekanismArmor> REFINED_GLOWSTONE_LEGGINGS = registerArmor(MekanismToolsConfig.tools.refinedGlowstone, EquipmentSlotType.LEGS, true);
+    public static final ItemRegistryObject<ItemMekanismArmor> REFINED_GLOWSTONE_BOOTS = registerArmor(MekanismToolsConfig.tools.refinedGlowstone, EquipmentSlotType.FEET, true);
     public static final ItemRegistryObject<ItemMekanismShield> REFINED_GLOWSTONE_SHIELD = registerShield(MekanismToolsConfig.tools.refinedGlowstone);
 
     public static final ItemRegistryObject<ItemMekanismPickaxe> REFINED_OBSIDIAN_PICKAXE = registerPickaxe(MekanismToolsConfig.tools.refinedObsidian);
@@ -138,6 +137,10 @@ public class ToolsItems {
     }
 
     private static ItemRegistryObject<ItemMekanismArmor> registerArmor(MaterialCreator material, EquipmentSlotType slot) {
+        return registerArmor(material, slot, false);
+    }
+
+    private static ItemRegistryObject<ItemMekanismArmor> registerArmor(MaterialCreator material, EquipmentSlotType slot, boolean makesPiglinsNeutral) {
         String suffix;
         if (slot == EquipmentSlotType.HEAD) {
             suffix = "_helmet";
@@ -148,7 +151,7 @@ public class ToolsItems {
         } else {//EquipmentSlotType.FEET
             suffix = "_boots";
         }
-        return ITEMS.register(material.getRegistryPrefix() + suffix, () -> new ItemMekanismArmor(material, slot, getBaseProperties(material)));
+        return ITEMS.register(material.getRegistryPrefix() + suffix, () -> new ItemMekanismArmor(material, slot, getBaseProperties(material), makesPiglinsNeutral));
     }
 
     private static <ITEM extends Item> ItemRegistryObject<ITEM> register(BiFunction<MaterialCreator, Item.Properties, ITEM> itemCreator, String suffix,

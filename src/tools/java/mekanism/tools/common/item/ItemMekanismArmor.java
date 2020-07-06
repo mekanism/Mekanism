@@ -35,10 +35,12 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
 
     private final MaterialCreator material;
     private final AttributeCache attributeCache;
+    private final boolean makesPiglinsNeutral;
 
-    public ItemMekanismArmor(MaterialCreator material, EquipmentSlotType slot, Item.Properties properties) {
+    public ItemMekanismArmor(MaterialCreator material, EquipmentSlotType slot, Item.Properties properties, boolean makesPiglinsNeutral) {
         super(material, slot, properties);
         this.material = material;
+        this.makesPiglinsNeutral = makesPiglinsNeutral;
         CachedIntValue armorConfig;
         if (slot == EquipmentSlotType.FEET) {
             armorConfig = material.bootArmor;
@@ -68,6 +70,11 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
             return GlowArmor.getGlow(armorSlot);
         }
         return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+    }
+
+    @Override
+    public boolean makesPiglinsNeutral(@Nonnull ItemStack stack, @Nonnull LivingEntity wearer) {
+        return makesPiglinsNeutral;
     }
 
     @Nonnull

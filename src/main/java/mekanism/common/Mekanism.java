@@ -80,18 +80,17 @@ import mekanism.common.world.GenHandler;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
@@ -274,13 +273,6 @@ public class Mekanism {
 
     private void onTagsReload(TagsUpdatedEvent event) {
         TagCache.resetTagCaches();
-    }
-
-    //TODO - 1.16: Replace reference to this with the actual one from forge once https://github.com/MinecraftForge/MinecraftForge/pull/6849 gets merged
-    private class AddReloadListenerEvent extends Event {
-
-        public void addListener(IFutureReloadListener listener) {
-        }
     }
 
     private void addReloadListenersLowest(AddReloadListenerEvent event) {

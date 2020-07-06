@@ -18,7 +18,7 @@ public class ReloadListener implements IFutureReloadListener {
         //TODO: Invalidate the cached recipes stored in the machines
         return CompletableFuture.runAsync(() -> {
             MekanismRecipeType.clearCache();
-            Mekanism.packetHandler.sendToAll(new PacketClearRecipeCache());
+            Mekanism.packetHandler.sendToAllIfLoaded(new PacketClearRecipeCache());
             CommonWorldTickHandler.flushTagCaches = true;
         }, gameExecutor).thenCompose(stage::markCompleteAwaitingOthers);
     }

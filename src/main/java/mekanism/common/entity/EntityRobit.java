@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -87,6 +88,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -285,17 +287,16 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
         } else {
             ServerWorld newWorld = ((ServerWorld) world).getServer().getWorld(homeLocation.dimension);
-            Entity newEntity = func_241206_a_(newWorld);
-            newEntity.setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
-            //TODO - 1.16: Use this method of teleporting the entity instead once https://github.com/MinecraftForge/MinecraftForge/pull/6886 is merged
-            /*changeDimension(newWorld, new ITeleporter() {
-                @Override
-                public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-                    Entity repositionedEntity = repositionEntity.apply(false);
-                    repositionedEntity.setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
-                    return repositionedEntity;
-                }
-            });*/
+            if (newWorld != null) {
+                changeDimension(newWorld, new ITeleporter() {
+                    @Override
+                    public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                        Entity repositionedEntity = repositionEntity.apply(false);
+                        repositionedEntity.setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
+                        return repositionedEntity;
+                    }
+                });
+            }
         }
         setMotion(0, 0, 0);
     }
