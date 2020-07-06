@@ -8,13 +8,13 @@
 	},
 	"elements": [
 		{
-			"name": "string_straight",
-			"from": [7.5, 3, 8],
+			"name": "string",
+			"from": [4.5, 3, 8],
 			"to": [8.5, 19, 8],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 3, 8]},
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 3, 8]},
 			"faces": {
-				"north": {"uv": [0, 0, 1, 16], "texture": "#1"},
-				"south": {"uv": [1, 0, 0, 16], "texture": "#1"}
+				"north": {"uv": [12, 0, 16, 16], "texture": "#1"},
+				"south": {"uv": [16, 0, 12, 16], "texture": "#1"}
 			}
 		},
 		{
@@ -58,12 +58,12 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"rotation": [68, -135, 0],
-			"translation": [-0.25, 1.25, 4.5]
+			"rotation": [68, 45, 0],
+			"translation": [1.5, 3.5, 4.5]
 		},
 		"thirdperson_lefthand": {
 			"rotation": [68, -135, 0],
-			"translation": [-0.25, 1.25, 4.5]
+			"translation": [1.5, 3.5, 4.5]
 		},
 		"firstperson_righthand": {
 			"rotation": [0, 15, 0],
