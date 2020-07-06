@@ -74,7 +74,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
         prevRotationPitch = rotationPitch = player.rotationPitch;
         prevRotationYaw = rotationYaw = player.rotationYaw;
-        setMotion(motion.add(player.getMotion().x * 1.5, player.onGround ? 0 : player.getMotion().y * 0.75, player.getMotion().z * 1.5));
+        setMotion(motion.add(player.getMotion().x * 1.5, player.func_233570_aj_() ? 0 : player.getMotion().y * 0.75, player.getMotion().z * 1.5));
 
         owner = player;
         mode = ((ItemFlamethrower) player.inventory.getCurrentItem().getItem()).getMode(player.inventory.getCurrentItem());
@@ -145,7 +145,6 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                 } else if (mode == FlamethrowerMode.INFERNO) {
                     BlockState hitState = world.getBlockState(hitPos);
                     BlockPos sidePos = hitPos.offset(hitSide);
-                    BlockState sideState = world.getBlockState(sidePos);
                     PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
                     if (AbstractFireBlock.func_241465_a_(world, sidePos)) {
                         world.setBlockState(sidePos, AbstractFireBlock.func_235326_a_(world, sidePos));
