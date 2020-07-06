@@ -278,7 +278,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public void goHome() {
-        if (!world.isRemote())
+        if (world.isRemote())
             return;
         setFollowing(false);
         if (world.func_234923_W_() == homeLocation.dimension) {

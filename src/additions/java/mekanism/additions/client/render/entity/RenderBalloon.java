@@ -44,7 +44,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
     }
 
     @Override
-    protected int getBlockLight(@Nonnull EntityBalloon balloon, BlockPos pos) {
+    protected int getBlockLight(@Nonnull EntityBalloon balloon, @Nonnull BlockPos pos) {
         //We always want our balloon to have full brightness
         return 15;
     }
