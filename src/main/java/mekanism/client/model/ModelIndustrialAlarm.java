@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelIndustrialAlarm extends MekanismModel {
+public class ModelIndustrialAlarm extends MekanismJavaModel {
 
     private static final ResourceLocation TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "industrial_alarm.png");
     private static final ResourceLocation TEXTURE_ACTIVE = MekanismUtils.getResource(ResourceType.RENDER, "industrial_alarm_active.png");

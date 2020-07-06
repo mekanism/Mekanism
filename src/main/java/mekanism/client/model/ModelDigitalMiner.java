@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelDigitalMiner extends MekanismModel {
+public class ModelDigitalMiner extends MekanismJavaModel {
 
     private static final ResourceLocation MINER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "digital_miner.png");
     private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "digital_miner_overlay_on.png");

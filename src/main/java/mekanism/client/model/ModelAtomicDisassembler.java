@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelAtomicDisassembler extends MekanismModel {
+public class ModelAtomicDisassembler extends MekanismJavaModel {
 
     private static final ResourceLocation DISASSEMBLER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "atomic_disassembler.png");
     private static final RenderType BLADE_RENDER_TYPE = MekanismRenderType.bladeRender(DISASSEMBLER_TEXTURE);

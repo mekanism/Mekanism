@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelScubaTank extends MekanismModel {
+public class ModelScubaTank extends MekanismJavaModel {
 
     private static final ResourceLocation TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
     private final RenderType RENDER_TYPE = getRenderType(TANK_TEXTURE);

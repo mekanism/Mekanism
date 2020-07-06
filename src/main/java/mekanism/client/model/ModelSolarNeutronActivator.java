@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelSolarNeutronActivator extends MekanismModel {
+public class ModelSolarNeutronActivator extends MekanismJavaModel {
 
     private static final ResourceLocation ACTIVATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "solar_neutron_activator.png");
     private final RenderType RENDER_TYPE = getRenderType(ACTIVATOR_TEXTURE);

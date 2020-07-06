@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
 //TODO: Replace usage of this by using the json model and drawing fluid inside of it?
-public class ModelFluidTank extends MekanismModel {
+public class ModelFluidTank extends MekanismJavaModel {
 
     private static final ResourceLocation TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "fluid_tank.png");
     private static final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(TANK_TEXTURE);

@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelScubaMask extends MekanismModel {
+public class ModelScubaMask extends MekanismJavaModel {
 
     private static final ResourceLocation MASK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
     private static final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(MASK_TEXTURE);

@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelSeismicVibrator extends MekanismModel {
+public class ModelSeismicVibrator extends MekanismJavaModel {
 
     private static final ResourceLocation VIBRATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "seismic_vibrator.png");
     private final RenderType RENDER_TYPE = getRenderType(VIBRATOR_TEXTURE);

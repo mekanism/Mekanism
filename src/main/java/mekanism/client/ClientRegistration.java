@@ -71,6 +71,7 @@ import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
 import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
+import mekanism.client.model.baked.MekanismModel;
 import mekanism.client.model.baked.QIORedstoneAdapterBakedModel;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
@@ -149,6 +150,7 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -256,6 +258,8 @@ public class ClientRegistration {
             return 0;
         });
 
+        ModelLoaderRegistry.registerLoader(Mekanism.rl("mekanism"), MekanismModel.Loader.INSTANCE);
+
         for (DriveStatus status : DriveStatus.values()) {
             if (status == DriveStatus.NONE) {
                 continue;
@@ -266,9 +270,7 @@ public class ClientRegistration {
         addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig, evt));
         addCustomModel(MekanismBlocks.QIO_REDSTONE_ADAPTER, (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
 
-        addLitModel(MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.MODIFICATION_STATION,
-            MekanismBlocks.SECURITY_DESK,  MekanismBlocks.LOGISTICAL_SORTER, MekanismBlocks.RESISTIVE_HEATER, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER,
-            MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItems.MEKA_TOOL, MekanismBlocks.CHEMICAL_CRYSTALLIZER, MekanismBlocks.CHARGEPAD);
+        addLitModel(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItems.MEKA_TOOL);
     }
 
     @SubscribeEvent

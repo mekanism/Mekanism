@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelFreeRunners extends MekanismModel {
+public class ModelFreeRunners extends MekanismJavaModel {
 
     private static final ResourceLocation FREE_RUNNER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "free_runners.png");
     private final RenderType RENDER_TYPE = getRenderType(FREE_RUNNER_TEXTURE);

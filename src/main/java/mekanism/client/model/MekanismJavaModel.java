@@ -10,9 +10,9 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class MekanismModel extends Model {
+public abstract class MekanismJavaModel extends Model {
 
-    public MekanismModel(Function<ResourceLocation, RenderType> renderType) {
+    public MekanismJavaModel(Function<ResourceLocation, RenderType> renderType) {
         super(renderType);
     }
 
