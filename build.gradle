@@ -447,6 +447,7 @@ task toolsJar(type: Jar) {
     from sourceSets.tools.output
 }
 
+//TODO: Fix the fact that the all jar does not properly merge overlapping tags (for example piglin_loved)
 task allJar(type: Jar) {
     //Make sure the other tasks run first
     shouldRunAfter(apiJar, jar, additionsJar, defenseJar, generatorsJar, toolsJar,
@@ -456,15 +457,12 @@ task allJar(type: Jar) {
     doFirst {
         //Generate folders, merge the access transformers and mods.toml files
         mkdir("$buildDir/generated/META-INF")
-        (new File("$buildDir/generated/META-INF/accesstransformer.cfg")).text = mergeATs(sourceSets.api, sourceSets.main,
+        (new File("$buildDir/generated/META-INF/accesstransformer.cfg")).text = mergeATs(sourceSets.main,
                 sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
-        (new File("$buildDir/generated/META-INF/mods.toml")).text = mergeModsTOML(sourceSets.api, sourceSets.main,
+        (new File("$buildDir/generated/META-INF/mods.toml")).text = mergeModsTOML(sourceSets.main,
                 sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
     }
-    from(sourceSets.api.output) {
-        exclude 'META-INF/mods.toml'
-        exclude 'META-INF/accesstransformer.cfg'
-    }
+    from(sourceSets.api.output)
     from(sourceSets.main.output) {
         exclude 'META-INF/mods.toml'
         exclude 'META-INF/accesstransformer.cfg'
@@ -472,18 +470,22 @@ task allJar(type: Jar) {
     from(sourceSets.additions.output) {
         exclude 'META-INF/mods.toml'
         exclude 'META-INF/accesstransformer.cfg'
+        exclude 'pack.mcmeta'
     }
     from(sourceSets.defense.output) {
         exclude 'META-INF/mods.toml'
         exclude 'META-INF/accesstransformer.cfg'
+        exclude 'pack.mcmeta'
     }
     from(sourceSets.generators.output) {
         exclude 'META-INF/mods.toml'
         exclude 'META-INF/accesstransformer.cfg'
+        exclude 'pack.mcmeta'
     }
     from(sourceSets.tools.output) {
         exclude 'META-INF/mods.toml'
         exclude 'META-INF/accesstransformer.cfg'
+        exclude 'pack.mcmeta'
     }
     //Copy over the generated files
     from("$buildDir/generated") {
