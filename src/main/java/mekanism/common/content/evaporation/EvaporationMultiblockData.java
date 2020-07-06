@@ -143,14 +143,16 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
         base += HeatAPI.AMBIENT_TEMP;
         if (Math.abs(getTemp() - base) < 0.001) {
             heatCapacitor.handleHeat((base * heatCapacitor.getHeatCapacity()) - heatCapacitor.getHeat());
+            totalLoss = 0;
+        } else {
+            double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(Math.abs(heatCapacitor.getTemperature() - base));
+            if (heatCapacitor.getTemperature() > base) {
+                incr = -incr;
+            }
+            heatCapacitor.handleHeat(heatCapacitor.getHeatCapacity() * incr);
+            totalLoss = incr < 0 ? -incr / heatCapacitor.getHeatCapacity() : 0;
         }
-        double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(Math.abs(heatCapacitor.getTemperature() - base));
-        if (heatCapacitor.getTemperature() > base) {
-            incr = -incr;
-        }
-        heatCapacitor.handleHeat(heatCapacitor.getHeatCapacity() * incr);
 
-        totalLoss = incr < 0 ? -incr / heatCapacitor.getHeatCapacity() : 0;
         tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, heatCapacitor.getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() * ((double) height() / MAX_HEIGHT);
         updateHeatCapacitors(null);
     }
