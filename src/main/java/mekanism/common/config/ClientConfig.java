@@ -32,14 +32,18 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedIntValue radiationParticleRadius;
     public final CachedIntValue radiationParticleCount;
     public final CachedIntValue energyColor;
-    public final CachedBooleanValue mekaSuitHelmetCompassEnabled;
 
     public final CachedIntValue guiTitleTextColor;
     public final CachedIntValue guiHeadingTextColor;
     public final CachedIntValue guiSubheadingTextColor;
     public final CachedIntValue guiScreenTextColor;
 
+    public final CachedFloatValue hudOpacity;
     public final CachedIntValue hudColor;
+    public final CachedIntValue hudWarningColor;
+    public final CachedIntValue hudDangerColor;
+    public final CachedFloatValue hudJitter;
+    public final CachedBooleanValue hudCompassEnabled;
 
     public final CachedEnumValue<ListSortType> qioItemViewerSortType;
     public final CachedEnumValue<SortDirection> qioItemViewerSortDirection;
@@ -80,8 +84,6 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("radiationParticleCount", 100));
         energyColor = CachedIntValue.wrap(this, builder.comment("Color of energy in item durability display.")
               .define("energyColor", 0x3CFE9A));
-        mekaSuitHelmetCompassEnabled = CachedBooleanValue.wrap(this, builder.comment("Display a fancy compass when the MekaSuit is worn.")
-              .define("mekaSuitHelmetCompass", true));
 
         builder.comment("GUI Config").push(GUI_CATEGORY);
         guiTitleTextColor = CachedIntValue.wrap(this, builder.comment("Color of title text.")
@@ -92,8 +94,18 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("subheadingTextColor", 0x787878));
         guiScreenTextColor = CachedIntValue.wrap(this, builder.comment("Color of text in black background/green text GUI elements.")
               .define("screenTextColor", 0x3CFE9A));
+        hudOpacity = CachedFloatValue.wrap(this, builder.comment("Opacity of HUD used by MekaSuit.")
+              .defineInRange("hudOpacity", 0.4F, 0, 1));
         hudColor = CachedIntValue.wrap(this, builder.comment("Color of HUD used by MekaSuit.")
-              .define("hudColor", 0x5040F5F0));
+              .define("hudColor", 0x40F5F0));
+        hudWarningColor = CachedIntValue.wrap(this, builder.comment("Color of warning HUD elements used by MekaSuit.")
+              .define("hudWarningColor", 0xFFDD4F));
+        hudDangerColor = CachedIntValue.wrap(this, builder.comment("Color of danger HUD elements used by MekaSuit.")
+              .define("hudDangerColor", 0xFF383C));
+        hudJitter = CachedFloatValue.wrap(this, builder.comment("Visual jitter of MekaSuit HUD, seen when moving the player's head. Bigger value = more jitter.")
+              .defineInRange("hudJitter", 6F, 1F, 100F));
+        hudCompassEnabled = CachedBooleanValue.wrap(this, builder.comment("Display a fancy compass when the MekaSuit is worn.")
+              .define("mekaSuitHelmetCompass", true));
         builder.pop();
 
         builder.comment("QIO Config").push(QIO_CATEGORY);

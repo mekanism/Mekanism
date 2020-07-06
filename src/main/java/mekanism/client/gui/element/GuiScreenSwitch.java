@@ -37,8 +37,8 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        drawScaledCenteredText(matrix, MekanismLang.ON.translate(), relativeX + field_230688_j_ - 9, relativeY + 3, 0x101010, 0.5F);
-        drawScaledCenteredText(matrix, MekanismLang.OFF.translate(), relativeX + field_230688_j_ - 9, relativeY + 12, 0x101010, 0.5F);
+        drawScaledCenteredText(matrix, MekanismLang.ON.translate(), relativeX + field_230688_j_ - 9, relativeY + 2, 0x101010, 0.5F);
+        drawScaledCenteredText(matrix, MekanismLang.OFF.translate(), relativeX + field_230688_j_ - 9, relativeY + 11, 0x101010, 0.5F);
     }
 
     @Override

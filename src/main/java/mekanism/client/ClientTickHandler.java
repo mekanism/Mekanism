@@ -286,7 +286,9 @@ public class ClientTickHandler {
             if (minecraft.world != null) {
                 ItemStack stack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
                 if (MekanismKeyHandler.isKeyDown(MekanismKeyHandler.handModeSwitchKey) && stack.getItem() instanceof IRadialModeItem) {
-                    updateSelectorRenderer((IRadialModeItem<?>) stack.getItem());
+                    if (minecraft.currentScreen == null || minecraft.currentScreen instanceof GuiRadialSelector) {
+                        updateSelectorRenderer((IRadialModeItem<?>) stack.getItem());
+                    }
                 } else {
                     if (minecraft.currentScreen instanceof GuiRadialSelector) {
                         minecraft.displayGuiScreen(null);

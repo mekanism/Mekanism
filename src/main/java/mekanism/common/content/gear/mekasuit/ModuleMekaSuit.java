@@ -9,21 +9,20 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.text.APILang;
-import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement;
+import mekanism.common.content.gear.HUDElement.HUDColor;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
-import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.capability.IRadiationEntity;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
@@ -32,7 +31,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
-import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -121,7 +119,7 @@ public abstract class ModuleMekaSuit extends Module {
 
         @Override
         public void addHUDElements(List<HUDElement> list) {
-            list.add(HUDElement.of(icon, OnOff.caps(isEnabled(), true).getTextComponent()));
+            list.add(HUDElement.enabled(icon, isEnabled()));
         }
 
         @Override
@@ -147,7 +145,7 @@ public abstract class ModuleMekaSuit extends Module {
 
         @Override
         public void addHUDElements(List<HUDElement> list) {
-            list.add(HUDElement.of(icon, OnOff.caps(isEnabled(), true).getTextComponent()));
+            list.add(HUDElement.enabled(icon, isEnabled()));
         }
 
         @Override
@@ -242,7 +240,7 @@ public abstract class ModuleMekaSuit extends Module {
             }
             GasStack stored = ((ItemMekaSuitArmor) getContainer().getItem()).getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get());
             double ratio = StorageUtils.getRatio(stored.getAmount(), ItemMekaSuitArmor.MAX_NUTRITIONAL_PASTE);
-            list.add(HUDElement.of(icon, StorageUtils.getStoragePercent(ratio)));
+            list.add(HUDElement.percent(icon, ratio));
         }
     }
 
@@ -259,9 +257,9 @@ public abstract class ModuleMekaSuit extends Module {
                   Capabilities.RADIATION_ENTITY_CAPABILITY, null));
             if (capability.isPresent()) {
                 double radiation = capability.get().getRadiation();
-                ITextComponent text = APILang.GENERIC.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(radiation),
-                      UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2));
-                list.add(HUDElement.of(icon, text));
+                HUDElement e = HUDElement.of(icon, UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2));
+                HUDColor color = radiation < RadiationManager.MIN_MAGNITUDE ? HUDColor.REGULAR : (radiation < 0.1 ? HUDColor.WARNING : HUDColor.DANGER);
+                list.add(e.color(color));
             }
         }
     }

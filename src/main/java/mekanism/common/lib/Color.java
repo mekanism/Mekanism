@@ -139,6 +139,10 @@ public class Color {
         return rgbai((color >> 24) & 0xFF, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
     }
 
+    public static Color rgba(int[] color) {
+        return rgbai(color[0], color[1], color[2], color[3]);
+    }
+
     public static Color argbi(int a, int r, int g, int b) {
         return rgbai(r, g, b, a);
     }
@@ -151,6 +155,10 @@ public class Color {
         return argbi((color >> 24) & 0xFF, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
     }
 
+    public static Color argb(int[] color) {
+        return argbi(color[0], color[1], color[2], color[3]);
+    }
+
     public static Color rgbi(int r, int g, int b) {
         return rgbai(r , g, b, 255);
     }
@@ -161,6 +169,10 @@ public class Color {
 
     public static Color rgb(int color) {
         return rgbi((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+    }
+
+    public static Color rgb(int[] color) {
+        return rgbi(color[0], color[1], color[2]);
     }
 
     public static Color hsv(double h, double s, double v) {

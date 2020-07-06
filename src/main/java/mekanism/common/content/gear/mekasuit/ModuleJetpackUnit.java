@@ -31,7 +31,7 @@ public class ModuleJetpackUnit extends ModuleMekaSuit {
         }
         GasStack stored = ((ItemMekaSuitArmor) getContainer().getItem()).getContainedGas(getContainer(), MekanismGases.HYDROGEN.get());
         double ratio = StorageUtils.getRatio(stored.getAmount(), ItemMekaSuitArmor.MAX_JETPACK_FUEL);
-        list.add(HUDElement.of(jetpackMode.get().getHUDIcon(), StorageUtils.getStoragePercent(ratio)));
+        list.add(HUDElement.percent(jetpackMode.get().getHUDIcon(), ratio));
     }
 
     @Override

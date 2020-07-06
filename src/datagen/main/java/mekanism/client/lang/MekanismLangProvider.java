@@ -674,6 +674,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.HELMET_OPTIONS, "Helmet Options");
         add(MekanismLang.HUD_OVERLAY, "HUD Overlay:");
         add(MekanismLang.OPACITY, "Opacity");
+        add(MekanismLang.DEFAULT, "Default");
+        add(MekanismLang.WARNING, "Warning");
+        add(MekanismLang.DANGER, "Danger");
+        add(MekanismLang.COMPASS, "Compass");
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");

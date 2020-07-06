@@ -213,6 +213,10 @@ public enum MekanismLang implements ILangEntry {
     HELMET_OPTIONS("gui", "helmet_options"),
     HUD_OVERLAY("gui", "hud_overlay"),
     OPACITY("gui", "opacity"),
+    DEFAULT("gui", "default"),
+    WARNING("gui", "warning"),
+    DANGER("gui", "danger"),
+    COMPASS("gui", "compass"),
     //Laser Amplifier
     ENTITY_DETECTION("laser_amplifier", "entity_detection"),
     ENERGY_CONTENTS("laser_amplifier", "energy_contents"),
