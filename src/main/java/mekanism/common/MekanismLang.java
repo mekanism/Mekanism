@@ -696,6 +696,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_ATTACK_DAMAGE("module", "attack_damage"),
     MODULE_FARMING_RADIUS("module", "farming_radius"),
     MODULE_JUMP_BOOST("module", "jump_boost"),
+    MODULE_STEP_ASSIST("module", "step_assist"),
     MODULE_RANGE("module", "range"),
     MODULE_SPRINT_BOOST("module", "sprint_boost"),
     MODULE_EXTENDED_MODE("module", "extended_mode"),

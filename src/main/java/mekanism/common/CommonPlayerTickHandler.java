@@ -9,7 +9,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
-import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
@@ -88,8 +87,8 @@ public class CommonPlayerTickHandler {
                 ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
                 return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
             }
-            Module module = Modules.load(stack, Modules.HYDRAULIC_PROPULSION_UNIT);
-            return module != null && module.isEnabled();
+            ModuleHydraulicPropulsionUnit module = Modules.load(stack, Modules.HYDRAULIC_PROPULSION_UNIT);
+            return module != null && module.isEnabled() && module.isStepAssistEnabled();
         }
         return false;
     }

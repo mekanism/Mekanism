@@ -18,6 +18,7 @@ import mekanism.common.content.gear.HUDElement;
 import mekanism.common.content.gear.HUDElement.HUDColor;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
+import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
@@ -163,15 +164,21 @@ public abstract class ModuleMekaSuit extends Module {
     public static class ModuleHydraulicPropulsionUnit extends ModuleMekaSuit {
 
         private ModuleConfigItem<JumpBoost> jumpBoost;
+        private ModuleConfigItem<Boolean> stepAssist;
 
         @Override
         public void init() {
             super.init();
             addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class, getInstalledCount() + 1), JumpBoost.LOW));
+            stepAssist = addConfigItem(new ModuleConfigItem<>(this, "step_assist", MekanismLang.MODULE_STEP_ASSIST, new BooleanData(), true));
         }
 
         public float getBoost() {
             return jumpBoost.get().getBoost();
+        }
+
+        public boolean isStepAssistEnabled() {
+            return stepAssist.get();
         }
 
         public enum JumpBoost implements IHasTextComponent {

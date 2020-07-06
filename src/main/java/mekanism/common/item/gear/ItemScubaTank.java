@@ -123,7 +123,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
     }
 
     @Override
-    public boolean supportsSlotType(@Nonnull EquipmentSlotType slotType) {
+    public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
         return slotType == getEquipmentSlot();
     }
 

@@ -212,8 +212,8 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     }
 
     @Override
-    public boolean supportsSlotType(@Nonnull EquipmentSlotType slotType) {
-        return slotType == getEquipmentSlot();
+    public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
+        return slotType == getEquipmentSlot() && Modules.loadAll(stack).stream().anyMatch(m -> m.handlesModeChange());
     }
 
     @Override

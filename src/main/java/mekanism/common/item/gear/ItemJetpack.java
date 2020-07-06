@@ -122,7 +122,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     }
 
     @Override
-    public boolean supportsSlotType(@Nonnull EquipmentSlotType slotType) {
+    public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
         return slotType == getEquipmentSlot();
     }
 

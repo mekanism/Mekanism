@@ -19,7 +19,7 @@ public interface IModeItem {
      */
     void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage);
 
-    default boolean supportsSlotType(@Nonnull EquipmentSlotType slotType) {
+    default boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
         return slotType == EquipmentSlotType.MAINHAND || slotType == EquipmentSlotType.OFFHAND;
     }
 
@@ -42,7 +42,7 @@ public interface IModeItem {
 
     static boolean isModeItem(@Nonnull ItemStack stack, @Nonnull EquipmentSlotType slotType, boolean allowRadial) {
         return !stack.isEmpty() && stack.getItem() instanceof IModeItem &&
-               ((IModeItem) stack.getItem()).supportsSlotType(slotType) &&
+               ((IModeItem) stack.getItem()).supportsSlotType(stack, slotType) &&
                (allowRadial || !(stack.getItem() instanceof IRadialModeItem));
     }
 }

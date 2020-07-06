@@ -1036,6 +1036,7 @@
   "module.mekanism.speed_boost": "Speed Boost",
   "module.mekanism.sprint_boost": "Sprint Boost",
   "module.mekanism.stackable": "Stackable: %s",
+  "module.mekanism.step_assist": "Step Assist",
   "module.mekanism.teleportation_unit": "Teleportation Unit",
   "module.mekanism.vein_mining_unit": "Vein Mining Unit",
   "module.mekanism.vision_enhancement": "Vision Enhancement",
