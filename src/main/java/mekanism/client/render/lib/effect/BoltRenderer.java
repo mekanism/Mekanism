@@ -39,20 +39,22 @@ public class BoltRenderer {
         if (refresh) {
             refreshTimestamp = timestamp;
         }
-        for (Iterator<Map.Entry<Object, BoltOwnerData>> iter = boltOwners.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry<Object, BoltOwnerData> entry = iter.next();
-            BoltOwnerData data = entry.getValue();
-            // tick our bolts based on the refresh rate, removing if they're now finished
-            if (refresh) {
-                data.bolts.removeIf(bolt -> bolt.tick(timestamp));
-            }
-            if (data.bolts.isEmpty() && data.lastBolt != null && data.lastBolt.getSpawnFunction().isConsecutive()) {
-                data.addBolt(new BoltInstance(data.lastBolt, timestamp), timestamp);
-            }
-            data.bolts.forEach(bolt -> bolt.render(matrix, buffer, timestamp));
+        synchronized (boltOwners) {
+            for (Iterator<Map.Entry<Object, BoltOwnerData>> iter = boltOwners.entrySet().iterator(); iter.hasNext(); ) {
+                Map.Entry<Object, BoltOwnerData> entry = iter.next();
+                BoltOwnerData data = entry.getValue();
+                // tick our bolts based on the refresh rate, removing if they're now finished
+                if (refresh) {
+                    data.bolts.removeIf(bolt -> bolt.tick(timestamp));
+                }
+                if (data.bolts.isEmpty() && data.lastBolt != null && data.lastBolt.getSpawnFunction().isConsecutive()) {
+                    data.addBolt(new BoltInstance(data.lastBolt, timestamp), timestamp);
+                }
+                data.bolts.forEach(bolt -> bolt.render(matrix, buffer, timestamp));
 
-            if (data.bolts.isEmpty() && timestamp.isPassed(data.lastUpdateTimestamp, MAX_OWNER_TRACK_TIME)) {
-                iter.remove();
+                if (data.bolts.isEmpty() && timestamp.isPassed(data.lastUpdateTimestamp, MAX_OWNER_TRACK_TIME)) {
+                    iter.remove();
+                }
             }
         }
     }
@@ -61,13 +63,15 @@ public class BoltRenderer {
         if (minecraft.world == null) {
             return;
         }
-        BoltOwnerData data = boltOwners.computeIfAbsent(owner, o -> new BoltOwnerData());
-        data.lastBolt = newBoltData;
-        Timestamp timestamp = new Timestamp(minecraft.world.getGameTime(), partialTicks);
-        if ((!data.lastBolt.getSpawnFunction().isConsecutive() || data.bolts.isEmpty()) && timestamp.isPassed(data.lastBoltTimestamp, data.lastBoltDelay)) {
-            data.addBolt(new BoltInstance(newBoltData, timestamp), timestamp);
+        synchronized (boltOwners) {
+            BoltOwnerData data = boltOwners.computeIfAbsent(owner, o -> new BoltOwnerData());
+            data.lastBolt = newBoltData;
+            Timestamp timestamp = new Timestamp(minecraft.world.getGameTime(), partialTicks);
+            if ((!data.lastBolt.getSpawnFunction().isConsecutive() || data.bolts.isEmpty()) && timestamp.isPassed(data.lastBoltTimestamp, data.lastBoltDelay)) {
+                data.addBolt(new BoltInstance(newBoltData, timestamp), timestamp);
+            }
+            data.lastUpdateTimestamp = timestamp;
         }
-        data.lastUpdateTimestamp = timestamp;
     }
 
     public class BoltOwnerData {
