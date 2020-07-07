@@ -1,5 +1,6 @@
 package mekanism.additions.client;
 
+import mekanism.additions.client.model.AdditionsModelCache;
 import mekanism.additions.client.render.entity.RenderBabyCreeper;
 import mekanism.additions.client.render.entity.RenderBabyEnderman;
 import mekanism.additions.client.render.entity.RenderBalloon;
@@ -25,6 +26,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -49,6 +51,8 @@ public class AdditionsClientRegistration {
             ItemWalkieTalkie item = (ItemWalkieTalkie) stack.getItem();
             return item.getOn(stack) ? item.getChannel(stack) : 0;
         });
+
+        AdditionsModelCache.INSTANCE.setup();
     }
 
     @SubscribeEvent
@@ -185,6 +189,11 @@ public class AdditionsClientRegistration {
               AdditionsBlocks.PINK_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.LIME_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.YELLOW_PLASTIC_TRANSPARENT_STAIRS,
               AdditionsBlocks.LIGHT_BLUE_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.MAGENTA_PLASTIC_TRANSPARENT_STAIRS, AdditionsBlocks.ORANGE_PLASTIC_TRANSPARENT_STAIRS,
               AdditionsBlocks.WHITE_PLASTIC_TRANSPARENT_STAIRS);
+    }
+
+    @SubscribeEvent
+    public static void onModelBake(ModelBakeEvent event) {
+        AdditionsModelCache.INSTANCE.onBake(event);
     }
 
     @SafeVarargs

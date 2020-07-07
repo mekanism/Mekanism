@@ -1,11 +1,7 @@
-package mekanism.client.render.obj;
+package mekanism.client.model;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import mekanism.common.Mekanism;
-import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import net.minecraft.client.renderer.model.BlockModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
@@ -19,45 +15,25 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel.ModelSettings;
 
-public class ModelCache {
+public class BaseModelCache {
 
-    private static final Map<ResourceLocation, ModelData> modelMap = new Object2ObjectOpenHashMap<>();
-    private static final Set<Runnable> callbacks = new HashSet<>();
+    private final Map<ResourceLocation, ModelData> modelMap = new Object2ObjectOpenHashMap<>();
 
-    public static final OBJModelData MEKASUIT = registerOBJ(Mekanism.rl("models/entity/mekasuit.obj"));
-    public static final OBJModelData MEKASUIT_MODULES = registerOBJ(Mekanism.rl("models/entity/mekasuit_modules.obj"));
-    public static final OBJModelData MEKATOOL = registerOBJ(Mekanism.rl("models/entity/mekatool.obj"));
-
-    public static final JSONModelData[] QIO_DRIVES = new JSONModelData[DriveStatus.values().length];
-    static {
-        for (DriveStatus status : DriveStatus.values()) {
-            if (status == DriveStatus.NONE) {
-                continue;
-            }
-            QIO_DRIVES[status.ordinal()] = registerJSON(status.getModel());
-        }
-    }
-
-    public static void onBake(ModelBakeEvent evt) {
+    public void onBake(ModelBakeEvent evt) {
         modelMap.values().forEach(m -> m.reload(evt));
-        callbacks.forEach(Runnable::run);
     }
 
-    public static void reloadCallback(Runnable callback) {
-        callbacks.add(callback);
-    }
-
-    public static void setup() {
+    public void setup() {
         modelMap.values().forEach(m -> m.setup());
     }
 
-    private static OBJModelData registerOBJ(ResourceLocation rl) {
+    protected OBJModelData registerOBJ(ResourceLocation rl) {
         OBJModelData data = new OBJModelData(rl);
         modelMap.put(rl, data);
         return data;
     }
 
-    private static JSONModelData registerJSON(ResourceLocation rl) {
+    protected JSONModelData registerJSON(ResourceLocation rl) {
         JSONModelData data = new JSONModelData(rl);
         modelMap.put(rl, data);
         return data;
