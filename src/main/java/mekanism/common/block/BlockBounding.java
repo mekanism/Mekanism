@@ -13,7 +13,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.particle.DiggingParticle;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.chunk.ChunkRenderCache;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItemUseContext;
@@ -25,15 +28,19 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Extend MekanismBlock. Not done yet as checking is needed to ensure how drops happen still happens correctly and things in the super class don't mess this up
 public class BlockBounding extends Block implements IHasTileEntity<TileEntityBoundingBlock>, IStateFluidLoggable {
@@ -45,20 +52,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             return te.getMainPos();
         }
         return null;
-    }
-
-    /**
-     * Removes the main block if it is not already air.
-     */
-    private static void removeMainBlock(World world, BlockPos thisPos) {
-        BlockPos mainPos = getMainBlockPos(world, thisPos);
-        if (mainPos != null) {
-            BlockState state = world.getBlockState(mainPos);
-            if (!state.isAir(world, mainPos)) {
-                //Set the main block to air, which will invalidate the rest of the bounding blocks
-                world.removeBlock(mainPos, false);
-            }
-        }
     }
 
     //Note: This is not a block state so that we can have it easily create the correct TileEntity.
@@ -105,7 +98,14 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         //Remove the main block if a bounding block gets broken by being directly replaced
         // Note: We only do this if we don't go from bounding block to bounding block
         if (state.getBlock() != newState.getBlock()) {
-            removeMainBlock(world, pos);
+            BlockPos mainPos = getMainBlockPos(world, pos);
+            if (mainPos != null) {
+                BlockState mainState = world.getBlockState(mainPos);
+                if (!mainState.isAir(world, mainPos)) {
+                    //Set the main block to air, which will invalidate the rest of the bounding blocks
+                    world.removeBlock(mainPos, false);
+                }
+            }
             super.onReplaced(state, world, pos, newState, isMoving);
         }
     }
@@ -130,7 +130,14 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         if (willHarvest) {
             return true;
         }
-        removeMainBlock(world, pos);
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos != null) {
+            BlockState mainState = world.getBlockState(mainPos);
+            if (!mainState.isAir(world, mainPos)) {
+                //Set the main block to air, which will invalidate the rest of the bounding blocks
+                mainState.removedByPlayer(world, mainPos, player, false, world.getFluidState(mainPos));
+            }
+        }
         return super.removedByPlayer(state, world, pos, player, false, fluidState);
     }
 
@@ -249,6 +256,44 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Deprecated
     public boolean allowsMovement(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType type) {
         //Mark that bounding blocks do not allow movement for use by AI pathing
+        return false;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean addHitEffects(BlockState state, World world, RayTraceResult target, ParticleManager manager) {
+        if (target.getType() == Type.BLOCK && target instanceof BlockRayTraceResult) {
+            BlockRayTraceResult blockTarget = (BlockRayTraceResult) target;
+            BlockPos pos = blockTarget.getPos();
+            BlockPos mainPos = getMainBlockPos(world, pos);
+            if (mainPos != null) {
+                BlockState mainState = world.getBlockState(mainPos);
+                if (!mainState.isAir(world, mainPos)) {
+                    //Copy of ParticleManager#addBlockHitEffects except using the block state for the main position
+                    AxisAlignedBB axisalignedbb = state.getShape(world, pos).getBoundingBox();
+                    double x = pos.getX() + world.rand.nextDouble() * (axisalignedbb.maxX - axisalignedbb.minX - 0.2) + 0.1 + axisalignedbb.minX;
+                    double y = pos.getY() + world.rand.nextDouble() * (axisalignedbb.maxY - axisalignedbb.minY - 0.2) + 0.1 + axisalignedbb.minY;
+                    double z = pos.getZ() + world.rand.nextDouble() * (axisalignedbb.maxZ - axisalignedbb.minZ - 0.2) + 0.1 + axisalignedbb.minZ;
+                    Direction side = blockTarget.getFace();
+                    if (side == Direction.DOWN) {
+                        y = pos.getY() + axisalignedbb.minY - 0.1;
+                    } else if (side == Direction.UP) {
+                        y = pos.getY() + axisalignedbb.maxY + 0.1;
+                    } else if (side == Direction.NORTH) {
+                        z = pos.getZ() + axisalignedbb.minZ - 0.1;
+                    } else if (side == Direction.SOUTH) {
+                        z = pos.getZ() + axisalignedbb.maxZ + 0.1;
+                    } else if (side == Direction.WEST) {
+                        x = pos.getX() + axisalignedbb.minX - 0.1;
+                    } else if (side == Direction.EAST) {
+                        x = pos.getX() + axisalignedbb.maxX + 0.1;
+                    }
+                    manager.addEffect(new DiggingParticle((ClientWorld) world, x, y, z, 0, 0, 0, mainState)
+                          .setBlockPos(mainPos).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
+                    return true;
+                }
+            }
+        }
         return false;
     }
 }
