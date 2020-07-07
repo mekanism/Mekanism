@@ -102,7 +102,11 @@ public class TextComponentUtil {
     }
 
     public static StringTextComponent getString(String component) {
-        return new StringTextComponent(component);
+        return new StringTextComponent(cleanString(component));
+    }
+
+    private static String cleanString(String component) {
+        return component.replaceAll("\\u00A0", " ");
     }
 
     public static TranslationTextComponent translate(String key, Object... args) {
@@ -157,6 +161,9 @@ public class TextComponentUtil {
                     //Fallback to a direct replacement just so that we can properly color it
                     current = APILang.GENERIC.translate(component);
                 }
+            } else if (component instanceof String) {
+                //If we didn't format it and it is a string make sure we clean it up
+                component = cleanString((String) component);
             }
             //Formatting
             else if (component instanceof EnumColor) {
