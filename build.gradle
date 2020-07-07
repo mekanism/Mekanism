@@ -427,24 +427,36 @@ task additionsJar(type: Jar) {
     archiveName = "MekanismAdditions-${project.version}.jar"
     classifier = "additions"
     from sourceSets.additions.output
+    afterEvaluate {
+        finalizedBy reobfAdditionsJar
+    }
 }
 
 task defenseJar(type: Jar) {
     archiveName = "MekanismDefense-${project.version}.jar"
     classifier = "defense"
     from sourceSets.defense.output
+    afterEvaluate {
+        finalizedBy reobfDefenseJar
+    }
 }
 
 task generatorsJar(type: Jar) {
     archiveName = "MekanismGenerators-${project.version}.jar"
     classifier = "generators"
     from sourceSets.generators.output
+    afterEvaluate {
+        finalizedBy reobfGeneratorsJar
+    }
 }
 
 task toolsJar(type: Jar) {
     archiveName = "MekanismTools-${project.version}.jar"
     classifier = "tools"
     from sourceSets.tools.output
+    afterEvaluate {
+        finalizedBy reobfToolsJar
+    }
 }
 
 //TODO: Fix the fact that the all jar does not properly merge overlapping tags (for example piglin_loved)
@@ -453,6 +465,9 @@ task allJar(type: Jar) {
     shouldRunAfter(apiJar, jar, additionsJar, defenseJar, generatorsJar, toolsJar,
             processResources, processAdditionsResources, processDefenseResources,
             processGeneratorsResources, processToolsResources)
+    afterEvaluate {
+        finalizedBy reobfAllJar
+    }
     classifier "all"
     doFirst {
         //Generate folders, merge the access transformers and mods.toml files
@@ -617,6 +632,24 @@ publishing {
                     license {
                         name = 'MIT'
                         distribution = 'repo'
+                    }
+                }
+                withXml {
+                    NodeList dependencies = asNode().dependencies
+
+                    // Remove forge deps
+                    dependencies.'*'.findAll() { Node el ->
+                        el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge'
+                    }.forEach() { Node el ->
+                        el.parent().remove(el)
+                    }
+                    //remove forgegradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
+                    dependencies.'*'.findAll() { Node el ->
+                        el.version.text().contains('_mapped_')
+                    }.each {
+                        Node version = it.version[0]
+                        version.setValue(version.text().substring(0, version.text().indexOf('_mapped_')))
+                        it.appendNode('optional', true)
                     }
                 }
             }
