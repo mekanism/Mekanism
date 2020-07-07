@@ -184,19 +184,19 @@ public final class BlockShapes {
               makeCuboidShape(13, 9, 13, 16, 14, 16), // control_rod_frame2
               makeCuboidShape(0, 9, 0, 3, 14, 3), // control_rod_frame3
               makeCuboidShape(0, 9, 13, 3, 14, 16), // control_rod_frame4
-              makeCuboidShape(0, 7, 0, 16, 9, 2), // control_rod_frame5
+              makeCuboidShape(0, 7, 0, 16, 9, 3), // control_rod_frame5
               makeCuboidShape(0, 14, 0, 16, 16, 3), // control_rod_frame6
-              makeCuboidShape(0, 7, 2, 2, 9, 14), // control_rod_frame7
+              makeCuboidShape(0, 7, 3, 3, 9, 13), // control_rod_frame7
               makeCuboidShape(0, 14, 3, 3, 16, 13), // control_rod_frame8
-              makeCuboidShape(14, 7, 2, 16, 9, 14), // control_rod_frame9
+              makeCuboidShape(13, 7, 3, 16, 9, 13), // control_rod_frame9
               makeCuboidShape(13, 14, 3, 16, 16, 13), // control_rod_frame10
-              makeCuboidShape(0, 7, 14, 16, 9, 16), // control_rod_frame11
+              makeCuboidShape(0, 7, 13, 16, 9, 16), // control_rod_frame11
               makeCuboidShape(0, 14, 13, 16, 16, 16), // control_rod_frame12
               makeCuboidShape(0, 0, 0, 16, 3, 16) // connector_ring_bottom
         ), CONTROL_ROD_ASSEMBLY);
 
         setShape(VoxelShapeUtils.combine(
-              makeCuboidShape(2, 0, 2, 14, 14, 14), // core
+              makeCuboidShape(2, 3, 2, 14, 13, 14), // core
               makeCuboidShape(13, 1, 1, 15, 15, 3), // rod_1
               makeCuboidShape(9, 1, 1, 11, 15, 15), // rod_2
               makeCuboidShape(5, 1, 1, 7, 15, 15), // rod_3
