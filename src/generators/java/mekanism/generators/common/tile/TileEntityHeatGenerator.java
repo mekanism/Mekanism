@@ -33,6 +33,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -115,7 +116,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         //Lava boost
         FloatingLong boost = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(Arrays.stream(EnumUtils.DIRECTIONS)
               .filter(side -> world.getFluidState(pos.offset(side)).isTagged(FluidTags.LAVA)).count());
-        if (world.func_230315_m_().hasSkyLight()) {
+        if (world.func_234922_V_() == DimensionType.field_236000_d_) {
             boost = boost.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
         }
         return boost;
