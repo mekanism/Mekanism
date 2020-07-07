@@ -14,8 +14,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiColorPickerSlot extends GuiRelativeElement {
 
-    private Supplier<Color> supplier;
-    private Consumer<Color> consumer;
+    private final Supplier<Color> supplier;
+    private final Consumer<Color> consumer;
 
     public GuiColorPickerSlot(IGuiWrapper gui, int x, int y, Supplier<Color> supplier, Consumer<Color> consumer) {
         super(gui, x, y, 18, 18);

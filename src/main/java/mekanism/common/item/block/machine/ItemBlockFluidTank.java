@@ -52,7 +52,6 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -151,10 +150,9 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
         ItemStack stack = player.getHeldItem(hand);
         if (getBucketMode(stack)) {
             if (SecurityUtils.canAccess(player, stack)) {
-                RayTraceResult rayTraceResult = rayTrace(world, player, !player.isSneaking() ? FluidMode.SOURCE_ONLY : FluidMode.NONE);
+                BlockRayTraceResult result = rayTrace(world, player, !player.isSneaking() ? FluidMode.SOURCE_ONLY : FluidMode.NONE);
                 //It can be null if there is nothing in range
-                if (rayTraceResult.getType() == Type.BLOCK) {
-                    BlockRayTraceResult result = (BlockRayTraceResult) rayTraceResult;
+                if (result.getType() == Type.BLOCK) {
                     BlockPos pos = result.getPos();
                     if (!world.isBlockModifiable(player, pos)) {
                         return new ActionResult<>(ActionResultType.FAIL, stack);

@@ -3,6 +3,7 @@ package mekanism.client.gui.element.text;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
+import javax.annotation.Nonnull;
 import mekanism.api.functions.CharPredicate;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -177,7 +178,7 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     @Override
-    public void drawBackground(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         backgroundType.render(this, matrix);
         if (textScale != 1F) {

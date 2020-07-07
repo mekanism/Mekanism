@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import javax.annotation.Nonnull;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -52,11 +53,12 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
         }
 
         @Override
-        public void onResourceManagerReload(IResourceManager resourceManager) {
+        public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
         }
 
+        @Nonnull
         @Override
-        public MekanismModel read(JsonDeserializationContext ctx, JsonObject modelContents) {
+        public MekanismModel read(@Nonnull JsonDeserializationContext ctx, JsonObject modelContents) {
             Multimap<String, BlockPartWrapper> multimap = HashMultimap.create();
             if (modelContents.has("elements")) {
                 for (JsonElement element : JSONUtils.getJsonArray(modelContents, "elements")) {

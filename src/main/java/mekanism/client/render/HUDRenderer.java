@@ -72,7 +72,7 @@ public class HUDRenderer {
         prevRotationPitch += pitchDiff / MekanismConfig.client.hudJitter.get();
     }
 
-    private static final float absSqrt(float val) {
+    private static float absSqrt(float val) {
         float ret = (float) Math.sqrt(Math.abs(val));
         return val < 0 ? -ret : ret;
     }

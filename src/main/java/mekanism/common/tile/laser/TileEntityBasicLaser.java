@@ -286,7 +286,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+    public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.func_230337_a_(state, nbtTags);
         NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.LAST_FIRED, value -> lastFired = value);
     }

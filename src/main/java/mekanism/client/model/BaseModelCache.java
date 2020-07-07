@@ -24,7 +24,7 @@ public class BaseModelCache {
     }
 
     public void setup() {
-        modelMap.values().forEach(m -> m.setup());
+        modelMap.values().forEach(ModelData::setup);
     }
 
     protected OBJModelData registerOBJ(ResourceLocation rl) {

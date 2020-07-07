@@ -266,7 +266,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+    public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.func_230337_a_(state, nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_LEFT, GasMode::byIndexStatic, mode -> dumpLeft = mode);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_RIGHT, GasMode::byIndexStatic, mode -> dumpRight = mode);

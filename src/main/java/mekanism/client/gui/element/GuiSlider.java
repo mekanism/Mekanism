@@ -11,7 +11,7 @@ public class GuiSlider extends GuiRelativeElement {
 
     private static final ResourceLocation SLIDER = Mekanism.rl("gui/smooth_slider.png");
 
-    private DoubleConsumer callback;
+    private final DoubleConsumer callback;
 
     private double value;
     private boolean isDragging;

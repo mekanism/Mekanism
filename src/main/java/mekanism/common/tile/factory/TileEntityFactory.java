@@ -282,7 +282,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+    public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.func_230337_a_(state, nbtTags);
         sorting = nbtTags.getBoolean(NBTConstants.SORTING);
         for (int i = 0; i < tier.processes; i++) {

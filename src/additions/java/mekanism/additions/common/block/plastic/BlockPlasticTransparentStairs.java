@@ -1,5 +1,6 @@
 package mekanism.additions.common.block.plastic;
 
+import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -14,8 +15,6 @@ import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockPlasticTransparentStairs extends StairsBlock implements IColoredBlock {
 
@@ -34,19 +33,18 @@ public class BlockPlasticTransparentStairs extends StairsBlock implements IColor
 
     @Override
     @Deprecated
-    @OnlyIn(Dist.CLIENT)
-    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
-        return 0.8f;
+    public float getAmbientOcclusionLightValue(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+        return 0.8F;
     }
 
     @Override
     @Deprecated
-    public boolean isTransparent(BlockState state) {
+    public boolean isTransparent(@Nonnull BlockState state) {
         return true;
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
         return true;
     }
 
@@ -56,18 +54,23 @@ public class BlockPlasticTransparentStairs extends StairsBlock implements IColor
     }
 
     @Override
-    public boolean isSideInvisible(final BlockState state, final BlockState adjacentBlockState, final Direction side) {
+    @Deprecated
+    public boolean isSideInvisible(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
         final Block adjacentBlock = adjacentBlockState.getBlock();
         if (adjacentBlock instanceof BlockPlasticTransparent || adjacentBlock instanceof BlockPlasticTransparentSlab
             || adjacentBlock instanceof BlockPlasticTransparentStairs) {
             IColoredBlock plastic = ((IColoredBlock) adjacentBlock);
-            if (plastic.getColor() == color) {
-                VoxelShape shape = state.getShape(null, null);
-                VoxelShape adjacentShape = adjacentBlockState.getShape(null, null);
+            if (plastic.getColor() == getColor()) {
+                try {
+                    VoxelShape shape = state.getShape(null, null);
+                    VoxelShape adjacentShape = adjacentBlockState.getShape(null, null);
 
-                VoxelShape faceShape = shape.project(side);
-                VoxelShape adjacentFaceShape = adjacentShape.project(side.getOpposite());
-                return !VoxelShapes.compare(faceShape, adjacentFaceShape, IBooleanFunction.ONLY_FIRST);
+                    VoxelShape faceShape = shape.project(side);
+                    VoxelShape adjacentFaceShape = adjacentShape.project(side.getOpposite());
+                    return !VoxelShapes.compare(faceShape, adjacentFaceShape, IBooleanFunction.ONLY_FIRST);
+                } catch (Exception ignored) {
+                    //Something might have errored due to the null world and position
+                }
             }
         }
         return false;

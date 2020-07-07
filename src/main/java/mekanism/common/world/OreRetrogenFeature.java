@@ -2,6 +2,7 @@ package mekanism.common.world;
 
 import com.mojang.serialization.Codec;
 import java.util.Random;
+import javax.annotation.Nonnull;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ISeedReader;
@@ -18,7 +19,8 @@ public class OreRetrogenFeature extends OreFeature {
     }
 
     @Override
-    public boolean func_230362_a_(ISeedReader seedReader, StructureManager structureManager, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, OreFeatureConfig config) {
+    public boolean func_230362_a_(@Nonnull ISeedReader seedReader, @Nonnull StructureManager structureManager, @Nonnull ChunkGenerator chunkGenerator, Random rand,
+          BlockPos pos, OreFeatureConfig config) {
         float angle = rand.nextFloat() * (float) Math.PI;
         float f1 = config.size / 8.0F;
         int i = MathHelper.ceil((f1 + 1.0F) / 2.0F);

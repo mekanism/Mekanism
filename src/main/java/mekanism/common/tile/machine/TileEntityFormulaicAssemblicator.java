@@ -73,7 +73,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     public boolean stockControl = false;
     public boolean needsOrganize = true; //organize on load
-    private HashedItem[] stockControlMap = new HashedItem[18];
+    private final HashedItem[] stockControlMap = new HashedItem[18];
 
     public int pulseOperations;
 
@@ -443,14 +443,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         }
         // build map of what items we have to organize
         Map<HashedItem, Integer> storedMap = new Object2IntOpenHashMap<>();
-        for (int i = 0; i < inputSlots.size(); i++) {
-            ItemStack stack = inputSlots.get(i).getStack();
+        for (IInventorySlot inputSlot : inputSlots) {
+            ItemStack stack = inputSlot.getStack();
             if (!stack.isEmpty()) {
                 HashedItem hashed = new HashedItem(stack);
                 storedMap.put(hashed, storedMap.getOrDefault(hashed, 0) + stack.getCount());
             }
             // clear the existing stack
-            inputSlots.get(i).setStack(ItemStack.EMPTY);
+            inputSlot.setStack(ItemStack.EMPTY);
         }
         // place items into respective controlled slots
         Set<Integer> unused = new HashSet<>();
@@ -469,12 +469,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             inputSlots.get(i).setStack(getStackFromMap(storedMap, storedMap.keySet().iterator().next()));
         }
         // if we still have items, just add them to any slots that are still empty
-        for (int i = 0; i < inputSlots.size(); i++) {
+        for (IInventorySlot inputSlot : inputSlots) {
             if (storedMap.isEmpty()) {
                 return; // break early if the map is empty
             }
-            if (inputSlots.get(i).getStack().isEmpty()) {
-                inputSlots.get(i).setStack(getStackFromMap(storedMap, storedMap.keySet().iterator().next()));
+            if (inputSlot.isEmpty()) {
+                inputSlot.setStack(getStackFromMap(storedMap, storedMap.keySet().iterator().next()));
             }
         }
         if (!storedMap.isEmpty()) {
@@ -549,7 +549,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     @Override
-    public void func_230337_a_(BlockState state, @Nonnull CompoundNBT nbtTags) {
+    public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.func_230337_a_(state, nbtTags);
         autoMode = nbtTags.getBoolean(NBTConstants.AUTO);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);

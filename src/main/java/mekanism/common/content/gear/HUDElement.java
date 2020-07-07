@@ -13,8 +13,8 @@ import net.minecraft.util.text.StringTextComponent;
 
 public class HUDElement {
 
-    private ResourceLocation icon;
-    private ITextComponent text;
+    private final ResourceLocation icon;
+    private final ITextComponent text;
     private HUDColor color;
 
     private HUDElement(ResourceLocation icon, ITextComponent text) {
@@ -65,7 +65,7 @@ public class HUDElement {
         WARNING(MekanismConfig.client.hudWarningColor),
         DANGER(MekanismConfig.client.hudDangerColor);
 
-        private HUDColor(IntSupplier color) {
+        HUDColor(IntSupplier color) {
             this.color = color;
         }
 

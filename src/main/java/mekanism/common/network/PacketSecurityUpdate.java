@@ -49,8 +49,8 @@ public class PacketSecurityUpdate {
                 }
             } else {
                 MekanismClient.clientSecurityMap.clear();
-                message.securityMap.forEach((key, value) -> MekanismClient.clientSecurityMap.put(key, value));
-                message.uuidMap.forEach((key, value) -> MekanismClient.clientUUIDMap.put(key, value));
+                message.securityMap.forEach(MekanismClient.clientSecurityMap::put);
+                message.uuidMap.forEach(MekanismClient.clientUUIDMap::put);
             }
         });
         context.get().setPacketHandled(true);

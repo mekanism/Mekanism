@@ -100,6 +100,7 @@ public class ItemBalloon extends Item {
         return ActionResultType.PASS;
     }
 
+    @Nonnull
     @Override
     public ActionResultType itemInteractionForEntity(@Nonnull ItemStack stack, PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
         if (player.isSneaking()) {

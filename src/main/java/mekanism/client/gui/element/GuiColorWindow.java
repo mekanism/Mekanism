@@ -28,10 +28,10 @@ public class GuiColorWindow extends GuiWindow {
 
     private static final ResourceLocation HUE_PICKER = Mekanism.rl("gui/color_picker.png");
 
-    private GuiTextField textField;
+    private final GuiTextField textField;
 
-    private GuiShadePicker shadePicker;
-    private GuiHuePicker huePicker;
+    private final GuiShadePicker shadePicker;
+    private final GuiHuePicker huePicker;
 
     private float hue;
     private float saturation = 0.5F;
@@ -180,7 +180,7 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void drawBackground(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
             super.drawBackground(matrix, mouseX, mouseY, partialTicks);
 
             Color c = Color.hsv(hue, saturation, value);

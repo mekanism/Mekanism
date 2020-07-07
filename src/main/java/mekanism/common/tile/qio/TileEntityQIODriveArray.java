@@ -139,7 +139,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         NEAR_FULL(Mekanism.rl("block/qio_drive/qio_drive_partial")),
         FULL(Mekanism.rl("block/qio_drive/qio_drive_full"));
 
-        private ResourceLocation model;
+        private final ResourceLocation model;
 
         DriveStatus(ResourceLocation model) {
             this.model = model;

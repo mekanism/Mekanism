@@ -9,7 +9,7 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class SoundEventRegistryObject<SOUND extends SoundEvent> extends WrappedRegistryObject<SOUND> implements ILangEntry {
 
-    private String translationKey;
+    private final String translationKey;
 
     public SoundEventRegistryObject(RegistryObject<SOUND> registryObject) {
         super(registryObject);

@@ -48,7 +48,7 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
 
     public static class OnOff extends BooleanStateDisplay {
 
-        private boolean caps;
+        private final boolean caps;
 
         private OnOff(boolean value, boolean colored, boolean caps) {
             super(value, colored);
