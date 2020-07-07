@@ -45,7 +45,7 @@ public class ModelToVoxelShapeUtil {
     }*/
 
     public static void main(String[] args) {
-        printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/generators/resources/assets/mekanismgenerators/models/block/advanced_solar_generator.json");
+        printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/generators/resources/assets/mekanismgenerators/models/block/fission/control_rod_assembly.json");
     }
 
     public static void printoutModelFile(String path) {
