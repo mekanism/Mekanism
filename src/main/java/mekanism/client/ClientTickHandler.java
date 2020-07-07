@@ -148,7 +148,7 @@ public class ClientTickHandler {
         if (delay == 0) {
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.TELEPORT, hand, freq));
         } else {
-            portableTeleports.put(player, new TeleportData(hand, freq, minecraft.world.getDayTime() + delay));
+            portableTeleports.put(player, new TeleportData(hand, freq, minecraft.world.getGameTime() + delay));
         }
     }
 
@@ -211,7 +211,7 @@ public class ClientTickHandler {
                     minecraft.world.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
                 }
 
-                if (minecraft.world.getDayTime() == entry.getValue().teleportTime) {
+                if (minecraft.world.getGameTime() == entry.getValue().teleportTime) {
                     Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.TELEPORT, entry.getValue().hand, entry.getValue().freq));
                     iter.remove();
                 }

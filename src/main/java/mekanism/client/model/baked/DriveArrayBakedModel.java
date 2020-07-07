@@ -57,4 +57,9 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
         }
         return key.data(driveStatus, Arrays.hashCode(driveStatus), Arrays::equals);
     }
+
+    @Override
+    protected DriveArrayBakedModel wrapModel(IBakedModel model) {
+        return new DriveArrayBakedModel(model);
+    }
 }
