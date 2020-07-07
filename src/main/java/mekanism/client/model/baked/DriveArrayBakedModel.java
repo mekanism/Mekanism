@@ -3,9 +3,9 @@ package mekanism.client.model.baked;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
-import mekanism.client.render.obj.ModelCache;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
@@ -44,7 +44,7 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
     }
 
     private List<BakedQuad> getDriveQuads(int index, DriveStatus status, QuadsKey<byte[]> key) {
-        List<BakedQuad> ret = ModelCache.QIO_DRIVES[status.ordinal()].getBakedModel().getQuads(key.getBlockState(), null, key.getRandom());
+        List<BakedQuad> ret = MekanismModelCache.INSTANCE.QIO_DRIVES[status.ordinal()].getBakedModel().getQuads(key.getBlockState(), null, key.getRandom());
         float[] translation = DRIVE_PLACEMENTS[index];
         return QuadUtils.transformBakedQuads(ret, QuadTransformation.translate(new Vector3d(translation[0], translation[1], 0)));
     }

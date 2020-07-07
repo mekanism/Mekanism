@@ -21,13 +21,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import mekanism.client.model.BaseModelCache.ModelData;
+import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.effect.BoltRenderer;
-import mekanism.client.render.obj.ModelCache;
-import mekanism.client.render.obj.ModelCache.ModelData;
 import mekanism.client.render.obj.TransmitterBakedModel.QuickHash;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.Modules;
@@ -71,7 +71,7 @@ public class MekaSuitArmor extends CustomArmor {
     public static final MekaSuitArmor PANTS = new MekaSuitArmor(0.5F, EquipmentSlotType.LEGS, EquipmentSlotType.FEET);
     public static final MekaSuitArmor BOOTS = new MekaSuitArmor(0.5F, EquipmentSlotType.FEET, EquipmentSlotType.LEGS);
 
-    private static final Set<ModelData> specialModels = Sets.newHashSet(ModelCache.MEKASUIT_MODULES);
+    private static final Set<ModelData> specialModels = Sets.newHashSet(MekanismModelCache.INSTANCE.MEKASUIT_MODULES);
 
     private static final Table<EquipmentSlotType, ModuleData<?>, ModuleModelSpec> moduleModelSpec = HashBasedTable.create();
 
@@ -100,7 +100,7 @@ public class MekaSuitArmor extends CustomArmor {
         super(size);
         this.type = type;
         this.adjacentType = adjacentType;
-        ModelCache.reloadCallback(cache::invalidateAll);
+        MekanismModelCache.INSTANCE.reloadCallback(cache::invalidateAll);
     }
 
     @Override
@@ -221,17 +221,17 @@ public class MekaSuitArmor extends CustomArmor {
         Set<String> ignored = new HashSet<>();
 
         if (modules.size() > 0) {
-            Map<ModelPos, Set<String>> moduleQuadsToRender = specialQuadsToRenderMap.computeIfAbsent(ModelCache.MEKASUIT_MODULES, d -> new Object2ObjectOpenHashMap<>());
-            Map<ModelPos, Set<String>> moduleLEDQuadsToRender = specialLEDQuadsToRenderMap.computeIfAbsent(ModelCache.MEKASUIT_MODULES, d -> new Object2ObjectOpenHashMap<>());
+            Map<ModelPos, Set<String>> moduleQuadsToRender = specialQuadsToRenderMap.computeIfAbsent(MekanismModelCache.INSTANCE.MEKASUIT_MODULES, d -> new Object2ObjectOpenHashMap<>());
+            Map<ModelPos, Set<String>> moduleLEDQuadsToRender = specialLEDQuadsToRenderMap.computeIfAbsent(MekanismModelCache.INSTANCE.MEKASUIT_MODULES, d -> new Object2ObjectOpenHashMap<>());
 
-            for (IModelGeometryPart part : ModelCache.MEKASUIT_MODULES.getModel().getParts()) {
+            for (IModelGeometryPart part : MekanismModelCache.INSTANCE.MEKASUIT_MODULES.getModel().getParts()) {
                 String name = part.name();
                 ModuleModelSpec matchingSpec = modules.stream().filter(m -> name.contains(m.name)).findFirst().orElse(null);
                 if (matchingSpec == null) {
                     continue;
                 }
                 if (name.contains(OVERRIDDEN_TAG)) {
-                    overrides.put(matchingSpec.processOverrideName(name), Pair.of(ModelCache.MEKASUIT_MODULES, name));
+                    overrides.put(matchingSpec.processOverrideName(name), Pair.of(MekanismModelCache.INSTANCE.MEKASUIT_MODULES, name));
                 }
                 // if this armor unit controls rendering of this module
                 if (type == matchingSpec.slotType) {
@@ -250,7 +250,7 @@ public class MekaSuitArmor extends CustomArmor {
 
         // handle mekatool overrides
         if (type == EquipmentSlotType.CHEST && hasMekaTool) {
-            for (IModelGeometryPart part : ModelCache.MEKATOOL.getModel().getParts()) {
+            for (IModelGeometryPart part : MekanismModelCache.INSTANCE.MEKATOOL.getModel().getParts()) {
                 String name = part.name();
                 if (name.contains(OVERRIDDEN_TAG)) {
                     ignored.add(processOverrideName(name, "mekatool"));
@@ -261,7 +261,7 @@ public class MekaSuitArmor extends CustomArmor {
         Map<ModelPos, Set<String>> armorQuadsToRender = new Object2ObjectOpenHashMap<>();
         Map<ModelPos, Set<String>> armorLEDQuadsToRender = new Object2ObjectOpenHashMap<>();
 
-        for (IModelGeometryPart part : ModelCache.MEKASUIT.getModel().getParts()) {
+        for (IModelGeometryPart part : MekanismModelCache.INSTANCE.MEKASUIT.getModel().getParts()) {
             String name = part.name();
             // skip if it's the wrong equipment type
             if (!checkEquipment(type, name)) {
@@ -309,7 +309,7 @@ public class MekaSuitArmor extends CustomArmor {
                       specialQuadsToRenderMap.getOrDefault(modelData, new Object2ObjectOpenHashMap<>()).getOrDefault(pos, new HashSet<>()),
                       specialLEDQuadsToRenderMap.getOrDefault(modelData, new Object2ObjectOpenHashMap<>()).getOrDefault(pos, new HashSet<>()));
             }
-            parseTransparency(ModelCache.MEKASUIT, pos, opaqueMap, transparentMap, armorQuadsToRender.getOrDefault(pos, new HashSet<>()), armorLEDQuadsToRender.getOrDefault(pos, new HashSet<>()));
+            parseTransparency(MekanismModelCache.INSTANCE.MEKASUIT, pos, opaqueMap, transparentMap, armorQuadsToRender.getOrDefault(pos, new HashSet<>()), armorLEDQuadsToRender.getOrDefault(pos, new HashSet<>()));
         }
         return new ArmorQuads(opaqueMap, transparentMap);
     }

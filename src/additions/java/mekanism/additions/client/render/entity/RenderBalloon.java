@@ -1,18 +1,25 @@
 package mekanism.additions.client.render.entity;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import mekanism.additions.client.model.ModelBalloon;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mekanism.additions.client.model.AdditionsModelCache;
+import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.EntityBalloon;
+import mekanism.client.model.BaseModelCache.JSONModelData;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
 public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
-    private static final ModelBalloon model = new ModelBalloon();
+    public static final ResourceLocation BALLOON_TEXTURE = MekanismAdditions.rl("textures/item/balloon.png");
 
     public RenderBalloon(EntityRendererManager renderManager) {
         super(renderManager);
@@ -21,12 +28,14 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
     @Nonnull
     @Override
     public ResourceLocation getEntityTexture(@Nonnull EntityBalloon entity) {
-        return ModelBalloon.BALLOON_TEXTURE;
+        return BALLOON_TEXTURE;
     }
 
     @Override
     public void render(@Nonnull EntityBalloon balloon, float entityYaw, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light) {
         matrix.push();
+        matrix.translate(-0.5, -1, -0.5);
+
         if (balloon.isLatchedToEntity()) {
             //Shift the rendering of the balloon to be over the entity
             double x = balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.getPosX() - balloon.latchedEntity.lastTickPosX) * partialTick
@@ -38,14 +47,24 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
                        - (balloon.lastTickPosZ + (balloon.getPosZ() - balloon.lastTickPosZ) * partialTick);
             matrix.translate(x, y, z);
         }
-        model.render(matrix, renderer, light, balloon.color);
+
+        JSONModelData model = balloon.isLatched() ? AdditionsModelCache.INSTANCE.BALLOON : AdditionsModelCache.INSTANCE.BALLOON_FREE;
+
+        List<BakedQuad> quads = model.getBakedModel().getQuads(null, null, null);
+        RenderType renderType = RenderType.getEntityTranslucent(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        IVertexBuilder builder = renderer.getBuffer(renderType);
+        MatrixStack.Entry last = matrix.getLast();
+        for (BakedQuad quad : quads) {
+            float[] color = new float[] {1, 1, 1, 1};
+            if (quad.getTintIndex() == 0) {
+                color[0] = balloon.color.getRgbCode()[0] / 255F;
+                color[1] = balloon.color.getRgbCode()[1] / 255F;
+                color[2] = balloon.color.getRgbCode()[2] / 255F;
+            }
+            builder.addVertexData(last, quad, color[0], color[1], color[2], color[3], light, OverlayTexture.NO_OVERLAY);
+        }
+        ((IRenderTypeBuffer.Impl) renderer).finish(renderType);
         matrix.pop();
         super.render(balloon, entityYaw, partialTick, matrix, renderer, light);
-    }
-
-    @Override
-    protected int getBlockLight(@Nonnull EntityBalloon balloon, @Nonnull BlockPos pos) {
-        //We always want our balloon to have full brightness
-        return 15;
     }
 }
