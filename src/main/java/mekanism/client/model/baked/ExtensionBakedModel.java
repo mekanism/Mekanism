@@ -142,7 +142,6 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     }
 
     protected ExtensionBakedModel<T> wrapModel(IBakedModel model) {
-        //Note: DriveArrayBakedModel does not override this
         return new ExtensionBakedModel<>(model);
     }
 

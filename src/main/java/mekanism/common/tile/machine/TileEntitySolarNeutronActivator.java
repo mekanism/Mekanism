@@ -209,13 +209,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         return new AxisAlignedBB(pos, pos.add(1, 2, 1));
     }
 
-    public double getProgress() {
-        if (getActive()) {
-            return .16 * (1 + (world.getDayTime() % 6));
-        }
-        return 0;
-    }
-
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());

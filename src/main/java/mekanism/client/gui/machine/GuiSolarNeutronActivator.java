@@ -29,7 +29,7 @@ public class GuiSolarNeutronActivator extends GuiMekanismTile<TileEntitySolarNeu
         func_230480_a_(new GuiRedstoneControlTab(this, tile));
         func_230480_a_(new GuiGasGauge(() -> tile.inputTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 25, 13));
         func_230480_a_(new GuiGasGauge(() -> tile.outputTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 133, 13));
-        func_230480_a_(new GuiProgress(tile::getProgress, ProgressType.LARGE_RIGHT, this, 64, 39).jeiCategory(tile));
+        func_230480_a_(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressType.LARGE_RIGHT, this, 64, 39).jeiCategory(tile));
     }
 
     @Override
