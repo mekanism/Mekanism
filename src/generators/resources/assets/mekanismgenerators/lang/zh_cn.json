@@ -97,7 +97,7 @@
   "fission.mekanismgenerators.port_mode_output_coolant": "输出冷却剂",
   "fission.mekanismgenerators.port_mode_output_waste": "输出废料",
   "fission.mekanismgenerators.rate_limit": "速率限制：%s mB/t",
-  "fission.mekanismgenerators.scram": "快走！",
+  "fission.mekanismgenerators.scram": "紧急停机",
   "fission.mekanismgenerators.set_rate_limit": "设置速率上限：",
   "fission.mekanismgenerators.stats": "裂变反应堆统计",
   "fission.mekanismgenerators.surface_area": "燃料表面积：%s m²",
@@ -194,5 +194,5 @@
   "turbine.mekanismgenerators.stats.vents": "排气口: %s %s",
   "turbine.mekanismgenerators.steam_input": "蒸汽输入: %s mB/t",
   "wind_generator.mekanismgenerators.no_wind": "无风",
-  "wind_generator.mekanismgenerators.sky_blocked": "天空阻塞"
+  "wind_generator.mekanismgenerators.sky_blocked": "上方被遮挡"
 }
