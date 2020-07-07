@@ -136,11 +136,11 @@ def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
 ext {
     replaceResourcesInfo = [
-            "main": sourceSets.main,
-            "additions": sourceSets.additions,
+            "main"      : sourceSets.main,
+            "additions" : sourceSets.additions,
             "generators": sourceSets.generators,
-            "defense": sourceSets.defense,
-            "tools": sourceSets.tools,
+            "defense"   : sourceSets.defense,
+            "tools"     : sourceSets.tools,
     ]
 }
 
@@ -378,9 +378,24 @@ processToolsResources {
     }
 }
 
+def getManifestAttributes(String title) {
+    //TODO: Eventually we may want to try and improve the information supplied here
+    // if there are parts of it that are not as they are supposed to be
+    return [
+            "Specification-Title"     : title,
+            "Specification-Vendor"    : "Mekanism",
+            "Specification-Version"   : "${project.mod_version}",
+            "Implementation-Title"    : title,
+            "Implementation-Version"  : "${project.mod_version}",
+            "Implementation-Vendor"   : "Mekanism",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+    ]
+}
+
 jar {
     from sourceSets.api.output
     from sourceSets.main.output
+    manifest.attributes(getManifestAttributes("Mekanism"))
 }
 
 //TODO: Sources Jars?
@@ -396,6 +411,7 @@ task additionsJar(type: Jar) {
     archiveName = "MekanismAdditions-${project.version}.jar"
     classifier = "additions"
     from sourceSets.additions.output
+    manifest.attributes(getManifestAttributes("MekanismAdditions"))
     afterEvaluate {
         finalizedBy reobfAdditionsJar
     }
@@ -407,6 +423,7 @@ task defenseJar(type: Jar) {
     archiveName = "MekanismDefense-${project.version}.jar"
     classifier = "defense"
     from sourceSets.defense.output
+    manifest.attributes(getManifestAttributes("MekanismDefense"))
     afterEvaluate {
         finalizedBy reobfDefenseJar
     }
@@ -418,6 +435,7 @@ task generatorsJar(type: Jar) {
     archiveName = "MekanismGenerators-${project.version}.jar"
     classifier = "generators"
     from sourceSets.generators.output
+    manifest.attributes(getManifestAttributes("MekanismGenerators"))
     afterEvaluate {
         finalizedBy reobfGeneratorsJar
     }
@@ -429,12 +447,13 @@ task toolsJar(type: Jar) {
     archiveName = "MekanismTools-${project.version}.jar"
     classifier = "tools"
     from sourceSets.tools.output
+    manifest.attributes(getManifestAttributes("MekanismTools"))
     afterEvaluate {
         finalizedBy reobfToolsJar
     }
 }
 
-//TODO: Fix the fact that the all jar does not properly merge overlapping tags (for example piglin_loved)
+//TODO: Fix the fact that the all jar does not properly merge overlapping tags (cardboard_blacklist, and piglin_loved)
 task allJar(type: Jar) {
     //Make sure the other tasks run first
     shouldRunAfter(apiJar, jar, additionsJar, defenseJar, generatorsJar, toolsJar,
@@ -444,6 +463,7 @@ task allJar(type: Jar) {
         finalizedBy reobfAllJar
     }
     classifier "all"
+    manifest.attributes(getManifestAttributes("MekanismAll"))
     doFirst {
         //Generate folders, merge the access transformers and mods.toml files
         mkdir("$buildDir/generated/META-INF")
@@ -600,7 +620,7 @@ publishing {
                     url = 'https://github.com/mekanism/Mekanism.git'
                 }
                 issueManagement {
-                    system =  'github'
+                    system = 'github'
                     url = 'https://github.com/mekanism/Mekanism/issues'
                 }
                 licenses {
