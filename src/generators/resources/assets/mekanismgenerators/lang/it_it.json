@@ -97,7 +97,7 @@
   "fission.mekanismgenerators.port_mode_output_coolant": "estrazione del refrigerante",
   "fission.mekanismgenerators.port_mode_output_waste": "estrazione della scoria",
   "fission.mekanismgenerators.rate_limit": "Tasso limite: %s mB/t",
-  "fission.mekanismgenerators.scram": "ARRESTA",
+  "fission.mekanismgenerators.scram": "SCAPPA",
   "fission.mekanismgenerators.set_rate_limit": "Imposta un tasso limite:",
   "fission.mekanismgenerators.stats": "Statistiche del Reattore a Fissione",
   "fission.mekanismgenerators.surface_area": "Superficie Carburante: %s m2",
