@@ -1,7 +1,7 @@
 package mekanism.additions.client.render.entity;
 
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

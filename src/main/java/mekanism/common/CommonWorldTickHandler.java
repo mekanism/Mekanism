@@ -1,10 +1,10 @@
 package mekanism.common;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.chunkloading.ChunkManager;
 import mekanism.common.lib.frequency.FrequencyManager;

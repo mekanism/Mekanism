@@ -41,17 +41,17 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     private static final char SLIME_CHAR = 'S';
 
     private static final RecipePattern GLOW_PANEL = RecipePattern.createPattern(
-            TripleLine.of(GLASS_PANES_CHAR, PLASTIC_SHEET_CHAR, GLASS_PANES_CHAR),
-            TripleLine.of(PLASTIC_SHEET_CHAR, Pattern.DYE, PLASTIC_SHEET_CHAR),
-            TripleLine.of(Pattern.GLOWSTONE, PLASTIC_SHEET_CHAR, Pattern.GLOWSTONE));
+          TripleLine.of(GLASS_PANES_CHAR, PLASTIC_SHEET_CHAR, GLASS_PANES_CHAR),
+          TripleLine.of(PLASTIC_SHEET_CHAR, Pattern.DYE, PLASTIC_SHEET_CHAR),
+          TripleLine.of(Pattern.GLOWSTONE, PLASTIC_SHEET_CHAR, Pattern.GLOWSTONE));
     private static final RecipePattern PLASTIC = RecipePattern.createPattern(
           TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
           TripleLine.of(Pattern.CONSTANT, Pattern.DYE, Pattern.CONSTANT),
           TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY));
     private static final RecipePattern PLASTIC_TRANSPARENT = RecipePattern.createPattern(
-            TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
-            TripleLine.of(Pattern.CONSTANT, Pattern.DYE, Pattern.CONSTANT),
-            TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
+          TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
+          TripleLine.of(Pattern.CONSTANT, Pattern.DYE, Pattern.CONSTANT),
+          TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
     private static final RecipePattern PLASTIC_FENCE = RecipePattern.createPattern(
           TripleLine.of(Pattern.CONSTANT, PLASTIC_ROD_CHAR, Pattern.CONSTANT),
           TripleLine.of(Pattern.CONSTANT, PLASTIC_ROD_CHAR, Pattern.CONSTANT));

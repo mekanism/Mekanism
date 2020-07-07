@@ -14,6 +14,16 @@ import net.minecraft.util.ResourceLocation;
 
 *//**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Pigment}s.
+ *
+ * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link PigmentStack}
+ *
+ * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link Pigment}
+ *
+ * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link ResourceLocation}
+ *
+ * Helper method to create an {@link NSSPigment} representing a tag from a {@link ResourceLocation}
+ *
+ * Helper method to create an {@link NSSPigment} representing a tag from a {@link Tag<Pigment>}
  *//*
 public final class NSSPigment extends AbstractNSSTag<Pigment> {
 
@@ -22,8 +32,8 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
     }
 
     *//**
-     * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link PigmentStack}
-     *//*
+ * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link PigmentStack}
+ *//*
     @Nonnull
     public static NSSPigment createPigment(@Nonnull PigmentStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
@@ -31,8 +41,8 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
     }
 
     *//**
-     * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link Pigment}
-     *//*
+ * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link Pigment}
+ *//*
     @Nonnull
     public static NSSPigment createPigment(@Nonnull Pigment pigment) {
         if (pigment.isEmptyType()) {
@@ -43,24 +53,24 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
     }
 
     *//**
-     * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link ResourceLocation}
-     *//*
+ * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link ResourceLocation}
+ *//*
     @Nonnull
     public static NSSPigment createPigment(@Nonnull ResourceLocation pigmentID) {
         return new NSSPigment(pigmentID, false);
     }
 
     *//**
-     * Helper method to create an {@link NSSPigment} representing a tag from a {@link ResourceLocation}
-     *//*
+ * Helper method to create an {@link NSSPigment} representing a tag from a {@link ResourceLocation}
+ *//*
     @Nonnull
     public static NSSPigment createTag(@Nonnull ResourceLocation tagId) {
         return new NSSPigment(tagId, true);
     }
 
     *//**
-     * Helper method to create an {@link NSSPigment} representing a tag from a {@link Tag<Pigment>}
-     *//*
+ * Helper method to create an {@link NSSPigment} representing a tag from a {@link Tag<Pigment>}
+ *//*
     @Nonnull
     public static NSSPigment createTag(@Nonnull ITag<Pigment> tag) {
         return createTag(ChemicalTags.PIGMENT.lookupTag(tag));

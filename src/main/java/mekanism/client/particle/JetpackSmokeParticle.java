@@ -1,7 +1,7 @@
 package mekanism.client.particle;
 
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;

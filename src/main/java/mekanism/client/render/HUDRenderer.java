@@ -1,9 +1,9 @@
 package mekanism.client.render;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -26,9 +26,9 @@ import net.minecraft.util.text.ITextComponent;
 public class HUDRenderer {
 
     private static final ResourceLocation HEAD_ICON = Mekanism.rl("gui/hud/hud_mekasuit_helmet.png"),
-                                          CHEST_ICON = Mekanism.rl("gui/hud/hud_mekasuit_chest.png"),
-                                          LEGS_ICON = Mekanism.rl("gui/hud/hud_mekasuit_leggings.png"),
-                                          BOOTS_ICON = Mekanism.rl("gui/hud/hud_mekasuit_boots.png");
+          CHEST_ICON = Mekanism.rl("gui/hud/hud_mekasuit_chest.png"),
+          LEGS_ICON = Mekanism.rl("gui/hud/hud_mekasuit_leggings.png"),
+          BOOTS_ICON = Mekanism.rl("gui/hud/hud_mekasuit_boots.png");
 
     private static final ResourceLocation COMPASS = MekanismUtils.getResource(ResourceType.GUI, "compass.png");
 
@@ -42,8 +42,9 @@ public class HUDRenderer {
     public void renderHUD(MatrixStack matrix, float partialTick) {
         update();
         int color = HUDColor.REGULAR.getColor();
-        if (MekanismConfig.client.hudOpacity.get() < 0.05F)
+        if (MekanismConfig.client.hudOpacity.get() < 0.05F) {
             return;
+        }
         matrix.push();
         float yawJitter = -absSqrt(minecraft.player.rotationYawHead - prevRotationYaw);
         float pitchJitter = -absSqrt(minecraft.player.rotationPitch - prevRotationPitch);

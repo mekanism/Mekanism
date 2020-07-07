@@ -1,10 +1,10 @@
 package mekanism.common.block.attribute;
 
+import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.Lists;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
@@ -17,7 +17,8 @@ public interface Attribute {
 
     interface TileAttribute<TILE extends TileEntityMekanism> extends Attribute {}
 
-    default void adjustProperties(Block.Properties props) {}
+    default void adjustProperties(Block.Properties props) {
+    }
 
     static boolean has(Block block, Class<? extends Attribute> type) {
         return block instanceof ITypeBlock && ((ITypeBlock) block).getType().has(type);

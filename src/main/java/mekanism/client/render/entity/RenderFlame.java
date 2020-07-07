@@ -1,8 +1,8 @@
 package mekanism.client.render.entity;
 
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.util.MekanismUtils;

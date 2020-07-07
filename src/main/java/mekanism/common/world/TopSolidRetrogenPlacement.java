@@ -1,10 +1,10 @@
 package mekanism.common.world;
 
+import com.mojang.serialization.Codec;
 import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import com.mojang.serialization.Codec;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;

@@ -73,14 +73,14 @@ public abstract class ModuleMekaSuit extends Module {
         }
 
         /**
-         * Checks whether the given chestplate should be filled with hydrogen, if it can store hydrogen.
-         * Does not check whether the chestplate can store hydrogen.
+         * Checks whether the given chestplate should be filled with hydrogen, if it can store hydrogen. Does not check whether the chestplate can store hydrogen.
          *
          * @param chestPlate the chestplate to check
+         *
          * @return whether the given chestplate should be filled with hydrogen.
          */
         private boolean checkChestPlate(ItemStack chestPlate) {
-            if(chestPlate.getItem() == MekanismItems.MEKASUIT_BODYARMOR.get()) {
+            if (chestPlate.getItem() == MekanismItems.MEKASUIT_BODYARMOR.get()) {
                 return Modules.load(chestPlate, Modules.JETPACK_UNIT) != null;
             } else {
                 return true;

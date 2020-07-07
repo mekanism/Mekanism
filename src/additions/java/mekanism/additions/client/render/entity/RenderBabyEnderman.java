@@ -1,8 +1,8 @@
 package mekanism.additions.client.render.entity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Random;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.additions.client.model.ModelBabyEnderman;
 import mekanism.additions.client.render.entity.layer.BabyEndermanEyesLayer;
 import mekanism.additions.client.render.entity.layer.BabyEndermanHeldBlockLayer;

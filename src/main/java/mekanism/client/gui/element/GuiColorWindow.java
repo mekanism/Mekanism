@@ -1,10 +1,9 @@
 package mekanism.client.gui.element;
 
-import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
@@ -23,6 +22,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.ITextComponent;
+import org.lwjgl.opengl.GL11;
 
 public class GuiColorWindow extends GuiWindow {
 
@@ -78,6 +78,7 @@ public class GuiColorWindow extends GuiWindow {
     }
 
     private static final int S_TILES = 10, V_TILES = 10;
+
     private void drawTiledGradient(MatrixStack matrix, int x, int y, int width, int height) {
         int tileWidth = Math.round((float) width / S_TILES);
         int tileHeight = Math.round((float) height / V_TILES);
@@ -131,8 +132,9 @@ public class GuiColorWindow extends GuiWindow {
                 int r = Integer.parseInt(split[0]);
                 int g = Integer.parseInt(split[1]);
                 int b = Integer.parseInt(split[2]);
-                if (!byteCheck(r) || !byteCheck(g) || !byteCheck(b))
+                if (!byteCheck(r) || !byteCheck(g) || !byteCheck(b)) {
                     return;
+                }
                 setFromColor(Color.rgbi(r, g, b));
             } catch (NumberFormatException e) {
                 // ignore any NumberFormatException

@@ -1,10 +1,5 @@
 package mekanism.client.model.baked;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -14,6 +9,11 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -48,10 +48,12 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
 
         public static final Loader INSTANCE = new Loader();
 
-        private Loader() {}
+        private Loader() {
+        }
 
         @Override
-        public void onResourceManagerReload(IResourceManager resourceManager) {}
+        public void onResourceManagerReload(IResourceManager resourceManager) {
+        }
 
         @Override
         public MekanismModel read(JsonDeserializationContext ctx, JsonObject modelContents) {
@@ -68,8 +70,9 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
                         JsonObject faces = obj.get("faces").getAsJsonObject();
                         faces.entrySet().forEach(e -> {
                             Direction side = Direction.byName(e.getKey());
-                            if (side == null)
+                            if (side == null) {
                                 return;
+                            }
                             JsonObject face = e.getValue().getAsJsonObject();
                             if (face.has("lightLevel")) {
                                 int light = face.get("lightLevel").getAsInt();

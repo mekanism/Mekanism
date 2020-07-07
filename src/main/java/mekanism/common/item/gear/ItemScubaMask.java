@@ -50,7 +50,7 @@ public class ItemScubaMask extends ArmorItem implements ISpecialGear {
 
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-    	return material.getEnchantability() > 0;
+        return material.getEnchantability() > 0;
     }
 
     @ParametersAreNonnullByDefault

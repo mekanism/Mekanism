@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.bar;
 
-import javax.annotation.Nullable;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nullable;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;

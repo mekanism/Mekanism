@@ -66,7 +66,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 17));
         func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
         func_230480_a_(new GuiSecurityLight(this, 144, 77, () -> tile.getFreq() == null || tile.ownerUUID == null ||
-                                                            !tile.ownerUUID.equals(getMinecraft().player.getUniqueID()) ? 2 : tile.getFreq().isOverridden() ? 0 : 1));
+                                                                 !tile.ownerUUID.equals(getMinecraft().player.getUniqueID()) ? 2 : tile.getFreq().isOverridden() ? 0 : 1));
         func_230480_a_(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
         func_230480_a_(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
         func_230480_a_(scrollList = new GuiTextScrollList(this, 13, 13, 122, 42));

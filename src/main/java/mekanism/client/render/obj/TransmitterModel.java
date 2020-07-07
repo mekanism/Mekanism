@@ -1,12 +1,12 @@
 package mekanism.client.render.obj;
 
+import com.google.common.collect.Sets;
+import com.mojang.datafixers.util.Pair;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import com.google.common.collect.Sets;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.IUnbakedModel;

@@ -3,10 +3,11 @@ package mekanism.client.gui.element;
 import static mekanism.client.gui.element.GuiDigitalSwitch.BUTTON_SIZE_X;
 import static mekanism.client.gui.element.GuiDigitalSwitch.BUTTON_SIZE_Y;
 import static mekanism.client.gui.element.GuiDigitalSwitch.SWITCH;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collections;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;

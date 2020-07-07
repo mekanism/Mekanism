@@ -1,5 +1,7 @@
 package mekanism.common.tile.machine;
 
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -7,8 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
@@ -438,8 +438,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private void organizeStock() {
-        if (formula == null)
+        if (formula == null) {
             return;
+        }
         // build map of what items we have to organize
         Map<HashedItem, Integer> storedMap = new Object2IntOpenHashMap<>();
         for (int i = 0; i < inputSlots.size(); i++) {
@@ -462,25 +463,29 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         }
         // if we still have items, first try to add remaining items to known unused (non-controlled) slots
         for (int i : unused) {
-            if (storedMap.isEmpty())
+            if (storedMap.isEmpty()) {
                 return; // break early if the map is empty
+            }
             inputSlots.get(i).setStack(getStackFromMap(storedMap, storedMap.keySet().iterator().next()));
         }
         // if we still have items, just add them to any slots that are still empty
         for (int i = 0; i < inputSlots.size(); i++) {
-            if (storedMap.isEmpty())
+            if (storedMap.isEmpty()) {
                 return; // break early if the map is empty
+            }
             if (inputSlots.get(i).getStack().isEmpty()) {
                 inputSlots.get(i).setStack(getStackFromMap(storedMap, storedMap.keySet().iterator().next()));
             }
         }
-        if (!storedMap.isEmpty())
+        if (!storedMap.isEmpty()) {
             Mekanism.logger.error("Critical error: Formulaic Assemblicator had items left over after organizing stock. Impossible!");
+        }
     }
 
     private static ItemStack getStackFromMap(Map<HashedItem, Integer> map, HashedItem item) {
-        if (!map.containsKey(item))
+        if (!map.containsKey(item)) {
             return ItemStack.EMPTY;
+        }
         int stored = map.get(item);
         ItemStack ret = item.createStack(Math.min(item.getStack().getMaxStackSize(), stored));
         if (ret.getCount() == stored) {

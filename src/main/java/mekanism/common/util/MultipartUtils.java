@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import java.util.Collection;
-import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -10,6 +9,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
+import org.apache.commons.lang3.tuple.Pair;
 
 public final class MultipartUtils {
 

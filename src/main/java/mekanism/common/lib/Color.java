@@ -82,15 +82,15 @@ public class Color {
     }
 
     public int[] rgbaArray() {
-        return new int[] {r(), g(), b(), a()};
+        return new int[]{r(), g(), b(), a()};
     }
 
     public int[] argbArray() {
-        return new int[] {a(), r(), g(), b()};
+        return new int[]{a(), r(), g(), b()};
     }
 
     public int[] rgbArray() {
-        return new int[] {r(), g(), b()};
+        return new int[]{r(), g(), b()};
     }
 
     /**
@@ -160,7 +160,7 @@ public class Color {
     }
 
     public static Color rgbi(int r, int g, int b) {
-        return rgbai(r , g, b, 255);
+        return rgbai(r, g, b, 255);
     }
 
     public static Color rgbd(double r, double g, double b) {
@@ -214,8 +214,9 @@ public class Color {
             ret[0] = ((r - g) / delta) + 4;
         }
         ret[0] *= 60;
-        if (ret[0] < 0)
+        if (ret[0] < 0) {
             ret[0] += 360;
+        }
         ret[1] = max == 0 ? 0 : delta / max;
         ret[2] = max;
         return ret;

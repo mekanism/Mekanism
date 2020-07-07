@@ -4,8 +4,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -21,7 +21,7 @@ public class BlockPlasticTransparent extends Block implements IColoredBlock {
 
     public BlockPlasticTransparent(EnumColor color) {
         super(Block.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F)
-                .notSolid());
+              .notSolid());
         this.color = color;
     }
 
@@ -50,14 +50,14 @@ public class BlockPlasticTransparent extends Block implements IColoredBlock {
 
     @Override
     public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, PlacementType type, EntityType<?> entityType) {
-    	return false;
+        return false;
     }
 
     @Override
     public boolean isSideInvisible(final BlockState state, final BlockState adjacentBlockState, final Direction side) {
         final Block adjacentBlock = adjacentBlockState.getBlock();
         if (adjacentBlock instanceof BlockPlasticTransparent || adjacentBlock instanceof BlockPlasticTransparentSlab
-                || adjacentBlock instanceof BlockPlasticTransparentStairs) {
+            || adjacentBlock instanceof BlockPlasticTransparentStairs) {
             IColoredBlock plastic = ((IColoredBlock) adjacentBlock);
             if (plastic.getColor() == color) {
                 VoxelShape shape = state.getShape(null, null);

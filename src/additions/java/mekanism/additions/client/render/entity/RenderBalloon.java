@@ -1,9 +1,9 @@
 package mekanism.additions.client.render.entity;
 
-import java.util.List;
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.additions.client.model.AdditionsModelCache;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.EntityBalloon;
@@ -55,7 +55,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
         IVertexBuilder builder = renderer.getBuffer(renderType);
         MatrixStack.Entry last = matrix.getLast();
         for (BakedQuad quad : quads) {
-            float[] color = new float[] {1, 1, 1, 1};
+            float[] color = new float[]{1, 1, 1, 1};
             if (quad.getTintIndex() == 0) {
                 color[0] = balloon.color.getRgbCode()[0] / 255F;
                 color[1] = balloon.color.getRgbCode()[1] / 255F;

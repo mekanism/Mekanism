@@ -16,6 +16,7 @@ public class MekanismModelCache extends BaseModelCache {
     public final OBJModelData MEKATOOL = registerOBJ(Mekanism.rl("models/entity/mekatool.obj"));
 
     public final JSONModelData[] QIO_DRIVES = new JSONModelData[DriveStatus.values().length];
+
     {
         for (DriveStatus status : DriveStatus.values()) {
             if (status == DriveStatus.NONE) {

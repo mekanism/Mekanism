@@ -1,10 +1,10 @@
 package mekanism.tools.client.render.item;
 
-import java.util.List;
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.datafixers.util.Pair;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.tools.client.ShieldTextures;

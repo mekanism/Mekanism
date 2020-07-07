@@ -1,8 +1,8 @@
 package mekanism.client.gui.element.custom;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.functions.ByteSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;

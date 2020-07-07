@@ -46,7 +46,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
                 FluidAttributes fluidAttributes = fluid.getFluid().getAttributes();
                 //TODO: Decide if we want to always be using the luminosity of the stack
                 ambientLight = Math.max(ambientLight, world instanceof IBlockDisplayReader ? fluidAttributes.getLuminosity((IBlockDisplayReader) world, pos)
-                                                                                    : fluidAttributes.getLuminosity(fluid));
+                                                                                           : fluidAttributes.getLuminosity(fluid));
             }
         }
         return ambientLight;

@@ -2,8 +2,6 @@ package mekanism.common.lib.chunkloading;
 
 import java.util.Comparator;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import net.minecraft.nbt.CompoundNBT;
@@ -13,6 +11,8 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Saved data for managing Mekanism chunkloaders.

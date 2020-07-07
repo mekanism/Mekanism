@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
-import org.apache.commons.lang3.tuple.Pair;
 import mekanism.common.lib.Color;
 import net.minecraft.util.math.vector.Vector3d;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class BoltEffect {
 

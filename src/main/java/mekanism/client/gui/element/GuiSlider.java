@@ -1,7 +1,7 @@
 package mekanism.client.gui.element;
 
-import java.util.function.DoubleConsumer;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.function.DoubleConsumer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;

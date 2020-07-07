@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container.slot;
 
-import javax.annotation.Nonnull;
 import com.mojang.datafixers.util.Pair;
+import javax.annotation.Nonnull;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

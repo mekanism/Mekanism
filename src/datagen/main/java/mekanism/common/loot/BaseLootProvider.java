@@ -1,5 +1,7 @@
 package mekanism.common.loot;
 
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -7,8 +9,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
 import mekanism.common.loot.table.BaseBlockLootTables;
 import mekanism.common.loot.table.BaseChestLootTables;
 import mekanism.common.loot.table.BaseEntityLootTables;

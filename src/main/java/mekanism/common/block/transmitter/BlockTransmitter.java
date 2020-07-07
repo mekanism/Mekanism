@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.IMekWrench;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.IStateFluidLoggable;
@@ -38,6 +37,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class BlockTransmitter extends BlockMekanism implements IStateFluidLoggable {
 

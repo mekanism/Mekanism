@@ -15,6 +15,16 @@ import net.minecraft.util.ResourceLocation;
 */
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Gas}s.
+ *
+ * Helper method to create an {@link NSSGas} representing a gas from a {@link GasStack}
+ *
+ * Helper method to create an {@link NSSGas} representing a gas from a {@link Gas}
+ *
+ * Helper method to create an {@link NSSGas} representing a gas from a {@link ResourceLocation}
+ *
+ * Helper method to create an {@link NSSGas} representing a tag from a {@link ResourceLocation}
+ *
+ * Helper method to create an {@link NSSGas} representing a tag from a {@link Tag<Gas>}
  *//*
 public final class NSSGas extends AbstractNSSTag<Gas> {
 
@@ -23,8 +33,8 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
     }
 
     *//**
-     * Helper method to create an {@link NSSGas} representing a gas from a {@link GasStack}
-     *//*
+ * Helper method to create an {@link NSSGas} representing a gas from a {@link GasStack}
+ *//*
     @Nonnull
     public static NSSGas createGas(@Nonnull GasStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
@@ -32,8 +42,8 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
     }
 
     *//**
-     * Helper method to create an {@link NSSGas} representing a gas from a {@link Gas}
-     *//*
+ * Helper method to create an {@link NSSGas} representing a gas from a {@link Gas}
+ *//*
     @Nonnull
     public static NSSGas createGas(@Nonnull Gas gas) {
         if (gas.isEmptyType()) {
@@ -44,24 +54,24 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
     }
 
     *//**
-     * Helper method to create an {@link NSSGas} representing a gas from a {@link ResourceLocation}
-     *//*
+ * Helper method to create an {@link NSSGas} representing a gas from a {@link ResourceLocation}
+ *//*
     @Nonnull
     public static NSSGas createGas(@Nonnull ResourceLocation gasID) {
         return new NSSGas(gasID, false);
     }
 
     *//**
-     * Helper method to create an {@link NSSGas} representing a tag from a {@link ResourceLocation}
-     *//*
+ * Helper method to create an {@link NSSGas} representing a tag from a {@link ResourceLocation}
+ *//*
     @Nonnull
     public static NSSGas createTag(@Nonnull ResourceLocation tagId) {
         return new NSSGas(tagId, true);
     }
 
     *//**
-     * Helper method to create an {@link NSSGas} representing a tag from a {@link Tag<Gas>}
-     *//*
+ * Helper method to create an {@link NSSGas} representing a tag from a {@link Tag<Gas>}
+ *//*
     @Nonnull
     public static NSSGas createTag(@Nonnull ITag<Gas> tag) {
         return createTag(ChemicalTags.GAS.lookupTag(tag));

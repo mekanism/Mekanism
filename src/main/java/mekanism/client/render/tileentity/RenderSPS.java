@@ -1,9 +1,9 @@
 package mekanism.client.render.tileentity;
 
-import java.util.Random;
-import javax.annotation.ParametersAreNonnullByDefault;
 import com.google.common.base.Objects;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.Random;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.lib.effect.BillboardingEffectRenderer;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.common.base.ProfilerConstants;

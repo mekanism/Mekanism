@@ -1,11 +1,11 @@
 package mekanism.common.lib.transmitter;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Range3D;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import net.minecraft.util.math.BlockPos;

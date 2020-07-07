@@ -43,7 +43,7 @@ public class GuiHeatTab extends GuiBiDirectionalTab {
     @Override
     protected ResourceLocation getResource() {
         return icons.computeIfAbsent(MekanismConfig.general.tempUnit.get(), (type) -> MekanismUtils.getResource(ResourceType.GUI, "tabs/heat_info_" +
-              type.name().toLowerCase(Locale.ROOT) + ".png"));
+                                                                                                                                  type.name().toLowerCase(Locale.ROOT) + ".png"));
     }
 
     @Override

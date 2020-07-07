@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.button;
 
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiWindow;
 import mekanism.common.MekanismLang;

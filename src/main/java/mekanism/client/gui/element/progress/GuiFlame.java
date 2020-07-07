@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.progress;
 
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 
 public class GuiFlame extends GuiProgress {

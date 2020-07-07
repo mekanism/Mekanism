@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
-import java.util.Map;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
 import net.minecraft.client.renderer.model.BlockModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
@@ -54,7 +54,8 @@ public class BaseModelCache {
             bakedMap.clear();
         }
 
-        protected void setup() {}
+        protected void setup() {
+        }
 
         public IBakedModel bake(IModelConfiguration config) {
             return bakedMap.computeIfAbsent(config, c -> model.bake(c, ModelLoader.instance(), ModelLoader.defaultTextureGetter(), SimpleModelTransform.IDENTITY, ItemOverrideList.EMPTY, rl));

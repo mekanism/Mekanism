@@ -20,8 +20,8 @@ public class IngredientHelper {
     private final IMappingCollector<NormalizedSimpleStack, Long> mapper;
     private Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
     *//**
-     * Gets set to false if we have a recipe that is more than we can handle
-     *//*
+ * Gets set to false if we have a recipe that is more than we can handle
+ *//*
     private boolean isValid = true;
 
     public IngredientHelper(IMappingCollector<NormalizedSimpleStack, Long> mapper) {

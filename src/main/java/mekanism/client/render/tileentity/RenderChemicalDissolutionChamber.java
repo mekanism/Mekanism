@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.model.ModelChemicalDissolutionChamber;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;

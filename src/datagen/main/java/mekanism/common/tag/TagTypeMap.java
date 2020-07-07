@@ -1,9 +1,9 @@
 package mekanism.common.tag;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import mekanism.api.datagen.tag.ForgeRegistryTagBuilder;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;

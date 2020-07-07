@@ -1,7 +1,7 @@
 package mekanism.additions.client.render.entity.layer;
 
-import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import mekanism.additions.client.model.ModelBabyEnderman;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
 import net.minecraft.block.BlockState;

@@ -15,6 +15,16 @@ import net.minecraft.util.ResourceLocation;
 
 *//**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Slurry}.
+ *
+ * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link SlurryStack}
+ *
+ * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link Slurry}
+ *
+ * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link ResourceLocation}
+ *
+ * Helper method to create an {@link NSSSlurry} representing a tag from a {@link ResourceLocation}
+ *
+ * Helper method to create an {@link NSSSlurry} representing a tag from a {@link Tag<Slurry>}
  *//*
 public final class NSSSlurry extends AbstractNSSTag<Slurry> {
 
@@ -23,8 +33,8 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
     }
 
     *//**
-     * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link SlurryStack}
-     *//*
+ * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link SlurryStack}
+ *//*
     @Nonnull
     public static NSSSlurry createSlurry(@Nonnull SlurryStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
@@ -32,8 +42,8 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
     }
 
     *//**
-     * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link Slurry}
-     *//*
+ * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link Slurry}
+ *//*
     @Nonnull
     public static NSSSlurry createSlurry(@Nonnull Slurry slurry) {
         if (slurry.isEmptyType()) {
@@ -44,24 +54,24 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
     }
 
     *//**
-     * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link ResourceLocation}
-     *//*
+ * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link ResourceLocation}
+ *//*
     @Nonnull
     public static NSSSlurry createSlurry(@Nonnull ResourceLocation slurryID) {
         return new NSSSlurry(slurryID, false);
     }
 
     *//**
-     * Helper method to create an {@link NSSSlurry} representing a tag from a {@link ResourceLocation}
-     *//*
+ * Helper method to create an {@link NSSSlurry} representing a tag from a {@link ResourceLocation}
+ *//*
     @Nonnull
     public static NSSSlurry createTag(@Nonnull ResourceLocation tagId) {
         return new NSSSlurry(tagId, true);
     }
 
     *//**
-     * Helper method to create an {@link NSSSlurry} representing a tag from a {@link Tag<Slurry>}
-     *//*
+ * Helper method to create an {@link NSSSlurry} representing a tag from a {@link Tag<Slurry>}
+ *//*
     @Nonnull
     public static NSSSlurry createTag(@Nonnull ITag<Slurry> tag) {
         return createTag(ChemicalTags.SLURRY.lookupTag(tag));
