@@ -130,26 +130,28 @@ configurations {
     }
 }
 
-repositories {
-    maven {
-        name 'ForgeFS'
-        url 'https://files.minecraftforge.net/maven'
-    }
-    maven {
-        name 'prog'
-        url 'http://dvs1.progwml6.com/files/maven'
-    }
-    maven {
-        name 'curseforge'
-        url 'https://minecraft.curseforge.com/api/maven/'
-    }
-    maven {
-        name 'tterrag'
-        url 'https://maven.tterrag.com/'
-    }
-    maven {
-        name 'BlameJared - Crafttweaker'
-        url 'https://maven.blamejared.com/'
+def version_properties = ["version"       : mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version,
+                          "loader_version": loader_version]
+def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
+
+ext {
+    replaceResourcesInfo = [
+            "main": sourceSets.main,
+            "additions": sourceSets.additions,
+            "generators": sourceSets.generators,
+            "defense": sourceSets.defense,
+            "tools": sourceSets.tools,
+    ]
+}
+
+replaceResourcesInfo.each { output, sourceSet ->
+    return tasks.create("${output}ReplaceResources", Copy) {
+        outputs.upToDateWhen { false }
+        from(sourceSet.resources) {
+            include "META-INF/mods.toml"
+            expand version_properties
+        }
+        into "$buildDir/resources/${output}/"
     }
 }
 
@@ -269,6 +271,21 @@ minecraft {
     }
 }
 
+repositories {
+    maven {
+        name 'ForgeFS'
+        url 'https://files.minecraftforge.net/maven'
+    }
+    maven {
+        name 'prog'
+        url 'http://dvs1.progwml6.com/files/maven'
+    }
+    maven {
+        name 'tterrag'
+        url 'https://maven.tterrag.com/'
+    }
+}
+
 test {
     useJUnitPlatform()
 }
@@ -301,60 +318,10 @@ dependencies {
     //datagenmainCompile fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
 }
 
-def version_properties = ["version"       : mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version,
-                          "loader_version": loader_version]
-def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
-
-//TODO: Figure out if there is a way to just define one replaceResources task
-task replaceResources(type: Copy) {
-    outputs.upToDateWhen { false }
-    from(sourceSets.main.resources) {
-        include "META-INF/mods.toml"
-        expand version_properties
-    }
-    into "$buildDir/resources/main/"
-}
-
-task replaceResourcesAdditions(type: Copy) {
-    outputs.upToDateWhen { false }
-    from(sourceSets.additions.resources) {
-        include "META-INF/mods.toml"
-        expand version_properties
-    }
-    into "$buildDir/resources/additions/"
-}
-
-task replaceResourcesGenerators(type: Copy) {
-    outputs.upToDateWhen { false }
-    from(sourceSets.generators.resources) {
-        include "META-INF/mods.toml"
-        expand version_properties
-    }
-    into "$buildDir/resources/generators/"
-}
-
-task replaceResourcesDefense(type: Copy) {
-    outputs.upToDateWhen { false }
-    from(sourceSets.defense.resources) {
-        include "META-INF/mods.toml"
-        expand version_properties
-    }
-    into "$buildDir/resources/defense/"
-}
-
-task replaceResourcesTools(type: Copy) {
-    outputs.upToDateWhen { false }
-    from(sourceSets.tools.resources) {
-        include "META-INF/mods.toml"
-        expand version_properties
-    }
-    into "$buildDir/resources/tools/"
-}
-
 processResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
-    finalizedBy(replaceResources)
+    finalizedBy mainReplaceResources
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
@@ -366,7 +333,7 @@ processResources {
 processAdditionsResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
-    finalizedBy(replaceResourcesAdditions)
+    finalizedBy additionsReplaceResources
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
@@ -378,7 +345,7 @@ processAdditionsResources {
 processDefenseResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
-    finalizedBy(replaceResourcesDefense)
+    finalizedBy defenseReplaceResources
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
@@ -390,7 +357,7 @@ processDefenseResources {
 processGeneratorsResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
-    finalizedBy(replaceResourcesGenerators)
+    finalizedBy generatorsReplaceResources
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
@@ -402,7 +369,7 @@ processGeneratorsResources {
 processToolsResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
-    finalizedBy(replaceResourcesTools)
+    finalizedBy toolsReplaceResources
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
@@ -424,6 +391,8 @@ task apiJar(type: Jar) {
 }
 
 task additionsJar(type: Jar) {
+    //Mark that it shouldn't run before the replace resources gets run
+    shouldRunAfter(additionsReplaceResources)
     archiveName = "MekanismAdditions-${project.version}.jar"
     classifier = "additions"
     from sourceSets.additions.output
@@ -433,6 +402,8 @@ task additionsJar(type: Jar) {
 }
 
 task defenseJar(type: Jar) {
+    //Mark that it shouldn't run before the replace resources gets run
+    shouldRunAfter(defenseReplaceResources)
     archiveName = "MekanismDefense-${project.version}.jar"
     classifier = "defense"
     from sourceSets.defense.output
@@ -442,6 +413,8 @@ task defenseJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
+    //Mark that it shouldn't run before the replace resources gets run
+    shouldRunAfter(generatorsReplaceResources)
     archiveName = "MekanismGenerators-${project.version}.jar"
     classifier = "generators"
     from sourceSets.generators.output
@@ -451,6 +424,8 @@ task generatorsJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
+    //Mark that it shouldn't run before the replace resources gets run
+    shouldRunAfter(toolsReplaceResources)
     archiveName = "MekanismTools-${project.version}.jar"
     classifier = "tools"
     from sourceSets.tools.output
