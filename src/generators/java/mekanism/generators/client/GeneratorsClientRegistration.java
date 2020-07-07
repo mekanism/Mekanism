@@ -70,10 +70,9 @@ public class GeneratorsClientRegistration {
             ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
         }
 
-        ClientRegistration.addLitModel(GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.GAS_BURNING_GENERATOR, GeneratorsBlocks.HEAT_GENERATOR);
         // adv solar gen requires to be translated up 1 block, so handle the model separately
         ClientRegistration.addCustomModel(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, (orig, evt) -> new TransformedBakedModel<Void>(orig,
-              QuadTransformation.list(QuadTransformation.filtered_fullbright, QuadTransformation.translate(new Vector3d(0, 1, 0)))));
+              QuadTransformation.translate(new Vector3d(0, 1, 0))));
     }
 
     @SubscribeEvent

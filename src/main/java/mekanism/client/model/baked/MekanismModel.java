@@ -1,11 +1,12 @@
 package mekanism.client.model.baked;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import com.google.common.collect.Lists;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -32,54 +33,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.geometry.ISimpleModelGeometry;
+import net.minecraftforge.client.model.geometry.IModelGeometryPart;
+import net.minecraftforge.client.model.geometry.IMultipartModelGeometry;
 
-public class MekanismModel implements ISimpleModelGeometry<MekanismModel> {
+public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
 
-    private final List<BlockPart> elements;
-    private final Object2IntMap<BlockPartFace> litFaceMap;
+    private final Multimap<String, BlockPartWrapper> elements;
 
-    public MekanismModel(List<BlockPart> list, Object2IntMap<BlockPartFace> litFaceMap) {
+    public MekanismModel(Multimap<String, BlockPartWrapper> list) {
         this.elements = list;
-        this.litFaceMap = litFaceMap;
-    }
-
-    @Override
-    public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
-          ResourceLocation modelLocation) {
-        for (BlockPart blockpart : elements) {
-            for (Direction direction : blockpart.mapFaces.keySet()) {
-                BlockPartFace face = blockpart.mapFaces.get(direction);
-                TextureAtlasSprite sprite = spriteGetter.apply(owner.resolveTexture(face.texture));
-                BakedQuad quad = BlockModel.makeBakedQuad(blockpart, face, sprite, direction, modelTransform, modelLocation);
-                if (litFaceMap.containsKey(face)) {
-                    quad = new Quad(quad).transform(QuadTransformation.light(litFaceMap.getInt(face) / 15F)).bake();
-                }
-                if (face.cullFace == null) {
-                    modelBuilder.addGeneralQuad(quad);
-                } else {
-                    modelBuilder.addFaceQuad(modelTransform.getRotation().rotateTransform(face.cullFace), quad);
-                }
-            }
-        }
-    }
-
-    @Override
-    public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        Set<RenderMaterial> textures = Sets.newHashSet();
-
-        for (BlockPart part : elements) {
-            for (BlockPartFace face : part.mapFaces.values()) {
-                RenderMaterial texture = owner.resolveTexture(face.texture);
-                if (Objects.equals(texture.getTextureLocation(), MissingTextureSprite.getLocation())) {
-                    missingTextureErrors.add(Pair.of(face.texture, owner.getModelName()));
-                }
-
-                textures.add(texture);
-            }
-        }
-
-        return textures;
     }
 
     public static class Loader implements IModelLoader<MekanismModel> {
@@ -93,14 +55,15 @@ public class MekanismModel implements ISimpleModelGeometry<MekanismModel> {
 
         @Override
         public MekanismModel read(JsonDeserializationContext ctx, JsonObject modelContents) {
-            List<BlockPart> list = Lists.newArrayList();
-            Object2IntMap<BlockPartFace> litFaceMap = new Object2IntOpenHashMap<>();
+            Multimap<String, BlockPartWrapper> multimap = HashMultimap.create();
             if (modelContents.has("elements")) {
                 for (JsonElement element : JSONUtils.getJsonArray(modelContents, "elements")) {
-                    BlockPart part = ctx.deserialize(element, BlockPart.class);
-                    list.add(part);
-
                     JsonObject obj = element.getAsJsonObject();
+                    BlockPart part = ctx.deserialize(element, BlockPart.class);
+                    String name = obj.has("name") ? obj.get("name").getAsString() : "undefined";
+                    BlockPartWrapper wrapper = new BlockPartWrapper(name, part);
+                    multimap.put(name, wrapper);
+
                     if (obj.has("faces")) {
                         JsonObject faces = obj.get("faces").getAsJsonObject();
                         faces.entrySet().forEach(e -> {
@@ -110,13 +73,80 @@ public class MekanismModel implements ISimpleModelGeometry<MekanismModel> {
                             JsonObject face = e.getValue().getAsJsonObject();
                             if (face.has("lightLevel")) {
                                 int light = face.get("lightLevel").getAsInt();
-                                litFaceMap.put(part.mapFaces.get(side), light);
+                                wrapper.light(side, light);
                             }
                         });
                     }
                 }
             }
-            return new MekanismModel(list, litFaceMap);
+            return new MekanismModel(multimap);
         }
+    }
+
+    public static class BlockPartWrapper implements IModelGeometryPart {
+
+        private final String name;
+        private final BlockPart blockPart;
+
+        private final Object2IntMap<BlockPartFace> litFaceMap = new Object2IntOpenHashMap<>();
+
+        public BlockPartWrapper(String name, BlockPart blockPart) {
+            this.name = name;
+            this.blockPart = blockPart;
+        }
+
+        public BlockPart getPart() {
+            return blockPart;
+        }
+
+        @Override
+        public String name() {
+            return name;
+        }
+
+        public void light(Direction side, int light) {
+            litFaceMap.put(blockPart.mapFaces.get(side), light);
+        }
+
+        @Override
+        public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+              ResourceLocation modelLocation) {
+            for (Direction direction : blockPart.mapFaces.keySet()) {
+                BlockPartFace face = blockPart.mapFaces.get(direction);
+                TextureAtlasSprite sprite = spriteGetter.apply(owner.resolveTexture(face.texture));
+                BakedQuad quad = BlockModel.makeBakedQuad(blockPart, face, sprite, direction, modelTransform, modelLocation);
+                if (litFaceMap.containsKey(face)) {
+                    quad = new Quad(quad).transform(QuadTransformation.light(litFaceMap.getInt(face) / 15F)).bake();
+                }
+                if (face.cullFace == null) {
+                    modelBuilder.addGeneralQuad(quad);
+                } else {
+                    modelBuilder.addFaceQuad(modelTransform.getRotation().rotateTransform(face.cullFace), quad);
+                }
+            }
+        }
+
+        @Override
+        public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+            Set<RenderMaterial> textures = Sets.newHashSet();
+            for (BlockPartFace face : blockPart.mapFaces.values()) {
+                RenderMaterial texture = owner.resolveTexture(face.texture);
+                if (Objects.equals(texture.getTextureLocation(), MissingTextureSprite.getLocation())) {
+                    missingTextureErrors.add(Pair.of(face.texture, owner.getModelName()));
+                }
+                textures.add(texture);
+            }
+            return textures;
+        }
+    }
+
+    @Override
+    public Collection<BlockPartWrapper> getParts() {
+        return elements.values();
+    }
+
+    @Override
+    public Optional<BlockPartWrapper> getPart(String name) {
+        return elements.get(name).stream().findFirst();
     }
 }

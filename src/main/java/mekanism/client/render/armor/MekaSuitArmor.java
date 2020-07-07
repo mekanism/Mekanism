@@ -1,15 +1,5 @@
 package mekanism.client.render.armor;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Table;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -20,13 +10,24 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Table;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.effect.BoltRenderer;
-import mekanism.client.render.obj.OBJModelCache;
-import mekanism.client.render.obj.OBJModelCache.OBJModelData;
+import mekanism.client.render.obj.ModelCache;
+import mekanism.client.render.obj.ModelCache.ModelData;
 import mekanism.client.render.obj.TransmitterBakedModel.QuickHash;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.Modules;
@@ -56,7 +57,6 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class MekaSuitArmor extends CustomArmor {
 
@@ -71,7 +71,7 @@ public class MekaSuitArmor extends CustomArmor {
     public static final MekaSuitArmor PANTS = new MekaSuitArmor(0.5F, EquipmentSlotType.LEGS, EquipmentSlotType.FEET);
     public static final MekaSuitArmor BOOTS = new MekaSuitArmor(0.5F, EquipmentSlotType.FEET, EquipmentSlotType.LEGS);
 
-    private static final Set<OBJModelData> specialModels = Sets.newHashSet(OBJModelCache.MEKASUIT_MODULES);
+    private static final Set<ModelData> specialModels = Sets.newHashSet(ModelCache.MEKASUIT_MODULES);
 
     private static final Table<EquipmentSlotType, ModuleData<?>, ModuleModelSpec> moduleModelSpec = HashBasedTable.create();
 
@@ -100,7 +100,7 @@ public class MekaSuitArmor extends CustomArmor {
         super(size);
         this.type = type;
         this.adjacentType = adjacentType;
-        OBJModelCache.reloadCallback(cache::invalidateAll);
+        ModelCache.reloadCallback(cache::invalidateAll);
     }
 
     @Override
@@ -142,10 +142,10 @@ public class MekaSuitArmor extends CustomArmor {
         }
     }
 
-    private static List<BakedQuad> getQuads(OBJModelData data, Set<String> parts, Set<String> ledParts, QuadTransformation transform) {
-        List<BakedQuad> quads = data.getBakedModel(new MekaSuitModelConfiguration(parts))
+    private static List<BakedQuad> getQuads(ModelData data, Set<String> parts, Set<String> ledParts, QuadTransformation transform) {
+        List<BakedQuad> quads = data.bake(new MekaSuitModelConfiguration(parts))
               .getQuads(null, null, Minecraft.getInstance().world.getRandom(), EmptyModelData.INSTANCE);
-        List<BakedQuad> ledQuads = data.getBakedModel(new MekaSuitModelConfiguration(ledParts))
+        List<BakedQuad> ledQuads = data.bake(new MekaSuitModelConfiguration(ledParts))
               .getQuads(null, null, Minecraft.getInstance().world.getRandom(), EmptyModelData.INSTANCE);
         quads.addAll(QuadUtils.transformBakedQuads(ledQuads, QuadTransformation.fullbright));
         if (transform != null) {
@@ -214,24 +214,24 @@ public class MekaSuitArmor extends CustomArmor {
     }
 
     public ArmorQuads createQuads(Set<ModuleModelSpec> modules, Set<EquipmentSlotType> wornParts, boolean hasMekaTool) {
-        Map<OBJModelData, Map<ModelPos, Set<String>>> specialQuadsToRenderMap = new Object2ObjectOpenHashMap<>();
-        Map<OBJModelData, Map<ModelPos, Set<String>>> specialLEDQuadsToRenderMap = new Object2ObjectOpenHashMap<>();
+        Map<ModelData, Map<ModelPos, Set<String>>> specialQuadsToRenderMap = new Object2ObjectOpenHashMap<>();
+        Map<ModelData, Map<ModelPos, Set<String>>> specialLEDQuadsToRenderMap = new Object2ObjectOpenHashMap<>();
         // map of normal model part name to overwritten model part name (i.e. chest_body_box1 -> jetpack_chest_body_overridden_box1
-        Map<String, Pair<OBJModelData, String>> overrides = new Object2ObjectOpenHashMap<>();
+        Map<String, Pair<ModelData, String>> overrides = new Object2ObjectOpenHashMap<>();
         Set<String> ignored = new HashSet<>();
 
         if (modules.size() > 0) {
-            Map<ModelPos, Set<String>> moduleQuadsToRender = specialQuadsToRenderMap.computeIfAbsent(OBJModelCache.MEKASUIT_MODULES, d -> new Object2ObjectOpenHashMap<>());
-            Map<ModelPos, Set<String>> moduleLEDQuadsToRender = specialLEDQuadsToRenderMap.computeIfAbsent(OBJModelCache.MEKASUIT_MODULES, d -> new Object2ObjectOpenHashMap<>());
+            Map<ModelPos, Set<String>> moduleQuadsToRender = specialQuadsToRenderMap.computeIfAbsent(ModelCache.MEKASUIT_MODULES, d -> new Object2ObjectOpenHashMap<>());
+            Map<ModelPos, Set<String>> moduleLEDQuadsToRender = specialLEDQuadsToRenderMap.computeIfAbsent(ModelCache.MEKASUIT_MODULES, d -> new Object2ObjectOpenHashMap<>());
 
-            for (IModelGeometryPart part : OBJModelCache.MEKASUIT_MODULES.getModel().getParts()) {
+            for (IModelGeometryPart part : ModelCache.MEKASUIT_MODULES.getModel().getParts()) {
                 String name = part.name();
                 ModuleModelSpec matchingSpec = modules.stream().filter(m -> name.contains(m.name)).findFirst().orElse(null);
                 if (matchingSpec == null) {
                     continue;
                 }
                 if (name.contains(OVERRIDDEN_TAG)) {
-                    overrides.put(matchingSpec.processOverrideName(name), Pair.of(OBJModelCache.MEKASUIT_MODULES, name));
+                    overrides.put(matchingSpec.processOverrideName(name), Pair.of(ModelCache.MEKASUIT_MODULES, name));
                 }
                 // if this armor unit controls rendering of this module
                 if (type == matchingSpec.slotType) {
@@ -250,7 +250,7 @@ public class MekaSuitArmor extends CustomArmor {
 
         // handle mekatool overrides
         if (type == EquipmentSlotType.CHEST && hasMekaTool) {
-            for (IModelGeometryPart part : OBJModelCache.MEKATOOL.getModel().getParts()) {
+            for (IModelGeometryPart part : ModelCache.MEKATOOL.getModel().getParts()) {
                 String name = part.name();
                 if (name.contains(OVERRIDDEN_TAG)) {
                     ignored.add(processOverrideName(name, "mekatool"));
@@ -261,7 +261,7 @@ public class MekaSuitArmor extends CustomArmor {
         Map<ModelPos, Set<String>> armorQuadsToRender = new Object2ObjectOpenHashMap<>();
         Map<ModelPos, Set<String>> armorLEDQuadsToRender = new Object2ObjectOpenHashMap<>();
 
-        for (IModelGeometryPart part : OBJModelCache.MEKASUIT.getModel().getParts()) {
+        for (IModelGeometryPart part : ModelCache.MEKASUIT.getModel().getParts()) {
             String name = part.name();
             // skip if it's the wrong equipment type
             if (!checkEquipment(type, name)) {
@@ -282,7 +282,7 @@ public class MekaSuitArmor extends CustomArmor {
             }
 
             if (!ignored.contains(name)) {
-                Pair<OBJModelData, String> override = overrides.get(name);
+                Pair<ModelData, String> override = overrides.get(name);
                 if (override != null) {
                     String overrideName = override.getRight();
                     if (overrideName.contains(LED_TAG)) {
@@ -304,17 +304,17 @@ public class MekaSuitArmor extends CustomArmor {
         Map<ModelPos, List<BakedQuad>> transparentMap = new Object2ObjectOpenHashMap<>();
 
         for (ModelPos pos : ModelPos.VALUES) {
-            for (OBJModelData modelData : specialModels) {
+            for (ModelData modelData : specialModels) {
                 parseTransparency(modelData, pos, opaqueMap, transparentMap,
                       specialQuadsToRenderMap.getOrDefault(modelData, new Object2ObjectOpenHashMap<>()).getOrDefault(pos, new HashSet<>()),
                       specialLEDQuadsToRenderMap.getOrDefault(modelData, new Object2ObjectOpenHashMap<>()).getOrDefault(pos, new HashSet<>()));
             }
-            parseTransparency(OBJModelCache.MEKASUIT, pos, opaqueMap, transparentMap, armorQuadsToRender.getOrDefault(pos, new HashSet<>()), armorLEDQuadsToRender.getOrDefault(pos, new HashSet<>()));
+            parseTransparency(ModelCache.MEKASUIT, pos, opaqueMap, transparentMap, armorQuadsToRender.getOrDefault(pos, new HashSet<>()), armorLEDQuadsToRender.getOrDefault(pos, new HashSet<>()));
         }
         return new ArmorQuads(opaqueMap, transparentMap);
     }
 
-    public static void parseTransparency(OBJModelData modelData, ModelPos pos, Map<ModelPos, List<BakedQuad>> opaqueMap, Map<ModelPos, List<BakedQuad>> transparentMap, Set<String> regularQuads, Set<String> ledQuads) {
+    public static void parseTransparency(ModelData modelData, ModelPos pos, Map<ModelPos, List<BakedQuad>> opaqueMap, Map<ModelPos, List<BakedQuad>> transparentMap, Set<String> regularQuads, Set<String> ledQuads) {
         Set<String> opaqueRegularQuads = new HashSet<>(), opaqueLEDQuads = new HashSet<>();
         Set<String> transparentRegularQuads = new HashSet<>(), transparentLEDQuads = new HashSet<>();
         regularQuads.forEach(s -> (s.contains(GLASS_TAG) ? transparentRegularQuads : opaqueRegularQuads).add(s));

@@ -81,7 +81,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.layer.MekanismArmorLayer;
-import mekanism.client.render.obj.OBJModelCache;
+import mekanism.client.render.obj.ModelCache;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
@@ -120,7 +120,6 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
-import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -148,7 +147,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -256,14 +254,9 @@ public class ClientRegistration {
             return 0;
         });
 
-        for (DriveStatus status : DriveStatus.values()) {
-            if (status == DriveStatus.NONE) {
-                continue;
-            }
-            ModelLoader.addSpecialModel(status.getModel());
-        }
+        ModelCache.setup();
 
-        addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig, evt));
+        addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
         addCustomModel(MekanismBlocks.QIO_REDSTONE_ADAPTER, (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
 
         addLitModel(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItems.MEKA_TOOL);
@@ -354,7 +347,7 @@ public class ClientRegistration {
             CustomModelRegistryObject obj = customModels.get(new ResourceLocation(rl.getNamespace(), rl.getPath()));
             return obj == null ? model : obj.createModel(model, event);
         });
-        OBJModelCache.onBake(event);
+        ModelCache.onBake(event);
     }
 
     @SubscribeEvent

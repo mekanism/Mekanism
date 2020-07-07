@@ -2,18 +2,16 @@ package mekanism.client.model.baked;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
+import mekanism.client.render.obj.ModelCache;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.data.IModelData;
 
 public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
@@ -23,15 +21,8 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
         {0, 0}, {-2F/16, 0}, {-4F/16, 0}, {-7F/16, 0}, {-9F/16, 0}, {-11F/16, 0}
     };
 
-    private final Map<DriveStatus, IBakedModel> driveModels = new EnumMap<>(DriveStatus.class);
-
-    public DriveArrayBakedModel(IBakedModel original, ModelBakeEvent evt) {
+    public DriveArrayBakedModel(IBakedModel original) {
         super(original);
-        for (DriveStatus status : DriveStatus.values()) {
-            if (status != DriveStatus.NONE) {
-                driveModels.put(status, evt.getModelRegistry().get(status.getModel()));
-            }
-        }
     }
 
     @Override
@@ -49,11 +40,11 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
             }
             ret.addAll(QuadUtils.transformBakedQuads(driveQuads, QuadTransformation.rotate(key.getSide())));
         }
-        return QuadUtils.transformBakedQuads(ret, QuadTransformation.filtered_fullbright);
+        return ret;
     }
 
     private List<BakedQuad> getDriveQuads(int index, DriveStatus status, QuadsKey<byte[]> key) {
-        List<BakedQuad> ret = driveModels.get(status).getQuads(key.getBlockState(), null, key.getRandom());
+        List<BakedQuad> ret = ModelCache.QIO_DRIVES[status.ordinal()].getBakedModel().getQuads(key.getBlockState(), null, key.getRandom());
         float[] translation = DRIVE_PLACEMENTS[index];
         return QuadUtils.transformBakedQuads(ret, QuadTransformation.translate(new Vector3d(translation[0], translation[1], 0)));
     }

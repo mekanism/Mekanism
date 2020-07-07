@@ -11,7 +11,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement;
 import mekanism.common.content.gear.HUDElement.HUDColor;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
-import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -43,7 +42,7 @@ public class HUDRenderer {
     public void renderHUD(MatrixStack matrix, float partialTick) {
         update();
         int color = HUDColor.REGULAR.getColor();
-        if (Color.argb(color).a() <= 1)
+        if (MekanismConfig.client.hudOpacity.get() < 0.05F)
             return;
         matrix.push();
         float yawJitter = -absSqrt(minecraft.player.rotationYawHead - prevRotationYaw);
