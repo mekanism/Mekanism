@@ -636,20 +636,23 @@ publishing {
                 }
                 withXml {
                     NodeList dependencies = asNode().dependencies
+                    NodeList allDeps = dependencies.'*';
 
                     // Remove forge deps
-                    dependencies.'*'.findAll() { Node el ->
+                    allDeps.findAll() { Node el ->
                         el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge'
                     }.forEach() { Node el ->
                         el.parent().remove(el)
                     }
                     //remove forgegradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
-                    dependencies.'*'.findAll() { Node el ->
+                    allDeps.findAll() { Node el ->
                         el.version.text().contains('_mapped_')
-                    }.each {
-                        Node version = it.version[0]
-                        version.setValue(version.text().substring(0, version.text().indexOf('_mapped_')))
-                        it.appendNode('optional', true)
+                    }.each { Node el ->
+                        NodeList version = el.version
+                        version.each {
+                            it.setValue(it.text().substring(0, it.text().indexOf('_mapped_')))
+                        }
+                        el.appendNode('optional', true)
                     }
                 }
             }
