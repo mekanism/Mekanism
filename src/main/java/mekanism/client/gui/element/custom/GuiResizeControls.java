@@ -1,11 +1,13 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
@@ -59,6 +61,11 @@ public class GuiResizeControls extends GuiSideHolder {
             mouseY >= expandButton.field_230691_m_ && mouseY < expandButton.field_230691_m_ + expandButton.getHeight()) {
             tooltipTicks = 100;
         }
+    }
+
+    @Override
+    protected void colorTab() {
+        MekanismRenderer.color(SpecialColors.TAB_RESIZE_CONTROLS.get());
     }
 
     private void handleResize(ResizeType type) {

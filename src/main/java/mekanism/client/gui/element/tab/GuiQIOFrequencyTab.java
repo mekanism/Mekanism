@@ -1,9 +1,11 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -32,6 +34,11 @@ public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
         super(FREQUENCY, gui, null, -26, 6, 26, 18, true);
         isItem = true;
         currentHand = hand;
+    }
+
+    @Override
+    protected void colorTab() {
+        MekanismRenderer.color(SpecialColors.TAB_QIO_FREQUENCY.get());
     }
 
     @Override

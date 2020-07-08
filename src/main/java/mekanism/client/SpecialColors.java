@@ -23,6 +23,11 @@ public class SpecialColors {
     public static ColorRegistryObject TAB_UPGRADE = GUI_OBJECTS.register();
     public static ColorRegistryObject TAB_CONFIGURATION = GUI_OBJECTS.register();
     public static ColorRegistryObject TAB_TRANSPORTER = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_DIGITAL_MINER_VISUAL = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_ROBIT_MENU = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_FACTORY_SORT = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_QIO_FREQUENCY = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_RESIZE_CONTROLS = GUI_OBJECTS.register();
 
     public static ColorRegistryObject TEXT_TITLE = GUI_TEXT.register();
     public static ColorRegistryObject TEXT_HEADING = GUI_TEXT.register();

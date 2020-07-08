@@ -1,7 +1,8 @@
 package mekanism.client.gui.robit;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSideHolder;
@@ -9,6 +10,7 @@ import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.custom.GuiRobitRename;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
@@ -35,7 +37,12 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     public void func_231160_c_() {
         super.func_231160_c_();
-        func_230480_a_(new GuiSideHolder(this, 176, 6, 106, false));
+        func_230480_a_(new GuiSideHolder(this, 176, 6, 106, false) {
+            @Override
+            protected void colorTab() {
+                MekanismRenderer.color(SpecialColors.TAB_ROBIT_MENU.get());
+            }
+        });
         func_230480_a_(new GuiInnerScreen(this, 27, 16, 122, 56));
         func_230480_a_(new GuiHorizontalPowerBar(this, robit.getEnergyContainer(), 27, 74, 120));
         func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 16, 18, getButtonLocation("home"), () -> {
