@@ -62,7 +62,7 @@
   "description.mekanismgenerators.reactor.logic.depleted": "The reactor has insufficient fuel to sustain a reaction",
   "description.mekanismgenerators.reactor.logic.disabled": "Will not emit a Redstone signal",
   "description.mekanismgenerators.reactor.logic.excess_waste": "Output when the reactor has excess waste",
-  "description.mekanismgenerators.reactor.logic.ready": "Reactor has reached the required heat level to ignite",
+  "description.mekanismgenerators.reactor.logic.ready": "Output when the reactor has reached the required heat level to ignite",
   "description.mekanismgenerators.reactor.logic.temperature": "Output when the reactor reaches dangerous temperatures",
   "description.mekanismgenerators.reactor_glass": "Reinforced glass that can be used in the Fusion Reactor multiblock.",
   "description.mekanismgenerators.rotational_complex": "A connector that is placed on the highest Turbine Rotor of an Industrial Turbine to carry kinetic energy into its Electromagnetic Coils.",
