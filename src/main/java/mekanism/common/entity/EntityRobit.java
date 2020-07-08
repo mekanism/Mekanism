@@ -31,6 +31,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -75,7 +76,6 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
@@ -519,6 +519,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     public IEnergyContainer getEnergyContainer() {
         return energyContainer;
+    }
+
+    @Override
+    public boolean invalidateCache() {
+        return CommonWorldTickHandler.flushTagAndRecipeCaches;
     }
 
     @Override

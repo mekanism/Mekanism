@@ -25,7 +25,7 @@ public class CommonWorldTickHandler {
     private static final long maximumDeltaTimeNanoSecs = 16_000_000; // 16 milliseconds
 
     private Map<ResourceLocation, Queue<ChunkPos>> chunkRegenMap;
-    public static boolean flushTagCaches;
+    public static boolean flushTagAndRecipeCaches;
 
     public void addRegenChunk(RegistryKey<World> dimension, ChunkPos chunkCoord) {
         if (chunkRegenMap == null) {
@@ -81,7 +81,7 @@ public class CommonWorldTickHandler {
         if (!world.isRemote) {
             Mekanism.radiationManager.tickServerWorld(world);
             ChunkManager.tick(world);
-            flushTagCaches = false;
+            flushTagAndRecipeCaches = false;
 
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;

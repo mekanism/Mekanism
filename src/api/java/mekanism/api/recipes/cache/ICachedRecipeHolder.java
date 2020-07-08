@@ -11,12 +11,16 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
     @Nullable
     default CachedRecipe<RECIPE> getUpdatedCache(int cacheIndex) {
         CachedRecipe<RECIPE> currentCache = getCachedRecipe(cacheIndex);
-        //If there is no cached recipe or the input doesn't match, attempt to get the recipe based on the input
+        if (invalidateCache()) {
+            //If we should invalidate the cache, set the current cache to null so that we properly recalculate the values
+            currentCache = null;
+        }
         //TODO: We probably want something so that we don't have to recheck if the input has not changed since the last check
         // Maybe make it be !isInputValid AND inputHasChanged to check if the input is the same as the last time isInputValid was called
         // Note: This still doesn't have a benefit for if currentCache is null, but it will still help overall, or maybe make a method in this interface
         // that has to be implemented, giving thinking about it there is no reason input/output helpers cannot be final given they are just suppliers
         // and are always the same for a given machine
+        //If there is no cached recipe or the input doesn't match, attempt to get the recipe based on the input
         if (currentCache == null || !currentCache.isInputValid()) {
             RECIPE recipe = getRecipe(cacheIndex);
             if (recipe != null) {
@@ -50,4 +54,8 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
     //TODO: Why is this nullable??
     @Nullable
     CachedRecipe<RECIPE> createNewCachedRecipe(@Nonnull RECIPE recipe, int cacheIndex);
+
+    default boolean invalidateCache() {
+        return false;
+    }
 }
