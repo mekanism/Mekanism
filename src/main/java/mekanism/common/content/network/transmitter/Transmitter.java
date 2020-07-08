@@ -361,8 +361,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             NBTUtils.setEnumIfPresent(tag, NBTConstants.SIDE + index, ConnectionType::byIndexStatic, type -> connectionTypes[index] = type);
         }
         //Transmitter
-        if (tag.hasUniqueId(NBTConstants.NETWORK)) {
-            UUID networkID = tag.getUniqueId(NBTConstants.NETWORK);
+        NBTUtils.setUUIDIfPresentElse(tag, NBTConstants.NETWORK, networkID -> {
             if (hasTransmitterNetwork() && getTransmitterNetwork().getUUID().equals(networkID)) {
                 //Nothing needs to be done
                 return;
@@ -377,9 +376,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                 //TODO: Validate network type?
                 updateClientNetwork((NETWORK) clientNetwork);
             }
-        } else {
-            setTransmitterNetwork(null);
-        }
+        }, () -> setTransmitterNetwork(null));
     }
 
     protected void updateClientNetwork(@Nonnull NETWORK network) {

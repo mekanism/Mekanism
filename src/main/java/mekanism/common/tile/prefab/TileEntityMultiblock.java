@@ -257,12 +257,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.func_230337_a_(state, nbtTags);
-        if (!getMultiblock().isFormed() && nbtTags.hasUniqueId(NBTConstants.INVENTORY_ID)) {
-            cachedID = nbtTags.getUniqueId(NBTConstants.INVENTORY_ID);
-            if (nbtTags.contains(NBTConstants.CACHE)) {
-                cachedData = getManager().createCache();
-                cachedData.load(nbtTags.getCompound(NBTConstants.CACHE));
-            }
+        if (!getMultiblock().isFormed()) {
+            NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.INVENTORY_ID, id -> {
+                cachedID = id;
+                if (nbtTags.contains(NBTConstants.CACHE)) {
+                    cachedData = getManager().createCache();
+                    cachedData.load(nbtTags.getCompound(NBTConstants.CACHE));
+                }
+            });
         }
     }
 
