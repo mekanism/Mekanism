@@ -46,7 +46,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockBounding extends Block implements IHasTileEntity<TileEntityBoundingBlock>, IStateFluidLoggable {
 
     @Nullable
-    private static BlockPos getMainBlockPos(IBlockReader world, BlockPos thisPos) {
+    public static BlockPos getMainBlockPos(IBlockReader world, BlockPos thisPos) {
         TileEntityBoundingBlock te = MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, world, thisPos);
         if (te != null && te.receivedCoords && !thisPos.equals(te.getMainPos())) {
             return te.getMainPos();

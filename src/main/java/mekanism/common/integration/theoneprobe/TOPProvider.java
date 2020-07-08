@@ -1,4 +1,4 @@
-/*package mekanism.common.integration.theoneprobe;
+package mekanism.common.integration.theoneprobe;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,7 +6,7 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mcjty.theoneprobe.api.CompoundText;
-import mcjty.theoneprobe.api.IElementNew;
+import mcjty.theoneprobe.api.IElement;
 import mcjty.theoneprobe.api.IProbeConfig;
 import mcjty.theoneprobe.api.IProbeConfig.ConfigMode;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -23,6 +23,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.BlockBounding;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
@@ -34,6 +35,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -78,7 +80,16 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
 
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo info, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
-        TileEntity tile = MekanismUtils.getTileEntity(world, data.getPos());
+        BlockPos pos = data.getPos();
+        if (blockState.getBlock() instanceof BlockBounding) {
+            //If we are a bounding block that has a position set, redirect the probe to the main location
+            BlockPos mainPos = BlockBounding.getMainBlockPos(world, pos);
+            if (mainPos != null) {
+                pos = mainPos;
+                blockState = world.getBlockState(mainPos);
+            }
+        }
+        TileEntity tile = MekanismUtils.getTileEntity(world, pos);
         if (tile != null) {
             MultiblockData structure = getMultiblock(tile);
             Optional<IStrictEnergyHandler> energyCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null));
@@ -94,7 +105,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
             }
             ProbeMode requiredMode = tankMode == ConfigMode.NORMAL ? ProbeMode.NORMAL : ProbeMode.EXTENDED;
             if (mode == requiredMode) {
-                //TODO: Improve handling for displaying merged tanks/potentially hiding the alternate tank types
+                //TODO - V10: Improve handling for displaying merged tanks/potentially hiding the alternate tank types
                 //Fluid - only add it to our own tiles in which we disable the default display for
                 if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
                     Optional<IFluidHandler> fluidCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null));
@@ -177,6 +188,6 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     @FunctionalInterface
     private interface ElementCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
 
-        IElementNew create(STACK stored, long capacity);
+        IElement create(STACK stored, long capacity);
     }
-}*/
+}

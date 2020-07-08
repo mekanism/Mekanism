@@ -1,5 +1,7 @@
 package mekanism.common.integration;
 
+import mekanism.common.integration.theoneprobe.TOPProvider;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 
@@ -36,7 +38,7 @@ public final class MekanismHooks {
 
     public void sendIMCMessages(InterModEnqueueEvent event) {
         if (TOPLoaded) {
-            //InterModComms.sendTo(TOP_MOD_ID, "getTheOneProbe", TOPProvider::new);//TODO - The One Probe
+            InterModComms.sendTo(TOP_MOD_ID, "getTheOneProbe", TOPProvider::new);
         }
         if (ProjectELoaded) {
             //NSSHelper.init();//TODO - ProjectE
