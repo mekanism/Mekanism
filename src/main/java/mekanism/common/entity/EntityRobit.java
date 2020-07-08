@@ -552,7 +552,6 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public IWorldPosCallable getWorldPosCallable() {
-        //TODO: Decide if we want to cache this result
         return new IWorldPosCallable() {
             @Nonnull
             @Override

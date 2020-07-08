@@ -72,7 +72,6 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
     //TODO: Make this a config option?
     private static final int GAS_TRANSFER_RATE = 256;
-
     public static final int MAX_JETPACK_FUEL = 24_000;
     public static final int MAX_NUTRITIONAL_PASTE = 16_000;
 

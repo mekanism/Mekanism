@@ -126,8 +126,6 @@ public class SoundHandler {
     }
 
     public static void playSound(SoundEvent sound) {
-        //TODO: this previously was called getRecord, but it seems to match up closer param wise to master than record
-        // this should be double checked this works properly
         playSound(SimpleSound.master(sound, 1, MekanismConfig.client.baseSoundVolume.get()));
     }
 

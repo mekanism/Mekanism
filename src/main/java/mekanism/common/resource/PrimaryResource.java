@@ -37,7 +37,7 @@ public enum PrimaryResource implements IResource {
         this.resourceBlockInfo = resourceBlockInfo;
     }
 
-    // TODO remove
+    //TODO: remove
     public String getName() {
         return name;
     }

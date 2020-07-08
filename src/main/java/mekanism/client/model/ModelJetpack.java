@@ -185,7 +185,6 @@ public class ModelJetpack extends MekanismJavaModel {
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
         render(matrix, getVertexBuilder(renderer, frameRenderType, hasEffect), light, overlayLight, 1, 1, 1, 1);
-        //TODO: Should our wing render type have cull enabled? It previously was enabled
         renderWings(matrix, getVertexBuilder(renderer, wingRenderType, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.2F);
     }
 

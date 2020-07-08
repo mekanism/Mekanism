@@ -29,6 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -95,6 +96,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
             float laserEnergyScale = getEnergyScale(firing);
             FloatingLong remainingEnergy = firing.copy();
+            //TODO: Make the dimensions scale with laser size
+            // (so that the tractor beam can actually pickup items that are on the ground underneath it)
             List<Entity> hitEntities = world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to));
             if (hitEntities.isEmpty()) {
                 setEmittingRedstone(false);
@@ -111,6 +114,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         //Update the position that the laser is going to
                         to = from.adjustPosition(direction, entity);
                         break;
+                    }
+                    if (entity instanceof ItemEntity && handleHitItem((ItemEntity) entity)) {
+                        //TODO: Allow the tractor beam to have an energy cost for pulling items?
+                        continue;
                     }
                     FloatingLong value = remainingEnergy.divide(energyPerDamage);
                     float damage = value.floatValue();
@@ -275,6 +282,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     protected void setEmittingRedstone(boolean foundEntity) {
+    }
+
+    protected boolean handleHitItem(ItemEntity entity) {
+        return false;
     }
 
     protected void handleBreakBlock(BlockState state, BlockPos hitPos) {

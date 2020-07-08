@@ -129,7 +129,6 @@ public class ModelRobit extends EntityModel<EntityRobit> {
 
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        //TODO: Look into if we can do the rotation in the other method rather than just rotating this matrix
         matrix.push();
         matrix.rotate(Vector3f.YP.rotationDegrees(180));
         Body.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);

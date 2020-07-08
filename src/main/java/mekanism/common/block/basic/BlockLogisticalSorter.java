@@ -11,7 +11,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,6 +21,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSorter, Machine<TileEntityLogisticalSorter>> {
@@ -29,8 +29,6 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
     public BlockLogisticalSorter() {
         super(MekanismBlockTypes.LOGISTICAL_SORTER);
     }
-
-    //TODO: updatePostPlacement?? for rotating to a block if not attached to any container yet
 
     @Override
     public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
@@ -94,27 +92,21 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         return tile.openGui(player);
     }
 
+    @Nonnull
     @Override
     @Deprecated
-    public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
-          boolean isMoving) {
-        if (!world.isRemote) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-            if (tile instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tile).onNeighborChange(neighborBlock, neighborPos);
-            }
-            if (tile instanceof TileEntityLogisticalSorter) {
-                TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) tile;
-                if (!sorter.hasConnectedInventory()) {
-                    for (Direction dir : EnumUtils.DIRECTIONS) {
-                        TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos.offset(dir));
-                        if (InventoryUtils.isItemHandler(tileEntity, dir)) {
-                            sorter.setFacing(dir.getOpposite());
-                            return;
-                        }
-                    }
+    public BlockState updatePostPlacement(BlockState state, @Nonnull Direction dir, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos pos,
+          @Nonnull BlockPos neighborPos) {
+        if (!world.isRemote()) {
+            TileEntityLogisticalSorter sorter = MekanismUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
+            if (sorter != null && !sorter.hasConnectedInventory()) {
+                TileEntity tileEntity = MekanismUtils.getTileEntity(world, neighborPos);
+                if (InventoryUtils.isItemHandler(tileEntity, dir)) {
+                    sorter.setFacing(dir.getOpposite());
+                    state = sorter.getBlockState();
                 }
             }
         }
+        return super.updatePostPlacement(state, dir, facingState, world, pos, neighborPos);
     }
 }

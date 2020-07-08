@@ -16,11 +16,11 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 
-//TODO: Make the tractor beam pull items when it hits them
 public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
 
     public TileEntityLaserTractorBeam() {
@@ -65,5 +65,22 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
                 }
             }
         }
+    }
+
+    @Override
+    protected boolean handleHitItem(ItemEntity entity) {
+        ItemStack stack = entity.getItem();
+        for (IInventorySlot slot : getInventorySlots(null)) {
+            stack = slot.insertItem(stack, Action.EXECUTE, AutomationType.INTERNAL);
+            if (stack.isEmpty()) {
+                //If we inserted it all, then break otherwise try to insert the remainder into another slot
+                break;
+            }
+        }
+        if (stack.isEmpty()) {
+            //If we have finished grabbing it all then remove the entity
+            entity.remove();
+        }
+        return true;
     }
 }

@@ -88,6 +88,7 @@ public abstract class RobitAIBase extends Goal {
 
     private boolean isEmptyBlock(BlockPos pos) {
         //TODO: Check voxel shape
+        // We potentially should just try and update this to use one of the newer built in goals MC has
         return world.isAirBlock(pos);// || !world.getBlockState(pos).isFullCube();
     }
 }

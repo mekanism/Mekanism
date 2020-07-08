@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -16,7 +17,6 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -43,7 +43,7 @@ public class ItemConfigurationCard extends Item {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, Translation.of(getDataType(stack))));
+        tooltip.add(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, TextComponentUtil.translate(getDataType(stack))));
     }
 
     @Nonnull
@@ -65,7 +65,8 @@ public class ItemConfigurationCard extends Item {
                             data.putString(NBTConstants.DATA_TYPE, getNameFromTile(tile, side));
                             setData(stack, data);
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                                  MekanismLang.CONFIG_CARD_GOT.translateColored(EnumColor.GRAY, EnumColor.INDIGO, Translation.of(data.getString(NBTConstants.DATA_TYPE)))), Util.field_240973_b_);
+                                  MekanismLang.CONFIG_CARD_GOT.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                                        TextComponentUtil.translate(data.getString(NBTConstants.DATA_TYPE)))), Util.field_240973_b_);
                         }
                         return ActionResultType.SUCCESS;
                     }
@@ -82,7 +83,8 @@ public class ItemConfigurationCard extends Item {
                                 MekanismUtils.notifyLoadedNeighborsOfTileChange(world, pos);
                             }
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                                  MekanismLang.CONFIG_CARD_SET.translateColored(EnumColor.DARK_GREEN, EnumColor.INDIGO, Translation.of(getDataType(stack)))), Util.field_240973_b_);
+                                  MekanismLang.CONFIG_CARD_SET.translateColored(EnumColor.DARK_GREEN, EnumColor.INDIGO,
+                                        TextComponentUtil.translate(getDataType(stack)))), Util.field_240973_b_);
                         } else {
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIG_CARD_UNEQUAL.translateColored(EnumColor.RED)), Util.field_240973_b_);

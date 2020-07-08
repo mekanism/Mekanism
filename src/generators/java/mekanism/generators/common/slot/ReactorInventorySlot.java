@@ -16,7 +16,6 @@ import net.minecraft.item.ItemStack;
 @MethodsReturnNonnullByDefault
 public class ReactorInventorySlot extends BasicInventorySlot {
 
-    //TODO: Make the slot not render in the gui if the reactor is not fully formed
     public static ReactorInventorySlot at(Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(validator, "Item validity check cannot be null");
         return new ReactorInventorySlot(validator, listener, x, y);
