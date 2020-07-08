@@ -70,13 +70,13 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         //Reinforced
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismTags.Items.ALLOYS_INFUSED),
-              InfusionStackIngredient.from(MekanismTags.InfuseTypes.DIAMOND, 10),
+              InfusionStackIngredient.from(MekanismTags.InfuseTypes.DIAMOND, 20),
               MekanismItems.REINFORCED_ALLOY.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "reinforced"));
         //Atomic
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismTags.Items.ALLOYS_REINFORCED),
-              InfusionStackIngredient.from(MekanismTags.InfuseTypes.REFINED_OBSIDIAN, 10),
+              InfusionStackIngredient.from(MekanismTags.InfuseTypes.REFINED_OBSIDIAN, 40),
               MekanismItems.ATOMIC_ALLOY.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "atomic"));
     }
