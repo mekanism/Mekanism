@@ -223,7 +223,7 @@ public class QIOFrequency extends Frequency {
             isDirty = false;
         }
 
-        if (CommonWorldTickHandler.flushTagCaches) {
+        if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
             tagLookupMap.clear();
             tagWildcardCache.clear();
             itemDataMap.values().forEach(item -> tagLookupMap.putAll(TagCache.getItemTags(item.itemType.getStack()), item.itemType));

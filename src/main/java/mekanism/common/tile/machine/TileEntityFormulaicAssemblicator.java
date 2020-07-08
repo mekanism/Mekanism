@@ -16,6 +16,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -180,6 +181,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
+        if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
+            //Invalidate the cached recipe and recalculate
+            cachedRecipe = Optional.empty();
+            recalculateRecipe();
+        }
         if (formula != null && stockControl && needsOrganize) {
             needsOrganize = false;
             organizeStock();

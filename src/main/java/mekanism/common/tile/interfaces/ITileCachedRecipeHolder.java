@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -32,5 +33,10 @@ public interface ITileCachedRecipeHolder<RECIPE extends MekanismRecipe> extends 
     @Nullable
     default RECIPE findFirstRecipe(@Nonnull Predicate<RECIPE> matchCriteria) {
         return getRecipeType().findFirst(getTileWorld(), matchCriteria);
+    }
+
+    @Override
+    default boolean invalidateCache() {
+        return CommonWorldTickHandler.flushTagAndRecipeCaches;
     }
 }
