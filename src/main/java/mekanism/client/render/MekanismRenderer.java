@@ -1,8 +1,5 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
@@ -10,6 +7,10 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -20,7 +21,7 @@ import mekanism.client.model.baked.MekanismModel;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.lib.ColorAtlasLoader;
+import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.obj.TransmitterLoader;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderTeleporter;
@@ -56,7 +57,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
-import org.lwjgl.opengl.GL11;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
@@ -362,12 +362,13 @@ public class MekanismRenderer {
         RenderTeleporter.resetCachedModels();
 
         parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"));
-        SpecialColors.parse(Mekanism.rl("textures/colormap/secondary.png"));
+        SpecialColors.GUI_OBJECTS.parse(Mekanism.rl("textures/colormap/gui_objects.png"));
+        SpecialColors.GUI_TEXT.parse(Mekanism.rl("textures/colormap/gui_text.png"));
     }
 
     private static void parseColorAtlas(ResourceLocation rl) {
         EnumColor[] colors = EnumColor.values();
-        List<Color> parsed = ColorAtlasLoader.load(rl, colors.length);
+        List<Color> parsed = ColorAtlas.load(rl, colors.length);
         if (parsed.size() < colors.length) {
             Mekanism.logger.error("Failed to parse primary color atlas.");
             return;

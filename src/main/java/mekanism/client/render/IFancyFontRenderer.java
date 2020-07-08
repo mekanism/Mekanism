@@ -1,14 +1,14 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import mekanism.common.config.MekanismConfig;
+import org.apache.commons.lang3.tuple.Pair;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import mekanism.client.SpecialColors;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import org.apache.commons.lang3.tuple.Pair;
 
 public interface IFancyFontRenderer {
 
@@ -17,19 +17,19 @@ public interface IFancyFontRenderer {
     FontRenderer getFont();
 
     default int titleTextColor() {
-        return MekanismConfig.client.guiTitleTextColor.get();
+        return SpecialColors.TEXT_TITLE.argb();
     }
 
     default int headingTextColor() {
-        return MekanismConfig.client.guiHeadingTextColor.get();
+        return SpecialColors.TEXT_HEADING.argb();
     }
 
     default int subheadingTextColor() {
-        return MekanismConfig.client.guiSubheadingTextColor.get();
+        return SpecialColors.TEXT_SUBHEADING.argb();
     }
 
     default int screenTextColor() {
-        return MekanismConfig.client.guiScreenTextColor.get();
+        return SpecialColors.TEXT_SCREEN.argb();
     }
 
     default int drawString(MatrixStack matrix, ITextComponent component, int x, int y, int color) {

@@ -1,58 +1,29 @@
 package mekanism.client;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-import mekanism.client.render.lib.ColorAtlasLoader;
-import mekanism.common.Mekanism;
-import mekanism.common.lib.Color;
-import net.minecraft.util.ResourceLocation;
+import mekanism.client.render.lib.ColorAtlas;
+import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 
 public class SpecialColors {
 
-    private static final List<ColorRegistryObject> colors = new ArrayList<>();
+    public static final ColorAtlas GUI_OBJECTS = new ColorAtlas("gui_objects");
+    public static final ColorAtlas GUI_TEXT = new ColorAtlas("gui_text");
 
-    public static Supplier<Color> ENERGY_CONFIG_TAB = register();
-    public static Supplier<Color> FLUID_CONFIG_TAB = register();
-    public static Supplier<Color> GAS_CONFIG_TAB = register();
-    public static Supplier<Color> INFUSION_CONFIG_TAB = register();
-    public static Supplier<Color> PIGMENT_CONFIG_TAB = register();
-    public static Supplier<Color> SLURRY_CONFIG_TAB = register();
-    public static Supplier<Color> ITEM_CONFIG_TAB = register();
-    public static Supplier<Color> HEAT_CONFIG_TAB = register();
+    public static ColorRegistryObject TAB_ENERGY_CONFIG = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_FLUID_CONFIG = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_GAS_CONFIG = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_INFUSION_CONFIG = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_PIGMENT_CONFIG = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_SLURRY_CONFIG = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_ITEM_CONFIG = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_HEAT_CONFIG = GUI_OBJECTS.register();
 
-    public static Supplier<Color> REDSTONE_CONTROL_TAB = register();
-    public static Supplier<Color> SECURITY_TAB = register();
-    public static Supplier<Color> CONTAINER_EDIT_MODE_TAB = register();
+    public static ColorRegistryObject TAB_REDSTONE_CONTROL = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_SECURITY = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_CONTAINER_EDIT_MODE = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_UPGRADE = GUI_OBJECTS.register();
 
-    private static Supplier<Color> register() {
-        ColorRegistryObject obj = new ColorRegistryObject();
-        colors.add(obj);
-        return obj;
-    }
-
-    public static void parse(ResourceLocation rl) {
-        List<Color> parsed = ColorAtlasLoader.load(rl, colors.size());
-        if (parsed.size() < colors.size()) {
-            Mekanism.logger.error("Failed to parse special color atlas.");
-            return;
-        }
-        for (int i = 0; i < parsed.size(); i++) {
-            colors.get(i).setColor(parsed.get(i));
-        }
-    }
-
-    private static class ColorRegistryObject implements Supplier<Color> {
-
-        private Color color;
-
-        private void setColor(Color color) {
-            this.color = color;
-        }
-
-        @Override
-        public Color get() {
-            return color;
-        }
-    }
+    public static ColorRegistryObject TEXT_TITLE = GUI_TEXT.register();
+    public static ColorRegistryObject TEXT_HEADING = GUI_TEXT.register();
+    public static ColorRegistryObject TEXT_SUBHEADING = GUI_TEXT.register();
+    public static ColorRegistryObject TEXT_SCREEN = GUI_TEXT.register();
 }

@@ -53,7 +53,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.SECURITY_TAB.get());
+        MekanismRenderer.color(SpecialColors.TAB_SECURITY.get());
     }
 
     @Override

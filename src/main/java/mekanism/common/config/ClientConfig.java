@@ -33,11 +33,6 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedIntValue radiationParticleCount;
     public final CachedIntValue energyColor;
 
-    public final CachedIntValue guiTitleTextColor;
-    public final CachedIntValue guiHeadingTextColor;
-    public final CachedIntValue guiSubheadingTextColor;
-    public final CachedIntValue guiScreenTextColor;
-
     public final CachedFloatValue hudOpacity;
     public final CachedIntValue hudColor;
     public final CachedIntValue hudWarningColor;
@@ -86,14 +81,6 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("energyColor", 0x3CFE9A));
 
         builder.comment("GUI Config").push(GUI_CATEGORY);
-        guiTitleTextColor = CachedIntValue.wrap(this, builder.comment("Color of title text.")
-              .define("titleTextColor", 0x404040));
-        guiHeadingTextColor = CachedIntValue.wrap(this, builder.comment("Color of heading text.")
-              .define("headingTextColor", 0x202020));
-        guiSubheadingTextColor = CachedIntValue.wrap(this, builder.comment("Color of subheading text.")
-              .define("subheadingTextColor", 0x787878));
-        guiScreenTextColor = CachedIntValue.wrap(this, builder.comment("Color of text in black background/green text GUI elements.")
-              .define("screenTextColor", 0x3CFE9A));
         hudOpacity = CachedFloatValue.wrap(this, builder.comment("Opacity of HUD used by MekaSuit.")
               .defineInRange("hudOpacity", 0.4F, 0, 1));
         hudColor = CachedIntValue.wrap(this, builder.comment("Color of HUD used by MekaSuit.")

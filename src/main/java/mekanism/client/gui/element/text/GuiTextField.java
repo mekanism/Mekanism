@@ -1,20 +1,20 @@
 package mekanism.client.gui.element.text;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
+import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.functions.CharPredicate;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.text.StringTextComponent;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * GuiElement wrapper of TextFieldWidget for more control
@@ -25,7 +25,7 @@ public class GuiTextField extends GuiRelativeElement {
 
     public static final int DEFAULT_BORDER_COLOR = 0xFFA0A0A0;
     public static final int DEFAULT_BACKGROUND_COLOR = 0xFF000000;
-    public static final IntSupplier SCREEN_COLOR = () -> Color.packOpaque(MekanismConfig.client.guiScreenTextColor.get());
+    public static final IntSupplier SCREEN_COLOR = SpecialColors.TEXT_SCREEN::argb;
     public static final IntSupplier DARK_SCREEN_COLOR = () -> Color.argb(SCREEN_COLOR.getAsInt()).darken(0.4).argb();
 
     private final TextFieldWidget textField;

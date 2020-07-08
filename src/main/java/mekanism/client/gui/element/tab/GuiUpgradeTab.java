@@ -1,9 +1,11 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.PacketGuiButtonPress;
@@ -26,5 +28,10 @@ public class GuiUpgradeTab extends GuiInsetElement<TileEntity> {
     @Override
     public void func_230982_a_(double mouseX, double mouseY) {
         Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.UPGRADE_MANAGEMENT, tile));
+    }
+
+    @Override
+    protected void colorTab() {
+        MekanismRenderer.color(SpecialColors.TAB_UPGRADE.get());
     }
 }
