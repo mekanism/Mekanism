@@ -9,12 +9,10 @@ public class RobitAIFollow extends RobitAIBase {
      * The robit's owner.
      */
     private PlayerEntity theOwner;
-
     /**
      * The distance between the owner the robit must be at in order for the protocol to begin.
      */
     private final float maxDist;
-
     /**
      * The distance between the owner the robit must reach before it stops the protocol.
      */
@@ -29,13 +27,13 @@ public class RobitAIFollow extends RobitAIBase {
     @Override
     public boolean shouldExecute() {
         PlayerEntity player = theRobit.getOwner();
-        if (player == null) {
+        if (player == null || player.isSpectator()) {
             return false;
-        } else if (!theRobit.world.func_230315_m_().equals(player.world.func_230315_m_())) {
+        } else if (theRobit.world.func_234923_W_() != player.world.func_234923_W_()) {
             return false;
         } else if (!theRobit.getFollowing()) {
             //Still looks up at the player if on chargepad or not following
-            theRobit.getLookController().setLookPositionWithEntity(player, 6.0F, theRobit.getVerticalFaceSpeed() / 10);
+            theRobit.getLookController().setLookPositionWithEntity(player, 6, theRobit.getVerticalFaceSpeed() / 10F);
             return false;
         } else if (theRobit.getDistanceSq(player) < (minDist * minDist)) {
             return false;
@@ -48,8 +46,8 @@ public class RobitAIFollow extends RobitAIBase {
 
     @Override
     public boolean shouldContinueExecuting() {
-        return !thePathfinder.noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && !theRobit.getEnergyContainer().isEmpty()
-               && theOwner.world.func_230315_m_().equals(theRobit.world.func_230315_m_());
+        return !thePathfinder.noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() &&
+               !theRobit.getEnergyContainer().isEmpty() && theOwner.world.func_234923_W_() == theRobit.world.func_234923_W_();
     }
 
     @Override

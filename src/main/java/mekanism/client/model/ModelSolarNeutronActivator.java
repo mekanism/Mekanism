@@ -8,6 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
@@ -62,7 +63,7 @@ public class ModelSolarNeutronActivator extends MekanismJavaModel {
     private final ExtendedModelRenderer support15;
     private final ExtendedModelRenderer support16;
     private final ExtendedModelRenderer portConnector;
-    private final ExtendedModelRenderer laserBeamToggle;
+    private final ModelRenderer laserBeamToggle;
 
     public ModelSolarNeutronActivator() {
         super(RenderType::getEntityCutout);
@@ -345,7 +346,7 @@ public class ModelSolarNeutronActivator extends MekanismJavaModel {
         portConnector.setTextureSize(128, 64);
         portConnector.mirror = true;
         setRotation(portConnector, 0F, 0F, 0F);
-        laserBeamToggle = new ExtendedModelRenderer(this, 12, 0);
+        laserBeamToggle = new ModelRenderer(this, 12, 0);
         laserBeamToggle.addBox(0.5F, 4.1F, -9F, 1, 11, 1, false);
         laserBeamToggle.setRotationPoint(-1F, -5F, 8F);
         laserBeamToggle.setTextureSize(128, 64);
@@ -360,11 +361,12 @@ public class ModelSolarNeutronActivator extends MekanismJavaModel {
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, false);
+        //TODO: Figure out if there is there supposed to be a "laser" here?
+        laserBeamToggle.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     public void renderWireFrame(MatrixStack matrix, IVertexBuilder vertexBuilder, float red, float green, float blue, float alpha) {
         render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY, red, green, blue, alpha, true);
-        //TODO: Fix the fact that this renders the line in the middle of the activator even though there is nothing there due to cutout for the texture
     }
 
     private void render(MatrixStack matrix, IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha, boolean wireFrame) {
@@ -414,6 +416,5 @@ public class ModelSolarNeutronActivator extends MekanismJavaModel {
         support15.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         support16.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
         portConnector.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
-        laserBeamToggle.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, wireFrame);
     }
 }

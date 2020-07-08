@@ -6,10 +6,6 @@ import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 
-/*
- * 	Written by pixlepix (I'm in mekanism! Yay!)
- *	Boilerplate copied from RobitAIFollow
- */
 public class RobitAIPickup extends RobitAIBase {
 
     private ItemEntity closest;
@@ -22,10 +18,10 @@ public class RobitAIPickup extends RobitAIBase {
     public boolean shouldExecute() {
         if (!theRobit.getDropPickup()) {
             return false;
-        }
-        if (closest != null && closest.getDistanceSq(closest) > 100 && thePathfinder.getPathToEntity(closest, 0) != null) {
+        } else if (closest != null && closest.getDistanceSq(closest) > 100 && thePathfinder.getPathToEntity(closest, 0) != null) {
             return true;
         }
+        //TODO: Look at and potentially mimic the way piglins search for items to pickup once their AI has mappings
         List<ItemEntity> items = theRobit.world.getEntitiesWithinAABB(ItemEntity.class,
               new AxisAlignedBB(theRobit.getPosX() - 10, theRobit.getPosY() - 10, theRobit.getPosZ() - 10,
                     theRobit.getPosX() + 10, theRobit.getPosY() + 10, theRobit.getPosZ() + 10));
@@ -50,8 +46,8 @@ public class RobitAIPickup extends RobitAIBase {
 
     @Override
     public boolean shouldContinueExecuting() {
-        return closest.isAlive() && !thePathfinder.noPath() && theRobit.getDistanceSq(closest) > 100 && theRobit.getDropPickup() && !theRobit.getEnergyContainer().isEmpty()
-               && closest.world.func_230315_m_().equals(theRobit.world.func_230315_m_());
+        return closest.isAlive() && !thePathfinder.noPath() && theRobit.getDistanceSq(closest) > 100 && theRobit.getDropPickup() &&
+               !theRobit.getEnergyContainer().isEmpty() && closest.world.func_234923_W_() == theRobit.world.func_234923_W_();
     }
 
     @Override

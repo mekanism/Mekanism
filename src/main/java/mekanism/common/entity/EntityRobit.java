@@ -166,12 +166,6 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         prevPosZ = z;
     }
 
-    @Nonnull
-    @Override
-    public GroundPathNavigator getNavigator() {
-        return (GroundPathNavigator) navigator;
-    }
-
     @Override
     protected void registerGoals() {
         super.registerGoals();
