@@ -80,6 +80,10 @@ import mekanism.common.world.GenHandler;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.resources.IFutureReloadListener;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.resources.SimpleReloadableResourceManager;
+import net.minecraft.tags.NetworkTagManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -186,6 +190,7 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::onWorldUnload);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
+        MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
         MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
@@ -273,6 +278,30 @@ public class Mekanism {
 
     private void onTagsReload(TagsUpdatedEvent event) {
         TagCache.resetTagCaches();
+    }
+
+    private void addReloadListeners(AddReloadListenerEvent event) {
+        boolean added = false;
+        IResourceManager resourceManager = event.getDataPackRegistries().func_240970_h_();
+        if (resourceManager instanceof SimpleReloadableResourceManager) {
+            //Note: We "hack" it so that our tag manager gets registered directly after the normal tag manager
+            // to ensure that it is before the recipe manager and that the custom tags can be properly resolved
+            //TODO: It would make sense to eventually make a PR to forge to make custom tags easier to do
+            SimpleReloadableResourceManager manager = (SimpleReloadableResourceManager) resourceManager;
+            for (int i = 0; i < manager.reloadListeners.size(); i++) {
+                IFutureReloadListener listener = manager.reloadListeners.get(i);
+                if (listener instanceof NetworkTagManager) {
+                    manager.reloadListeners.add(i + 1, getTagManager());
+                    manager.initTaskQueue.add(i + 1, getTagManager());
+                    added = true;
+                    break;
+                }
+            }
+        }
+        if (!added) {
+            //Fallback to trying to just add it even though this is probably too late to do so properly
+            event.addListener(getTagManager());
+        }
     }
 
     private void addReloadListenersLowest(AddReloadListenerEvent event) {
