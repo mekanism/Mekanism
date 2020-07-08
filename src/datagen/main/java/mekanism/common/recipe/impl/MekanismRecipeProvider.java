@@ -18,7 +18,6 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
-import mekanism.common.recipe.compat.CompatRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -56,55 +55,55 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
 
-    private static final List<ISubRecipeProvider> subRecipeProviders = Arrays.asList(
-          new BinRecipeProvider(),
-          new ChemicalInfuserRecipeProvider(),
-          new ChemicalInjectorRecipeProvider(),
-          new ChemicalTankRecipeProvider(),
-          new CombinerRecipeProvider(),
-          new ControlCircuitRecipeProvider(),
-          new CrusherRecipeProvider(),
-          new ChemicalCrystallizerRecipeProvider(),
-          new EnergyConversionRecipeProvider(),
-          new EnergyCubeRecipeProvider(),
-          new EnrichingRecipeProvider(),
-          new EvaporatingRecipeProvider(),
-          new FactoryRecipeProvider(),
-          new FluidTankRecipeProvider(),
-          new GasConversionRecipeProvider(),
-          new InductionRecipeProvider(),
-          new InfusionConversionRecipeProvider(),
-          new MetallurgicInfuserRecipeProvider(),
-          new NucleosynthesizingRecipeProvider(),
-          new OreProcessingRecipeProvider(),
-          new OxidizingRecipeProvider(),
-          new PressurizedReactionRecipeProvider(),
-          new RotaryRecipeProvider(),
-          new SawingRecipeProvider(),
-          new SeparatingRecipeProvider(),
-          new StorageRecipeProvider(),
-          new ThermalEvaporationRecipeProvider(),
-          new TierInstallerRecipeProvider(),
-          new TransmitterRecipeProvider(),
-          new UpgradeRecipeProvider()
-    );
-    private static final List<CompatRecipeProvider> compatRecipeProviders = Arrays.asList(
-          //new BiomesOPlentyRecipeProvider(),//TODO - Biomes O Plenty
-          //new ILikeWoodRecipeProvider()//TODO - ILikeWood
-    );
-
     public MekanismRecipeProvider(DataGenerator gen) {
         super(gen, Mekanism.MODID);
     }
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        //Mod compat recipes
-        compatRecipeProviders.forEach(compatRecipeProvider -> compatRecipeProvider.registerRecipes(consumer));
-        subRecipeProviders.forEach(subRecipeProvider -> subRecipeProvider.addRecipes(consumer));
+        super.registerRecipes(consumer);
         addMiscRecipes(consumer);
         addGearModuleRecipes(consumer);
         addLateGameRecipes(consumer);
+    }
+
+    @Override
+    protected List<ISubRecipeProvider> getSubRecipeProviders() {
+        return Arrays.asList(
+              new BinRecipeProvider(),
+              new ChemicalInfuserRecipeProvider(),
+              new ChemicalInjectorRecipeProvider(),
+              new ChemicalTankRecipeProvider(),
+              new CombinerRecipeProvider(),
+              new ControlCircuitRecipeProvider(),
+              new CrusherRecipeProvider(),
+              new ChemicalCrystallizerRecipeProvider(),
+              new EnergyConversionRecipeProvider(),
+              new EnergyCubeRecipeProvider(),
+              new EnrichingRecipeProvider(),
+              new EvaporatingRecipeProvider(),
+              new FactoryRecipeProvider(),
+              new FluidTankRecipeProvider(),
+              new GasConversionRecipeProvider(),
+              new InductionRecipeProvider(),
+              new InfusionConversionRecipeProvider(),
+              new MetallurgicInfuserRecipeProvider(),
+              new NucleosynthesizingRecipeProvider(),
+              new OreProcessingRecipeProvider(),
+              new OxidizingRecipeProvider(),
+              new PressurizedReactionRecipeProvider(),
+              new RotaryRecipeProvider(),
+              new SawingRecipeProvider(),
+              new SeparatingRecipeProvider(),
+              new StorageRecipeProvider(),
+              new ThermalEvaporationRecipeProvider(),
+              new TierInstallerRecipeProvider(),
+              new TransmitterRecipeProvider(),
+              new UpgradeRecipeProvider()
+              //Mod Compat Recipe providers
+              //new BiomesOPlentyRecipeProvider(),//TODO - Biomes O Plenty
+              //new ILikeWoodRecipeProvider()//TODO - ILikeWood
+        );
     }
 
     private void addMiscRecipes(Consumer<IFinishedRecipe> consumer) {

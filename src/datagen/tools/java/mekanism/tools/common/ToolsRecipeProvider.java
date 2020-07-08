@@ -80,6 +80,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
+        super.registerRecipes(consumer);
         registerRecipeSet(consumer, "bronze", ToolsItems.BRONZE_HELMET, ToolsItems.BRONZE_CHESTPLATE, ToolsItems.BRONZE_LEGGINGS, ToolsItems.BRONZE_BOOTS,
               ToolsItems.BRONZE_SWORD, ToolsItems.BRONZE_PICKAXE, ToolsItems.BRONZE_AXE, ToolsItems.BRONZE_SHOVEL, ToolsItems.BRONZE_HOE, ToolsItems.BRONZE_PAXEL,
               ToolsItems.BRONZE_SHIELD, MekanismTags.Items.INGOTS_BRONZE, Tags.Items.RODS_WOODEN, MekanismItems.BRONZE_NUGGET);

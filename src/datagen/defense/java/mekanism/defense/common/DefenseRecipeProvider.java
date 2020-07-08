@@ -15,5 +15,6 @@ public class DefenseRecipeProvider extends BaseRecipeProvider {
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
+        super.registerRecipes(consumer);
     }
 }

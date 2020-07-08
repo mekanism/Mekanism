@@ -2,6 +2,7 @@ package mekanism.common.recipe.compat;
 
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.common.recipe.ISubRecipeProvider;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
@@ -9,7 +10,7 @@ import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 
 //TODO: Decide if we should have compat recipes go into their own data packs
 @ParametersAreNonnullByDefault
-public abstract class CompatRecipeProvider {
+public abstract class CompatRecipeProvider implements ISubRecipeProvider {
 
     protected final String modid;
     protected final ICondition modLoaded;
@@ -19,7 +20,8 @@ public abstract class CompatRecipeProvider {
         this.modLoaded = new ModLoadedCondition(modid);
     }
 
-    public final void registerRecipes(Consumer<IFinishedRecipe> consumer) {
+    @Override
+    public final void addRecipes(Consumer<IFinishedRecipe> consumer) {
         registerRecipes(consumer, getBasePath());
     }
 

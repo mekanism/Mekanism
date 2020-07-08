@@ -5,6 +5,7 @@ import mekanism.additions.client.AdditionsItemModelProvider;
 import mekanism.additions.client.AdditionsLangProvider;
 import mekanism.additions.client.AdditionsSoundProvider;
 import mekanism.additions.common.loot.AdditionsLootProvider;
+import mekanism.additions.common.recipe.AdditionsRecipeProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

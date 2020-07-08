@@ -1,5 +1,7 @@
 package mekanism.common.recipe;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -24,5 +26,16 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    protected abstract void registerRecipes(Consumer<IFinishedRecipe> consumer);
+    protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
+        getSubRecipeProviders().forEach(subRecipeProvider -> subRecipeProvider.addRecipes(consumer));
+    }
+
+    /**
+     * Gets all the sub/offloaded recipe providers that this recipe provider has.
+     *
+     * @implNote This is only called once per provider so there is no need to bother caching the list that this returns
+     */
+    protected List<ISubRecipeProvider> getSubRecipeProviders() {
+        return Collections.emptyList();
+    }
 }
