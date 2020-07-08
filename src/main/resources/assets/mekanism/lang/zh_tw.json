@@ -505,7 +505,7 @@
   "description.mekanism.qio_redstone_adapter": "一個與QIO連接的紅石適配器. 用於監控你的QIO 系統內容",
   "description.mekanism.quantum_entangloporter": "一臺可以長距離跨維度傳輸物品的高級機器.",
   "description.mekanism.radiation_shielding_unit": "為任何MekaSuit裝甲提供厚重的防輻射金屬鍍層.",
-  "description.mekanism.radioactive_waste_barrel": "一個可用於'安全'存放放射性廢料. 警告: 打破此桶子將會使其內容物釋放到大氣中.",
+  "description.mekanism.radioactive_waste_barrel": "一個可用於'安全'存放放射性廢料的桶子. 警告: 打破此桶子將會使其內容物釋放到大氣中.",
   "description.mekanism.resistive_heater": "一臺通過電阻直接將能量轉化為熱量的機器.",
   "description.mekanism.restrictive": "- 僅在沒有其他可用路徑時使用",
   "description.mekanism.rotary_condensentrator": "一臺能夠將氣體和其液態形式,相互轉化的機器.",
