@@ -83,6 +83,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -329,10 +330,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         return ActionResultType.PASS;
     }
 
-    public void drop() {
-        //TODO: Move this to loot table?
-        ItemEntity entityItem = new ItemEntity(world, getPosX(), getPosY() + 0.3, getPosZ(), MekanismItems.ROBIT.getItemStack());
-        ItemStack stack = entityItem.getItem();
+    private ItemStack getItemVariant() {
+        ItemStack stack = MekanismItems.ROBIT.getItemStack();
         Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
         if (capability.isPresent()) {
             IStrictEnergyHandler energyHandlerItem = capability.get();
@@ -343,6 +342,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         ItemRobit item = (ItemRobit) stack.getItem();
         item.setInventory(((ISustainedInventory) this).getInventory(), stack);
         item.setName(stack, getName());
+        return stack;
+    }
+
+    public void drop() {
+        //TODO: Move this to loot table?
+        ItemEntity entityItem = new ItemEntity(world, getPosX(), getPosY() + 0.3, getPosZ(), getItemVariant());
         entityItem.setMotion(0, rand.nextGaussian() * 0.05F + 0.2F, 0);
         world.addEntity(entityItem);
     }
@@ -520,6 +525,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     public IEnergyContainer getEnergyContainer() {
         return energyContainer;
+    }
+
+    @Override
+    public ItemStack getPickedResult(RayTraceResult target) {
+        return getItemVariant();
     }
 
     @Nullable

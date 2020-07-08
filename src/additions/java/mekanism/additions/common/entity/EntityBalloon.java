@@ -3,6 +3,7 @@ package mekanism.additions.common.entity;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
@@ -15,6 +16,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.IPacket;
@@ -26,6 +28,7 @@ import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -393,5 +396,44 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         if (isAddedToWorld() && !this.world.isRemote && world instanceof ServerWorld) {
             ((ServerWorld) this.world).chunkCheck(this); // Forge - Process chunk registration after moving.
         }
+    }
+
+    @Override
+    public ItemStack getPickedResult(RayTraceResult target) {
+        switch (color) {
+            case BLACK:
+                return AdditionsItems.BLACK_BALLOON.getItemStack();
+            case DARK_BLUE:
+                return AdditionsItems.BLUE_BALLOON.getItemStack();
+            case DARK_GREEN:
+                return AdditionsItems.GREEN_BALLOON.getItemStack();
+            case DARK_AQUA:
+                return AdditionsItems.CYAN_BALLOON.getItemStack();
+            case PURPLE:
+                return AdditionsItems.PURPLE_BALLOON.getItemStack();
+            case ORANGE:
+                return AdditionsItems.ORANGE_BALLOON.getItemStack();
+            case GRAY:
+                return AdditionsItems.LIGHT_GRAY_BALLOON.getItemStack();
+            case DARK_GRAY:
+                return AdditionsItems.GRAY_BALLOON.getItemStack();
+            case INDIGO:
+                return AdditionsItems.LIGHT_BLUE_BALLOON.getItemStack();
+            case BRIGHT_GREEN:
+                return AdditionsItems.LIME_BALLOON.getItemStack();
+            case RED:
+                return AdditionsItems.RED_BALLOON.getItemStack();
+            case PINK:
+                return AdditionsItems.MAGENTA_BALLOON.getItemStack();
+            case YELLOW:
+                return AdditionsItems.YELLOW_BALLOON.getItemStack();
+            case WHITE:
+                return AdditionsItems.WHITE_BALLOON.getItemStack();
+            case BROWN:
+                return AdditionsItems.BROWN_BALLOON.getItemStack();
+            case BRIGHT_PINK:
+                return AdditionsItems.PINK_BALLOON.getItemStack();
+        }
+        return super.getPickedResult(target);
     }
 }
