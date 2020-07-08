@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -64,7 +63,7 @@ public class MergedChemicalTank {
                     } else {
                         insertionCheck = () -> extraCheck.getAsBoolean() && otherTanks.stream().allMatch(IChemicalTank::isEmpty);
                     }
-                    tankMap.put(type, type.createWrapper(tank, insertionCheck));
+                    tankMap.put(type, type.createWrapper(this, tank, insertionCheck));
                     handled = true;
                     break;
                 }
@@ -143,6 +142,12 @@ public class MergedChemicalTank {
         SLURRY
     }
 
+    @FunctionalInterface
+    private interface IWrapperCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
+
+        TANK create(MergedChemicalTank mergedTank, TANK tank, BooleanSupplier insertCheck);
+    }
+
     private static class ChemicalTankType<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
 
         private static final List<ChemicalTankType<?, ?, ?>> TYPES = new ArrayList<>();
@@ -151,11 +156,11 @@ public class MergedChemicalTank {
         private static final ChemicalTankType<Pigment, PigmentStack, IPigmentTank> PIGMENT = new ChemicalTankType<>("pigment", PigmentTankWrapper::new, tank -> tank instanceof IPigmentTank);
         private static final ChemicalTankType<Slurry, SlurryStack, ISlurryTank> SLURRY = new ChemicalTankType<>("slurry", SlurryTankWrapper::new, tank -> tank instanceof ISlurryTank);
 
-        private final BiFunction<TANK, BooleanSupplier, TANK> tankWrapper;
+        private final IWrapperCreator<CHEMICAL, STACK, TANK> tankWrapper;
         private final Predicate<IChemicalTank<?, ?>> tankValidator;
         private final String type;
 
-        ChemicalTankType(String type, BiFunction<TANK, BooleanSupplier, TANK> tankWrapper, Predicate<IChemicalTank<?, ?>> tankValidator) {
+        ChemicalTankType(String type, IWrapperCreator<CHEMICAL, STACK, TANK> tankWrapper, Predicate<IChemicalTank<?, ?>> tankValidator) {
             this.type = type;
             this.tankWrapper = tankWrapper;
             this.tankValidator = tankValidator;
@@ -170,8 +175,8 @@ public class MergedChemicalTank {
         /**
          * It is assumed that {@link #canHandle(IChemicalTank)} is called before this method
          */
-        public TANK createWrapper(IChemicalTank<?, ?> tank, BooleanSupplier insertCheck) {
-            return tankWrapper.apply((TANK) tank, insertCheck);
+        public TANK createWrapper(MergedChemicalTank mergedTank, IChemicalTank<?, ?> tank, BooleanSupplier insertCheck) {
+            return tankWrapper.create(mergedTank, (TANK) tank, insertCheck);
         }
 
         @Override
@@ -182,29 +187,29 @@ public class MergedChemicalTank {
 
     private static class GasTankWrapper extends ChemicalTankWrapper<Gas, GasStack> implements IGasTank {
 
-        public GasTankWrapper(IGasTank internal, BooleanSupplier insertCheck) {
-            super(internal, insertCheck);
+        public GasTankWrapper(MergedChemicalTank mergedTank, IGasTank internal, BooleanSupplier insertCheck) {
+            super(mergedTank, internal, insertCheck);
         }
     }
 
     private static class InfusionTankWrapper extends ChemicalTankWrapper<InfuseType, InfusionStack> implements IInfusionTank {
 
-        public InfusionTankWrapper(IInfusionTank internal, BooleanSupplier insertCheck) {
-            super(internal, insertCheck);
+        public InfusionTankWrapper(MergedChemicalTank mergedTank, IInfusionTank internal, BooleanSupplier insertCheck) {
+            super(mergedTank, internal, insertCheck);
         }
     }
 
     private static class PigmentTankWrapper extends ChemicalTankWrapper<Pigment, PigmentStack> implements IPigmentTank {
 
-        public PigmentTankWrapper(IPigmentTank internal, BooleanSupplier insertCheck) {
-            super(internal, insertCheck);
+        public PigmentTankWrapper(MergedChemicalTank mergedTank, IPigmentTank internal, BooleanSupplier insertCheck) {
+            super(mergedTank, internal, insertCheck);
         }
     }
 
     private static class SlurryTankWrapper extends ChemicalTankWrapper<Slurry, SlurryStack> implements ISlurryTank {
 
-        public SlurryTankWrapper(ISlurryTank internal, BooleanSupplier insertCheck) {
-            super(internal, insertCheck);
+        public SlurryTankWrapper(MergedChemicalTank mergedTank, ISlurryTank internal, BooleanSupplier insertCheck) {
+            super(mergedTank, internal, insertCheck);
         }
     }
 }

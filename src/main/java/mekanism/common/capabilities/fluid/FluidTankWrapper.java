@@ -7,6 +7,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
+import mekanism.common.capabilities.merged.MergedTank;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -19,11 +20,17 @@ public class FluidTankWrapper implements IExtendedFluidTank {
 
     private final IExtendedFluidTank internal;
     private final BooleanSupplier insertCheck;
+    private final MergedTank mergedTank;
 
-    public FluidTankWrapper(IExtendedFluidTank internal, BooleanSupplier insertCheck) {
+    public FluidTankWrapper(MergedTank mergedTank, IExtendedFluidTank internal, BooleanSupplier insertCheck) {
         //TODO: Do we want to short circuit it so that if we are not empty it allows for inserting before checking the insertCheck
+        this.mergedTank = mergedTank;
         this.internal = internal;
         this.insertCheck = insertCheck;
+    }
+
+    public MergedTank getMergedTank() {
+        return mergedTank;
     }
 
     @Override

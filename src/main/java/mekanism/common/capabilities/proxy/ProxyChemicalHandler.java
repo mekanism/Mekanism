@@ -1,5 +1,7 @@
 package mekanism.common.capabilities.proxy;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -9,6 +11,8 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.chemical.ISidedChemicalHandler;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -40,6 +44,17 @@ public abstract class ProxyChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, 
     public ProxyChemicalHandler(SIDED_HANDLER sidedHandler, @Nullable Direction side, @Nullable IHolder holder) {
         super(side, holder);
         this.sidedHandler = sidedHandler;
+    }
+
+    /**
+     * @apiNote This is only for use in the TOP integration to allow us to properly handle hiding merged chemical tanks, and <strong>SHOULD NOT</strong> be called from
+     * anywhere else. It is also important to not use this to bypass write access the proxy may limit.
+     */
+    public <TANK extends IChemicalTank<CHEMICAL, STACK>> List<TANK> getTanksIfMekanism() {
+        if (sidedHandler instanceof IMekanismChemicalHandler) {
+            return ((IMekanismChemicalHandler<CHEMICAL, STACK, TANK>) sidedHandler).getChemicalTanks(null);
+        }
+        return Collections.emptyList();
     }
 
     @Override

@@ -21,11 +21,17 @@ public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     private final IChemicalTank<CHEMICAL, STACK> internal;
     private final BooleanSupplier insertCheck;
+    private final MergedChemicalTank mergedTank;
 
-    public ChemicalTankWrapper(IChemicalTank<CHEMICAL, STACK> internal, BooleanSupplier insertCheck) {
+    protected ChemicalTankWrapper(MergedChemicalTank mergedTank, IChemicalTank<CHEMICAL, STACK> internal, BooleanSupplier insertCheck) {
         //TODO: Do we want to short circuit it so that if we are not empty it allows for inserting before checking the insertCheck
+        this.mergedTank = mergedTank;
         this.internal = internal;
         this.insertCheck = insertCheck;
+    }
+
+    public MergedChemicalTank getMergedTank() {
+        return mergedTank;
     }
 
     @Override

@@ -18,8 +18,6 @@ class SawingRecipeProvider implements ISubRecipeProvider {
 
     @Override
     public void addRecipes(Consumer<IFinishedRecipe> consumer) {
-        //TODO: Decide if we want to move fences, slabs, and stairs to individual wood type ones
-        // or maybe move some from the wood types out like pressure plates
         String basePath = "sawing/";
         addPrecisionSawmillBedRecipes(consumer, basePath + "bed/");
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.ACACIA_PLANKS, Items.ACACIA_BOAT, Items.ACACIA_DOOR, Blocks.ACACIA_FENCE_GATE,
