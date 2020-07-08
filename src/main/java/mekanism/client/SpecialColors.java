@@ -21,6 +21,8 @@ public class SpecialColors {
     public static ColorRegistryObject TAB_SECURITY = GUI_OBJECTS.register();
     public static ColorRegistryObject TAB_CONTAINER_EDIT_MODE = GUI_OBJECTS.register();
     public static ColorRegistryObject TAB_UPGRADE = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_CONFIGURATION = GUI_OBJECTS.register();
+    public static ColorRegistryObject TAB_TRANSPORTER = GUI_OBJECTS.register();
 
     public static ColorRegistryObject TEXT_TITLE = GUI_TEXT.register();
     public static ColorRegistryObject TEXT_HEADING = GUI_TEXT.register();

@@ -1,11 +1,13 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.gui.element.custom.GuiTransporterConfig;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
@@ -20,6 +22,11 @@ public class GuiTransporterConfigTab extends GuiWindowCreatorTab<GuiTransporterC
     @Override
     public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         displayTooltip(matrix, MekanismLang.TRANSPORTER_CONFIG.translate(), mouseX, mouseY);
+    }
+
+    @Override
+    protected void colorTab() {
+        MekanismRenderer.color(SpecialColors.TAB_TRANSPORTER.get());
     }
 
     @Override
