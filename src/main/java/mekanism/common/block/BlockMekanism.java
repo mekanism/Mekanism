@@ -29,6 +29,9 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.particle.DiggingParticle;
+import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -45,10 +48,13 @@ import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
 
 /**
@@ -267,6 +273,38 @@ public abstract class BlockMekanism extends Block {
             }
         }
         return 0;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
+        //Copy of ParticleManager#addBlockDestroyEffects, but removes the minimum number of particles each voxel shape produces
+        state.getShape(world, pos).forEachBox((minX, minY, minZ, maxX, maxY, maxZ) -> {
+            double xDif = Math.min(1, maxX - minX);
+            double yDif = Math.min(1, maxY - minY);
+            double zDif = Math.min(1, maxZ - minZ);
+            //Don't force the counts to be at least two
+            int xCount = MathHelper.ceil(xDif / 0.25);
+            int yCount = MathHelper.ceil(yDif / 0.25);
+            int zCount = MathHelper.ceil(zDif / 0.25);
+            if (xCount > 0 && yCount > 0 && zCount > 0) {
+                for (int x = 0; x < xCount; x++) {
+                    for (int y = 0; y < yCount; y++) {
+                        for (int z = 0; z < zCount; z++) {
+                            double d4 = (x + 0.5) / xCount;
+                            double d5 = (y + 0.5) / yCount;
+                            double d6 = (z + 0.5) / zCount;
+                            double d7 = d4 * xDif + minX;
+                            double d8 = d5 * yDif + minY;
+                            double d9 = d6 * zDif + minZ;
+                            manager.addEffect(new DiggingParticle((ClientWorld) world, pos.getX() + d7, pos.getY() + d8,
+                                  pos.getZ() + d9, d4 - 0.5, d5 - 0.5, d6 - 0.5, state).setBlockPos(pos));
+                        }
+                    }
+                }
+            }
+        });
+        return true;
     }
 
     protected ActionResultType genericClientActivated(@Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit) {
