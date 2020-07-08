@@ -16,7 +16,7 @@ public class ColorAtlas {
 
     private static final int ATLAS_SIZE = 16;
 
-    private String name;
+    private final String name;
     private final List<ColorRegistryObject> colors = new ArrayList<>();
 
     public ColorAtlas(String name) {

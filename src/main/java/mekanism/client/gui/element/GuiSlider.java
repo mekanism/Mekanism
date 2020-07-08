@@ -4,12 +4,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.DoubleConsumer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiSlider extends GuiRelativeElement {
 
-    private static final ResourceLocation SLIDER = Mekanism.rl("gui/smooth_slider.png");
+    private static final ResourceLocation SLIDER = MekanismUtils.getResource(ResourceType.GUI, "smooth_slider.png");
 
     private final DoubleConsumer callback;
 

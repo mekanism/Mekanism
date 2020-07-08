@@ -11,9 +11,10 @@ import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -26,7 +27,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiColorWindow extends GuiWindow {
 
-    private static final ResourceLocation HUE_PICKER = Mekanism.rl("gui/color_picker.png");
+    private static final ResourceLocation HUE_PICKER = MekanismUtils.getResource(ResourceType.GUI, "color_picker.png");
 
     private final GuiTextField textField;
 

@@ -1041,6 +1041,7 @@ public final class MekanismUtils {
         GUI("gui"),
         GUI_BUTTON("gui/button"),
         GUI_BAR("gui/bar"),
+        GUI_HUD("gui/hud"),
         GUI_GAUGE("gui/gauge"),
         GUI_PROGRESS("gui/progress"),
         GUI_SLOT("gui/slot"),

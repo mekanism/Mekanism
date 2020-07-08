@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.text.ILangEntry;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement;
@@ -25,10 +24,10 @@ import net.minecraft.util.text.ITextComponent;
 
 public class HUDRenderer {
 
-    private static final ResourceLocation HEAD_ICON = Mekanism.rl("gui/hud/hud_mekasuit_helmet.png"),
-          CHEST_ICON = Mekanism.rl("gui/hud/hud_mekasuit_chest.png"),
-          LEGS_ICON = Mekanism.rl("gui/hud/hud_mekasuit_leggings.png"),
-          BOOTS_ICON = Mekanism.rl("gui/hud/hud_mekasuit_boots.png");
+    private static final ResourceLocation HEAD_ICON = MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_helmet.png");
+    private static final ResourceLocation CHEST_ICON = MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_chest.png");
+    private static final ResourceLocation LEGS_ICON = MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_leggings.png");
+    private static final ResourceLocation BOOTS_ICON = MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_boots.png");
 
     private static final ResourceLocation COMPASS = MekanismUtils.getResource(ResourceType.GUI, "compass.png");
 

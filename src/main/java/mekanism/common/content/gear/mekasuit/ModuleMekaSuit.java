@@ -10,7 +10,6 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -29,6 +28,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
@@ -110,7 +110,7 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleVisionEnhancementUnit extends ModuleMekaSuit {
 
-        private static final ResourceLocation icon = Mekanism.rl("gui/hud/vision_enhancement_unit.png");
+        private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "vision_enhancement_unit.png");
 
         @Override
         public void tickServer(PlayerEntity player) {
@@ -133,7 +133,7 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleGravitationalModulatingUnit extends ModuleMekaSuit {
 
-        private static final ResourceLocation icon = Mekanism.rl("gui/hud/gravitational_modulation_unit.png");
+        private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "gravitational_modulation_unit.png");
 
         // we share with locomotive boosting unit
         private ModuleConfigItem<SprintBoost> speedBoost;
@@ -223,7 +223,7 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleNutritionalInjectionUnit extends ModuleMekaSuit {
 
-        private static final ResourceLocation icon = Mekanism.rl("gui/hud/nutritional_injection_unit.png");
+        private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "nutritional_injection_unit.png");
 
         @Override
         public void tickServer(PlayerEntity player) {
@@ -253,7 +253,7 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleDosimeterUnit extends ModuleMekaSuit {
 
-        private static final ResourceLocation icon = Mekanism.rl("gui/hud/dosimeter.png");
+        private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "dosimeter.png");
 
         @Override
         public void addHUDElements(List<HUDElement> list) {

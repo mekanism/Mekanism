@@ -65,11 +65,11 @@ public class HUDElement {
         WARNING(MekanismConfig.client.hudWarningColor),
         DANGER(MekanismConfig.client.hudDangerColor);
 
+        private final IntSupplier color;
+
         HUDColor(IntSupplier color) {
             this.color = color;
         }
-
-        private IntSupplier color;
 
         public int getColor() {
             return Color.rgb(color.getAsInt()).alpha(MekanismConfig.client.hudOpacity.get()).argb();

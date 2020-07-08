@@ -33,9 +33,7 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
         }));
 
         GuiSlider slider;
-        addChild(slider = new GuiSlider(gui, x + 10, y + 62, 120, value -> {
-            MekanismConfig.client.hudOpacity.set((float) value);
-        }));
+        addChild(slider = new GuiSlider(gui, x + 10, y + 62, 120, value -> MekanismConfig.client.hudOpacity.set((float) value)));
         slider.setValue(MekanismConfig.client.hudOpacity.get());
 
         addChild(new GuiScreenSwitch(gui, x + 7, y + 87, 126, MekanismLang.COMPASS.translate(), MekanismConfig.client.hudCompassEnabled, () -> {

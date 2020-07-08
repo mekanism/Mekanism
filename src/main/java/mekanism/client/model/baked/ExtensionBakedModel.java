@@ -73,6 +73,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
 
     @Nonnull
     @Override
+    @Deprecated
     public TextureAtlasSprite getParticleTexture() {
         return original.getParticleTexture();
     }

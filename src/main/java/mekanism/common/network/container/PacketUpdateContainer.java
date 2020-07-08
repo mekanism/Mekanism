@@ -13,7 +13,7 @@ public class PacketUpdateContainer {
     //Note: windowId gets transferred over the network as an unsigned byte
     protected final short windowId;
     protected final short property;
-    protected PropertyData data;
+    protected final PropertyData data;
 
     public PacketUpdateContainer(short windowId, short property, PropertyData data) {
         this.windowId = windowId;

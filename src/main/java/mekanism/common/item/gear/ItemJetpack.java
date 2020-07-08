@@ -28,6 +28,7 @@ import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -143,14 +144,14 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     }
 
     public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
-        NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, Mekanism.rl("gui/hud/jetpack_normal.png")),
-        HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, Mekanism.rl("gui/hud/jetpack_hover.png")),
-        DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, Mekanism.rl("gui/hud/jetpack_off.png"));
+        NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_normal.png")),
+        HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_hover.png")),
+        DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_off.png"));
 
         private static final JetpackMode[] MODES = values();
         private final ILangEntry langEntry;
         private final EnumColor color;
-        private ResourceLocation hudIcon;
+        private final ResourceLocation hudIcon;
 
         JetpackMode(ILangEntry langEntry, EnumColor color, ResourceLocation hudIcon) {
             this.langEntry = langEntry;
