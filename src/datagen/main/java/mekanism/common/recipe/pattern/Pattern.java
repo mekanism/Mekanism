@@ -14,6 +14,7 @@ public class Pattern {
     public static final char GLOWSTONE = 'G', GLASS = 'G';
     public static final char INGOT = 'I';
     public static final char LITHIUM = 'L';
+    public static final char NUGGET = 'N';
     public static final char OSMIUM = 'O';
     public static final char PREVIOUS = 'P', PLASTIC = 'P';
     public static final char REDSTONE = 'R';

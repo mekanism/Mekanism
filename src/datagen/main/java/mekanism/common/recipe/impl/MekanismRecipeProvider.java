@@ -1040,7 +1040,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
                     TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
-              .key(Pattern.CONSTANT, Items.DIAMOND_HELMET)
+              .key(Pattern.CONSTANT, Items.field_234763_ls_)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
@@ -1052,7 +1052,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
                     TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
-              .key(Pattern.CONSTANT, Items.DIAMOND_CHESTPLATE)
+              .key(Pattern.CONSTANT, Items.field_234764_lt_)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
@@ -1064,7 +1064,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
                     TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
-              .key(Pattern.CONSTANT, Items.DIAMOND_LEGGINGS)
+              .key(Pattern.CONSTANT, Items.field_234765_lu_)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
@@ -1076,7 +1076,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.PLASTIC, Pattern.CONSTANT, Pattern.PLASTIC),
                     TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY))
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
-              .key(Pattern.CONSTANT, Items.DIAMOND_BOOTS)
+              .key(Pattern.CONSTANT, Items.field_234766_lv_)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
@@ -1160,10 +1160,11 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Module Base
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_BASE, 2)
               .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.NUGGET, Pattern.INGOT, Pattern.NUGGET),
                     TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+                    TripleLine.of(Pattern.NUGGET, Pattern.INGOT, Pattern.NUGGET))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
+              .key(Pattern.NUGGET, MekanismTags.Items.NUGGETS_BRONZE)
               .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
               .build(consumer);
         //Jetpack Module

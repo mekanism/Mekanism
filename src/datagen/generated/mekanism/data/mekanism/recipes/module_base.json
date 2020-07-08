@@ -5,13 +5,16 @@
     "count": 2
   },
   "pattern": [
-    " I ",
+    "NIN",
     "I#I",
-    " I "
+    "NIN"
   ],
   "key": {
     "I": {
       "tag": "forge:ingots/tin"
+    },
+    "N": {
+      "tag": "forge:nuggets/bronze"
     },
     "#": {
       "item": "mekanism:hdpe_sheet"
