@@ -295,8 +295,8 @@
 		},
 		{
 			"name": "frame2a",
-			"from": [-8, 27, 4],
-			"to": [24, 32, 19],
+			"from": [-8, 26.99, 4],
+			"to": [24, 31.99, 19],
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 12, 9]},
 			"faces": {
@@ -972,6 +972,51 @@
 			"faces": {
 				"south": {"uv": [6, 2, 7, 6], "texture": "#4"}
 			}
+		},
+		{
+			"name": "port_top",
+			"from": [4, 30.993, 4],
+			"to": [12, 31.993, 12],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 31, 8]},
+			"faces": {
+				"up": {"uv": [0, 0, 8, 8], "texture": "#3"}
+			}
+		},
+		{
+			"name": "port_top_led2",
+			"from": [5, 32, 5],
+			"to": [11, 32, 6],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 31, 8]},
+			"faces": {
+				"up": {"uv": [1, 1, 7, 2], "texture": "#4"}
+			}
+		},
+		{
+			"name": "port_top_led3",
+			"from": [5, 32, 10],
+			"to": [11, 32, 11],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 31, 8]},
+			"faces": {
+				"up": {"uv": [1, 6, 7, 7], "texture": "#4"}
+			}
+		},
+		{
+			"name": "port_top_led4",
+			"from": [5, 32, 6],
+			"to": [6, 32, 10],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 31, 8]},
+			"faces": {
+				"up": {"uv": [1, 2, 2, 6], "texture": "#4"}
+			}
+		},
+		{
+			"name": "port_top_led5",
+			"from": [10, 32, 6],
+			"to": [11, 32, 10],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 31, 8]},
+			"faces": {
+				"up": {"uv": [6, 2, 7, 6], "texture": "#4"}
+			}
 		}
 	],
 	"display": {
@@ -1088,5 +1133,16 @@
 			"name": "support_leg4",
 			"origin": [8, 12, 9],
 			"children": [68, 69]
-		}, 70, 71, 72, 73, 74]
+		},
+		{
+			"name": "port_back",
+			"origin": [13, 23, 31.5],
+			"children": [70, 71, 72, 73, 74]
+		},
+		{
+			"name": "port_top",
+			"origin": [13, 23, 31.5],
+			"children": [75, 76, 77, 78, 79]
+		}
+	]
 }
