@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.client.render.tileentity.RenderDigitalMiner;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -358,6 +359,7 @@ public class MekanismRenderer {
         addChemicalSprites(event, MekanismAPI.slurryRegistry());
 
         ModelRenderer.resetCachedModels();
+        RenderDigitalMiner.resetCachedVisuals();
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
         RenderMechanicalPipe.onStitch();
