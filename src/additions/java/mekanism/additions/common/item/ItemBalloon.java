@@ -83,7 +83,7 @@ public class ItemBalloon extends Item {
             if (MekanismUtils.isValidReplaceableBlock(world, pos)) {
                 pos = pos.down();
             }
-            if (!Block.hasSolidSide(world.getBlockState(pos), world, pos, Direction.UP)) {
+            if (!Block.hasEnoughSolidSide(world, pos, Direction.UP)) {
                 return ActionResultType.FAIL;
             }
             if (MekanismUtils.isValidReplaceableBlock(world, pos.up()) && MekanismUtils.isValidReplaceableBlock(world, pos.up(2))) {
