@@ -1,7 +1,6 @@
 package mekanism.common.item.block.machine;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
@@ -16,7 +15,7 @@ import net.minecraft.world.World;
 public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockDigitalMiner(BlockTile<TileEntityDigitalMiner, Machine<TileEntityDigitalMiner>> block) {
-        super(block, ISTERProvider::miner);
+        super(block);
     }
 
     @Override

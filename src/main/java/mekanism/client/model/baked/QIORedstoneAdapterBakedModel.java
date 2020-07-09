@@ -12,7 +12,7 @@ import net.minecraftforge.client.model.data.IModelData;
 
 public class QIORedstoneAdapterBakedModel extends ExtensionBakedModel<Boolean> {
 
-    private static final QuadTransformation TORCH_TRANSFORM = QuadTransformation.list(QuadTransformation.fullbright, QuadTransformation.texture(MekanismRenderer.redstoneTorch));
+    private final QuadTransformation TORCH_TRANSFORM = QuadTransformation.list(QuadTransformation.fullbright, QuadTransformation.texture(MekanismRenderer.redstoneTorch));
 
     public QIORedstoneAdapterBakedModel(IBakedModel original) {
         super(original);

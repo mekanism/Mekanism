@@ -1,10 +1,10 @@
 package mekanism.client;
 
-import com.google.common.collect.Table.Cell;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import com.google.common.collect.Table.Cell;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
@@ -70,6 +70,7 @@ import mekanism.client.gui.robit.GuiRobitMain;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
 import mekanism.client.model.MekanismModelCache;
+import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
 import mekanism.client.model.baked.QIORedstoneAdapterBakedModel;
@@ -84,7 +85,6 @@ import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
-import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidTank;
@@ -167,7 +167,6 @@ public class ClientRegistration {
         //Register TileEntityRenderers
         ClientRegistrationUtil.bindTileEntityRenderer(RenderThermoelectricBoiler::new, MekanismTileEntityTypes.BOILER_CASING, MekanismTileEntityTypes.BOILER_VALVE);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CHEMICAL_DISSOLUTION_CHAMBER, RenderChemicalDissolutionChamber::new);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.DIGITAL_MINER, RenderDigitalMiner::new);
         ClientRegistrationUtil.bindTileEntityRenderer(RenderDynamicTank::new, MekanismTileEntityTypes.DYNAMIC_TANK, MekanismTileEntityTypes.DYNAMIC_VALVE);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.PERSONAL_CHEST, RenderPersonalChest::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, RenderQuantumEntangloporter::new);
@@ -258,6 +257,7 @@ public class ClientRegistration {
 
         addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
         addCustomModel(MekanismBlocks.QIO_REDSTONE_ADAPTER, (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
+        addCustomModel(MekanismBlocks.DIGITAL_MINER, (orig, evt) -> new DigitalMinerBakedModel(orig));
 
         addLitModel(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItems.MEKA_TOOL);
     }

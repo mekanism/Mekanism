@@ -8,6 +8,9 @@
 		"3": "mekanism:block/models/ports",
 		"4": "mekanism:block/models/ports_led",
 		"5": "mekanism:block/models/leds",
+		"6": "mekanism:block/models/digital_miner_screen_blank",
+		"7": "mekanism:block/models/digital_miner_screen_cmd",
+		"8": "mekanism:block/models/digital_miner_screen_hello",
 		"particle": "mekanism:block/steel_casing"
 	},
 	"elements": [
@@ -24,6 +27,16 @@
 				"west": {"uv": [8, 0, 7, 5], "texture": "#1"},
 				"up": {"uv": [0, 5, 7, 6], "texture": "#1"},
 				"down": {"uv": [0, 6, 7, 5], "texture": "#1"}
+			}
+		},
+		{
+			"name": "monitor1_on",
+			"from": [17, 19, -13.01],
+			"to": [29, 27, -13.01],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [16, 23, -13]},
+			"faces": {
+				"north": {"uv": [0, 0, 12, 8], "texture": "#8", "lightLevel": 15}
 			}
 		},
 		{
@@ -47,11 +60,11 @@
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [16, 22.5, -13.005]},
 			"faces": {
-				"north": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"east": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"south": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"west": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"down": {"uv": [0, 0, 2, 2], "texture": "#5"}
+				"north": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"east": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"south": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"west": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"down": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15}
 			}
 		},
 		{
@@ -67,6 +80,16 @@
 				"west": {"uv": [8, 0, 7, 5], "texture": "#1"},
 				"up": {"uv": [0, 5, 7, 6], "texture": "#1"},
 				"down": {"uv": [0, 6, 7, 5], "texture": "#1"}
+			}
+		},
+		{
+			"name": "monitor2_on",
+			"from": [2, 19, -13.01],
+			"to": [14, 27, -13.01],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 23, -13]},
+			"faces": {
+				"north": {"uv": [0, 0, 12, 8], "texture": "#6", "lightLevel": 15}
 			}
 		},
 		{
@@ -90,11 +113,11 @@
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [12, 14, 9]},
 			"faces": {
-				"north": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"east": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"south": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"west": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"down": {"uv": [0, 0, 2, 2], "texture": "#5"}
+				"north": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"east": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"south": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"west": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"down": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15}
 			}
 		},
 		{
@@ -110,6 +133,16 @@
 				"west": {"uv": [8, 0, 7, 5], "texture": "#1"},
 				"up": {"uv": [0, 5, 7, 6], "texture": "#1"},
 				"down": {"uv": [0, 6, 7, 5], "texture": "#1"}
+			}
+		},
+		{
+			"name": "monitor3_on",
+			"from": [-13, 19, -13.01],
+			"to": [-1, 27, -13.01],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 23, -13]},
+			"faces": {
+				"north": {"uv": [0, 0.0625, 12, 8.0625], "texture": "#7", "lightLevel": 15}
 			}
 		},
 		{
@@ -133,11 +166,11 @@
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [0, 23, -13]},
 			"faces": {
-				"north": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"east": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"south": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"west": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"down": {"uv": [0, 0, 2, 2], "texture": "#5"}
+				"north": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"east": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"south": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"west": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15},
+				"down": {"uv": [0, 0, 2, 2], "texture": "#5", "lightLevel": 15}
 			}
 		},
 		{

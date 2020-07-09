@@ -2,7 +2,6 @@ package mekanism.common.content.blocktype;
 
 import static mekanism.common.util.VoxelShapeUtils.setShape;
 import static net.minecraft.block.Block.makeCuboidShape;
-
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.util.Direction;
@@ -69,77 +68,66 @@ public final class BlockShapes {
         ), Rotation.CLOCKWISE_90), ELECTROLYTIC_SEPARATOR);
 
         setShape(VoxelShapeUtils.combine(
-              makeCuboidShape(5, 9, -14, 6, 10, -13),
-              makeCuboidShape(10, 9, -14, 11, 10, -13),
-              makeCuboidShape(10, 9, -13, 11, 11, -9),
-              makeCuboidShape(5, 9, -13, 6, 11, -9),
-              makeCuboidShape(10, 20, -11, 12, 22, -9),
-              makeCuboidShape(4, 20, -11, 6, 22, -9),
-              makeCuboidShape(-8, 3, -9, 24, 32, 3),
-              makeCuboidShape(-8, 3, 20, 24, 32, 32),
-              makeCuboidShape(-8, 3, 4, 24, 8, 19),
-              makeCuboidShape(24, 24, -8, 29, 29, -6),
-              makeCuboidShape(24, 24, 0, 29, 29, 2),
-              makeCuboidShape(24, 24, 21, 29, 29, 23),
-              makeCuboidShape(24, 24, 29, 29, 29, 31),
-              makeCuboidShape(-13, 24, -8, -8, 29, -6),
-              makeCuboidShape(-13, 24, 0, -8, 29, 2),
-              makeCuboidShape(-13, 24, 21, -8, 29, 23),
-              makeCuboidShape(-13, 24, 29, -8, 29, 31),
-              makeCuboidShape(24, 24, -6, 25, 29, 0),
-              makeCuboidShape(24, 24, 23, 25, 29, 29),
-              makeCuboidShape(-9, 24, -6, -8, 29, 0),
-              makeCuboidShape(-9, 24, 23, -8, 29, 29),
-              makeCuboidShape(26, 2, -7, 30, 30, 1),
-              makeCuboidShape(26, 2, 22, 30, 30, 30),
-              makeCuboidShape(-14, 2, -7, -10, 30, 1),
-              makeCuboidShape(-14, 2, 22, -10, 30, 30),
-              makeCuboidShape(24, 0, -8, 31, 2, 2),
-              makeCuboidShape(24, 0, 21, 31, 2, 31),
-              makeCuboidShape(-15, 0, 21, -8, 2, 31),
-              makeCuboidShape(-15, 0, -8, -8, 2, 2),
-              makeCuboidShape(-7, 4, 3, 23, 31, 20),
-              makeCuboidShape(5, 2, -6, 11, 4, 5),
-              makeCuboidShape(5, 1, 5, 11, 4, 11),
-              makeCuboidShape(-15, 5, 5, -6, 11, 11),
-              makeCuboidShape(22, 5, 5, 31, 11, 11),
-              makeCuboidShape(4, 0, 4, 12, 1, 12),
-              makeCuboidShape(-16, 4, 4, -15, 12, 12),
-              makeCuboidShape(-9, 4, 4, -8, 12, 12),
-              makeCuboidShape(31, 4, 4, 32, 12, 12),
-              makeCuboidShape(24, 4, 4, 25, 12, 12),
-              makeCuboidShape(-8, 27, 4, 24, 32, 19),
-              makeCuboidShape(-8, 21, 4, 24, 26, 19),
-              makeCuboidShape(-8, 15, 4, 24, 20, 19),
-              makeCuboidShape(-8, 9, 4, 24, 14, 19),
-              //Keyboard
-              makeCuboidShape(3, 11, -10.5, 13, 12.5, -11.75),
-              makeCuboidShape(3, 10, -11.75, 13, 11.5, -13),
-              makeCuboidShape(3, 9.5, -13, 13, 11, -14.25),
-              makeCuboidShape(3, 9, -14.25, 13, 10.5, -15.25),
-              makeCuboidShape(4, 9.5, -12, 12, 10, -13),
-              makeCuboidShape(4, 8.5, -13, 12, 9.5, -14.25),
-              //Center monitor
-              makeCuboidShape(2, 18, -10.5, 14, 24, -11.5),
-              makeCuboidShape(1, 16, -11.5, 15, 26, -13.5),
-              //Left monitor
-              makeCuboidShape(17, 17.75, -10, 18.5, 24.25, -11.5),
-              makeCuboidShape(18.5, 17.75, -10.5, 22, 24.25, -12),
-              makeCuboidShape(22, 17.75, -11.5, 25.5, 24.25, -13),
-              makeCuboidShape(25.5, 17.75, -12.5, 29, 24.25, -14),
-              makeCuboidShape(15.5, 16, -11.5, 19.5, 26, -13.5),
-              makeCuboidShape(18.5, 16, -12, 23, 26, -14),
-              makeCuboidShape(22, 16, -13, 26.5, 26, -15),
-              makeCuboidShape(25.5, 16, -14, 30, 26, -16),
-              //Right Monitor
-              makeCuboidShape(-3 + 2.5, 17.75, -10, -6.5 + 2.5, 24.25, -11.5),
-              makeCuboidShape(-6.5 + 2.5, 17.75, -10.5, -10 + 2.5, 24.25, -12),
-              makeCuboidShape(-10 + 2.5, 17.75, -11.5, -13.5 + 2.5, 24.25, -13),
-              makeCuboidShape(-13.5 + 2.5, 17.75, -12.5, -15 + 2.5, 24.25, -14),
-              makeCuboidShape(-6.5 + 2.5, 16, -11.5, -2 + 2.5, 26, -13.5),
-              makeCuboidShape(-10 + 2.5, 16, -12, -5.5 + 2.5, 26, -14),
-              makeCuboidShape(-13.5 + 2.5, 16, -13, -9 + 2.5, 26, -15),
-              makeCuboidShape(-16.5 + 2.5, 16, -14, -12.5 + 2.5, 26, -16)
+              makeCuboidShape(16, 18, -13, 30, 28, -11), // monitor1
+              makeCuboidShape(17, 19, -13.01, 29, 27, -13.01), // monitor1_on
+              makeCuboidShape(17, 20, -11, 29, 26, -10), // monitor_back1
+              makeCuboidShape(17, 17.5, -12.005, 18, 18.5, -11.005), // led1
+              makeCuboidShape(1, 18, -13, 15, 28, -11), // monitor2
+              makeCuboidShape(2, 19, -13.01, 14, 27, -13.01), // monitor2_on
+              makeCuboidShape(2, 20, -11, 14, 26, -10), // monitor_back2
+              makeCuboidShape(2, 17.5, -12.005, 3, 18.5, -11.005), // led2
+              makeCuboidShape(-14, 18, -13, 0, 28, -11), // monitor3
+              makeCuboidShape(-13, 19, -13.01, -1, 27, -13.01), // monitor3_on
+              makeCuboidShape(-13, 20, -11, -1, 26, -10), // monitor_back3
+              makeCuboidShape(-13, 17.5, -12.005, -12, 18.5, -11.005), // led3
+              makeCuboidShape(-2, 22, -11.95, 2, 24, -10.95), // monitorBar1
+              makeCuboidShape(14, 22, -11.95, 18, 24, -10.95), // monitorBar2
+              makeCuboidShape(4, 22, -11, 6, 24, -9), // monitorMount1
+              makeCuboidShape(10, 22, -11, 12, 24, -9), // monitorMount2
+              makeCuboidShape(5, 11, -14, 6, 13, -9), // keyboard_support1
+              makeCuboidShape(10, 11, -14, 11, 13, -9), // keyboard_support2
+              makeCuboidShape(4, 11.5, -13.5, 12, 12.5, -10.5), // keyboardBottom
+              makeCuboidShape(3, 12.5, -14.5, 13, 13.5, -9.5), // keyboard
+              makeCuboidShape(-8, 3, -9, 24, 32, 3), // frame1
+              makeCuboidShape(-8, 26.99, 4, 24, 31.99, 19), // frame2a
+              makeCuboidShape(-8, 21, 4, 24, 26, 19), // frame2b
+              makeCuboidShape(-8, 15, 4, 24, 20, 19), // frame2c
+              makeCuboidShape(-8, 9, 4, 24, 14, 19), // frame2d
+              makeCuboidShape(-8, 3, 4, 24, 8, 19), // frame2e
+              makeCuboidShape(-8, 3, 19.99, 24, 32, 31.99), // frame3
+              makeCuboidShape(-7, 15, 3, 23, 31, 20), // core_top
+              makeCuboidShape(-7, 4, 3, 23, 15, 20), // core_bottom
+              makeCuboidShape(-9, 24, -6, -8, 29, 0), // bracket_east1
+              makeCuboidShape(-13, 24, -8, -8, 29, -6), // bracket_north1
+              makeCuboidShape(-13, 24, 0, -8, 29, 2), // bracket_south1
+              makeCuboidShape(-9, 24, 23, -8, 29, 29), // bracket_east2
+              makeCuboidShape(-13, 24, 21, -8, 29, 23), // bracket_north2
+              makeCuboidShape(-13, 24, 29, -8, 29, 31), // bracket_south2
+              makeCuboidShape(24, 24, -6, 25, 29, 0), // bracket_west1
+              makeCuboidShape(24, 24, 0, 29, 29, 2), // bracket_south3
+              makeCuboidShape(24, 24, -8, 29, 29, -6), // bracket_north3
+              makeCuboidShape(24, 24, 23, 25, 29, 29), // bracket_west2
+              makeCuboidShape(24, 24, 29, 29, 29, 31), // bracket_south4
+              makeCuboidShape(24, 24, 21, 29, 29, 23), // bracket_north4
+              makeCuboidShape(5, 2, -6, 11, 4, 5), // power_cable1a
+              makeCuboidShape(5, 1, 5, 11, 3, 11), // power_cable1b
+              makeCuboidShape(4, 0, 4, 12, 1, 12), // port1
+              makeCuboidShape(23, 5, 5, 31, 11, 11), // power_cable2
+              makeCuboidShape(30.99, 4, 4, 31.99, 12, 12), // port2a
+              makeCuboidShape(24, 4, 4, 25, 12, 12), // port2b
+              makeCuboidShape(-15, 5, 5, -7, 11, 11), // power_cable3
+              makeCuboidShape(-15.99, 4, 4, -14.99, 12, 12), // port3a
+              makeCuboidShape(-9, 4, 4, -8, 12, 12), // port3b
+              makeCuboidShape(-14, 2, -7, -10, 30, 1), // beam1
+              makeCuboidShape(-15, 0, -8, -8, 2, 2), // foot1
+              makeCuboidShape(-14, 2, 22, -10, 30, 30), // beam2
+              makeCuboidShape(-15, 0, 21, -8, 2, 31), // foot2
+              makeCuboidShape(26.5, 2, 22, 30.5, 30, 30), // beam3
+              makeCuboidShape(24.5, 0, 21, 31.5, 2, 31), // foot3
+              makeCuboidShape(26.5, 2, -7, 30.5, 30, 1), // beam4
+              makeCuboidShape(24.5, 0, -8, 31.5, 2, 2), // foot4
+              makeCuboidShape(4, 20, 30.993, 12, 28, 31.993), // port_back
+              makeCuboidShape(4, 30.993, 4, 12, 31.993, 12) // port_top
         ), DIGITAL_MINER);
 
         setShape(VoxelShapeUtils.combine(

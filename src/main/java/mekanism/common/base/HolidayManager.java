@@ -1,8 +1,8 @@
 package mekanism.common.base;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -18,50 +18,46 @@ public final class HolidayManager {
 
     private static final Calendar calendar = Calendar.getInstance();
 
-    private static final List<Holiday> holidays = new ArrayList<>();
-    private static final List<Holiday> holidaysNotified = new ArrayList<>();
+    private static final Set<Holiday> holidays = new ObjectOpenHashSet<>();
+
+    public static final Holiday CHRISTMAS = register(new Christmas());
+    public static final Holiday NEW_YEAR = register(new NewYear());
+    public static final Holiday MAY_4 = register(new May4());
+    public static final Holiday APRIL_FOOLS = register(new AprilFools());
+
+    private static Holiday register(Holiday holiday) {
+        holidays.add(holiday);
+        return holiday;
+    }
 
     public static void init() {
         if (MekanismConfig.client.holidays.get()) {
-            holidays.add(new Christmas());
-            holidays.add(new NewYear());
-            holidays.add(new May4());
-        }
-        Mekanism.logger.info("Initialized HolidayManager.");
-    }
-
-    public static void check(PlayerEntity player) {
-        try {
             YearlyDate date = getDate();
-
             for (Holiday holiday : holidays) {
-                if (!holidaysNotified.contains(holiday)) {
-                    if (holiday.getDate().equals(date)) {
-                        holiday.onEvent(player);
-                        holidaysNotified.add(holiday);
-                    }
+                if (holiday.getDate().equals(date)) {
+                    holiday.setIsToday();
                 }
             }
-        } catch (Exception ignored) {
+            Mekanism.logger.info("Initialized HolidayManager.");
         }
     }
 
-    public static Holiday getHoliday() {
-        return holidaysNotified.isEmpty() ? null : holidaysNotified.get(0);
+    public static void notify(PlayerEntity player) {
+        for (Holiday holiday : holidays) {
+            if (holiday.isToday() && !holiday.hasNotified()) {
+                holiday.notify(player);
+            }
+        }
     }
 
     public static SoundEventRegistryObject<SoundEvent> filterSound(SoundEventRegistryObject<SoundEvent> sound) {
         if (!MekanismConfig.client.holidays.get()) {
             return sound;
         }
-        try {
-            YearlyDate date = getDate();
-            for (Holiday holiday : holidays) {
-                if (holiday.getDate().equals(date)) {
-                    return holiday.filterSound(sound);
-                }
+        for (Holiday holiday : holidays) {
+            if (holiday.isToday()) {
+                return holiday.filterSound(sound);
             }
-        } catch (Exception ignored) {
         }
         return sound;
     }
@@ -115,12 +111,32 @@ public final class HolidayManager {
 
     public static abstract class Holiday {
 
+        private boolean hasNotified;
+        private boolean isToday;
+
         public abstract YearlyDate getDate();
 
-        public abstract void onEvent(PlayerEntity player);
+        public void onEvent(PlayerEntity player) {}
 
         public SoundEventRegistryObject<SoundEvent> filterSound(SoundEventRegistryObject<SoundEvent> sound) {
             return sound;
+        }
+
+        private boolean hasNotified() {
+            return hasNotified;
+        }
+
+        private void notify(PlayerEntity player) {
+            onEvent(player);
+            hasNotified = true;
+        }
+
+        private void setIsToday() {
+            isToday = true;
+        }
+
+        public boolean isToday() {
+            return isToday;
         }
     }
 
@@ -192,6 +208,14 @@ public final class HolidayManager {
             player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)), Util.field_240973_b_);
             player.sendMessage(MekanismLang.MAY_4_LINE_ONE.translateColored(EnumColor.GRAY, EnumColor.DARK_BLUE, player.getName()), Util.field_240973_b_);
             player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"), Util.field_240973_b_);
+        }
+    }
+
+    public static class AprilFools extends Holiday {
+
+        @Override
+        public YearlyDate getDate() {
+            return new YearlyDate(4, 1);
         }
     }
 

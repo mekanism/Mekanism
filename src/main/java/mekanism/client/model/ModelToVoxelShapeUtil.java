@@ -1,9 +1,5 @@
 package mekanism.client.model;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,6 +8,10 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.stream.Stream;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import mekanism.common.Mekanism;
 
 //TODO: JavaDoc - contains client side methods to help convert models to VoxelShapes
@@ -45,7 +45,7 @@ public class ModelToVoxelShapeUtil {
     }*/
 
     public static void main(String[] args) {
-        printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/generators/resources/assets/mekanismgenerators/models/block/fission/control_rod_assembly.json");
+        printoutModelFile("/Users/aidancbrady/Documents/Mekanism/src/main/resources/assets/mekanism/models/block/digital_miner.json");
     }
 
     public static void printoutModelFile(String path) {

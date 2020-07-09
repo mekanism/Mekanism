@@ -17,6 +17,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.SpecialColors;
+import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.model.baked.MekanismModel;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.ValveRenderData;
@@ -349,6 +350,8 @@ public class MekanismRenderer {
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_modules"));
         event.addSprite(Mekanism.rl("entity/armor/mekatool"));
 
+        DigitalMinerBakedModel.preStitch(event);
+
         addChemicalSprites(event, MekanismAPI.gasRegistry());
         addChemicalSprites(event, MekanismAPI.infuseTypeRegistry());
         addChemicalSprites(event, MekanismAPI.pigmentRegistry());
@@ -399,6 +402,8 @@ public class MekanismRenderer {
         heatIcon = map.getSprite(Mekanism.rl("liquid/heat"));
         redstoneTorch = map.getSprite(new ResourceLocation("minecraft:block/redstone_torch"));
         redstonePulse = map.getSprite(Mekanism.rl("icon/redstone_control_pulse"));
+
+        DigitalMinerBakedModel.onStitch(event);
 
         //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
         RenderLogisticalTransporter.onStitch(map);

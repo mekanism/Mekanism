@@ -2,7 +2,6 @@ package mekanism.client.render.item;
 
 import java.util.concurrent.Callable;
 import mekanism.client.render.item.block.RenderChemicalDissolutionChamberItem;
-import mekanism.client.render.item.block.RenderDigitalMinerItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.block.RenderIndustrialAlarmItem;
@@ -27,10 +26,6 @@ public class ISTERProvider {
 
     public static Callable<ItemStackTileEntityRenderer> dissolution() {
         return RenderChemicalDissolutionChamberItem::new;
-    }
-
-    public static Callable<ItemStackTileEntityRenderer> miner() {
-        return RenderDigitalMinerItem::new;
     }
 
     public static Callable<ItemStackTileEntityRenderer> fluidTank() {

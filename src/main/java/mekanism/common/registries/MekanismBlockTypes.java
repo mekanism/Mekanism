@@ -1,9 +1,9 @@
 package mekanism.common.registries;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import java.util.EnumSet;
 import java.util.function.Supplier;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
@@ -272,7 +272,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.digitalMiner, MekanismConfig.storage.digitalMiner)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR))
           .withCustomShape(BlockShapes.DIGITAL_MINER)
-          .with(new AttributeCustomSelectionBox(true))
+          .with(new AttributeCustomSelectionBox(false))
           .build();
     // Formulaic Assemblicator
     public static final Machine<TileEntityFormulaicAssemblicator> FORMULAIC_ASSEMBLICATOR = MachineBuilder
