@@ -1,5 +1,6 @@
 {
 	"credit": "Model by CyanideX",
+	"loader": "mekanism:mekanism",
 	"texture_size": [64, 64],
 	"textures": {
 		"1": "mekanism:block/models/digital_miner_elements1",
@@ -7,9 +8,10 @@
 		"3": "mekanism:block/models/ports",
 		"4": "mekanism:block/models/ports_led",
 		"5": "mekanism:block/models/leds",
-		"6": "mekanism:block/models/digital_miner_screen_alt_led",
-		"7": "mekanism:block/models/digital_miner_screen_led",
-		"particle": "mekanism:block/models/digital_miner"
+		"6": "mekanism:block/models/digital_miner_screen_blank",
+		"7": "mekanism:block/models/digital_miner_screen_cmd",
+		"8": "mekanism:block/models/digital_miner_screen_hello",
+		"particle": "mekanism:block/steel_casing"
 	},
 	"elements": [
 		{
@@ -34,7 +36,7 @@
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [16, 23, -13]},
 			"faces": {
-				"north": {"uv": [0, 0, 12, 8], "texture": "#7"}
+				"north": {"uv": [0, 0, 12, 8], "texture": "#8", "lightLevel": 15}
 			}
 		},
 		{
@@ -87,7 +89,7 @@
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 23, -13]},
 			"faces": {
-				"north": {"uv": [0, 0, 12, 8], "texture": "#6"}
+				"north": {"uv": [0, 0, 12, 8], "texture": "#6", "lightLevel": 15}
 			}
 		},
 		{
@@ -140,7 +142,7 @@
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [0, 23, -13]},
 			"faces": {
-				"north": {"uv": [0, 8, 12, 16], "texture": "#7"}
+				"north": {"uv": [0, 0.0625, 12, 8.0625], "texture": "#7", "lightLevel": 15}
 			}
 		},
 		{
