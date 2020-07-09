@@ -220,11 +220,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     private void pop() {
         playSound(AdditionsSounds.POP.getSoundEvent(), 1, 1);
-        if (world.isRemote) {
+        if (!world.isRemote) {
             RedstoneParticleData redstoneParticleData = new RedstoneParticleData(color.getColor(0), color.getColor(1), color.getColor(2), 1.0F);
             for (int i = 0; i < 10; i++) {
-                world.addParticle(redstoneParticleData, getPosX() + 0.6 * rand.nextFloat() - 0.3, getPosY() + 0.6 * rand.nextFloat() - 0.3,
-                      getPosZ() + 0.6 * rand.nextFloat() - 0.3, 0, 0, 0);
+                ((ServerWorld) world).spawnParticle(redstoneParticleData, getPosX() + 0.6 * rand.nextFloat() - 0.3, getPosY() + 0.6 * rand.nextFloat() - 0.3,
+                      getPosZ() + 0.6 * rand.nextFloat() - 0.3, 1, 0, 0, 0, 0);
             }
         }
         remove();
