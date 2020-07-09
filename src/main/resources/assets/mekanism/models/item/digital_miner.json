@@ -7,8 +7,8 @@
 		"3": "mekanism:block/models/ports",
 		"4": "mekanism:block/models/ports_led",
 		"5": "mekanism:block/models/leds",
-		"6": "mekanism:block/models/digital_miner_screen_alt_led",
-		"7": "mekanism:block/models/digital_miner_screen_led",
+		"6": "mekanism:block/models/digital_miner_screen1_led",
+		"7": "mekanism:block/models/digital_miner_screen2_led",
 		"particle": "mekanism:block/models/digital_miner"
 	},
 	"elements": [
@@ -34,7 +34,7 @@
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [16, 23, -13]},
 			"faces": {
-				"north": {"uv": [0, 0, 12, 8], "texture": "#7"}
+				"north": {"uv": [0, 0, 12, 8], "texture": "#6"}
 			}
 		},
 		{
@@ -87,7 +87,7 @@
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 23, -13]},
 			"faces": {
-				"north": {"uv": [0, 0, 12, 8], "texture": "#6"}
+				"north": {"uv": [0, 0, 12, 8], "texture": "#7"}
 			}
 		},
 		{
