@@ -1,14 +1,12 @@
 {
 	"credit": "Model by CyanideX",
-	"loader": "mekanism:mekanism",
 	"texture_size": [64, 64],
 	"textures": {
 		"1": "mekanism:block/models/digital_miner_elements1",
 		"2": "mekanism:block/models/digital_miner_elements2",
 		"3": "mekanism:block/models/ports",
 		"4": "mekanism:block/models/ports_led",
-		"5": "mekanism:block/models/leds",
-		"particle": "mekanism:block/steel_casing"
+		"particle": "mekanism:block/models/digital_miner"
 	},
 	"elements": [
 		{
@@ -47,11 +45,11 @@
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [16, 22.5, -13.005]},
 			"faces": {
-				"north": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"east": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"south": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"west": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"down": {"uv": [0, 0, 2, 2], "texture": "#5"}
+				"north": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"east": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"south": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"west": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"down": {"uv": [10, 9, 11, 10], "texture": "#3"}
 			}
 		},
 		{
@@ -90,11 +88,11 @@
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [12, 14, 9]},
 			"faces": {
-				"north": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"east": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"south": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"west": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"down": {"uv": [0, 0, 2, 2], "texture": "#5"}
+				"north": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"east": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"south": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"west": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"down": {"uv": [10, 9, 11, 10], "texture": "#3"}
 			}
 		},
 		{
@@ -133,11 +131,11 @@
 			"shade": false,
 			"rotation": {"angle": 0, "axis": "y", "origin": [0, 23, -13]},
 			"faces": {
-				"north": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"east": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"south": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"west": {"uv": [0, 0, 2, 2], "texture": "#5"},
-				"down": {"uv": [0, 0, 2, 2], "texture": "#5"}
+				"north": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"east": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"south": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"west": {"uv": [10, 9, 11, 10], "texture": "#3"},
+				"down": {"uv": [10, 9, 11, 10], "texture": "#3"}
 			}
 		},
 		{
@@ -1111,7 +1109,7 @@
 		{
 			"name": "port_top",
 			"origin": [13, 23, 31.5],
-			"children": [75, 76, 77, 78, 79]
+			"children": [75, 76]
 		}
 	]
 }
