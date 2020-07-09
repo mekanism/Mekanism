@@ -12,7 +12,7 @@ public class MekanismBlockLootTables extends BaseBlockLootTables {
     protected void addTables() {
         skip(MekanismBlocks.BOUNDING_BLOCK, MekanismBlocks.ADVANCED_BOUNDING_BLOCK);
         registerLootTable(block -> droppingWithSilkTouchOrRandomly(block, MekanismItems.SALT, ConstantRange.of(4)), MekanismBlocks.SALT_BLOCK);
-        registerLootTable(block -> droppingWithSilkTouchOrRandomly(block, MekanismItems.FLUORITE_GEM, RandomValueRange.of(2, 4)), MekanismBlocks.ORES.get(OreType.FLUORITE));
+        registerLootTable(block -> droppingWithFortuneOrRandomly(block, MekanismItems.FLUORITE_GEM, RandomValueRange.of(2, 4)), MekanismBlocks.ORES.get(OreType.FLUORITE));
         //Register the remaining blocks as dropping themselves with any contents they may have stored
         registerDropSelfWithContentsLootTable(MekanismBlocks.BLOCKS.getAllBlocks());
     }

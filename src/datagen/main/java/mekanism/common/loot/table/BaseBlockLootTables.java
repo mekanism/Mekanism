@@ -23,15 +23,20 @@ import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Block;
 import net.minecraft.data.loot.BlockLootTables;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.loot.ConstantRange;
+import net.minecraft.loot.IRandomRange;
 import net.minecraft.loot.ItemLootEntry;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTable.Builder;
+import net.minecraft.loot.functions.ApplyBonus;
 import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.loot.functions.CopyNbt.Source;
+import net.minecraft.loot.functions.SetCount;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
 
@@ -65,6 +70,11 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
     protected boolean skipBlock(Block block) {
         //Skip any blocks that we already registered a table for or have marked to skip
         return knownBlocks.contains(block) || toSkip.contains(block);
+    }
+
+    protected static LootTable.Builder droppingWithFortuneOrRandomly(Block block, IItemProvider item, IRandomRange range) {
+        return droppingWithSilkTouch(block, withExplosionDecay(block, ItemLootEntry.builder(item.asItem()).acceptFunction(SetCount.builder(range))
+              .acceptFunction(ApplyBonus.oreDrops(Enchantments.FORTUNE))));
     }
 
     //IBlockProvider versions of BlockLootTable methods, modified to support varargs
