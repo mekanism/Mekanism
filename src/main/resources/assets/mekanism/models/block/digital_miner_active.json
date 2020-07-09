@@ -1,4 +1,5 @@
 {
+	"loader": "mekanism:mekanism",
 	"credit": "Model by CyanideX",
 	"texture_size": [64, 64],
 	"textures": {
