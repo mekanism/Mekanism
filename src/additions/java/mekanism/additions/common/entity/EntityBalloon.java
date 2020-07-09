@@ -98,7 +98,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     public EntityBalloon(World world, BlockPos pos, EnumColor c) {
         this(AdditionsEntityTypes.BALLOON, world);
         latched = pos;
-        setPosition(latched.getX() + 0.5F, latched.getY() + 1.7F, latched.getZ() + 0.5F);
+        setPosition(latched.getX() + 0.5F, latched.getY() + 1.8F, latched.getZ() + 0.5F);
 
         prevPosX = getPosX();
         prevPosY = getPosY();
