@@ -6,7 +6,7 @@ import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.FluidSlurryToSlurryRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.ItemStackChemicalToChemicalRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ChemicalDissolutionRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackGasToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
@@ -204,7 +204,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               slurry.getCleanSlurry().getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "slurry/clean"));
         // dirty
-        ItemStackChemicalToChemicalRecipeBuilder.dissolution(
+        ChemicalDissolutionRecipeBuilder.dissolution(
               ItemStackIngredient.from(resource.getOreTag()),
               GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
               slurry.getDirtySlurry().getStack(1_000)
@@ -429,7 +429,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               MekanismItems.YELLOW_CAKE_URANIUM.getItemStack(2)
         ).build(consumer, Mekanism.rl(basePath + "yellow_cake_uranium"));
         //hydrofluoric acid
-        ItemStackChemicalToChemicalRecipeBuilder.dissolution(
+        ChemicalDissolutionRecipeBuilder.dissolution(
               ItemStackIngredient.from(MekanismTags.Items.GEMS_FLUORITE),
               GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
               MekanismGases.HYDROFLUORIC_ACID.getStack(1_000)

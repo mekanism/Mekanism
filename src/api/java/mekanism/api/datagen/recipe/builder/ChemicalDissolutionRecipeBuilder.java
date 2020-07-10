@@ -17,13 +17,13 @@ import net.minecraft.util.ResourceLocation;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemStackChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<ItemStackChemicalToChemicalRecipeBuilder> {
+public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<ChemicalDissolutionRecipeBuilder> {
 
     private final ItemStackIngredient itemInput;
     private final GasStackIngredient gasInput;
     private final BoxedChemicalStack output;
 
-    protected ItemStackChemicalToChemicalRecipeBuilder(ResourceLocation serializerName, ItemStackIngredient itemInput, GasStackIngredient gasInput,
+    protected ChemicalDissolutionRecipeBuilder(ResourceLocation serializerName, ItemStackIngredient itemInput, GasStackIngredient gasInput,
           ChemicalStack<?> output) {
         super(serializerName);
         this.itemInput = itemInput;
@@ -31,21 +31,21 @@ public class ItemStackChemicalToChemicalRecipeBuilder extends MekanismRecipeBuil
         this.output = BoxedChemicalStack.box(output);
     }
 
-    public static ItemStackChemicalToChemicalRecipeBuilder dissolution(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
+    public static ChemicalDissolutionRecipeBuilder dissolution(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This dissolution chamber recipe requires a non empty chemical output.");
         }
-        return new ItemStackChemicalToChemicalRecipeBuilder(mekSerializer("dissolution"), itemInput, gasInput, output);
+        return new ChemicalDissolutionRecipeBuilder(mekSerializer("dissolution"), itemInput, gasInput, output);
     }
 
     @Override
-    protected ItemStackGasToGasRecipeResult getResult(ResourceLocation id) {
-        return new ItemStackGasToGasRecipeResult(id);
+    protected ChemicalDissolutionRecipeResult getResult(ResourceLocation id) {
+        return new ChemicalDissolutionRecipeResult(id);
     }
 
-    public class ItemStackGasToGasRecipeResult extends RecipeResult {
+    public class ChemicalDissolutionRecipeResult extends RecipeResult {
 
-        protected ItemStackGasToGasRecipeResult(ResourceLocation id) {
+        protected ChemicalDissolutionRecipeResult(ResourceLocation id) {
             super(id);
         }
 

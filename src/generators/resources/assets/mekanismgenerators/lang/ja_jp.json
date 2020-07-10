@@ -94,7 +94,7 @@
   "fission.mekanismgenerators.max_burn_rate": "Max Burn Rate: %s mB/t",
   "fission.mekanismgenerators.port_mode_change": "Port mode changed to: %s",
   "fission.mekanismgenerators.port_mode_input": "input only",
-  "fission.mekanismgenerators.port_mode_output_coolant": "output coolant",
+  "fission.mekanismgenerators.port_mode_output_coolant": "出力クーラント",
   "fission.mekanismgenerators.port_mode_output_waste": "output waste",
   "fission.mekanismgenerators.rate_limit": "Rate Limit: %s mB/t",
   "fission.mekanismgenerators.scram": "SCRAM",
