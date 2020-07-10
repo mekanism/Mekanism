@@ -332,7 +332,6 @@ public class Mekanism {
         TransporterManager.reset();
         PathfinderCache.reset();
         TransmitterNetworkRegistry.reset();
-        Modules.resetSupportedContainers();
     }
 
     private void imcQueue(InterModEnqueueEvent event) {
