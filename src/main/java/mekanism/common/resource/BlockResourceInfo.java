@@ -6,16 +6,15 @@ public enum BlockResourceInfo implements IResource {
     COPPER("copper", 5, 10, 1),
     LEAD("lead", 5, 10, 1),
     URANIUM("uranium", 5, 10, 1),
-    CHARCOAL("charcoal", 5, 10, 0, 16_000, 0, false),
+    CHARCOAL("charcoal", 5, 10, 0, 16_000),
     BRONZE("bronze", 5, 15, 1),
     STEEL("steel", 5, 15, 1),
-    REFINED_OBSIDIAN("refined_obsidian", 50, 4_000, 2, -1, 8, true, false, true),
+    REFINED_OBSIDIAN("refined_obsidian", 50, 4_000, 2, -1, 8, false, true),
     REFINED_GLOWSTONE("refined_glowstone", 5, 10, 1, -1, 15);
 
     private final String registrySuffix;
     private final boolean portalFrame;
     private final boolean burnsInFire;
-    private final boolean beaconBase;
     private final float resistance;
     private final float hardness;
     private final int burnTime;
@@ -32,23 +31,13 @@ public enum BlockResourceInfo implements IResource {
     }
 
     BlockResourceInfo(String registrySuffix, float hardness, float resistance, int harvestLevel, int burnTime, int lightValue) {
-        this(registrySuffix, hardness, resistance, harvestLevel, burnTime, lightValue, true);
+        this(registrySuffix, hardness, resistance, harvestLevel, burnTime, lightValue, true, false);
     }
 
-    BlockResourceInfo(String registrySuffix, float hardness, float resistance, int harvestLevel, int burnTime, int lightValue, boolean beaconBase) {
-        this(registrySuffix, hardness, resistance, harvestLevel, burnTime, lightValue, beaconBase, true);
-    }
-
-    BlockResourceInfo(String registrySuffix, float hardness, float resistance, int harvestLevel, int burnTime, int lightValue, boolean beaconBase, boolean burnsInFire) {
-        this(registrySuffix, hardness, resistance, harvestLevel, burnTime, lightValue, beaconBase, burnsInFire, false);
-    }
-
-    BlockResourceInfo(String registrySuffix, float hardness, float resistance, int harvestLevel, int burnTime, int lightValue, boolean beaconBase, boolean burnsInFire,
-          boolean portalFrame) {
+    BlockResourceInfo(String registrySuffix, float hardness, float resistance, int harvestLevel, int burnTime, int lightValue , boolean burnsInFire, boolean portalFrame) {
         this.registrySuffix = registrySuffix;
         this.portalFrame = portalFrame;
         this.burnsInFire = burnsInFire;
-        this.beaconBase = beaconBase;
         this.burnTime = burnTime;
         this.lightValue = lightValue;
         this.resistance = resistance;
@@ -75,11 +64,6 @@ public enum BlockResourceInfo implements IResource {
 
     public int getLightValue() {
         return lightValue;
-    }
-
-    public boolean isBeaconBase() {
-        //TODO: Remove this once https://github.com/MinecraftForge/MinecraftForge/issues/6910 is resolved as we add to vanilla's beacon base tag
-        return beaconBase;
     }
 
     public boolean isPortalFrame() {

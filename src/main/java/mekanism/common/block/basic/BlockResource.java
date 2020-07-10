@@ -28,11 +28,6 @@ public class BlockResource extends BlockMekanism {
     }
 
     @Override
-    public boolean isBeaconBase(BlockState state, IWorldReader world, BlockPos pos, BlockPos beacon) {
-        return resource.isBeaconBase();
-    }
-
-    @Override
     public boolean isPortalFrame(BlockState state, IWorldReader world, BlockPos pos) {
         return resource.isPortalFrame();
     }
