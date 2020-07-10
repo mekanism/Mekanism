@@ -25,6 +25,8 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
 
     boolean isMaster();
 
+    boolean canBeMaster();
+
     Structure getStructure();
 
     void setStructure(Structure structure);

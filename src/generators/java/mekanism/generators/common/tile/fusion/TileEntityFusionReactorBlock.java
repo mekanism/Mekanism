@@ -30,7 +30,7 @@ public class TileEntityFusionReactorBlock extends TileEntityMultiblock<FusionRea
     }
 
     @Override
-    protected boolean canBeMaster() {
+    public boolean canBeMaster() {
         return false;
     }
 

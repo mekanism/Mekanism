@@ -1,9 +1,9 @@
 package mekanism.common.tile.prefab;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
@@ -164,7 +164,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         }
     }
 
-    protected boolean canBeMaster() {
+    @Override
+    public boolean canBeMaster() {
         return true;
     }
 
