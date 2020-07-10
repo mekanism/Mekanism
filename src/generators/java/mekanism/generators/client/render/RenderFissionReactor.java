@@ -1,8 +1,8 @@
 package mekanism.generators.client.render;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -14,6 +14,7 @@ import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
@@ -60,7 +61,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                     data.height = height;
                     data.length = tile.getMultiblock().length();
                     data.width = tile.getMultiblock().width();
-                    int glow = data.calculateGlowLight(light);
+                    int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
                     matrix.push();
                     matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                     MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.getMultiblock().prevCoolantScale), matrix, buffer, data.getColorARGB(tile.getMultiblock().prevCoolantScale), glow);
@@ -76,11 +77,12 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                     data.height = height;
                     data.length = tile.getMultiblock().length();
                     data.width = tile.getMultiblock().width();
+                    int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
                     matrix.push();
                     matrix.scale(0.998F, 0.998F, 0.998F);
                     matrix.translate(data.location.getX() - pos.getX() + 0.001, data.location.getY() - pos.getY() + 0.001, data.location.getZ() - pos.getZ() + 0.001);
                     Model3D gasModel = ModelRenderer.getModel(data, 1);
-                    MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevHeatedCoolantScale), data.calculateGlowLight(light));
+                    MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevHeatedCoolantScale), glow);
                     matrix.pop();
                 }
             }

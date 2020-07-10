@@ -1,9 +1,9 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -18,6 +18,7 @@ import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
@@ -43,7 +44,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
                 IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
                 BlockPos pos = tile.getPos();
                 matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                int glow = data.calculateGlowLight(light);
+                int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
                 Model3D model = ModelRenderer.getModel(data, tile.getMultiblock().prevScale);
                 MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevScale), glow);
                 matrix.pop();

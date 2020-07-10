@@ -1,11 +1,11 @@
 package mekanism.generators.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -41,7 +41,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             FluidStack fluid = tile.bioFuelTank.getFluid();
             float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
             MekanismRenderer.renderObject(getModel(tile.getDirection(), (int) (fluidScale * (stages - 1))), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
-                  MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid));
+                  MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT);
             matrix.pop();
         }
     }
