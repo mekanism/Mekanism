@@ -39,17 +39,17 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
     }
 
     @Override
-    protected ChemicalToItemStackRecipeResult getResult(ResourceLocation id) {
-        return new ChemicalToItemStackRecipeResult(id);
+    protected ChemicalCrystallizerRecipeResult getResult(ResourceLocation id) {
+        return new ChemicalCrystallizerRecipeResult(id);
     }
 
     public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, output.getItem().getRegistryName());
     }
 
-    public class ChemicalToItemStackRecipeResult extends RecipeResult {
+    public class ChemicalCrystallizerRecipeResult extends RecipeResult {
 
-        protected ChemicalToItemStackRecipeResult(ResourceLocation id) {
+        protected ChemicalCrystallizerRecipeResult(ResourceLocation id) {
             super(id);
         }
 
