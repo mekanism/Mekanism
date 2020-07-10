@@ -40,7 +40,7 @@ public class PlayerState {
         activeFlamethrowers.remove(uuid);
         if (FMLEnvironment.dist.isClient()) {
             SoundHandler.clearPlayerSounds(uuid);
-            if (Minecraft.getInstance().player.getUniqueID().equals(uuid)) {
+            if (Minecraft.getInstance().player == null || Minecraft.getInstance().player.getUniqueID().equals(uuid)) {
                 SoundHandler.radiationSoundMap.clear();
             }
         }
