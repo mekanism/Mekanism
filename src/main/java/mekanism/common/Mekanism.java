@@ -1,11 +1,13 @@
 package mekanism.common;
 
-import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -107,8 +109,6 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(Mekanism.MODID)
 public class Mekanism {
@@ -315,7 +315,6 @@ public class Mekanism {
         BuildCommand.register("tank", new TankBuilder());
         BuildCommand.register("evaporation", new EvaporationBuilder());
         event.getCommandDispatcher().register(CommandMek.register());
-        Modules.processSupportedContainers();
     }
 
     private void serverStopped(FMLServerStoppedEvent event) {
@@ -358,6 +357,9 @@ public class Mekanism {
         //Register player tracker
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTracker());
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTickHandler());
+
+        //Set up module container tooltips
+        Modules.processSupportedContainers();
 
         //Initialization notification
         logger.info("Version {} initializing...", versionNumber);
