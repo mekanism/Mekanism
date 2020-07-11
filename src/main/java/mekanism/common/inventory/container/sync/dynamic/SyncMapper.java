@@ -4,11 +4,6 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.lang.annotation.ElementType;
-import java.lang.invoke.CallSite;
-import java.lang.invoke.LambdaMetafactory;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +38,7 @@ import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.network.container.property.PropertyType;
+import mekanism.common.util.LambdaMetaFactoryUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -54,7 +50,6 @@ import org.objectweb.asm.Type;
 public class SyncMapper {
 
     public static final String DEFAULT_TAG = "default";
-    private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
     private static final List<SpecialPropertyHandler<?>> specialProperties = new ArrayList<>();
     private static final Map<Class<?>, PropertyDataClassCache> syncablePropertyMap = new Object2ObjectOpenHashMap<>();
 
@@ -144,11 +139,11 @@ public class SyncMapper {
                         PropertyType type = PropertyType.getFromType(field.getType());
                         String setterName = (String) annotationData.getOrDefault("setter", "");
                         if (type != null) {
-                            newField = new PropertyField(new TrackedFieldData(createGetter(field, annotatedClass, getterName),
-                                  createSetter(field, annotatedClass, setterName), type));
+                            newField = new PropertyField(new TrackedFieldData(LambdaMetaFactoryUtil.createGetter(field, annotatedClass, getterName),
+                                  LambdaMetaFactoryUtil.createSetter(field, annotatedClass, setterName), type));
                         } else if (field.getType().isEnum()) {
-                            newField = new PropertyField(new EnumFieldData(createGetter(field, annotatedClass, getterName),
-                                  createSetter(field, annotatedClass, setterName), field.getType()));
+                            newField = new PropertyField(new EnumFieldData(LambdaMetaFactoryUtil.createGetter(field, annotatedClass, getterName),
+                                  LambdaMetaFactoryUtil.createSetter(field, annotatedClass, setterName), field.getType()));
                         } else {
                             Mekanism.logger.error("Attempted to sync an invalid field '{}'", fieldName);
                             return;
@@ -240,7 +235,7 @@ public class SyncMapper {
         PropertyField ret = new PropertyField();
         for (SpecialPropertyData<O> data : handler.specialData) {
             // create a getter for the actual property field itself
-            Function<Object, O> fieldGetter = createGetter(field, objType, getterName);
+            Function<Object, O> fieldGetter = LambdaMetaFactoryUtil.createGetter(field, objType, getterName);
             // create a new tracked field
             TrackedFieldData trackedField = TrackedFieldData.create(data.propertyType, obj -> data.get(fieldGetter.apply(obj)), (obj, val) -> data.set(fieldGetter.apply(obj), val));
             if (trackedField != null) {
@@ -248,38 +243,6 @@ public class SyncMapper {
             }
         }
         return ret;
-    }
-
-    private static <O, V> Function<O, V> createGetter(Field field, Class<?> objType, String getterName) throws Throwable {
-        if (getterName.isEmpty()) {
-            MethodHandle getter = LOOKUP.unreflectGetter(field);
-            MethodType type = getter.type();
-            if (field.getType().isPrimitive()) {
-                type = type.wrap().dropParameterTypes(0, 0);
-            }
-            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "apply", MethodType.methodType(Function.class, MethodHandle.class), type.erase(), MethodHandles.exactInvoker(getter.type()), type);
-            return (Function<O, V>) site.getTarget().invokeExact(getter);
-        } else {
-            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "apply", MethodType.methodType(Function.class), MethodType.methodType(Object.class, Object.class),
-                  LOOKUP.findVirtual(objType, getterName, MethodType.methodType(field.getType())), MethodType.methodType(field.getType(), objType));
-            return (Function<O, V>) site.getTarget().invokeExact();
-        }
-    }
-
-    private static <O, V> BiConsumer<O, V> createSetter(Field field, Class<?> objType, String setterName) throws Throwable {
-        if (setterName.isEmpty()) {
-            MethodHandle setter = LOOKUP.unreflectSetter(field);
-            MethodType type = setter.type();
-            if (field.getType().isPrimitive()) {
-                type = type.wrap().changeReturnType(void.class);
-            }
-            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "accept", MethodType.methodType(BiConsumer.class, MethodHandle.class), type.erase(), MethodHandles.exactInvoker(setter.type()), type);
-            return (BiConsumer<O, V>) site.getTarget().invokeExact(setter);
-        } else {
-            CallSite site = LambdaMetafactory.metafactory(LOOKUP, "accept", MethodType.methodType(BiConsumer.class), MethodType.methodType(void.class, Object.class, Object.class),
-                  LOOKUP.findVirtual(objType, setterName, MethodType.methodType(void.class, field.getType())), MethodType.methodType(void.class, objType, field.getType()));
-            return (BiConsumer<O, V>) site.getTarget().invokeExact();
-        }
     }
 
     private static class PropertyDataClassCache {
