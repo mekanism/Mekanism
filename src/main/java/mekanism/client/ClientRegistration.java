@@ -411,14 +411,14 @@ public class ClientRegistration {
 
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             int tint = item.getColumnKey().getTint();
-            itemColors.register((stack, index) -> index == 1 ? tint : -1, item.getValue());
+            ClientRegistrationUtil.registerItemColorHandler(itemColors, (stack, index) -> index == 1 ? tint : -1, item.getValue());
         }
         for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             int tint = entry.getKey().getTint();
             ClientRegistrationUtil.registerBlockColorHandler(blockColors, itemColors, (state, world, pos, index) -> index == 1 ? tint : -1,
                   (stack, index) -> index == 1 ? tint : -1, entry.getValue());
         }
-        itemColors.register((stack, index) -> {
+        ClientRegistrationUtil.registerItemColorHandler(itemColors, (stack, index) -> {
             if (index == 1) {
                 ItemPortableQIODashboard item = (ItemPortableQIODashboard) stack.getItem();
                 EnumColor color = item.getColor(stack);
