@@ -101,7 +101,7 @@ public class PacketGuiInteract {
         if (pkt.interactionType == Type.INT) {
             buf.writeEnumValue(pkt.interaction);
             buf.writeBlockPos(pkt.tilePosition);
-            buf.writeVarLong(pkt.extra);
+            buf.writeVarInt(pkt.extra);
         } else if (pkt.interactionType == Type.ITEM) {
             buf.writeEnumValue(pkt.itemInteraction);
             buf.writeBlockPos(pkt.tilePosition);
