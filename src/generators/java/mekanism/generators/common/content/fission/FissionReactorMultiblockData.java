@@ -1,9 +1,10 @@
 package mekanism.generators.common.content.fission;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -30,10 +31,12 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -90,6 +93,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     private boolean active;
 
+    private AxisAlignedBB hotZone;
+
     public float prevCoolantScale, prevFuelScale, prevHeatedCoolantScale, prevWasteScale;
 
     public FissionReactorMultiblockData(TileEntityFissionReactorCasing tile) {
@@ -130,6 +135,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 heatHandlers.add((ITileHeatHandler) tile);
             }
         }
+
+        hotZone = new AxisAlignedBB(getMinPos().getX() + 1, getMinPos().getY() + 1, getMinPos().getZ() + 1,
+              getMaxPos().getX(), getMaxPos().getY(), getMaxPos().getZ());
     }
 
     @Override
@@ -160,6 +168,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         // update temperature
         updateHeatCapacitors(null);
         handleDamage(world);
+        radiateEntities(world);
 
         // update scales
         float coolantScale = MekanismUtils.getScale(prevCoolantScale, fluidCoolantTank);
@@ -294,6 +303,16 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
         // update previous burn
         lastBurnRate = toBurn;
+    }
+
+    private void radiateEntities(World world) {
+        if (isBurning() && world.getRandom().nextInt() % 20 == 0) {
+            List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesWithinAABB(LivingEntity.class, hotZone);
+
+            for (LivingEntity entity : entitiesToRadiate) {
+                Mekanism.radiationManager.radiate(entity, lastBurnRate);
+            }
+        }
     }
 
     public boolean isActive() {

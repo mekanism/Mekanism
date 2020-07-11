@@ -1,6 +1,5 @@
 package mekanism.common.lib.radiation;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.UUID;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
@@ -26,10 +26,13 @@ import mekanism.common.network.PacketRadiationData;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -41,21 +44,29 @@ import net.minecraft.world.World;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
  * equivalent dose. For reference, here are examples of equivalent dose (credit: wikipedia)
  *
- * 100 nSv: baseline dose (banana equivalent dose) 250 nSv: airport security screening 1 mSv: annual total civilian dose equivalent 50 mSv: annual total occupational
- * equivalent dose limit 250 mSv: total dose equivalent from 6-month trip to mars 1 Sv: maximum allowed dose allowed for NASA astronauts over their careers 5 Sv: dose
- * required to (50% chance) kill human if received over 30-day period 50 Sv: dose received after spending 10 min next to Chernobyl reactor core directly after meltdown
+ * 100 nSv: baseline dose (banana equivalent dose)
+ * 250 nSv: airport security screening
+ * 1 mSv: annual total civilian dose equivalent
+ * 50 mSv: annual total occupational equivalent dose limit
+ * 250 mSv: total dose equivalent from 6-month trip to mars
+ * 1 Sv: maximum allowed dose allowed for NASA astronauts over their careers
+ * 5 Sv: dose  required to (50% chance) kill human if received over 30-day period
+ * 50 Sv: dose received after spending 10 min next to Chernobyl reactor core directly after meltdown
  *
  * For defining rate of accumulation, we use _sieverts per hour_ (Sv/h). Here are examples of dose accumulation rates.
  *
- * 100 nSv/h: max recommended human irradiation 2.7 uSv/h: irradiation from airline at cruise altitude 190 mSv/h: highest reading from fallout of Trinity (Manhattan
- * project test) bomb, _20 miles away_, 3 hours after detonation ~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station (at this rate, it
- * takes 30 seconds to accumulate a median lethal dose)
+ * 100 nSv/h: max recommended human irradiation
+ * 2.7 uSv/h: irradiation from airline at cruise altitude
+ * 190 mSv/h: highest reading from fallout of Trinity (Manhattan project test) bomb, _20 miles away_, 3 hours after detonation
+ * ~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station (at this rate, it takes 30 seconds to accumulate a median lethal dose)
  *
  * @author aidancbrady
  */
@@ -132,6 +143,17 @@ public class RadiationManager {
         }
     }
 
+    public void radiate(LivingEntity entity, double magnitude) {
+        if (!MekanismConfig.general.radiationEnabled.get()) {
+            return;
+        }
+        if (!(entity instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) entity)) {
+            entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+                c.radiate(magnitude * (1 - Math.min(1, getRadiationResistance(entity))));
+            });
+        }
+    }
+
     public void createMeltdown(World world, BlockPos minPos, BlockPos maxPos, double magnitude, double chance) {
         meltdowns.computeIfAbsent(world.func_234923_W_().func_240901_a_(), id -> new ArrayList<>()).add(new Meltdown(world, minPos, maxPos, magnitude, chance));
     }
@@ -144,9 +166,10 @@ public class RadiationManager {
         return source.getMagnitude() / Math.max(1, Math.pow(coord.distanceTo(source.getPos()), 2));
     }
 
-    private double getRadiationResistance(PlayerEntity player) {
+    private double getRadiationResistance(LivingEntity entity) {
         double resistance = 0;
-        for (ItemStack stack : player.inventory.armorInventory) {
+        for (EquipmentSlotType type : EnumUtils.ARMOR_SLOTS) {
+            ItemStack stack = entity.getItemStackFromSlot(type);
             Optional<IRadiationShielding> shielding = MekanismUtils.toOptional(CapabilityUtils.getCapability(stack, Capabilities.RADIATION_SHIELDING_CAPABILITY, null));
             if (shielding.isPresent()) {
                 resistance += shielding.get().getRadiationShielding();
@@ -178,31 +201,34 @@ public class RadiationManager {
     }
 
     public void tickServer(ServerPlayerEntity player) {
+        updateEntityRadiation(player);
+    }
+
+    public void updateEntityRadiation(LivingEntity entity) {
         // terminate early if we're disabled
         if (!MekanismConfig.general.radiationEnabled.get()) {
             return;
         }
         // each tick, there is a 1/20 chance we will apply radiation to each player
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
-        if (player.world.getRandom().nextInt(20) == 0) {
-            double magnitude = getRadiationLevel(new Coord4D(player));
-            if (magnitude > BASELINE && MekanismUtils.isPlayingMode(player)) {
+        if (entity.world.getRandom().nextInt(20) == 0) {
+            double magnitude = getRadiationLevel(new Coord4D(entity));
+            if (magnitude > BASELINE && (!(entity instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) entity))) {
                 // apply radiation to the player
-                player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
-                    double added = magnitude * (1 - Math.min(1, getRadiationResistance(player)));
-                    added /= 3_600D; // convert to Sv/s
-                    c.radiate(added);
-                });
+                radiate(entity, magnitude / 3_600D); // convert to Sv/s
             }
-            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(IRadiationEntity::decay);
-            RadiationScale scale = RadiationScale.get(magnitude);
-            if (playerExposureMap.get(player.getUniqueID()) != scale) {
-                playerExposureMap.put(player.getUniqueID(), scale);
-                Mekanism.packetHandler.sendTo(PacketRadiationData.create(scale), player);
+            entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(IRadiationEntity::decay);
+            if (entity instanceof ServerPlayerEntity) {
+                ServerPlayerEntity player = (ServerPlayerEntity) entity;
+                RadiationScale scale = RadiationScale.get(magnitude);
+                if (playerExposureMap.get(player.getUniqueID()) != scale) {
+                    playerExposureMap.put(player.getUniqueID(), scale);
+                    Mekanism.packetHandler.sendTo(PacketRadiationData.create(scale), player);
+                }
             }
         }
         // update the radiation capability (decay, sync, effects)
-        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.update(player));
+        entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.update(entity));
     }
 
     public void tickServerWorld(World world) {
@@ -271,6 +297,14 @@ public class RadiationManager {
 
     public void resetPlayer(UUID uuid) {
         playerExposureMap.remove(uuid);
+    }
+
+    @SubscribeEvent
+    public void onLivingUpdate(LivingUpdateEvent event) {
+        World world = event.getEntityLiving().getEntityWorld();
+        if (!world.isRemote() && !(event.getEntityLiving() instanceof PlayerEntity) && world.getRandom().nextInt() % 20 == 0) {
+            updateEntityRadiation(event.getEntityLiving());
+        }
     }
 
     public enum RadiationScale {

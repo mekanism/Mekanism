@@ -11,6 +11,7 @@ import mekanism.common.network.PacketRadiationData;
 import mekanism.common.network.PacketResetPlayerClient;
 import mekanism.common.network.PacketSecurityUpdate;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -78,7 +79,7 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void attachCaps(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof PlayerEntity) {
+        if (event.getObject() instanceof LivingEntity) {
             DefaultRadiationEntity.Provider radiationProvider = new DefaultRadiationEntity.Provider();
             event.addCapability(DefaultRadiationEntity.Provider.NAME, radiationProvider);
             event.addListener(radiationProvider::invalidate);

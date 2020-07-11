@@ -51,6 +51,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.TileEntityChargepad;
@@ -390,7 +391,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     protected void damageEntity(@Nonnull DamageSource damageSource, float amount) {
         amount = ForgeHooks.onLivingHurt(this, damageSource, amount);
-        if (amount <= 0) {
+        if (amount <= 0 || damageSource == MekanismDamageSource.RADIATION) {
             return;
         }
         amount = applyArmorCalculations(damageSource, amount);

@@ -13,6 +13,8 @@ import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.network.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -39,25 +41,32 @@ public class DefaultRadiationEntity implements IRadiationEntity {
     }
 
     @Override
-    public void update(ServerPlayerEntity player) {
-        if (clientSeverity != radiation) {
-            clientSeverity = radiation;
-            PacketRadiationData.sync(player);
+    public void update(LivingEntity entity) {
+        if (entity instanceof PlayerEntity && !MekanismUtils.isPlayingMode((PlayerEntity) entity)) {
+            return;
         }
 
-        if (MekanismUtils.isPlayingMode(player)) {
-            Random rand = player.world.getRandom();
-            double minSeverity = MekanismConfig.general.radiationNegativeEffectsMinSeverity.get();
-            double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
-            // Add food exhaustion randomly
-            double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
+        Random rand = entity.world.getRandom();
+        double minSeverity = MekanismConfig.general.radiationNegativeEffectsMinSeverity.get();
+        double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
+        double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
+
+        // Hurt randomly
+        chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
+        if (severityScale > chance && rand.nextInt() % 2 == 0) {
+            entity.attackEntityFrom(MekanismDamageSource.RADIATION, 1);
+        }
+
+        if (entity instanceof PlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity) entity;
+
+            if (clientSeverity != radiation) {
+                clientSeverity = radiation;
+                PacketRadiationData.sync(player);
+            }
+
             if (severityScale > chance) {
                 player.getFoodStats().addExhaustion(1F);
-            }
-            // Hurt player randomly
-            chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
-            if (severityScale > chance && rand.nextInt() % 2 == 0) {
-                player.attackEntityFrom(MekanismDamageSource.RADIATION, 1);
             }
         }
     }

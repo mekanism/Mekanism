@@ -1,6 +1,6 @@
 package mekanism.common.lib.radiation.capability;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -28,7 +28,7 @@ public interface IRadiationEntity extends INBTSerializable<CompoundNBT> {
     /**
      * Applies radiation effects to the entity, and syncs the capability if needed.
      */
-    void update(ServerPlayerEntity player);
+    void update(LivingEntity entity);
 
     /**
      * Sets the radiation level of the entity to a new value.

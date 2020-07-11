@@ -357,6 +357,8 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTracker());
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTickHandler());
 
+        MinecraftForge.EVENT_BUS.register(radiationManager);
+
         //Set up module container tooltips
         Modules.processSupportedContainers();
 

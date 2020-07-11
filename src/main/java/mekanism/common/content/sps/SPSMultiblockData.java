@@ -1,7 +1,8 @@
 package mekanism.common.content.sps;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.List;
 import java.util.Map;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -18,10 +19,13 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -48,6 +52,8 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @ContainerSync
     public double lastProcessed;
 
+    private AxisAlignedBB deathZone;
+
     public SPSMultiblockData(TileEntitySPSCasing tile) {
         super(tile);
         gasTanks.add(inputTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getMaxInputGas,
@@ -56,6 +62,13 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         gasTanks.add(outputTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> MAX_OUTPUT_GAS,
               (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL && isFormed(),
               gas -> gas == MekanismGases.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, null));
+    }
+
+    @Override
+    public void onCreated(World world) {
+        super.onCreated(world);
+        deathZone = new AxisAlignedBB(getMinPos().getX() + 2, getMinPos().getY() + 2, getMinPos().getZ() + 2,
+              getMaxPos().getX() - 1, getMaxPos().getY() - 1, getMaxPos().getZ() - 1);
     }
 
     private long getMaxInputGas() {
@@ -89,6 +102,8 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         receivedEnergy = FloatingLong.ZERO;
         lastProcessed = processed;
 
+        kill(world);
+
         needsPacket |= coilData.tick();
         return needsPacket;
     }
@@ -118,6 +133,17 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             GasStack toAdd = MekanismGases.ANTIMATTER.getStack(inputProcessed / inputPerAntimatter);
             outputTank.insert(toAdd, Action.EXECUTE, AutomationType.INTERNAL);
             inputProcessed %= inputPerAntimatter;
+        }
+    }
+
+    private void kill(World world) {
+        if (lastReceivedEnergy.isZero() || !canOperate() || world.getRandom().nextInt() % 20 != 0) {
+            return;
+        }
+        List<Entity> entitiesToDie = getWorld().getEntitiesWithinAABB(Entity.class, deathZone);
+
+        for (Entity entity : entitiesToDie) {
+            entity.attackEntityFrom(DamageSource.MAGIC, lastReceivedEnergy.floatValue() / 1_000F);
         }
     }
 

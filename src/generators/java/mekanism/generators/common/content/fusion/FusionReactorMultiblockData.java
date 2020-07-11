@@ -1,9 +1,9 @@
 package mekanism.generators.common.content.fusion;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -195,7 +195,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         updateTemperatures();
 
         if (isBurning()) {
-            kill();
+            kill(world);
         }
 
         if (isBurning() != clientBurning || Math.abs(getLastPlasmaTemp() - clientTemp) > 1_000_000) {
@@ -211,7 +211,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastCaseTemperature = heatCapacitor.getTemperature();
     }
 
-    private void kill() {
+    private void kill(World world) {
+        if (world.getRandom().nextInt() % 20 != 0) {
+            return;
+        }
         List<Entity> entitiesToDie = getWorld().getEntitiesWithinAABB(Entity.class, deathZone);
 
         for (Entity entity : entitiesToDie) {
