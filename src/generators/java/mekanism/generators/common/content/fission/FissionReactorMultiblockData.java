@@ -14,6 +14,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
+import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
@@ -311,7 +312,14 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesWithinAABB(LivingEntity.class, hotZone);
 
             for (LivingEntity entity : entitiesToRadiate) {
-                Mekanism.radiationManager.radiate(entity, lastBurnRate);
+                double wasteRadiation = 0;
+                if (wasteTank.getStored() > 0) {
+                    Radiation r = wasteTank.getType().get(Radiation.class);
+                    if (r != null) {
+                        wasteRadiation = r.getRadioactivity() * wasteTank.getStored() / 3_600F; // divide down to Sv/s
+                    }
+                }
+                Mekanism.radiationManager.radiate(entity, lastBurnRate + wasteRadiation);
             }
         }
     }
