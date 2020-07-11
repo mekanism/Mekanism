@@ -20,6 +20,7 @@ import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBu
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -306,7 +307,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private void radiateEntities(World world) {
-        if (isBurning() && world.getRandom().nextInt() % 20 == 0) {
+        if (MekanismConfig.general.radiationEnabled.get() && isBurning() && world.getRandom().nextInt() % 20 == 0) {
             List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesWithinAABB(LivingEntity.class, hotZone);
 
             for (LivingEntity entity : entitiesToRadiate) {
