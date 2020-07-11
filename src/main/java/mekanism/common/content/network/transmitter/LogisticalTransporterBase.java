@@ -1,14 +1,14 @@
 package mekanism.common.content.network.transmitter;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.function.IntConsumer;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -369,7 +369,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
         BlockPos outputterPos = outputter.getPos();
-        Direction from = MekanismUtils.sideDifference(getTilePos(), outputterPos).getOpposite();
+        Direction from = MekanismUtils.sideDifference(getTilePos(), outputterPos);
         TransporterStack stack = insertStack(outputterPos, color);
         if (!stack.canInsertToTransporterNN(this, from, outputter)) {
             return request.getEmptyResponse();
@@ -379,7 +379,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
         BlockPos outputterPos = outputter.getPos();
-        Direction from = MekanismUtils.sideDifference(getTilePos(), outputterPos).getOpposite();
+        Direction from = MekanismUtils.sideDifference(getTilePos(), outputterPos);
         TransporterStack stack = insertStack(outputterPos, color);
         if (!canReceiveFrom(from) || !stack.canInsertToTransporterNN(this, from, outputter)) {
             return request.getEmptyResponse();
