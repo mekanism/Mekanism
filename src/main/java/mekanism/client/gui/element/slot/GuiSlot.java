@@ -26,6 +26,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     private IHoverable onHover;
     private IClickable onClick;
     private boolean renderHover;
+    private boolean renderAboveSlots;
 
     @Nullable
     private IGhostIngredientConsumer ghostHandler;
@@ -76,8 +77,26 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
         return this;
     }
 
+    public GuiSlot setRenderAboveSlots() {
+        this.renderAboveSlots = true;
+        return this;
+    }
+
     @Override
     public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        if (!renderAboveSlots) {
+            draw(matrix, mouseX, mouseY);
+        }
+    }
+
+    @Override
+    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        if (renderAboveSlots) {
+            draw(matrix, mouseX, mouseY);
+        }
+    }
+
+    private void draw(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         minecraft.textureManager.bindTexture(getResource());
         func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
         if (hasValidityCheck) {
@@ -97,10 +116,6 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
             minecraft.textureManager.bindTexture(overlay.getTexture());
             func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
         }
-    }
-
-    @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
     }
 
     @Override
