@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -32,7 +31,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -59,8 +57,6 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     public static final long BURN_PER_ASSEMBLY = 1;
     private static final double EXPLOSION_CHANCE = 1D / (512_000);
-
-    private final Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
 
     public final Set<FormedAssembly> assemblies = new LinkedHashSet<>();
     @ContainerSync
@@ -130,13 +126,6 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         super.onCreated(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
-
-        for (ValveData data : valves) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, data.location);
-            if (tile instanceof TileEntityFissionReactorPort) {
-                heatHandlers.add((ITileHeatHandler) tile);
-            }
-        }
 
         hotZone = new AxisAlignedBB(getMinPos().getX() + 1, getMinPos().getY() + 1, getMinPos().getZ() + 1,
               getMaxPos().getX(), getMaxPos().getY(), getMaxPos().getZ());
