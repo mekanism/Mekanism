@@ -596,7 +596,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COMMAND_CHUNK_LOADED, "Loaded");
         add(MekanismLang.COMMAND_CHUNK_UNLOADED, "Unloaded");
         add(MekanismLang.COMMAND_DEBUG, "Toggled debug mode: %s.");
-        add(MekanismLang.COMMAND_TEST_RULES, "Mob spawning, daylight cycle and weather disabled!");
+        add(MekanismLang.COMMAND_TEST_RULES, "Enabled keepInventory, and disabled doMobSpawning, doDaylightCycle, doWeatherCycle and mobGriefing!");
         add(MekanismLang.COMMAND_TP, "Teleported to %d, %d, %d - saved last position on stack");
         add(MekanismLang.COMMAND_TPOP, "Returned to %d, %d, %d; %d positions on stack");
         add(MekanismLang.COMMAND_TPOP_EMPTY, "No positions on stack");
