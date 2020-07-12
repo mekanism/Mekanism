@@ -35,6 +35,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
@@ -67,6 +68,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.IFluidBlock;
 
 public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem, IItemHUDProvider {
 
@@ -264,11 +266,12 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (!world.isRemote() && isModuleEnabled(stack, Modules.TELEPORTATION_UNIT)) {
-            BlockRayTraceResult pos = MekanismUtils.rayTrace(player, MekanismConfig.gear.mekaToolMaxTeleportReach.get());
-            if (pos.getType() != RayTraceResult.Type.MISS) {
+            BlockRayTraceResult result = MekanismUtils.rayTrace(player, MekanismConfig.gear.mekaToolMaxTeleportReach.get());
+            if (result.getType() != RayTraceResult.Type.MISS) {
+                BlockPos pos = result.getPos();
                 // make sure we fit
-                if (world.isAirBlock(pos.getPos().add(0, 1, 0)) && world.isAirBlock(pos.getPos().add(0, 2, 0))) {
-                    double distance = player.getDistanceSq(pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ());
+                if (isValidDestinationBlock(world, pos.up()) && isValidDestinationBlock(world, pos.up(2))) {
+                    double distance = player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ());
                     if (distance < 5) {
                         return new ActionResult<>(ActionResultType.PASS, stack);
                     }
@@ -278,15 +281,21 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
                     energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
-                    player.setPositionAndUpdate(pos.getPos().getX() + 0.5, pos.getPos().getY() + 1.5, pos.getPos().getZ() + 0.5);
+                    player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
                     player.fallDistance = 0.0F;
-                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(pos.getPos().add(0, 1, 0)), world, pos.getPos());
-                    world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(pos.up()), world, pos);
+                    world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                     return new ActionResult<>(ActionResultType.SUCCESS, stack);
                 }
             }
         }
         return new ActionResult<>(ActionResultType.PASS, stack);
+    }
+
+    private boolean isValidDestinationBlock(World world, BlockPos pos) {
+        BlockState blockState = world.getBlockState(pos);
+        //Allow teleporting into air or fluids
+        return blockState.isAir(world, pos) || blockState.getBlock() instanceof FlowingFluidBlock || blockState.getBlock() instanceof IFluidBlock;
     }
 
     @Override

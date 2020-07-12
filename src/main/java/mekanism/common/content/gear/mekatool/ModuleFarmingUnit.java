@@ -147,7 +147,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
             if (aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) {
                 world.destroyBlock(abovePos, true);
             }
-            world.playSound(player, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
         }
         FloatingLong energyUsed = energyUsage.copy();
         int radius = (diameter - 1) / 2;
@@ -184,7 +184,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
                     //If the block above the one we tilled is a plant, then we try to remove it
                     world.destroyBlock(newPos.up(), true);
                 }
-                world.playSound(player, newPos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(null, newPos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
         }
         energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);
@@ -232,7 +232,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         BlockState strippedState = strippedBlock.getDefaultState().with(RotatedPillarBlock.AXIS, axis);
         //Process the block we interacted with initially and play the sound
         world.setBlockState(pos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
-        world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
         Direction side = context.getFace();
         FloatingLong energyUsed = energyUsage.copy();
         for (BlockPos newPos : getStrippingArea(pos, side, (diameter - 1) / 2)) {
@@ -258,7 +258,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
                 energyUsed = energyUsed.plusEqual(energyUsage);
                 //Replace the block. Note it just directly sets it (in the same way that AxeItem does).
                 world.setBlockState(newPos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
-                world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
         }
         energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);

@@ -98,7 +98,7 @@ public class PacketPortableTeleporterGui {
                                     if (player instanceof ServerPlayerEntity) {
                                         TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coordsPos);
                                     }
-                                    player.world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                    player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), teleWorld, coordsPos);
                                 } catch (Exception ignored) {
                                 }
