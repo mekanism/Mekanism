@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "biomesoplenty",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:cherry_boat"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:cherry_planks",
+    "count": 5
+  }
+}

@@ -17,7 +17,6 @@ buildscript {
 plugins {
     id 'org.ajoberstar.grgit' version '4.0.2'
     id "com.matthewprenger.cursegradle" version '1.4.0'
-    id "com.wynprice.cursemaven" version "2.1.5"
     id 'java'
     id 'idea'
     id 'maven'
@@ -284,6 +283,10 @@ repositories {
         name 'tterrag'
         url 'https://maven.tterrag.com/'
     }
+    maven {
+        name 'CurseMaven'
+        url 'https://www.cursemaven.com'
+    }
 }
 
 test {
@@ -313,8 +316,8 @@ dependencies {
     //compileOnly fg.deobf("curse.maven:flux-networks:${flux_networks_id}")
 
     //Dependencies for data generators for mod compat reference
-    //TODO: Ideally we would switch this to compileOnly and runtimeOnly but for some reason it does not work quite right
-    //datagenmainCompile fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_id}")
+    datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api:${biomesoplenty_api_id}")
+    datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_id}")
     //datagenmainCompile fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
 }
 
@@ -725,7 +728,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 relations {
                     optionalDependency "jei"
                     optionalDependency "ctm"
-                    //optionalDependency "biomes-o-plenty"
+                    optionalDependency "biomes-o-plenty"
                     //optionalDependency "flux-networks"
                     //optionalDependency "i-like-wood"
                     //optionalDependency "projecte"

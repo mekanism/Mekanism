@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "biomesoplenty",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:goldenrod"
+    }
+  },
+  "output": {
+    "item": "minecraft:yellow_dye",
+    "count": 2
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:injecting",
+  "conditions": [
+    {
+      "modid": "biomesoplenty",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "itemInput": {
+    "ingredient": {
+      "item": "biomesoplenty:mud_brick"
+    }
+  },
+  "gasInput": {
+    "amount": 1,
+    "tag": "mekanism:water_vapor"
+  },
+  "output": {
+    "item": "biomesoplenty:mud_ball"
+  }
+}

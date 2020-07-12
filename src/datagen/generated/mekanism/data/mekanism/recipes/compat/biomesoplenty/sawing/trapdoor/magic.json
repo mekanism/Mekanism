@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "biomesoplenty",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:magic_trapdoor"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:magic_planks",
+    "count": 3
+  }
+}

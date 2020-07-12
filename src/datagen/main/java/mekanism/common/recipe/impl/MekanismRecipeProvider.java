@@ -18,6 +18,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
+import mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -99,9 +100,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               new ThermalEvaporationRecipeProvider(),
               new TierInstallerRecipeProvider(),
               new TransmitterRecipeProvider(),
-              new UpgradeRecipeProvider()
+              new UpgradeRecipeProvider(),
               //Mod Compat Recipe providers
-              //new BiomesOPlentyRecipeProvider(),//TODO - Biomes O Plenty
+              new BiomesOPlentyRecipeProvider()
               //new ILikeWoodRecipeProvider()//TODO - ILikeWood
         );
     }

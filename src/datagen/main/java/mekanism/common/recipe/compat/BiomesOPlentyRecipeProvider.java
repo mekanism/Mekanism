@@ -1,4 +1,4 @@
-/*package mekanism.common.recipe.compat;
+package mekanism.common.recipe.compat;
 
 import biomesoplenty.api.block.BOPBlocks;
 import biomesoplenty.api.item.BOPItems;
@@ -13,6 +13,7 @@ import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.IItemProvider;
 
@@ -26,6 +27,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
+        addEnrichingDyeRecipes(consumer, basePath + "dye/");
         //Mud brick -> mud ball
         ItemStackGasToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(BOPItems.mud_brick),
@@ -74,7 +76,73 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
 
     private void addPrecisionSawmillWoodTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, IItemProvider boat, IItemProvider door,
           IItemProvider fenceGate, IItemProvider pressurePlate, IItemProvider trapdoor, String name) {
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, new ItemTags.Wrapper(rl(name + "_logs")),
-              pressurePlate, trapdoor, name, modLoaded);
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate,
+              ItemTags.makeWrapperTag(rl(name + "_logs").toString()), pressurePlate, trapdoor, name, modLoaded);
     }
-}*/
+
+    private void addEnrichingDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Red
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(BOPBlocks.rose),
+              new ItemStack(Items.RED_DYE, 2)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "red"));
+        //Purple
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.createMulti(
+                    ItemStackIngredient.from(BOPBlocks.violet),
+                    ItemStackIngredient.from(BOPBlocks.lavender)
+              ),
+              new ItemStack(Items.PURPLE_DYE, 2)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "purple"));
+        //Magenta
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(BOPBlocks.wildflower),
+              new ItemStack(Items.MAGENTA_DYE, 2)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "magenta"));
+        //Orange
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.createMulti(
+                    ItemStackIngredient.from(BOPBlocks.orange_cosmos),
+                    ItemStackIngredient.from(BOPBlocks.burning_blossom)
+              ),
+              new ItemStack(Items.ORANGE_DYE, 2)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "orange"));
+        //Pink
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.createMulti(
+                    ItemStackIngredient.from(BOPBlocks.pink_daffodil),
+                    ItemStackIngredient.from(BOPBlocks.pink_hibiscus)
+              ),
+              new ItemStack(Items.PINK_DYE, 2)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "pink"));
+        //Cyan
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(BOPBlocks.glowflower),
+              new ItemStack(Items.CYAN_DYE, 2)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "cyan"));
+        //Gray
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(BOPBlocks.wilted_lily),
+              new ItemStack(Items.GRAY_DYE, 2)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "gray"));
+        //Light Blue
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(BOPBlocks.blue_hydrangea),
+              new ItemStack(Items.LIGHT_BLUE_DYE, 2)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "light_blue"));
+        //Yellow
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(BOPBlocks.goldenrod),
+              new ItemStack(Items.YELLOW_DYE, 2)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "yellow"));
+    }
+}
