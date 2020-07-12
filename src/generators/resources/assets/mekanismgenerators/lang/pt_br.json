@@ -55,7 +55,7 @@
   "description.mekanismgenerators.fusion_reactor_port": "Um bloco de armação reforçada que é capaz de gerenciar a transferência de gás e de energia do Reator de Fusão.",
   "description.mekanismgenerators.gas_burning_generator": "Um gerador que aproveita os diferentes gases para produzir energia.",
   "description.mekanismgenerators.heat_generator": "Um gerador que usa o calor da lava ou outros recursos combustíveis para produzir energia.",
-  "description.mekanismgenerators.laser_focus_matrix": "Um painel do Vidro do Reator que é capaz de absorver energia óptica e dessa forma aquecendo o Reator de Fusão.",
+  "description.mekanismgenerators.laser_focus_matrix": "Um painel de Vidro do Reator que é capaz de absorver energia óptica e dessa forma aquecendo o Reator de Fusão.",
   "description.mekanismgenerators.reactor.logic.activation": "Activate the reactor when powered, and deactivate when unpowered",
   "description.mekanismgenerators.reactor.logic.capacity": "A capacidade de calor do núcleo do reator foi atendida",
   "description.mekanismgenerators.reactor.logic.damaged": "Despejar quando o reator atingir níveis críticos de dano (100%+).",
