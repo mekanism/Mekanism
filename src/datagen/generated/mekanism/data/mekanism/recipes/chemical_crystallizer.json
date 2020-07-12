@@ -4,13 +4,13 @@
     "item": "mekanism:chemical_crystallizer"
   },
   "pattern": [
-    "ITI",
+    "IAI",
     "CXC",
-    "ITI"
+    "IAI"
   ],
   "key": {
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
+    "A": {
+      "tag": "forge:gems/fluorite"
     },
     "C": {
       "tag": "forge:circuits/ultimate"

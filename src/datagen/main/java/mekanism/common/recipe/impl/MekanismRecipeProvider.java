@@ -168,10 +168,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Chemical crystallizer
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_CRYSTALLIZER)
               .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
-                    TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT))
-              ).key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT))
+              ).key(Pattern.ALLOY, MekanismTags.Items.GEMS_FLUORITE)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
