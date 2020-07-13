@@ -389,9 +389,14 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
+    public boolean isInvulnerableTo(@Nonnull DamageSource source) {
+        return source == MekanismDamageSource.RADIATION || super.isInvulnerableTo(source);
+    }
+
+    @Override
     protected void damageEntity(@Nonnull DamageSource damageSource, float amount) {
         amount = ForgeHooks.onLivingHurt(this, damageSource, amount);
-        if (amount <= 0 || damageSource == MekanismDamageSource.RADIATION) {
+        if (amount <= 0) {
             return;
         }
         amount = applyArmorCalculations(damageSource, amount);
