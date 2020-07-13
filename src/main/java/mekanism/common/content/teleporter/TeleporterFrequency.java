@@ -81,7 +81,7 @@ public class TeleporterFrequency extends Frequency {
     @Override
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        color = EnumColor.byIndexStatic(dataStream.readVarInt());
+        color = dataStream.readEnumValue(EnumColor.class);
     }
 
     @Override
@@ -93,6 +93,6 @@ public class TeleporterFrequency extends Frequency {
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeVarInt(color.ordinal());
+        buffer.writeEnumValue(color);
     }
 }

@@ -283,7 +283,7 @@ public class QIOFrequency extends Frequency {
         buf.writeVarLong(totalCountCapacity);
         buf.writeVarInt(itemDataMap.size());
         buf.writeVarInt(totalTypeCapacity);
-        buf.writeVarInt(color.ordinal());
+        buf.writeEnumValue(color);
     }
 
     @Override
@@ -293,7 +293,7 @@ public class QIOFrequency extends Frequency {
         totalCountCapacity = buf.readVarLong();
         clientTypes = buf.readVarInt();
         totalTypeCapacity = buf.readVarInt();
-        color = EnumColor.byIndexStatic(buf.readVarInt());
+        color = buf.readEnumValue(EnumColor.class);
     }
 
     @Override

@@ -121,7 +121,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 131, 120));
+        func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
         func_230480_a_(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
               () -> getFrequency() != null ? getFrequency().getColor() : null,
               () -> sendColorUpdate(0),
