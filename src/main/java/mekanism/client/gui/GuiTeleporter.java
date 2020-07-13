@@ -94,8 +94,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         }));
         func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
         func_230480_a_(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
-              //TODO: Replace this with making the SyncableFrequency able to have a custom "compare/hash" check so we can mark it as dirty when the color changes
-              tile::getColor,
+              () -> getFrequency() == null ? null : getFrequency().getColor(),
               () -> sendColorUpdate(0),
               () -> sendColorUpdate(1)));
         func_230480_a_(frequencyField = new GuiTextField(this, 50, 103, 98, 11));

@@ -30,6 +30,13 @@ public class TeleporterFrequency extends Frequency {
         return activeCoords;
     }
 
+    @Override
+    public int getSyncHash() {
+        int code = hashCode();
+        code = 31 * code + color.hashCode();
+        return code;
+    }
+
     public EnumColor getColor() {
         return color;
     }
