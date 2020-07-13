@@ -94,7 +94,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         }));
         func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
         func_230480_a_(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
-              () -> tile.getColor(),
+              //TODO: Replace this with making the SyncableFrequency able to have a custom "compare/hash" check so we can mark it as dirty when the color changes
+              tile::getColor,
               () -> sendColorUpdate(0),
               () -> sendColorUpdate(1)));
         func_230480_a_(frequencyField = new GuiTextField(this, 50, 103, 98, 11));
@@ -149,10 +150,9 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     @Override
     public void func_231023_e_() {
         super.func_231023_e_();
-        TeleporterFrequency freq = getFrequency();
         if (!init && getFrequency() != null) {
             init = true;
-            privateMode = freq.isPrivate();
+            privateMode = getFrequency().isPrivate();
         }
         //TODO: Why do we call updateButtons every tick?
         updateButtons();
@@ -205,7 +205,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         return tile.getFrequency(FrequencyType.TELEPORTER);
     }
 
-    public void sendColorUpdate(int extra) {
+    private void sendColorUpdate(int extra) {
         TeleporterFrequency freq = getFrequency();
         if (freq != null) {
             Mekanism.packetHandler.sendToServer(PacketTeleporterSetColor.create(tile.getTilePos(), freq, extra));

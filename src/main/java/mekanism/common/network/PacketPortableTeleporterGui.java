@@ -1,6 +1,5 @@
 package mekanism.common.network;
 
-import java.util.ArrayList;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
@@ -47,21 +46,9 @@ public class PacketPortableTeleporterGui {
         context.get().enqueueWork(() -> {
             ItemStack stack = player.getHeldItem(message.currentHand);
             if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableTeleporter) {
-                ItemPortableTeleporter item = (ItemPortableTeleporter) stack.getItem();
                 switch (message.packetType) {
                     case DATA_REQUEST:
-                        sendDataResponse(message.frequency, player, stack, message.currentHand);
-                        break;
-                    case SET_FREQ:
-                        FrequencyManager<TeleporterFrequency> manager1 = FrequencyType.TELEPORTER.getManager(message.frequency.isPublic() ? null : player.getUniqueID());
-                        TeleporterFrequency toUse = manager1.getOrCreateFrequency(message.frequency.getIdentity(), player.getUniqueID());
-                        item.setFrequency(stack, toUse);
-                        sendDataResponse(toUse, player, stack, message.currentHand);
-                        break;
-                    case DEL_FREQ:
-                        FrequencyManager<TeleporterFrequency> manager = FrequencyType.TELEPORTER.getManager(message.frequency.isPublic() ? null : player.getUniqueID());
-                        manager.remove(message.frequency.getName(), player.getUniqueID());
-                        item.setFrequency(stack, null);
+                        sendDataResponse(message.frequency, player, stack);
                         break;
                     case TELEPORT:
                         FrequencyManager<TeleporterFrequency> manager2 = FrequencyType.TELEPORTER.getManager(message.frequency.isPublic() ? null : player.getUniqueID());
@@ -135,9 +122,7 @@ public class PacketPortableTeleporterGui {
         return new PacketPortableTeleporterGui(packetType, currentHand, frequency);
     }
 
-    private static void sendDataResponse(TeleporterFrequency given, PlayerEntity player, ItemStack stack, Hand hand) {
-        FrequencyManager<TeleporterFrequency> publicManager = FrequencyType.TELEPORTER.getManager(null),
-              privateManager = FrequencyType.TELEPORTER.getManager(player.getUniqueID());
+    private static void sendDataResponse(TeleporterFrequency given, PlayerEntity player, ItemStack stack) {
         byte status = 3;
         if (given != null) {
             FrequencyManager<TeleporterFrequency> manager = FrequencyType.TELEPORTER.getFrequencyManager(given);
@@ -156,14 +141,11 @@ public class PacketPortableTeleporterGui {
                 }
             }
         }
-        Mekanism.packetHandler.sendTo(new PacketPortableTeleporter(hand, given, status, new ArrayList<>(publicManager.getFrequencies()),
-              new ArrayList<>(privateManager.getFrequencies())), (ServerPlayerEntity) player);
+        Mekanism.packetHandler.sendTo(new PacketPortableTeleporter(status), (ServerPlayerEntity) player);
     }
 
     public enum PortableTeleporterPacketType {
         DATA_REQUEST,
-        SET_FREQ,
-        DEL_FREQ,
         TELEPORT
     }
 }
