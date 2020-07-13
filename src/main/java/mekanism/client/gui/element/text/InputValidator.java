@@ -13,7 +13,7 @@ public class InputValidator {
     public static final CharPredicate DECIMAL = DIGIT.or(from('.'));
     public static final CharPredicate SCI_NOTATION = DECIMAL.or(from('E'));
 
-    public static final CharPredicate FILTER_CHARS = from('*', '-', ' ', '|', '_', '\'', ':', '/');
+    public static final CharPredicate FILTER_CHARS = from('*', '-', ' ', '|', '_', '\'', ':', '/', '#', '?');
     public static final CharPredicate FREQUENCY_CHARS = from('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')', '?', '!', '/', '@', '$', '`', '~', ',', '.', '#');
 
     public static CharPredicate from(char character) {

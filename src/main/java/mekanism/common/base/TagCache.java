@@ -2,19 +2,20 @@ package mekanism.common.base;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import mekanism.common.block.BlockBounding;
+import mekanism.common.lib.WildcardMatcher;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -40,36 +41,13 @@ public final class TagCache {
         if (itemTagStacks.get(oreName) != null) {
             return itemTagStacks.get(oreName);
         }
-        List<ResourceLocation> keys = new ArrayList<>();
-        TagCollection<Item> tagCollection = ItemTags.getCollection();
-        Collection<ResourceLocation> registeredTags = tagCollection.getRegisteredTags();
-        for (ResourceLocation rl : registeredTags) {
-            String rlAsString = rl.toString();
-            if (oreName.equals(rlAsString) || oreName.equals("*")) {
-                keys.add(rl);
-            } else if (oreName.endsWith("*") && !oreName.startsWith("*")) {
-                if (rlAsString.startsWith(oreName.substring(0, oreName.length() - 1))) {
-                    keys.add(rl);
-                }
-            } else if (oreName.startsWith("*") && !oreName.endsWith("*")) {
-                if (rlAsString.endsWith(oreName.substring(1))) {
-                    keys.add(rl);
-                }
-            } else if (oreName.startsWith("*") && oreName.endsWith("*")) {
-                if (rlAsString.contains(oreName.substring(1, oreName.length() - 1))) {
-                    keys.add(rl);
-                }
-            }
-        }
-        List<Item> items = new ArrayList<>();
+        TagCollection<Item> tagCollection = TagCollectionManager.func_232928_e_().func_232925_b_();
+        List<ResourceLocation> keys = tagCollection.getRegisteredTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
+        Set<Item> items = new HashSet<>();
         for (ResourceLocation key : keys) {
             ITag<Item> itemTag = tagCollection.get(key);
             if (itemTag != null) {
-                for (Item item : itemTag.func_230236_b_()) {
-                    if (!items.contains(item)) {
-                        items.add(item);
-                    }
-                }
+                items.addAll(itemTag.func_230236_b_());
             }
         }
         List<ItemStack> stacks = items.stream().map(ItemStack::new).collect(Collectors.toList());
@@ -81,38 +59,13 @@ public final class TagCache {
         if (blockTagStacks.get(oreName) != null) {
             return blockTagStacks.get(oreName);
         }
-
-        List<ResourceLocation> keys = new ArrayList<>();
-        TagCollection<Block> tagCollection = BlockTags.getCollection();
-        Collection<ResourceLocation> registeredTags = tagCollection.getRegisteredTags();
-        for (ResourceLocation rl : registeredTags) {
-            String rlAsString = rl.toString();
-            if (oreName.equals(rlAsString) || oreName.equals("*")) {
-                keys.add(rl);
-            } else if (oreName.endsWith("*") && !oreName.startsWith("*")) {
-                if (rlAsString.startsWith(oreName.substring(0, oreName.length() - 1))) {
-                    keys.add(rl);
-                }
-            } else if (oreName.startsWith("*") && !oreName.endsWith("*")) {
-                if (rlAsString.endsWith(oreName.substring(1))) {
-                    keys.add(rl);
-                }
-            } else if (oreName.startsWith("*") && oreName.endsWith("*")) {
-                if (rlAsString.contains(oreName.substring(1, oreName.length() - 1))) {
-                    keys.add(rl);
-                }
-            }
-        }
-
-        List<Block> blocks = new ArrayList<>();
+        TagCollection<Block> tagCollection = TagCollectionManager.func_232928_e_().func_232923_a_();
+        List<ResourceLocation> keys = tagCollection.getRegisteredTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
+        Set<Block> blocks = new HashSet<>();
         for (ResourceLocation key : keys) {
             ITag<Block> blockTag = tagCollection.get(key);
             if (blockTag != null) {
-                for (Block block : blockTag.func_230236_b_()) {
-                    if (!blocks.contains(block)) {
-                        blocks.add(block);
-                    }
-                }
+                blocks.addAll(blockTag.func_230236_b_());
             }
         }
         List<ItemStack> stacks = blocks.stream().map(ItemStack::new).collect(Collectors.toList());
@@ -131,22 +84,8 @@ public final class TagCache {
                 if (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof BlockBounding) {
                     continue;
                 }
-
-                String id = item.getRegistryName().getNamespace();
-                if (modName.equals(id) || modName.equals("*")) {
+                if (WildcardMatcher.matches(modName, item.getRegistryName().getNamespace())) {
                     stacks.add(new ItemStack(item));
-                } else if (modName.endsWith("*") && !modName.startsWith("*")) {
-                    if (id.startsWith(modName.substring(0, modName.length() - 1))) {
-                        stacks.add(new ItemStack(item));
-                    }
-                } else if (modName.startsWith("*") && !modName.endsWith("*")) {
-                    if (id.endsWith(modName.substring(1))) {
-                        stacks.add(new ItemStack(item));
-                    }
-                } else if (modName.startsWith("*") && modName.endsWith("*")) {
-                    if (id.contains(modName.substring(1, modName.length() - 1))) {
-                        stacks.add(new ItemStack(item));
-                    }
                 }
             }
         }
