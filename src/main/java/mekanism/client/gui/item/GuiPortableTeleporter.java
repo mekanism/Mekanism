@@ -29,12 +29,10 @@ import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.lib.frequency.FrequencyManager;
-import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.IOwnerItem;
 import mekanism.common.network.PacketPortableTeleporterGui;
 import mekanism.common.network.PacketTeleporterSetColor;
 import mekanism.common.network.PacketPortableTeleporterGui.PortableTeleporterPacketType;
-import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
@@ -267,7 +265,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     public TeleporterFrequency getFrequency() {
-    	return FrequencyType.TELEPORTER.getFrequency(MekanismItems.PORTABLE_TELEPORTER.get().getFrequency(itemStack), MekanismItems.PORTABLE_TELEPORTER.get().getOwnerUUID(itemStack));
+    	return container.getFrequency();
     }
 
     public void sendColorUpdate(int extra) {
