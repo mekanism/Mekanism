@@ -31,12 +31,12 @@ public class TeleporterFrequency extends Frequency {
     }
 
     public EnumColor getColor() {
-		return color;
-	}
+        return color;
+    }
 
     public void setColor(EnumColor color) {
-		this.color = color;
-	}
+        this.color = color;
+    }
 
     @Override
     public void update(TileEntity tile) {
@@ -74,25 +74,25 @@ public class TeleporterFrequency extends Frequency {
 
     @Override
     protected void read(CompoundNBT nbtTags) {
-    	super.read(nbtTags);
+        super.read(nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, (value) -> color = value);
     }
 
     @Override
     protected void read(PacketBuffer dataStream) {
-    	super.read(dataStream);
+        super.read(dataStream);
         color = EnumColor.byIndexStatic(dataStream.readVarInt());
     }
 
     @Override
     public void write(CompoundNBT nbtTags) {
-    	super.write(nbtTags);
+        super.write(nbtTags);
         nbtTags.putInt(NBTConstants.COLOR, color.ordinal());
     }
 
     @Override
     public void write(PacketBuffer buffer) {
-    	super.write(buffer);
-    	buffer.writeVarInt(color.ordinal());
+        super.write(buffer);
+        buffer.writeVarInt(color.ordinal());
     }
 }

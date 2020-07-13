@@ -265,7 +265,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     public TeleporterFrequency getFrequency() {
-    	return container.getFrequency();
+        return container.getFrequency();
     }
 
     public void sendColorUpdate(int extra) {

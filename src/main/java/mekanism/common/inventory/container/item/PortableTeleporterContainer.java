@@ -28,8 +28,8 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
         return stack;
     }
 
-	@Override
-	public FrequencyType<TeleporterFrequency> getFrequencyType() {
-		return FrequencyType.TELEPORTER;
-	}
+    @Override
+    public FrequencyType<TeleporterFrequency> getFrequencyType() {
+        return FrequencyType.TELEPORTER;
+    }
 }

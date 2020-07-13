@@ -202,7 +202,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     }
 
     public TeleporterFrequency getFrequency() {
-    	return tile.getFrequency(FrequencyType.TELEPORTER);
+        return tile.getFrequency(FrequencyType.TELEPORTER);
     }
 
     public void sendColorUpdate(int extra) {
