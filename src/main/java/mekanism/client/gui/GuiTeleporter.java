@@ -94,7 +94,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         }));
         func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 131, 120));
         func_230480_a_(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
-              () -> getFrequency() != null ? getFrequency().getColor() : null,
+              () -> tile.getColor(),
               () -> sendColorUpdate(0),
               () -> sendColorUpdate(1)));
         func_230480_a_(frequencyField = new GuiTextField(this, 50, 103, 98, 11));
