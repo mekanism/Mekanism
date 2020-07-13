@@ -12,11 +12,14 @@ import mekanism.client.MekanismClient;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
+import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.custom.GuiTeleporterStatus;
 import mekanism.client.gui.element.scroll.GuiTextScrollList;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
@@ -26,9 +29,12 @@ import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.lib.frequency.FrequencyManager;
+import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.IOwnerItem;
 import mekanism.common.network.PacketPortableTeleporterGui;
+import mekanism.common.network.PacketTeleporterSetColor;
 import mekanism.common.network.PacketPortableTeleporterGui.PortableTeleporterPacketType;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
@@ -99,7 +105,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             privateMode = true;
             updateButtons();
         }));
-        func_230480_a_(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
+        func_230480_a_(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 TeleporterFrequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
@@ -107,7 +113,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        func_230480_a_(deleteButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
+        func_230480_a_(deleteButton = new TranslationButton(this, getGuiLeft() + 79, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 TeleporterFrequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
@@ -117,6 +123,11 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
+        func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 131, 120));
+        func_230480_a_(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
+              () -> getFrequency() != null ? getFrequency().getColor() : null,
+              () -> sendColorUpdate(0),
+              () -> sendColorUpdate(1)));
         func_230480_a_(teleportButton = new TranslationButton(this, getGuiLeft() + 42, getGuiTop() + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
             if (clientFreq != null && clientStatus == 1) {
                 ClientTickHandler.portableTeleport(getMinecraft().player, currentHand, clientFreq);
@@ -253,5 +264,16 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     private ITextComponent getName() {
         return itemStack.getDisplayName();
+    }
+
+    public TeleporterFrequency getFrequency() {
+    	return FrequencyType.TELEPORTER.getFrequency(MekanismItems.PORTABLE_TELEPORTER.get().getFrequency(itemStack), MekanismItems.PORTABLE_TELEPORTER.get().getOwnerUUID(itemStack));
+    }
+
+    public void sendColorUpdate(int extra) {
+        TeleporterFrequency freq = getFrequency();
+        if (freq != null) {
+            Mekanism.packetHandler.sendToServer(PacketTeleporterSetColor.create(container.getHand(), freq, extra));
+        }
     }
 }
