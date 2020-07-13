@@ -14,6 +14,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -22,6 +23,7 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -58,6 +60,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Nullable
     private Direction frameDirection;
     private boolean frameRotated;
+    private EnumColor color;
 
     /**
      * This teleporter's current status.
@@ -140,9 +143,14 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
         boolean prevShouldRender = shouldRender;
         shouldRender = status == 1 || status > 4;
+        EnumColor prevColor = color;
+        TeleporterFrequency freq = getFrequency(FrequencyType.TELEPORTER);
+        color = freq != null ? freq.getColor() : null;
         if (shouldRender != prevShouldRender) {
             //This also means the comparator output changed so notify the neighbors we have a change
             MekanismUtils.notifyLoadedNeighborsOfTileChange(world, getPos());
+            sendUpdatePacket();
+        } else if (color != prevColor) {
             sendUpdatePacket();
         }
         teleDelay = Math.max(0, teleDelay - 1);
@@ -450,6 +458,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return energyContainer;
     }
 
+    public EnumColor getColor() {
+        return color;
+    }
+
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
@@ -461,6 +473,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.putBoolean(NBTConstants.RENDERING, shouldRender);
+        if (color != null) {
+            updateTag.putInt(NBTConstants.COLOR, color.ordinal());
+        }
         return updateTag;
     }
 
@@ -468,5 +483,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
         super.handleUpdateTag(state, tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> shouldRender = value);
+        if (tag.contains(NBTConstants.COLOR)) {
+            color = EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR));
+        } else {
+            color = null;
+        }
     }
 }
