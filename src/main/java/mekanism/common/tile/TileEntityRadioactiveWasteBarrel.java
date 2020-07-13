@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -11,7 +10,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.config.MekanismConfig;
@@ -61,7 +59,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
     }
 
     public float getGasScale() {
-        return (float) gasTank.getStored() / (float) gasTank.getCapacity();
+        return gasTank.getStored() / (float) gasTank.getCapacity();
     }
 
     public GasStack getGas() {
@@ -82,18 +80,5 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
         super.handleUpdateTag(state, tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.GAS_STORED, nbt -> gasTank.deserializeNBT(nbt));
         NBTUtils.setIntIfPresent(tag, NBTConstants.PROGRESS, val -> processTicks = val);
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
-        if (!isRemote() && gasTank.getStored() > 0) {
-            // should always be true
-            GasStack stack = gasTank.getStack();
-            if (stack.has(GasAttributes.Radiation.class)) {
-                double radioactivity = stack.get(GasAttributes.Radiation.class).getRadioactivity();
-                Mekanism.radiationManager.radiate(Coord4D.get(this), radioactivity * stack.getAmount());
-            }
-        }
     }
 }

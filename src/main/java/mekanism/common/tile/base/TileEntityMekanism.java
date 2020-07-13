@@ -10,11 +10,14 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
@@ -518,6 +521,25 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (isRemote() && hasSound()) {
             updateSound();
+        }
+        if (!isRemote() && MekanismConfig.general.radiationEnabled.get()) {
+            //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
+            dumpRadiation();
+        }
+    }
+
+    protected void dumpRadiation() {
+        List<IGasTank> gasTanks = getGasTanks(null);
+        for (IGasTank gasTank : gasTanks) {
+            //For each tank in this tile, if it isn't empty and the stored gas is radioactive
+            // then dump that radioactivity into the air
+            if (!gasTank.isEmpty()) {
+                GasStack stack = gasTank.getStack();
+                if (stack.has(GasAttributes.Radiation.class)) {
+                    double radioactivity = stack.get(GasAttributes.Radiation.class).getRadioactivity();
+                    Mekanism.radiationManager.radiate(Coord4D.get(this), radioactivity * stack.getAmount());
+                }
+            }
         }
     }
 

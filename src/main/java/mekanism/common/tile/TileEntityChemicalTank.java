@@ -219,6 +219,14 @@ public class TileEntityChemicalTank extends TileEntityMekanism implements ISideC
     }
 
     @Override
+    protected void dumpRadiation() {
+        if (tier != ChemicalTankTier.CREATIVE) {
+            //Don't dump radioactive materials from creative chemical tanks
+            super.dumpRadiation();
+        }
+    }
+
+    @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(getStoredAmount(), tier.getStorage());
     }

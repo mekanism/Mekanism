@@ -156,6 +156,11 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
+    protected void dumpRadiation() {
+        //NO-OP we handle dumping radiation separately for multiblocks
+    }
+
+    @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         if (!isRemote()) {

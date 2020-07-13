@@ -184,6 +184,11 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
+    protected void dumpRadiation() {
+        //NO-OP we handle dumping radiation separately for multiblocks
+    }
+
+    @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         unload();
