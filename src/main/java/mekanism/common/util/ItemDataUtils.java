@@ -39,7 +39,13 @@ public final class ItemDataUtils {
 
     public static void removeData(ItemStack stack, String key) {
         if (hasDataTag(stack)) {
-            getDataMap(stack).remove(key);
+            CompoundNBT dataMap = getDataMap(stack);
+            dataMap.remove(key);
+            if (dataMap.isEmpty()) {
+                //If our data map no longer has any elements after removing a piece of stored data
+                // then remove the data tag to make the stack nice and clean again
+                stack.getTag().remove(NBTConstants.MEK_DATA);
+            }
         }
     }
 

@@ -1,10 +1,15 @@
 package mekanism.common.block;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
@@ -15,6 +20,8 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -39,6 +46,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -104,6 +113,56 @@ public abstract class BlockMekanism extends Block {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
         }
         return itemStack;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public List<ItemStack> getDrops(@Nonnull BlockState state, @Nonnull LootContext.Builder builder) {
+        List<ItemStack> drops = super.getDrops(state, builder);
+        //Check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
+        if (state.getBlock() instanceof IHasTileEntity) {
+            TileEntity tile = ((IHasTileEntity<?>) state.getBlock()).getTileType().create();
+            if (tile instanceof TileEntityMekanism) {
+                TileEntityMekanism mekTile = (TileEntityMekanism) tile;
+                //Skip tiles that have no tanks and skip chemical creative tanks
+                if (!mekTile.getGasTanks(null).isEmpty() && (!(mekTile instanceof TileEntityChemicalTank) ||
+                                                             ((TileEntityChemicalTank) mekTile).getTier() != ChemicalTankTier.CREATIVE)) {
+                    for (ItemStack drop : drops) {
+                        ListNBT gasTankList = ItemDataUtils.getList(drop, NBTConstants.GAS_TANKS);
+                        if (!gasTankList.isEmpty()) {
+                            int count = DataHandlerUtils.getMaxId(gasTankList, NBTConstants.TANK);
+                            List<IGasTank> tanks = new ArrayList<>(count);
+                            for (int i = 0; i < count; i++) {
+                                tanks.add(ChemicalTankBuilder.GAS.createDummy(Long.MAX_VALUE));
+                            }
+                            DataHandlerUtils.readContainers(tanks, gasTankList);
+                            boolean hasRadioactive = false;
+                            for (IGasTank tank : tanks) {
+                                if (!tank.isEmpty() && tank.getStack().has(GasAttributes.Radiation.class)) {
+                                    //If the tank isn't empty and has a radioactive gas in it, clear the tank and mark we need to update the item
+                                    hasRadioactive = true;
+                                    tank.setEmpty();
+                                }
+                            }
+                            if (hasRadioactive) {
+                                //If the item has any gas tanks stored, check if any have radioactive substances in them
+                                // and if so clear them out
+                                ListNBT newGasTankList = DataHandlerUtils.writeContainers(tanks);
+                                if (newGasTankList.isEmpty()) {
+                                    //If the list is now empty remove it
+                                    ItemDataUtils.removeData(drop, NBTConstants.GAS_TANKS);
+                                } else {
+                                    //Otherwise update the list
+                                    ItemDataUtils.setList(drop, NBTConstants.GAS_TANKS, newGasTankList);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return drops;
     }
 
     @Override

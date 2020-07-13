@@ -5,14 +5,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.Action;
+import mekanism.api.Coord4D;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
@@ -60,10 +65,11 @@ public class PacketDropperUse {
                     if (tile instanceof TileEntityMultiblock) {
                         MultiblockData structure = ((TileEntityMultiblock<?>) tile).getMultiblock();
                         if (structure.isFormed()) {
-                            handleTankType(structure, message, player, stack);
+                            //TODO: Decide if we want to release the radiation from a different point in the multiblock
+                            handleTankType(structure, message, player, stack, Coord4D.get(tile));
                         }
                     } else {
-                        handleTankType(tile, message, player, stack);
+                        handleTankType(tile, message, player, stack, Coord4D.get(tile));
                     }
                 }
             }
@@ -72,7 +78,7 @@ public class PacketDropperUse {
     }
 
     private static <HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> void handleTankType(HANDLER handler,
-          PacketDropperUse message, PlayerEntity player, ItemStack stack) {
+          PacketDropperUse message, PlayerEntity player, ItemStack stack, Coord4D coord) {
         if (message.tankType == TankType.FLUID_TANK) {
             IExtendedFluidTank fluidTank = handler.getFluidTank(message.tankId, null);
             if (fluidTank != null) {
@@ -90,7 +96,7 @@ public class PacketDropperUse {
                 tanks = handler.getSlurryTanks(null);
             }
             if (message.tankId < tanks.size()) {
-                handleChemicalTank(player, stack, tanks.get(message.tankId), message.action);
+                handleChemicalTank(player, stack, tanks.get(message.tankId), message.action, coord);
             }
         }
     }
@@ -107,10 +113,21 @@ public class PacketDropperUse {
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleChemicalTank(PlayerEntity player, ItemStack stack,
-          IChemicalTank<CHEMICAL, STACK> tank, DropperAction action) {
+          IChemicalTank<CHEMICAL, STACK> tank, DropperAction action, Coord4D coord) {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
-            tank.setEmpty();
+            if (!tank.isEmpty()) {
+                if (tank instanceof IGasTank) {
+                    //If the tank is a gas tank and has radioactive substances in it make sure we properly emit the radiation
+                    // to the environment
+                    GasStack gasStack = ((IGasTank) tank).getStack();
+                    if (gasStack.has(GasAttributes.Radiation.class)) {
+                        double radioactivity = gasStack.get(GasAttributes.Radiation.class).getRadioactivity();
+                        Mekanism.radiationManager.radiate(coord, radioactivity * gasStack.getAmount());
+                    }
+                }
+                tank.setEmpty();
+            }
         } else {
             Optional<IChemicalHandler<CHEMICAL, STACK>> cap = MekanismUtils.toOptional(stack.getCapability(ChemicalUtil.getCapabilityForChemical(tank)));
             if (cap.isPresent()) {
