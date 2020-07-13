@@ -37,7 +37,7 @@ public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncable
     @Override
     public DirtyType isDirty() {
         FREQUENCY value = get();
-        int valueHashCode = value == null ? 0 : value.hashCode();
+        int valueHashCode = value == null ? 0 : value.getSyncHash();
         if (lastKnownHashCode == valueHashCode) {
             return DirtyType.CLEAN;
         }

@@ -111,6 +111,14 @@ public abstract class Frequency {
         publicFreq = dataStream.readBoolean();
     }
 
+    /**
+     * This is the hashCode that is used for determining if a frequency is dirty. Override this if your frequency type has more things that may mean it needs to be
+     * re-synced.
+     */
+    public int getSyncHash() {
+        return hashCode();
+    }
+
     @Override
     public int hashCode() {
         int code = 1;

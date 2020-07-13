@@ -76,9 +76,9 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
                   }
                   updateButtons();
               }, DialogType.DANGER)));
-        func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 131, 120));
+        func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
         func_230480_a_(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
-              () -> getFrequency() != null ? getFrequency().getColor() : null,
+              () -> getFrequency() == null ? null : getFrequency().getColor(),
               () -> sendColorUpdate(0),
               () -> sendColorUpdate(1)));
         func_230480_a_(frequencyField = new GuiTextField(this, 50, 106, 98, 11));
@@ -139,10 +139,9 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     @Override
     public void func_231023_e_() {
         super.func_231023_e_();
-        Frequency freq = getFrequency();
         if (!init && getFrequency() != null) {
             init = true;
-            privateMode = freq.isPrivate();
+            privateMode = getFrequency().isPrivate();
         }
         updateButtons();
     }

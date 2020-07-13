@@ -40,6 +40,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketQIOItemViewerSlotInteract.class, PacketQIOItemViewerSlotInteract::encode, PacketQIOItemViewerSlotInteract::decode, PacketQIOItemViewerSlotInteract::handle);
         registerClientToServer(PacketGuiItemDataRequest.class, PacketGuiItemDataRequest::encode, PacketGuiItemDataRequest::decode, PacketGuiItemDataRequest::handle);
         registerClientToServer(PacketQIOSetColor.class, PacketQIOSetColor::encode, PacketQIOSetColor::decode, PacketQIOSetColor::handle);
+        registerClientToServer(PacketTeleporterSetColor.class, PacketTeleporterSetColor::encode, PacketTeleporterSetColor::decode, PacketTeleporterSetColor::handle);
 
         //Server to client messages
         registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);

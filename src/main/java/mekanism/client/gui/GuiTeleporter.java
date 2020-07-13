@@ -7,10 +7,13 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
+import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.custom.GuiTeleporterStatus;
 import mekanism.client.gui.element.scroll.GuiTextScrollList;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
@@ -19,12 +22,14 @@ import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.PacketGuiSetFrequency;
+import mekanism.common.network.PacketTeleporterSetColor;
 import mekanism.common.network.PacketGuiSetFrequency.FrequencyUpdate;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.text.OwnerDisplay;
@@ -40,6 +45,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     private GuiTextScrollList scrollList;
     private GuiTextField frequencyField;
     private boolean privateMode;
+
+    private boolean init = false;
 
     public GuiTeleporter(MekanismTileContainer<TileEntityTeleporter> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -68,7 +75,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             privateMode = true;
             updateButtons();
         }));
-        func_230480_a_(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
+        func_230480_a_(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.TELEPORTER).get(selection) : tile.getPublicCache(FrequencyType.TELEPORTER).get(selection);
@@ -76,7 +83,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             }
             updateButtons();
         }));
-        func_230480_a_(deleteButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
+        func_230480_a_(deleteButton = new TranslationButton(this, getGuiLeft() + 79, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.TELEPORTER).get(selection) : tile.getPublicCache(FrequencyType.TELEPORTER).get(selection);
@@ -85,6 +92,11 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             }
             updateButtons();
         }));
+        func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
+        func_230480_a_(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
+              () -> getFrequency() == null ? null : getFrequency().getColor(),
+              () -> sendColorUpdate(0),
+              () -> sendColorUpdate(1)));
         func_230480_a_(frequencyField = new GuiTextField(this, 50, 103, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
@@ -137,6 +149,10 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     @Override
     public void func_231023_e_() {
         super.func_231023_e_();
+        if (!init && getFrequency() != null) {
+            init = true;
+            privateMode = getFrequency().isPrivate();
+        }
         //TODO: Why do we call updateButtons every tick?
         updateButtons();
     }
@@ -181,6 +197,17 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     public void setFrequency(String freq) {
         if (!freq.isEmpty()) {
             Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_TILE, FrequencyType.TELEPORTER, new FrequencyIdentity(freq, !privateMode), tile.getPos()));
+        }
+    }
+
+    public TeleporterFrequency getFrequency() {
+        return tile.getFrequency(FrequencyType.TELEPORTER);
+    }
+
+    private void sendColorUpdate(int extra) {
+        TeleporterFrequency freq = getFrequency();
+        if (freq != null) {
+            Mekanism.packetHandler.sendToServer(PacketTeleporterSetColor.create(tile.getTilePos(), freq, extra));
         }
     }
 }

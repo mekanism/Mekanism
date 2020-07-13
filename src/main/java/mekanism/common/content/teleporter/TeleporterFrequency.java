@@ -4,13 +4,19 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
+import mekanism.api.text.EnumColor;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.util.NBTUtils;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
 public class TeleporterFrequency extends Frequency {
 
     private final Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
+    private EnumColor color = EnumColor.PURPLE;
 
     public TeleporterFrequency(String n, UUID uuid) {
         super(FrequencyType.TELEPORTER, n, uuid);
@@ -22,6 +28,21 @@ public class TeleporterFrequency extends Frequency {
 
     public Set<Coord4D> getActiveCoords() {
         return activeCoords;
+    }
+
+    @Override
+    public int getSyncHash() {
+        int code = hashCode();
+        code = 31 * code + color.hashCode();
+        return code;
+    }
+
+    public EnumColor getColor() {
+        return color;
+    }
+
+    public void setColor(EnumColor color) {
+        this.color = color;
     }
 
     @Override
@@ -56,5 +77,29 @@ public class TeleporterFrequency extends Frequency {
             }
         }
         return closest;
+    }
+
+    @Override
+    protected void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, (value) -> color = value);
+    }
+
+    @Override
+    protected void read(PacketBuffer dataStream) {
+        super.read(dataStream);
+        color = dataStream.readEnumValue(EnumColor.class);
+    }
+
+    @Override
+    public void write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putInt(NBTConstants.COLOR, color.ordinal());
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        super.write(buffer);
+        buffer.writeEnumValue(color);
     }
 }
