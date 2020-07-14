@@ -13,9 +13,10 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagCollection;
-import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -41,7 +42,7 @@ public final class TagCache {
         if (itemTagStacks.get(oreName) != null) {
             return itemTagStacks.get(oreName);
         }
-        TagCollection<Item> tagCollection = TagCollectionManager.func_232928_e_().func_232925_b_();
+        TagCollection<Item> tagCollection = ItemTags.getCollection();
         List<ResourceLocation> keys = tagCollection.getRegisteredTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
         Set<Item> items = new HashSet<>();
         for (ResourceLocation key : keys) {
@@ -59,7 +60,7 @@ public final class TagCache {
         if (blockTagStacks.get(oreName) != null) {
             return blockTagStacks.get(oreName);
         }
-        TagCollection<Block> tagCollection = TagCollectionManager.func_232928_e_().func_232923_a_();
+        TagCollection<Block> tagCollection = BlockTags.getCollection();
         List<ResourceLocation> keys = tagCollection.getRegisteredTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
         Set<Block> blocks = new HashSet<>();
         for (ResourceLocation key : keys) {
