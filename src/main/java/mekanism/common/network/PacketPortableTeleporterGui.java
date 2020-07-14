@@ -125,7 +125,7 @@ public class PacketPortableTeleporterGui {
     private static void sendDataResponse(TeleporterFrequency given, PlayerEntity player, ItemStack stack) {
         byte status = 3;
         if (given != null) {
-            FrequencyManager<TeleporterFrequency> manager = FrequencyType.TELEPORTER.getFrequencyManager(given);
+            FrequencyManager<TeleporterFrequency> manager = FrequencyType.TELEPORTER.getManager(given.isPublic() ? null : player.getUniqueID());
             TeleporterFrequency freq = manager.getFrequency(given.getName());
             if (freq != null && !freq.getActiveCoords().isEmpty()) {
                 status = 1;
