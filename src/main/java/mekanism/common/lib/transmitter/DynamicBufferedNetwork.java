@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Range3D;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.eventbus.api.Event;
@@ -165,7 +166,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     public void markDirty() {
         if (world != null && !world.isRemote && world.getGameTime() != lastMarkDirtyTime) {
             lastMarkDirtyTime = world.getGameTime();
-            chunks.forEach(chunk -> world.markChunkDirty(chunk.asBlockPos(), null));
+            chunks.forEach(chunk -> MekanismUtils.markChunkDirty(world, chunk.asBlockPos()));
         }
     }
 

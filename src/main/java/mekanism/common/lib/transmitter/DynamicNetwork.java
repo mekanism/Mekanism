@@ -1,6 +1,5 @@
 package mekanism.common.lib.transmitter;
 
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Set;
@@ -19,7 +18,7 @@ import net.minecraftforge.fml.common.thread.EffectiveSide;
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
       TRANSMITTER extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements INetworkDataHandler, IHasTextComponent {
 
-    protected final Set<TRANSMITTER> transmitters = new ObjectLinkedOpenHashSet<>();
+    protected final Set<TRANSMITTER> transmitters = new ObjectOpenHashSet<>();
     protected final Set<TRANSMITTER> transmittersToAdd = new ObjectOpenHashSet<>();
     protected final NetworkAcceptorCache<ACCEPTOR> acceptorCache = new NetworkAcceptorCache<>();
     @Nullable
@@ -186,5 +185,21 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public Set<Direction> getAcceptorDirections(BlockPos pos) {
         return acceptorCache.getAcceptorDirections(pos);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (o instanceof DynamicNetwork) {
+            return uuid.equals(((DynamicNetwork<?, ?, ?>) o).uuid);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
     }
 }

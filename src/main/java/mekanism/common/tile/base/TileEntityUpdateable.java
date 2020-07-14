@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUpdateTile;
 import mekanism.common.tile.interfaces.ITileWrapper;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -58,7 +59,7 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
             if (recheckBlockState) {
                 cachedBlockState = world.getBlockState(pos);
             }
-            world.markChunkDirty(pos, this);
+            MekanismUtils.markChunkDirty(world, pos);
             if (!isRemote()) {
                 markDirtyComparator();
             }

@@ -154,7 +154,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public boolean isValid() {
-        return !getTransmitterTile().isRemoved();
+        return !getTransmitterTile().isRemoved() && getTransmitterTile().isLoaded();
     }
 
 

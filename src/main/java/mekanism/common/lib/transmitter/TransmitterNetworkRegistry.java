@@ -121,7 +121,7 @@ public class TransmitterNetworkRegistry {
 
     private <NETWORK extends DynamicNetwork<?, NETWORK, TRANSMITTER>, TRANSMITTER extends Transmitter<?, NETWORK, TRANSMITTER>>
     void removeInvalidTransmitter(Transmitter<?, NETWORK, TRANSMITTER> invalid) {
-        if (!(invalid.isOrphan() && invalid.isValid())) {
+        if (!invalid.isOrphan() || !invalid.isValid()) {
             NETWORK n = invalid.getTransmitterNetwork();
             if (n != null) {
                 n.invalidate((TRANSMITTER) invalid);
@@ -137,7 +137,7 @@ public class TransmitterNetworkRegistry {
             Mekanism.logger.info("Dealing with {} orphan Transmitters", orphanTransmitters.size());
         }
 
-        for (Transmitter<?, ?, ?> orphanTransmitter : new Object2ObjectOpenHashMap<>(orphanTransmitters).values()) {
+        for (Transmitter<?, ?, ?> orphanTransmitter : orphanTransmitters.values()) {
             if (orphanTransmitter.isValid() && orphanTransmitter.isOrphan()) {
                 OrphanPathFinder<?, ?, ?> finder;
                 if (orphanTransmitter instanceof BufferedTransmitter) {

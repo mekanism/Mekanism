@@ -95,7 +95,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
             for (int y = structure.renderLocation.getY(); y < initDisperser.getY(); y++) {
                 for (int z = structure.renderLocation.getZ(); z < structure.renderLocation.getZ() + structure.width(); z++) {
                     BlockPos airPos = new BlockPos(x, y, z);
-                    if (world.isAirBlock(airPos) || isFrameCompatible(world.getTileEntity(airPos))) {
+                    if (world.isAirBlock(airPos) || isFrameCompatible(MekanismUtils.getTileEntity(world, airPos))) {
                         initAir = airPos;
                         totalAir++;
                     }
@@ -111,7 +111,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
               coord.getY() >= renderLocation.getY() - 1 && coord.getY() < initDisperser.getY() &&
               coord.getX() >= renderLocation.getX() && coord.getX() < renderLocation.getX() + volLength &&
               coord.getZ() >= renderLocation.getZ() && coord.getZ() < renderLocation.getZ() + volWidth &&
-              (world.isAirBlock(coord) || isFrameCompatible(world.getTileEntity(coord)))));
+              (world.isAirBlock(coord) || isFrameCompatible(MekanismUtils.getTileEntity(world, coord)))));
 
         //Make sure all air blocks are connected
         if (totalAir > structure.getWaterVolume()) {

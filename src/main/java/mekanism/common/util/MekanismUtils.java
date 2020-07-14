@@ -558,8 +558,21 @@ public final class MekanismUtils {
      */
     public static void saveChunk(TileEntity tile) {
         if (tile != null && !tile.isRemoved() && tile.getWorld() != null) {
-            tile.getWorld().markChunkDirty(tile.getPos(), tile);
+            markChunkDirty(tile.getWorld(), tile.getPos());
         }
+    }
+
+    /**
+     * Marks a chunk as dirty if it is currently loaded
+     */
+    public static void markChunkDirty(World world, BlockPos pos) {
+        if (isBlockLoaded(world, pos)) {
+            world.getChunkAt(pos).markDirty();
+        }
+        //TODO: This line below is now (1.16+) called by the mark chunk dirty method (without even validating if it is loaded).
+        // And with it causes issues where chunks are easily ghost loaded. Why was it added like that and do we need to somehow
+        // also update neighboring comparators
+        //world.updateComparatorOutputLevel(pos, world.getBlockState(pos).getBlock()); //Notify neighbors of changes
     }
 
     /**
@@ -913,11 +926,7 @@ public final class MekanismUtils {
     @Nullable
     @Contract("_, null, _, _ -> null")
     public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IBlockReader world, @Nonnull BlockPos pos, boolean logWrongType) {
-        if (!isBlockLoaded(world, pos)) {
-            //If the world is null or its a world reader and the block is not loaded, return null
-            return null;
-        }
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = getTileEntity(world, pos);
         if (tile == null) {
             return null;
         }

@@ -52,6 +52,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
 
     private final Transmitter<?, ?, ?> transmitter;
     private boolean forceUpdate = true;
+    private boolean loaded = false;
 
     public TileEntityTransmitter(IBlockProvider blockProvider) {
         super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType());
@@ -122,8 +123,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
 
     @Override
     public void validate() {
-        onWorldJoin();
         super.validate();
+        onWorldJoin();
     }
 
     @Override
@@ -137,15 +138,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
 
     @Override
     public void remove() {
-        onWorldSeparate();
         super.remove();
+        onWorldSeparate();
         getTransmitter().remove();
-    }
-
-    @Override
-    public void onLoad() {
-        onWorldJoin();
-        super.onLoad();
     }
 
     public void onAdded() {
@@ -153,18 +148,24 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         getTransmitter().refreshConnections();
     }
 
-    public void onWorldJoin() {
+    private void onWorldJoin() {
+        loaded = true;
         if (!isRemote()) {
             TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
         }
     }
 
-    public void onWorldSeparate() {
+    private void onWorldSeparate() {
+        loaded = false;
         if (isRemote()) {
             getTransmitter().setTransmitterNetwork(null);
         } else {
             TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
         }
+    }
+
+    public boolean isLoaded() {
+        return loaded;
     }
 
     @Override

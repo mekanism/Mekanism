@@ -108,8 +108,7 @@ public class ChunkCommand {
             return;
         }
         ChunkPos pos = event.getChunk().getPos();
-        long key = ChunkPos.asLong(pos.x, pos.z);
-        if (chunkWatchers.contains(key)) {
+        if (chunkWatchers.contains(pos.asLong())) {
             ITextComponent message = MekanismLang.COMMAND_CHUNK.translate(direction, pos.x, pos.z);
             event.getWorld().getPlayers().forEach(player -> player.sendMessage(message, Util.field_240973_b_));
         }

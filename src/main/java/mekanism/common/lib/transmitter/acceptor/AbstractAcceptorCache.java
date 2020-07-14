@@ -13,6 +13,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EmitUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -87,7 +88,8 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAccep
     private NonNullConsumer<LazyOptional<ACCEPTOR>> getUncachedRefreshListener(Direction side) {
         return ignored -> {
             //Check to make sure the transmitter is still valid and that the position we are going to check is actually still loaded
-            if (!transmitterTile.isRemoved() && transmitterTile.hasWorld() && transmitterTile.getWorld().isBlockPresent(transmitterTile.getPos().offset(side))) {
+            if (!transmitterTile.isRemoved() && transmitterTile.hasWorld() && transmitterTile.isLoaded() &&
+                MekanismUtils.isBlockLoaded(transmitterTile.getWorld(), transmitterTile.getPos().offset(side))) {
                 //If it is, then refresh the connection
                 transmitter.refreshConnections(side);
             }
