@@ -18,7 +18,6 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
-import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
@@ -35,7 +34,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -77,7 +75,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     public MultiblockHeatCapacitor<FissionReactorMultiblockData> heatCapacitor;
 
     @ContainerSync
-    public double lastEnvironmentLoss = 0, lastTransferLoss = 0;
+    public double lastEnvironmentLoss = 0;
     @ContainerSync
     public long lastBoilRate = 0;
     @ContainerSync
@@ -148,14 +146,6 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         handleCoolant();
         // external heat dissipation
         lastEnvironmentLoss = simulateEnvironment();
-        // adjacent heat transfer
-        lastTransferLoss = 0;
-        for (ValveData valve : valves) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, valve.location);
-            if (tile instanceof ITileHeatHandler) {
-                lastTransferLoss += ((ITileHeatHandler) tile).simulateAdjacent();
-            }
-        }
         // update temperature
         updateHeatCapacitors(null);
         handleDamage(world);

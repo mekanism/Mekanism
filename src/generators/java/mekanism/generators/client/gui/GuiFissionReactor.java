@@ -1,8 +1,8 @@
 package mekanism.generators.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiBigLight;
@@ -70,9 +70,8 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
               () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 171, 13)
               .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
         func_230480_a_(new GuiHeatTab(() -> {
-            ITextComponent transfer = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastTransferLoss, TemperatureUnit.KELVIN, false);
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
-            return Arrays.asList(MekanismLang.TRANSFERRED_RATE.translate(transfer), MekanismLang.DISSIPATED_RATE.translate(environment));
+            return Arrays.asList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));
         func_230480_a_(activateButton = new TranslationButton(this, getGuiLeft() + 6, getGuiTop() + 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
               () -> MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 1)), null,
