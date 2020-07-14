@@ -92,8 +92,8 @@ public class SecurityFrequency extends Frequency {
     }
 
     @Override
-    public int hashCode() {
-        int code = super.hashCode();
+    public int getSyncHash() {
+        int code = super.getSyncHash();
         code = 31 * code + (override ? 1 : 0);
         code = 31 * code + (securityMode != null ? securityMode.ordinal() : 0);
         code = 31 * code + trustedCacheHash;

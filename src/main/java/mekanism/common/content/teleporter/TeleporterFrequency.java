@@ -32,8 +32,8 @@ public class TeleporterFrequency extends Frequency {
 
     @Override
     public int getSyncHash() {
-        int code = hashCode();
-        code = 31 * code + color.hashCode();
+        int code = super.getSyncHash();
+        code = 31 * code + color.ordinal();
         return code;
     }
 
