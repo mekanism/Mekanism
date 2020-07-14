@@ -68,7 +68,7 @@ public class PacketQIOItemViewerSlotInteract {
                         }
                     } else if (message.type == Type.PUT) {
                         if (!curStack.isEmpty()) {
-                            ItemStack rejects = freq.addItem(StackUtils.size(curStack, message.count));
+                            ItemStack rejects = freq.addItem(StackUtils.size(curStack, Math.min(message.count, curStack.getCount())));
                             ItemStack newStack = StackUtils.size(curStack, curStack.getCount() - (message.count - rejects.getCount()));
                             player.inventory.setItemStack(newStack);
                         }
