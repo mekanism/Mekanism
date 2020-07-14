@@ -32,8 +32,6 @@ import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.PacketGuiSetFrequency;
 import mekanism.common.network.PacketGuiSetFrequency.FrequencyUpdate;
-import mekanism.common.network.PacketPortableTeleporterGui;
-import mekanism.common.network.PacketPortableTeleporterGui.PortableTeleporterPacketType;
 import mekanism.common.network.PacketTeleporterSetColor;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
@@ -193,7 +191,6 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         if (!init && getFrequency() != null) {
             init = true;
             privateMode = getFrequency().isPrivate();
-            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.DATA_REQUEST, currentHand, getFrequency()));
         }
         updateButtons();
     }

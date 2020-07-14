@@ -68,7 +68,21 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> {
                         item.setFrequency(stack, toUse);
                     } else if (message.updateType == FrequencyUpdate.REMOVE_ITEM) {
                         manager.remove(message.data.getKey(), player.getUniqueID());
-                        item.setFrequency(stack, null);
+                        FrequencyIdentity current = item.getFrequency(stack);
+                        if (current != null) {
+                            if (current.equals(message.data)) {
+                                //If the frequency we are removing matches the stored frequency set it to nothing
+                                item.setFrequency(stack, null);
+                            } else {
+                                //Otherwise just delete the frequency and keep what the item is set to
+                                FrequencyManager<FREQ> currentManager = manager;
+                                if (message.data.isPublic() != current.isPublic()) {
+                                    //Update the manager if it is the wrong one for getting our actual current frequency
+                                    currentManager = message.type.getManager(current.isPublic() ? null : player.getUniqueID());
+                                }
+                                toUse = currentManager.getFrequency(current.getKey());
+                            }
+                        }
                     }
                     Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(message.currentHand, message.type, player.getUniqueID(), toUse), (ServerPlayerEntity) player);
                 }
