@@ -23,9 +23,12 @@ public class MekanismClient {
 
     public static void updateKey(KeyBinding key, int type) {
         boolean down = Minecraft.getInstance().currentScreen == null && key.isKeyDown();
-        if (down != Mekanism.keyMap.has(Minecraft.getInstance().player, type)) {
-            Mekanism.packetHandler.sendToServer(new PacketKey(type, down));
-            Mekanism.keyMap.update(Minecraft.getInstance().player, type, down);
+        if (Minecraft.getInstance().player != null) {
+            UUID playerUUID = Minecraft.getInstance().player.getUniqueID();
+            if (down != Mekanism.keyMap.has(playerUUID, type)) {
+                Mekanism.packetHandler.sendToServer(new PacketKey(type, down));
+                Mekanism.keyMap.update(playerUUID, type, down);
+            }
         }
     }
 

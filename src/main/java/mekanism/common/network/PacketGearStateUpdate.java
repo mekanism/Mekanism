@@ -13,7 +13,7 @@ public class PacketGearStateUpdate {
     private final boolean state;
     private final UUID uuid;
 
-    //Client to server AND sort of server to client, as the server then reroutes it to the client
+    //Client to server AND sort of server to client, as the server then reroutes it as PacketPlayerData to clients
     public PacketGearStateUpdate(GearType gearType, UUID uuid, boolean state) {
         this.gearType = gearType;
         this.uuid = uuid;

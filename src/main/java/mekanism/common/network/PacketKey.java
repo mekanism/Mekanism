@@ -23,9 +23,9 @@ public class PacketKey {
         }
         context.get().enqueueWork(() -> {
             if (message.add) {
-                Mekanism.keyMap.add(player, message.key);
+                Mekanism.keyMap.add(player.getUniqueID(), message.key);
             } else {
-                Mekanism.keyMap.remove(player, message.key);
+                Mekanism.keyMap.remove(player.getUniqueID(), message.key);
             }
         });
         context.get().setPacketHandled(true);

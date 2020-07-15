@@ -20,7 +20,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
-import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleVisionEnhancementUnit;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -185,13 +184,6 @@ public class ClientTickHandler {
             }
 
             Mekanism.radiationManager.tickClient(minecraft.player);
-            boolean stepBoostOn = CommonPlayerTickHandler.isStepBoostOn(minecraft.player);
-
-            if (stepBoostOn && !minecraft.player.isSneaking()) {
-                minecraft.player.stepHeight = 1.002F;
-            } else if (minecraft.player.stepHeight == 1.002F) {
-                minecraft.player.stepHeight = 0.6F;
-            }
 
             UUID playerUUID = minecraft.player.getUniqueID();
             // Update player's state for various items; this also automatically notifies server if something changed and
@@ -249,21 +241,6 @@ public class ClientTickHandler {
                     }
                     minecraft.player.fallDistance = 0.0F;
                 }
-            }
-
-            if (CommonPlayerTickHandler.isGravitationalModulationReady(minecraft.player)) {
-                minecraft.player.abilities.allowFlying = true;
-                if (minecraft.player.abilities.isFlying) {
-                    ModuleGravitationalModulatingUnit module = Modules.load(minecraft.player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
-                    minecraft.player.setSprinting(false);
-                    if (Mekanism.keyMap.has(minecraft.player, KeySync.BOOST)) {
-                        minecraft.player.moveRelative(module.getBoost(), new Vector3d(0, 0, 1));
-                    }
-                }
-
-            } else if (MekanismUtils.isPlayingMode(minecraft.player)) {
-                minecraft.player.abilities.allowFlying = false;
-                minecraft.player.abilities.isFlying = false;
             }
 
             if (isScubaMaskOn(minecraft.player) && minecraft.player.getAir() == 300) {

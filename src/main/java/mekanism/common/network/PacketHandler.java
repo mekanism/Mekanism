@@ -57,6 +57,8 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
         registerServerToClient(PacketFrequencyItemGuiUpdate.class, PacketFrequencyItemGuiUpdate::encode, PacketFrequencyItemGuiUpdate::decode, PacketFrequencyItemGuiUpdate::handle);
         registerServerToClient(PacketQIOItemViewerGuiSync.class, PacketQIOItemViewerGuiSync::encode, PacketQIOItemViewerGuiSync::decode, PacketQIOItemViewerGuiSync::handle);
+        registerServerToClient(PacketFlyingSync.class, PacketFlyingSync::encode, PacketFlyingSync::decode, PacketFlyingSync::handle);
+        registerServerToClient(PacketStepHeightSync.class, PacketStepHeightSync::encode, PacketStepHeightSync::decode, PacketStepHeightSync::handle);
 
         //Register container sync packet
         registerServerToClient(PacketUpdateContainer.class, PacketUpdateContainer::encode, PacketUpdateContainer::decode, PacketUpdateContainer::handle);

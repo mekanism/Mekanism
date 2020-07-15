@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
@@ -100,11 +101,16 @@ public class CommonPlayerTickHandler {
         }
     }
 
-    public void tickEnd(PlayerEntity player) {
-        if (isStepBoostOn(player)) {
-            player.stepHeight = 1.002F;
-        } else if (player.stepHeight == 1.002F) {
-            player.stepHeight = 0.6F;
+    private void tickEnd(PlayerEntity player) {
+        UUID playerUUID = player.getUniqueID();
+        if (!isStepBoostOn(player)) {
+            if (Mekanism.playerState.isStepAssistApplied(playerUUID)) {
+                //If we don't have step assist but we previously did, remove it and lower the step height
+                Mekanism.playerState.removeStepAssist(player);
+            }
+        } else if (!Mekanism.playerState.isStepAssistApplied(playerUUID)) {
+            //If we should be able to have auto step, but we don't have it set yet, enable it
+            Mekanism.playerState.applyStepAssist(player);
         }
         if (player instanceof ServerPlayerEntity) {
             Mekanism.radiationManager.tickServer((ServerPlayerEntity) player);
@@ -125,8 +131,8 @@ public class CommonPlayerTickHandler {
             if (mode == JetpackMode.NORMAL) {
                 player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.5D), motion.getZ());
             } else if (mode == JetpackMode.HOVER) {
-                boolean ascending = Mekanism.keyMap.has(player, KeySync.ASCEND);
-                boolean descending = Mekanism.keyMap.has(player, KeySync.DESCEND);
+                boolean ascending = Mekanism.keyMap.has(playerUUID, KeySync.ASCEND);
+                boolean descending = Mekanism.keyMap.has(playerUUID, KeySync.DESCEND);
                 if ((!ascending && !descending) || (ascending && descending)) {
                     if (motion.getY() > 0) {
                         player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, 0), motion.getZ());
@@ -170,22 +176,7 @@ public class CommonPlayerTickHandler {
             }
         }
 
-        if (isGravitationalModulationReady(player)) {
-            player.abilities.allowFlying = true;
-            if (player.abilities.isFlying) {
-                FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
-                boolean boostKey = Mekanism.keyMap.has(player, KeySync.BOOST);
-                ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
-                player.setSprinting(false);
-                if (boostKey) {
-                    player.moveRelative(module.getBoost(), new Vector3d(0, 0, 1));
-                }
-                module.useEnergy(player, Mekanism.keyMap.has(player, KeySync.BOOST) ? usage.multiply(4) : usage);
-            }
-        } else if (MekanismUtils.isPlayingMode(player)) {
-            player.abilities.allowFlying = false;
-            player.abilities.isFlying = false;
-        }
+        Mekanism.playerState.updateFlightInfo(player);
     }
 
     public static boolean isJetpackOn(PlayerEntity player) {
@@ -194,10 +185,10 @@ public class CommonPlayerTickHandler {
             if (!chest.isEmpty()) {
                 JetpackMode mode = getJetpackMode(chest);
                 if (mode == JetpackMode.NORMAL) {
-                    return Mekanism.keyMap.has(player, KeySync.ASCEND);
+                    return Mekanism.keyMap.has(player.getUniqueID(), KeySync.ASCEND);
                 } else if (mode == JetpackMode.HOVER) {
-                    boolean ascending = Mekanism.keyMap.has(player, KeySync.ASCEND);
-                    boolean descending = Mekanism.keyMap.has(player, KeySync.DESCEND);
+                    boolean ascending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.ASCEND);
+                    boolean descending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.DESCEND);
                     if (!ascending || descending) {
                         return !isOnGround(player);
                     }
@@ -320,7 +311,7 @@ public class CommonPlayerTickHandler {
         if (event.getEntityLiving() instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
             ModuleHydraulicPropulsionUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.FEET), Modules.HYDRAULIC_PROPULSION_UNIT);
-            if (module != null && module.isEnabled() && Mekanism.keyMap.has(player, KeySync.BOOST)) {
+            if (module != null && module.isEnabled() && Mekanism.keyMap.has(player.getUniqueID(), KeySync.BOOST)) {
                 FloatingLong usage = MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get().multiply(module.getBoost() / 0.1F);
                 if (module.getContainerEnergy().greaterOrEqual(usage)) {
                     float boost = module.getBoost();

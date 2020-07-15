@@ -1,16 +1,28 @@
 package mekanism.common.base;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import mekanism.api.math.FloatingLong;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.Modules;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
+import mekanism.common.network.PacketFlyingSync;
 import mekanism.common.network.PacketGearStateUpdate;
 import mekanism.common.network.PacketGearStateUpdate.GearType;
+import mekanism.common.network.PacketStepHeightSync;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
@@ -20,13 +32,17 @@ public class PlayerState {
     private final Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
     private final Set<UUID> activeGravitationalModulators = new ObjectOpenHashSet<>();
     private final Set<UUID> activeFlamethrowers = new ObjectOpenHashSet<>();
+    private final Set<UUID> stepAssistedPlayers = new ObjectOpenHashSet<>();
+    private final Map<UUID, FlightInfo> flightInfoMap = new Object2ObjectOpenHashMap<>();
 
     private IWorld world;
 
     public void clear() {
         activeJetpacks.clear();
         activeScubaMasks.clear();
+        stepAssistedPlayers.clear();
         activeGravitationalModulators.clear();
+        flightInfoMap.clear();
         activeFlamethrowers.clear();
         if (FMLEnvironment.dist.isClient()) {
             SoundHandler.clearPlayerSounds();
@@ -36,7 +52,9 @@ public class PlayerState {
     public void clearPlayer(UUID uuid) {
         activeJetpacks.remove(uuid);
         activeScubaMasks.remove(uuid);
+        stepAssistedPlayers.remove(uuid);
         activeGravitationalModulators.remove(uuid);
+        flightInfoMap.remove(uuid);
         activeFlamethrowers.remove(uuid);
         if (FMLEnvironment.dist.isClient()) {
             SoundHandler.clearPlayerSounds(uuid);
@@ -129,6 +147,31 @@ public class PlayerState {
 
     // ----------------------
     //
+    // Step assist state tracking
+    //
+    // ----------------------
+
+    public boolean isStepAssistApplied(UUID uuid) {
+        return stepAssistedPlayers.contains(uuid);
+    }
+
+    public void applyStepAssist(PlayerEntity player) {
+        stepAssistedPlayers.add(player.getUniqueID());
+        updateClientServerStepHeight(player, 1.002F);
+    }
+
+    public void removeStepAssist(PlayerEntity player) {
+        stepAssistedPlayers.remove(player.getUniqueID());
+        updateClientServerStepHeight(player, 0.6F);
+    }
+
+    private void updateClientServerStepHeight(PlayerEntity player, float value) {
+        player.stepHeight = value;
+        Mekanism.packetHandler.sendTo(new PacketStepHeightSync(value), (ServerPlayerEntity) player);
+    }
+
+    // ----------------------
+    //
     // Gravitational Modulator state tracking
     //
     // ----------------------
@@ -162,6 +205,63 @@ public class PlayerState {
 
     public Set<UUID> getActiveGravitationalModulators() {
         return activeGravitationalModulators;
+    }
+
+    public void updateFlightInfo(PlayerEntity player) {
+        boolean isFlyingGameMode = !MekanismUtils.isPlayingMode(player);
+        boolean hasGravitationalModulator = CommonPlayerTickHandler.isGravitationalModulationReady(player);
+        FlightInfo flightInfo = flightInfoMap.computeIfAbsent(player.getUniqueID(), uuid -> new FlightInfo());
+        if (isFlyingGameMode || hasGravitationalModulator) {
+            //The player can fly
+            if (!flightInfo.hadFlightItem) {
+                //If they did not have a flight item
+                if (!player.abilities.allowFlying) {
+                    //and they are not already allowed to fly, then enable it
+                    updateClientServerFlight(player, true);
+                }
+                //and mark that they had a flight item
+                flightInfo.hadFlightItem = true;
+            } else if (flightInfo.wasFlyingGameMode && !isFlyingGameMode) {
+                //The player was in a game mode that allowed flight, but no longer is, though they still are allowed to fly
+                //Sync the fact to the client. Also passes wasFlying so that if they were flying previously,
+                //and are still allowed to the game mode change doesn't force them out of it
+                updateClientServerFlight(player, true, flightInfo.wasFlying);
+            }
+            //Update flight info states
+            flightInfo.wasFlyingGameMode = isFlyingGameMode;
+            flightInfo.wasFlying = player.abilities.isFlying;
+            if (player.abilities.isFlying && hasGravitationalModulator) {
+                //If the player is actively flying (not just allowed to), and has the garviational modulator ready then apply movement boost if active, and use energy
+                FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
+                boolean boostKey = Mekanism.keyMap.has(player.getUniqueID(), KeySync.BOOST);
+                ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
+                player.setSprinting(false);
+                if (boostKey) {
+                    player.moveRelative(module.getBoost(), new Vector3d(0, 0, 1));
+                }
+                module.useEnergy(player, boostKey ? usage.multiply(4) : usage);
+            }
+        } else {
+            if (flightInfo.hadFlightItem) {
+                if (player.abilities.allowFlying) {
+                    updateClientServerFlight(player, false);
+                }
+                flightInfo.hadFlightItem = false;
+            }
+            flightInfo.wasFlyingGameMode = false;
+            flightInfo.wasFlying = false;
+        }
+    }
+
+    private void updateClientServerFlight(PlayerEntity player, boolean allowFlying) {
+        updateClientServerFlight(player, allowFlying, allowFlying && player.abilities.isFlying);
+    }
+
+    private void updateClientServerFlight(PlayerEntity player, boolean allowFlying, boolean isFlying) {
+        //TODO: Make sure changing dimensions doesn't break players who are currently flying
+        Mekanism.packetHandler.sendTo(new PacketFlyingSync(allowFlying, isFlying), (ServerPlayerEntity) player);
+        player.abilities.allowFlying = allowFlying;
+        player.abilities.isFlying = isFlying;
     }
 
     // ----------------------
@@ -217,5 +317,12 @@ public class PlayerState {
 
     public Set<UUID> getActiveFlamethrowers() {
         return activeFlamethrowers;
+    }
+
+    private static class FlightInfo {
+
+        public boolean hadFlightItem;
+        public boolean wasFlyingGameMode;
+        public boolean wasFlying;
     }
 }
