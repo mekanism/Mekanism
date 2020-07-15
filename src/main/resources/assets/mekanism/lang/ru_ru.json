@@ -938,7 +938,7 @@
   "jetpack.mekanism.hover": "Зависание",
   "jetpack.mekanism.mode_change": "Режим ранца изменён на: %s",
   "jetpack.mekanism.normal": "Обычный",
-  "key.mekanism.chest_mode": "Переключение режима сундука",
+  "key.mekanism.chest_mode": "Переключение режима ранца",
   "key.mekanism.description": "Показать описание",
   "key.mekanism.details": "Подробности",
   "key.mekanism.feet_mode": "Переключить режим бегунков",
