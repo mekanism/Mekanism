@@ -73,12 +73,9 @@ public class EntityFlame extends DamagingProjectileEntity implements IEntityAddi
         Pos3D mergedVec = playerPos.translate(flameVec);
         setPosition(mergedVec.x, mergedVec.y, mergedVec.z);
 
-        Pos3D motion = new Pos3D(0.4, 0.4, 0.4).multiply(lookVec);
-        setMotion(motion);
-
         owner = player;
         mode = ((ItemFlamethrower) player.inventory.getCurrentItem().getItem()).getMode(player.inventory.getCurrentItem());
-        func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0.0F, 0.8F, 1.0F);
+        func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0.0F, 0.5F, 1.0F);
     }
 
     @Override
