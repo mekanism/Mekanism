@@ -226,12 +226,17 @@ public class PlayerState {
                 //Sync the fact to the client. Also passes wasFlying so that if they were flying previously,
                 //and are still allowed to the game mode change doesn't force them out of it
                 updateClientServerFlight(player, true, flightInfo.wasFlying);
+            } else if (flightInfo.wasFlyingAllowed && !player.abilities.allowFlying) {
+                //If we were allowed to fly but something changed that state (such as another mod)
+                // Re-enable flying and set the player back into flying if they were flying
+                updateClientServerFlight(player, true, flightInfo.wasFlying);
             }
             //Update flight info states
             flightInfo.wasFlyingGameMode = isFlyingGameMode;
             flightInfo.wasFlying = player.abilities.isFlying;
+            flightInfo.wasFlyingAllowed = player.abilities.allowFlying;
             if (player.abilities.isFlying && hasGravitationalModulator) {
-                //If the player is actively flying (not just allowed to), and has the garviational modulator ready then apply movement boost if active, and use energy
+                //If the player is actively flying (not just allowed to), and has the gravitational modulator ready then apply movement boost if active, and use energy
                 FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
                 boolean boostKey = Mekanism.keyMap.has(player.getUniqueID(), KeySync.BOOST);
                 ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
@@ -249,7 +254,8 @@ public class PlayerState {
                 flightInfo.hadFlightItem = false;
             }
             flightInfo.wasFlyingGameMode = false;
-            flightInfo.wasFlying = false;
+            flightInfo.wasFlying = player.abilities.isFlying;
+            flightInfo.wasFlyingAllowed = player.abilities.allowFlying;
         }
     }
 
@@ -323,6 +329,7 @@ public class PlayerState {
 
         public boolean hadFlightItem;
         public boolean wasFlyingGameMode;
+        public boolean wasFlyingAllowed;
         public boolean wasFlying;
     }
 }
