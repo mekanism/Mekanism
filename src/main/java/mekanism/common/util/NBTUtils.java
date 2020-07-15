@@ -229,9 +229,9 @@ public class NBTUtils {
 
     public static void setResourceLocationIfPresent(CompoundNBT nbt, String key, Consumer<ResourceLocation> setter) {
         if (nbt.contains(key, NBT.TAG_STRING)) {
-            String value = nbt.getString(key);
-            if (ResourceLocation.isResouceNameValid(value)) {
-                setter.accept(new ResourceLocation(value));
+            ResourceLocation value = ResourceLocation.tryCreate(nbt.getString(key));
+            if (value != null) {
+                setter.accept(value);
             }
         }
     }

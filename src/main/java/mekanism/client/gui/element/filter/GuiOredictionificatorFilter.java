@@ -13,7 +13,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.TagCollectionManager;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -88,7 +88,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
         } else {
             List<String> possibleFilters = TileEntityOredictionificator.possibleFilters.getOrDefault(modid, Collections.emptyList());
             if (possibleFilters.stream().anyMatch(newFilter::startsWith) &&
-                TagCollectionManager.func_232928_e_().func_232925_b_().getRegisteredTags().contains(filterLocation)) {
+                ItemTags.getCollection().getRegisteredTags().contains(filterLocation)) {
                 filter.setFilter(filterLocation);
                 slotDisplay.updateStackList();
                 text.setText("");
