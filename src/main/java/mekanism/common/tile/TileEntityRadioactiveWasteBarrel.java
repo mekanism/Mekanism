@@ -24,6 +24,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
     private static final float TOLERANCE = 0.05F;
     private static final int MAX_PROCESS_TICKS = 1200;
 
+    private long lastProcessTick;
     private IGasTank gasTank;
     private float prevScale;
     private int processTicks;
@@ -45,16 +46,19 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
     @Override
     public void onUpdateServer() {
         super.onUpdateServer();
+        if (world.getGameTime() > lastProcessTick) {
+            //If we are not on the same tick do stuff, otherwise ignore it (anti tick accellerator protection)
+            lastProcessTick = world.getGameTime();
+            if (++processTicks >= MAX_PROCESS_TICKS) {
+                processTicks = 0;
+                gasTank.shrinkStack(1, Action.EXECUTE);
+            }
 
-        if (++processTicks >= MAX_PROCESS_TICKS) {
-            processTicks = 0;
-            gasTank.shrinkStack(1, Action.EXECUTE);
-        }
-
-        float scale = getGasScale();
-        if (Math.abs(scale - prevScale) > TOLERANCE) {
-            sendUpdatePacket();
-            prevScale = scale;
+            float scale = getGasScale();
+            if (Math.abs(scale - prevScale) > TOLERANCE) {
+                sendUpdatePacket();
+                prevScale = scale;
+            }
         }
     }
 
