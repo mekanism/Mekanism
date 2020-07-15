@@ -182,10 +182,11 @@ public class TransmitterNetworkRegistry {
     }
 
     private void commitChanges() {
-        for (DynamicNetwork<?, ?, ?> network : networksToChange) {
+        Set<DynamicNetwork<?,?,?>> networks = new ObjectOpenHashSet<>(networksToChange);
+        networksToChange.clear();
+        for (DynamicNetwork<?, ?, ?> network : networks) {
             network.commit();
         }
-        networksToChange.clear();
     }
 
     @Override
