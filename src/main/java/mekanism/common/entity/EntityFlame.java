@@ -19,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.DamagingProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
@@ -47,7 +48,9 @@ import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
+// ProjectileEntity would fit better then DamagingProjectileEntity, but seeing as there seem to be problems with ATs in 1.16
+// and its constructor isn't accessible that can't be used.
+public class EntityFlame extends DamagingProjectileEntity implements IEntityAdditionalSpawnData {
 
     public static final int LIFESPAN = 80;
     public static final int DAMAGE = 10;
@@ -71,14 +74,11 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         setPosition(mergedVec.x, mergedVec.y, mergedVec.z);
 
         Pos3D motion = new Pos3D(0.4, 0.4, 0.4).multiply(lookVec);
-
-        prevRotationPitch = rotationPitch = player.rotationPitch;
-        prevRotationYaw = rotationYaw = player.rotationYaw;
-        Vector3d playerMotion = player.getMotion();
-        setMotion(motion.add(playerMotion.x * 2, player.func_233570_aj_() ? 0 : playerMotion.y, playerMotion.z * 2));
+        setMotion(motion);
 
         owner = player;
         mode = ((ItemFlamethrower) player.inventory.getCurrentItem().getItem()).getMode(player.inventory.getCurrentItem());
+        func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0.0F, 0.8F, 1.0F);
     }
 
     @Override
@@ -238,12 +238,12 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     @Override
-    protected void readAdditional(@Nonnull CompoundNBT nbtTags) {
+	public void readAdditional(@Nonnull CompoundNBT nbtTags) {
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.MODE, FlamethrowerMode::byIndexStatic, mode -> this.mode = mode);
     }
 
     @Override
-    protected void writeAdditional(@Nonnull CompoundNBT nbtTags) {
+	public void writeAdditional(@Nonnull CompoundNBT nbtTags) {
         nbtTags.putInt(NBTConstants.MODE, mode.ordinal());
     }
 
@@ -261,5 +261,29 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void readSpawnData(PacketBuffer dataStream) {
         mode = dataStream.readEnumValue(FlamethrowerMode.class);
+    }
+
+    /**
+     * Called when the entity is attacked.
+     * 
+     * Copied from Entity, wouldn't be needed with ProjectileEntity.
+     */
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        if (this.isInvulnerableTo(source)) {
+            return false;
+        } else {
+            this.markVelocityChanged();
+            return false;
+        }
+    }
+
+    /**
+     * Returns true if other Entities should be prevented from moving through this Entity.
+     * 
+     * Copied from Entity, wouldn't be needed with ProjectileEntity.
+     */
+    public boolean canBeCollidedWith() {
+        return false;
     }
 }
