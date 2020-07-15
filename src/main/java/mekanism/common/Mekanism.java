@@ -1,13 +1,11 @@
 package mekanism.common;
 
+import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import com.mojang.authlib.GameProfile;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -93,6 +91,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
@@ -106,9 +105,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(Mekanism.MODID)
 public class Mekanism {
@@ -188,7 +188,7 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::onChunkDataLoad);
         MinecraftForge.EVENT_BUS.addListener(this::onWorldLoad);
         MinecraftForge.EVENT_BUS.addListener(this::onWorldUnload);
-        MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+        MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
@@ -309,12 +309,12 @@ public class Mekanism {
         event.addListener(getRecipeCacheManager());
     }
 
-    private void serverStarting(FMLServerStartingEvent event) {
+    private void registerCommands(RegisterCommandsEvent event) {
         BuildCommand.register("boiler", new BoilerBuilder());
         BuildCommand.register("matrix", new MatrixBuilder());
         BuildCommand.register("tank", new TankBuilder());
         BuildCommand.register("evaporation", new EvaporationBuilder());
-        event.getCommandDispatcher().register(CommandMek.register());
+        event.getDispatcher().register(CommandMek.register());
     }
 
     private void serverStopped(FMLServerStoppedEvent event) {
