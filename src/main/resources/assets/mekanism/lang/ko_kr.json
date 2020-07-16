@@ -279,7 +279,7 @@
   "command.mekanism.radiation.clear": "플레이어의 방사선을 제거했습니다.",
   "command.mekanism.radiation.get": "현재 방사선 (sV/h): %s",
   "command.mekanism.radiation.remove_all": "모든 방사선 근원을 제거했습니다.",
-  "command.mekanism.testrules": "Enabled keepInventory, and disabled doMobSpawning, doDaylightCycle, doWeatherCycle and mobGriefing!",
+  "command.mekanism.testrules": "keepInventory를 활성화하였고, doMobSpawning / doDaylightCycle / doWeatherCycle / mobGriefing 를 비활성화 하였습니다.",
   "command.mekanism.tp": "%d, %d, %d로 텔레포트함 - 스택 리스트에 이전 위치 저장됨",
   "command.mekanism.tpop": "%d, %d, %d로 귀환함 - %d개의 위치 정보가 스택 리스트에 저장됨",
   "command.mekanism.tpop.empty": "스택에 저장되어 있는 위치 없음",
