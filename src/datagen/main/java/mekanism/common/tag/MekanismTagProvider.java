@@ -130,7 +130,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addBoxBlacklist() {
-        addToTag(MekanismTags.Blocks.CARDBOARD_BLACKLIST,
+        addToTag(MekanismTags.Blocks.RELOCATION_NOT_SUPPORTED,
               MekanismBlocks.CARDBOARD_BOX,
               MekanismBlocks.BOUNDING_BLOCK,
               MekanismBlocks.ADVANCED_BOUNDING_BLOCK,
@@ -142,33 +142,34 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.ISOTOPIC_CENTRIFUGE,
               MekanismBlocks.RADIOACTIVE_WASTE_BARREL // closing all the loopholes!
         );
-        getBlockBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST).add(
-              Blocks.WHITE_BED,
-              Blocks.ORANGE_BED,
-              Blocks.MAGENTA_BED,
-              Blocks.LIGHT_BLUE_BED,
-              Blocks.YELLOW_BED,
-              Blocks.LIME_BED,
-              Blocks.PINK_BED,
-              Blocks.GRAY_BED,
-              Blocks.LIGHT_GRAY_BED,
-              Blocks.CYAN_BED,
-              Blocks.PURPLE_BED,
-              Blocks.BLUE_BED,
-              Blocks.BROWN_BED,
-              Blocks.GREEN_BED,
-              Blocks.RED_BED,
-              Blocks.BLACK_BED,
-              Blocks.OAK_DOOR,
-              Blocks.SPRUCE_DOOR,
-              Blocks.BIRCH_DOOR,
-              Blocks.JUNGLE_DOOR,
-              Blocks.ACACIA_DOOR,
-              Blocks.DARK_OAK_DOOR,
-              Blocks.field_235360_mS_,
-              Blocks.field_235361_mT_,
-              Blocks.IRON_DOOR
-        );
+        getBlockBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST)
+              .add(MekanismTags.Blocks.RELOCATION_NOT_SUPPORTED)
+              .add(Blocks.WHITE_BED,
+                    Blocks.ORANGE_BED,
+                    Blocks.MAGENTA_BED,
+                    Blocks.LIGHT_BLUE_BED,
+                    Blocks.YELLOW_BED,
+                    Blocks.LIME_BED,
+                    Blocks.PINK_BED,
+                    Blocks.GRAY_BED,
+                    Blocks.LIGHT_GRAY_BED,
+                    Blocks.CYAN_BED,
+                    Blocks.PURPLE_BED,
+                    Blocks.BLUE_BED,
+                    Blocks.BROWN_BED,
+                    Blocks.GREEN_BED,
+                    Blocks.RED_BED,
+                    Blocks.BLACK_BED,
+                    Blocks.OAK_DOOR,
+                    Blocks.SPRUCE_DOOR,
+                    Blocks.BIRCH_DOOR,
+                    Blocks.JUNGLE_DOOR,
+                    Blocks.ACACIA_DOOR,
+                    Blocks.DARK_OAK_DOOR,
+                    Blocks.field_235360_mS_,
+                    Blocks.field_235361_mT_,
+                    Blocks.IRON_DOOR
+              );
     }
 
     private void addRods() {

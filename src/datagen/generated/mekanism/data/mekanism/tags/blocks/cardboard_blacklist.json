@@ -1,15 +1,6 @@
 {
   "values": [
-    "mekanism:cardboard_box",
-    "mekanism:bounding_block",
-    "mekanism:advanced_bounding_block",
-    "mekanism:security_desk",
-    "mekanism:digital_miner",
-    "mekanism:seismic_vibrator",
-    "mekanism:solar_neutron_activator",
-    "mekanism:modification_station",
-    "mekanism:isotopic_centrifuge",
-    "mekanism:radioactive_waste_barrel",
+    "#forge:relocation_not_supported",
     "minecraft:white_bed",
     "minecraft:orange_bed",
     "minecraft:magenta_bed",

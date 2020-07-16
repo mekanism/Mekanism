@@ -21,7 +21,7 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     private void addBoxBlacklist() {
         addFluids();
         addGases();
-        addToTag(MekanismTags.Blocks.CARDBOARD_BLACKLIST,
+        addToTag(MekanismTags.Blocks.RELOCATION_NOT_SUPPORTED,
               GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR,
               GeneratorsBlocks.WIND_GENERATOR
         );
