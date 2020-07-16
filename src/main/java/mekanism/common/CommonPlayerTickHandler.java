@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
@@ -81,17 +80,21 @@ public class CommonPlayerTickHandler {
         return false;
     }
 
-    public static boolean isStepBoostOn(PlayerEntity player) {
+    public static float getStepBoost(PlayerEntity player) {
         ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
         if (!stack.isEmpty() && !player.isSneaking()) {
             if (stack.getItem() instanceof ItemFreeRunners) {
                 ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
-                return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
+                if (freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL) {
+                    return 0.5F;
+                }
             }
             ModuleHydraulicPropulsionUnit module = Modules.load(stack, Modules.HYDRAULIC_PROPULSION_UNIT);
-            return module != null && module.isEnabled() && module.isStepAssistEnabled();
+            if (module != null && module.isEnabled()) {
+                return module.getStepHeight();
+            }
         }
-        return false;
+        return 0;
     }
 
     @SubscribeEvent
@@ -102,16 +105,7 @@ public class CommonPlayerTickHandler {
     }
 
     private void tickEnd(PlayerEntity player) {
-        UUID playerUUID = player.getUniqueID();
-        if (!isStepBoostOn(player)) {
-            if (Mekanism.playerState.isStepAssistApplied(playerUUID)) {
-                //If we don't have step assist but we previously did, remove it and lower the step height
-                Mekanism.playerState.removeStepAssist(player);
-            }
-        } else if (!Mekanism.playerState.isStepAssistApplied(playerUUID)) {
-            //If we should be able to have auto step, but we don't have it set yet, enable it
-            Mekanism.playerState.applyStepAssist(player);
-        }
+        Mekanism.playerState.updateStepAssist(player);
         if (player instanceof ServerPlayerEntity) {
             Mekanism.radiationManager.tickServer((ServerPlayerEntity) player);
         }
@@ -131,8 +125,8 @@ public class CommonPlayerTickHandler {
             if (mode == JetpackMode.NORMAL) {
                 player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.5D), motion.getZ());
             } else if (mode == JetpackMode.HOVER) {
-                boolean ascending = Mekanism.keyMap.has(playerUUID, KeySync.ASCEND);
-                boolean descending = Mekanism.keyMap.has(playerUUID, KeySync.DESCEND);
+                boolean ascending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.ASCEND);
+                boolean descending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.DESCEND);
                 if ((!ascending && !descending) || (ascending && descending)) {
                     if (motion.getY() > 0) {
                         player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, 0), motion.getZ());

@@ -17,7 +17,6 @@ import mekanism.common.content.gear.HUDElement;
 import mekanism.common.content.gear.HUDElement.HUDColor;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
-import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
@@ -164,27 +163,27 @@ public abstract class ModuleMekaSuit extends Module {
     public static class ModuleHydraulicPropulsionUnit extends ModuleMekaSuit {
 
         private ModuleConfigItem<JumpBoost> jumpBoost;
-        private ModuleConfigItem<Boolean> stepAssist;
+        private ModuleConfigItem<StepAssist> stepAssist;
 
         @Override
         public void init() {
             super.init();
             addConfigItem(jumpBoost = new ModuleConfigItem<>(this, "jump_boost", MekanismLang.MODULE_JUMP_BOOST, new EnumData<>(JumpBoost.class, getInstalledCount() + 1), JumpBoost.LOW));
-            stepAssist = addConfigItem(new ModuleConfigItem<>(this, "step_assist", MekanismLang.MODULE_STEP_ASSIST, new BooleanData(), true));
+            addConfigItem(stepAssist = new ModuleConfigItem<>(this, "step_assist", MekanismLang.MODULE_STEP_ASSIST, new EnumData<>(StepAssist.class, getInstalledCount() + 1), StepAssist.LOW));
         }
 
         public float getBoost() {
             return jumpBoost.get().getBoost();
         }
 
-        public boolean isStepAssistEnabled() {
-            return stepAssist.get();
+        public float getStepHeight() {
+            return stepAssist.get().getHeight();
         }
 
         public enum JumpBoost implements IHasTextComponent {
             OFF(0),
             LOW(0.5F),
-            MED(1F),
+            MED(1),
             HIGH(3),
             ULTRA(5);
 
@@ -203,6 +202,31 @@ public abstract class ModuleMekaSuit extends Module {
 
             public float getBoost() {
                 return boost;
+            }
+        }
+
+        public enum StepAssist implements IHasTextComponent {
+            OFF(0),
+            LOW(0.5F),
+            MED(1),
+            HIGH(1.5F),
+            ULTRA(2);
+
+            private final float height;
+            private final ITextComponent label;
+
+            StepAssist(float height) {
+                this.height = height;
+                this.label = new StringTextComponent(Float.toString(height));
+            }
+
+            @Override
+            public ITextComponent getTextComponent() {
+                return label;
+            }
+
+            public float getHeight() {
+                return height;
             }
         }
     }

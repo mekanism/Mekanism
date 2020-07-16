@@ -1,5 +1,7 @@
 package mekanism.common.base;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
@@ -32,7 +34,7 @@ public class PlayerState {
     private final Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
     private final Set<UUID> activeGravitationalModulators = new ObjectOpenHashSet<>();
     private final Set<UUID> activeFlamethrowers = new ObjectOpenHashSet<>();
-    private final Set<UUID> stepAssistedPlayers = new ObjectOpenHashSet<>();
+    private final Object2FloatMap<UUID> stepAssistedPlayers = new Object2FloatOpenHashMap<>();
     private final Map<UUID, FlightInfo> flightInfoMap = new Object2ObjectOpenHashMap<>();
 
     private IWorld world;
@@ -151,18 +153,23 @@ public class PlayerState {
     //
     // ----------------------
 
-    public boolean isStepAssistApplied(UUID uuid) {
-        return stepAssistedPlayers.contains(uuid);
-    }
-
-    public void applyStepAssist(PlayerEntity player) {
-        stepAssistedPlayers.add(player.getUniqueID());
-        updateClientServerStepHeight(player, 1.002F);
-    }
-
-    public void removeStepAssist(PlayerEntity player) {
-        stepAssistedPlayers.remove(player.getUniqueID());
-        updateClientServerStepHeight(player, 0.6F);
+    public void updateStepAssist(PlayerEntity player) {
+        UUID uuid = player.getUniqueID();
+        float additionalHeight = CommonPlayerTickHandler.getStepBoost(player);
+        if (additionalHeight == 0) {
+            if (stepAssistedPlayers.containsKey(uuid)) {
+                //If we don't have step assist but we previously did, remove it and lower the step height
+                stepAssistedPlayers.removeFloat(uuid);
+                updateClientServerStepHeight(player, 0.6F);
+            }
+        } else {
+            float totalHeight = 0.6F + additionalHeight;
+            if (!stepAssistedPlayers.containsKey(uuid) || stepAssistedPlayers.getFloat(uuid) != totalHeight) {
+                //If we should be able to have auto step, but we don't have it set yet, or our stored amount is different, update
+                stepAssistedPlayers.put(uuid, totalHeight);
+                updateClientServerStepHeight(player, totalHeight);
+            }
+        }
     }
 
     private void updateClientServerStepHeight(PlayerEntity player, float value) {
