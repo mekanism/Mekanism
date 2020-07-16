@@ -82,7 +82,8 @@ public class ModuleChargeDistributionUnit extends ModuleMekaSuit {
     private FloatingLong charge(PlayerEntity player, ItemStack stack, FloatingLong amount) {
         IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
         if (handler != null) {
-            return handler.insertEnergy(useEnergy(player, amount), Action.EXECUTE);
+        	FloatingLong remaining = handler.insertEnergy(amount, Action.SIMULATE);
+            return handler.insertEnergy(useEnergy(player, amount.subtract(remaining)), Action.EXECUTE).add(remaining);
         }
         return amount;
     }
