@@ -235,12 +235,12 @@ public class EntityFlame extends DamagingProjectileEntity implements IEntityAddi
     }
 
     @Override
-	public void readAdditional(@Nonnull CompoundNBT nbtTags) {
+    public void readAdditional(@Nonnull CompoundNBT nbtTags) {
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.MODE, FlamethrowerMode::byIndexStatic, mode -> this.mode = mode);
     }
 
     @Override
-	public void writeAdditional(@Nonnull CompoundNBT nbtTags) {
+    public void writeAdditional(@Nonnull CompoundNBT nbtTags) {
         nbtTags.putInt(NBTConstants.MODE, mode.ordinal());
     }
 
