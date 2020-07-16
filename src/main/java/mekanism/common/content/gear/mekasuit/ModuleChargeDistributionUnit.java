@@ -83,7 +83,10 @@ public class ModuleChargeDistributionUnit extends ModuleMekaSuit {
         IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
         if (handler != null) {
             FloatingLong remaining = handler.insertEnergy(amount, Action.SIMULATE);
-            return handler.insertEnergy(useEnergy(player, amount.subtract(remaining)), Action.EXECUTE).add(remaining);
+            if (remaining.smallerThan(amount)) {
+                //If we can actually insert any energy into
+                return handler.insertEnergy(useEnergy(player, amount.subtract(remaining)), Action.EXECUTE).add(remaining);
+            }
         }
         return amount;
     }
