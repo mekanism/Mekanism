@@ -16,6 +16,7 @@ import mekanism.client.ClientRegistrationUtil;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.registration.impl.ItemRegistryObject;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.color.ItemColors;
@@ -80,6 +81,10 @@ public class AdditionsClientRegistration {
 
     @SubscribeEvent
     public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
+        if (MekanismUtils.isGameStateInvalid()) {
+            //Exit early to avoid getting blamed for crashes due to https://github.com/MinecraftForge/MinecraftForge/issues/6374
+            return;
+        }
         ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, world, pos, tintIndex) -> {
                   Block block = state.getBlock();
                   if (block instanceof IColoredBlock) {

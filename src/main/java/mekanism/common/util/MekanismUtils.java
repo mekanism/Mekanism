@@ -26,6 +26,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.GenericWrench;
 import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -113,6 +114,15 @@ public final class MekanismUtils {
         if (!actual.isZero()) {
             Mekanism.logger.error("Energy value changed by a different amount (" + actual + ") than requested (zero).", new Exception());
         }
+    }
+
+    /**
+     * REMOVE THIS AS SOON AS POSSIBLE, this is to make it easier to just add a small if statement to early exit out of events if we are in an invalid state so that we
+     * don't get blamed for crashes by https://github.com/MinecraftForge/MinecraftForge/issues/6374
+     */
+    @Deprecated
+    public static boolean isGameStateInvalid() {
+        return !MekanismItems.ATOMIC_ALLOY.doesItemExist();
     }
 
     /**
