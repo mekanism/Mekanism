@@ -81,19 +81,8 @@ public class GeneratorsBuilders {
 
         @Override
         protected void build(World world, BlockPos start) {
-            for (int x = 0; x < 3; ++x) {
-                for (int y = 0; y < 3; ++y) {
-                    for (int z = 0; z < 3; ++z) {
-                        if ((x == 0 || x == 2) && (y == 0 || y == 2) && (z == 0 || z == 2)) {
-                            continue;
-                        } else if ((x == 1 && y == 1) || (y == 1 && z == 1) || (x == 1 && z == 1)) {
-                            continue;
-                        }
-                        world.setBlockState(start.add(sizeX * x / 2.5, sizeY * y / 2.5, sizeZ * z / 2.5), GeneratorsBlocks.FUSION_REACTOR_FRAME.getBlock().getDefaultState());
-                    }
-                }
-            }
             buildWalls(world, start);
+            buildPartialFrame(world, start, 1);
             world.setBlockState(start.add(2, 4, 2), GeneratorsBlocks.FUSION_REACTOR_CONTROLLER.getBlock().getDefaultState());
         }
 

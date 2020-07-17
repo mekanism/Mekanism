@@ -26,6 +26,7 @@ import mekanism.common.command.builders.Builders.BoilerBuilder;
 import mekanism.common.command.builders.Builders.EvaporationBuilder;
 import mekanism.common.command.builders.Builders.MatrixBuilder;
 import mekanism.common.command.builders.Builders.TankBuilder;
+import mekanism.common.command.builders.Builders.SPSBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
@@ -314,6 +315,7 @@ public class Mekanism {
         BuildCommand.register("matrix", new MatrixBuilder());
         BuildCommand.register("tank", new TankBuilder());
         BuildCommand.register("evaporation", new EvaporationBuilder());
+        BuildCommand.register("sps", new SPSBuilder());
         event.getDispatcher().register(CommandMek.register());
     }
 
