@@ -21,7 +21,8 @@ public class GeneratorsBuilders {
             buildColumn(world, start, new BlockPos(sizeX / 2, 1, sizeZ / 2), 14, GeneratorsBlocks.TURBINE_ROTOR.getBlock());
             buildInteriorLayer(world, start, 15, MekanismBlocks.PRESSURE_DISPERSER.getBlock());
             world.setBlockState(start.add(sizeX / 2, 15, sizeZ / 2), GeneratorsBlocks.ROTATIONAL_COMPLEX.getBlock().getDefaultState());
-            buildInteriorLayer(world, start, 16, GeneratorsBlocks.ELECTROMAGNETIC_COIL.getBlock());
+            buildInteriorLayer(world, start, 16, GeneratorsBlocks.SATURATING_CONDENSER.getBlock());
+            buildPlane(world, start, 5, 5, 13, 13, 16, GeneratorsBlocks.ELECTROMAGNETIC_COIL.getBlock());
         }
 
         @Override
@@ -80,7 +81,18 @@ public class GeneratorsBuilders {
 
         @Override
         protected void build(World world, BlockPos start) {
-            buildFrame(world, start);
+            for (int x = 0; x < 3; ++x) {
+                for (int y = 0; y < 3; ++y) {
+                    for (int z = 0; z < 3; ++z) {
+                        if ((x == 0 || x == 2) && (y == 0 || y == 2) && (z == 0 || z == 2)) {
+                            continue;
+                        } else if ((x == 1 && y == 1) || (y == 1 && z == 1) || (x == 1 && z == 1)) {
+                            continue;
+                        }
+                        world.setBlockState(start.add(sizeX * x / 2.5, sizeY * y / 2.5, sizeZ * z / 2.5), GeneratorsBlocks.FUSION_REACTOR_FRAME.getBlock().getDefaultState());
+                    }
+                }
+            }
             buildWalls(world, start);
             world.setBlockState(start.add(2, 4, 2), GeneratorsBlocks.FUSION_REACTOR_CONTROLLER.getBlock().getDefaultState());
         }

@@ -19,8 +19,7 @@ public class Builders {
             buildFrame(world, start);
             buildWalls(world, start);
             buildInteriorLayer(world, start, 1, MekanismBlocks.SUPERHEATING_ELEMENT.getBlock());
-            buildInteriorLayer(world, start, 2, MekanismBlocks.SUPERHEATING_ELEMENT.getBlock());
-            buildInteriorLayer(world, start, 9, MekanismBlocks.PRESSURE_DISPERSER.getBlock());
+            buildInteriorLayer(world, start, 15, MekanismBlocks.PRESSURE_DISPERSER.getBlock());
         }
 
         @Override

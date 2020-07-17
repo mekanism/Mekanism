@@ -71,6 +71,14 @@ public abstract class StructureBuilder {
         }
     }
 
+    protected void buildPlane(World world, BlockPos start, int x1, int z1, int x2, int z2, int yLevel, Block block) {
+    	for (int x = x1; x < x2 - 1; x++) {
+            for (int z = z1; z < z2 - 1; z++) {
+                world.setBlockState(start.add(x, yLevel, z), block.getDefaultState());
+            }
+        }
+    }
+
     protected void buildColumn(World world, BlockPos start, BlockPos pos, int height, Block block) {
         for (int y = 0; y < height; y++) {
             world.setBlockState(start.add(pos).add(0, y, 0), block.getDefaultState());
