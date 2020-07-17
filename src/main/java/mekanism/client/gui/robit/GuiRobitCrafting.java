@@ -16,9 +16,9 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiRightArrow(this, 90, 35).jeiCrafting());
+    public void init() {
+        super.init();
+        addButton(new GuiRightArrow(this, 90, 35).jeiCrafting());
     }
 
     @Override

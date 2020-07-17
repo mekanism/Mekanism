@@ -32,7 +32,7 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
         for (Entry<ResourceLocation, ITag<T>> entry : tagMap.entrySet()) {
             buffer.writeResourceLocation(entry.getKey());
             ITag<T> tag = entry.getValue();
-            List<T> tags = tag.func_230236_b_();
+            List<T> tags = tag.getAllElements();
             buffer.writeVarInt(tags.size());
             for (T element : tags) {
                 ResourceLocation key = this.registry.getKey(element);
@@ -57,7 +57,7 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
                     builder.add(value);
                 }
             }
-            tagMap.put(resourceLocation, ITag.func_232946_a_(builder.build()));
+            tagMap.put(resourceLocation, ITag.getTagOf(builder.build()));
         }
         toImmutable(tagMap);
     }

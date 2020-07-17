@@ -29,7 +29,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
 
     public ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, @Nonnull IReactorLogic<TYPE> tile, IntSupplier indexSupplier,
           Supplier<TYPE[]> listSupplier, Consumer<TYPE> onPress) {
-        super(gui, x, y, 128, 22, StringTextComponent.field_240750_d_, null, null);
+        super(gui, x, y, 128, 22, StringTextComponent.EMPTY, null, null);
         this.index = index;
         this.indexSupplier = indexSupplier;
         this.modeList = listSupplier;
@@ -38,7 +38,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         TYPE mode = getMode();
         if (mode != null) {
             onPress.accept(mode);
@@ -46,7 +46,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         TYPE mode = getMode();
         if (mode != null) {
             guiObj.displayTooltip(matrix, mode.getDescription(), mouseX, mouseY);
@@ -61,7 +61,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
         }
         MekanismRenderer.bindTexture(TEXTURE);
         MekanismRenderer.color(mode.getColor());
-        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, mode == tile.getMode() ? 22 : 0, field_230688_j_, field_230689_k_, 128, 44);
+        blit(matrix, x, y, 0, mode == tile.getMode() ? 22 : 0, width, height, 128, 44);
         MekanismRenderer.resetColor();
     }
 

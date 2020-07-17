@@ -17,9 +17,9 @@ public abstract class GuiConfigurableTile<TILE extends TileEntityMekanism, CONTA
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(sideConfigTab = new GuiSideConfigurationTab(this, tile, () -> sideConfigTab));
-        func_230480_a_(transporterConfigTab = new GuiTransporterConfigTab(this, tile, () -> transporterConfigTab));
+    public void init() {
+        super.init();
+        addButton(sideConfigTab = new GuiSideConfigurationTab(this, tile, () -> sideConfigTab));
+        addButton(transporterConfigTab = new GuiTransporterConfigTab(this, tile, () -> transporterConfigTab));
     }
 }

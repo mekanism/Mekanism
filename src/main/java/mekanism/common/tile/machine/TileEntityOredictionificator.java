@@ -151,8 +151,8 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.func_230337_a_(state, nbtTags);
+    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.read(state, nbtTags);
         setConfigurationData(nbtTags);
     }
 
@@ -312,7 +312,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
         public List<Item> getMatchingItems() {
             if (hasFilter()) {
-                return new ArrayList<>(filterTag.func_230236_b_());
+                return new ArrayList<>(filterTag.getAllElements());
             }
             return Collections.emptyList();
         }

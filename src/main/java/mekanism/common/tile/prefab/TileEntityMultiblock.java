@@ -261,8 +261,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.func_230337_a_(state, nbtTags);
+    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.read(state, nbtTags);
         if (!getMultiblock().isFormed()) {
             NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.INVENTORY_ID, id -> {
                 cachedID = id;
@@ -338,7 +338,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (!isRemote() && !getMultiblock().isFormed()) {
             FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
-                player.sendMessage(result.getResultText(), Util.field_240973_b_);
+                player.sendMessage(result.getResultText(), Util.DUMMY_UUID);
                 return ActionResultType.SUCCESS;
             }
         }

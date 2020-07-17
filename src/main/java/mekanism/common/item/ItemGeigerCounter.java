@@ -30,7 +30,7 @@ public class ItemGeigerCounter extends Item {
         if (!player.isSneaking() && !world.isRemote()) {
             double magnitude = Mekanism.radiationManager.getRadiationLevel(player);
             player.sendMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY,
-                  RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)), Util.field_240973_b_);
+                  RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)), Util.DUMMY_UUID);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         return new ActionResult<>(ActionResultType.PASS, stack);

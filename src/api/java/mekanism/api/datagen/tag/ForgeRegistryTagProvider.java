@@ -47,11 +47,11 @@ public abstract class ForgeRegistryTagProvider<TYPE extends IForgeRegistryEntry<
         tagToBuilder.clear();
         registerTags();
         if (!tagToBuilder.isEmpty()) {
-            Map<ResourceLocation, ITag.Builder> builders = tagToBuilder.entrySet().stream().collect(Collectors.toMap(tag -> tag.getKey().func_230234_a_(), Entry::getValue));
+            Map<ResourceLocation, ITag.Builder> builders = tagToBuilder.entrySet().stream().collect(Collectors.toMap(tag -> tag.getKey().getName(), Entry::getValue));
             builders.forEach((id, tagBuilder) -> {
                 Path path = makePath(id);
                 try {
-                    String json = GSON.toJson(tagBuilder.func_232965_c_());
+                    String json = GSON.toJson(tagBuilder.serialize());
                     String hash = HASH_FUNCTION.hashUnencodedChars(json).toString();
                     if (!Objects.equals(cache.getPreviousHash(path), hash) || !Files.exists(path)) {
                         Files.createDirectories(path.getParent());

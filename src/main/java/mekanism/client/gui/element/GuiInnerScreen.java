@@ -37,7 +37,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
 
     public GuiInnerScreen tooltip(Supplier<List<ITextComponent>> tooltipStrings) {
         this.tooltipStrings = tooltipStrings;
-        field_230693_o_ = true;
+        active = true;
         return this;
     }
 
@@ -89,8 +89,8 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        super.func_230443_a_(matrix, mouseX, mouseY);
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         if (tooltipStrings != null) {
             List<ITextComponent> list = tooltipStrings.get();
             if (list != null && !list.isEmpty()) {
@@ -100,7 +100,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     }
 
     private void drawText(MatrixStack matrix, ITextComponent text, float x, float y) {
-        drawScaledTextScaledBound(matrix, text, x, y, screenTextColor(), func_230998_h_() - padding * 2, textScale);
+        drawScaledTextScaledBound(matrix, text, x, y, screenTextColor(), getWidth() - padding * 2, textScale);
     }
 
     @Nonnull
@@ -118,6 +118,6 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
 
     @Override
     public boolean isMouseOverJEIArea(double mouseX, double mouseY) {
-        return field_230694_p_ && mouseX >= field_230690_l_ && mouseY >= field_230691_m_ && mouseX < field_230690_l_ + field_230688_j_ && mouseY < field_230691_m_ + field_230689_k_;
+        return visible && mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
     }
 }

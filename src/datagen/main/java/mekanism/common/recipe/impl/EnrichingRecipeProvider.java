@@ -79,7 +79,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         //Soul Sand -> soul soil
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Blocks.SOUL_SAND),
-              new ItemStack(Blocks.field_235336_cN_)
+              new ItemStack(Blocks.SOUL_SOIL)
         ).build(consumer, Mekanism.rl(basePath + "soul_sand_to_soul_soil"));
         //Sulfur -> gunpowder
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -93,18 +93,18 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "obsidian_to_obsidian_dust"));
         //Basalt -> polished basalt
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Blocks.field_235337_cO_),
-              new ItemStack(Blocks.field_235338_cP_)
+              ItemStackIngredient.from(Blocks.BASALT),
+              new ItemStack(Blocks.POLISHED_BASALT)
         ).build(consumer, Mekanism.rl(basePath + "basalt_to_polished_basalt"));
         //Cracked nether bricks -> nether bricks
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Blocks.field_235394_nH_),
+              ItemStackIngredient.from(Blocks.CRACKED_NETHER_BRICKS),
               new ItemStack(Blocks.NETHER_BRICKS)
         ).build(consumer, Mekanism.rl(basePath + "cracked_nether_bricks_to_nether_bricks"));
         //Nether bricks -> chiseled nether bricks
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Blocks.NETHER_BRICKS),
-              new ItemStack(Blocks.field_235393_nG_)
+              new ItemStack(Blocks.CHISELED_NETHER_BRICKS)
         ).build(consumer, Mekanism.rl(basePath + "nether_bricks_to_chiseled_nether_bricks"));
     }
 
@@ -129,18 +129,18 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
     private void addEnrichingBlackstoneConversionRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Polished blackstone -> cracked polished blackstone bricks
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Blocks.field_235410_nt_),
-              new ItemStack(Blocks.field_235412_nv_)
+              ItemStackIngredient.from(Blocks.POLISHED_BLACKSTONE),
+              new ItemStack(Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS)
         ).build(consumer, Mekanism.rl(basePath + "to_cracked_bricks"));
         //Cracked polished blackstone bricks -> polished blackstone bricks
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Blocks.field_235412_nv_),
-              new ItemStack(Blocks.field_235411_nu_)
+              ItemStackIngredient.from(Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS),
+              new ItemStack(Blocks.POLISHED_BLACKSTONE_BRICKS)
         ).build(consumer, Mekanism.rl(basePath + "cracked_bricks_to_bricks"));
         //Polished blackstone bricks -> chiseled polished blackstone bricks
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Blocks.field_235411_nu_),
-              new ItemStack(Blocks.field_235413_nw_)
+              ItemStackIngredient.from(Blocks.POLISHED_BLACKSTONE_BRICKS),
+              new ItemStack(Blocks.CHISELED_POLISHED_BLACKSTONE)
         ).build(consumer, Mekanism.rl(basePath + "bricks_to_chiseled_bricks"));
     }
 

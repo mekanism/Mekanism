@@ -29,7 +29,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     protected final TYPE type;
 
     public BlockBase(TYPE type) {
-        this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).func_235861_h_());
+        this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).setRequiresTool());
     }
 
     public BlockBase(TYPE type, Block.Properties properties) {
@@ -59,7 +59,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     @Override
     public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion) {
-        return type.has(AttributeCustomResistance.class) ? type.get(AttributeCustomResistance.class).getResistance() : field_235689_au_;
+        return type.has(AttributeCustomResistance.class) ? type.get(AttributeCustomResistance.class).getResistance() : blastResistance;
     }
 
     @Override

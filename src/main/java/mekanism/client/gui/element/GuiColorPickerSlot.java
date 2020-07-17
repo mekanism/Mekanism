@@ -26,8 +26,8 @@ public class GuiColorPickerSlot extends GuiRelativeElement {
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        super.func_230443_a_(matrix, mouseX, mouseY);
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         ITextComponent hex = MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, supplier.get().rgb()));
         guiObj.displayTooltip(matrix, hex, mouseX, mouseY);
     }
@@ -39,7 +39,7 @@ public class GuiColorPickerSlot extends GuiRelativeElement {
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         GuiColorWindow window = new GuiColorWindow(guiObj, guiObj.getWidth() / 2 - 160 / 2, guiObj.getHeight() / 2 - 120 / 2, consumer);
         window.setColor(supplier.get());
         guiObj.addWindow(window);

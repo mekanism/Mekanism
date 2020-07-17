@@ -20,7 +20,7 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
     }
 
     public ForgeRegistryTagBuilder<TYPE> add(TYPE element) {
-        this.builder.func_232961_a_(element.getRegistryName(), modID);
+        this.builder.addItemEntry(element.getRegistryName(), modID);
         return this;
     }
 
@@ -33,7 +33,7 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
     }
 
     public ForgeRegistryTagBuilder<TYPE> add(INamedTag<TYPE> tag) {
-        this.builder.func_232964_b_(tag.func_230234_a_(), modID);
+        this.builder.addTagEntry(tag.getName(), modID);
         return this;
     }
 
@@ -46,7 +46,7 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
     }
 
     public ForgeRegistryTagBuilder<TYPE> add(ITag.ITagEntry tag) {
-        builder.func_232955_a_(tag, modID);
+        builder.addTag(tag, modID);
         return this;
     }
 

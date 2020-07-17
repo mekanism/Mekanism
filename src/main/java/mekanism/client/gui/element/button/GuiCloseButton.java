@@ -15,7 +15,7 @@ public class GuiCloseButton extends MekanismImageButton {
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         displayTooltip(matrix, MekanismLang.CLOSE.translate(), mouseX, mouseY);
     }
 

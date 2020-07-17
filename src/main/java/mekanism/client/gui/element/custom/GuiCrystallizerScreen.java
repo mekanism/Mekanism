@@ -38,7 +38,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
 
     public GuiCrystallizerScreen(IGuiWrapper gui, int x, int y, IOreInfo oreInfo) {
         super(SLOT.getTexture(), gui, x, y, 115, 42);
-        innerScreen = new GuiInnerScreen(gui, x, y, field_230688_j_, field_230689_k_, () -> {
+        innerScreen = new GuiInnerScreen(gui, x, y, width, height, () -> {
             List<ITextComponent> ret = new ArrayList<>();
             BoxedChemicalStack boxedChemical = oreInfo.getInputChemical();
             if (!boxedChemical.isEmpty()) {
@@ -57,8 +57,8 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
             return ret;
         });
         this.oreInfo = oreInfo;
-        this.slotX = this.field_230690_l_ + 115 - SLOT.getWidth();
-        field_230693_o_ = false;
+        this.slotX = this.x + 115 - SLOT.getWidth();
+        active = false;
     }
 
     @Override
@@ -72,9 +72,9 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         innerScreen.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        func_238463_a_(matrix, slotX, field_230691_m_, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
+        blit(matrix, slotX, y, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
         if (!renderStack.isEmpty()) {
-            guiObj.renderItem(matrix, renderStack, slotX + 1, field_230691_m_ + 1);
+            guiObj.renderItem(matrix, renderStack, slotX + 1, y + 1);
         }
     }
 
@@ -90,7 +90,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
                 if (!prevSlurry.isEmptyType() && !prevSlurry.isIn(MekanismTags.Slurries.DIRTY)) {
                     ITag<Item> oreTag = prevSlurry.getOreTag();
                     if (oreTag != null) {
-                        for (Item ore : oreTag.func_230236_b_()) {
+                        for (Item ore : oreTag.getAllElements()) {
                             iterStacks.add(new ItemStack(ore));
                         }
                     }

@@ -105,7 +105,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
               AdditionsBlocks.WHITE_PLASTIC_FENCE_GATE);
         getItemBuilder(Tags.Items.FENCE_GATES).add(AdditionsTags.Items.FENCE_GATES_PLASTIC);
         getBlockBuilder(Tags.Blocks.FENCE_GATES).add(AdditionsTags.Blocks.FENCE_GATES_PLASTIC);
-        getBlockBuilder(BlockTags.field_232868_aA_).add(AdditionsTags.Blocks.FENCE_GATES_PLASTIC);
+        getBlockBuilder(BlockTags.FENCE_GATES).add(AdditionsTags.Blocks.FENCE_GATES_PLASTIC);
     }
 
     private void addGlowPanels() {

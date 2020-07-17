@@ -26,11 +26,11 @@ public class GuiDumpButton<TILE extends TileEntity & IHasDumpButton> extends Gui
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
+        blit(matrix, x, y, 0, 0, width, height, width, height);
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.DUMP_BUTTON, tile));
     }
 }

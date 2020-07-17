@@ -94,8 +94,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.func_230337_a_(state, nbtTags);
+    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.read(state, nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
     }
 

@@ -46,19 +46,19 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(scrollList = new GuiTextScrollList(this, 27, 39, 122, 42));
+    public void init() {
+        super.init();
+        addButton(scrollList = new GuiTextScrollList(this, 27, 39, 122, 42));
 
-        func_230480_a_(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 17, 60, 20, MekanismLang.PUBLIC, () -> {
+        addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 17, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        func_230480_a_(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 17, 60, 20, MekanismLang.PRIVATE, () -> {
+        addButton(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 17, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        func_230480_a_(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
+        addButton(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
@@ -66,7 +66,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             }
             updateButtons();
         }));
-        func_230480_a_(deleteButton = new TranslationButton(this, getGuiLeft() + 79, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_DELETE,
+        addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 79, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_DELETE,
               () -> GuiConfirmationDialog.show(this, MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
                   int selection = scrollList.getSelection();
                   if (selection != -1) {
@@ -76,12 +76,12 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
                   }
                   updateButtons();
               }, DialogType.DANGER)));
-        func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
-        func_230480_a_(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
+        addButton(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
+        addButton(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
               () -> getFrequency() == null ? null : getFrequency().getColor(),
               () -> sendColorUpdate(0),
               () -> sendColorUpdate(1)));
-        func_230480_a_(frequencyField = new GuiTextField(this, 50, 106, 98, 11));
+        addButton(frequencyField = new GuiTextField(this, 50, 106, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);
@@ -119,26 +119,26 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
         }
         scrollList.setText(text);
         if (privateMode) {
-            publicButton.field_230693_o_ = true;
-            privateButton.field_230693_o_ = false;
+            publicButton.active = true;
+            privateButton.active = false;
         } else {
-            publicButton.field_230693_o_ = false;
-            privateButton.field_230693_o_ = true;
+            publicButton.active = false;
+            privateButton.active = true;
         }
         if (scrollList.hasSelection()) {
             Frequency freq = privateMode ? getPrivateFrequencies().get(scrollList.getSelection()) :
                              getPublicFrequencies().get(scrollList.getSelection());
-            setButton.field_230693_o_ = getFrequency() == null || !getFrequency().equals(freq);
-            deleteButton.field_230693_o_ = getOwnerUUID().equals(freq.getOwner());
+            setButton.active = getFrequency() == null || !getFrequency().equals(freq);
+            deleteButton.active = getOwnerUUID().equals(freq.getOwner());
         } else {
-            setButton.field_230693_o_ = false;
-            deleteButton.field_230693_o_ = false;
+            setButton.active = false;
+            deleteButton.active = false;
         }
     }
 
     @Override
-    public void func_231023_e_() {
-        super.func_231023_e_();
+    public void tick() {
+        super.tick();
         if (!init && getFrequency() != null) {
             init = true;
             privateMode = getFrequency().isPrivate();
@@ -147,9 +147,9 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     }
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         updateButtons();
-        return super.func_231044_a_(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     private void setFrequency() {

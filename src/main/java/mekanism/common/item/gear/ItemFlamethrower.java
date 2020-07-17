@@ -129,7 +129,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
             setMode(stack, newMode);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.FLAMETHROWER_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)), Util.field_240973_b_);
+                      MekanismLang.FLAMETHROWER_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)), Util.DUMMY_UUID);
             }
         }
     }

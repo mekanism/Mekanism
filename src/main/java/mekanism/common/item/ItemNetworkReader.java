@@ -44,7 +44,7 @@ public class ItemNetworkReader extends ItemEnergized {
 
     private void displayBorder(PlayerEntity player, Object toDisplay, boolean brackets) {
         player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE,
-              brackets ? MekanismLang.GENERIC_SQUARE_BRACKET.translate(toDisplay) : toDisplay), Util.field_240973_b_);
+              brackets ? MekanismLang.GENERIC_SQUARE_BRACKET.translate(toDisplay) : toDisplay), Util.DUMMY_UUID);
     }
 
     private void displayEndBorder(PlayerEntity player) {
@@ -86,7 +86,7 @@ public class ItemNetworkReader extends ItemEnergized {
             } else if (player.isSneaking() && MekanismAPI.debug) {
                 displayBorder(player, MekanismLang.DEBUG_TITLE, true);
                 for (ITextComponent component : TransmitterNetworkRegistry.getInstance().toComponents()) {
-                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GRAY, component), Util.field_240973_b_);
+                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GRAY, component), Util.DUMMY_UUID);
                 }
                 displayEndBorder(player);
             }
@@ -98,15 +98,15 @@ public class ItemNetworkReader extends ItemEnergized {
         displayBorder(player, MekanismLang.MEKANISM, true);
         if (transmitter.hasTransmitterNetwork()) {
             DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
-            player.sendMessage(MekanismLang.NETWORK_READER_TRANSMITTERS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.transmittersSize()), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.NETWORK_READER_ACCEPTORS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.getAcceptorCount()), Util.field_240973_b_);
+            player.sendMessage(MekanismLang.NETWORK_READER_TRANSMITTERS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.transmittersSize()), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.NETWORK_READER_ACCEPTORS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.getAcceptorCount()), Util.DUMMY_UUID);
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_NEEDED, transmitterNetwork.getNeededInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_BUFFER, transmitterNetwork.getStoredInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_THROUGHPUT, transmitterNetwork.getFlowInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_CAPACITY, transmitterNetwork.getNetworkReaderCapacity());
             CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER_CAPABILITY, opposite).ifPresent(heatHandler -> sendTemperature(player, heatHandler));
         } else {
-            player.sendMessage(MekanismLang.NO_NETWORK.translate(), Util.field_240973_b_);
+            player.sendMessage(MekanismLang.NO_NETWORK.translate(), Util.DUMMY_UUID);
         }
         displayEndBorder(player);
     }
@@ -121,7 +121,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 if (transmitterNetwork.hasAcceptor(pos) && !iteratedNetworks.contains(transmitterNetwork)) {
                     displayBorder(player, compileList(transmitter.getSupportedTransmissionTypes()), false);
                     player.sendMessage(MekanismLang.NETWORK_READER_CONNECTED_SIDES.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
-                          compileList(transmitterNetwork.getAcceptorDirections(pos))), Util.field_240973_b_);
+                          compileList(transmitterNetwork.getAcceptorDirections(pos))), Util.DUMMY_UUID);
                     displayEndBorder(player);
                     iteratedNetworks.add(transmitterNetwork);
                 }
@@ -131,12 +131,12 @@ public class ItemNetworkReader extends ItemEnergized {
 
     private void sendTemperature(PlayerEntity player, IHeatHandler handler) {
         ITextComponent temp = MekanismUtils.getTemperatureDisplay(handler.getTotalTemperature(), TemperatureUnit.KELVIN, true);
-        player.sendMessage(MekanismLang.NETWORK_READER_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, temp), Util.field_240973_b_);
+        player.sendMessage(MekanismLang.NETWORK_READER_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, temp), Util.DUMMY_UUID);
     }
 
     private void sendMessageIfNonNull(PlayerEntity player, ILangEntry langEntry, Object toSend) {
         if (toSend != null) {
-            player.sendMessage(langEntry.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, toSend), Util.field_240973_b_);
+            player.sendMessage(langEntry.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, toSend), Util.DUMMY_UUID);
         }
     }
 

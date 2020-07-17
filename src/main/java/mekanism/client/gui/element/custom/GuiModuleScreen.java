@@ -85,16 +85,16 @@ public class GuiModuleScreen extends GuiRelativeElement {
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
-        super.func_230982_a_(mouseX, mouseY);
+    public void onClick(double mouseX, double mouseY) {
+        super.onClick(mouseX, mouseY);
         for (MiniElement element : miniElements) {
             element.click(mouseX, mouseY);
         }
     }
 
     @Override
-    public void func_231000_a__(double mouseX, double mouseY) {
-        super.func_231000_a__(mouseX, mouseY);
+    public void onRelease(double mouseX, double mouseY) {
+        super.onRelease(mouseX, mouseY);
         for (MiniElement element : miniElements) {
             element.release(mouseX, mouseY);
         }
@@ -149,11 +149,11 @@ public class GuiModuleScreen extends GuiRelativeElement {
         }
 
         int getX() {
-            return field_230690_l_ + xPos;
+            return x + xPos;
         }
 
         int getY() {
-            return field_230691_m_ + yPos;
+            return y + yPos;
         }
     }
 
@@ -172,15 +172,15 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
             boolean hover = mouseX >= getX() + 4 && mouseX < getX() + 12 && mouseY >= getY() + 11 && mouseY < getY() + 19;
             if (data.get()) {
-                func_238463_a_(matrix, getX() + 4, getY() + 11, 0, 8, 8, 8, 16, 16);
+                blit(matrix, getX() + 4, getY() + 11, 0, 8, 8, 8, 16, 16);
             } else {
-                func_238463_a_(matrix, getX() + 4, getY() + 11, hover ? 8 : 0, 0, 8, 8, 16, 16);
+                blit(matrix, getX() + 4, getY() + 11, hover ? 8 : 0, 0, 8, 8, 16, 16);
             }
             hover = mouseX >= getX() + 50 && mouseX < getX() + 58 && mouseY >= getY() + 11 && mouseY < getY() + 19;
             if (!data.get()) {
-                func_238463_a_(matrix, getX() + 50, getY() + 11, 8, 8, 8, 8, 16, 16);
+                blit(matrix, getX() + 50, getY() + 11, 8, 8, 8, 8, 16, 16);
             } else {
-                func_238463_a_(matrix, getX() + 50, getY() + 11, hover ? 8 : 0, 0, 8, 8, 16, 16);
+                blit(matrix, getX() + 50, getY() + 11, hover ? 8 : 0, 0, 8, 8, 16, 16);
             }
         }
 
@@ -207,7 +207,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
     class EnumToggle extends MiniElement {
 
-        final int BAR_LENGTH = func_230998_h_() - 24;
+        final int BAR_LENGTH = getWidth() - 24;
         final int BAR_START = 10;
         final float TEXT_SCALE = 0.7F;
         final ModuleConfigItem<Enum<? extends IHasTextComponent>> data;
@@ -223,8 +223,8 @@ public class GuiModuleScreen extends GuiRelativeElement {
             minecraft.textureManager.bindTexture(SLIDER);
             int count = ((EnumData<?>) data.getData()).getSelectableCount();
             int center = (BAR_LENGTH / (count - 1)) * data.get().ordinal();
-            func_238463_a_(matrix, getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
-            func_238463_a_(matrix, getX() + BAR_START, getY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
+            blit(matrix, getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
+            blit(matrix, getX() + BAR_START, getY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
         }
 
         @Override

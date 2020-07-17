@@ -17,7 +17,7 @@ public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<ExtendedSmi
     private final Ingredient upgradeIngredient;
 
     public ExtendedSmithingRecipeBuilder(Ingredient ingredient, Ingredient upgradeIngredient, IItemProvider result) {
-        super(IRecipeSerializer.field_234826_u_, result, 1);
+        super(IRecipeSerializer.SMITHING, result, 1);
         this.ingredient = ingredient;
         this.upgradeIngredient = upgradeIngredient;
     }

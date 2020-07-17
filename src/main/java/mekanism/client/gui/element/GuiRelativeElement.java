@@ -11,7 +11,7 @@ public abstract class GuiRelativeElement extends GuiElement {
     protected int relativeY;
 
     public GuiRelativeElement(IGuiWrapper gui, int x, int y, int width, int height) {
-        super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, StringTextComponent.field_240750_d_);
+        super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, StringTextComponent.EMPTY);
         this.relativeX = x;
         this.relativeY = y;
     }

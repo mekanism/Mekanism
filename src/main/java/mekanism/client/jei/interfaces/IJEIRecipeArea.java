@@ -34,6 +34,6 @@ public interface IJEIRecipeArea<ELEMENT extends GuiElement> extends IGuiEventLis
     }
 
     default boolean isMouseOverJEIArea(double mouseX, double mouseY) {
-        return func_231047_b_(mouseX, mouseY);
+        return isMouseOver(mouseX, mouseY);
     }
 }

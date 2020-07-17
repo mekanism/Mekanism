@@ -40,18 +40,18 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
+    public void init() {
+        super.init();
 
-        func_230480_a_(moduleScreen = new GuiModuleScreen(this, 138, 20, stack -> {
+        addButton(moduleScreen = new GuiModuleScreen(this, 138, 20, stack -> {
             int slotId = container.inventorySlots.get(selected).getSlotIndex();
             Mekanism.packetHandler.sendToServer(new PacketUpdateInventorySlot(stack, slotId));
             playerInventory.player.inventory.setInventorySlotContents(slotId, stack);
         }));
-        func_230480_a_(scrollList = new GuiModuleScrollList(this, 30, 20, 108, 116, () -> getStack(selected), this::onModuleSelected));
-        func_230480_a_(new GuiElementHolder(this, 30, 136, 108, 18));
-        func_230480_a_(optionsButton = new TranslationButton(this, getGuiLeft() + 31, getGuiTop() + 137, 106, 16, MekanismLang.BUTTON_OPTIONS, this::openOptions));
-        optionsButton.field_230693_o_ = false;
+        addButton(scrollList = new GuiModuleScrollList(this, 30, 20, 108, 116, () -> getStack(selected), this::onModuleSelected));
+        addButton(new GuiElementHolder(this, 30, 136, 108, 18));
+        addButton(optionsButton = new TranslationButton(this, getGuiLeft() + 31, getGuiTop() + 137, 106, 16, MekanismLang.BUTTON_OPTIONS, this::openOptions));
+        optionsButton.active = false;
         int size = container.inventorySlots.size();
         for (int i = 0; i < size; i++) {
             Slot slot = container.inventorySlots.get(i);
@@ -60,7 +60,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
             if (selected == -1 && isValidItem(index)) {
                 select(index);
             }
-            func_230480_a_(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1)
+            addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1)
                   .click((e, x, y) -> select(index))
                   .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                   .with(() -> index == selected ? SlotOverlay.SELECT : null));
@@ -76,8 +76,8 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    public boolean func_231046_a_(int key, int i, int j) {
-        if (super.func_231046_a_(key, i, j)) {
+    public boolean keyPressed(int key, int i, int j) {
+        if (super.keyPressed(key, i, j)) {
             return true;
         }
 
@@ -106,10 +106,10 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    public boolean func_231048_c_(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
         // make sure we get the release event
-        moduleScreen.func_231000_a__(mouseX, mouseY);
-        return super.func_231048_c_(mouseX, mouseY, button);
+        moduleScreen.onRelease(mouseX, mouseY);
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         if (isValidItem(index)) {
             selected = index;
             scrollList.updateList(getStack(index), true);
-            optionsButton.field_230693_o_ = getStack(index).getItem() == MekanismItems.MEKASUIT_HELMET.get();
+            optionsButton.active = getStack(index).getItem() == MekanismItems.MEKASUIT_HELMET.get();
         }
     }
 

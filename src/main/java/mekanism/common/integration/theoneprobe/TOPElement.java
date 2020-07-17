@@ -25,10 +25,10 @@ public abstract class TOPElement implements IElement {
     public void render(@Nonnull MatrixStack matrix, int x, int y) {
         int width = getWidth();
         int height = getHeight();
-        AbstractGui.func_238467_a_(matrix, x, y, x + width - 1, y + 1, borderColor);
-        AbstractGui.func_238467_a_(matrix, x, y, x + 1, y + height - 1, borderColor);
-        AbstractGui.func_238467_a_(matrix, x + width - 1, y, x + width, y + height - 1, borderColor);
-        AbstractGui.func_238467_a_(matrix, x, y + height - 1, x + width, y + height, borderColor);
+        AbstractGui.fill(matrix, x, y, x + width - 1, y + 1, borderColor);
+        AbstractGui.fill(matrix, x, y, x + 1, y + height - 1, borderColor);
+        AbstractGui.fill(matrix, x + width - 1, y, x + width, y + height - 1, borderColor);
+        AbstractGui.fill(matrix, x, y + height - 1, x + width, y + height, borderColor);
         TextureAtlasSprite icon = getIcon();
         if (icon != null) {
             int scale = getScaledLevel(width - 2);

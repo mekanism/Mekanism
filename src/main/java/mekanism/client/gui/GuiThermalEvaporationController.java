@@ -29,17 +29,17 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiInnerScreen(this, 48, 19, 80, 40, () -> Arrays.asList(
+    public void init() {
+        super.init();
+        addButton(new GuiInnerScreen(this, 48, 19, 80, 40, () -> Arrays.asList(
               getStruct().translate(),
               MekanismLang.EVAPORATION_HEIGHT.translate(tile.getMultiblock().height()),
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getMultiblock().getTemp(), TemperatureUnit.KELVIN, true)),
               MekanismLang.FLUID_PRODUCTION.translate(Math.round(tile.getMultiblock().lastGain * 100D) / 100D)
         )).spacing(1).jeiCategory(tile));
-        func_230480_a_(new GuiDownArrow(this, 32, 39));
-        func_230480_a_(new GuiDownArrow(this, 136, 39));
-        func_230480_a_(new GuiHorizontalRateBar(this, new IBarInfoHandler() {
+        addButton(new GuiDownArrow(this, 32, 39));
+        addButton(new GuiDownArrow(this, 136, 39));
+        addButton(new GuiHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return MekanismUtils.getTemperatureDisplay(tile.getMultiblock().getTemp(), TemperatureUnit.KELVIN, true);
@@ -50,9 +50,9 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
                 return Math.min(1, tile.getMultiblock().getTemp() / EvaporationMultiblockData.MAX_MULTIPLIER_TEMP);
             }
         }, 48, 63));
-        func_230480_a_(new GuiFluidGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
-        func_230480_a_(new GuiFluidGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 152, 13));
-        func_230480_a_(new GuiHeatTab(() -> {
+        addButton(new GuiFluidGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
+        addButton(new GuiFluidGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 152, 13));
+        addButton(new GuiHeatTab(() -> {
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().totalLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));

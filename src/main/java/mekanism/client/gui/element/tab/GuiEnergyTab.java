@@ -38,11 +38,11 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
+        blit(matrix, x, y, 0, 0, width, height, width, height);
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         List<ITextComponent> info = new ArrayList<>(infoHandler.getInfo());
         info.add(MekanismLang.UNIT.translate(MekanismConfig.general.energyUnit.get()));
         displayTooltips(matrix, info, mouseX, mouseY);
@@ -55,7 +55,7 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         MekanismConfig.general.energyUnit.set(MekanismConfig.general.energyUnit.get().getNext());
     }
 

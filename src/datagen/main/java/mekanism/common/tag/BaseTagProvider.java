@@ -89,7 +89,7 @@ public abstract class BaseTagProvider implements IDataProvider {
             tagTypeMap.getBuilders().forEach((id, tagBuilder) -> {
                 Path path = gen.getOutputFolder().resolve("data/" + id.getNamespace() + "/tags/" + tagTypePath + "/" + id.getPath() + ".json");
                 try {
-                    String json = GSON.toJson(cleanJsonTag(tagBuilder.func_232965_c_()));
+                    String json = GSON.toJson(cleanJsonTag(tagBuilder.serialize()));
                     String hash = HASH_FUNCTION.hashUnencodedChars(json).toString();
                     if (!Objects.equals(cache.getPreviousHash(path), hash) || !Files.exists(path)) {
                         Files.createDirectories(path.getParent());

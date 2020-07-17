@@ -44,9 +44,9 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiInnerScreen(this, 9, 16, xSize - 18, 12, () -> {
+    public void init() {
+        super.init();
+        addButton(new GuiInnerScreen(this, 9, 16, xSize - 18, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             QIOFrequency freq = tile.getQIOFrequency();
             if (freq != null) {
@@ -67,13 +67,13 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
             return list;
         }));
         //Filter holder
-        func_230480_a_(new GuiElementHolder(this, 9, 30, 144, 68));
+        addButton(new GuiElementHolder(this, 9, 30, 144, 68));
         //new filter button border
-        func_230480_a_(new GuiElementHolder(this, 9, 98, 144, 22));
-        func_230480_a_(scrollBar = new GuiScrollBar(this, 153, 30, 90, () -> tile.getFilters().size(), () -> FILTER_COUNT));
+        addButton(new GuiElementHolder(this, 9, 98, 144, 22));
+        addButton(scrollBar = new GuiScrollBar(this, 153, 30, 90, () -> tile.getFilters().size(), () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            func_230480_a_(new MovableFilterButton(this, 10, 31 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, tile::getFilters, index -> {
+            addButton(new MovableFilterButton(this, 10, 31 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, tile::getFilters, index -> {
                 if (index > 0) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
                 }
@@ -96,9 +96,9 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                 return list;
             }));
         }
-        func_230480_a_(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
+        addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
               () -> addWindow(GuiQIOItemStackFilter.create(this, tile))));
-        func_230480_a_(new TranslationButton(this, getGuiLeft() + 81, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_TAG_FILTER,
+        addButton(new TranslationButton(this, getGuiLeft() + 81, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_TAG_FILTER,
               () -> addWindow(GuiQIOTagFilter.create(this, tile))));
     }
 

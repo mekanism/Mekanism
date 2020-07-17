@@ -153,8 +153,8 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     BlockPos sidePos = hitPos.offset(hitSide);
                     BlockState sideState = world.getBlockState(sidePos);
                     PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
-                    if (AbstractFireBlock.func_241465_a_(world, sidePos)) {
-                        world.setBlockState(sidePos, AbstractFireBlock.func_235326_a_(world, sidePos));
+                    if (AbstractFireBlock.canLightBlock(world, sidePos)) {
+                        world.setBlockState(sidePos, AbstractFireBlock.getFireForPlacement(world, sidePos));
                     } else if (CampfireBlock.func_241470_h_(hitState)) {
                         world.setBlockState(hitPos, hitState.with(BlockStateProperties.LIT, true));
                     } else if (hitState.isFlammable(world, hitPos, hitSide)) {

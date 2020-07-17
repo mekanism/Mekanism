@@ -23,12 +23,12 @@ public class GuiEnergyCube extends GuiConfigurableTile<TileEntityEnergyCube, Mek
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiRedstoneControlTab(this, tile));
-        func_230480_a_(new GuiSecurityTab<>(this, tile));
-        func_230480_a_(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.WIDE, this, 55, 18));
-        func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getInputRate())),
+    public void init() {
+        super.init();
+        addButton(new GuiRedstoneControlTab(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.WIDE, this, 55, 18));
+        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getInputRate())),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getTier().getOutput()))), this));
     }
 

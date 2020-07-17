@@ -62,7 +62,7 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
         super.draw(recipe, matrix, mouseX, mouseY);
         double secondaryChance = recipe.getSecondaryChance();
         if (secondaryChance > 0) {
-            getFont().func_238421_b_(matrix, Math.round(secondaryChance * 100) + "%", 104, 41, 0x404040);
+            getFont().drawString(matrix, Math.round(secondaryChance * 100) + "%", 104, 41, 0x404040);
         }
     }
 }

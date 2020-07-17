@@ -150,13 +150,13 @@ public final class HolidayManager {
         @Override
         public void onEvent(PlayerEntity player) {
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.DARK_GREEN, EnumColor.DARK_RED}, 13);
-            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.CHRISTMAS_LINE_ONE.translateColored(EnumColor.RED, EnumColor.DARK_BLUE, player.getName()), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.CHRISTMAS_LINE_TWO.translateColored(EnumColor.RED), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.CHRISTMAS_LINE_THREE.translateColored(EnumColor.RED), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.CHRISTMAS_LINE_FOUR.translateColored(EnumColor.RED), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.HOLIDAY_SIGNATURE.translateColored(EnumColor.DARK_GRAY), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"), Util.field_240973_b_);
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.CHRISTMAS_LINE_ONE.translateColored(EnumColor.RED, EnumColor.DARK_BLUE, player.getName()), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.CHRISTMAS_LINE_TWO.translateColored(EnumColor.RED), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.CHRISTMAS_LINE_THREE.translateColored(EnumColor.RED), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.CHRISTMAS_LINE_FOUR.translateColored(EnumColor.RED), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.HOLIDAY_SIGNATURE.translateColored(EnumColor.DARK_GRAY), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"), Util.DUMMY_UUID);
         }
 
         @Override
@@ -186,12 +186,12 @@ public final class HolidayManager {
         @Override
         public void onEvent(PlayerEntity player) {
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.WHITE, EnumColor.YELLOW}, 13);
-            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.NEW_YEAR_LINE_ONE.translateColored(EnumColor.AQUA, EnumColor.DARK_BLUE, player.getName()), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.NEW_YEAR_LINE_TWO.translateColored(EnumColor.AQUA), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.NEW_YEAR_LINE_THREE.translateColored(EnumColor.AQUA, calendar.get(Calendar.YEAR)), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.HOLIDAY_SIGNATURE.translateColored(EnumColor.DARK_GRAY), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"), Util.field_240973_b_);
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.NEW_YEAR_LINE_ONE.translateColored(EnumColor.AQUA, EnumColor.DARK_BLUE, player.getName()), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.NEW_YEAR_LINE_TWO.translateColored(EnumColor.AQUA), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.NEW_YEAR_LINE_THREE.translateColored(EnumColor.AQUA, calendar.get(Calendar.YEAR)), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.HOLIDAY_SIGNATURE.translateColored(EnumColor.DARK_GRAY), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"), Util.DUMMY_UUID);
         }
     }
 
@@ -205,9 +205,9 @@ public final class HolidayManager {
         @Override
         public void onEvent(PlayerEntity player) {
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.BLACK, EnumColor.GRAY, EnumColor.BLACK, EnumColor.YELLOW, EnumColor.BLACK}, 15);
-            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.MAY_4_LINE_ONE.translateColored(EnumColor.GRAY, EnumColor.DARK_BLUE, player.getName()), Util.field_240973_b_);
-            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"), Util.field_240973_b_);
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.MAY_4_LINE_ONE.translateColored(EnumColor.GRAY, EnumColor.DARK_BLUE, player.getName()), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"), Util.DUMMY_UUID);
         }
     }
 

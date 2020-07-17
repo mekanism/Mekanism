@@ -41,7 +41,7 @@ public class EntityBabyWitherSkeleton extends WitherSkeletonEntity {
     public void setChild(boolean child) {
         getDataManager().set(IS_CHILD, child);
         if (world != null && !world.isRemote) {
-            ModifiableAttributeInstance attributeInstance = getAttribute(Attributes.field_233821_d_);
+            ModifiableAttributeInstance attributeInstance = getAttribute(Attributes.MOVEMENT_SPEED);
             attributeInstance.removeModifier(MekanismAdditions.babySpeedBoostModifier);
             if (child) {
                 attributeInstance.func_233767_b_(MekanismAdditions.babySpeedBoostModifier);

@@ -70,7 +70,7 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
 
     @Override
     public List<ITextComponent> getTooltipStrings(ItemStackToEnergyRecipe recipe, double mouseX, double mouseY) {
-        if (gauge.func_231047_b_(mouseX, mouseY) && !recipe.getOutputDefinition().isZero()) {
+        if (gauge.isMouseOver(mouseX, mouseY) && !recipe.getOutputDefinition().isZero()) {
             //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
             return Collections.singletonList(EnergyDisplay.of(recipe.getOutputDefinition()).getTextComponent());
         }

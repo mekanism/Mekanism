@@ -35,7 +35,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         displayTooltip(matrix, tooltip, mouseX, mouseY);
     }
 
@@ -43,11 +43,11 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        func_238463_a_(matrix, field_230690_l_ + type.switchX, field_230691_m_ + type.switchY, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-        func_238463_a_(matrix, field_230690_l_ + type.switchX, field_230691_m_ + type.switchY + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        blit(matrix, x + type.switchX, y + type.switchY, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        blit(matrix, x + type.switchX, y + type.switchY + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
 
         minecraft.textureManager.bindTexture(icon);
-        func_238463_a_(matrix, field_230690_l_ + 6, field_230691_m_ + 21, 0, 0, 5, 5, 5, 5);
+        blit(matrix, x + 6, y + 21, 0, 0, 5, 5, 5, 5);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
         onToggle.run();
     }

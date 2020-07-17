@@ -33,15 +33,15 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiElementHolder(this, 16, 31, 130, 90));
-        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 16, getGuiTop() + 19, 11, 18, getButtonLocation("toggle"),
+    public void init() {
+        super.init();
+        addButton(new GuiElementHolder(this, 16, 31, 130, 90));
+        addButton(new MekanismImageButton(this, getGuiLeft() + 16, getGuiTop() + 19, 11, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING)));
-        func_230480_a_(scrollBar = new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
+        addButton(scrollBar = new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
-            func_230480_a_(new ReactorLogicButton<>(this, getGuiLeft() + 17, getGuiTop() + 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, (type) -> {
+            addButton(new ReactorLogicButton<>(this, getGuiLeft() + 17, getGuiTop() + 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, (type) -> {
                 if (type == null) {
                     return;
                 }
@@ -61,7 +61,7 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
     }
 
     @Override
-    public boolean func_231043_a_(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.func_231043_a_(mouseX, mouseY, delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 }

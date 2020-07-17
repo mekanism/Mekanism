@@ -44,6 +44,6 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
     @Override
     protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         int displayInt = (int) (getHandler().getLevel() * texWidth);
-        func_238466_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1, calculateScaled(widthScale, displayInt), texHeight, 0, 0, displayInt, texHeight, texWidth, texHeight);
+        blit(matrix, x + 1, y + 1, calculateScaled(widthScale, displayInt), texHeight, 0, 0, displayInt, texHeight, texWidth, texHeight);
     }
 }

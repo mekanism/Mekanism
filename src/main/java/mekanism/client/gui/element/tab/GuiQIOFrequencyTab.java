@@ -42,12 +42,12 @@ public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         displayTooltip(matrix, MekanismLang.SET_FREQUENCY.translate(), mouseX, mouseY);
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         if (MekanismConfig.general.allowProtection.get()) {
             if (isItem) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedItemButton.QIO_FREQUENCY_SELECT, currentHand));

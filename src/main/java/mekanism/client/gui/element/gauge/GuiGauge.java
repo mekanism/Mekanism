@@ -67,17 +67,17 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         TextureAtlasSprite icon = getIcon();
         if (scale > 0 && icon != null) {
             applyRenderColor();
-            drawTiledSprite(matrix, field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, field_230688_j_ - 2, scale, icon);
+            drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, scale, icon);
             MekanismRenderer.resetColor();
         }
         //Draw the bar overlay
         minecraft.textureManager.bindTexture(getResource());
         GaugeOverlay gaugeOverlay = gaugeType.getGaugeOverlay();
-        func_238466_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1, func_230998_h_() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
+        blit(matrix, x + 1, y + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         ItemStack stack = minecraft.player.inventory.getItemStack();
         EnumColor color = gaugeType.getGaugeInfo().getColor();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {

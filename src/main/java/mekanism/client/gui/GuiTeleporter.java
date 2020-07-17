@@ -58,24 +58,24 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiTeleporterStatus(this, () -> tile.getFrequency(FrequencyType.TELEPORTER) != null, () -> tile.status));
-        func_230480_a_(new GuiRedstoneControlTab(this, tile));
-        func_230480_a_(new GuiUpgradeTab(this, tile));
-        func_230480_a_(new GuiSecurityTab<>(this, tile));
-        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 158, 26));
-        func_230480_a_(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
+    public void init() {
+        super.init();
+        addButton(new GuiTeleporterStatus(this, () -> tile.getFrequency(FrequencyType.TELEPORTER) != null, () -> tile.status));
+        addButton(new GuiRedstoneControlTab(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 158, 26));
+        addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
 
-        func_230480_a_(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
+        addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        func_230480_a_(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 14, 60, 20, MekanismLang.PRIVATE, () -> {
+        addButton(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 14, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        func_230480_a_(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
+        addButton(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.TELEPORTER).get(selection) : tile.getPublicCache(FrequencyType.TELEPORTER).get(selection);
@@ -83,7 +83,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             }
             updateButtons();
         }));
-        func_230480_a_(deleteButton = new TranslationButton(this, getGuiLeft() + 79, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
+        addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 79, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.TELEPORTER).get(selection) : tile.getPublicCache(FrequencyType.TELEPORTER).get(selection);
@@ -92,12 +92,12 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             }
             updateButtons();
         }));
-        func_230480_a_(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
-        func_230480_a_(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
+        addButton(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
+        addButton(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
               () -> getFrequency() == null ? null : getFrequency().getColor(),
               () -> sendColorUpdate(0),
               () -> sendColorUpdate(1)));
-        func_230480_a_(frequencyField = new GuiTextField(this, 50, 103, 98, 11));
+        addButton(frequencyField = new GuiTextField(this, 50, 103, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);
@@ -129,26 +129,26 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         }
         scrollList.setText(text);
         if (privateMode) {
-            publicButton.field_230693_o_ = true;
-            privateButton.field_230693_o_ = false;
+            publicButton.active = true;
+            privateButton.active = false;
         } else {
-            publicButton.field_230693_o_ = false;
-            privateButton.field_230693_o_ = true;
+            publicButton.active = false;
+            privateButton.active = true;
         }
         if (scrollList.hasSelection()) {
             Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.TELEPORTER).get(scrollList.getSelection()) :
                              tile.getPublicCache(FrequencyType.TELEPORTER).get(scrollList.getSelection());
-            setButton.field_230693_o_ = tile.getFrequency(FrequencyType.TELEPORTER) == null || !tile.getFrequency(FrequencyType.TELEPORTER).equals(freq);
-            deleteButton.field_230693_o_ = getOwner().equals(freq.getOwner());
+            setButton.active = tile.getFrequency(FrequencyType.TELEPORTER) == null || !tile.getFrequency(FrequencyType.TELEPORTER).equals(freq);
+            deleteButton.active = getOwner().equals(freq.getOwner());
         } else {
-            setButton.field_230693_o_ = false;
-            deleteButton.field_230693_o_ = false;
+            setButton.active = false;
+            deleteButton.active = false;
         }
     }
 
     @Override
-    public void func_231023_e_() {
-        super.func_231023_e_();
+    public void tick() {
+        super.tick();
         if (!init && getFrequency() != null) {
             init = true;
             privateMode = getFrequency().isPrivate();
@@ -158,9 +158,9 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     }
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         updateButtons();
-        return super.func_231044_a_(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     private void setFrequency() {

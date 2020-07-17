@@ -103,7 +103,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                         if (!player.isSneaking()) {
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(), dataType,
-                                        dataType.getColor().getColoredName())), Util.field_240973_b_);
+                                        dataType.getColor().getColoredName())), Util.DUMMY_UUID);
                         } else if (SecurityUtils.canAccess(player, tile)) {
                             if (!player.isCreative()) {
                                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
@@ -116,7 +116,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                             dataType = info.incrementDataType(relativeSide);
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType,
-                                        dataType.getColor(), dataType, dataType.getColor().getColoredName())), Util.field_240973_b_);
+                                        dataType.getColor(), dataType, dataType.getColor().getColoredName())), Util.DUMMY_UUID);
                             config.getConfig().sideChanged(transmissionType, relativeSide);
                         } else {
                             SecurityUtils.displayNoAccess(player);
@@ -216,7 +216,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
             setMode(stack, player, newMode);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.CONFIGURE_STATE.translateColored(EnumColor.GRAY, newMode)), Util.field_240973_b_);
+                      MekanismLang.CONFIGURE_STATE.translateColored(EnumColor.GRAY, newMode)), Util.DUMMY_UUID);
             }
         }
     }

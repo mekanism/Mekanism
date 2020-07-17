@@ -146,7 +146,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         registerVanillaPaxel(consumer, ToolsItems.IRON_PAXEL, Items.IRON_AXE, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_NUGGET);
         registerVanillaPaxel(consumer, ToolsItems.GOLD_PAXEL, Items.GOLDEN_AXE, Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL, Items.GOLD_NUGGET);
         registerVanillaPaxel(consumer, ToolsItems.DIAMOND_PAXEL, Items.DIAMOND_AXE, Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL, null);
-        ExtendedSmithingRecipeBuilder.smithing(ToolsItems.DIAMOND_PAXEL, Items.field_234759_km_, ToolsItems.NETHERITE_PAXEL).build(consumer);
+        ExtendedSmithingRecipeBuilder.smithing(ToolsItems.DIAMOND_PAXEL, Items.NETHERITE_INGOT, ToolsItems.NETHERITE_PAXEL).build(consumer);
     }
 
     private void registerVanillaPaxel(Consumer<IFinishedRecipe> consumer, IItemProvider paxel, Item axe, Item pickaxe, Item shovel, @Nullable Item nugget) {

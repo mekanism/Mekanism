@@ -126,11 +126,11 @@ public class HUDRenderer {
         MekanismRenderer.color(color);
         minecraft.getTextureManager().bindTexture(element.getIcon());
         if (!iconRight) {
-            AbstractGui.func_238463_a_(matrix, x, y, 0, 0, 16, 16, 16, 16);
+            AbstractGui.blit(matrix, x, y, 0, 0, 16, 16, 16, 16);
             MekanismRenderer.resetColor();
             minecraft.fontRenderer.func_238422_b_(matrix, element.getText(), x + 18, y + 5, element.getColor());
         } else {
-            AbstractGui.func_238463_a_(matrix, x + minecraft.fontRenderer.func_238414_a_(element.getText()) + 2, y, 0, 0, 16, 16, 16, 16);
+            AbstractGui.blit(matrix, x + minecraft.fontRenderer.func_238414_a_(element.getText()) + 2, y, 0, 0, 16, 16, 16, 16);
             MekanismRenderer.resetColor();
             minecraft.fontRenderer.func_238422_b_(matrix, element.getText(), x, y + 5, element.getColor());
         }
@@ -154,7 +154,7 @@ public class HUDRenderer {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         MekanismRenderer.color(color);
-        AbstractGui.func_238466_a_(matrix, -50, -50, 100, 100, 0, 0, 256, 256, 256, 256);
+        AbstractGui.blit(matrix, -50, -50, 100, 100, 0, 0, 256, 256, 256, 256);
         rotateStr(matrix, MekanismLang.NORTH_SHORT, angle, 0, color);
         rotateStr(matrix, MekanismLang.EAST_SHORT, angle, 90, color);
         rotateStr(matrix, MekanismLang.SOUTH_SHORT, angle, 180, color);

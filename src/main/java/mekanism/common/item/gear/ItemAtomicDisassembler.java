@@ -64,7 +64,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     public ItemAtomicDisassembler(Properties properties) {
         super(MekanismConfig.gear.disassemblerChargeRate, MekanismConfig.gear.disassemblerMaxEnergy, properties.rarity(Rarity.RARE).setNoRepair().setISTER(ISTERProvider::disassembler));
         Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4D, Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4D, Operation.ADDITION));
         this.attributes = builder.build();
     }
 
@@ -141,7 +141,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                     return super.onBlockStartBreak(stack, pos, player);
                 }
                 //If it is extended or should be treated as an ore
-                if (extended || state.func_235714_a_(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
                     List<BlockPos> found = findPositions(state, pos, world, extended ? MekanismConfig.gear.disassemblerMiningRange.get() : -1);
                     for (BlockPos foundPos : found) {
@@ -249,7 +249,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                       MekanismLang.DISASSEMBLER_MODE_CHANGE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, newMode, EnumColor.AQUA, newMode.getEfficiency())),
-                      Util.field_240973_b_);
+                      Util.DUMMY_UUID);
             }
         }
     }

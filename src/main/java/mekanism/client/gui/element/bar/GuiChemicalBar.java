@@ -49,9 +49,9 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                 MekanismRenderer.color(type);
                 TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(type);
                 if (horizontal) {
-                    drawTiledSprite(matrix, field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, (int) (level * (field_230688_j_ - 2)), field_230689_k_ - 2, icon);
+                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, (int) (level * (width - 2)), height - 2, icon);
                 } else {
-                    drawTiledSprite(matrix, field_230690_l_ + 1, field_230691_m_ + 1, field_230689_k_ - 2, field_230688_j_ - 2, (int) (level * (field_230689_k_ - 2)), icon);
+                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, (int) (level * (height - 2)), icon);
                 }
                 MekanismRenderer.resetColor();
             }
@@ -59,8 +59,8 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     }
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
-        if (func_231047_b_(mouseX, mouseY)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (isMouseOver(mouseX, mouseY)) {
             ItemStack stack = Minecraft.getInstance().player.inventory.getItemStack();
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TankType tankType = null;
@@ -79,7 +79,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                     if (index != -1) {
                         DropperAction action;
                         if (button == 0) {
-                            action = Screen.func_231173_s_() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
+                            action = Screen.hasShiftDown() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
                         } else {
                             action = DropperAction.DRAIN_DROPPER;
                         }
@@ -89,7 +89,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                 }
             }
         }
-        return super.func_231044_a_(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Nullable

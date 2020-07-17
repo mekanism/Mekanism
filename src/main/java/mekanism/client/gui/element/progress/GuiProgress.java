@@ -25,14 +25,14 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
             minecraft.textureManager.bindTexture(getResource());
-            func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, type.getTextureWidth(), type.getTextureHeight());
+            blit(matrix, x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             if (type.isVertical()) {
-                int displayInt = (int) (handler.getProgress() * field_230689_k_);
-                func_238463_a_(matrix, field_230690_l_, field_230691_m_, type.getOverlayX(), type.getOverlayY(), field_230688_j_, displayInt, type.getTextureWidth(), type.getTextureHeight());
+                int displayInt = (int) (handler.getProgress() * height);
+                blit(matrix, x, y, type.getOverlayX(), type.getOverlayY(), width, displayInt, type.getTextureWidth(), type.getTextureHeight());
             } else {
                 int innerOffsetX = type == ProgressType.BAR ? 1 : 0;
-                int displayInt = (int) (handler.getProgress() * (field_230688_j_ - 2 * innerOffsetX));
-                func_238463_a_(matrix, field_230690_l_ + innerOffsetX, field_230691_m_, type.getOverlayX() + innerOffsetX, type.getOverlayY(), displayInt, field_230689_k_, type.getTextureWidth(), type.getTextureHeight());
+                int displayInt = (int) (handler.getProgress() * (width - 2 * innerOffsetX));
+                blit(matrix, x + innerOffsetX, y, type.getOverlayX() + innerOffsetX, type.getOverlayY(), displayInt, height, type.getTextureWidth(), type.getTextureHeight());
             }
         }
     }

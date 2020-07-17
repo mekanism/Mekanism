@@ -20,7 +20,7 @@ public class GuiSideConfigurationTab extends GuiWindowCreatorTab<GuiSideConfigur
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         displayTooltip(matrix, MekanismLang.SIDE_CONFIG.translate(), mouseX, mouseY);
     }
 

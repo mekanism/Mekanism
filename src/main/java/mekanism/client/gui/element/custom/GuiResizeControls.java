@@ -28,10 +28,10 @@ public class GuiResizeControls extends GuiSideHolder {
     public GuiResizeControls(IGuiWrapper gui, int y, Consumer<ResizeType> resizeHandler) {
         super(gui, -26, y, 39, true);
         this.resizeHandler = resizeHandler;
-        addChild(expandButton = new MekanismImageButton(gui, this.field_230690_l_ + 4, this.field_230691_m_ + 5, 19, 9, 19, 9, PLUS, () -> handleResize(ResizeType.EXPAND_Y)));
-        addChild(shrinkButton = new MekanismImageButton(gui, this.field_230690_l_ + 4, this.field_230691_m_ + 25, 19, 9, 19, 9, MINUS, () -> handleResize(ResizeType.SHRINK_Y)));
+        addChild(expandButton = new MekanismImageButton(gui, this.x + 4, this.y + 5, 19, 9, 19, 9, PLUS, () -> handleResize(ResizeType.EXPAND_Y)));
+        addChild(shrinkButton = new MekanismImageButton(gui, this.x + 4, this.y + 25, 19, 9, 19, 9, MINUS, () -> handleResize(ResizeType.SHRINK_Y)));
         updateButtonState();
-        field_230693_o_ = true;
+        active = true;
     }
 
     @Override
@@ -41,9 +41,9 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        super.func_230443_a_(matrix, mouseX, mouseY);
-        if (tooltipTicks > 0 && !expandButton.field_230693_o_) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
+        if (tooltipTicks > 0 && !expandButton.active) {
             displayTooltip(matrix, MekanismLang.QIO_COMPENSATE_TOOLTIP.translate(), mouseX, mouseY);
         }
     }
@@ -55,10 +55,10 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
-        super.func_230982_a_(mouseX, mouseY);
-        if (!expandButton.field_230693_o_ && mouseX >= expandButton.field_230690_l_ && mouseX < expandButton.field_230690_l_ + expandButton.func_230998_h_() &&
-            mouseY >= expandButton.field_230691_m_ && mouseY < expandButton.field_230691_m_ + expandButton.getHeight()) {
+    public void onClick(double mouseX, double mouseY) {
+        super.onClick(mouseX, mouseY);
+        if (!expandButton.active && mouseX >= expandButton.x && mouseX < expandButton.x + expandButton.getWidth() &&
+            mouseY >= expandButton.y && mouseY < expandButton.y + expandButton.getHeight()) {
             tooltipTicks = 100;
         }
     }
@@ -75,8 +75,8 @@ public class GuiResizeControls extends GuiSideHolder {
 
     private void updateButtonState() {
         int index = getIndex();
-        expandButton.field_230693_o_ = index < QIOItemViewerContainer.getSlotsYMax();
-        shrinkButton.field_230693_o_ = index > QIOItemViewerContainer.SLOTS_Y_MIN;
+        expandButton.active = index < QIOItemViewerContainer.getSlotsYMax();
+        shrinkButton.active = index > QIOItemViewerContainer.SLOTS_Y_MIN;
     }
 
     private int getIndex() {

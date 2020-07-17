@@ -26,10 +26,10 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiMatrixTab(this, tile, MatrixTab.MAIN));
-        func_230480_a_(new GuiEnergyGauge(new IEnergyInfoHandler() {
+    public void init() {
+        super.init();
+        addButton(new GuiMatrixTab(this, tile, MatrixTab.MAIN));
+        addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
             public FloatingLong getEnergy() {
                 return tile.getMultiblock().getEnergy();
@@ -40,7 +40,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
                 return tile.getMultiblock().getStorageCap();
             }
         }, GaugeType.STANDARD, this, 6, 13));
-        func_230480_a_(new GuiVerticalRateBar(this, new IBarInfoHandler() {
+        addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return MekanismLang.MATRIX_RECEIVING_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput()));
@@ -51,7 +51,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
                 return !tile.getMultiblock().isFormed() ? 0 : tile.getMultiblock().getLastInput().divideToLevel(tile.getMultiblock().getTransferCap());
             }
         }, 30, 13));
-        func_230480_a_(new GuiVerticalRateBar(this, new IBarInfoHandler() {
+        addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return MekanismLang.MATRIX_OUTPUTTING_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput()));
@@ -65,7 +65,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
                 return tile.getMultiblock().getLastOutput().divideToLevel(tile.getMultiblock().getTransferCap());
             }
         }, 38, 13));
-        func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getMultiblock().getEnergy(), tile.getMultiblock().getStorageCap())),
+        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getMultiblock().getEnergy(), tile.getMultiblock().getStorageCap())),
               MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput())),
               MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput()))),
               this));

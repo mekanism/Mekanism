@@ -85,7 +85,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
             }
             Upgrade upgrade = upgrades[index];
             int multipliedElement = elementHeight * i;
-            if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= field_230691_m_ + 1 + multipliedElement && mouseY < field_230691_m_ + 1 + multipliedElement + elementHeight) {
+            if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
                 guiObj.displayTooltip(matrix, upgrade.getDescription(), mouseX - guiObj.getLeft(), mouseY - guiObj.getTop(), guiObj.getWidth());
             }
         }
@@ -105,15 +105,15 @@ public class GuiUpgradeScrollList extends GuiScrollList {
                 break;
             }
             Upgrade upgrade = upgrades[index];
-            int shiftedY = field_230691_m_ + 1 + elementHeight * i;
+            int shiftedY = y + 1 + elementHeight * i;
             int j = 1;
             if (upgrade == getSelection()) {
                 j = 2;
-            } else if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
+            } else if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
                 j = 0;
             }
             MekanismRenderer.color(upgrade.getColor());
-            func_238463_a_(matrix, field_230690_l_ + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            blit(matrix, x + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             MekanismRenderer.resetColor();
         }
     }

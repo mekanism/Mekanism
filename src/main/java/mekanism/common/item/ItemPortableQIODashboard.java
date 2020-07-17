@@ -43,7 +43,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
                 setOwnerUUID(stack, player.getUniqueID());
                 Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NOW_OWN.translateColored(EnumColor.GRAY)),
-                      Util.field_240973_b_);
+                      Util.DUMMY_UUID);
             } else if (SecurityUtils.canAccess(player, stack)) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, getContainerProvider(stack, hand), buf -> {
                     buf.writeEnumValue(hand);

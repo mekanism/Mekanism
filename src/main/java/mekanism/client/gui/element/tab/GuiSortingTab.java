@@ -24,12 +24,12 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        drawString(matrix, OnOff.of(tile.isSorting()).getTextComponent(), field_230690_l_ + 5, field_230691_m_ + 24, 0x0404040);
+        drawString(matrix, OnOff.of(tile.isSorting()).getTextComponent(), x + 5, y + 24, 0x0404040);
         MekanismRenderer.resetColor();
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         displayTooltip(matrix, MekanismLang.AUTO_SORT.translate(), mouseX, mouseY);
     }
 
@@ -39,7 +39,7 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_SORT_BUTTON, tile));
     }
 }

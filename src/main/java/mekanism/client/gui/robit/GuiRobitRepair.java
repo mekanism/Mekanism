@@ -31,12 +31,12 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
+    public void init() {
+        super.init();
         getMinecraft().keyboardListener.enableRepeatEvents(true);
-        func_230480_a_(itemNameField = new TextFieldWidget(field_230712_o_, getGuiLeft() + 62, getGuiTop() + 24, 103, 12, new StringTextComponent("")));
+        addButton(itemNameField = new TextFieldWidget(font, getGuiLeft() + 62, getGuiTop() + 24, 103, 12, new StringTextComponent("")));
         itemNameField.setCanLoseFocus(false);
-        itemNameField.func_231049_c__(true);
+        itemNameField.changeFocus(true);
         itemNameField.setTextColor(-1);
         itemNameField.setDisabledTextColour(-1);
         itemNameField.setEnableBackgroundDrawing(false);
@@ -47,9 +47,9 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    public void func_231152_a_(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
         String s = itemNameField.getText();
-        super.func_231152_a_(minecraft, scaledWidth, scaledHeight);
+        super.resize(minecraft, scaledWidth, scaledHeight);
         itemNameField.setText(s);
     }
 
@@ -65,8 +65,8 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    public void func_231175_as__() {
-        super.func_231175_as__();
+    public void onClose() {
+        super.onClose();
         getMinecraft().keyboardListener.enableRepeatEvents(false);
         container.removeListener(this);
     }
@@ -94,7 +94,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
 
             if (flag) {
                 int width = getXSize() - 8 - getStringWidth(component) - 2;
-                func_238467_a_(matrix, width - 2, 67, getXSize() - 8, 79, 0x4F000000);
+                fill(matrix, width - 2, 67, getXSize() - 8, 79, 0x4F000000);
                 getFont().func_238407_a_(matrix, component, width, 69.0F, k);
                 MekanismRenderer.resetColor();
             }
@@ -103,19 +103,19 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    public boolean func_231042_a_(char c, int keyCode) {
+    public boolean charTyped(char c, int keyCode) {
         if (itemNameField.canWrite()) {
-            return itemNameField.func_231042_a_(c, keyCode);
+            return itemNameField.charTyped(c, keyCode);
         }
-        return super.func_231042_a_(c, keyCode);
+        return super.charTyped(c, keyCode);
     }
 
     @Override
-    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode != GLFW.GLFW_KEY_ESCAPE && itemNameField.canWrite()) {
-            return itemNameField.func_231046_a_(keyCode, scanCode, modifiers);
+            return itemNameField.keyPressed(keyCode, scanCode, modifiers);
         }
-        return super.func_231046_a_(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
@@ -126,10 +126,10 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     protected void func_230450_a_(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
         getMinecraft().textureManager.bindTexture(ANVIL_RESOURCE);
-        func_238474_b_(matrix, getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
-        func_238474_b_(matrix, getGuiLeft() + 59, getGuiTop() + 20, 0, getYSize() + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
+        blit(matrix, getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
+        blit(matrix, getGuiLeft() + 59, getGuiTop() + 20, 0, getYSize() + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
         if ((container.getSlot(0).getHasStack() || container.getSlot(1).getHasStack()) && !container.getSlot(2).getHasStack()) {
-            func_238474_b_(matrix, getGuiLeft() + 99, getGuiTop() + 45, getXSize(), 0, 28, 21);
+            blit(matrix, getGuiLeft() + 99, getGuiTop() + 45, getXSize(), 0, 28, 21);
         }
     }
 

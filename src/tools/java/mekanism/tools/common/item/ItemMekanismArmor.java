@@ -121,8 +121,8 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
     @Override
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
         UUID modifier = ARMOR_MODIFIERS[getEquipmentSlot().getIndex()];
-        builder.put(Attributes.field_233826_i_, new AttributeModifier(modifier, "Armor modifier", getDamageReduceAmount(), Operation.ADDITION));
-        builder.put(Attributes.field_233827_j_, new AttributeModifier(modifier, "Armor toughness", func_234657_f_(), Operation.ADDITION));
-        builder.put(Attributes.field_233820_c_, new AttributeModifier(modifier, "Armor knockback resistance", getKnockbackResistance(), Operation.ADDITION));
+        builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDamageReduceAmount(), Operation.ADDITION));
+        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", func_234657_f_(), Operation.ADDITION));
+        builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifier, "Armor knockback resistance", getKnockbackResistance(), Operation.ADDITION));
     }
 }

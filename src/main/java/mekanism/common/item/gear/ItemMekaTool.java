@@ -79,7 +79,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.ATTACK_AMPLIFICATION_UNIT, Modules.SILK_TOUCH_UNIT, Modules.VEIN_MINING_UNIT, Modules.FARMING_UNIT,
               Modules.TELEPORTATION_UNIT, Modules.EXCAVATION_ESCALATION_UNIT);
         Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.field_233825_h_, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4D, Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4D, Operation.ADDITION));
         this.attributes = builder.build();
     }
 
@@ -195,7 +195,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                     return silk;
                 }
                 //If it is extended or should be treated as an ore
-                if (extended || state.func_235714_a_(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
                     Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(player, state, pos, world, extended ? module.getExcavationRange() : -1);
                     for (BlockPos foundPos : found) {

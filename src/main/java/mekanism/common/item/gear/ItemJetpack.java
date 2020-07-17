@@ -117,7 +117,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
             setMode(stack, newMode);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.JETPACK_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)), Util.field_240973_b_);
+                      MekanismLang.JETPACK_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)), Util.DUMMY_UUID);
             }
         }
     }

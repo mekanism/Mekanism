@@ -27,10 +27,10 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiMergedChemicalBar<>(this, tile, tile.getChemicalTank(), 42, 16, 116, 10, true));
-        func_230480_a_(new GuiInnerScreen(this, 42, 37, 118, 28, () -> {
+    public void init() {
+        super.init();
+        addButton(new GuiMergedChemicalBar<>(this, tile, tile.getChemicalTank(), 42, 16, 116, 10, true));
+        addButton(new GuiInnerScreen(this, 42, 37, 118, 28, () -> {
             List<ITextComponent> ret = new ArrayList<>();
             Current current = tile.getChemicalTank().getCurrent();
             if (current == Current.EMPTY) {
@@ -49,9 +49,9 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
             }
             return ret;
         }));
-        func_230480_a_(new GuiRedstoneControlTab(this, tile));
-        func_230480_a_(new GuiSecurityTab<>(this, tile));
-        func_230480_a_(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumping, tile.getPos(), 0));
+        addButton(new GuiRedstoneControlTab(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumping, tile.getPos(), 0));
     }
 
     private void addStored(List<ITextComponent> ret, IChemicalTank<?, ?> tank, ILangEntry langKey) {

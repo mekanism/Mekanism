@@ -40,7 +40,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         ITextComponent tooltip = handler.getTooltip();
         if (tooltip != null) {
             displayTooltip(matrix, tooltip, mouseX, mouseY);

@@ -14,15 +14,15 @@ public abstract class GuiBiDirectionalTab extends GuiTexturedElement {
     protected abstract void onRightClick(double mouseX, double mouseY);
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
-        if (super.func_231044_a_(mouseX, mouseY, button)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (super.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
         //TODO: We may want to eventually move this logic into GuiElement as it is shared by GuiButton
-        if (this.field_230693_o_ && this.field_230694_p_ && func_230449_g_()) {
+        if (this.active && this.visible && isHovered()) {
             if (button == 1) {
                 //Right clicked
-                func_230988_a_(Minecraft.getInstance().getSoundHandler());
+                playDownSound(Minecraft.getInstance().getSoundHandler());
                 onRightClick(mouseX, mouseY);
                 return true;
             }

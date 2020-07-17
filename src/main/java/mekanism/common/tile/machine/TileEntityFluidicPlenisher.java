@@ -236,8 +236,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.func_230337_a_(state, nbtTags);
+    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.read(state, nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
         finishedCalc = nbtTags.getBoolean(NBTConstants.FINISHED);
         if (nbtTags.contains(NBTConstants.ACTIVE_NODES, NBT.TAG_LIST)) {
@@ -260,7 +260,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         usedNodes.clear();
         finishedCalc = false;
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.PLENISHER_RESET.translateColored(EnumColor.GRAY)),
-              Util.field_240973_b_);
+              Util.DUMMY_UUID);
         return ActionResultType.SUCCESS;
     }
 

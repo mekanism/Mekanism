@@ -47,23 +47,23 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new TranslationButton(this, getGuiLeft() + 56, getGuiTop() + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
+    public void init() {
+        super.init();
+        addButton(new TranslationButton(this, getGuiLeft() + 56, getGuiTop() + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiMinerFilerSelect(this, tile))));
-        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
-        func_230480_a_(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 141, 14, getButtonLocation("strict_input"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 141, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, tile)), getOnHover(MekanismLang.MINER_INVERSE)));
-        func_230480_a_(radiusField = new GuiTextField(this, 13, 67, 38, 11));
+        addButton(radiusField = new GuiTextField(this, 13, 67, 38, 11));
         radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
         radiusField.setInputValidator(InputValidator.DIGIT);
         radiusField.configureDigitalBorderInput(this::setRadius);
-        func_230480_a_(minField = new GuiTextField(this, 13, 92, 38, 11));
+        addButton(minField = new GuiTextField(this, 13, 92, 38, 11));
         minField.setMaxStringLength(3);
         minField.setInputValidator(InputValidator.DIGIT);
         minField.configureDigitalBorderInput(this::setMinY);
-        func_230480_a_(maxField = new GuiTextField(this, 13, 117, 38, 11));
+        addButton(maxField = new GuiTextField(this, 13, 117, 38, 11));
         maxField.setMaxStringLength(3);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.configureDigitalBorderInput(this::setMaxY);

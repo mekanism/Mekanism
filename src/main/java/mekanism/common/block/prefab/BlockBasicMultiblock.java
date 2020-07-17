@@ -27,7 +27,7 @@ import net.minecraft.world.World;
 public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends BlockTile<TILE, BlockTypeTile<TILE>> {
 
     public BlockBasicMultiblock(BlockTypeTile<TILE> type) {
-        this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F).func_235861_h_());
+        this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F).setRequiresTool());
     }
 
     public BlockBasicMultiblock(BlockTypeTile<TILE> type, Block.Properties properties) {

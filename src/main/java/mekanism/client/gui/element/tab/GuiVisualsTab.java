@@ -22,7 +22,7 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         ITextComponent visualsComponent = MekanismLang.MINER_VISUALS.translate(OnOff.of(tile.clientRendering));
         if (tile.getRadius() <= 64) {
             displayTooltip(matrix, visualsComponent, mouseX, mouseY);
@@ -37,7 +37,7 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         tile.clientRendering = !tile.clientRendering;
     }
 }

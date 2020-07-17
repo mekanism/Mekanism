@@ -42,8 +42,8 @@ public class GhostIngredientHandler implements IGhostIngredientHandler<GuiMekani
             if (hasTargets) {
                 //If we have at least one layer with targets grab the intersection information for this window's layer
                 List<Rectangle2d> areas = new ArrayList<>();
-                areas.add(new Rectangle2d(window.field_230690_l_, window.field_230691_m_, window.func_230998_h_(), window.getHeight()));
-                areas.addAll(GuiElementHandler.getAreasFor(window.field_230690_l_, window.field_230691_m_, window.func_230998_h_(), window.getHeight(), window.children()));
+                areas.add(new Rectangle2d(window.x, window.y, window.getWidth(), window.getHeight()));
+                areas.addAll(GuiElementHandler.getAreasFor(window.x, window.y, window.getWidth(), window.getHeight(), window.children()));
                 layerIntersections.put(depth, areas);
             }
             ghostTargets = getTargets(window.children(), ingredient);
@@ -84,7 +84,7 @@ public class GhostIngredientHandler implements IGhostIngredientHandler<GuiMekani
                 IGhostIngredientConsumer ghostHandler = ghostTarget.getGhostHandler();
                 if (ghostHandler != null && ghostHandler.supportsIngredient(ingredient)) {
                     Widget element = (Widget) child;
-                    ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, element.field_230690_l_, element.field_230691_m_, element.func_230998_h_(), element.getHeight()));
+                    ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, element.x, element.y, element.getWidth(), element.getHeight()));
                 }
             }
         }

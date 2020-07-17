@@ -54,7 +54,7 @@ public class GuiColorWindow extends GuiWindow {
         textField.setMaxStringLength(11);
         textField.setInputValidator(InputValidator.DIGIT.or(c -> c == ','));
         textField.setBackground(BackgroundType.ELEMENT_HOLDER);
-        addChild(new TranslationButton(gui, field_230690_l_ + 100, field_230691_m_ + getButtonHeight() - 21, 54, 14, MekanismLang.BUTTON_CONFIRM, () -> {
+        addChild(new TranslationButton(gui, x + 100, y + getButtonHeight() - 21, 54, 14, MekanismLang.BUTTON_CONFIRM, () -> {
             callback.accept(getColor());
             close();
         }));
@@ -154,15 +154,15 @@ public class GuiColorWindow extends GuiWindow {
     }
 
     @Override
-    public boolean func_231042_a_(char c, int keyCode) {
-        boolean ret = super.func_231042_a_(c, keyCode);
+    public boolean charTyped(char c, int keyCode) {
+        boolean ret = super.charTyped(c, keyCode);
         updateColorFromText();
         return ret;
     }
 
     @Override
-    public void func_231000_a__(double mouseX, double mouseY) {
-        super.func_231000_a__(mouseX, mouseY);
+    public void onRelease(double mouseX, double mouseY) {
+        super.onRelease(mouseX, mouseY);
         huePicker.isDragging = false;
         shadePicker.isDragging = false;
     }
@@ -174,8 +174,8 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-            super.func_230443_a_(matrix, mouseX, mouseY);
+        public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+            super.renderToolTip(matrix, mouseX, mouseY);
             ITextComponent hex = MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, getColor().rgb()));
             guiObj.displayTooltip(matrix, hex, mouseX, mouseY);
         }
@@ -208,15 +208,15 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void func_230982_a_(double mouseX, double mouseY) {
-            if (func_230992_c_(mouseX, mouseY)) {
+        public void onClick(double mouseX, double mouseY) {
+            if (clicked(mouseX, mouseY)) {
                 set(mouseX, mouseY);
                 isDragging = true;
             }
         }
 
         @Override
-        public void func_230983_a_(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
+        public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
             if (isDragging) {
                 set(mouseX, mouseY);
             }
@@ -245,20 +245,20 @@ public class GuiColorWindow extends GuiWindow {
             drawColorBar(matrix, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
             minecraft.textureManager.bindTexture(HUE_PICKER);
             int posX = Math.round((hue / 360F) * (getButtonWidth() - 3));
-            func_238463_a_(matrix, getButtonX() - 2 + posX, getButtonY() - 2, 0, 0, 7, 12, 12, 12);
+            blit(matrix, getButtonX() - 2 + posX, getButtonY() - 2, 0, 0, 7, 12, 12, 12);
             GuiUtils.fill(matrix, getButtonX() + posX, getButtonY(), 3, 8, Color.hsv(hue, 1, 1).argb());
         }
 
         @Override
-        public void func_230982_a_(double mouseX, double mouseY) {
-            if (func_230992_c_(mouseX, mouseY)) {
+        public void onClick(double mouseX, double mouseY) {
+            if (clicked(mouseX, mouseY)) {
                 set(mouseX, mouseY);
                 isDragging = true;
             }
         }
 
         @Override
-        public void func_230983_a_(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
+        public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
             if (isDragging) {
                 set(mouseX, mouseY);
             }

@@ -34,9 +34,9 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(crystallizerScreen = new GuiCrystallizerScreen(this, 31, 13, new IOreInfo() {
+    public void init() {
+        super.init();
+        addButton(crystallizerScreen = new GuiCrystallizerScreen(this, 31, 13, new IOreInfo() {
             @Nonnull
             @Override
             public BoxedChemicalStack getInputChemical() {
@@ -51,13 +51,13 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
                 return cachedRecipe == null ? null : cachedRecipe.getRecipe();
             }
         }));
-        func_230480_a_(new GuiSecurityTab<>(this, tile));
-        func_230480_a_(new GuiRedstoneControlTab(this, tile));
-        func_230480_a_(new GuiUpgradeTab(this, tile));
-        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 23));
-        func_230480_a_(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        func_230480_a_(new GuiMergedChemicalTankGauge<>(() -> tile.inputTank, () -> tile, GaugeType.STANDARD, this, 7, 4));
-        func_230480_a_(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61).jeiCategory(tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiRedstoneControlTab(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 23));
+        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        addButton(new GuiMergedChemicalTankGauge<>(() -> tile.inputTank, () -> tile, GaugeType.STANDARD, this, 7, 4));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61).jeiCategory(tile));
     }
 
     @Override
@@ -67,8 +67,8 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     }
 
     @Override
-    public void func_231023_e_() {
-        super.func_231023_e_();
+    public void tick() {
+        super.tick();
         crystallizerScreen.tick();
     }
 }

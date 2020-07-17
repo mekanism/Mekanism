@@ -46,11 +46,11 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
+    public void init() {
+        super.init();
         int slotsY = MekanismConfig.client.qioItemViewerSlotsY.get();
         getMinecraft().keyboardListener.enableRepeatEvents(true);
-        func_230480_a_(new GuiInnerScreen(this, 7, 15, xSize - 16, 12, () -> {
+        addButton(new GuiInnerScreen(this, 7, 15, xSize - 16, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             FrequencyIdentity freq = getFrequency();
             if (freq != null) {
@@ -69,7 +69,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             }
             return list;
         }));
-        func_230480_a_(searchField = new GuiTextField(this, 50, 15 + 12 + 3, xSize - 50 - 10, 10));
+        addButton(searchField = new GuiTextField(this, 50, 15 + 12 + 3, xSize - 50 - 10, 10));
         searchField.setOffset(0, -1);
         searchField.setInputValidator(this::isValidSearchChar);
         searchField.setResponder(container::updateSearch);
@@ -77,14 +77,14 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         searchField.setBackground(BackgroundType.ELEMENT_HOLDER);
         searchField.setVisible(true);
         searchField.setTextColor(0xFFFFFF);
-        searchField.func_230996_d_(true);
-        func_230480_a_(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
+        searchField.setFocused(true);
+        addButton(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
               container::getQIOItemList, container));
-        func_230480_a_(new GuiDropdown<>(this, xSize - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+        addButton(new GuiDropdown<>(this, xSize - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               41, ListSortType.class, container::getSortType, container::setSortType));
-        func_230480_a_(new GuiDigitalIconToggle<>(this, xSize - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+        addButton(new GuiDigitalIconToggle<>(this, xSize - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, container::getSortDirection, container::setSortDirection));
-        func_230480_a_(new GuiResizeControls(this, (getMinecraft().getMainWindow().getScaledHeight() / 2) - 20 - getGuiTop(), this::resize));
+        addButton(new GuiResizeControls(this, (getMinecraft().getMainWindow().getScaledHeight() / 2) - 20 - getGuiTop(), this::resize));
     }
 
     @Override
@@ -98,8 +98,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void func_231152_a_(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
-        super.func_231152_a_(minecraft, sizeX, sizeY);
+    public void resize(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
+        super.resize(minecraft, sizeX, sizeY);
         container.updateSearch(searchField.getText());
         //Validate the height is still valid, and if it isn't recreate it
         int maxY = QIOItemViewerContainer.getSlotsYMax();
@@ -113,8 +113,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void func_231164_f_() {
-        super.func_231164_f_();
+    public void removed() {
+        super.removed();
         getMinecraft().keyboardListener.enableRepeatEvents(false);
     }
 

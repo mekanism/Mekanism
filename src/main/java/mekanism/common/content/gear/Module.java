@@ -198,7 +198,7 @@ public abstract class Module {
 
     protected void displayModeChange(PlayerEntity player, ITextComponent modeName, IHasTextComponent mode) {
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-              MekanismLang.MODULE_MODE_CHANGE.translateColored(EnumColor.GRAY, modeName, EnumColor.INDIGO, mode.getTextComponent())), Util.field_240973_b_);
+              MekanismLang.MODULE_MODE_CHANGE.translateColored(EnumColor.GRAY, modeName, EnumColor.INDIGO, mode.getTextComponent())), Util.DUMMY_UUID);
     }
 
     protected void toggleEnabled(PlayerEntity player, ITextComponent modeName) {
@@ -206,6 +206,6 @@ public abstract class Module {
         ILangEntry lang = isEnabled() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
               MekanismLang.GENERIC_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, modeName, isEnabled() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate())),
-              Util.field_240973_b_);
+              Util.DUMMY_UUID);
     }
 }
