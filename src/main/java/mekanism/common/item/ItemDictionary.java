@@ -7,7 +7,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -19,7 +18,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -33,22 +31,19 @@ public class ItemDictionary extends Item {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
         if (player != null && !player.isSneaking()) {
-            BlockPos pos = context.getPos();
-            BlockState state = world.getBlockState(pos);
-            Block block = state.getBlock();
+            World world = context.getWorld();
             if (world.isRemote) {
-                ItemStack testStack = new ItemStack(block);
-                //TODO - V11: List block tags/fluid tags it the item is of that type
-                Set<ResourceLocation> tags = testStack.getItem().getTags();
-                if (!tags.isEmpty()) {
+                Block block = world.getBlockState(context.getPos()).getBlock();
+                //TODO - V11: List fluid tags it the item is of that type
+                Set<ResourceLocation> tags = block.getTags();
+                if (tags.isEmpty()) {
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_NO_KEY.translateColored(EnumColor.GRAY)), Util.field_240973_b_);
+                } else {
                     player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_KEYS_FOUND.translateColored(EnumColor.GRAY)), Util.field_240973_b_);
                     for (ResourceLocation tag : tags) {
                         player.sendMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag), Util.field_240973_b_);
                     }
-                } else {
-                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_NO_KEY.translateColored(EnumColor.GRAY)), Util.field_240973_b_);
                 }
             }
             return ActionResultType.SUCCESS;
