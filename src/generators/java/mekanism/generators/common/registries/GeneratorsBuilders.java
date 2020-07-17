@@ -81,8 +81,8 @@ public class GeneratorsBuilders {
 
         @Override
         protected void build(World world, BlockPos start) {
-            buildWalls(world, start);
             buildPartialFrame(world, start, 1);
+            buildWalls(world, start);
             world.setBlockState(start.add(2, 4, 2), GeneratorsBlocks.FUSION_REACTOR_CONTROLLER.getBlock().getDefaultState());
         }
 
