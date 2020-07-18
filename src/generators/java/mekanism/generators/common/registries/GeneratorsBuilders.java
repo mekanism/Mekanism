@@ -3,6 +3,7 @@ package mekanism.generators.common.registries;
 import mekanism.common.command.builders.StructureBuilder;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -53,11 +54,12 @@ public class GeneratorsBuilders {
             buildWalls(world, start);
             for (int x = 1; x < sizeX - 1; x++) {
                 for (int z = 1; z < sizeZ - 1; z++) {
-                    if (x % 2 != z % 2) {
-                        continue;
+                    if (x % 2 == z % 2) {
+                        buildColumn(world, start, new BlockPos(x, 1, z), 15, GeneratorsBlocks.FISSION_FUEL_ASSEMBLY.getBlock());
+                        world.setBlockState(start.add(x, sizeY - 2, z), GeneratorsBlocks.CONTROL_ROD_ASSEMBLY.getBlock().getDefaultState());
+                    } else {
+                        buildColumn(world, start, new BlockPos(x, 1, z), 16, Blocks.AIR);
                     }
-                    buildColumn(world, start, new BlockPos(x, 1, z), 15, GeneratorsBlocks.FISSION_FUEL_ASSEMBLY.getBlock());
-                    world.setBlockState(start.add(x, sizeY - 2, z), GeneratorsBlocks.CONTROL_ROD_ASSEMBLY.getBlock().getDefaultState());
                 }
             }
         }
