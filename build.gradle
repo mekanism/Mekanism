@@ -309,7 +309,7 @@ dependencies {
     runtimeOnly fg.deobf("team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}")
 
     compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
-    //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
+    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //compileOnly fg.deobf("curse.maven:projecte:${projecte_api_id}")

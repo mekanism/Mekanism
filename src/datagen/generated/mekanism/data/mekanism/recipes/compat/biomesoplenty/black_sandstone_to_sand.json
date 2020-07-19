@@ -1,0 +1,35 @@
+{
+  "type": "mekanism:crushing",
+  "conditions": [
+    {
+      "modid": "biomesoplenty",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": [
+    {
+      "ingredient": {
+        "item": "biomesoplenty:black_sandstone"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "biomesoplenty:chiseled_black_sandstone"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "biomesoplenty:cut_black_sandstone"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "biomesoplenty:smooth_black_sandstone"
+      }
+    }
+  ],
+  "output": {
+    "item": "biomesoplenty:black_sand",
+    "count": 2
+  }
+}

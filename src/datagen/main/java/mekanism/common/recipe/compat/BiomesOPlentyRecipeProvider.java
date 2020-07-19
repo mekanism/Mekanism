@@ -35,6 +35,17 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               new ItemStack(BOPItems.mud_ball)
         ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "mud_brick_to_mud_ball"));
+        //Black Sandstone -> Sand
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.createMulti(
+                    ItemStackIngredient.from(BOPBlocks.black_sandstone),
+                    ItemStackIngredient.from(BOPBlocks.chiseled_black_sandstone),
+                    ItemStackIngredient.from(BOPBlocks.cut_black_sandstone),
+                    ItemStackIngredient.from(BOPBlocks.smooth_black_sandstone)
+              ),
+              new ItemStack(BOPBlocks.black_sand, 2)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "black_sandstone_to_sand"));
         //White Sandstone -> Sand
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.createMulti(
