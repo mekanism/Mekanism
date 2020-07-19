@@ -77,6 +77,9 @@ public class MekanismTagProvider extends BaseTagProvider {
                 case CRYSTAL:
                     addToTag(MekanismTags.Items.CRYSTALS, item.getValue());
                     break;
+                case ENDER:
+                    addToTag(MekanismTags.Items.ENDER, item.getValue());
+                    break;
                 case DUST:
                     addToTag(Tags.Items.DUSTS, item.getValue());
                     break;

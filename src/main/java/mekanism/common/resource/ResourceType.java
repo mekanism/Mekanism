@@ -3,6 +3,7 @@ package mekanism.common.resource;
 public enum ResourceType {
     SHARD("shard"),
     CRYSTAL("crystal"),
+    ENDER("ender", "ender"),
     DUST("dust"),
     DIRTY_DUST("dirty_dust"),
     CLUMP("clump"),

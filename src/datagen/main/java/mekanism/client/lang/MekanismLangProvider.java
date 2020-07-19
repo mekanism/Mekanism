@@ -166,6 +166,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
                 case CRYSTAL:
                     add(item.getValue(), resourceName + " Crystal");
                     break;
+                case ENDER:
+                    add(item.getValue(), "Ender " + resourceName);
+                    break;
                 case DUST:
                     add(item.getValue(), resourceName + " Dust");
                     break;

@@ -132,6 +132,7 @@ public class MekanismTags {
         public static final INamedTag<Item> CLUMPS = tag("clumps");
         public static final INamedTag<Item> SHARDS = tag("shards");
         public static final INamedTag<Item> CRYSTALS = tag("crystals");
+        public static final INamedTag<Item> ENDER = tag("ender");
 
         public static final INamedTag<Item> GEMS_FLUORITE = forgeTag("gems/fluorite");
 

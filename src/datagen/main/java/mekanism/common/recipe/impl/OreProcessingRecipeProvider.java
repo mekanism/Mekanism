@@ -117,12 +117,14 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         IItemProvider dirtyDust = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource);
         IItemProvider clump = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
         IItemProvider crystal = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
+        IItemProvider ender = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.ENDER, resource);
         IItemProvider shard = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
         ITag<Item> dustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, resource);
         ITag<Item> dirtyDustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource);
         ITag<Item> clumpTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
         ITag<Item> shardTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
         ITag<Item> crystalTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
+        ITag<Item> enderTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.ENDER, resource);
 
         SlurryRegistryObject<?, ?> slurry = MekanismSlurries.PROCESSED_RESOURCES.get(resource);
 
@@ -196,6 +198,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
               shard.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
+        // Ender
+        // from ore
+        ItemStackGasToItemStackRecipeBuilder.injecting(
+                ItemStackIngredient.from(resource.getOreTag()),
+                GasStackIngredient.from(MekanismGases.ANTIMATTER, 1),
+                ender.getItemStack(2)
+        ).build(consumer, Mekanism.rl(basePath + "ender/from_ore"));
         // Slurry
         // clean
         FluidSlurryToSlurryRecipeBuilder.washing(
@@ -204,11 +213,18 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               slurry.getCleanSlurry().getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "slurry/clean"));
         // dirty
+        // from ore
         ChemicalDissolutionRecipeBuilder.dissolution(
               ItemStackIngredient.from(resource.getOreTag()),
               GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
               slurry.getDirtySlurry().getStack(1_000)
-        ).build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
+        ).build(consumer, Mekanism.rl(basePath + "slurry/from_ore_dirty"));
+        // from ender
+        ChemicalDissolutionRecipeBuilder.dissolution(
+                ItemStackIngredient.from(enderTag),
+                GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
+                slurry.getDirtySlurry().getStack(1_000)
+        ).build(consumer, Mekanism.rl(basePath + "slurry/from_ender_dirty"));
     }
 
     private void addCoalOreProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {

@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:injecting",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:ores/lead"
+    }
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "mekanism:ender_lead",
+    "count": 2
+  }
+}
