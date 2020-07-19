@@ -19,7 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.DamagingProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
@@ -48,9 +48,7 @@ import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-// ProjectileEntity would fit better then DamagingProjectileEntity, but seeing as there seem to be problems with ATs in 1.16
-// and its constructor isn't accessible that can't be used.
-public class EntityFlame extends DamagingProjectileEntity implements IEntityAdditionalSpawnData {
+public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSpawnData {
 
     public static final int LIFESPAN = 80;
     public static final int DAMAGE = 10;
@@ -258,29 +256,5 @@ public class EntityFlame extends DamagingProjectileEntity implements IEntityAddi
     @Override
     public void readSpawnData(PacketBuffer dataStream) {
         mode = dataStream.readEnumValue(FlamethrowerMode.class);
-    }
-
-    /**
-     * Called when the entity is attacked.
-     * 
-     * Copied from Entity, wouldn't be needed with ProjectileEntity.
-     */
-    @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
-            return false;
-        } else {
-            this.markVelocityChanged();
-            return false;
-        }
-    }
-
-    /**
-     * Returns true if other Entities should be prevented from moving through this Entity.
-     * 
-     * Copied from Entity, wouldn't be needed with ProjectileEntity.
-     */
-    public boolean canBeCollidedWith() {
-        return false;
     }
 }
