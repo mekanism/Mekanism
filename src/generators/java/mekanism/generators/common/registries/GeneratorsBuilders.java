@@ -3,6 +3,7 @@ package mekanism.generators.common.registries;
 import mekanism.common.command.builders.StructureBuilder;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -21,7 +22,8 @@ public class GeneratorsBuilders {
             buildColumn(world, start, new BlockPos(sizeX / 2, 1, sizeZ / 2), 14, GeneratorsBlocks.TURBINE_ROTOR.getBlock());
             buildInteriorLayer(world, start, 15, MekanismBlocks.PRESSURE_DISPERSER.getBlock());
             world.setBlockState(start.add(sizeX / 2, 15, sizeZ / 2), GeneratorsBlocks.ROTATIONAL_COMPLEX.getBlock().getDefaultState());
-            buildInteriorLayer(world, start, 16, GeneratorsBlocks.ELECTROMAGNETIC_COIL.getBlock());
+            buildInteriorLayer(world, start, 16, GeneratorsBlocks.SATURATING_CONDENSER.getBlock());
+            buildPlane(world, start, 5, 5, 13, 13, 16, GeneratorsBlocks.ELECTROMAGNETIC_COIL.getBlock());
         }
 
         @Override
@@ -52,11 +54,12 @@ public class GeneratorsBuilders {
             buildWalls(world, start);
             for (int x = 1; x < sizeX - 1; x++) {
                 for (int z = 1; z < sizeZ - 1; z++) {
-                    if (x % 2 != z % 2) {
-                        continue;
+                    if (x % 2 == z % 2) {
+                        buildColumn(world, start, new BlockPos(x, 1, z), 15, GeneratorsBlocks.FISSION_FUEL_ASSEMBLY.getBlock());
+                        world.setBlockState(start.add(x, sizeY - 2, z), GeneratorsBlocks.CONTROL_ROD_ASSEMBLY.getBlock().getDefaultState());
+                    } else {
+                        buildColumn(world, start, new BlockPos(x, 1, z), 16, Blocks.AIR);
                     }
-                    buildColumn(world, start, new BlockPos(x, 1, z), 15, GeneratorsBlocks.FISSION_FUEL_ASSEMBLY.getBlock());
-                    world.setBlockState(start.add(x, sizeY - 2, z), GeneratorsBlocks.CONTROL_ROD_ASSEMBLY.getBlock().getDefaultState());
                 }
             }
         }
@@ -80,7 +83,7 @@ public class GeneratorsBuilders {
 
         @Override
         protected void build(World world, BlockPos start) {
-            buildFrame(world, start);
+            buildPartialFrame(world, start, 1);
             buildWalls(world, start);
             world.setBlockState(start.add(2, 4, 2), GeneratorsBlocks.FUSION_REACTOR_CONTROLLER.getBlock().getDefaultState());
         }
