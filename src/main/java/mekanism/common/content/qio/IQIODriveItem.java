@@ -11,8 +11,12 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public interface IQIODriveItem {
 
+    default boolean hasStoredItemMap(ItemStack stack) {
+        return ItemDataUtils.hasData(stack, NBTConstants.QIO_ITEM_MAP, NBT.TAG_LIST);
+    }
+
     default void loadItemMap(ItemStack stack, QIODriveData data) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.QIO_ITEM_MAP, NBT.TAG_LIST)) {
+        if (hasStoredItemMap(stack)) {
             ListNBT list = ItemDataUtils.getList(stack, NBTConstants.QIO_ITEM_MAP);
             for (int i = 0; i < list.size(); i++) {
                 CompoundNBT tag = list.getCompound(i);
@@ -43,7 +47,7 @@ public interface IQIODriveItem {
         private final long count;
         private final int types;
 
-        protected DriveMetadata(long count, int types) {
+        public DriveMetadata(long count, int types) {
             this.count = count;
             this.types = types;
         }

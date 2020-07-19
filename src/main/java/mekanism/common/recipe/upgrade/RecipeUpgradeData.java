@@ -14,6 +14,8 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.content.qio.IQIODriveItem;
+import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
 import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
@@ -93,6 +95,9 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         if (item instanceof ISecurityItem) {
             supportedTypes.add(RecipeUpgradeType.SECURITY);
         }
+        if (item instanceof IQIODriveItem) {
+            supportedTypes.add(RecipeUpgradeType.QIO_DRIVE);
+        }
         return supportedTypes;
     }
 
@@ -124,6 +129,13 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case UPGRADE:
                 CompoundNBT componentUpgrade = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
                 return componentUpgrade.isEmpty() ? null : new UpgradesRecipeData(Upgrade.buildMap(componentUpgrade));
+            case QIO_DRIVE:
+                DriveMetadata data = DriveMetadata.load(stack);
+                if (data.getCount() > 0 && ((IQIODriveItem) item).hasStoredItemMap(stack)) {
+                    //If we don't have any stored items don't actually grab any recipe data
+                    return new QIORecipeData(data, ItemDataUtils.getList(stack, NBTConstants.QIO_ITEM_MAP));
+                }
+                break;
         }
         return null;
     }

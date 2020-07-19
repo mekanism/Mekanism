@@ -922,7 +922,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Hyper-Dense QIO Drive
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HYPER_DENSE_QIO_DRIVE)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.HYPER_DENSE_QIO_DRIVE)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
                     TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
@@ -932,7 +932,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.BASE_QIO_DRIVE)
               .build(consumer);
         //Time-Dilating QIO Drive
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.TIME_DILATING_QIO_DRIVE)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.TIME_DILATING_QIO_DRIVE)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
                     TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
@@ -942,7 +942,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.HYPER_DENSE_QIO_DRIVE)
               .build(consumer);
         //Supermassive QIO Drive
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SUPERMASSIVE_QIO_DRIVE)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.SUPERMASSIVE_QIO_DRIVE)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
                     TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),

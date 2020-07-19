@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "mekanism:mek_data",
   "result": {
     "item": "mekanism:qio_drive_supermassive"
   },
