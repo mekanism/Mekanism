@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.client.render.RenderTickHandler;
+import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
@@ -44,6 +45,7 @@ public class MekanismClient {
         Mekanism.activeVibrators.clear();
         Mekanism.radiationManager.resetClient();
         SoundHandler.radiationSoundMap.clear();
+        RenderSPS.clearBoltRenderers();
         TransmitterNetworkRegistry.getInstance().clearClientNetworks();
         RenderTickHandler.prevRadiation = 0;
 

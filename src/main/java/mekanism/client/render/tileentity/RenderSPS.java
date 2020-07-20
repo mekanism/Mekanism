@@ -2,7 +2,10 @@ package mekanism.client.render.tileentity;
 
 import com.google.common.base.Objects;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.lib.effect.BillboardingEffectRenderer;
 import mekanism.client.render.lib.effect.BoltRenderer;
@@ -31,11 +34,15 @@ import net.minecraft.util.math.vector.Vector3d;
 public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
 
     private static final CustomEffect CORE = new CustomEffect(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png"));
-    private static final Random rand = new Random();
+    private static final Map<UUID, BoltRenderer> boltRendererMap = new HashMap<>();
     private static final float MIN_SCALE = 0.1F, MAX_SCALE = 4F;
+    private static final Random rand = new Random();
+
+    public static void clearBoltRenderers() {
+        boltRendererMap.clear();
+    }
 
     private final Minecraft minecraft = Minecraft.getInstance();
-    private final BoltRenderer bolts = new BoltRenderer();
 
     public RenderSPS(TileEntityRendererDispatcher renderer) {
         super(renderer);
@@ -45,6 +52,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
     @Override
     protected void render(TileEntitySPSCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && tile.getMultiblock().getBounds() != null) {
+            BoltRenderer bolts = boltRendererMap.computeIfAbsent(tile.getMultiblock().inventoryID, multiblock -> new BoltRenderer());
             Vector3d center = Vector3d.func_237491_b_(tile.getMultiblock().getMinPos()).add(Vector3d.func_237491_b_(tile.getMultiblock().getMaxPos())).add(new Vector3d(1, 1, 1)).scale(0.5);
             Vector3d renderCenter = center.subtract(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
             if (!minecraft.isGamePaused()) {
