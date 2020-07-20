@@ -51,9 +51,9 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSpawnData {
 
     public static final int LIFESPAN = 80;
-    public static final int DAMAGE = 10;
+    private static final int DAMAGE = 10;
 
-    public FlamethrowerMode mode = FlamethrowerMode.COMBAT;
+    private FlamethrowerMode mode = FlamethrowerMode.COMBAT;
 
     public EntityFlame(EntityType<EntityFlame> type, World world) {
         super(type, world);
@@ -61,7 +61,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
 
     public EntityFlame(PlayerEntity player) {
         this(MekanismEntityTypes.FLAME.getEntityType(), player.world);
-        Pos3D playerPos = new Pos3D(player).translate(0, 1.6, 0);
+        Pos3D playerPos = new Pos3D(player.getPosX(), player.getPosYEye() - 0.1, player.getPosZ());
         Pos3D flameVec = new Pos3D(1, 1, 1);
 
         Vector3d lookVec = player.getLookVec();
@@ -137,10 +137,9 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
     }
 
     @Override
-    protected void func_230299_a_(BlockRayTraceResult blockRayTrace) {
+    protected void func_230299_a_(@Nonnull BlockRayTraceResult blockRayTrace) {
+        super.func_230299_a_(blockRayTrace);
         BlockPos hitPos = blockRayTrace.getPos();
-        BlockState hitState = world.getBlockState(hitPos);
-        hitState.onProjectileCollision(world, hitState, blockRayTrace, this);
         Direction hitSide = blockRayTrace.getFace();
         boolean hitFluid = !world.getFluidState(hitPos).isEmpty();
         if (!world.isRemote && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
@@ -150,6 +149,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
                 Entity owner = func_234616_v_();
                 PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
                 BlockPos sidePos = hitPos.offset(hitSide);
+                BlockState hitState = world.getBlockState(hitPos);
                 if (AbstractFireBlock.func_241465_a_(world, sidePos)) {
                     world.setBlockState(sidePos, AbstractFireBlock.func_235326_a_(world, sidePos));
                 } else if (CampfireBlock.func_241470_h_(hitState)) {

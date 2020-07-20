@@ -213,7 +213,7 @@ public class RenderTickHandler {
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
                     PlayerEntity p = world.getPlayerByUuid(uuid);
                     if (p != null) {
-                        Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
+                        Pos3D playerPos = new Pos3D(p).translate(0, p.getEyeHeight(), 0);
                         Vector3d playerMotion = p.getMotion();
                         float random = (world.rand.nextFloat() - 0.5F) * 0.1F;
                         Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isCrouching() ? 20 : 0).rotateYaw(p.renderYawOffset);
@@ -232,7 +232,7 @@ public class RenderTickHandler {
                         if (p != null && p.isInWater()) {
                             Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(p.getLook(1)).translate(0, -0.2, 0);
                             Pos3D motion = vec.scale(0.2).translate(p.getMotion());
-                            Pos3D v = new Pos3D(p).translate(0, 1.7, 0).translate(vec);
+                            Pos3D v = new Pos3D(p).translate(0, p.getEyeHeight(), 0).translate(vec);
                             world.addParticle((BasicParticleType) MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                         }
                     }
@@ -243,13 +243,13 @@ public class RenderTickHandler {
                             if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem)) {
                                 Pos3D flameVec;
                                 if (player == p && minecraft.gameSettings.thirdPersonView == 0) {
-                                    flameVec = new Pos3D(1, 1, 1).multiply(p.getLook(1)).rotateYaw(5).translate(0, 1.6, 0);
+                                    flameVec = new Pos3D(1, 1, 1).multiply(p.getLook(1)).rotateYaw(5).translate(0, p.getEyeHeight() - 0.1, 0);
                                 } else {
                                     double flameXCoord = -0.2;
                                     double flameYCoord = 1;
                                     double flameZCoord = 1.2;
                                     if (p.isCrouching()) {
-                                        flameYCoord -= 0.55;
+                                        flameYCoord -= 0.65;
                                         flameZCoord -= 0.15;
                                     }
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).rotateYaw(p.renderYawOffset);
