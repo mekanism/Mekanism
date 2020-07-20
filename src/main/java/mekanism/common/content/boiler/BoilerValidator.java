@@ -56,6 +56,10 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         if (dispersers.isEmpty()) {
             return FormationResult.fail(MekanismLang.BOILER_INVALID_NO_DISPERSER);
         }
+        //Ensure that at least one superheating element exists
+        if (elements.isEmpty()) {
+            return FormationResult.fail(MekanismLang.BOILER_INVALID_SUPERHEATING);
+        }
 
         //Find a single disperser contained within this multiblock
         final BlockPos initDisperser = dispersers.iterator().next();
