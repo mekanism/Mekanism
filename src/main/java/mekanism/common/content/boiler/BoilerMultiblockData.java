@@ -127,7 +127,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             HeatedCoolant coolantType = superheatedCoolantTank.getStack().get(HeatedCoolant.class);
             if (coolantType != null) {
                 long toCool = Math.round(BoilerMultiblockData.COOLANT_COOLING_EFFICIENCY * superheatedCoolantTank.getStored());
-                toCool *= 1 - heatCapacitor.getTemperature() / HeatUtils.HEATED_COOLANT_TEMP;
+                toCool = MathUtils.clampToLong(toCool * (1 - heatCapacitor.getTemperature() / HeatUtils.HEATED_COOLANT_TEMP));
                 GasStack cooledCoolant = coolantType.getCooledGas().getStack(toCool);
                 toCool = Math.min(toCool, toCool - cooledCoolantTank.insert(cooledCoolant, Action.EXECUTE, AutomationType.INTERNAL).getAmount());
                 if (toCool > 0) {

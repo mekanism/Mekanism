@@ -116,4 +116,15 @@ public class VoxelPlane {
         VoxelPlane other = (VoxelPlane) obj;
         return size == other.size && minCol == other.minCol && maxCol == other.maxCol && minRow == other.minRow && maxRow == other.maxRow;
     }
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 31 * result + size;
+        result = 31 * result + minCol;
+        result = 31 * result + maxCol;
+        result = 31 * result + minRow;
+        result = 31 * result + maxRow;
+        return result;
+    }
 }

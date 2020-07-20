@@ -49,7 +49,7 @@ public class MathUtils {
      */
     public static long clampToLong(double d) {
         if (d < Long.MAX_VALUE) {
-            return (int) d;
+            return (long) d;
         }
         return Long.MAX_VALUE;
     }

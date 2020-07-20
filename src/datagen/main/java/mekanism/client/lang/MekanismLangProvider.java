@@ -624,7 +624,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.JETPACK_STORED, "Jetpack Fuel: %s");
         add(MekanismLang.PROGRESS, "Progress: %s");
         add(MekanismLang.PROCESS_RATE, "Process Rate: %s");
-        add(MekanismLang.PROCESS_RATE_MB, "Process Rate: %s mb/t");
+        add(MekanismLang.PROCESS_RATE_MB, "Process Rate: %s mB/t");
         add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %s");
         //Gui stuff
         add(MekanismLang.WIDTH, "Width");

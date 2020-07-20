@@ -1,8 +1,8 @@
 package mekanism.common.content.sps;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -52,6 +52,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @ContainerSync
     public double lastProcessed;
 
+    private boolean couldOperate;
     private AxisAlignedBB deathZone;
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
@@ -79,18 +80,25 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public boolean tick(World world) {
         boolean needsPacket = super.tick(world);
         double processed = 0;
-        final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
-        if (canOperate() && !receivedEnergy.isZero()) {
+        couldOperate = canOperate();
+        if (couldOperate && !receivedEnergy.isZero()) {
+            final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
             long inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeeded() - 1);
             double processable = receivedEnergy.doubleValue() / MekanismConfig.general.spsEnergyPerInput.get().doubleValue();
             if (processable + progress >= inputNeeded) {
-                processed = inputNeeded;
-                process(inputNeeded);
+                processed = process(inputNeeded);
                 progress = 0;
             } else {
                 processed = processable;
                 progress += processable;
-                process((int) progress);
+                long toProcess = MathUtils.clampToLong(progress);
+                long actualProcessed = process(toProcess);
+                if (actualProcessed < toProcess) {
+                    //If we processed less than we intended to we need to adjust how much our values actually changed by
+                    long processedDif = toProcess - actualProcessed;
+                    progress -= processedDif;
+                    processed -= processedDif;
+                }
                 progress %= 1;
             }
         }
@@ -122,33 +130,35 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         tag.putString(NBTConstants.ENERGY_USAGE, lastReceivedEnergy.toString());
     }
 
-    private void process(long operations) {
+    private long process(long operations) {
         if (operations == 0) {
-            return;
+            return 0;
         }
+        long processed = inputTank.shrinkStack(operations, Action.EXECUTE);
+        //Limit how much input we actually increase the input processed by to how much we were actually able to remove from the input tank
+        inputProcessed += MathUtils.clampToInt(processed);
         final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
-        inputProcessed += MathUtils.clampToInt(operations);
-        inputTank.shrinkStack(operations, Action.EXECUTE);
         if (inputProcessed >= inputPerAntimatter) {
             GasStack toAdd = MekanismGases.ANTIMATTER.getStack(inputProcessed / inputPerAntimatter);
             outputTank.insert(toAdd, Action.EXECUTE, AutomationType.INTERNAL);
             inputProcessed %= inputPerAntimatter;
         }
+        return processed;
     }
 
     private void kill(World world) {
-        if (lastReceivedEnergy.isZero() || !canOperate() || world.getRandom().nextInt() % 20 != 0) {
-            return;
-        }
-        List<Entity> entitiesToDie = getWorld().getEntitiesWithinAABB(Entity.class, deathZone);
-
-        for (Entity entity : entitiesToDie) {
-            entity.attackEntityFrom(DamageSource.MAGIC, lastReceivedEnergy.floatValue() / 1_000F);
+        if (!lastReceivedEnergy.isZero() && couldOperate && world.getRandom().nextInt() % 20 == 0) {
+            List<Entity> entitiesToDie = getWorld().getEntitiesWithinAABB(Entity.class, deathZone);
+            for (Entity entity : entitiesToDie) {
+                entity.attackEntityFrom(DamageSource.MAGIC, lastReceivedEnergy.floatValue() / 1_000F);
+            }
         }
     }
 
     public boolean canSupplyCoilEnergy(TileEntitySPSPort tile) {
-        return canOperate() && coilData.coilMap.containsKey(tile.getPos());
+        //We allow supplying coil energy for one tick more than the structure "canOperate" so that tick order does not
+        // make it so that some coils are unable to supply energy
+        return (couldOperate || canOperate()) && coilData.coilMap.containsKey(tile.getPos());
     }
 
     public void addCoil(BlockPos portPos, Direction side) {
@@ -245,11 +255,22 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
         @Override
         public int hashCode() {
-            final int prime = 31;
             int result = 1;
-            result = prime * result + coilPos.hashCode();
-            result = prime * result + prevLevel;
+            result = 31 * result + coilPos.hashCode();
+            result = 31 * result + prevLevel;
             return result;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
+            if (o instanceof CoilData) {
+                CoilData other = (CoilData) o;
+                return coilPos.equals(other.coilPos) && prevLevel == other.prevLevel;
+            }
+            return false;
         }
     }
 }
