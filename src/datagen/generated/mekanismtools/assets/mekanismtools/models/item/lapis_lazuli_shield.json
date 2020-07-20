@@ -1,7 +1,7 @@
 {
-  "parent": "item/shield",
+  "parent": "minecraft:item/shield",
   "textures": {
-    "particle": "block/lapis_block"
+    "particle": "minecraft:block/lapis_block"
   },
   "overrides": [
     {

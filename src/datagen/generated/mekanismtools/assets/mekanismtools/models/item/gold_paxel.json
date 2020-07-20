@@ -1,5 +1,5 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
     "layer0": "mekanismtools:item/gold_paxel"
   }

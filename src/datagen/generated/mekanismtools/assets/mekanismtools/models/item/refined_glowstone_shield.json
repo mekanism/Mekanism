@@ -1,5 +1,5 @@
 {
-  "parent": "item/shield",
+  "parent": "minecraft:item/shield",
   "textures": {
     "particle": "mekanism:block/block_refined_glowstone"
   },
