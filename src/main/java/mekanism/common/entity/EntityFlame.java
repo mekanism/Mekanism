@@ -19,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
@@ -37,7 +38,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
@@ -48,13 +48,12 @@ import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
+public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSpawnData {
 
     public static final int LIFESPAN = 80;
-    public static final int DAMAGE = 10;
+    private static final int DAMAGE = 10;
 
-    public Entity owner = null;
-    public ItemFlamethrower.FlamethrowerMode mode = ItemFlamethrower.FlamethrowerMode.COMBAT;
+    private FlamethrowerMode mode = FlamethrowerMode.COMBAT;
 
     public EntityFlame(EntityType<EntityFlame> type, World world) {
         super(type, world);
@@ -62,7 +61,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     public EntityFlame(PlayerEntity player) {
         this(MekanismEntityTypes.FLAME.getEntityType(), player.world);
-        Pos3D playerPos = new Pos3D(player).translate(0, 1.6, 0);
+        Pos3D playerPos = new Pos3D(player.getPosX(), player.getPosYEye() - 0.1, player.getPosZ());
         Pos3D flameVec = new Pos3D(1, 1, 1);
 
         Vector3d lookVec = player.getLookVec();
@@ -70,24 +69,13 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
         Pos3D mergedVec = playerPos.translate(flameVec);
         setPosition(mergedVec.x, mergedVec.y, mergedVec.z);
-
-        Pos3D motion = new Pos3D(0.4, 0.4, 0.4).multiply(lookVec);
-
-        setHeading(motion);
-        setMotion(motion);
-
-        owner = player;
+        setShooter(player);
         mode = ((ItemFlamethrower) player.inventory.getCurrentItem().getItem()).getMode(player.inventory.getCurrentItem());
-    }
-
-    public void setHeading(Pos3D motion) {
-        float d = MathHelper.sqrt((motion.x * motion.x) + (motion.z * motion.z));
-        prevRotationYaw = rotationYaw = (float) Math.toDegrees(Math.atan2(motion.x, motion.z));
-        prevRotationPitch = rotationPitch = (float) Math.toDegrees(Math.atan2(motion.y, d));
+        func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 0.5F, 1);
     }
 
     @Override
-    public void tick() {
+    public void baseTick() {
         if (!isAlive()) {
             return;
         }
@@ -123,54 +111,62 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         }
         EntityRayTraceResult entityResult = ProjectileHelper.rayTraceEntities(world, this, localVec, motionVec,
               getBoundingBox().expand(getMotion()).grow(1.0D, 1.0D, 1.0D), EntityPredicates.NOT_SPECTATING);
-        if (entityResult != null) {
-            Entity entity = entityResult.getEntity();
-            if (entity instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) entity.getEntity();
-                if (player.abilities.disableDamage || owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(player)) {
-                    return;
-                }
+        onImpact(entityResult == null ? blockRayTrace : entityResult);
+    }
+
+    @Override
+    protected void onEntityHit(EntityRayTraceResult entityResult) {
+        Entity entity = entityResult.getEntity();
+        if (entity instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) entity.getEntity();
+            Entity owner = func_234616_v_();
+            if (player.abilities.disableDamage || owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(player)) {
+                return;
             }
-            if (!entity.getEntity().func_230279_az_()) {
-                if (entity.getEntity() instanceof ItemEntity && mode == FlamethrowerMode.HEAT) {
-                    if (entity.getEntity().ticksExisted > 100 && !smeltItem((ItemEntity) entity.getEntity())) {
-                        burn(entity.getEntity());
-                    }
-                } else {
+        }
+        if (!entity.getEntity().func_230279_az_()) {
+            if (entity.getEntity() instanceof ItemEntity && mode == FlamethrowerMode.HEAT) {
+                if (entity.getEntity().ticksExisted > 100 && !smeltItem((ItemEntity) entity.getEntity())) {
                     burn(entity.getEntity());
                 }
+            } else {
+                burn(entity.getEntity());
             }
-            remove();
-        } else if (blockRayTrace.getType() != Type.MISS) {
-            BlockPos hitPos = blockRayTrace.getPos();
-            Direction hitSide = blockRayTrace.getFace();
-            boolean hitFluid = !world.getFluidState(hitPos).isEmpty();
-            if (!world.isRemote && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
-                if (mode == FlamethrowerMode.HEAT) {
-                    smeltBlock(hitPos);
-                } else if (mode == FlamethrowerMode.INFERNO) {
-                    BlockState hitState = world.getBlockState(hitPos);
-                    BlockPos sidePos = hitPos.offset(hitSide);
-                    BlockState sideState = world.getBlockState(sidePos);
-                    PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
-                    if (AbstractFireBlock.func_241465_a_(world, sidePos)) {
-                        world.setBlockState(sidePos, AbstractFireBlock.func_235326_a_(world, sidePos));
-                    } else if (CampfireBlock.func_241470_h_(hitState)) {
-                        world.setBlockState(hitPos, hitState.with(BlockStateProperties.LIT, true));
-                    } else if (hitState.isFlammable(world, hitPos, hitSide)) {
-                        hitState.catchFire(world, hitPos, hitSide, shooter);
-                        if (hitState.getBlock() instanceof TNTBlock) {
-                            world.removeBlock(hitPos, false);
-                        }
+        }
+        remove();
+    }
+
+    @Override
+    protected void func_230299_a_(@Nonnull BlockRayTraceResult blockRayTrace) {
+        super.func_230299_a_(blockRayTrace);
+        BlockPos hitPos = blockRayTrace.getPos();
+        Direction hitSide = blockRayTrace.getFace();
+        boolean hitFluid = !world.getFluidState(hitPos).isEmpty();
+        if (!world.isRemote && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
+            if (mode == FlamethrowerMode.HEAT) {
+                smeltBlock(hitPos);
+            } else if (mode == FlamethrowerMode.INFERNO) {
+                Entity owner = func_234616_v_();
+                PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
+                BlockPos sidePos = hitPos.offset(hitSide);
+                BlockState hitState = world.getBlockState(hitPos);
+                if (AbstractFireBlock.func_241465_a_(world, sidePos)) {
+                    world.setBlockState(sidePos, AbstractFireBlock.func_235326_a_(world, sidePos));
+                } else if (CampfireBlock.func_241470_h_(hitState)) {
+                    world.setBlockState(hitPos, hitState.with(BlockStateProperties.LIT, true));
+                } else if (hitState.isFlammable(world, hitPos, hitSide)) {
+                    hitState.catchFire(world, hitPos, hitSide, shooter);
+                    if (hitState.getBlock() instanceof TNTBlock) {
+                        world.removeBlock(hitPos, false);
                     }
                 }
             }
-            if (hitFluid) {
-                spawnParticlesAt(func_233580_cy_());
-                playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
-            }
-            remove();
         }
+        if (hitFluid) {
+            spawnParticlesAt(func_233580_cy_());
+            playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
+        }
+        remove();
     }
 
     private boolean smeltItem(ItemEntity item) {
@@ -222,14 +218,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     private void burn(Entity entity) {
         entity.setFire(20);
-        entity.attackEntityFrom(getFlamethrowerDamage(), DAMAGE);
-    }
-
-    private DamageSource getFlamethrowerDamage() {
-        if (owner == null) {
-            return DamageSource.causeThrownDamage(this, this);
-        }
-        return DamageSource.causeThrownDamage(this, owner);
+        entity.attackEntityFrom(DamageSource.causeThrownDamage(this, func_234616_v_()), DAMAGE);
     }
 
     private void spawnParticlesAt(BlockPos pos) {
@@ -244,12 +233,14 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     @Override
-    protected void readAdditional(@Nonnull CompoundNBT nbtTags) {
+    public void readAdditional(@Nonnull CompoundNBT nbtTags) {
+        super.readAdditional(nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.MODE, FlamethrowerMode::byIndexStatic, mode -> this.mode = mode);
     }
 
     @Override
-    protected void writeAdditional(@Nonnull CompoundNBT nbtTags) {
+    public void writeAdditional(@Nonnull CompoundNBT nbtTags) {
+        super.writeAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.MODE, mode.ordinal());
     }
 
