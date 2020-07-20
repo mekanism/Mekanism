@@ -734,7 +734,7 @@
   "gui.mekanism.opacity": "Opacità",
   "gui.mekanism.pigment": "Pigmento: %s",
   "gui.mekanism.process_rate": "Tasso di Processo: %s",
-  "gui.mekanism.process_rate_mb": "Process Rate: %s mB/t",
+  "gui.mekanism.process_rate_mb": "Processo: %s mB/t",
   "gui.mekanism.progress": "Progresso: %s",
   "gui.mekanism.radiation_dose": "Dose di Radiazione: %s",
   "gui.mekanism.radiation_exposure": "Esposizione alle Radiazioni: %s",
