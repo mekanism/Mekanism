@@ -15,6 +15,7 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -84,5 +85,10 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
         super.handleUpdateTag(state, tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.GAS_STORED, nbt -> gasTank.deserializeNBT(nbt));
         NBTUtils.setIntIfPresent(tag, NBTConstants.PROGRESS, val -> processTicks = val);
+    }
+
+    @Override
+    public int getRedstoneLevel() {
+        return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getCapacity());
     }
 }
