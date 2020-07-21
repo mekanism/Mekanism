@@ -107,7 +107,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
     }
 
     private static BoltEffect getBoltFromData(CoilData data, BlockPos pos, SPSMultiblockData multiblock, Vector3d center) {
-        Vector3d start = Vector3d.func_237491_b_(data.coilPos.offset(data.side)).add(0.5, 0.5, 0.5);
+        Vector3d start = Vector3d.func_237489_a_(data.coilPos.offset(data.side));
         start = start.add(Vector3d.func_237491_b_(data.side.getDirectionVec()).scale(0.5));
         int count = 1 + (data.prevLevel - 1) / 2;
         float size = 0.01F * data.prevLevel;

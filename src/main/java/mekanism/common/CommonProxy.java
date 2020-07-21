@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.client.ClientProxy;
 import mekanism.common.base.MekFakePlayer;
-import mekanism.common.lib.effect.BoltEffect;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -39,15 +38,6 @@ public class CommonProxy {
      */
     public boolean isPaused() {
         return false;
-    }
-
-    public void renderBolt(Object renderer, BoltEffect bolt) {
-    }
-
-    /**
-     * Does the multiblock creation animation, starting from the rendering block.
-     */
-    public void doMultiblockSparkle(TileEntity tile, BlockPos corner1, BlockPos corner2) {
     }
 
     /**

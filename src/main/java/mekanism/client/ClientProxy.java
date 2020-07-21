@@ -9,7 +9,6 @@ import mekanism.common.CommonProxy;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.effect.BoltEffect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,18 +38,8 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void renderBolt(Object renderer, BoltEffect bolt) {
-        RenderTickHandler.renderBolt(renderer, bolt);
-    }
-
-    @Override
     public void doMultiblockSparkle(TileEntity tile, BlockPos renderLoc, int length, int width, int height) {
         doSparkle(tile, new SparkleAnimation(tile, renderLoc, length, width, height));
-    }
-
-    @Override
-    public void doMultiblockSparkle(TileEntity tile, BlockPos corner1, BlockPos corner2) {
-        doSparkle(tile, new SparkleAnimation(tile, corner1, corner2));
     }
 
     @Override

@@ -19,6 +19,7 @@ import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -48,6 +49,16 @@ public abstract class BasePacketHandler {
     public static String readString(PacketBuffer buffer) {
         //TODO: Evaluate usages and potentially move some things to more strict string length checks
         return buffer.readString(Short.MAX_VALUE);
+    }
+
+    public static Vector3d readVector3d(PacketBuffer buffer) {
+        return new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+    }
+
+    public static void writeVector3d(PacketBuffer buffer, Vector3d vector) {
+        buffer.writeDouble(vector.getX());
+        buffer.writeDouble(vector.getY());
+        buffer.writeDouble(vector.getZ());
     }
 
     public static void log(String log) {
@@ -131,6 +142,10 @@ public abstract class BasePacketHandler {
 
     public <MSG> void sendToAllTracking(MSG message, Entity entity) {
         getChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+    }
+
+    public <MSG> void sendToAllTrackingAndSelf(MSG message, Entity entity) {
+        getChannel().send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
     }
 
     public <MSG> void sendToAllTracking(MSG message, TileEntity tile) {

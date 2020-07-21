@@ -10,9 +10,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
-import mekanism.common.lib.effect.BoltEffect;
-import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
-import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
+import mekanism.common.network.PacketLightningRender;
+import mekanism.common.network.PacketLightningRender.LightningPreset;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -63,9 +62,8 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
                         //Make sure to add it as immutable
                         if (!openSet.contains(pos)) {
                             openSet.add(pos.toImmutable());
-                            BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, Vector3d.func_237491_b_(blockPos).add(0.5, 0.5, 0.5), Vector3d.func_237491_b_(pos).add(0.5, 0.5, 0.5), 10)
-                                  .size(0.015F).lifespan(12).spawn(SpawnFunction.NO_DELAY);
-                            Mekanism.proxy.renderBolt(Objects.hash(blockPos, pos), bolt);
+                            Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.VEIN_MINING, Objects.hash(blockPos, pos),
+                                  Vector3d.func_237489_a_(blockPos), Vector3d.func_237489_a_(pos), 10), world, blockPos);
                         }
                     }
                 }

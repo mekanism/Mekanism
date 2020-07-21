@@ -6,6 +6,7 @@ import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
@@ -21,12 +22,15 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.render.item.ISTERProvider;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.network.PacketLightningRender;
+import mekanism.common.network.PacketLightningRender.LightningPreset;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -50,6 +54,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -203,6 +208,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                         if (world.isBlockPresent(pos) && startBlock == world.getBlockState(pos).getBlock()) {
                             //Make sure to add it as immutable
                             found.add(pos.toImmutable());
+                            Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.VEIN_MINING, Objects.hash(blockPos, pos),
+                                  Vector3d.func_237489_a_(blockPos), Vector3d.func_237489_a_(pos), 10), world, blockPos);
                             if (found.size() > maxCount) {
                                 return found;
                             }

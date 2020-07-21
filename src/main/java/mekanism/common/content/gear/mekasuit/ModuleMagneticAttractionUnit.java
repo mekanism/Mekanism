@@ -9,9 +9,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
-import mekanism.common.lib.effect.BoltEffect;
-import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
-import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
+import mekanism.common.network.PacketLightningRender;
+import mekanism.common.network.PacketLightningRender.LightningPreset;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -29,38 +28,24 @@ public class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
     }
 
     @Override
-    public void tickClient(PlayerEntity player) {
-        super.tickClient(player);
-        suckItems(player, true);
-    }
-
-    @Override
     public void tickServer(PlayerEntity player) {
         super.tickServer(player);
-        suckItems(player, false);
-    }
-
-    private void suckItems(PlayerEntity player, boolean client) {
-        if (range.get() == Range.OFF) {
-            return;
-        }
-        float size = 4 + range.get().getRange();
-        List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(size, size, size));
-        FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get().multiply(range.get().getRange());
-        for (ItemEntity item : items) {
-            if (!getContainerEnergy().greaterOrEqual(usage)) {
-                break;
-            }
-            if (item.getDistance(player) > 0.001) {
-                useEnergy(player, usage);
-                Vector3d diff = player.getPositionVec().subtract(item.getPositionVec());
-                Vector3d motionNeeded = new Vector3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
-                Vector3d motionDiff = motionNeeded.subtract(player.getMotion());
-                item.setMotion(motionDiff.scale(0.2));
-                if (client) {
-                    BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int) (diff.length() * 4))
-                          .size(0.04F).lifespan(8).spawn(SpawnFunction.noise(8, 4));
-                    Mekanism.proxy.renderBolt(Objects.hash(player, item), bolt);
+        if (range.get() != Range.OFF) {
+            float size = 4 + range.get().getRange();
+            List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(size, size, size));
+            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get().multiply(range.get().getRange());
+            for (ItemEntity item : items) {
+                if (!getContainerEnergy().greaterOrEqual(usage)) {
+                    break;
+                }
+                if (item.getDistance(player) > 0.001) {
+                    useEnergy(player, usage);
+                    Vector3d diff = player.getPositionVec().subtract(item.getPositionVec());
+                    Vector3d motionNeeded = new Vector3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
+                    Vector3d motionDiff = motionNeeded.subtract(player.getMotion());
+                    item.setMotion(motionDiff.scale(0.2));
+                    Mekanism.packetHandler.sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player, item),
+                          player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int) (diff.length() * 4)), player);
                 }
             }
         }
