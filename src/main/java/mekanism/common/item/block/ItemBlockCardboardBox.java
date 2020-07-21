@@ -66,35 +66,38 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         BlockPos pos = context.getPos();
         if (getBlockData(stack) == null && !player.isSneaking() && !world.isAirBlock(pos)) {
             BlockState state = world.getBlockState(pos);
-            if (!world.isRemote && state.getBlockHardness(world, pos) != -1) {
+            if (state.getBlockHardness(world, pos) != -1) {
                 if (state.func_235714_a_(MekanismTags.Blocks.CARDBOARD_BLACKLIST) || MekanismConfig.general.cardboardModBlacklist.get().contains(state.getBlock().getRegistryName().getNamespace())) {
                     return ActionResultType.FAIL;
                 }
-                BlockData data = new BlockData(state);
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-                if (tile != null) {
-                    if (!SecurityUtils.canAccess(player, tile)) {
-                        //If the player cannot access the tile don't allow them to pick it up with a cardboard box
-                        return ActionResultType.FAIL;
+                if (tile != null && !SecurityUtils.canAccess(player, tile)) {
+                    //If the player cannot access the tile don't allow them to pick it up with a cardboard box
+                    return ActionResultType.FAIL;
+                }
+                if (!world.isRemote) {
+                    BlockData data = new BlockData(state);
+                    if (tile != null) {
+                        //Note: We check security access above
+                        CompoundNBT tag = new CompoundNBT();
+                        tile.write(tag);
+                        data.tileTag = tag;
                     }
-                    CompoundNBT tag = new CompoundNBT();
-                    tile.write(tag);
-                    data.tileTag = tag;
-                }
-                if (!player.isCreative()) {
-                    stack.shrink(1);
-                }
-                CommonPlayerTracker.monitoringCardboardBox = true;
-                // First, set the block to air to give the underlying block a chance to process
-                // any updates (esp. if it's a tile entity backed block). Ideally, we could avoid
-                // double updates, but if the block we are wrapping has multiple stacked blocks,
-                // we need to make sure it has a chance to update.
-                world.removeBlock(pos, false);
-                world.setBlockState(pos, getBlock().getDefaultState().with(BlockStateHelper.storageProperty, true));
-                CommonPlayerTracker.monitoringCardboardBox = false;
-                TileEntityCardboardBox box = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
-                if (box != null) {
-                    box.storedData = data;
+                    if (!player.isCreative()) {
+                        stack.shrink(1);
+                    }
+                    CommonPlayerTracker.monitoringCardboardBox = true;
+                    // First, set the block to air to give the underlying block a chance to process
+                    // any updates (esp. if it's a tile entity backed block). Ideally, we could avoid
+                    // double updates, but if the block we are wrapping has multiple stacked blocks,
+                    // we need to make sure it has a chance to update.
+                    world.removeBlock(pos, false);
+                    world.setBlockState(pos, getBlock().getDefaultState().with(BlockStateHelper.storageProperty, true));
+                    CommonPlayerTracker.monitoringCardboardBox = false;
+                    TileEntityCardboardBox box = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
+                    if (box != null) {
+                        box.storedData = data;
+                    }
                 }
                 return ActionResultType.SUCCESS;
             }
