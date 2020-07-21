@@ -130,7 +130,7 @@ public class RenderTickHandler {
         matrix.translate(-camVec.x, -camVec.y, -camVec.z);
         IRenderTypeBuffer.Impl renderer = minecraft.getRenderTypeBuffers().getBufferSource();
         boltRenderer.render(minecraft.getRenderPartialTicks(), matrix, renderer);
-        renderer.finish(RenderType.getLightning());
+        renderer.finish(MekanismRenderType.MEK_LIGHTNING);
         matrix.pop();
     }
 

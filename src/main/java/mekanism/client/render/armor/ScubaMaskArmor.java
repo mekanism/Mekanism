@@ -17,7 +17,8 @@ public class ScubaMaskArmor extends CustomArmor {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity, ItemStack stack) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity,
+          ItemStack stack) {
         if (!bipedHead.showModel) {
             //If the head model shouldn't show don't bother displaying it
             return;

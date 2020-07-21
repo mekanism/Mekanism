@@ -104,8 +104,23 @@ public class MekaSuitArmor extends CustomArmor {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity, ItemStack stack) {
-        cache.getUnchecked(key(entity)).getOpaqueMap().forEach((modelPos, quads) -> {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity,
+          ItemStack stack) {
+        if (isChild) {
+            matrix.push();
+            float f1 = 1.0F / childBodyScale;
+            matrix.scale(f1, f1, f1);
+            matrix.translate(0.0D, childBodyOffsetY / 16.0F, 0.0D);
+            renderMekaSuit(matrix, renderer, light, overlayLight, hasEffect, entity);
+            matrix.pop();
+        } else {
+            renderMekaSuit(matrix, renderer, light, overlayLight, hasEffect, entity);
+        }
+    }
+
+    private void renderMekaSuit(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity) {
+        ArmorQuads armorQuads = cache.getUnchecked(key(entity));
+        armorQuads.getOpaqueMap().forEach((modelPos, quads) -> {
             matrix.push();
             modelPos.translate(this, matrix);
             render(renderer, matrix, light, overlayLight, hasEffect, quads, false);
@@ -122,10 +137,14 @@ public class MekaSuitArmor extends CustomArmor {
                 boltRenderer.update(0, leftBolt, MekanismRenderer.getPartialTick());
                 boltRenderer.update(1, rightBolt, MekanismRenderer.getPartialTick());
             }
+            //Adjust the matrix so that we render the lightning in the correct spot if the player is crouching
+            matrix.push();
+            ModelPos.BODY.translate(this, matrix);
             boltRenderer.render(MekanismRenderer.getPartialTick(), matrix, renderer);
+            matrix.pop();
         }
 
-        cache.getUnchecked(key(entity)).getTransparentMap().forEach((modelPos, quads) -> {
+        armorQuads.getTransparentMap().forEach((modelPos, quads) -> {
             matrix.push();
             modelPos.translate(this, matrix);
             render(renderer, matrix, light, overlayLight, hasEffect, quads, true);
@@ -213,7 +232,7 @@ public class MekaSuitArmor extends CustomArmor {
         }
     }
 
-    public ArmorQuads createQuads(Set<ModuleModelSpec> modules, Set<EquipmentSlotType> wornParts, boolean hasMekaTool) {
+    private ArmorQuads createQuads(Set<ModuleModelSpec> modules, Set<EquipmentSlotType> wornParts, boolean hasMekaTool) {
         Map<ModelData, Map<ModelPos, Set<String>>> specialQuadsToRenderMap = new Object2ObjectOpenHashMap<>();
         Map<ModelData, Map<ModelPos, Set<String>>> specialLEDQuadsToRenderMap = new Object2ObjectOpenHashMap<>();
         // map of normal model part name to overwritten model part name (i.e. chest_body_box1 -> jetpack_chest_body_overridden_box1
@@ -314,7 +333,7 @@ public class MekaSuitArmor extends CustomArmor {
         return new ArmorQuads(opaqueMap, transparentMap);
     }
 
-    public static void parseTransparency(ModelData modelData, ModelPos pos, Map<ModelPos, List<BakedQuad>> opaqueMap, Map<ModelPos, List<BakedQuad>> transparentMap, Set<String> regularQuads, Set<String> ledQuads) {
+    private static void parseTransparency(ModelData modelData, ModelPos pos, Map<ModelPos, List<BakedQuad>> opaqueMap, Map<ModelPos, List<BakedQuad>> transparentMap, Set<String> regularQuads, Set<String> ledQuads) {
         Set<String> opaqueRegularQuads = new HashSet<>(), opaqueLEDQuads = new HashSet<>();
         Set<String> transparentRegularQuads = new HashSet<>(), transparentLEDQuads = new HashSet<>();
         regularQuads.forEach(s -> (s.contains(GLASS_TAG) ? transparentRegularQuads : opaqueRegularQuads).add(s));
@@ -323,7 +342,7 @@ public class MekaSuitArmor extends CustomArmor {
         transparentMap.computeIfAbsent(pos, p -> new ArrayList<>()).addAll(getQuads(modelData, transparentRegularQuads, transparentLEDQuads, pos.getTransform()));
     }
 
-    public static boolean checkEquipment(EquipmentSlotType type, String text) {
+    private static boolean checkEquipment(EquipmentSlotType type, String text) {
         if (type == EquipmentSlotType.HEAD && text.contains("helmet")) {
             return true;
         } else if (type == EquipmentSlotType.CHEST && text.contains("chest")) {

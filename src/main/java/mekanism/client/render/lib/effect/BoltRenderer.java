@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import mekanism.client.render.MekanismRenderType;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltQuads;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.math.vector.Matrix4f;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -31,9 +31,9 @@ public class BoltRenderer {
 
     private final Map<Object, BoltOwnerData> boltOwners = new Object2ObjectOpenHashMap<>();
 
-    public void render(float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn) {
-        IVertexBuilder buffer = bufferIn.getBuffer(RenderType.getLightning());
-        Matrix4f matrix = matrixStackIn.getLast().getMatrix();
+    public void render(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn) {
+        IVertexBuilder buffer = bufferIn.getBuffer(MekanismRenderType.MEK_LIGHTNING);
+        Matrix4f matrix = matrixStack.getLast().getMatrix();
         Timestamp timestamp = new Timestamp(minecraft.world.getGameTime(), partialTicks);
         boolean refresh = timestamp.isPassed(refreshTimestamp, (1 / REFRESH_TIME));
         if (refresh) {

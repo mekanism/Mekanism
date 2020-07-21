@@ -1,6 +1,5 @@
 package mekanism.client.render;
 
-import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -10,6 +9,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class MekanismRenderType extends RenderType {
 
@@ -18,6 +18,14 @@ public class MekanismRenderType extends RenderType {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(SourceFactor.ONE, DestFactor.ONE_MINUS_SRC_ALPHA);
     }, RenderSystem::disableBlend);
+
+    public static final RenderType MEK_LIGHTNING = makeType("mek_lightning", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256,
+          false, true, RenderType.State.getBuilder()
+                .writeMask(COLOR_DEPTH_WRITE)
+                .transparency(LIGHTNING_TRANSPARENCY)
+                .shadeModel(SHADE_ENABLED)
+                .build(false)
+    );
 
     //Ignored
     private MekanismRenderType(String name, VertexFormat format, int p_i225992_3_, int p_i225992_4_, boolean p_i225992_5_, boolean p_i225992_6_, Runnable runnablePre, Runnable runnablePost) {

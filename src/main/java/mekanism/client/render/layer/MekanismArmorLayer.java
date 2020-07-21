@@ -25,14 +25,13 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
     @Override
     public void render(MatrixStack matrix, IRenderTypeBuffer renderer, int packedLightIn, T entity, float limbSwing, float limbSwingAmount, float partialTick,
           float ageInTicks, float netHeadYaw, float headPitch) {
-        renderArmorPart(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.CHEST, packedLightIn);
-        renderArmorPart(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.LEGS, packedLightIn);
-        renderArmorPart(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.FEET, packedLightIn);
-        renderArmorPart(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.HEAD, packedLightIn);
+        renderArmorPart(matrix, renderer, entity, EquipmentSlotType.CHEST, packedLightIn);
+        renderArmorPart(matrix, renderer, entity, EquipmentSlotType.LEGS, packedLightIn);
+        renderArmorPart(matrix, renderer, entity, EquipmentSlotType.FEET, packedLightIn);
+        renderArmorPart(matrix, renderer, entity, EquipmentSlotType.HEAD, packedLightIn);
     }
 
-    private void renderArmorPart(MatrixStack matrix, IRenderTypeBuffer renderer, T entity, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks,
-          float netHeadYaw, float headPitch, EquipmentSlotType slot, int light) {
+    private void renderArmorPart(MatrixStack matrix, IRenderTypeBuffer renderer, T entity, EquipmentSlotType slot, int light) {
         ItemStack stack = entity.getItemStackFromSlot(slot);
         Item item = stack.getItem();
         if (item instanceof ISpecialGear && item instanceof ArmorItem) {
@@ -40,9 +39,7 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
             if (armorItem.getEquipmentSlot() == slot) {
                 CustomArmor model = ((ISpecialGear) item).getGearModel();
                 getEntityModel().setModelAttributes((BipedModel<T>) model);
-                model.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTick);
                 setModelSlotVisible((A) model, slot);
-                model.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
                 model.render(matrix, renderer, light, OverlayTexture.NO_OVERLAY, stack.hasEffect(), entity, stack);
             }
         }

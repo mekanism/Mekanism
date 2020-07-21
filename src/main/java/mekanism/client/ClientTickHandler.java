@@ -39,7 +39,12 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.model.ArmorStandModel;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ArmorStandEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -353,26 +358,54 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public void renderPlayer(RenderLivingEvent.Pre<PlayerEntity, PlayerModel<PlayerEntity>> evt) {
-        if (evt.getEntity() instanceof PlayerEntity) {
-            PlayerEntity entity = (PlayerEntity) evt.getEntity();
-            if (entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
-                evt.getRenderer().getEntityModel().bipedHead.showModel = false;
-                evt.getRenderer().getEntityModel().bipedHeadwear.showModel = false;
+    public void renderEntityPre(RenderLivingEvent.Pre<?, ?> evt) {
+        EntityModel<?> model = evt.getRenderer().getEntityModel();
+        if (model instanceof BipedModel) {
+            //If the entity has a biped model, then see if it is wearing a meka suit, in which case we want to hide various parts of the model
+            setModelVisibility(evt.getEntity(), (BipedModel<?>) model, false);
+        }
+    }
+
+    @SubscribeEvent
+    public void renderEntityPost(RenderLivingEvent.Post<?, ?> evt) {
+        EntityModel<?> model = evt.getRenderer().getEntityModel();
+        if (model instanceof BipedModel) {
+            //Undo model visibility changes we made to ensure that other entities of the same type are properly visible
+            setModelVisibility(evt.getEntity(), (BipedModel<?>) model, true);
+        }
+    }
+
+    private static void setModelVisibility(LivingEntity entity, BipedModel<?> entityModel, boolean showModel) {
+        if (entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
+            entityModel.bipedHead.showModel = showModel;
+            entityModel.bipedHeadwear.showModel = showModel;
+        }
+        if (entity.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof ItemMekaSuitArmor) {
+            entityModel.bipedBody.showModel = showModel;
+            if (!(entity instanceof ArmorStandEntity)) {
+                //Don't adjust arms for armor stands as the model will end up changing them anyways and then we may incorrectly activate them
+                entityModel.bipedLeftArm.showModel = showModel;
+                entityModel.bipedRightArm.showModel = showModel;
             }
-            if (entity.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() instanceof ItemMekaSuitArmor) {
-                evt.getRenderer().getEntityModel().bipedBody.showModel = false;
-                evt.getRenderer().getEntityModel().bipedBodyWear.showModel = false;
-                evt.getRenderer().getEntityModel().bipedLeftArm.showModel = false;
-                evt.getRenderer().getEntityModel().bipedLeftArmwear.showModel = false;
-                evt.getRenderer().getEntityModel().bipedRightArm.showModel = false;
-                evt.getRenderer().getEntityModel().bipedRightArmwear.showModel = false;
+            if (entityModel instanceof PlayerModel) {
+                PlayerModel<?> playerModel = (PlayerModel<?>) entityModel;
+                playerModel.bipedBodyWear.showModel = showModel;
+                playerModel.bipedLeftArmwear.showModel = showModel;
+                playerModel.bipedRightArmwear.showModel = showModel;
+            } else if (entityModel instanceof ArmorStandModel) {
+                ArmorStandModel armorStandModel = (ArmorStandModel) entityModel;
+                armorStandModel.standRightSide.showModel = showModel;
+                armorStandModel.standLeftSide.showModel = showModel;
+                armorStandModel.standWaist.showModel = showModel;
             }
-            if (entity.getItemStackFromSlot(EquipmentSlotType.LEGS).getItem() instanceof ItemMekaSuitArmor) {
-                evt.getRenderer().getEntityModel().bipedLeftLeg.showModel = false;
-                evt.getRenderer().getEntityModel().bipedLeftLegwear.showModel = false;
-                evt.getRenderer().getEntityModel().bipedRightLeg.showModel = false;
-                evt.getRenderer().getEntityModel().bipedRightLegwear.showModel = false;
+        }
+        if (entity.getItemStackFromSlot(EquipmentSlotType.LEGS).getItem() instanceof ItemMekaSuitArmor) {
+            entityModel.bipedLeftLeg.showModel = showModel;
+            entityModel.bipedRightLeg.showModel = showModel;
+            if (entityModel instanceof PlayerModel) {
+                PlayerModel<?> playerModel = (PlayerModel<?>) entityModel;
+                playerModel.bipedLeftLegwear.showModel = showModel;
+                playerModel.bipedRightLegwear.showModel = showModel;
             }
         }
     }

@@ -15,6 +15,7 @@ import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
+import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.common.MekanismLang;
@@ -29,7 +30,6 @@ import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.math.vector.Vector3d;
@@ -87,10 +87,11 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
         drawTextScaledBound(matrix, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
         super.drawForegroundText(matrix, mouseX, mouseY);
         matrix.push();
+        matrix.translate(0, 0, 100);
         IRenderTypeBuffer.Impl renderer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
         bolt.update(this, boltSupplier.get(), MekanismRenderer.getPartialTick());
         bolt.render(MekanismRenderer.getPartialTick(), matrix, renderer);
-        renderer.finish(RenderType.getLightning());
+        renderer.finish(MekanismRenderType.MEK_LIGHTNING);
         matrix.pop();
     }
 }

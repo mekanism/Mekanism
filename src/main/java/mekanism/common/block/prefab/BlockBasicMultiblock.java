@@ -16,7 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -39,9 +38,9 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
     public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
           boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-            if (tile instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tile).onNeighborChange(neighborBlock, neighborPos);
+            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock, neighborPos);
             }
         }
     }
