@@ -73,7 +73,14 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     }
 
     @Override
+    public void onSlotChanged() {
+        super.onSlotChanged();
+        slot.onContentsChanged();
+    }
+
+    @Override
     public void onSlotChange(@Nonnull ItemStack current, @Nonnull ItemStack newStack) {
+        slot.onContentsChanged();
     }
 
     @Override
