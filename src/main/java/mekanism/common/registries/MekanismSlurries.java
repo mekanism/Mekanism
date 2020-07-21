@@ -13,7 +13,7 @@ public class MekanismSlurries {
 
     public static final SlurryDeferredRegister SLURRIES = new SlurryDeferredRegister(Mekanism.MODID);
 
-    public static final Map<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> PROCESSED_RESOURCES = new LinkedHashMap<>();
+    public static final Map<PrimaryResource, SlurryRegistryObject<Slurry, Slurry, Slurry>> PROCESSED_RESOURCES = new LinkedHashMap<>();
 
     static {
         for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {

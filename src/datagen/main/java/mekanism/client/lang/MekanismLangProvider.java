@@ -378,14 +378,15 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addSlurries() {
         add(MekanismAPI.EMPTY_SLURRY, "Empty");
-        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> entry : MekanismSlurries.PROCESSED_RESOURCES.entrySet()) {
+        for (Map.Entry<PrimaryResource, SlurryRegistryObject<Slurry, Slurry, Slurry>> entry : MekanismSlurries.PROCESSED_RESOURCES.entrySet()) {
             addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getName()));
         }
     }
 
-    private void addSlurry(SlurryRegistryObject<Slurry, Slurry> slurryRO, String name) {
+    private void addSlurry(SlurryRegistryObject<Slurry, Slurry, Slurry> slurryRO, String name) {
         add(slurryRO.getDirtySlurry(), "Dirty " + name + " Slurry");
         add(slurryRO.getCleanSlurry(), "Clean " + name + " Slurry");
+        add(slurryRO.getPureSlurry(), "Pure " + name + " Slurry");
     }
 
     private void addDamageSources() {

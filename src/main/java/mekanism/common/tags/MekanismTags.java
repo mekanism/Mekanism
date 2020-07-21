@@ -240,6 +240,7 @@ public class MekanismTags {
 
         public static final INamedTag<Slurry> DIRTY = tag("dirty");
         public static final INamedTag<Slurry> CLEAN = tag("clean");
+        public static final INamedTag<Slurry> PURE = tag("pure");
 
         private static INamedTag<Slurry> tag(String name) {
             return ChemicalTags.slurryTag(Mekanism.rl(name));

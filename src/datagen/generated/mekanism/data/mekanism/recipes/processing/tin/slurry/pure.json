@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:washing",
+  "fluidInput": {
+    "amount": 5,
+    "tag": "forge:hydrofluoric_acid"
+  },
+  "slurryInput": {
+    "amount": 10,
+    "slurry": "mekanism:clean_tin"
+  },
+  "output": {
+    "slurry": "mekanism:pure_tin",
+    "amount": 12
+  }
+}

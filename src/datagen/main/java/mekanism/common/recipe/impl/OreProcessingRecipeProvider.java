@@ -124,7 +124,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ITag<Item> shardTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
         ITag<Item> crystalTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
 
-        SlurryRegistryObject<?, ?> slurry = MekanismSlurries.PROCESSED_RESOURCES.get(resource);
+        SlurryRegistryObject<?, ?, ?> slurry = MekanismSlurries.PROCESSED_RESOURCES.get(resource);
 
         // Clump
         // from ore
@@ -197,6 +197,12 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               shard.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
         // Slurry
+        // pure
+        FluidSlurryToSlurryRecipeBuilder.washing(
+                FluidStackIngredient.from(MekanismTags.Fluids.HYDROFLUORIC_ACID, 5),
+                SlurryStackIngredient.from(slurry.getCleanSlurry(), 10),
+                slurry.getPureSlurry().getStack(12)
+        ).build(consumer, Mekanism.rl(basePath + "slurry/pure"));
         // clean
         FluidSlurryToSlurryRecipeBuilder.washing(
               FluidStackIngredient.from(FluidTags.WATER, 5),

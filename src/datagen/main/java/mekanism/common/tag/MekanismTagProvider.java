@@ -328,17 +328,20 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Gases.WATER_VAPOR, MekanismGases.WATER_VAPOR, MekanismGases.STEAM);
     }
 
-    private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {
+    private void addSlurryTags(SlurryRegistryObject<?, ?, ?>... slurryRegistryObjects) {
         ForgeRegistryTagBuilder<Slurry> dirtyTagBuilder = getSlurryBuilder(MekanismTags.Slurries.DIRTY);
         ForgeRegistryTagBuilder<Slurry> cleanTagBuilder = getSlurryBuilder(MekanismTags.Slurries.CLEAN);
-        for (SlurryRegistryObject<?, ?> slurryRO : slurryRegistryObjects) {
+        ForgeRegistryTagBuilder<Slurry> pureTagBuilder = getSlurryBuilder(MekanismTags.Slurries.PURE);
+        for (SlurryRegistryObject<?, ?, ?> slurryRO : slurryRegistryObjects) {
             dirtyTagBuilder.add(slurryRO.getDirtySlurry());
             cleanTagBuilder.add(slurryRO.getCleanSlurry());
+            pureTagBuilder.add(slurryRO.getPureSlurry());
         }
         // add dynamic slurry tags
-        for (SlurryRegistryObject<?, ?> slurryRO : MekanismSlurries.PROCESSED_RESOURCES.values()) {
+        for (SlurryRegistryObject<?, ?, ?> slurryRO : MekanismSlurries.PROCESSED_RESOURCES.values()) {
             dirtyTagBuilder.add(slurryRO.getDirtySlurry());
             cleanTagBuilder.add(slurryRO.getCleanSlurry());
+            pureTagBuilder.add(slurryRO.getPureSlurry());
         }
     }
 

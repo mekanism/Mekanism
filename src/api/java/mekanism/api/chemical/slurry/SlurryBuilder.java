@@ -30,6 +30,10 @@ public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
         return builder(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "slurry/dirty"));
     }
 
+    public static SlurryBuilder pure() {
+        return builder(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "slurry/pure"));
+    }
+
     public static SlurryBuilder builder(ResourceLocation texture) {
         return new SlurryBuilder(Objects.requireNonNull(texture));
     }
