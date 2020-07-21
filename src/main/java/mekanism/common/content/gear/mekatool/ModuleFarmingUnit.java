@@ -1,16 +1,20 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.ToIntFunction;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
+import mekanism.common.network.PacketLightningRender;
+import mekanism.common.network.PacketLightningRender.LightningPreset;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.block.Block;
@@ -185,6 +189,8 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
                     world.destroyBlock(newPos.up(), true);
                 }
                 world.playSound(null, newPos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(pos, newPos),
+                      Vector3d.func_237490_a_(pos, 0.94), Vector3d.func_237490_a_(newPos, 0.94), 10), world, pos);
             }
         }
         energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);
@@ -235,6 +241,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
         Direction side = context.getFace();
         FloatingLong energyUsed = energyUsage.copy();
+        Vector3d offset = Vector3d.func_237491_b_(side.getDirectionVec()).scale(0.44);
         for (BlockPos newPos : getStrippingArea(pos, side, (diameter - 1) / 2)) {
             if (pos.equals(newPos)) {
                 //Skip the source position as it is free and we manually handled it before the loop
@@ -259,6 +266,8 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
                 //Replace the block. Note it just directly sets it (in the same way that AxeItem does).
                 world.setBlockState(newPos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
                 world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(pos, newPos),
+                      Vector3d.func_237489_a_(pos).add(offset), Vector3d.func_237489_a_(newPos).add(offset), 10), world, pos);
             }
         }
         energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);

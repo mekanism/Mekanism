@@ -55,9 +55,7 @@ public class PacketLightningRender {
 
     public enum LightningPreset {
         MAGNETIC_ATTRACTION((start, end, segments) -> new BoltEffect(BoltRenderInfo.ELECTRICITY, start, end, segments).size(0.04F).lifespan(8).spawn(SpawnFunction.noise(8, 4))),
-        VEIN_MINING((start, end, segments) -> new BoltEffect(BoltRenderInfo.ELECTRICITY, start, end, segments).size(0.015F).lifespan(12).spawn(SpawnFunction.NO_DELAY)),
-        //TODO: Add a preset for stripping logs and hoeing the ground
-        ;
+        TOOL_AOE((start, end, segments) -> new BoltEffect(BoltRenderInfo.ELECTRICITY, start, end, segments).size(0.015F).lifespan(12).spawn(SpawnFunction.NO_DELAY));
 
         private final BoltCreator boltCreator;
 

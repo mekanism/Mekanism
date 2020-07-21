@@ -15,7 +15,6 @@ import mekanism.common.network.PacketLightningRender.LightningPreset;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
@@ -42,7 +41,7 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
         return excavationRange.get().getRange();
     }
 
-    public static Set<BlockPos> findPositions(PlayerEntity player, BlockState state, BlockPos location, World world, int maxRange) {
+    public static Set<BlockPos> findPositions(BlockState state, BlockPos location, World world, int maxRange) {
         Set<BlockPos> found = new LinkedHashSet<>();
         Set<BlockPos> openSet = new LinkedHashSet<>();
         openSet.add(location);
@@ -62,7 +61,9 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
                         //Make sure to add it as immutable
                         if (!openSet.contains(pos)) {
                             openSet.add(pos.toImmutable());
-                            Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.VEIN_MINING, Objects.hash(blockPos, pos),
+                            //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
+                            // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
+                            Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
                                   Vector3d.func_237489_a_(blockPos), Vector3d.func_237489_a_(pos), 10), world, blockPos);
                         }
                     }

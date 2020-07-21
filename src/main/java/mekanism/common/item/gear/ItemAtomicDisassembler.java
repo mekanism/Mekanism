@@ -208,7 +208,9 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                         if (world.isBlockPresent(pos) && startBlock == world.getBlockState(pos).getBlock()) {
                             //Make sure to add it as immutable
                             found.add(pos.toImmutable());
-                            Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.VEIN_MINING, Objects.hash(blockPos, pos),
+                            //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
+                            // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
+                            Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
                                   Vector3d.func_237489_a_(blockPos), Vector3d.func_237489_a_(pos), 10), world, blockPos);
                             if (found.size() > maxCount) {
                                 return found;
