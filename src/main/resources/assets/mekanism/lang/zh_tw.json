@@ -734,7 +734,7 @@
   "gui.mekanism.opacity": "不透明度",
   "gui.mekanism.pigment": "顏料: %s",
   "gui.mekanism.process_rate": "處理速率: %s",
-  "gui.mekanism.process_rate_mb": "處理速率: %s mb/t",
+  "gui.mekanism.process_rate_mb": "處理速率: %s mB/t",
   "gui.mekanism.progress": "進度: %s",
   "gui.mekanism.radiation_dose": "輻射劑量: %s",
   "gui.mekanism.radiation_exposure": "輻射量: %s",

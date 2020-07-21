@@ -734,7 +734,7 @@
   "gui.mekanism.opacity": "불투명도",
   "gui.mekanism.pigment": "색소: %s",
   "gui.mekanism.process_rate": "처리 속도: %s",
-  "gui.mekanism.process_rate_mb": "처리 속도: %s mb/t",
+  "gui.mekanism.process_rate_mb": "Process Rate: %s mB/t",
   "gui.mekanism.progress": "진행률: %s",
   "gui.mekanism.radiation_dose": "방사능 피폭량: %s",
   "gui.mekanism.radiation_exposure": "방사능 노출량: %s",

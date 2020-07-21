@@ -734,7 +734,7 @@
   "gui.mekanism.opacity": "Przezroczystość",
   "gui.mekanism.pigment": "Pigment: %s",
   "gui.mekanism.process_rate": "Szybkość przetwarzania: %s",
-  "gui.mekanism.process_rate_mb": "Szybkość przetwarzania: %s mb/t",
+  "gui.mekanism.process_rate_mb": "Szybkość przetwarzania: %s mB/t",
   "gui.mekanism.progress": "Postęp: %s",
   "gui.mekanism.radiation_dose": "Dawka promieniowania: %s",
   "gui.mekanism.radiation_exposure": "Narażenie na promieniowanie: %s",
