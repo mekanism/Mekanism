@@ -386,7 +386,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addSlurry(SlurryRegistryObject<Slurry, Slurry, Slurry> slurryRO, String name) {
         add(slurryRO.getDirtySlurry(), "Dirty " + name + " Slurry");
         add(slurryRO.getCleanSlurry(), "Clean " + name + " Slurry");
-        add(slurryRO.getPureSlurry(), "Pure " + name + " Slurry");
+        add(slurryRO.getPureSlurry(), "Purified " + name + " Slurry");
     }
 
     private void addDamageSources() {
