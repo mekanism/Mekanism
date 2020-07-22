@@ -48,7 +48,7 @@
   "description.mekanismgenerators.fission_fuel_assembly": "A cluster of fuel rods used to house fission fuel within a Fission Reactor. These can be stacked on top of each other.",
   "description.mekanismgenerators.fission_reactor_casing": "Lead-infused steel casing used to create a Fission Reactor. Mostly heat-resistant, mostly radiation-resistant, and mostly safe!",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "A block that can be used to monitor or control the Fission Reactor with redstone.",
-  "description.mekanismgenerators.fission_reactor_port": "A port which can be placed on a Fission Reactor multiblock to transfer coolant, fuel, waste, and power.",
+  "description.mekanismgenerators.fission_reactor_port": "A port which can be placed on a Fission Reactor multiblock to transfer coolant, fuel, and waste.",
   "description.mekanismgenerators.fusion_reactor_controller": "核融合炉全体を制御するためのコントローラです。",
   "description.mekanismgenerators.fusion_reactor_frame": "核融合炉を構成する強化された筐体です。",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "核融合炉の状態を元にレッドストーン信号を出力するブロックです。",
