@@ -30,17 +30,17 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
 
     @Override
     protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        int displayInt = (int) (getHandler().getLevel() * (field_230688_j_ - 2));
+        int displayInt = (int) (getHandler().getLevel() * (width - 2));
         for (int i = 0; i < displayInt; i++) {
-            float level = (float) i / (float) (field_230688_j_ - 2);
+            float level = (float) i / (float) (width - 2);
             Color color = colorFunction.getColor(level);
             RenderSystem.color4f(color.rf(), color.gf(), color.bf(), color.af());
             if (i == 0) {
-                func_238463_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1, 0, 0, 1, texHeight, texWidth, texHeight);
+                blit(matrix, x + 1, y + 1, 0, 0, 1, texHeight, texWidth, texHeight);
             } else if (i == displayInt - 1) {
-                func_238463_a_(matrix, field_230690_l_ + 1 + i, field_230691_m_ + 1, texWidth - 1, 0, 1, texHeight, texWidth, texHeight);
+                blit(matrix, x + 1 + i, y + 1, texWidth - 1, 0, 1, texHeight, texWidth, texHeight);
             } else {
-                func_238463_a_(matrix, field_230690_l_ + 1 + i, field_230691_m_ + 1, 1, 0, 1, texHeight, texWidth, texHeight);
+                blit(matrix, x + 1 + i, y + 1, 1, 0, 1, texHeight, texWidth, texHeight);
             }
             MekanismRenderer.resetColor();
         }

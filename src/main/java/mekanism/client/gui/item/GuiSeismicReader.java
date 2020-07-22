@@ -45,35 +45,35 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiInnerScreen(this, 7, 11, 63, 49));
-        func_230480_a_(new GuiInnerScreen(this, 74, 11, 51, 159));
-        func_230480_a_(scrollBar = new GuiScrollBar(this, 126, 25, 131, blockList::size, () -> 1));
-        func_230480_a_(new GuiArrowSelection(this, 76, 81, () -> {
+    public void init() {
+        super.init();
+        addButton(new GuiInnerScreen(this, 7, 11, 63, 49));
+        addButton(new GuiInnerScreen(this, 74, 11, 51, 159));
+        addButton(scrollBar = new GuiScrollBar(this, 126, 25, 131, blockList::size, () -> 1));
+        addButton(new GuiArrowSelection(this, 76, 81, () -> {
             int currentLayer = scrollBar.getCurrentSelection();
             if (currentLayer >= 0) {
-                return blockList.get(blockList.size() - 1 - currentLayer).getBlock().func_235333_g_();
+                return blockList.get(blockList.size() - 1 - currentLayer).getBlock().getTranslatedName();
             }
             return null;
         }));
-        func_230480_a_(upButton = new MekanismImageButton(this, getGuiLeft() + 126, getGuiTop() + 11, 14,
+        addButton(upButton = new MekanismImageButton(this, getGuiLeft() + 126, getGuiTop() + 11, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), () -> scrollBar.adjustScroll(1)));
-        func_230480_a_(downButton = new MekanismImageButton(this, getGuiLeft() + 126, getGuiTop() + 156, 14,
+        addButton(downButton = new MekanismImageButton(this, getGuiLeft() + 126, getGuiTop() + 156, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), () -> scrollBar.adjustScroll(-1)));
         updateEnabledButtons();
     }
 
     @Override
-    public void func_231023_e_() {
-        super.func_231023_e_();
+    public void tick() {
+        super.tick();
         updateEnabledButtons();
     }
 
     private void updateEnabledButtons() {
         int currentLayer = scrollBar.getCurrentSelection();
-        upButton.field_230693_o_ = currentLayer > 0;
-        downButton.field_230693_o_ = currentLayer + 1 < blockList.size();
+        upButton.active = currentLayer > 0;
+        downButton.active = currentLayer + 1 < blockList.size();
     }
 
     @Override
@@ -111,7 +111,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         // Get the name from the stack and render it
         if (currentLayer >= 0) {
             Block block = blockList.get(currentLayer).getBlock();
-            ITextComponent displayName = block.func_235333_g_();
+            ITextComponent displayName = block.getTranslatedName();
             drawTextScaledBound(matrix, displayName, 10, 16, screenTextColor(), 57);
             frequency = frequencies.computeIntIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
         }
@@ -121,13 +121,13 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    public void func_231175_as__() {
-        super.func_231175_as__();
+    public void onClose() {
+        super.onClose();
         blockList.clear();
     }
 
     @Override
-    public boolean func_231043_a_(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.func_231043_a_(mouseX, mouseY, delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 }

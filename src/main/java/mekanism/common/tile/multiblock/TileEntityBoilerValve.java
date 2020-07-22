@@ -77,7 +77,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
             BoilerValveMode mode = getMode().getNext();
             world.setBlockState(pos, getBlockState().with(AttributeStateBoilerValveMode.modeProperty, mode));
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode)), Util.field_240973_b_);
+                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode)), Util.DUMMY_UUID);
         }
         return ActionResultType.SUCCESS;
     }

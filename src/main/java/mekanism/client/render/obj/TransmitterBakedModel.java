@@ -92,7 +92,7 @@ public class TransmitterBakedModel implements IBakedModel {
             if (!modelCache.containsKey(hash)) {
                 List<String> visible = new ArrayList<>();
                 for (Direction dir : EnumUtils.DIRECTIONS) {
-                    visible.add(dir.func_176610_l() + data.getConnectionType(dir).func_176610_l().toUpperCase());
+                    visible.add(dir.getString() + data.getConnectionType(dir).getString().toUpperCase());
                 }
                 List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData), hasColor).getQuads(state, null, rand, extraData);
                 modelCache.put(hash, result);

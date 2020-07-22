@@ -37,13 +37,13 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING
+    public void init() {
+        super.init();
+        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING
                     .translate(EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getMultiblock().getPassiveGeneration(false, true)))),
               this));
-        func_230480_a_(new GuiNumberGauge(new INumberInfoHandler() {
+        addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
                 return MekanismRenderer.getBaseFluidTexture(Fluids.LAVA, FluidType.STILL);
@@ -64,8 +64,8 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
                 return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 7, 50));
-        func_230480_a_(new GuiProgress(() -> tile.getMultiblock().getLastPlasmaTemp() > tile.getMultiblock().getLastCaseTemp() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 29, 76));
-        func_230480_a_(new GuiNumberGauge(new INumberInfoHandler() {
+        addButton(new GuiProgress(() -> tile.getMultiblock().getLastPlasmaTemp() > tile.getMultiblock().getLastCaseTemp() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 29, 76));
+        addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
                 return MekanismRenderer.getBaseFluidTexture(Fluids.LAVA, FluidType.STILL);
@@ -86,15 +86,15 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
                 return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 61, 50));
-        func_230480_a_(new GuiProgress(() -> tile.getMultiblock().getCaseTemp() > 0 ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));
-        func_230480_a_(new GuiProgress(() -> (tile.getMultiblock().getCaseTemp() > 0 && !tile.getMultiblock().waterTank.isEmpty() &&
+        addButton(new GuiProgress(() -> tile.getMultiblock().getCaseTemp() > 0 ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));
+        addButton(new GuiProgress(() -> (tile.getMultiblock().getCaseTemp() > 0 && !tile.getMultiblock().waterTank.isEmpty() &&
                                               tile.getMultiblock().steamTank.getStored() < tile.getMultiblock().steamTank.getCapacity()) ? 1 : 0,
               ProgressType.SMALL_RIGHT, this, 83, 91));
-        func_230480_a_(new GuiFluidGauge(() -> tile.getMultiblock().waterTank, () -> tile.getFluidTanks(null), GaugeType.SMALL, this, 115, 84));
-        func_230480_a_(new GuiGasGauge(() -> tile.getMultiblock().steamTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 151, 84));
-        func_230480_a_(new GuiEnergyGauge(tile.getMultiblock().energyContainer, GaugeType.SMALL, this, 115, 46));
-        func_230480_a_(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
-        func_230480_a_(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
+        addButton(new GuiFluidGauge(() -> tile.getMultiblock().waterTank, () -> tile.getFluidTanks(null), GaugeType.SMALL, this, 115, 84));
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().steamTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 151, 84));
+        addButton(new GuiEnergyGauge(tile.getMultiblock().energyContainer, GaugeType.SMALL, this, 115, 46));
+        addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
+        addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
     }
 
     @Override

@@ -44,14 +44,14 @@ public class GuiTextField extends GuiRelativeElement {
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
         super(gui, x, y, width, height);
 
-        textField = new TextFieldWidget(getFont(), this.field_230690_l_, this.field_230691_m_, width, height, StringTextComponent.field_240750_d_);
+        textField = new TextFieldWidget(getFont(), this.x, this.y, width, height, StringTextComponent.EMPTY);
         textField.setEnableBackgroundDrawing(false);
         textField.setResponder(s -> {
             if (responder != null) {
                 responder.accept(s);
             }
             if (checkmarkButton != null) {
-                checkmarkButton.field_230693_o_ = !textField.getText().isEmpty();
+                checkmarkButton.active = !textField.getText().isEmpty();
             }
         });
         guiObj.addFocusListener(this);
@@ -62,8 +62,8 @@ public class GuiTextField extends GuiRelativeElement {
     public void resize(int prevLeft, int prevTop, int left, int top) {
         super.resize(prevLeft, prevTop, left, top);
         //Ensure we also update the positions of the text field
-        textField.field_230690_l_ = textField.field_230690_l_ - prevLeft + left;
-        textField.field_230691_m_ = textField.field_230691_m_ - prevTop + top;
+        textField.x = textField.x - prevLeft + left;
+        textField.y = textField.y - prevTop + top;
     }
 
     public GuiTextField setScale(float textScale) {
@@ -125,22 +125,22 @@ public class GuiTextField extends GuiRelativeElement {
     public GuiTextField addCheckmarkButton(ButtonType type, Runnable callback) {
         addChild(checkmarkButton = type.getButton(this, () -> {
             callback.run();
-            func_230996_d_(true);
+            setFocused(true);
         }));
-        checkmarkButton.field_230693_o_ = false;
+        checkmarkButton.active = false;
         updateTextField();
         return this;
     }
 
     private void updateTextField() {
         // width is scaled based on text scale
-        textField.func_230991_b_(Math.round((field_230688_j_ - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - (iconType != null ? iconType.getOffsetX() : 0)) * (1 / textScale)));
-        textField.field_230690_l_ = field_230690_l_ + textOffsetX + 2 + (iconType != null ? iconType.getOffsetX() : 0);
-        textField.field_230691_m_ = field_230691_m_ + textOffsetY + 1 + (int) ((field_230689_k_ / 2F) - 4);
+        textField.setWidth(Math.round((width - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - (iconType != null ? iconType.getOffsetX() : 0)) * (1 / textScale)));
+        textField.x = x + textOffsetX + 2 + (iconType != null ? iconType.getOffsetX() : 0);
+        textField.y = y + textOffsetY + 1 + (int) ((height / 2F) - 4);
     }
 
     public boolean isTextFieldFocused() {
-        return textField.func_230999_j_();
+        return textField.isFocused();
     }
 
     @Override
@@ -162,19 +162,19 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         boolean prevFocus = isTextFieldFocused();
         double scaledX = mouseX;
         // figure out the proper mouse placement based on text scaling
-        if (textScale != 1.0F && scaledX > textField.field_230690_l_) {
-            scaledX = Math.min(scaledX, textField.field_230690_l_) + (scaledX - textField.field_230690_l_) * (1F / textScale);
+        if (textScale != 1.0F && scaledX > textField.x) {
+            scaledX = Math.min(scaledX, textField.x) + (scaledX - textField.x) * (1F / textScale);
         }
-        boolean ret = textField.func_231044_a_(scaledX, mouseY, button);
+        boolean ret = textField.mouseClicked(scaledX, mouseY, button);
         // detect if we're now focused
         if (!prevFocus && isTextFieldFocused()) {
             guiObj.focusChange(this);
         }
-        return ret || super.func_231044_a_(mouseX, mouseY, button);
+        return ret || super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -187,16 +187,16 @@ public class GuiTextField extends GuiRelativeElement {
             float yAdd = 4 - (textScale * 8) / 2F;
             matrix.push();
             matrix.scale(textScale, textScale, textScale);
-            matrix.translate(textField.field_230690_l_ * reverse, (textField.field_230691_m_) * reverse + yAdd * (1 / textScale), 0);
-            textField.func_230430_a_(matrix, mouseX, mouseY, 0);
+            matrix.translate(textField.x * reverse, (textField.y) * reverse + yAdd * (1 / textScale), 0);
+            textField.render(matrix, mouseX, mouseY, 0);
             matrix.pop();
         } else {
-            textField.func_230430_a_(matrix, mouseX, mouseY, 0);
+            textField.render(matrix, mouseX, mouseY, 0);
         }
         MekanismRenderer.resetColor();
         if (iconType != null) {
             minecraft.textureManager.bindTexture(iconType.getIcon());
-            func_238463_a_(matrix, field_230690_l_ + 2, field_230691_m_ + (field_230689_k_ / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
+            blit(matrix, x + 2, y + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }
     }
 
@@ -208,11 +208,11 @@ public class GuiTextField extends GuiRelativeElement {
     @Override
     public void syncFrom(GuiElement element) {
         textField.setText(((GuiTextField) element).getText());
-        func_230996_d_(element.func_230999_j_());
+        setFocused(element.isFocused());
     }
 
     @Override
-    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (canWrite()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 //Manually handle hitting escape to make the whole interface go away
@@ -226,21 +226,21 @@ public class GuiTextField extends GuiRelativeElement {
                 guiObj.incrementFocus(this);
                 return true;
             }
-            textField.func_231046_a_(keyCode, scanCode, modifiers);
+            textField.keyPressed(keyCode, scanCode, modifiers);
             return true;
         }
-        return super.func_231046_a_(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public boolean func_231042_a_(char c, int keyCode) {
+    public boolean charTyped(char c, int keyCode) {
         if (canWrite()) {
             if (inputValidator == null || inputValidator.test(c)) {
-                return textField.func_231042_a_(c, keyCode);
+                return textField.charTyped(c, keyCode);
             }
             return false;
         }
-        return super.func_231042_a_(c, keyCode);
+        return super.charTyped(c, keyCode);
     }
 
     public String getText() {
@@ -264,8 +264,8 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     @Override
-    public void func_230996_d_(boolean focused) {
-        super.func_230996_d_(focused);
+    public void setFocused(boolean focused) {
+        super.setFocused(focused);
         textField.setFocused2(focused);
         if (focused) {
             guiObj.focusChange(this);

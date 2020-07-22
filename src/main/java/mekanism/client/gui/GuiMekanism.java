@@ -43,7 +43,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.apache.commons.lang3.tuple.Pair;
 
-//TODO: Add our own "func_230480_a_" type thing for elements that are just "drawn" but don't actually have any logic behind them
+//TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
 
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
@@ -64,8 +64,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
+    public void init() {
+        super.init();
         initPreSlots();
         if (dynamicSlots) {
             addSlots();
@@ -73,9 +73,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void func_231023_e_() {
-        super.func_231023_e_();
-        field_230705_e_.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
+    public void tick() {
+        super.tick();
+        children.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
     }
 
     protected void initPreSlots() {
@@ -105,7 +105,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public void focusChange(GuiElement changed) {
-        focusListeners.stream().filter(e -> e != changed).forEach(e -> e.func_230996_d_(false));
+        focusListeners.stream().filter(e -> e != changed).forEach(e -> e.setFocused(false));
     }
 
     @Override
@@ -113,7 +113,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int index = focusListeners.indexOf(current);
         if (index != -1) {
             GuiElement next = focusListeners.get((index + 1) % focusListeners.size());
-            next.func_230996_d_(true);
+            next.setFocused(true);
             focusChange(next);
         }
     }
@@ -124,10 +124,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void func_231152_a_(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
+    public void resize(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
         List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
-        for (int i = 0; i < field_230710_m_.size(); i++) {
-            Widget widget = field_230710_m_.get(i);
+        for (int i = 0; i < buttons.size(); i++) {
+            Widget widget = buttons.get(i);
             if (widget instanceof GuiElement && ((GuiElement) widget).hasPersistentData()) {
                 prevElements.add(Pair.of(i, (GuiElement) widget));
             }
@@ -135,16 +135,16 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // flush the focus listeners list unless it's an overlay
         focusListeners.removeIf(element -> !element.isOverlay);
         int prevLeft = getGuiLeft(), prevTop = getGuiTop();
-        super.func_231152_a_(minecraft, sizeX, sizeY);
+        super.resize(minecraft, sizeX, sizeY);
 
         windows.forEach(window -> {
             window.resize(prevLeft, prevTop, getGuiLeft(), getGuiTop());
-            field_230705_e_.add(window);
+            children.add(window);
         });
 
         prevElements.forEach(e -> {
-            if (e.getLeft() < field_230710_m_.size()) {
-                Widget widget = field_230710_m_.get(e.getLeft());
+            if (e.getLeft() < buttons.size()) {
+                Widget widget = buttons.get(e.getLeft());
                 // we're forced to assume that the children list is the same before and after the resize.
                 // for verification, we run a lightweight class equality check
                 // Note: We do not perform an instance check on widget to ensure it is a GuiElement, as that is
@@ -168,7 +168,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // first render general foregrounds
         maxZOffset = 200;
         int zOffset = 200;
-        for (Widget widget : this.field_230710_m_) {
+        for (Widget widget : this.buttons) {
             if (widget instanceof GuiElement) {
                 matrix.push();
                 ((GuiElement) widget).onRenderForeground(matrix, mouseX, mouseY, zOffset, zOffset);
@@ -192,9 +192,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // then render tooltips, translating above max z offset to prevent clashing
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
         if (tooltipElement == null) {
-            for (int i = field_230710_m_.size() - 1; i >= 0; i--) {
-                Widget widget = field_230710_m_.get(i);
-                if (widget instanceof GuiElement && widget.func_231047_b_(mouseX, mouseY)) {
+            for (int i = buttons.size() - 1; i >= 0; i--) {
+                Widget widget = buttons.get(i);
+                if (widget instanceof GuiElement && widget.isMouseOver(mouseX, mouseY)) {
                     tooltipElement = (GuiElement) widget;
                     break;
                 }
@@ -207,7 +207,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         RenderSystem.translatef(0, 0, maxZOffset);
 
         if (tooltipElement != null) {
-            tooltipElement.func_230443_a_(matrix, xAxis, yAxis);
+            tooltipElement.renderToolTip(matrix, xAxis, yAxis);
         }
 
         // render item tooltips
@@ -230,15 +230,15 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         hasClicked = true;
         // first try to send the mouse event to our overlays
         GuiWindow top = windows.size() > 0 ? windows.iterator().next() : null;
-        GuiWindow focused = windows.stream().filter(overlay -> overlay.func_231044_a_(mouseX, mouseY, button)).findFirst().orElse(null);
+        GuiWindow focused = windows.stream().filter(overlay -> overlay.mouseClicked(mouseX, mouseY, button)).findFirst().orElse(null);
         if (focused != null) {
-            func_231035_a_(focused);
+            setFocused(focused);
             if (button == 0) {
-                func_231037_b__(true);
+                setDragging(true);
             }
             // this check prevents us from moving the window to the top of the stack if the clicked window opened up an additional window
             if (top != focused) {
@@ -247,50 +247,50 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             return true;
         }
         // otherwise we send it to the current element
-        for (int i = field_230710_m_.size() - 1; i >= 0; i--) {
-            IGuiEventListener listener = field_230710_m_.get(i);
-            if (listener.func_231044_a_(mouseX, mouseY, button)) {
-                func_231035_a_(listener);
+        for (int i = buttons.size() - 1; i >= 0; i--) {
+            IGuiEventListener listener = buttons.get(i);
+            if (listener.mouseClicked(mouseX, mouseY, button)) {
+                setFocused(listener);
                 if (button == 0) {
-                    func_231037_b__(true);
+                    setDragging(true);
                 }
                 return true;
             }
         }
-        return super.func_231044_a_(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean func_231048_c_(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (hasClicked) {
             // always pass mouse released events to windows for drag checks
-            windows.forEach(w -> w.func_231000_a__(mouseX, mouseY));
-            return super.func_231048_c_(mouseX, mouseY, button);
+            windows.forEach(w -> w.onRelease(mouseX, mouseY));
+            return super.mouseReleased(mouseX, mouseY, button);
         }
         return false;
     }
 
     @Override
-    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
-        return windows.stream().anyMatch(window -> window.func_231046_a_(keyCode, scanCode, modifiers)) ||
-               GuiUtils.checkChildren(field_230710_m_, (child) -> child.func_231046_a_(keyCode, scanCode, modifiers)) ||
-               super.func_231046_a_(keyCode, scanCode, modifiers);
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        return windows.stream().anyMatch(window -> window.keyPressed(keyCode, scanCode, modifiers)) ||
+               GuiUtils.checkChildren(buttons, (child) -> child.keyPressed(keyCode, scanCode, modifiers)) ||
+               super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public boolean func_231042_a_(char c, int keyCode) {
-        return windows.stream().anyMatch(window -> window.func_231042_a_(c, keyCode)) ||
-               GuiUtils.checkChildren(field_230710_m_, (child) -> child.func_231042_a_(c, keyCode)) ||
-               super.func_231042_a_(c, keyCode);
+    public boolean charTyped(char c, int keyCode) {
+        return windows.stream().anyMatch(window -> window.charTyped(c, keyCode)) ||
+               GuiUtils.checkChildren(buttons, (child) -> child.charTyped(c, keyCode)) ||
+               super.charTyped(c, keyCode);
     }
 
     /**
      * @apiNote mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance.
      */
     @Override
-    public boolean func_231045_a_(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
-        super.func_231045_a_(mouseX, mouseY, button, mouseXOld, mouseYOld);
-        return func_241217_q_() != null && func_231041_ay__() && button == 0 && func_241217_q_().func_231045_a_(mouseX, mouseY, button, mouseXOld, mouseYOld);
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
+        super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+        return getFocused() != null && isDragging() && button == 0 && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }
 
     protected boolean isMouseOverSlot(Slot slot, double mouseX, double mouseY) {
@@ -302,7 +302,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // overridden to prevent slot interactions when a GuiElement is blocking
         return super.isPointInRegion(x, y, width, height, mouseX, mouseY) &&
                getWindowHovering(mouseX, mouseY) == null &&
-               field_230710_m_.stream().noneMatch(button -> button.func_231047_b_(mouseX, mouseY));
+               buttons.stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
     }
 
     protected void addSlots() {
@@ -335,9 +335,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                     int index = i;
                     guiSlot.validity(() -> checkValidity(index));
                 }
-                func_230480_a_(guiSlot);
+                addButton(guiSlot);
             } else {
-                func_230480_a_(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
+                addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
             }
         }
     }
@@ -362,7 +362,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
-        if (field_230708_k_ < 8 || field_230709_l_ < 8) {
+        if (width < 8 || height < 8) {
             Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;
         }
@@ -371,31 +371,31 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public FontRenderer getFont() {
-        return field_230712_o_;
+        return font;
     }
 
     @Override
-    public void func_230430_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         // shift back a whole lot so we can stack more windows
         RenderSystem.translated(0, 0, -500);
         matrix.push();
-        func_230446_a_(matrix);
+        renderBackground(matrix);
         //Apply our matrix stack to the render system and pass an unmodified one to the super method
         // Vanilla still renders the items into the GUI using render system transformations so this
         // is required to not have tooltips of GuiElements rendering behind the items
-        super.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
+        super.render(matrix, mouseX, mouseY, partialTicks);
         matrix.pop();
         RenderSystem.translated(0, 0, 500);
     }
 
     @Override
     public void renderItemTooltip(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
-        func_230457_a_(matrix, stack, xAxis, yAxis);
+        renderTooltip(matrix, stack, xAxis, yAxis);
     }
 
     @Override
     public ItemRenderer getItemRenderer() {
-        return field_230707_j_;
+        return itemRenderer;
     }
 
     protected static String formatInt(long l) {
@@ -415,7 +415,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Nullable
     @Override
     public GuiWindow getWindowHovering(double mouseX, double mouseY) {
-        return windows.stream().filter(w -> w.func_231047_b_(mouseX, mouseY)).findFirst().orElse(null);
+        return windows.stream().filter(w -> w.isMouseOver(mouseX, mouseY)).findFirst().orElse(null);
     }
 
     public Collection<GuiWindow> getWindows() {
@@ -423,7 +423,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     public List<IGuiEventListener> children() {
-        return field_230705_e_;
+        return children;
     }
 
     public LRU<GuiWindow>.LRUIterator getWindowsDescendingIterator() {

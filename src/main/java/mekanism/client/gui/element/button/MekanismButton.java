@@ -37,16 +37,16 @@ public class MekanismButton extends GuiElement {
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         onLeftClick();
     }
 
     @Override
-    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         //From AbstractButton
-        if (this.field_230693_o_ && this.field_230694_p_ && this.func_230999_j_()) {
+        if (this.active && this.visible && this.isFocused()) {
             if (keyCode == 257 || keyCode == 32 || keyCode == 335) {
-                func_230988_a_(Minecraft.getInstance().getSoundHandler());
+                playDownSound(Minecraft.getInstance().getSoundHandler());
                 onLeftClick();
                 return true;
             }
@@ -55,21 +55,21 @@ public class MekanismButton extends GuiElement {
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         if (onHover != null) {
             onHover.onHover(this, matrix, mouseX, mouseY);
         }
     }
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
-        if (super.func_231044_a_(mouseX, mouseY, button)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (super.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
-        if (this.field_230693_o_ && this.field_230694_p_ && func_230449_g_()) {
+        if (this.active && this.visible && isHovered()) {
             if (button == 1) {
                 //Right clicked
-                func_230988_a_(Minecraft.getInstance().getSoundHandler());
+                playDownSound(Minecraft.getInstance().getSoundHandler());
                 onRightClick();
                 return true;
             }

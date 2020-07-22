@@ -31,14 +31,14 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(Tags.Items.NETHERRACK),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.FUNGI, 10),
-              new ItemStack(Blocks.field_235381_mu_)
+              new ItemStack(Blocks.CRIMSON_NYLIUM)
         ).build(consumer, Mekanism.rl(basePath + "netherrack_to_crimson_nylium"));
         //Crimson nylium -> warped nylium
         //Note: We use crimson as the base so that it is easy to "specify" which output is desired
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
-              ItemStackIngredient.from(Blocks.field_235381_mu_),
+              ItemStackIngredient.from(Blocks.CRIMSON_NYLIUM),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.FUNGI, 10),
-              new ItemStack(Blocks.field_235372_ml_)
+              new ItemStack(Blocks.WARPED_NYLIUM)
         ).build(consumer, Mekanism.rl(basePath + "crimson_nylium_to_warped_nylium"));
         //Dirt -> podzol
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
@@ -54,9 +54,9 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "sand_to_dirt"));
         //Blackstone -> Gilded Blackstone
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
-              ItemStackIngredient.from(Blocks.field_235406_np_),
+              ItemStackIngredient.from(Blocks.BLACKSTONE),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.GOLD, 100),
-              new ItemStack(Blocks.field_235387_nA_)
+              new ItemStack(Blocks.GILDED_BLACKSTONE)
         ).build(consumer, Mekanism.rl(basePath + "blackstone_to_gilded_blackstone"));
     }
 

@@ -21,7 +21,7 @@ public class FilterSelectButton extends MekanismButton {
     private final boolean down;
 
     public FilterSelectButton(IGuiWrapper gui, int x, int y, boolean down, Runnable onPress, IHoverable onHover) {
-        super(gui, x, y, 11, 7, StringTextComponent.field_240750_d_, onPress, onHover);
+        super(gui, x, y, 11, 7, StringTextComponent.EMPTY, onPress, onHover);
         this.down = down;
     }
 
@@ -38,16 +38,16 @@ public class FilterSelectButton extends MekanismButton {
         int x = getButtonX();
         int y = getButtonY();
         MekanismRenderer.bindTexture(ARROWS);
-        func_238463_a_(matrix, x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(matrix, x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         RenderSystem.disableBlend();
     }
 
     @Override
-    public boolean func_231047_b_(double xAxis, double yAxis) {
-        if (super.func_231047_b_(xAxis, yAxis)) {
+    public boolean isMouseOver(double xAxis, double yAxis) {
+        if (super.isMouseOver(xAxis, yAxis)) {
             //First we do a basic check to see if we are over the button if it was a rectangle rather than a triangle.
-            double xShifted = xAxis - field_230690_l_;
-            double yShifted = yAxis - field_230691_m_;
+            double xShifted = xAxis - x;
+            double yShifted = yAxis - y;
             //Next we check it against the shapes of the different buttons
             if (down) {
                 if (yShifted < 2) {

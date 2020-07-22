@@ -29,16 +29,16 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, M
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiRedstoneControlTab(this, tile));
-        func_230480_a_(new GuiSecurityTab<>(this, tile));
-        func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(
+    public void init() {
+        super.init();
+        addButton(new GuiRedstoneControlTab(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiEnergyTab(() -> Arrays.asList(
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProducingEnergy())),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
-        func_230480_a_(new GuiFluidGauge(() -> tile.lavaTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 55, 18));
-        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        func_230480_a_(new GuiHeatTab(() -> {
+        addButton(new GuiFluidGauge(() -> tile.lavaTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 55, 18));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        addButton(new GuiHeatTab(() -> {
             ITextComponent temp = MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true);
             ITextComponent transfer = MekanismUtils.getTemperatureDisplay(tile.getLastTransferLoss(), TemperatureUnit.KELVIN, false);
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);

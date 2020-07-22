@@ -18,13 +18,13 @@ public class GuiTextureOnlyElement extends GuiTexturedElement {
         super(resource, gui, x, y, width, height);
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
-        field_230693_o_ = false;
+        active = false;
     }
 
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, textureWidth, textureHeight);
+        blit(matrix, x, y, 0, 0, width, height, textureWidth, textureHeight);
     }
 }

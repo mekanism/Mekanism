@@ -36,27 +36,27 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiInnerScreen(this, 48, 23, 80, 42, () -> Arrays.asList(
+    public void init() {
+        super.init();
+        addButton(new GuiInnerScreen(this, 48, 23, 80, 42, () -> Arrays.asList(
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
               MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick()))
         )).clearFormat());
-        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        func_230480_a_(new GuiSecurityTab<>(this, tile));
-        func_230480_a_(new GuiRedstoneControlTab(this, tile));
-        func_230480_a_(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        func_230480_a_(new GuiHeatTab(() -> {
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiRedstoneControlTab(this, tile));
+        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        addButton(new GuiHeatTab(() -> {
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));
 
-        func_230480_a_(energyUsageField = new GuiTextField(this, 50, 51, 76, 12));
+        addButton(energyUsageField = new GuiTextField(this, 50, 51, 76, 12));
         energyUsageField.setText(energyUsageField.getText());
         energyUsageField.setMaxStringLength(7);
         energyUsageField.setInputValidator(InputValidator.DIGIT);
         energyUsageField.configureDigitalInput(this::setEnergyUsage);
-        energyUsageField.func_230996_d_(true);
+        energyUsageField.setFocused(true);
     }
 
     @Override

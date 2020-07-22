@@ -67,7 +67,7 @@ public class GuiTextScrollList extends GuiScrollList {
                 int index = scrollIndex + i;
                 if (index < maxElements) {
                     drawScaledTextScaledBound(matrix, new StringTextComponent(textEntries.get(index)), relativeX + 2, relativeY + 2 + elementHeight * i,
-                          screenTextColor(), barX - field_230690_l_ - 2, 0.8F);
+                          screenTextColor(), barX - x - 2, 0.8F);
                 }
             }
         }
@@ -78,7 +78,7 @@ public class GuiTextScrollList extends GuiScrollList {
         //Draw Selected
         int scrollIndex = getCurrentSelection();
         if (selected != -1 && selected >= scrollIndex && selected <= scrollIndex + getFocusedElements() - 1) {
-            func_238466_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1 + (selected - scrollIndex) * elementHeight, barX - field_230690_l_ - 2, elementHeight,
+            blit(matrix, x + 1, y + 1 + (selected - scrollIndex) * elementHeight, barX - x - 2, elementHeight,
                   4, 2, 2, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
     }

@@ -73,7 +73,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         ITextComponent securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, isItem ? SecurityUtils.getSecurity(getItem(), Dist.CLIENT)
                                                                                                          : SecurityUtils.getSecurity(tile, Dist.CLIENT));
         ITextComponent ownerComponent = OwnerDisplay.of(minecraft.player, getOwner(), getOwnerUsername()).getTextComponent();
@@ -129,7 +129,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         if (MekanismConfig.general.allowProtection.get()) {
             UUID owner = getOwner();
             if (owner != null && minecraft.player.getUniqueID().equals(owner)) {

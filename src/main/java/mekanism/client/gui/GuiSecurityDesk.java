@@ -55,22 +55,22 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     @Override
     protected void initPreSlots() {
-        func_230480_a_(new GuiElementHolder(this, 141, 13, 26, 37));
-        func_230480_a_(new GuiElementHolder(this, 141, 54, 26, 34));
-        func_230480_a_(new GuiElementHolder(this, 141, 92, 26, 37));
+        addButton(new GuiElementHolder(this, 141, 13, 26, 37));
+        addButton(new GuiElementHolder(this, 141, 54, 26, 34));
+        addButton(new GuiElementHolder(this, 141, 92, 26, 37));
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 17));
-        func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
-        func_230480_a_(new GuiSecurityLight(this, 144, 77, () -> tile.getFreq() == null || tile.ownerUUID == null ||
+    public void init() {
+        super.init();
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 17));
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
+        addButton(new GuiSecurityLight(this, 144, 77, () -> tile.getFreq() == null || tile.ownerUUID == null ||
                                                                  !tile.ownerUUID.equals(getMinecraft().player.getUniqueID()) ? 2 : tile.getFreq().isOverridden() ? 0 : 1));
-        func_230480_a_(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
-        func_230480_a_(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
-        func_230480_a_(scrollList = new GuiTextScrollList(this, 13, 13, 122, 42));
-        func_230480_a_(removeButton = new TranslationButton(this, getGuiLeft() + 13, getGuiTop() + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
+        addButton(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
+        addButton(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
+        addButton(scrollList = new GuiTextScrollList(this, 13, 13, 122, 42));
+        addButton(removeButton = new TranslationButton(this, getGuiLeft() + 13, getGuiTop() + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
             int selection = scrollList.getSelection();
             if (tile.getFreq() != null && selection != -1) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.REMOVE_TRUSTED, tile, selection));
@@ -78,28 +78,28 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                 updateButtons();
             }
         }));
-        func_230480_a_(trustedField = new GuiTextField(this, 35, 68, 99, 11));
+        addButton(trustedField = new GuiTextField(this, 35, 68, 99, 11));
         trustedField.setMaxStringLength(PacketAddTrusted.MAX_NAME_LENGTH);
         trustedField.setBackground(BackgroundType.INNER_SCREEN);
         trustedField.setEnterHandler(this::setTrusted);
         trustedField.setInputValidator(c -> SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c));
         trustedField.addCheckmarkButton(this::setTrusted);
-        func_230480_a_(publicButton = new MekanismImageButton(this, getGuiLeft() + 13, getGuiTop() + 113, 40, 16, 40, 16, getButtonLocation("public"),
+        addButton(publicButton = new MekanismImageButton(this, getGuiLeft() + 13, getGuiTop() + 113, 40, 16, 40, 16, getButtonLocation("public"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PUBLIC.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.PUBLIC_MODE)));
-        func_230480_a_(privateButton = new MekanismImageButton(this, getGuiLeft() + 54, getGuiTop() + 113, 40, 16, 40, 16, getButtonLocation("private"),
+        addButton(privateButton = new MekanismImageButton(this, getGuiLeft() + 54, getGuiTop() + 113, 40, 16, 40, 16, getButtonLocation("private"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PRIVATE.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.PRIVATE_MODE)));
-        func_230480_a_(trustedButton = new MekanismImageButton(this, getGuiLeft() + 95, getGuiTop() + 113, 40, 16, 40, 16, getButtonLocation("trusted"),
+        addButton(trustedButton = new MekanismImageButton(this, getGuiLeft() + 95, getGuiTop() + 113, 40, 16, 40, 16, getButtonLocation("trusted"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.TRUSTED.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.TRUSTED_MODE)));
-        func_230480_a_(overrideButton = new MekanismImageButton(this, getGuiLeft() + 146, getGuiTop() + 59, 16, 16, getButtonLocation("exclamation"),
+        addButton(overrideButton = new MekanismImageButton(this, getGuiLeft() + 146, getGuiTop() + 59, 16, 16, getButtonLocation("exclamation"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, tile));
                   updateButtons();
@@ -130,32 +130,32 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         SecurityFrequency freq = tile.getFreq();
         if (tile.ownerUUID != null) {
             scrollList.setText(tile.getFreq() == null ? Collections.emptyList() : tile.getFreq().getTrustedUsernameCache());
-            removeButton.field_230693_o_ = scrollList.hasSelection();
+            removeButton.active = scrollList.hasSelection();
         }
 
         if (freq != null && tile.ownerUUID != null && tile.ownerUUID.equals(getMinecraft().player.getUniqueID())) {
-            publicButton.field_230693_o_ = freq.getSecurityMode() != SecurityMode.PUBLIC;
-            privateButton.field_230693_o_ = freq.getSecurityMode() != SecurityMode.PRIVATE;
-            trustedButton.field_230693_o_ = freq.getSecurityMode() != SecurityMode.TRUSTED;
-            overrideButton.field_230693_o_ = true;
+            publicButton.active = freq.getSecurityMode() != SecurityMode.PUBLIC;
+            privateButton.active = freq.getSecurityMode() != SecurityMode.PRIVATE;
+            trustedButton.active = freq.getSecurityMode() != SecurityMode.TRUSTED;
+            overrideButton.active = true;
         } else {
-            publicButton.field_230693_o_ = false;
-            privateButton.field_230693_o_ = false;
-            trustedButton.field_230693_o_ = false;
-            overrideButton.field_230693_o_ = false;
+            publicButton.active = false;
+            privateButton.active = false;
+            trustedButton.active = false;
+            overrideButton.active = false;
         }
     }
 
     @Override
-    public void func_231023_e_() {
-        super.func_231023_e_();
+    public void tick() {
+        super.tick();
         updateButtons();
     }
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         updateButtons();
-        return super.func_231044_a_(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

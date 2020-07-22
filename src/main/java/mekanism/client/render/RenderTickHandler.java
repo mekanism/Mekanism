@@ -152,8 +152,8 @@ public class RenderTickHandler {
                 MatrixStack matrix = event.getMatrixStack();
                 GuiUtils.renderExtendedTexture(matrix, GuiBar.BAR, 2, 2, x, y, 81, 6);
                 minecraft.getTextureManager().bindTexture(POWER_BAR);
-                AbstractGui.func_238466_a_(matrix, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
-                minecraft.getTextureManager().bindTexture(ForgeIngameGui.field_230665_h_);
+                AbstractGui.blit(matrix, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
+                minecraft.getTextureManager().bindTexture(ForgeIngameGui.GUI_ICONS_LOCATION);
                 ForgeIngameGui.left_height += 8;
             }
         }

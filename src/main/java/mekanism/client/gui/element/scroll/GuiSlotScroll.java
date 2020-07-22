@@ -42,7 +42,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getSlotList() == null ? SLOTS_DARK : SLOTS);
-        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
+        blit(matrix, x, y, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
 
         List<IScrollableSlot> list = getSlotList();
         if (list != null) {
@@ -53,7 +53,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
                 if (slot >= list.size()) {
                     break;
                 }
-                int slotX = field_230690_l_ + (i % xSlots) * 18, slotY = field_230691_m_ + (i / xSlots) * 18;
+                int slotX = x + (i % xSlots) * 18, slotY = y + (i / xSlots) * 18;
                 renderSlot(matrix, list.get(slot), slotX, slotY);
             }
         }
@@ -67,14 +67,14 @@ public class GuiSlotScroll extends GuiRelativeElement {
         if (slotX >= 0 && slotY >= 0 && slotX < xSlots && slotY < ySlots) {
             int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
             if (xAxis >= slotStartX && xAxis < slotStartX + 16 && yAxis >= slotStartY && yAxis < slotStartY + 16) {
-                func_238467_a_(matrix, slotStartX, slotStartY, slotStartX + 16, slotStartY + 16, GuiSlot.DEFAULT_HOVER_COLOR);
+                fill(matrix, slotStartX, slotStartY, slotStartX + 16, slotStartY + 16, GuiSlot.DEFAULT_HOVER_COLOR);
                 MekanismRenderer.resetColor();
             }
         }
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int xAxis, int yAxis) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int xAxis, int yAxis) {
         IScrollableSlot slot = getSlot(xAxis, yAxis, relativeX, relativeY);
         if (slot != null) {
             renderSlotTooltip(matrix, slot, xAxis, yAxis);
@@ -82,15 +82,15 @@ public class GuiSlotScroll extends GuiRelativeElement {
     }
 
     @Override
-    public boolean func_231043_a_(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.func_231043_a_(mouseX, mouseY, delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override
-    public boolean func_231048_c_(double mouseX, double mouseY, int button) {
-        super.func_231048_c_(mouseX, mouseY, button);
-        IScrollableSlot slot = getSlot(mouseX, mouseY, field_230690_l_, field_230691_m_);
-        clickHandler.onClick(slot, button, Screen.func_231173_s_(), minecraft.player.inventory.getItemStack());
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        super.mouseReleased(mouseX, mouseY, button);
+        IScrollableSlot slot = getSlot(mouseX, mouseY, x, y);
+        clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.inventory.getItemStack());
         return true;
     }
 

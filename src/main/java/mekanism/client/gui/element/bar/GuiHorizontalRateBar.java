@@ -20,6 +20,6 @@ public class GuiHorizontalRateBar extends GuiBar<IBarInfoHandler> {
     @Override
     protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         int displayInt = (int) (getHandler().getLevel() * texWidth);
-        func_238463_a_(matrix, field_230690_l_ + 1, field_230691_m_ + 1, 0, 0, displayInt, texHeight, texWidth, texHeight);
+        blit(matrix, x + 1, y + 1, 0, 0, displayInt, texHeight, texWidth, texHeight);
     }
 }

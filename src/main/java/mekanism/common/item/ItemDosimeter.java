@@ -30,7 +30,7 @@ public class ItemDosimeter extends Item {
         if (!player.isSneaking() && !world.isRemote()) {
             player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c ->
                   player.sendMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(c.getRadiation()),
-                        UnitDisplayUtils.getDisplayShort(c.getRadiation(), RadiationUnit.SV, 3)), Util.field_240973_b_));
+                        UnitDisplayUtils.getDisplayShort(c.getRadiation(), RadiationUnit.SV, 3)), Util.DUMMY_UUID));
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         return new ActionResult<>(ActionResultType.PASS, stack);

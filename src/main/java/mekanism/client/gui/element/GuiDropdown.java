@@ -26,24 +26,24 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         this.curType = curType;
         this.handler = handler;
         this.options = enumClass.getEnumConstants();
-        this.field_230693_o_ = true;
+        this.active = true;
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
-        super.func_230982_a_(mouseX, mouseY);
+    public void onClick(double mouseX, double mouseY) {
+        super.onClick(mouseX, mouseY);
         isHolding = true;
-        setOpen(!isOpen || !(mouseY <= field_230691_m_ + 11));
+        setOpen(!isOpen || !(mouseY <= y + 11));
         minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
     }
 
     @Override
-    public void func_231000_a__(double mouseX, double mouseY) {
-        super.func_231000_a__(mouseX, mouseY);
+    public void onRelease(double mouseX, double mouseY) {
+        super.onRelease(mouseX, mouseY);
 
         if (isHolding) {
             isHolding = false;
-            if (isOpen && mouseY > field_230691_m_ + 11) {
+            if (isOpen && mouseY > y + 11) {
                 handler.accept(options[getHoveredIndex(mouseX, mouseY)]);
                 setOpen(false);
             }
@@ -71,13 +71,13 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
 
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
-            GuiUtils.drawOutline(matrix, field_230690_l_ + 1, field_230691_m_ + 12 + index * 10, field_230688_j_ - 2, 10, screenTextColor());
+            GuiUtils.drawOutline(matrix, x + 1, y + 12 + index * 10, width - 2, 10, screenTextColor());
         }
 
         TYPE current = curType.get();
         if (current.getIcon() != null) {
             minecraft.textureManager.bindTexture(current.getIcon());
-            func_238463_a_(matrix, field_230690_l_ + field_230688_j_ - 9, field_230691_m_ + 3, 0, 0, 6, 6, 6, 6);
+            blit(matrix, x + width - 9, y + 3, 0, 0, 6, 6, 6, 6);
         }
 
         if (isOpen) {
@@ -85,14 +85,14 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
                 ResourceLocation icon = options[i].getIcon();
                 if (icon != null) {
                     minecraft.textureManager.bindTexture(options[i].getIcon());
-                    func_238463_a_(matrix, field_230690_l_ + field_230688_j_ - 9, field_230691_m_ + 12 + 2 + 10 * i, 0, 0, 6, 6, 6, 6);
+                    blit(matrix, x + width - 9, y + 12 + 2 + 10 * i, 0, 0, 6, 6, 6, 6);
                 }
             }
         }
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         int index = getHoveredIndex(mouseX + guiObj.getLeft(), mouseY + guiObj.getTop());
         if (index != -1) {
             ITextComponent text = options[index].getTooltip();
@@ -103,8 +103,8 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     }
 
     private int getHoveredIndex(double mouseX, double mouseY) {
-        if (isOpen && mouseX >= field_230690_l_ && mouseX < field_230690_l_ + field_230688_j_ && mouseY >= field_230691_m_ + 11 && mouseY < field_230691_m_ + field_230689_k_) {
-            return Math.max(0, Math.min(options.length - 1, (int) ((mouseY - field_230691_m_ - 11) / 10)));
+        if (isOpen && mouseX >= x && mouseX < x + width && mouseY >= y + 11 && mouseY < y + height) {
+            return Math.max(0, Math.min(options.length - 1, (int) ((mouseY - y - 11) / 10)));
         }
         return -1;
     }
@@ -112,9 +112,9 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     private void setOpen(boolean open) {
         if (isOpen != open) {
             if (open) {
-                field_230689_k_ += options.length * 10 + 1;
+                height += options.length * 10 + 1;
             } else {
-                field_230689_k_ -= options.length * 10 + 1;
+                height -= options.length * 10 + 1;
             }
         }
         isOpen = open;

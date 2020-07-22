@@ -28,13 +28,13 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiElementHolder(this, 16, 31, 130, 90));
-        func_230480_a_(scrollBar = new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
+    public void init() {
+        super.init();
+        addButton(new GuiElementHolder(this, 16, 31, 130, 90));
+        addButton(scrollBar = new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
-            func_230480_a_(new ReactorLogicButton<>(this, getGuiLeft() + 17, getGuiTop() + 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, (type) -> {
+            addButton(new ReactorLogicButton<>(this, getGuiLeft() + 17, getGuiTop() + 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, (type) -> {
                 if (type == null) {
                     return;
                 }
@@ -52,7 +52,7 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
     }
 
     @Override
-    public boolean func_231043_a_(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.func_231043_a_(mouseX, mouseY, delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 }

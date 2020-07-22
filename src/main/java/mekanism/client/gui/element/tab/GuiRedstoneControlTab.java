@@ -30,12 +30,12 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         displayTooltip(matrix, ((IRedstoneControl) tile).getControlType().getTextComponent(), mouseX, mouseY);
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_REDSTONE_CONTROL, tile));
     }
 

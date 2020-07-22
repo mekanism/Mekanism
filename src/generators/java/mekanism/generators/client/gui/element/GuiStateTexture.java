@@ -27,8 +27,8 @@ public class GuiStateTexture extends GuiTexturedElement {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
+        blit(matrix, x, y, 0, 0, width, height, width, height);
         minecraft.textureManager.bindTexture(onSupplier.getAsBoolean() ? onTexture : offTexture);
-        func_238463_a_(matrix, field_230690_l_ + 2, field_230691_m_ + 2, 0, 0, field_230688_j_ - 4, field_230689_k_ - 4, field_230688_j_ - 4, field_230689_k_ - 4);
+        blit(matrix, x + 2, y + 2, 0, 0, width - 4, height - 4, width - 4, height - 4);
     }
 }

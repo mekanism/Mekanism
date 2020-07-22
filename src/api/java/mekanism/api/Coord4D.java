@@ -86,7 +86,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      */
     public static Coord4D read(CompoundNBT tag) {
         return new Coord4D(tag.getInt(NBTConstants.X), tag.getInt(NBTConstants.Y), tag.getInt(NBTConstants.Z),
-              RegistryKey.func_240903_a_(Registry.field_239699_ae_, new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
+              RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
     }
 
     /**
@@ -97,7 +97,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @return the Coord4D from the data input
      */
     public static Coord4D read(PacketBuffer dataStream) {
-        return new Coord4D(dataStream.readBlockPos(), RegistryKey.func_240903_a_(Registry.field_239699_ae_, dataStream.readResourceLocation()));
+        return new Coord4D(dataStream.readBlockPos(), RegistryKey.func_240903_a_(Registry.WORLD_KEY, dataStream.readResourceLocation()));
     }
 
     /**

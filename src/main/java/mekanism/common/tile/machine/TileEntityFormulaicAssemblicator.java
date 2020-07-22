@@ -555,8 +555,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     @Override
-    public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.func_230337_a_(state, nbtTags);
+    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.read(state, nbtTags);
         autoMode = nbtTags.getBoolean(NBTConstants.AUTO);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
         pulseOperations = nbtTags.getInt(NBTConstants.PULSE);

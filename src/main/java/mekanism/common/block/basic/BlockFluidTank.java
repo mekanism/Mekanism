@@ -30,7 +30,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> implements IColoredBlock {
 
     public BlockFluidTank(Machine<TileEntityFluidTank> type) {
-        super(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).func_235861_h_());
+        super(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).setRequiresTool());
     }
 
     @Override

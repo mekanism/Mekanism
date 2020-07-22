@@ -20,7 +20,7 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
         this.typeSupplier = typeSupplier;
         this.typeSetter = typeSetter;
         this.options = enumClass.getEnumConstants();
-        field_230693_o_ = true;
+        active = true;
     }
 
     @Override
@@ -28,18 +28,18 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         TYPE type = typeSupplier.get();
         minecraft.textureManager.bindTexture(type.getIcon());
-        func_238463_a_(matrix, field_230690_l_ + 3, field_230691_m_ + 3, 0, 0, field_230688_j_ - 6, field_230689_k_ - 6, 6, 6);
+        blit(matrix, x + 3, y + 3, 0, 0, width - 6, height - 6, 6, 6);
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
         TYPE nextType = options[(typeSupplier.get().ordinal() + 1) % options.length];
         typeSetter.accept(nextType);
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         displayTooltip(matrix, typeSupplier.get().getTooltip(), mouseX, mouseY);
     }
 }

@@ -28,8 +28,8 @@ public class MekanismRenderType extends RenderType {
     );
 
     //Ignored
-    private MekanismRenderType(String name, VertexFormat format, int p_i225992_3_, int p_i225992_4_, boolean p_i225992_5_, boolean p_i225992_6_, Runnable runnablePre, Runnable runnablePost) {
-        super(name, format, p_i225992_3_, p_i225992_4_, p_i225992_5_, p_i225992_6_, runnablePre, runnablePost);
+    private MekanismRenderType(String name, VertexFormat format, int drawMode, int bufferSize, boolean useDelegate, boolean needsSorting, Runnable runnablePre, Runnable runnablePost) {
+        super(name, format, drawMode, bufferSize, useDelegate, needsSorting, runnablePre, runnablePost);
     }
 
     public static RenderType mekStandard(ResourceLocation resourceLocation) {

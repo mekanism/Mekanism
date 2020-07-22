@@ -17,14 +17,14 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiQIOFrequencyTab(this, container.getHand()));
+    public void init() {
+        super.init();
+        addButton(new GuiQIOFrequencyTab(this, container.getHand()));
     }
 
     @Override
     public GuiQIOItemViewer<PortableQIODashboardContainer> recreate(PortableQIODashboardContainer container) {
-        return new GuiPortableQIODashboard(container, playerInventory, field_230704_d_);
+        return new GuiPortableQIODashboard(container, playerInventory, title);
     }
 
     @Override

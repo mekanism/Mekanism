@@ -42,17 +42,17 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiInnerScreen(this, 9, 17, 46, 140));
+    public void init() {
+        super.init();
+        addButton(new GuiInnerScreen(this, 9, 17, 46, 140));
         //Filter holder
-        func_230480_a_(new GuiElementHolder(this, 55, 17, 98, 118));
+        addButton(new GuiElementHolder(this, 55, 17, 98, 118));
         //new filter button border
-        func_230480_a_(new GuiElementHolder(this, 55, 135, 98, 22));
-        func_230480_a_(scrollBar = new GuiScrollBar(this, 153, 17, 140, () -> getFilters().size(), () -> FILTER_COUNT));
+        addButton(new GuiElementHolder(this, 55, 135, 98, 22));
+        addButton(scrollBar = new GuiScrollBar(this, 153, 17, 140, () -> getFilters().size(), () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            func_230480_a_(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, index -> {
+            addButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, index -> {
                 if (index > 0) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
                 }
@@ -85,8 +85,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected abstract void onClick(IFilter<?> filter, int index);
 
     @Override
-    public boolean func_231043_a_(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.func_231043_a_(mouseX, mouseY, delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     protected abstract List<ItemStack> getTagStacks(String tagName);

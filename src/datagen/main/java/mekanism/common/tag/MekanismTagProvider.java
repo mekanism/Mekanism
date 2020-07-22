@@ -61,8 +61,8 @@ public class MekanismTagProvider extends BaseTagProvider {
         addInfuseTags();
         addPellets();
         getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
-        addToTag(BlockTags.field_232883_ay_, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismBlocks.PERSONAL_CHEST);
-        addToTag(BlockTags.field_232879_au_, MekanismBlocks.TELEPORTER, MekanismBlocks.QUANTUM_ENTANGLOPORTER);
+        addToTag(BlockTags.GUARDED_BY_PIGLINS, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismBlocks.PERSONAL_CHEST);
+        addToTag(BlockTags.HOGLIN_REPELLENTS, MekanismBlocks.TELEPORTER, MekanismBlocks.QUANTUM_ENTANGLOPORTER);
         addToTag(ItemTags.field_232903_N_, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismItems.REFINED_GLOWSTONE_INGOT);
         addToTag(EntityTypeTags.field_232893_e_, MekanismEntityTypes.FLAME);
     }
@@ -104,7 +104,7 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addBeaconTags() {
         //Beacon bases
-        addToTag(BlockTags.field_232875_ap_,
+        addToTag(BlockTags.BEACON_BASE_BLOCKS,
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.COPPER),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.TIN),
@@ -166,8 +166,8 @@ public class MekanismTagProvider extends BaseTagProvider {
                     Blocks.JUNGLE_DOOR,
                     Blocks.ACACIA_DOOR,
                     Blocks.DARK_OAK_DOOR,
-                    Blocks.field_235360_mS_,
-                    Blocks.field_235361_mT_,
+                    Blocks.CRIMSON_DOOR,
+                    Blocks.WARPED_DOOR,
                     Blocks.IRON_DOOR
               );
     }

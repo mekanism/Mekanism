@@ -30,22 +30,22 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
 
     @Override
     protected void initPreSlots() {
-        func_230480_a_(new GuiElementHolder(this, 141, 16, 26, 56));
+        addButton(new GuiElementHolder(this, 141, 16, 26, 56));
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));
-        func_230480_a_(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
-        func_230480_a_(new GuiInnerScreen(this, 49, 21, 84, 46, () -> Arrays.asList(
+    public void init() {
+        super.init();
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));
+        addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
+        addButton(new GuiInnerScreen(this, 49, 21, 84, 46, () -> Arrays.asList(
               MekanismLang.ENERGY.translate(EnergyDisplay.of(tile.getMultiblock().getEnergy())),
               MekanismLang.CAPACITY.translate(EnergyDisplay.of(tile.getMultiblock().getStorageCap())),
               MekanismLang.MATRIX_INPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput()))),
               MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput())))
         )).spacing(2));
-        func_230480_a_(new GuiMatrixTab(this, tile, MatrixTab.STAT));
-        func_230480_a_(new GuiEnergyGauge(new IEnergyInfoHandler() {
+        addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT));
+        addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
             public FloatingLong getEnergy() {
                 return tile.getMultiblock().getEnergy();
@@ -56,7 +56,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
                 return tile.getMultiblock().getStorageCap();
             }
         }, GaugeType.MEDIUM, this, 7, 16, 34, 56));
-        func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getMultiblock().getEnergy(), tile.getMultiblock().getStorageCap())),
+        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getMultiblock().getEnergy(), tile.getMultiblock().getStorageCap())),
               MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput())),
               MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput()))
         ), this));

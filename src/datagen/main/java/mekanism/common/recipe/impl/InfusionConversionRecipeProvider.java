@@ -93,8 +93,8 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.createMulti(
                     ItemStackIngredient.from(Tags.Items.MUSHROOMS),
                     //TODO: If these get added to the mushroom tag then we can remove them from here
-                    ItemStackIngredient.from(Blocks.field_235373_mm_),
-                    ItemStackIngredient.from(Blocks.field_235382_mv_)
+                    ItemStackIngredient.from(Blocks.WARPED_FUNGUS),
+                    ItemStackIngredient.from(Blocks.CRIMSON_FUNGUS)
               ),
               MekanismInfuseTypes.FUNGI.getStack(10)
         ).build(consumer, Mekanism.rl(basePath + "from_mushrooms"));

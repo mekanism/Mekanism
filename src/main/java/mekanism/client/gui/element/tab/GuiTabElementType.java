@@ -16,12 +16,12 @@ public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enu
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         tabType.onClick(tile);
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         displayTooltip(matrix, tabType.getDescription(), mouseX, mouseY);
     }
 }

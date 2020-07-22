@@ -39,9 +39,9 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
         if (resourceLocation == null) {
             //If we failed to get the resource location, try manually looking it up by a "matching" entry
             // as the objects are different and neither Tag nor NamedTag override equals and hashCode
-            List<CHEMICAL> chemicals = tag.func_230236_b_();
+            List<CHEMICAL> chemicals = tag.getAllElements();
             for (Entry<ResourceLocation, ITag<CHEMICAL>> entry : collection.getTagMap().entrySet()) {
-                if (chemicals.equals(entry.getValue().func_230236_b_())) {
+                if (chemicals.equals(entry.getValue().getAllElements())) {
                     resourceLocation = entry.getKey();
                     break;
                 }

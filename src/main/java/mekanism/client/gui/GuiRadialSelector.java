@@ -41,7 +41,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     }
 
     @Override
-    public void func_230430_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTick) {
+    public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTick) {
         // center of screen
         float centerX = minecraft.getMainWindow().getScaledWidth() / 2F;
         float centerY = minecraft.getMainWindow().getScaledHeight() / 2F;
@@ -97,7 +97,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             float y = (float) Math.sin(angle) * (INNER + OUTER) / 2F;
             // draw icon
             minecraft.textureManager.bindTexture(types[i].getIcon());
-            func_238466_a_(matrix, Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
+            blit(matrix, Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
             // draw label
             matrix.push();
             int width = minecraft.fontRenderer.getStringWidth(types[i].getShortText().getString());
@@ -112,24 +112,24 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     }
 
     @Override
-    public void func_231164_f_() {
+    public void removed() {
         updateSelection();
     }
 
     @Override
-    public boolean func_231046_a_(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         // handle & ignore all key events
         return true;
     }
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         updateSelection();
         return true;
     }
 
     @Override
-    public boolean func_231177_au__() {
+    public boolean isPauseScreen() {
         return false;
     }
 

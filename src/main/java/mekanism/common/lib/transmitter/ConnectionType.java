@@ -23,7 +23,7 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, IStringS
     }
 
     @Override
-    public String func_176610_l() {
+    public String getString() {
         return name().toLowerCase(Locale.ROOT);
     }
 

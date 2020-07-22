@@ -23,15 +23,15 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
+    public void init() {
+        super.init();
         if (tile.getMultiblock().isFormed()) {
-            func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(
+            addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(
                   EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy())),
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getMultiblock().getPassiveGeneration(false, true)))), this));
-            func_230480_a_(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
-            func_230480_a_(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
-            func_230480_a_(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
+            addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
+            addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
+            addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
         }
     }
 

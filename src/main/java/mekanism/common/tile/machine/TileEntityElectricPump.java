@@ -290,8 +290,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.func_230337_a_(state, nbtTags);
+    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.read(state, nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
         suckedLastOperation = nbtTags.getBoolean(NBTConstants.SUCKED_LAST_OPERATION);
         NBTUtils.setFluidStackIfPresent(nbtTags, NBTConstants.FLUID_STORED, fluid -> activeType = fluid);
@@ -306,7 +306,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.PUMP_RESET.translateColored(EnumColor.GRAY)), Util.field_240973_b_);
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.PUMP_RESET.translateColored(EnumColor.GRAY)), Util.DUMMY_UUID);
         return ActionResultType.SUCCESS;
     }
 

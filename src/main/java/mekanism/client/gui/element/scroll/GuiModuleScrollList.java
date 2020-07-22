@@ -115,8 +115,8 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        super.func_230443_a_(matrix, mouseX, mouseY);
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         for (int i = 0; i < getFocusedElements(); i++) {
             int index = getCurrentSelection() + i;
             if (index > currentList.size() - 1) {
@@ -142,14 +142,14 @@ public class GuiModuleScrollList extends GuiScrollList {
                 break;
             }
             ModuleData<?> module = currentList.get(index);
-            int shiftedY = field_230691_m_ + 1 + elementHeight * i;
+            int shiftedY = y + 1 + elementHeight * i;
             int j = 1;
             if (module == getSelection()) {
                 j = 2;
-            } else if (mouseX >= field_230690_l_ + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
+            } else if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
                 j = 0;
             }
-            func_238463_a_(matrix, field_230690_l_ + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            blit(matrix, x + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             MekanismRenderer.resetColor();
         }
     }

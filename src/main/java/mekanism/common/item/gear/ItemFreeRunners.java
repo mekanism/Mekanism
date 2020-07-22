@@ -122,7 +122,7 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
             setMode(stack, newMode);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.FREE_RUNNER_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)), Util.field_240973_b_);
+                      MekanismLang.FREE_RUNNER_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)), Util.DUMMY_UUID);
             }
         }
     }

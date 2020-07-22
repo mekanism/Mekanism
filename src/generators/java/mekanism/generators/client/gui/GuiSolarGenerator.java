@@ -28,20 +28,20 @@ public class GuiSolarGenerator<TILE extends TileEntitySolarGenerator> extends Gu
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiInnerScreen(this, 48, 23, 80, 40, () -> Arrays.asList(
+    public void init() {
+        super.init();
+        addButton(new GuiInnerScreen(this, 48, 23, 80, 40, () -> Arrays.asList(
               EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent(),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getLastProductionAmount())),
               GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput()))
         )));
-        func_230480_a_(new GuiRedstoneControlTab(this, tile));
-        func_230480_a_(new GuiSecurityTab<>(this, tile));
-        func_230480_a_(new GuiEnergyTab(() -> Arrays.asList(
+        addButton(new GuiRedstoneControlTab(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiEnergyTab(() -> Arrays.asList(
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getLastProductionAmount())),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
-        func_230480_a_(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        func_230480_a_(new GuiStateTexture(this, 18, 35, tile::canSeeSun, MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "sees_sun.png"),
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        addButton(new GuiStateTexture(this, 18, 35, tile::canSeeSun, MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "sees_sun.png"),
               MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "no_sun.png")));
     }
 

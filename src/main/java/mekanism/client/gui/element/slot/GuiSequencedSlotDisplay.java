@@ -23,7 +23,7 @@ public class GuiSequencedSlotDisplay extends GuiRelativeElement {
         super(gui, x, y, 16, 16);
         this.stackListSupplier = stackListSupplier;
         //Mark it as false for active so that it doesn't intercept click events and ensures that it properly clears it
-        field_230693_o_ = false;
+        active = false;
     }
 
     public GuiSequencedSlotDisplay setZOffset(float zOffset) {
@@ -59,7 +59,7 @@ public class GuiSequencedSlotDisplay extends GuiRelativeElement {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (!renderStack.isEmpty()) {
             guiObj.getItemRenderer().zLevel += zOffset;
-            guiObj.renderItem(matrix, renderStack, field_230690_l_, field_230691_m_);
+            guiObj.renderItem(matrix, renderStack, x, y);
             guiObj.getItemRenderer().zLevel -= zOffset;
         }
     }

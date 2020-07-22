@@ -102,8 +102,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public void func_230337_a_(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.func_230337_a_(state, nbtTags);
+    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.read(state, nbtTags);
         getTransmitter().read(nbtTags);
     }
 
@@ -200,7 +200,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             getTransmitter().onModeChange(Direction.byIndex(hitSide.ordinal()));
             getTransmitter().refreshConnections();
             getTransmitter().notifyTileChange();
-            player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.connectionTypes[hitSide.ordinal()]), Util.field_240973_b_);
+            player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.connectionTypes[hitSide.ordinal()]), Util.DUMMY_UUID);
             sendUpdatePacket();
         }
         return ActionResultType.SUCCESS;

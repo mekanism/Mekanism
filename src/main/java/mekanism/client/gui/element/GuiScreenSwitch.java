@@ -24,26 +24,26 @@ public class GuiScreenSwitch extends GuiInnerScreen {
         super(gui, x, y, width, BUTTON_SIZE_Y * 2 + 5, () -> Collections.singletonList(buttonName));
         this.stateSupplier = stateSupplier;
         this.onToggle = onToggle;
-        field_230693_o_ = true;
+        active = true;
     }
 
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(SWITCH);
-        func_238463_a_(matrix, field_230690_l_ + field_230688_j_ - 2 - BUTTON_SIZE_X, field_230691_m_ + 2, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-        func_238463_a_(matrix, field_230690_l_ + field_230688_j_ - 2 - BUTTON_SIZE_X, field_230691_m_ + 2 + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        blit(matrix, x + width - 2 - BUTTON_SIZE_X, y + 2, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        blit(matrix, x + width - 2 - BUTTON_SIZE_X, y + 2 + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
     }
 
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        drawScaledCenteredText(matrix, MekanismLang.ON.translate(), relativeX + field_230688_j_ - 9, relativeY + 2, 0x101010, 0.5F);
-        drawScaledCenteredText(matrix, MekanismLang.OFF.translate(), relativeX + field_230688_j_ - 9, relativeY + 11, 0x101010, 0.5F);
+        drawScaledCenteredText(matrix, MekanismLang.ON.translate(), relativeX + width - 9, relativeY + 2, 0x101010, 0.5F);
+        drawScaledCenteredText(matrix, MekanismLang.OFF.translate(), relativeX + width - 9, relativeY + 11, 0x101010, 0.5F);
     }
 
     @Override
-    public void func_230982_a_(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY) {
         Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
         onToggle.run();
     }

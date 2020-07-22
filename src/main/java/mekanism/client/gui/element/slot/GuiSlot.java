@@ -33,7 +33,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
     public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y) {
         super(type.getTexture(), gui, x, y, type.getWidth(), type.getHeight());
-        field_230693_o_ = false;
+        active = false;
     }
 
     public GuiSlot validity(Supplier<ItemStack> validityCheck) {
@@ -83,7 +83,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (!renderAboveSlots) {
             draw(matrix, mouseX, mouseY);
         }
@@ -98,13 +98,13 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
     private void draw(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         minecraft.textureManager.bindTexture(getResource());
-        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
+        blit(matrix, x, y, 0, 0, width, height, width, height);
         if (hasValidityCheck) {
             ItemStack invalid = validityCheck.get();
             if (!invalid.isEmpty()) {
-                int xPos = field_230690_l_ + 1;
-                int yPos = field_230691_m_ + 1;
-                func_238467_a_(matrix, xPos, yPos, xPos + 16, yPos + 16, INVALID_SLOT_COLOR);
+                int xPos = x + 1;
+                int yPos = y + 1;
+                fill(matrix, xPos, yPos, xPos + 16, yPos + 16, INVALID_SLOT_COLOR);
                 MekanismRenderer.resetColor();
                 guiObj.renderItem(matrix, invalid, xPos, yPos);
             }
@@ -114,16 +114,16 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
         }
         if (overlay != null) {
             minecraft.textureManager.bindTexture(overlay.getTexture());
-            func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
+            blit(matrix, x, y, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
         }
     }
 
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
-        if (renderHover && func_230449_g_()) {
+        if (renderHover && isHovered()) {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
-            func_238467_a_(matrix, xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
+            fill(matrix, xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
             MekanismRenderer.resetColor();
         }
         if (overlayColorSupplier != null) {
@@ -131,30 +131,30 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
             matrix.translate(0, 0, 10);
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
-            func_238467_a_(matrix, xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
+            fill(matrix, xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
             matrix.translate(0, 0, -10);
             matrix.pop();
             MekanismRenderer.resetColor();
         }
-        if (func_230449_g_()) {
+        if (isHovered()) {
             //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
-            func_230443_a_(matrix, mouseX - guiObj.getLeft(), mouseY - guiObj.getTop());
+            renderToolTip(matrix, mouseX - guiObj.getLeft(), mouseY - guiObj.getTop());
         }
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         if (onHover != null) {
             onHover.onHover(this, matrix, mouseX, mouseY);
         }
     }
 
     @Override
-    public boolean func_231044_a_(double mouseX, double mouseY, int button) {
-        if (onClick != null && func_230987_a_(button)) {
-            if (mouseX >= field_230690_l_ && mouseY >= field_230691_m_ && mouseX < field_230690_l_ + field_230688_j_ && mouseY < field_230691_m_ + field_230689_k_) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (onClick != null && isValidClickButton(button)) {
+            if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height) {
                 onClick.onClick(this, (int) mouseX, (int) mouseY);
-                func_230988_a_(Minecraft.getInstance().getSoundHandler());
+                playDownSound(Minecraft.getInstance().getSoundHandler());
                 return true;
             }
         }

@@ -93,7 +93,7 @@ import org.jetbrains.annotations.Contract;
  */
 public final class MekanismUtils {
 
-    public static final Codec<Direction> DIRECTION_CODEC = IStringSerializable.func_233023_a_(Direction::values, Direction::byName);
+    public static final Codec<Direction> DIRECTION_CODEC = IStringSerializable.createEnumCodec(Direction::values, Direction::byName);
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
 
@@ -987,8 +987,8 @@ public final class MekanismUtils {
         entity.potionsNeedUpdate = true;
         if (reapply && !entity.world.isRemote) {
             Effect effect = id.getPotion();
-            effect.removeAttributesModifiersFromEntity(entity, entity.func_233645_dx_(), id.getAmplifier());
-            effect.applyAttributesModifiersToEntity(entity, entity.func_233645_dx_(), id.getAmplifier());
+            effect.removeAttributesModifiersFromEntity(entity, entity.getAttributeManager(), id.getAmplifier());
+            effect.applyAttributesModifiersToEntity(entity, entity.getAttributeManager(), id.getAmplifier());
         }
     }
 

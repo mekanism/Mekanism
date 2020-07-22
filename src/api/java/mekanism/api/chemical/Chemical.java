@@ -148,7 +148,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
     }
 
     public boolean isIn(ITag<CHEMICAL> tag) {
-        return tag.func_230235_a_(getChemical());
+        return tag.contains(getChemical());
     }
 
     public Set<ResourceLocation> getTags() {

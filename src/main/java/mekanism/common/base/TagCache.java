@@ -48,7 +48,7 @@ public final class TagCache {
         for (ResourceLocation key : keys) {
             ITag<Item> itemTag = tagCollection.get(key);
             if (itemTag != null) {
-                items.addAll(itemTag.func_230236_b_());
+                items.addAll(itemTag.getAllElements());
             }
         }
         List<ItemStack> stacks = items.stream().map(ItemStack::new).collect(Collectors.toList());
@@ -66,7 +66,7 @@ public final class TagCache {
         for (ResourceLocation key : keys) {
             ITag<Block> blockTag = tagCollection.get(key);
             if (blockTag != null) {
-                blocks.addAll(blockTag.func_230236_b_());
+                blocks.addAll(blockTag.getAllElements());
             }
         }
         List<ItemStack> stacks = blocks.stream().map(ItemStack::new).collect(Collectors.toList());

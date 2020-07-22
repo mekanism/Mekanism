@@ -26,13 +26,13 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
-        func_230480_a_(new GuiInnerScreen(this, 48, 23, 80, 28, () -> Arrays.asList(
+    public void init() {
+        super.init();
+        addButton(new GuiInnerScreen(this, 48, 23, 80, 28, () -> Arrays.asList(
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true)),
               MekanismLang.FUEL.translate(tile.burnTime)
         )).defaultFormat());
-        func_230480_a_(new GuiFlame(new IProgressInfoHandler() {
+        addButton(new GuiFlame(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tile.burnTime / (double) tile.maxBurnTime;
@@ -43,8 +43,8 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
                 return tile.burnTime > 0;
             }
         }, this, 144, 31));
-        func_230480_a_(new GuiSecurityTab<>(this, tile));
-        func_230480_a_(new GuiHeatTab(() -> {
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiHeatTab(() -> {
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));

@@ -30,7 +30,7 @@ public class FilterButton extends MekanismButton {
 
     public FilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, Supplier<HashList<? extends IFilter<?>>> filters,
           BiConsumer<IFilter<?>, Integer> onPress) {
-        super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, StringTextComponent.field_240750_d_,
+        super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, StringTextComponent.EMPTY,
               () -> onPress.accept(filters.get().getOrNull(filterIndex.getAsInt() + index), filterIndex.getAsInt() + index), null);
         this.index = index;
         this.filterIndex = filterIndex;
@@ -40,13 +40,13 @@ public class FilterButton extends MekanismButton {
     }
 
     protected void setVisibility(boolean visible) {
-        this.field_230694_p_ = visible;
+        this.visible = visible;
     }
 
     @Override
-    public void func_230430_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         setVisibility(filters.get().getOrNull(filterIndex.getAsInt() + index) != null);
-        super.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
+        super.render(matrix, mouseX, mouseY, partialTicks);
     }
 
     protected void colorButton() {
@@ -57,8 +57,8 @@ public class FilterButton extends MekanismButton {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         colorButton();
         minecraft.textureManager.bindTexture(TEXTURE);
-        func_238466_a_(matrix, field_230690_l_, field_230691_m_, field_230688_j_, field_230689_k_, 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(matrix, x, y, width, height, 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         MekanismRenderer.resetColor();
-        slot.func_230430_a_(matrix, mouseX, mouseY, partialTicks);
+        slot.render(matrix, mouseX, mouseY, partialTicks);
     }
 }

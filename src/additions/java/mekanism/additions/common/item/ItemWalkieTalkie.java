@@ -85,7 +85,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
                 setChannel(stack, newChannel);
                 if (displayChangeMessage) {
                     player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                          AdditionsLang.CHANNEL_CHANGE.translateColored(EnumColor.GRAY, newChannel)), Util.field_240973_b_);
+                          AdditionsLang.CHANNEL_CHANGE.translateColored(EnumColor.GRAY, newChannel)), Util.DUMMY_UUID);
                 }
             }
         }

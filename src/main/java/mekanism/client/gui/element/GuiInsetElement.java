@@ -21,25 +21,25 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiSideHo
         this.innerWidth = innerSize;
         this.innerHeight = innerSize;
         //TODO: decide what to do if this doesn't divide nicely
-        this.border = (field_230688_j_ - innerWidth) / 2;
+        this.border = (width - innerWidth) / 2;
         playClickSound = true;
-        field_230693_o_ = true;
+        active = true;
     }
 
     @Override
-    public boolean func_231047_b_(double xAxis, double yAxis) {
+    public boolean isMouseOver(double xAxis, double yAxis) {
         //TODO: override isHovered
-        return this.field_230693_o_ && this.field_230694_p_ && xAxis >= field_230690_l_ + border && xAxis < field_230690_l_ + field_230688_j_ - border && yAxis >= field_230691_m_ + border && yAxis < field_230691_m_ + field_230689_k_ - border;
+        return this.active && this.visible && xAxis >= x + border && xAxis < x + width - border && yAxis >= y + border && yAxis < y + height - border;
     }
 
     @Override
     protected int getButtonX() {
-        return field_230690_l_ + border + (left ? 1 : -1);
+        return x + border + (left ? 1 : -1);
     }
 
     @Override
     protected int getButtonY() {
-        return field_230691_m_ + border;
+        return y + border;
     }
 
     @Override
@@ -63,6 +63,6 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiSideHo
         drawButton(matrix, mouseX, mouseY);
         //Draw the overlay onto the button
         minecraft.textureManager.bindTexture(getOverlay());
-        func_238463_a_(matrix, getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
+        blit(matrix, getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
     }
 }

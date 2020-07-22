@@ -34,7 +34,7 @@ public class MekanismImageButton extends MekanismButton {
     }
 
     public MekanismImageButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, ResourceLocation resource, Runnable onPress, IHoverable onHover) {
-        super(gui, x, y, width, height, StringTextComponent.field_240750_d_, onPress, onHover);
+        super(gui, x, y, width, height, StringTextComponent.EMPTY, onPress, onHover);
         this.resourceLocation = resource;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
@@ -44,7 +44,7 @@ public class MekanismImageButton extends MekanismButton {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         MekanismRenderer.bindTexture(getResource());
-        func_238466_a_(matrix, field_230690_l_, field_230691_m_, field_230688_j_, field_230689_k_, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+        blit(matrix, x, y, width, height, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
     }
 
     protected ResourceLocation getResource() {

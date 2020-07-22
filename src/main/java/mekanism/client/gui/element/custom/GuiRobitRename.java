@@ -19,10 +19,10 @@ public class GuiRobitRename extends GuiWindow {
     public GuiRobitRename(IGuiWrapper gui, int x, int y, EntityRobit robit) {
         super(gui, x, y, 122, 58);
         this.robit = robit;
-        addChild(new TranslationButton(gui, this.field_230690_l_ + 31, this.field_230691_m_ + 32, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
+        addChild(new TranslationButton(gui, this.x + 31, this.y + 32, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
         addChild(nameChangeField = new GuiTextField(gui, relativeX + 21, relativeY + 17, 80, 12));
         nameChangeField.setMaxStringLength(12);
-        nameChangeField.func_230996_d_(true);
+        nameChangeField.setFocused(true);
         nameChangeField.setEnterHandler(this::changeName);
     }
 

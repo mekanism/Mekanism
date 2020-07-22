@@ -32,7 +32,7 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     }
 
     @Override
-    protected int func_230989_a_(boolean hovering) {
+    protected int getYImage(boolean hovering) {
         return 1;
     }
 
@@ -58,11 +58,11 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        func_238463_a_(matrix, field_230690_l_, field_230691_m_, 0, 0, field_230688_j_, field_230689_k_, field_230688_j_, field_230689_k_);
+        blit(matrix, x, y, 0, 0, width, height, width, height);
     }
 
     @Override
-    public void func_230443_a_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         displayTooltip(matrix, getStatusDisplay(), mouseX, mouseY);
     }
 

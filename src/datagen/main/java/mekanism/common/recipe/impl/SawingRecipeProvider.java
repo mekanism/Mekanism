@@ -32,10 +32,10 @@ class SawingRecipeProvider implements ISubRecipeProvider {
               Blocks.OAK_PRESSURE_PLATE, Blocks.OAK_TRAPDOOR, "oak");
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.SPRUCE_PLANKS, Items.SPRUCE_BOAT, Items.SPRUCE_DOOR, Blocks.SPRUCE_FENCE_GATE,
               ItemTags.SPRUCE_LOGS, Blocks.SPRUCE_PRESSURE_PLATE, Blocks.SPRUCE_TRAPDOOR, "spruce");
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.field_235344_mC_, null, Items.field_234752_jS_, Blocks.field_235354_mM_,
-              ItemTags.field_232913_w_, Blocks.field_235348_mG_, Blocks.field_235352_mK_, "crimson");
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.field_235345_mD_, null, Items.field_234753_jT_, Blocks.field_235355_mN_,
-              ItemTags.field_232914_x_, Blocks.field_235349_mH_, Blocks.field_235353_mL_, "warped");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.CRIMSON_PLANKS, null, Items.CRIMSON_DOOR, Blocks.CRIMSON_FENCE_GATE,
+              ItemTags.field_232913_w_, Blocks.CRIMSON_PRESSURE_PLATE, Blocks.CRIMSON_TRAPDOOR, "crimson");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.WARPED_PLANKS, null, Items.WARPED_DOOR, Blocks.WARPED_FENCE_GATE,
+              ItemTags.field_232914_x_, Blocks.WARPED_PRESSURE_PLATE, Blocks.WARPED_TRAPDOOR, "warped");
         //Barrel
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(Items.BARREL),
@@ -131,9 +131,9 @@ class SawingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "torch"));
         //Soul Torch
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Items.field_234737_dp_, 4),
+              ItemStackIngredient.from(Items.SOUL_TORCH, 4),
               new ItemStack(Items.TORCH, 4),
-              new ItemStack(Blocks.field_235336_cN_),
+              new ItemStack(Blocks.SOUL_SOIL),
               1
         ).build(consumer, Mekanism.rl(basePath + "soul_torch"));
         //Trapped chest
