@@ -48,7 +48,7 @@
   "description.mekanismgenerators.fission_fuel_assembly": "在裂变反应堆中用来存放裂变燃料的一组燃料棒。这些可以叠放在一起。",
   "description.mekanismgenerators.fission_reactor_casing": "用于制造裂变反应堆的铅注入钢外壳。大部分是耐热的，大部分是防辐射的，而且大部分是安全的！",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "一种方块可以用红石来监视或控制裂变反应堆。",
-  "description.mekanismgenerators.fission_reactor_port": "一种可以放置在裂变反应堆多方块结构上用来传送冷却剂、燃料、废物和能量的端口。",
+  "description.mekanismgenerators.fission_reactor_port": "A port which can be placed on a Fission Reactor multiblock to transfer coolant, fuel, and waste.",
   "description.mekanismgenerators.fusion_reactor_controller": "整个聚变反应结构的控制方块。",
   "description.mekanismgenerators.fusion_reactor_frame": "能用于聚变反映结构的强化框架。",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "一个可以通过红石信号来对反应堆进行基本监控的的方块。",
