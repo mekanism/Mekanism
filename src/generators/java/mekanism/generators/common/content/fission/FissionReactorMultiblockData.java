@@ -40,7 +40,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class FissionReactorMultiblockData extends MultiblockData implements IValveHandler {
 
-    public static final double INVERSE_INSULATION_COEFFICIENT = 100_000;
+    public static final double INVERSE_INSULATION_COEFFICIENT = 10_000;
     public static final double INVERSE_CONDUCTION_COEFFICIENT = 10;
 
     private static final double waterConductivity = 0.5;

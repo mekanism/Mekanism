@@ -204,7 +204,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.DESCRIPTION_WIND_GENERATOR, "A generator that uses the strength of the wind to produce energy, with greater efficiency at higher levels.");
         //Fission Reactor
         add(GeneratorsLang.DESCRIPTION_FISSION_REACTOR_CASING, "Lead-infused steel casing used to create a Fission Reactor. Mostly heat-resistant, mostly radiation-resistant, and mostly safe!");
-        add(GeneratorsLang.DESCRIPTION_FISSION_REACTOR_PORT, "A port which can be placed on a Fission Reactor multiblock to transfer coolant, fuel, waste, and power.");
+        add(GeneratorsLang.DESCRIPTION_FISSION_REACTOR_PORT, "A port which can be placed on a Fission Reactor multiblock to transfer coolant, fuel, and waste.");
         add(GeneratorsLang.DESCRIPTION_FISSION_REACTOR_LOGIC_ADAPTER, "A block that can be used to monitor or control the Fission Reactor with redstone.");
         add(GeneratorsLang.DESCRIPTION_FISSION_FUEL_ASSEMBLY, "A cluster of fuel rods used to house fission fuel within a Fission Reactor. These can be stacked on top of each other.");
         add(GeneratorsLang.DESCRIPTION_CONTROL_ROD_ASSEMBLY, "A collection of control rods used to halt a fission chain reaction. Placed on top of a tower of Fission Fuel Assemblies.");
