@@ -48,7 +48,7 @@
   "description.mekanismgenerators.fission_fuel_assembly": "Fizyon Reaktörü içinde fizyon yakıtı sağlamak için yakıt çubukları kümesi. Bunlar üst üste konabilirler.",
   "description.mekanismgenerators.fission_reactor_casing": "Bir Fizyon Reaktörü yapmak için kullanılan kurşun alaşımlı çelik bir kasa. Çoğunukla ısıya dayanıklı, çoğunlukla radyasyona dayanıklı, ve çoğunlukla güvenli!",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "Fizyon Reaktörü'nü kızıltaş ile izlemek veya kontrol etmek için kullanılan bir blok.",
-  "description.mekanismgenerators.fission_reactor_port": "Fizyon Reaktörü üzerine soğutma sıvısı, yakıt, atık, ve güç transferi için konulabilen bir bağlantı noktası.",
+  "description.mekanismgenerators.fission_reactor_port": "A port which can be placed on a Fission Reactor multiblock to transfer coolant, fuel, and waste.",
   "description.mekanismgenerators.fusion_reactor_controller": "Bütün Füzyon Reaktörü yapısının kontrol bloğu.",
   "description.mekanismgenerators.fusion_reactor_frame": "Füzyon Reaktörü multibloğu yapısında kullanılabilen güçlendirilmiş çerçeve.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Reaktörü kızıltaş ile basitçe görüntülemeyi sağlayan bir blok.",
