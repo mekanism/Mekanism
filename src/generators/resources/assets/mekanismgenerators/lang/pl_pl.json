@@ -48,7 +48,7 @@
   "description.mekanismgenerators.fission_fuel_assembly": "Zbiór prętów paliwowych używany do przechowywania paliwa rozczepialnego wewnątrz Reaktora rozczepiania atomów. Mogą być grupowane w pionie.",
   "description.mekanismgenerators.fission_reactor_casing": "Stalowa obudowa pokryta ołowiem używana do tworzenia Reaktora rozczepiania atomów. Przeważnie odporna na ciepło i promieniowanie oraz bezpieczna!",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "Blok, który może być używany do monitorowania lub kontrolowania Reaktora rozszczepiania atomów za pomocą redstone.",
-  "description.mekanismgenerators.fission_reactor_port": "Port, który może być umieszczony w multibloku Reaktora rozszczepiania atomów, aby przenosić chłodziwo, paliwo, odpady i energię.",
+  "description.mekanismgenerators.fission_reactor_port": "A port which can be placed on a Fission Reactor multiblock to transfer coolant, fuel, and waste.",
   "description.mekanismgenerators.fusion_reactor_controller": "Blok kontrolny dla całej struktury reaktora syntezy jądrowej.",
   "description.mekanismgenerators.fusion_reactor_frame": "Wzmocnione ramy, które mogą być użyte w multibloku reaktora syntezy jądrowej.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Blok, który może być wykorzystany do umożliwienia podstawowego monitorowania reaktora za pomocą czerwonego proszku.",
