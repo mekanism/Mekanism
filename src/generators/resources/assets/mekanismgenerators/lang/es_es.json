@@ -48,7 +48,7 @@
   "description.mekanismgenerators.fission_fuel_assembly": "Un racimo de barras de combustible utilizadas para albergar combustible de fisión dentro de un reactor de fisión que se pueden apilar unos sobre otros.",
   "description.mekanismgenerators.fission_reactor_casing": "Carcasa de acero con incrustación de plomo que se utiliza para crear un reactor de fisión ¡Principalmente resistente al calor, en su mayoría resistente a la radiación y en su mayoría segura!",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "Un bloque que puede ser utilizado para monitorear o controlar el reactor de fisión con redstone.",
-  "description.mekanismgenerators.fission_reactor_port": "Un puerto que se puede colocar en un multibloque de reactor de fisión para transferir refrigerante, combustible, residuos y energía.",
+  "description.mekanismgenerators.fission_reactor_port": "A port which can be placed on a Fission Reactor multiblock to transfer coolant, fuel, and waste.",
   "description.mekanismgenerators.fusion_reactor_controller": "Panel de control para el Reactor de fusión.",
   "description.mekanismgenerators.fusion_reactor_frame": "Bloque reforzado para la construcción de la estructura de un Reactor de fusión.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Un bloque que se puede utilizar para permitir el monitoreo básico de un reactor mediante señales de redstone.",
