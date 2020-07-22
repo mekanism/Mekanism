@@ -48,7 +48,7 @@
   "description.mekanismgenerators.fission_fuel_assembly": "Кластер топливных стержней, используемые для размещения топлива внутри ядерного реактора. Они могут быть размещены друг на друге.",
   "description.mekanismgenerators.fission_reactor_casing": "Корпус из свинца и стали, используемый для создания ядерного реактора. Более жаростойкий, более радиационно-устойчивый, более безопасный!",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "Блок, который может использоваться для мониторинга или управления Ядерным Реактором с помощью редстоуна.",
-  "description.mekanismgenerators.fission_reactor_port": "A port which can be placed on a Fission Reactor multiblock to transfer coolant, fuel, and waste.",
+  "description.mekanismgenerators.fission_reactor_port": "Порт, который может быть размещен на ядерном реакторе для передачи охлаждающей жидкости, топлива и отходов.",
   "description.mekanismgenerators.fusion_reactor_controller": "Блок управления всего термоядерного реактора.",
   "description.mekanismgenerators.fusion_reactor_frame": "Укреплённый каркас, который используется при строительстве термоядерного реактора.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Блок, который может использоваться для мониторинга реактора с помощью редстоуна.",
