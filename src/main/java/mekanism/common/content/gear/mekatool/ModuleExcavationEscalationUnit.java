@@ -1,13 +1,12 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.List;
-import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
-import mekanism.api.IDisableableEnum;
+import mekanism.api.IIncrementalEnum;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import net.minecraft.entity.player.PlayerEntity;
@@ -51,38 +50,28 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
         return excavationMode.get().getEfficiency();
     }
 
-    public enum ExcavationMode implements IDisableableEnum<ExcavationMode>, IHasTextComponent {
-        OFF(0, () -> true),
-        SLOW(4, MekanismConfig.gear.disassemblerSlowMode),
-        NORMAL(16, () -> true),
-        FAST(32, () -> true),
-        SUPER_FAST(64, () -> true),
-        EXTREME(128, MekanismConfig.gear.disassemblerFastMode);
+    public enum ExcavationMode implements IIncrementalEnum<ExcavationMode>, IHasTextComponent {
+        OFF(0),
+        SLOW(4),
+        NORMAL(16),
+        FAST(32),
+        SUPER_FAST(64),
+        EXTREME(128);
 
         private static final ExcavationMode[] MODES = values();
 
-        private final BooleanSupplier checkEnabled;
         private final ITextComponent label;
         private final int efficiency;
 
-        ExcavationMode(int efficiency, BooleanSupplier checkEnabled) {
+        ExcavationMode(int efficiency) {
             this.efficiency = efficiency;
-            this.checkEnabled = checkEnabled;
             this.label = new StringTextComponent(Integer.toString(efficiency));
-        }
-
-        /**
-         * Gets a Mode from its ordinal. NOTE: if this mode is not enabled then it will reset to NORMAL
-         */
-        public static ExcavationMode byIndexStatic(int index) {
-            ExcavationMode mode = MODES[Math.floorMod(index, MODES.length)];
-            return mode.isEnabled() ? mode : NORMAL;
         }
 
         @Nonnull
         @Override
         public ExcavationMode byIndex(int index) {
-            return MODES[Math.floorMod(index, MODES.length)];
+            return MathUtils.getByIndexMod(MODES, index);
         }
 
         @Override
@@ -92,11 +81,6 @@ public class ModuleExcavationEscalationUnit extends ModuleMekaTool {
 
         public int getEfficiency() {
             return efficiency;
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return checkEnabled.getAsBoolean();
         }
     }
 }

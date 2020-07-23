@@ -1,6 +1,7 @@
 package mekanism.common.content.gear;
 
 import java.util.function.Consumer;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.item.ItemStack;
@@ -115,8 +116,8 @@ public class ModuleConfigItem<TYPE> {
     public static class EnumData<TYPE extends Enum<TYPE> & IHasTextComponent> implements ConfigData<TYPE> {
 
         private final Class<TYPE> enumClass;
-        private TYPE value;
         private final int selectableCount;
+        private TYPE value;
 
         public EnumData(Class<TYPE> enumClass) {
             this(enumClass, enumClass.getEnumConstants().length);
@@ -140,7 +141,7 @@ public class ModuleConfigItem<TYPE> {
         @Override
         public void read(String name, CompoundNBT tag) {
             int index = Math.min(tag.getInt(name), selectableCount - 1);
-            value = enumClass.getEnumConstants()[index];
+            value = MathUtils.getByIndexMod(getEnums(), index);
         }
 
         @Override
