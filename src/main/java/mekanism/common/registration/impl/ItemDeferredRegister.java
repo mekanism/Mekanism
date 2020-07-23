@@ -33,7 +33,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     }
 
     public ItemRegistryObject<Item> registerUnburnable(String name) {
-        return register(name, properties -> new Item(properties.func_234689_a_()));
+        return registerUnburnable(name, Item::new);
     }
 
     public ItemRegistryObject<Item> register(String name, Rarity rarity) {
@@ -52,6 +52,10 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup) {
         return register(name, () -> sup.apply(getMekBaseProperties()));
+    }
+
+    public <ITEM extends Item> ItemRegistryObject<ITEM> registerUnburnable(String name, Function<Item.Properties, ITEM> sup) {
+        return register(name, () -> sup.apply(getMekBaseProperties().func_234689_a_()));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Supplier<? extends ITEM> sup) {
