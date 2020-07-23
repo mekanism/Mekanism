@@ -59,7 +59,7 @@ public class Modules {
           .rarity(Rarity.UNCOMMON).setHandlesModeChange().setRendersHUD();
     public static final ModuleData<ModuleAttackAmplificationUnit> ATTACK_AMPLIFICATION_UNIT = register("attack_amplification_unit",
           MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, ModuleAttackAmplificationUnit::new, 4)
-          .rarity(Rarity.UNCOMMON).setHandlesModeChange().setRendersHUD();
+          .rarity(Rarity.UNCOMMON).setRendersHUD();
     public static final ModuleData<ModuleFarmingUnit> FARMING_UNIT = register("farming_unit",
           MekanismLang.MODULE_FARMING_UNIT, MekanismLang.DESCRIPTION_FARMING_UNIT, ModuleFarmingUnit::new, 4)
           .rarity(Rarity.UNCOMMON).setExclusive();
@@ -68,7 +68,7 @@ public class Modules {
           .rarity(Rarity.RARE);
     public static final ModuleData<ModuleVeinMiningUnit> VEIN_MINING_UNIT = register("vein_mining_unit",
           MekanismLang.MODULE_VEIN_MINING_UNIT, MekanismLang.DESCRIPTION_VEIN_MINING_UNIT, ModuleVeinMiningUnit::new, 4)
-          .rarity(Rarity.RARE).setHandlesModeChange().setRendersHUD();
+          .rarity(Rarity.RARE).setRendersHUD();
     public static final ModuleData<ModuleTeleportationUnit> TELEPORTATION_UNIT = register("teleportation_unit",
           MekanismLang.MODULE_TELEPORTATION_UNIT, MekanismLang.DESCRIPTION_TELEPORTATION_UNIT, ModuleTeleportationUnit::new)
           .rarity(Rarity.EPIC).setExclusive();

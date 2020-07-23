@@ -7,7 +7,6 @@ import java.util.Set;
 
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -19,9 +18,6 @@ import mekanism.common.network.PacketLightningRender.LightningPreset;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
@@ -78,20 +74,6 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
             }
         }
         return found;
-    }
-
-    @Override
-    public void changeMode(PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
-        if (!isEnabled()) {
-            return;
-        }
-        extendedMode.set(!extendedMode.get(), null);
-        if (displayChangeMessage) {
-            ILangEntry lang = isExtended() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER;
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  MekanismLang.GENERIC_STORED.translateColored(EnumColor.GRAY, EnumColor.GRAY, MekanismLang.MODULE_EXTENDED_MODE,
-                  isExtended() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED, lang.translate())), Util.DUMMY_UUID);
-        }
     }
 
     @Override
