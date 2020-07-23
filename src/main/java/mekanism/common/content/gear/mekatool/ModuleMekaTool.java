@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
@@ -89,7 +90,7 @@ public class ModuleMekaTool extends Module {
 
             @Override
             public AttackDamage byIndex(int index) {
-            	return MODES[Math.floorMod(index, MODES.length)];
+                return MathUtils.getByIndexMod(MODES, index);
             }
         }
     }
