@@ -33,6 +33,7 @@ import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
@@ -48,9 +49,23 @@ public abstract class ModuleMekaSuit extends Module {
 
         @Override
         public void tickServer(PlayerEntity player) {
-            if (player.func_233571_b_(FluidTags.WATER) > 1.6) {
+            int productionRate = 0;
+            //Check if the mask is under water
+            //Note: Being in water is checked first to ensure that if it is raining and the player is in water
+            // they get the full strength production
+            double maskHeight = player.getPosYEye() - 0.15;
+            BlockPos headPos = new BlockPos(player.getPosX(), maskHeight, player.getPosZ());
+            FluidState fluidstate = player.getEntityWorld().getFluidState(headPos);
+            if (fluidstate.isTagged(FluidTags.WATER) && maskHeight <= headPos.getY() + fluidstate.getActualHeight(player.getEntityWorld(), headPos)) {
+                //If the position the bottom of the mask is in is water set the production rate to our max rate
+                productionRate = getMaxRate();
+            } else if (player.isInRain()) {
+                //If the player is not in water but is in rain set the production at half power
+                productionRate = getMaxRate() / 2;
+            }
+            if (productionRate > 0) {
                 FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
-                long maxRate = Math.min(getMaxRate(), getContainerEnergy().divide(usage).intValue());
+                int maxRate = Math.min(productionRate, getContainerEnergy().divide(usage).intValue());
                 long hydrogenUsed = 0;
                 GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2);
                 ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
@@ -64,10 +79,10 @@ public abstract class ModuleMekaSuit extends Module {
                 if (handCapability.isPresent()) {
                     hydrogenUsed = maxRate * 2 - handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                 }
-                long oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
+                int oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
                 long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
                 useEnergy(player, usage.multiply(used));
-                player.setAir(player.getAir() + (int) oxygenUsed);
+                player.setAir(player.getAir() + oxygenUsed);
             }
         }
 
@@ -81,9 +96,8 @@ public abstract class ModuleMekaSuit extends Module {
         private boolean checkChestPlate(ItemStack chestPlate) {
             if (chestPlate.getItem() == MekanismItems.MEKASUIT_BODYARMOR.get()) {
                 return Modules.load(chestPlate, Modules.JETPACK_UNIT) != null;
-            } else {
-                return true;
             }
+            return true;
         }
 
         private int getMaxRate() {
