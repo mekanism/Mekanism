@@ -54,7 +54,7 @@ public class ModuleMekaTool extends Module {
 
         @Override
         public void addHUDStrings(List<ITextComponent> list) {
-        	if (!isEnabled()) {
+            if (!isEnabled()) {
                 return;
             }
             list.add(MekanismLang.MODULE_DAMAGE.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, attackDamage.get().getDamage()));
