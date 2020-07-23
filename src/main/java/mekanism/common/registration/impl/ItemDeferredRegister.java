@@ -33,7 +33,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     }
 
     public ItemRegistryObject<Item> registerUnburnable(String name) {
-        return register(name, properties -> new Item(properties.func_234689_a_()));
+        return registerUnburnable(name, Item::new);
     }
 
     public ItemRegistryObject<Item> register(String name, Rarity rarity) {
