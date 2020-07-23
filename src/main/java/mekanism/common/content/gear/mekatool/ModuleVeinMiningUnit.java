@@ -100,8 +100,8 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
             return;
         }
         list.add(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,
-              isExtended() ? MekanismLang.MODULE_ENABLED_LOWER.translateColored(EnumColor.BRIGHT_GREEN) :
-              MekanismLang.MODULE_DISABLED_LOWER.translateColored(EnumColor.DARK_RED)));
+              isExtended() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED,
+              isExtended() ? MekanismLang.MODULE_ENABLED_LOWER.translate() : MekanismLang.MODULE_DISABLED_LOWER.translate()));
     }
 
     public enum ExcavationRange implements IHasTextComponent {
