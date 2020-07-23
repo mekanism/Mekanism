@@ -1146,6 +1146,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");
         add(MekanismLang.MODULE_DISABLED_LOWER, "disabled");
+        add(MekanismLang.MODULE_DAMAGE, "Damage: %s");
         add(MekanismLang.MODULE_TWEAKER, "Module Tweaker");
         add(MekanismLang.MODULE_INSTALLED, "Installed: %s");
         add(MekanismLang.MODULE_STACKABLE, "Stackable: %s");
@@ -1160,6 +1161,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_RANGE, "Range");
         add(MekanismLang.MODULE_SPRINT_BOOST, "Sprint Boost");
         add(MekanismLang.MODULE_EXTENDED_MODE, "Extended Mode");
+        add(MekanismLang.MODULE_EXTENDED_ENABLED, "Extended Vein Mining: %s");
         add(MekanismLang.MODULE_EXCAVATION_RANGE, "Excavation Range");
         add(MekanismLang.MODULE_EFFICIENCY, "Efficiency");
         add(MekanismLang.MODULE_MODE_CHANGE, "%s bumped to: %s");
