@@ -89,7 +89,7 @@ public class ModuleMekaTool extends Module {
 
             @Override
             public AttackDamage byIndex(int index) {
-                return MODES[index];
+            	return MODES[Math.floorMod(index, MODES.length)];
             }
         }
     }
