@@ -87,7 +87,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemAtomicDisassembler> ATOMIC_DISASSEMBLER = ITEMS.register("atomic_disassembler", ItemAtomicDisassembler::new);
     public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.register("electric_bow", ItemElectricBow::new);
     public static final ItemRegistryObject<ItemFlamethrower> FLAMETHROWER = ITEMS.register("flamethrower", ItemFlamethrower::new);
-    public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.register("meka_tool", ItemMekaTool::new);
+    public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerUnburnable("meka_tool", ItemMekaTool::new);
     // Armor
     public static final ItemRegistryObject<ItemFreeRunners> FREE_RUNNERS = ITEMS.register("free_runners", ItemFreeRunners::new);
     public static final ItemRegistryObject<ItemScubaMask> SCUBA_MASK = ITEMS.register("scuba_mask", ItemScubaMask::new);
@@ -100,10 +100,10 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_PANTS = ITEMS.register("hazmat_pants", props -> new ItemHazmatSuitArmor(EquipmentSlotType.LEGS, props));
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_BOOTS = ITEMS.register("hazmat_boots", props -> new ItemHazmatSuitArmor(EquipmentSlotType.FEET, props));
 
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_HELMET = ITEMS.register("mekasuit_helmet", props -> new ItemMekaSuitArmor(EquipmentSlotType.HEAD, props));
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BODYARMOR = ITEMS.register("mekasuit_bodyarmor", props -> new ItemMekaSuitArmor(EquipmentSlotType.CHEST, props));
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_PANTS = ITEMS.register("mekasuit_pants", props -> new ItemMekaSuitArmor(EquipmentSlotType.LEGS, props));
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BOOTS = ITEMS.register("mekasuit_boots", props -> new ItemMekaSuitArmor(EquipmentSlotType.FEET, props));
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_HELMET = ITEMS.registerUnburnable("mekasuit_helmet", props -> new ItemMekaSuitArmor(EquipmentSlotType.HEAD, props));
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BODYARMOR = ITEMS.registerUnburnable("mekasuit_bodyarmor", props -> new ItemMekaSuitArmor(EquipmentSlotType.CHEST, props));
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_PANTS = ITEMS.registerUnburnable("mekasuit_pants", props -> new ItemMekaSuitArmor(EquipmentSlotType.LEGS, props));
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BOOTS = ITEMS.registerUnburnable("mekasuit_boots", props -> new ItemMekaSuitArmor(EquipmentSlotType.FEET, props));
 
     public static final ItemRegistryObject<Item> MODULE_BASE = ITEMS.register("module_base");
 

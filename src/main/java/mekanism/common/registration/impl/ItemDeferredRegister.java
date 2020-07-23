@@ -54,6 +54,10 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         return register(name, () -> sup.apply(getMekBaseProperties()));
     }
 
+    public <ITEM extends Item> ItemRegistryObject<ITEM> registerUnburnable(String name, Function<Item.Properties, ITEM> sup) {
+        return register(name, () -> sup.apply(getMekBaseProperties().func_234689_a_()));
+    }
+
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Supplier<? extends ITEM> sup) {
         ItemRegistryObject<ITEM> registeredItem = register(name, sup, ItemRegistryObject::new);
         allItems.add(registeredItem);
