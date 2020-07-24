@@ -1,8 +1,11 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -71,6 +74,16 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
             }
         }
         return found;
+    }
+
+    @Override
+    public void addHUDStrings(List<ITextComponent> list) {
+        if (!isEnabled()) {
+            return;
+        }
+        list.add(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,
+              isExtended() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED,
+              isExtended() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER));
     }
 
     public enum ExcavationRange implements IHasTextComponent {

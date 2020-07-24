@@ -1,5 +1,8 @@
 package mekanism.common.content.gear.mekatool;
 
+import java.util.List;
+
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
@@ -28,6 +31,14 @@ public class ModuleMekaTool extends Module {
 
         public int getDamage() {
             return attackDamage.get().getDamage();
+        }
+
+        @Override
+        public void addHUDStrings(List<ITextComponent> list) {
+            if (!isEnabled()) {
+                return;
+            }
+            list.add(MekanismLang.MODULE_DAMAGE.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, attackDamage.get().getDamage()));
         }
 
         public enum AttackDamage implements IHasTextComponent {
