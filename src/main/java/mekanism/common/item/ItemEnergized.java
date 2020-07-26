@@ -87,4 +87,16 @@ public class ItemEnergized extends Item {
         // Internal is used by the "null" side, which is what will get used for most items
         return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack), canExtract, canInsert));
     }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        //Ignore NBT for energized items causing re-equip animations
+        return oldStack.getItem() != newStack.getItem();
+    }
+
+    @Override
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        //Ignore NBT for energized items causing block break reset
+        return oldStack.getItem() != newStack.getItem();
+    }
 }
