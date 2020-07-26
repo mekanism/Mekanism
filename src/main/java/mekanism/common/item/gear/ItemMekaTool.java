@@ -12,6 +12,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.ILangEntry;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
@@ -60,7 +61,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -93,12 +93,13 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
             for (Module module : Modules.loadAll(stack)) {
-                IFormattableTextComponent component = module.getData().getLangEntry().translateColored(EnumColor.GRAY);
+                ILangEntry langEntry = module.getData().getLangEntry();
                 if (module.getInstalledCount() > 1) {
-                    ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, module.getInstalledCount(), module.getData().getMaxStackSize());
-                    component.append(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, "", t));
+                    ITextComponent amount = MekanismLang.GENERIC_FRACTION.translate(module.getInstalledCount(), module.getData().getMaxStackSize());
+                    tooltip.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, langEntry, amount));
+                } else {
+                    tooltip.add(langEntry.translateColored(EnumColor.GRAY));
                 }
-                tooltip.add(component);
             }
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
