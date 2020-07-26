@@ -142,7 +142,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         }
                         health = livingEntity.getHealth();
                     }
-                    if (!entity.func_230279_az_()) {
+                    if (!entity.isImmuneToFire()) {
                         entity.setFire(value.intValue());
                     }
                     int lastHurtResistTime = entity.hurtResistantTime;

@@ -69,13 +69,13 @@ public class TextComponentUtil {
             }
             if (!cachedStyle.equals(Style.EMPTY)) {
                 //Apply the style and reset
-                current.func_230530_a_(cachedStyle);
+                current.setStyle(cachedStyle);
                 cachedStyle = Style.EMPTY;
             }
             if (result == null) {
                 result = current;
             } else {
-                result.func_230529_a_(current);
+                result.append(current);
             }
         }
         //TODO: Make this more like smartTranslate? Including back to back color codes treat the second as name?
@@ -180,7 +180,7 @@ public class TextComponentUtil {
                     args.add(component);
                 } else {
                     //Otherwise we apply the formatting and then add it
-                    args.add(current.func_230530_a_(cachedStyle));
+                    args.add(current.setStyle(cachedStyle));
                 }
                 cachedStyle = Style.EMPTY;
             } else if (current == null) {

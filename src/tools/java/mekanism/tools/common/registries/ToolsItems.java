@@ -162,7 +162,7 @@ public class ToolsItems {
     private static Item.Properties getBaseProperties(BaseMekanismMaterial material) {
         Item.Properties properties = ItemDeferredRegister.getMekBaseProperties();
         if (!material.burnsInFire()) {
-            properties = properties.func_234689_a_();
+            properties = properties.isBurnable();
         }
         return properties;
     }

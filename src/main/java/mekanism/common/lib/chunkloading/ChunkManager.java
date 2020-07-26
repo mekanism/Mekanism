@@ -33,7 +33,7 @@ public class ChunkManager extends WorldSavedData {
 
     private ChunkMultimap chunks = new ChunkMultimap();
 
-    public ChunkManager() {
+    private ChunkManager() {
         super(SAVEDATA_KEY);
     }
 

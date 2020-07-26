@@ -283,7 +283,7 @@ public class Mekanism {
 
     private void addReloadListeners(AddReloadListenerEvent event) {
         boolean added = false;
-        IResourceManager resourceManager = event.getDataPackRegistries().func_240970_h_();
+        IResourceManager resourceManager = event.getDataPackRegistries().getResourceManager();
         if (resourceManager instanceof SimpleReloadableResourceManager) {
             //Note: We "hack" it so that our tag manager gets registered directly after the normal tag manager
             // to ensure that it is before the recipe manager and that the custom tags can be properly resolved
@@ -352,7 +352,7 @@ public class Mekanism {
             //Collect sync mapper scan data
             SyncMapper.collectScanData();
             //Entity attribute assignments
-            GlobalEntityTypeAttributes.put(MekanismEntityTypes.ROBIT.get(), EntityRobit.getDefaultAttributes().func_233813_a_());
+            GlobalEntityTypeAttributes.put(MekanismEntityTypes.ROBIT.get(), EntityRobit.getDefaultAttributes().create());
         });
 
         //Register player tracker

@@ -112,7 +112,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     }
 
     @Override
-    public void removed() {
+    public void onClose() {
         updateSelection();
     }
 

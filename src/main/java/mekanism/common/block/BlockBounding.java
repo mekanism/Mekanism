@@ -289,7 +289,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
                         x = pos.getX() + axisalignedbb.maxX + 0.1;
                     }
                     manager.addEffect(new DiggingParticle((ClientWorld) world, x, y, z, 0, 0, 0, mainState)
-                          .setBlockPos(mainPos).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
+                          .setBlockPos(mainPos).multiplyVelocity(0.2F).multiplyParticleScaleBy(0.6F));
                     return true;
                 }
             }

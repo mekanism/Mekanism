@@ -211,7 +211,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                             //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
                             // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
                             Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
-                                  Vector3d.func_237489_a_(blockPos), Vector3d.func_237489_a_(pos), 10), world, blockPos);
+                                  Vector3d.copyCentered(blockPos), Vector3d.copyCentered(pos), 10), world, blockPos);
                             if (found.size() > maxCount) {
                                 return found;
                             }

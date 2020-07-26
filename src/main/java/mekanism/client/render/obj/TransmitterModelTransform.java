@@ -20,7 +20,7 @@ public class TransmitterModelTransform implements IModelTransform {
     }
 
     private static Vector3f vecForDirection(Direction dir) {
-        Vector3f vec = new Vector3f(Vector3d.func_237491_b_(dir.getDirectionVec()));
+        Vector3f vec = new Vector3f(Vector3d.copy(dir.getDirectionVec()));
         vec.mul(-1);
         return vec;
     }

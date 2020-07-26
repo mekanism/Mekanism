@@ -157,7 +157,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         matrix.translate(0, 0, 300);
         RenderSystem.translatef(-guiLeft, -guiTop, 0);
         children().stream().filter(c -> c instanceof GuiElement).forEach(c -> ((GuiElement) c).onDrawBackground(matrix, mouseX, mouseY, MekanismRenderer.getPartialTick()));
@@ -236,7 +236,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         GuiWindow top = windows.size() > 0 ? windows.iterator().next() : null;
         GuiWindow focused = windows.stream().filter(overlay -> overlay.mouseClicked(mouseX, mouseY, button)).findFirst().orElse(null);
         if (focused != null) {
-            setFocused(focused);
+            setListener(focused);
             if (button == 0) {
                 setDragging(true);
             }
@@ -250,7 +250,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         for (int i = buttons.size() - 1; i >= 0; i--) {
             IGuiEventListener listener = buttons.get(i);
             if (listener.mouseClicked(mouseX, mouseY, button)) {
-                setFocused(listener);
+                setListener(listener);
                 if (button == 0) {
                     setDragging(true);
                 }
@@ -290,7 +290,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
-        return getFocused() != null && isDragging() && button == 0 && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+        return getListener() != null && isDragging() && button == 0 && getListener().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }
 
     protected boolean isMouseOverSlot(Slot slot, double mouseX, double mouseY) {
@@ -358,7 +358,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    protected void func_230450_a_(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();

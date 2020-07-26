@@ -178,7 +178,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public static AttributeModifierMap.MutableAttribute getDefaultAttributes() {
-        return MobEntity.func_233666_p_().func_233815_a_(Attributes.MAX_HEALTH, 1.0D).func_233815_a_(Attributes.MOVEMENT_SPEED, 0.3F);
+        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3F);
     }
 
     @Override
@@ -299,7 +299,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     private boolean isOnChargepad() {
-        return MekanismUtils.getTileEntity(TileEntityChargepad.class, world, func_233580_cy_()) != null;
+        return MekanismUtils.getTileEntity(TileEntityChargepad.class, world, getPosition()) != null;
     }
 
     @Nonnull
@@ -563,7 +563,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             public <T> Optional<T> apply(@Nonnull BiFunction<World, BlockPos, T> worldBlockPosTBiFunction) {
                 //Note: We use an anonymous class implementation rather than using IWorldPosCallable.of, so that if the robit moves
                 // this uses the proper updated position
-                return Optional.of(worldBlockPosTBiFunction.apply(getEntityWorld(), func_233580_cy_()));
+                return Optional.of(worldBlockPosTBiFunction.apply(getEntityWorld(), getPosition()));
             }
         };
     }

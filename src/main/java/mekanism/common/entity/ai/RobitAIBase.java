@@ -64,7 +64,7 @@ public abstract class RobitAIBase extends Goal {
             timeToRecalcPath = 10;
             if (!theRobit.isPassenger()) {
                 if (theRobit.getDistanceSq(target) >= 144.0) {
-                    BlockPos targetPos = target.func_233580_cy_();
+                    BlockPos targetPos = target.getPosition();
                     for (int i = 0; i < 10; i++) {
                         if (tryPathTo(target, targetPos.getX() + randomize(-3, 3), targetPos.getY() + randomize(-1, 1), targetPos.getZ() + randomize(-3, 3))) {
                             return;
@@ -91,9 +91,9 @@ public abstract class RobitAIBase extends Goal {
     }
 
     private boolean canNavigate(BlockPos pos) {
-        PathNodeType pathnodetype = WalkNodeProcessor.func_237231_a_(this.world, pos.func_239590_i_());
+        PathNodeType pathnodetype = WalkNodeProcessor.func_237231_a_(this.world, pos.toMutable());
         if (pathnodetype == PathNodeType.WALKABLE) {
-            BlockPos blockpos = pos.subtract(theRobit.func_233580_cy_());
+            BlockPos blockpos = pos.subtract(theRobit.getPosition());
             return world.hasNoCollisions(theRobit, theRobit.getBoundingBox().offset(blockpos));
         }
         return false;

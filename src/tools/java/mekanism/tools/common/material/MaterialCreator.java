@@ -114,7 +114,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
         toughness = CachedFloatValue.wrap(config, builder.comment("Base armor toughness value of " + toolKey + " armor.")
               .defineInRange(toolKey + "Toughness", materialDefaults.getToughness(), 0, Float.MAX_VALUE));
         knockbackResistance = CachedFloatValue.wrap(config, builder.comment("Base armor knockback resistance value of " + toolKey + " armor.")
-              .defineInRange(toolKey + "KnockbackResistance", materialDefaults.func_230304_f_(), 0, Float.MAX_VALUE));
+              .defineInRange(toolKey + "KnockbackResistance", materialDefaults.getKnockbackResistance(), 0, Float.MAX_VALUE));
         bootDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " boots.")
               .defineInRange(toolKey + "BootDurability", materialDefaults.getDurability(EquipmentSlotType.FEET), 1, Integer.MAX_VALUE));
         leggingDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " leggings.")
@@ -312,7 +312,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
-    public float func_230304_f_() {
+    public float getKnockbackResistance() {
         return knockbackResistance.get();
     }
 }

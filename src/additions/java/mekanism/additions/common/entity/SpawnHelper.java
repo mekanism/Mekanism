@@ -50,11 +50,11 @@ public class SpawnHelper {
         EntitySpawnPlacementRegistry.register(AdditionsEntityTypes.BABY_STRAY.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND,
               Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EntityBabyStray::spawnRestrictions);
         //Add the global entity type attributes for the entities
-        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_CREEPER.getEntityType(), CreeperEntity.func_234278_m_().func_233813_a_());
-        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_ENDERMAN.getEntityType(), EndermanEntity.func_234287_m_().func_233813_a_());
-        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_SKELETON.getEntityType(), AbstractSkeletonEntity.func_234275_m_().func_233813_a_());
-        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_STRAY.getEntityType(), AbstractSkeletonEntity.func_234275_m_().func_233813_a_());
-        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_WITHER_SKELETON.getEntityType(), AbstractSkeletonEntity.func_234275_m_().func_233813_a_());
+        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_CREEPER.getEntityType(), CreeperEntity.func_234278_m_().create());
+        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_ENDERMAN.getEntityType(), EndermanEntity.func_234287_m_().create());
+        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_SKELETON.getEntityType(), AbstractSkeletonEntity.func_234275_m_().create());
+        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_STRAY.getEntityType(), AbstractSkeletonEntity.func_234275_m_().create());
+        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_WITHER_SKELETON.getEntityType(), AbstractSkeletonEntity.func_234275_m_().create());
     }
 
     private static void addSpawn(IEntityTypeProvider entityTypeProvider, EntityType<?> parent, AdditionsCommonConfig.SpawnConfig spawnConfig,

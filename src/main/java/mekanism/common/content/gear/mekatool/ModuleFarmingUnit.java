@@ -190,7 +190,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
                 }
                 world.playSound(null, newPos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(pos, newPos),
-                      Vector3d.func_237490_a_(pos, 0.94), Vector3d.func_237490_a_(newPos, 0.94), 10), world, pos);
+                      Vector3d.copyCenteredWithVerticalOffset(pos, 0.94), Vector3d.copyCenteredWithVerticalOffset(newPos, 0.94), 10), world, pos);
             }
         }
         energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);
@@ -241,7 +241,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
         Direction side = context.getFace();
         FloatingLong energyUsed = energyUsage.copy();
-        Vector3d offset = Vector3d.func_237491_b_(side.getDirectionVec()).scale(0.44);
+        Vector3d offset = Vector3d.copy(side.getDirectionVec()).scale(0.44);
         for (BlockPos newPos : getStrippingArea(pos, side, (diameter - 1) / 2)) {
             if (pos.equals(newPos)) {
                 //Skip the source position as it is free and we manually handled it before the loop
@@ -267,7 +267,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
                 world.setBlockState(newPos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
                 world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(pos, newPos),
-                      Vector3d.func_237489_a_(pos).add(offset), Vector3d.func_237489_a_(newPos).add(offset), 10), world, pos);
+                      Vector3d.copyCentered(pos).add(offset), Vector3d.copyCentered(newPos).add(offset), 10), world, pos);
             }
         }
         energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);

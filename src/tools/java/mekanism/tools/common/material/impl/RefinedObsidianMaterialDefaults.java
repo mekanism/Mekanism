@@ -134,7 +134,7 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public float func_230304_f_() {
+    public float getKnockbackResistance() {
         return 0.1F;
     }
 }

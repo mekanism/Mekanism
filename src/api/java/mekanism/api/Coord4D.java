@@ -32,7 +32,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @param entity - entity to create the Coord4D from
      */
     public Coord4D(Entity entity) {
-        BlockPos entityPosition = entity.func_233580_cy_();
+        BlockPos entityPosition = entity.getPosition();
         this.x = entityPosition.getX();
         this.y = entityPosition.getY();
         this.z = entityPosition.getZ();

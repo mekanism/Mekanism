@@ -124,7 +124,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
                 return;
             }
         }
-        if (!entity.getEntity().func_230279_az_()) {
+        if (!entity.getEntity().isImmuneToFire()) {
             if (entity.getEntity() instanceof ItemEntity && mode == FlamethrowerMode.HEAT) {
                 if (entity.getEntity().ticksExisted > 100 && !smeltItem((ItemEntity) entity.getEntity())) {
                     burn(entity.getEntity());
@@ -152,7 +152,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
                 BlockState hitState = world.getBlockState(hitPos);
                 if (AbstractFireBlock.canLightBlock(world, sidePos)) {
                     world.setBlockState(sidePos, AbstractFireBlock.getFireForPlacement(world, sidePos));
-                } else if (CampfireBlock.func_241470_h_(hitState)) {
+                } else if (CampfireBlock.canBeLit(hitState)) {
                     world.setBlockState(hitPos, hitState.with(BlockStateProperties.LIT, true));
                 } else if (hitState.isFlammable(world, hitPos, hitSide)) {
                     hitState.catchFire(world, hitPos, hitSide, shooter);
@@ -163,7 +163,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
             }
         }
         if (hitFluid) {
-            spawnParticlesAt(func_233580_cy_());
+            spawnParticlesAt(getPosition());
             playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
         }
         remove();
@@ -175,7 +175,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
             ItemStack result = recipe.get().getRecipeOutput();
             item.setItem(StackUtils.size(result, item.getItem().getCount()));
             item.ticksExisted = 0;
-            spawnParticlesAt(item.func_233580_cy_());
+            spawnParticlesAt(item.getPosition());
             playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
             return true;
         }

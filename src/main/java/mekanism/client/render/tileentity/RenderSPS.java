@@ -53,7 +53,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
     protected void render(TileEntitySPSCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && tile.getMultiblock().getBounds() != null) {
             BoltRenderer bolts = boltRendererMap.computeIfAbsent(tile.getMultiblock().inventoryID, multiblock -> new BoltRenderer());
-            Vector3d center = Vector3d.func_237491_b_(tile.getMultiblock().getMinPos()).add(Vector3d.func_237491_b_(tile.getMultiblock().getMaxPos())).add(new Vector3d(1, 1, 1)).scale(0.5);
+            Vector3d center = Vector3d.copy(tile.getMultiblock().getMinPos()).add(Vector3d.copy(tile.getMultiblock().getMaxPos())).add(new Vector3d(1, 1, 1)).scale(0.5);
             Vector3d renderCenter = center.subtract(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
             if (!minecraft.isGamePaused()) {
                 for (CoilData data : tile.getMultiblock().coilData.coilMap.values()) {
@@ -107,8 +107,8 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
     }
 
     private static BoltEffect getBoltFromData(CoilData data, BlockPos pos, SPSMultiblockData multiblock, Vector3d center) {
-        Vector3d start = Vector3d.func_237489_a_(data.coilPos.offset(data.side));
-        start = start.add(Vector3d.func_237491_b_(data.side.getDirectionVec()).scale(0.5));
+        Vector3d start = Vector3d.copyCentered(data.coilPos.offset(data.side));
+        start = start.add(Vector3d.copy(data.side.getDirectionVec()).scale(0.5));
         int count = 1 + (data.prevLevel - 1) / 2;
         float size = 0.01F * data.prevLevel;
         return new BoltEffect(BoltRenderInfo.ELECTRICITY, start.subtract(pos.getX(), pos.getY(), pos.getZ()), center, 15)

@@ -113,8 +113,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void removed() {
-        super.removed();
+    public void onClose() {
+        super.onClose();
         getMinecraft().keyboardListener.enableRepeatEvents(false);
     }
 

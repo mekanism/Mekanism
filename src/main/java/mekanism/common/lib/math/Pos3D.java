@@ -52,7 +52,7 @@ public class Pos3D extends Vector3d {
     }
 
     public static Pos3D create(Vector3i vec) {
-        return new Pos3D(Vector3d.func_237491_b_(vec));
+        return new Pos3D(Vector3d.copy(vec));
     }
 
     /**

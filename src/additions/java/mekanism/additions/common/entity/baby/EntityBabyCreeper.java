@@ -46,7 +46,7 @@ public class EntityBabyCreeper extends CreeperEntity {
             ModifiableAttributeInstance attributeInstance = getAttribute(Attributes.MOVEMENT_SPEED);
             attributeInstance.removeModifier(MekanismAdditions.babySpeedBoostModifier);
             if (child) {
-                attributeInstance.func_233767_b_(MekanismAdditions.babySpeedBoostModifier);
+                attributeInstance.applyNonPersistentModifier(MekanismAdditions.babySpeedBoostModifier);
             }
         }
     }

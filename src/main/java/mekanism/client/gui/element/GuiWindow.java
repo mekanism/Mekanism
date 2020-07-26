@@ -137,7 +137,7 @@ public class GuiWindow extends GuiTexturedElement {
         children.forEach(GuiElement::onWindowClose);
         guiObj.removeWindow(this);
         if (guiObj instanceof GuiMekanism) {
-            ((GuiMekanism<?>) guiObj).setFocused(null);
+            ((GuiMekanism<?>) guiObj).setListener(null);
         }
         if (closeListener != null) {
             closeListener.run();

@@ -31,7 +31,7 @@ public class BillboardingEffectRenderer {
         new Vector3f(-1.0F, -1.0F, 0.0F).transform(quaternion);
         Vector3f[] vertexPos = new Vector3f[]{new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),
                                               new Vector3f(1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, -1.0F, 0.0F)};
-        Vector3d pos = effect.getPos(partialTick).subtract(Vector3d.func_237491_b_(renderPos));
+        Vector3d pos = effect.getPos(partialTick).subtract(Vector3d.copy(renderPos));
         for (int i = 0; i < 4; i++) {
             Vector3f vector3f = vertexPos[i];
             vector3f.transform(quaternion);

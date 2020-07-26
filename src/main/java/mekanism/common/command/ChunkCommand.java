@@ -37,7 +37,7 @@ public class ChunkCommand {
                   .executes(ctx -> {
                       CommandSource source = ctx.getSource();
                       Entity entity = source.getEntity();
-                      ChunkPos chunkPos = new ChunkPos(entity.func_233580_cy_());
+                      ChunkPos chunkPos = new ChunkPos(entity.getPosition());
                       chunkWatchers.add(ChunkPos.asLong(chunkPos.x, chunkPos.z));
                       source.sendFeedback(MekanismLang.COMMAND_CHUNK_WATCH.translate(chunkPos.x, chunkPos.z), true);
                       return 0;
@@ -53,7 +53,7 @@ public class ChunkCommand {
                   .executes(ctx -> {
                       CommandSource source = ctx.getSource();
                       Entity entity = source.getEntity();
-                      ChunkPos chunkPos = new ChunkPos(entity.func_233580_cy_());
+                      ChunkPos chunkPos = new ChunkPos(entity.getPosition());
                       chunkWatchers.remove(ChunkPos.asLong(chunkPos.x, chunkPos.z));
                       source.sendFeedback(MekanismLang.COMMAND_CHUNK_UNWATCH.translate(chunkPos.x, chunkPos.z), true);
                       return 0;

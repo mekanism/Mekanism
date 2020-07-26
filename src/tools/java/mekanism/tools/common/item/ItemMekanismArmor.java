@@ -94,7 +94,7 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
     }
 
     public float getKnockbackResistance() {
-        return getArmorMaterial().func_230304_f_();
+        return getArmorMaterial().getKnockbackResistance();
     }
 
     @Override

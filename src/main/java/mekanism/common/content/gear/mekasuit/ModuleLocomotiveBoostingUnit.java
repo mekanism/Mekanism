@@ -27,7 +27,7 @@ public class ModuleLocomotiveBoostingUnit extends ModuleMekaSuit {
 
         if (canFunction(player)) {
             float boost = getBoost();
-            if (!player.func_233570_aj_()) {
+            if (!player.isOnGround()) {
                 boost /= 5F; // throttle if we're in the air
             }
             if (player.isInWater()) {
@@ -44,7 +44,7 @@ public class ModuleLocomotiveBoostingUnit extends ModuleMekaSuit {
 
         if (canFunction(player)) {
             float boost = getBoost();
-            if (!player.func_233570_aj_()) {
+            if (!player.isOnGround()) {
                 boost /= 5F; // throttle if we're in the air
             }
             if (player.isInWater()) {

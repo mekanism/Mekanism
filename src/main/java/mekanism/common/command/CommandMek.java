@@ -91,7 +91,7 @@ public class CommandMek {
                             if (entity != null) {
                                 UUID player = entity.getUniqueID();
                                 Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<>());
-                                playerLocations.push(entity.func_233580_cy_());
+                                playerLocations.push(entity.getPosition());
                                 tpStack.put(player, playerLocations);
 
                                 ILocationArgument location = Vec3Argument.getLocation(ctx, "location");

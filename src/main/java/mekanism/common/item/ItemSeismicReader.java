@@ -54,7 +54,7 @@ public class ItemSeismicReader extends ItemEnergized {
         if (world.isRemote) {
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
-        if (!MekanismUtils.isChunkVibrated(new ChunkPos(player.func_233580_cy_()), player.world)) {
+        if (!MekanismUtils.isChunkVibrated(new ChunkPos(player.getPosition()), player.world)) {
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NO_VIBRATIONS.translateColored(EnumColor.RED)), Util.DUMMY_UUID);
         } else {
             if (!player.isCreative()) {

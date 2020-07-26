@@ -255,7 +255,7 @@ public class RenderTickHandler {
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).rotateYaw(p.renderYawOffset);
                                 }
                                 Vector3d motion = p.getMotion();
-                                Pos3D flameMotion = new Pos3D(motion.getX(), p.func_233570_aj_() ? 0 : motion.getY(), motion.getZ());
+                                Pos3D flameMotion = new Pos3D(motion.getX(), p.isOnGround() ? 0 : motion.getY(), motion.getZ());
                                 Pos3D playerPos = new Pos3D(p);
                                 Pos3D mergedVec = playerPos.translate(flameVec);
                                 world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(),

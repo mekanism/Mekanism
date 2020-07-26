@@ -55,7 +55,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
     private static Item.Properties getItemProperties(ItemTier material) {
         Item.Properties properties = ItemDeferredRegister.getMekBaseProperties();
         if (material == ItemTier.NETHERITE) {
-            properties = properties.func_234689_a_();
+            properties = properties.isBurnable();
         }
         return addHarvestLevel(properties, material.getHarvestLevel());
     }
