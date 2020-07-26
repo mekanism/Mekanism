@@ -3,7 +3,7 @@
   "mainInput": {
     "amount": 16,
     "ingredient": {
-      "tag": "forge:dusts/lapis_lazuli"
+      "tag": "forge:dusts/lapis"
     }
   },
   "extraInput": {

@@ -76,7 +76,7 @@ public class MekanismTags {
         public static final INamedTag<Item> DUSTS_DIAMOND = forgeTag("dusts/diamond");
         public static final INamedTag<Item> DUSTS_EMERALD = forgeTag("dusts/emerald");
         public static final INamedTag<Item> DUSTS_NETHERITE = forgeTag("dusts/netherite");
-        public static final INamedTag<Item> DUSTS_LAPIS_LAZULI = forgeTag("dusts/lapis_lazuli");
+        public static final INamedTag<Item> DUSTS_LAPIS = forgeTag("dusts/lapis");
         public static final INamedTag<Item> DUSTS_LITHIUM = forgeTag("dusts/lithium");
         public static final INamedTag<Item> DUSTS_OBSIDIAN = forgeTag("dusts/obsidian");
         public static final INamedTag<Item> DUSTS_QUARTZ = forgeTag("dusts/quartz");

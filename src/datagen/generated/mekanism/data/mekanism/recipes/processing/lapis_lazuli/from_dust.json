@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/lapis_lazuli"
+      "tag": "forge:dusts/lapis"
     }
   },
   "output": {
