@@ -341,7 +341,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         // For now we "ignore" this case as the structure can be rechecked manually with a configurator
         // and checking on every neighbor changed when we don't have a multiblock (so don't know its bounds)
         // would not be very performant
-        if (!isRemote() && getMultiblock().isPositionInsideBounds(neighborPos)) {
+        if (!isRemote() && getMultiblock().isPositionInsideBounds(getStructure(), neighborPos)) {
             //If the neighbor change happened from inside the bounds of the multiblock,
             // then we mark the structure as needing to be re-validated
             getStructure().markForUpdate(world, true);

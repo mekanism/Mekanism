@@ -121,7 +121,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
             // would not be very performant
             for (Structure s : structures.values()) {
                 //For each structure this structural multiblock is a part of
-                if (s.getController() != null && getMultiblockData(s.getManager()).isPositionInsideBounds(neighborPos)) {
+                if (s.getController() != null && getMultiblockData(s.getManager()).isPositionInsideBounds(s, neighborPos)) {
                     //If the neighbor change happened from inside the bounds of the multiblock,
                     // then we mark the structure as needing to be re-validated
                     s.markForUpdate(world, true);

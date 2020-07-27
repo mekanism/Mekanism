@@ -33,6 +33,8 @@ import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.math.voxel.IShape;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
+import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidRelative;
+import mekanism.common.lib.multiblock.FormationProtocol.StructureRequirement;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
@@ -227,15 +229,22 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     /**
      * Checks if this multiblock is formed and the given position is insides the bounds of this multiblock
      */
-    public boolean isPositionInsideBounds(@Nonnull BlockPos pos) {
-        //TODO: Make this slightly more generic for structures without all sides, so that we don't need to override this for evap towers
+    public <T extends MultiblockData> boolean isPositionInsideBounds(@Nonnull Structure structure, @Nonnull BlockPos pos) {
         if (isFormed()) {
-            BlockPos minPos = getMinPos();
-            BlockPos maxPos = getMaxPos();
-            //Note: We check strictly less than/greater than as we only care if it is inside and not if it is on the bounds
-            // and then we won't need to worry about non full cuboid structures like
-            return pos.getX() > minPos.getX() && pos.getY() > minPos.getY() && pos.getZ() > minPos.getZ() &&
-                   pos.getX() < maxPos.getX() && pos.getY() < maxPos.getY() && pos.getZ() < maxPos.getZ();
+            CuboidRelative relativeLocation = getBounds().getRelativeLocation(pos);
+            if (relativeLocation == CuboidRelative.INSIDE) {
+                return true;
+            } else if (relativeLocation.isWall()) {
+                //If we are in the wall check if we are really an inner position. For example evap towers
+                MultiblockManager<T> manager = (MultiblockManager<T>) structure.getManager();
+                IStructureValidator<T> validator =  manager.createValidator();
+                if (validator instanceof CuboidStructureValidator) {
+                    CuboidStructureValidator<T> cuboidValidator = (CuboidStructureValidator<T>) validator;
+                    validator.init(getWorld(), manager, structure);
+                    cuboidValidator.loadCuboid(getBounds());
+                    return cuboidValidator.getStructureRequirement(pos) == StructureRequirement.INNER;
+                }
+            }
         }
         return false;
     }

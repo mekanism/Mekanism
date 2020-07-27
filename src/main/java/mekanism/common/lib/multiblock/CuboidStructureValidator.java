@@ -147,4 +147,8 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         cuboid = StructureHelper.fetchCuboid(structure, minBounds, maxBounds);
         return cuboid != null;
     }
+
+    public void loadCuboid(VoxelCuboid cuboid) {
+        this.cuboid = cuboid;
+    }
 }
