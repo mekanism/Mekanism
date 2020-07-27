@@ -138,7 +138,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
         //Return some capabilities as disabled, and handle them with offset capabilities instead
         addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-        addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
     }
 
     @Nonnull
