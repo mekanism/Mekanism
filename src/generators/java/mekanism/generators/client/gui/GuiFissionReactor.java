@@ -1,6 +1,7 @@
 package mekanism.generators.client.gui;
 
 import java.util.Arrays;
+import java.util.Collections;
 import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.text.EnumColor;
@@ -71,7 +72,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
               .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
         addButton(new GuiHeatTab(() -> {
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
-            return Arrays.asList(MekanismLang.DISSIPATED_RATE.translate(environment));
+            return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));
         addButton(activateButton = new TranslationButton(this, getGuiLeft() + 6, getGuiTop() + 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
               () -> MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 1)), null,

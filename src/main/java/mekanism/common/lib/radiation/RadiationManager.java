@@ -148,9 +148,7 @@ public class RadiationManager {
             return;
         }
         if (!(entity instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) entity)) {
-            entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
-                c.radiate(magnitude * (1 - Math.min(1, getRadiationResistance(entity))));
-            });
+            entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.radiate(magnitude * (1 - Math.min(1, getRadiationResistance(entity)))));
         }
     }
 
