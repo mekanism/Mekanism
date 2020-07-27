@@ -15,16 +15,6 @@ import net.minecraft.util.ResourceLocation;
 
 *//**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Slurry}.
- *
- * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link SlurryStack}
- *
- * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link Slurry}
- *
- * Helper method to create an {@link NSSSlurry} representing a slurry type from a {@link ResourceLocation}
- *
- * Helper method to create an {@link NSSSlurry} representing a tag from a {@link ResourceLocation}
- *
- * Helper method to create an {@link NSSSlurry} representing a tag from a {@link Tag<Slurry>}
  *//*
 public final class NSSSlurry extends AbstractNSSTag<Slurry> {
 

@@ -34,7 +34,7 @@ public enum BlockResourceInfo implements IResource {
         this(registrySuffix, hardness, resistance, harvestLevel, burnTime, lightValue, true, false);
     }
 
-    BlockResourceInfo(String registrySuffix, float hardness, float resistance, int harvestLevel, int burnTime, int lightValue , boolean burnsInFire, boolean portalFrame) {
+    BlockResourceInfo(String registrySuffix, float hardness, float resistance, int harvestLevel, int burnTime, int lightValue, boolean burnsInFire, boolean portalFrame) {
         this.registrySuffix = registrySuffix;
         this.portalFrame = portalFrame;
         this.burnsInFire = burnsInFire;

@@ -59,12 +59,12 @@ public class BlockPlasticTransparentSlab extends SlabBlock implements IColoredBl
             IColoredBlock plastic = ((IColoredBlock) adjacentBlock);
             if (plastic.getColor() == getColor()) {
                 try {
-                VoxelShape shape = state.getShape(null, null);
-                VoxelShape adjacentShape = adjacentBlockState.getShape(null, null);
+                    VoxelShape shape = state.getShape(null, null);
+                    VoxelShape adjacentShape = adjacentBlockState.getShape(null, null);
 
-                VoxelShape faceShape = shape.project(side);
-                VoxelShape adjacentFaceShape = adjacentShape.project(side.getOpposite());
-                return !VoxelShapes.compare(faceShape, adjacentFaceShape, IBooleanFunction.ONLY_FIRST);
+                    VoxelShape faceShape = shape.project(side);
+                    VoxelShape adjacentFaceShape = adjacentShape.project(side.getOpposite());
+                    return !VoxelShapes.compare(faceShape, adjacentFaceShape, IBooleanFunction.ONLY_FIRST);
                 } catch (Exception ignored) {
                     //Something might have errored due to the null world and position
                 }

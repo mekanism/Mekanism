@@ -1,8 +1,8 @@
 package mekanism.common.base;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Calendar;
 import java.util.Set;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -116,7 +116,8 @@ public final class HolidayManager {
 
         public abstract YearlyDate getDate();
 
-        public void onEvent(PlayerEntity player) {}
+        public void onEvent(PlayerEntity player) {
+        }
 
         public SoundEventRegistryObject<SoundEvent> filterSound(SoundEventRegistryObject<SoundEvent> sound) {
             return sound;

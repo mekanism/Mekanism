@@ -15,16 +15,6 @@ import net.minecraft.util.ResourceLocation;
 */
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link NSSTag} for representing {@link Gas}s.
- *
- * Helper method to create an {@link NSSGas} representing a gas from a {@link GasStack}
- *
- * Helper method to create an {@link NSSGas} representing a gas from a {@link Gas}
- *
- * Helper method to create an {@link NSSGas} representing a gas from a {@link ResourceLocation}
- *
- * Helper method to create an {@link NSSGas} representing a tag from a {@link ResourceLocation}
- *
- * Helper method to create an {@link NSSGas} representing a tag from a {@link Tag<Gas>}
  *//*
 public final class NSSGas extends AbstractNSSTag<Gas> {
 

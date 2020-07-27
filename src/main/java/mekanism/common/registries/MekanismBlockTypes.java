@@ -1,9 +1,9 @@
 package mekanism.common.registries;
 
-import java.util.EnumSet;
-import java.util.function.Supplier;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import java.util.EnumSet;
+import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;

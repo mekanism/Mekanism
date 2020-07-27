@@ -1,8 +1,8 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiWindow;
