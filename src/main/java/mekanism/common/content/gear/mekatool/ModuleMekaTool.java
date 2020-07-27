@@ -1,6 +1,7 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.List;
+
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;

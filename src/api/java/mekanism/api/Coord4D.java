@@ -206,7 +206,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
 
     @Override
     public String toString() {
-        return "[Coord4D: " + x + ", " + y + ", " + z + ", dim=" + dimension + "]";
+        return "[Coord4D: " + x + ", " + y + ", " + z + ", dim=" + dimension.func_240901_a_() + "]";
     }
 
     @Override

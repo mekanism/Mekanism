@@ -105,13 +105,13 @@ public class Builders {
             for (int x = -2; x < 2; ++x) {
                 for (int y = -2; y < 2; ++y) {
                     for (int z = -2; z < 2; ++z) {
-                        // Check whether one or all three vars ar 0 or -1.
-                        // Something that checks whether its exactly one would be better, but that seems very hard.
+                    	// Check whether one or all three vars ar 0 or -1.
+                    	// Something that checks whether its exactly one would be better, but that seems very hard.
                         if ((x == -1) != (y == -1) != (z == -1) != (x == 0) != (y == 0) != (z == 0)) {
-                            // Check that not all three vars are 0 or -1.
+                        	// Check that not all three vars are 0 or -1.
                             if (!(x == -1 || x == 0) || !(y == -1 || y == 0) || !(z == -1 || z == 0)) {
                                 world.setBlockState(start.add(x < 0 ? sizeX + x : x, y < 0 ? sizeY + y : y,
-                                      z < 0 ? sizeZ + z : z), getCasing().getDefaultState());
+                                        z < 0 ? sizeZ + z : z), getCasing().getDefaultState());
                             }
                         }
                     }
