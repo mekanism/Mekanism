@@ -1,9 +1,8 @@
-package mekanism.common.integration.theoneprobe;
+package mekanism.common.integration.lookingat;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mcjty.theoneprobe.api.IElement;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
@@ -11,17 +10,16 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class TOPElement implements IElement {
+public abstract class LookingAtElement {
 
     private final int borderColor;
     private final int textColor;
 
-    protected TOPElement(int borderColor, int textColor) {
+    protected LookingAtElement(int borderColor, int textColor) {
         this.borderColor = borderColor;
         this.textColor = textColor;
     }
 
-    @Override
     public void render(@Nonnull MatrixStack matrix, int x, int y) {
         int width = getWidth();
         int height = getHeight();
@@ -43,12 +41,10 @@ public abstract class TOPElement implements IElement {
         renderScaledText(Minecraft.getInstance(), matrix, x + 4, y + 3, textColor, getWidth() - 8, getText());
     }
 
-    @Override
     public int getWidth() {
         return 100;
     }
 
-    @Override
     public int getHeight() {
         return 13;
     }
@@ -64,7 +60,7 @@ public abstract class TOPElement implements IElement {
         return false;
     }
 
-    protected static void renderScaledText(Minecraft mc, @Nonnull MatrixStack matrix, int x, int y, int color, int maxWidth, ITextComponent component) {
+    public static void renderScaledText(Minecraft mc, @Nonnull MatrixStack matrix, int x, int y, int color, int maxWidth, ITextComponent component) {
         int length = mc.fontRenderer.func_238414_a_(component);
         if (length <= maxWidth) {
             mc.fontRenderer.func_238422_b_(matrix, component, x, y, color);

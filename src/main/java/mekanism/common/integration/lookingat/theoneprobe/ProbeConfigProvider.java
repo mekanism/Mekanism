@@ -1,4 +1,4 @@
-package mekanism.common.integration.theoneprobe;
+package mekanism.common.integration.lookingat.theoneprobe;
 
 import mcjty.theoneprobe.api.IProbeConfig;
 import mcjty.theoneprobe.api.IProbeConfigProvider;

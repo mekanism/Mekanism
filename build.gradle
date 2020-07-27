@@ -286,6 +286,10 @@ repositories {
         name 'CurseMaven'
         url 'https://www.cursemaven.com'
     }
+    maven {
+        name 'HWYLA'
+        url "https://maven.tehnut.info"
+    }
 }
 
 test {
@@ -309,6 +313,9 @@ dependencies {
 
     compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
     runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
+
+    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
+    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //compileOnly fg.deobf("curse.maven:projecte:${projecte_api_id}")
@@ -729,6 +736,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "ctm"
                     optionalDependency "biomes-o-plenty"
                     //optionalDependency "flux-networks"
+                    optionalDependency "hwyla"
                     //optionalDependency "i-like-wood"
                     //optionalDependency "projecte"
                     optionalDependency "the-one-probe"

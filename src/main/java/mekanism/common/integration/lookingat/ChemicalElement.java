@@ -1,31 +1,23 @@
-package mekanism.common.integration.theoneprobe;
+package mekanism.common.integration.lookingat;
 
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class ChemicalElement extends TOPElement {
+public class ChemicalElement extends LookingAtElement {
 
     @Nonnull
     protected final ChemicalStack<?> stored;
     protected final long capacity;
 
-    protected ChemicalElement(@Nonnull ChemicalStack<?> stored, long capacity) {
+    public ChemicalElement(@Nonnull ChemicalStack<?> stored, long capacity) {
         super(0xFF000000, 0xFFFFFF);
         this.stored = stored;
         this.capacity = capacity;
-    }
-
-    @Override
-    public void toBytes(PacketBuffer buf) {
-        ChemicalUtils.writeChemicalStack(buf, stored);
-        buf.writeVarLong(capacity);
     }
 
     @Override

@@ -1,15 +1,14 @@
-package mekanism.common.integration.theoneprobe;
+package mekanism.common.integration.lookingat;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.MekanismLang;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
 
-public class FluidElement extends TOPElement {
+public class FluidElement extends LookingAtElement {
 
     @Nonnull
     protected final FluidStack stored;
@@ -19,16 +18,6 @@ public class FluidElement extends TOPElement {
         super(0xFF000000, 0xFFFFFF);
         this.stored = stored;
         this.capacity = capacity;
-    }
-
-    public FluidElement(PacketBuffer buf) {
-        this(buf.readFluidStack(), buf.readVarInt());
-    }
-
-    @Override
-    public void toBytes(PacketBuffer buf) {
-        buf.writeFluidStack(stored);
-        buf.writeVarInt(capacity);
     }
 
     @Override
@@ -57,10 +46,5 @@ public class FluidElement extends TOPElement {
     protected boolean applyRenderColor() {
         MekanismRenderer.color(stored);
         return true;
-    }
-
-    @Override
-    public int getID() {
-        return TOPProvider.FLUID_ELEMENT_ID;
     }
 }
