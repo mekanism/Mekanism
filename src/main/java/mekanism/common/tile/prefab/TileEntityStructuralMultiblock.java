@@ -16,6 +16,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -24,6 +25,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
 
 public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism implements IStructuralMultiblock, IConfigurable {
 
@@ -107,6 +109,25 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
             }
         }
         return ActionResultType.PASS;
+    }
+
+    @Override
+    public void onNeighborChange(Block block, BlockPos neighborPos) {
+        super.onNeighborChange(block, neighborPos);
+        if (!isRemote()) {
+            //TODO - V11: Make this properly support removing blocks from the "inside" and rechecking the structure
+            // For now we "ignore" this case as the structure can be rechecked manually with a configurator
+            // and checking on every neighbor changed when we don't have a multiblock (so don't know its bounds)
+            // would not be very performant
+            for (Structure s : structures.values()) {
+                //For each structure this structural multiblock is a part of
+                if (s.getController() != null && getMultiblockData(s.getManager()).isPositionInsideBounds(neighborPos)) {
+                    //If the neighbor change happened from inside the bounds of the multiblock,
+                    // then we mark the structure as needing to be re-validated
+                    s.markForUpdate(world, true);
+                }
+            }
+        }
     }
 
     @Override

@@ -80,6 +80,16 @@ public class Structure {
         return planeMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
     }
 
+    public void markForUpdate(World world, boolean invalidate) {
+        updateTimestamp = world.getGameTime();
+        didUpdate = false;
+        if (invalidate) {
+            invalidate(world);
+        } else {
+            removeMultiblock(world);
+        }
+    }
+
     public <TILE extends TileEntity & IMultiblockBase> void tick(TILE tile) {
         if (!didUpdate && updateTimestamp == tile.getWorld().getGameTime() - 1) {
             didUpdate = true;
@@ -247,9 +257,7 @@ public class Structure {
             changed.add(nodeStructure);
         }
         // update the changed structure
-        changed.updateTimestamp = node.getTileWorld().getGameTime();
-        changed.didUpdate = false;
-        changed.removeMultiblock(node.getTileWorld());
+        changed.markForUpdate(node.getTileWorld(), false);
     }
 
     private static boolean isCompatible(IMultiblockBase node, IMultiblockBase other) {

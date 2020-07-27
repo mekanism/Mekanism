@@ -224,6 +224,22 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return bounds;
     }
 
+    /**
+     * Checks if this multiblock is formed and the given position is insides the bounds of this multiblock
+     */
+    public boolean isPositionInsideBounds(@Nonnull BlockPos pos) {
+        //TODO: Make this slightly more generic for structures without all sides, so that we don't need to override this for evap towers
+        if (isFormed()) {
+            BlockPos minPos = getMinPos();
+            BlockPos maxPos = getMaxPos();
+            //Note: We check strictly less than/greater than as we only care if it is inside and not if it is on the bounds
+            // and then we won't need to worry about non full cuboid structures like
+            return pos.getX() > minPos.getX() && pos.getY() > minPos.getY() && pos.getZ() > minPos.getZ() &&
+                   pos.getX() < maxPos.getX() && pos.getY() < maxPos.getY() && pos.getZ() < maxPos.getZ();
+        }
+        return false;
+    }
+
     @Nonnull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {

@@ -1,9 +1,9 @@
 package mekanism.common.tile.prefab;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
@@ -23,6 +23,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -331,6 +332,20 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         return side -> getMultiblock().getInventorySlots(side);
+    }
+
+    @Override
+    public void onNeighborChange(Block block, BlockPos neighborPos) {
+        super.onNeighborChange(block, neighborPos);
+        //TODO - V11: Make this properly support removing blocks from the "inside" and rechecking the structure
+        // For now we "ignore" this case as the structure can be rechecked manually with a configurator
+        // and checking on every neighbor changed when we don't have a multiblock (so don't know its bounds)
+        // would not be very performant
+        if (!isRemote() && getMultiblock().isPositionInsideBounds(neighborPos)) {
+            //If the neighbor change happened from inside the bounds of the multiblock,
+            // then we mark the structure as needing to be re-validated
+            getStructure().markForUpdate(world, true);
+        }
     }
 
     @Override

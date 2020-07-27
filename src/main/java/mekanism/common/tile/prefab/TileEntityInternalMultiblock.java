@@ -9,6 +9,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
+//TODO - V11: Evaluate making neighbor updates to this (and other "non internal" internal multiblocks like induction cells) cause the multiblock to unform
 public class TileEntityInternalMultiblock extends TileEntityMekanism {
 
     protected UUID multiblockUUID;

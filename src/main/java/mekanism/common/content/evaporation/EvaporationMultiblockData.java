@@ -249,6 +249,18 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     }
 
     @Override
+    public boolean isPositionInsideBounds(@Nonnull BlockPos pos) {
+        if (isFormed()) {
+            BlockPos minPos = getMinPos();
+            BlockPos maxPos = getMaxPos();
+            //Note: We override this to check the inner top layer as well
+            return pos.getX() > minPos.getX() && pos.getY() > minPos.getY() && pos.getZ() > minPos.getZ() &&
+                   pos.getX() < maxPos.getX() && pos.getY() <= maxPos.getY() && pos.getZ() < maxPos.getZ();
+        }
+        return false;
+    }
+
+    @Override
     protected int getMultiblockRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(inputTank.getFluidAmount(), inputTank.getCapacity());
     }
