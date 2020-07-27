@@ -24,6 +24,16 @@ import net.minecraft.util.ResourceLocation;
  * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link ResourceLocation}
  *
  * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link Tag<InfuseType>}
+ *
+ * Helper method to create an {@link NSSInfuseType} representing an infuse type from a {@link InfusionStack}
+ *
+ * Helper method to create an {@link NSSInfuseType} representing an infuse type from a {@link InfuseType}
+ *
+ * Helper method to create an {@link NSSInfuseType} representing an infuse type from a {@link ResourceLocation}
+ *
+ * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link ResourceLocation}
+ *
+ * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link Tag<InfuseType>}
  *//*
 public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
 

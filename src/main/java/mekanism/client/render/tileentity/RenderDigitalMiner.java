@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 
 @ParametersAreNonnullByDefault
-public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDigitalMiner>  {
+public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDigitalMiner> {
 
     private static final float SCALE_FIX = 0.9999F;
     private static final float OFFSET_FIX = 0.00005F;

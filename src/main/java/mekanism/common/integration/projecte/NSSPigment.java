@@ -24,6 +24,16 @@ import net.minecraft.util.ResourceLocation;
  * Helper method to create an {@link NSSPigment} representing a tag from a {@link ResourceLocation}
  *
  * Helper method to create an {@link NSSPigment} representing a tag from a {@link Tag<Pigment>}
+ *
+ * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link PigmentStack}
+ *
+ * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link Pigment}
+ *
+ * Helper method to create an {@link NSSPigment} representing a pigment type from a {@link ResourceLocation}
+ *
+ * Helper method to create an {@link NSSPigment} representing a tag from a {@link ResourceLocation}
+ *
+ * Helper method to create an {@link NSSPigment} representing a tag from a {@link Tag<Pigment>}
  *//*
 public final class NSSPigment extends AbstractNSSTag<Pigment> {
 

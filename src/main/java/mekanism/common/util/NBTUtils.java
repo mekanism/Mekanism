@@ -112,7 +112,7 @@ public class NBTUtils {
             setter.accept(nbt.getLongArray(key));
         }
     }
-    
+
     public static boolean hasOldUUID(CompoundNBT nbt, String key) {
         return nbt.contains(key + "Most", NBT.TAG_ANY_NUMERIC) && nbt.contains(key + "Least", NBT.TAG_ANY_NUMERIC);
     }
