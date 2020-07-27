@@ -30,8 +30,8 @@ public class StructureHelper {
                 return null;
             }
             VoxelCuboid cuboid = VoxelCuboid.from(first.getValue(), last.getValue(), first.getKey(), last.getKey());
-            // if this is the first axial cuboid check, make sure we meet the min bounds
-            if (prev == null && !cuboid.greaterOrEqual(minBounds) && maxBounds.greaterOrEqual(cuboid)) {
+            // if this is the first axial cuboid check, make sure we have the correct bounds
+            if (prev == null && (!cuboid.greaterOrEqual(minBounds) || !maxBounds.greaterOrEqual(cuboid))) {
                 return null;
             }
             // if this isn't the first axial cuboid check, make sure the cuboids match
