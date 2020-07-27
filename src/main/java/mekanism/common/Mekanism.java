@@ -400,8 +400,8 @@ public class Mekanism {
 
     private void chunkSave(ChunkDataEvent.Save event) {
         if (event.getWorld() != null && !event.getWorld().isRemote()) {
-            //Note: ChunkDataLoad uses the level tag, but chunk save uses the parent compound
-            // we need to get the level compound so that we read the correct value
+            //TODO - 1.17: Make both this and load write to the main tag instead of the level sub tag. For now we are using the level tag
+            // in both spots to have proper backwards compatibility with earlier mek release versions from 1.16
             CompoundNBT levelTag = event.getData().getCompound(NBTConstants.CHUNK_DATA_LEVEL);
             levelTag.putInt(NBTConstants.WORLD_GEN_VERSION, MekanismConfig.world.userGenVersion.get());
         }
@@ -409,8 +409,9 @@ public class Mekanism {
 
     private synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         IWorld world = event.getWorld();
-        if (world instanceof World && !world.isRemote()) {
-            if (MekanismConfig.world.enableRegeneration.get() && event.getData().getInt(NBTConstants.WORLD_GEN_VERSION) < MekanismConfig.world.userGenVersion.get()) {
+        if (!world.isRemote() && world instanceof World && MekanismConfig.world.enableRegeneration.get()) {
+            CompoundNBT levelTag = event.getData().getCompound(NBTConstants.CHUNK_DATA_LEVEL);
+            if (levelTag.getInt(NBTConstants.WORLD_GEN_VERSION) < MekanismConfig.world.userGenVersion.get()) {
                 worldTickHandler.addRegenChunk(((World) world).func_234923_W_(), event.getChunk().getPos());
             }
         }
