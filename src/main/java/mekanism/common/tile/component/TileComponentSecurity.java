@@ -58,8 +58,12 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     public void setMode(SecurityMode mode) {
-        securityMode = mode;
-        tile.markDirty(false);
+        if (securityMode != mode) {
+            SecurityMode old = securityMode;
+            securityMode = mode;
+            tile.markDirty(false);
+            tile.onSecurityChanged(old, securityMode);
+        }
     }
 
     @Override

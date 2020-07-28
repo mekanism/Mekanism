@@ -981,6 +981,26 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public TileComponentSecurity getSecurity() {
         return securityComponent;
     }
+
+    @Override
+    public void onSecurityChanged(SecurityMode old, SecurityMode mode) {
+        //If the mode changed and this tile has a gui
+        if (old != mode && hasGui()) {
+            //and the new security mode is more restrictive than the old one
+            if (old == SecurityMode.PUBLIC || (old == SecurityMode.TRUSTED && mode == SecurityMode.PRIVATE)) {
+                //and there are players using this tile
+                if (!playersUsing.isEmpty()) {
+                    //then double check that all the players are actually supposed to be able to access the GUI
+                    for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
+                        if (!SecurityUtils.canAccess(player, this)) {
+                            //and if they can't then boot them out
+                            player.closeScreen();
+                        }
+                    }
+                }
+            }
+        }
+    }
     //End methods ITileSecurity
 
     //Methods for implementing ITileActive
