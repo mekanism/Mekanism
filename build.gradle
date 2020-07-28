@@ -539,9 +539,9 @@ static String mergeModsTOML(SourceSet... sourceSets) {
                     //Nothing added yet, take it all
                     text = file.getText()
                 } else {
-                    //Otherwise add all but the first three lines (which are duplicated between the files)
+                    //Otherwise add all but the first four lines (which are duplicated between the files)
                     String[] lines = file.getText().split("\n")
-                    for (int i = 3; i < lines.length; i++) {
+                    for (int i = 4; i < lines.length; i++) {
                         text = text + "\n" + lines[i]
                     }
                 }
