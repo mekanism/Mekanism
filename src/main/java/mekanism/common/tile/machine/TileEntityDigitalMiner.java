@@ -416,9 +416,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (world == null) {
             return false;
         }
-        ItemStack stack = getReplace(index);
+        MinerFilter<?> filter = replaceMap.get(index);
+        ItemStack stack = getReplace(filter);
         if (stack.isEmpty()) {
-            MinerFilter<?> filter = replaceMap.get(index);
             if (filter == null || filter.replaceStack.isEmpty() || !filter.requireStack) {
                 world.removeBlock(pos, false);
                 return true;
@@ -447,8 +447,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return !event.isCanceled();
     }
 
-    private ItemStack getReplace(int index) {
-        MinerFilter<?> filter = replaceMap.get(index);
+    private ItemStack getReplace(MinerFilter<?> filter) {
         if (filter == null || filter.replaceStack.isEmpty()) {
             return ItemStack.EMPTY;
         }
@@ -460,8 +459,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         if (doPull && getPullInv() != null) {
             TransitRequest request = TransitRequest.definedItem(getPullInv(), Direction.DOWN, 1, Finder.strict(filter.replaceStack));
-            if (!request.isEmpty()) {
-                return request.createSimpleResponse().useAll();
+            if (!request.isEmpty() && request.createSimpleResponse().useAll().isEmpty()) {
+                //If the request isn't empty and we were able to successfully use it all
+                return StackUtils.size(filter.replaceStack, 1);
             }
         }
         return ItemStack.EMPTY;
