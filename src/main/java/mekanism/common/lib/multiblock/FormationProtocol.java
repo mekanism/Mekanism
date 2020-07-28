@@ -52,6 +52,7 @@ public class FormationProtocol<T extends MultiblockData> {
         }
 
         structure.locations = locations;
+        structure.innerNodes = innerNodes;
         structure.valves = valves;
         result = validator.postcheck(structure, innerNodes);
         return result.isFormed() ? form(structure, idsFound) : fail(result);

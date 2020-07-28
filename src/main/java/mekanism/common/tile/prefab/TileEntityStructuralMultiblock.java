@@ -121,10 +121,17 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
             // would not be very performant
             for (Structure s : structures.values()) {
                 //For each structure this structural multiblock is a part of
-                if (s.getController() != null && getMultiblockData(s.getManager()).isPositionInsideBounds(s, neighborPos)) {
-                    //If the neighbor change happened from inside the bounds of the multiblock,
-                    // then we mark the structure as needing to be re-validated
-                    s.markForUpdate(world, true);
+                if (s.getController() != null) {
+                    MultiblockData multiblockData = getMultiblockData(s.getManager());
+                    if (multiblockData.isPositionInsideBounds(s, neighborPos)) {
+                        if (!multiblockData.innerNodes.contains(neighborPos) || world.isAirBlock(neighborPos)) {
+                            //And we are not already an internal part of the structure, or we are changing an internal part to air
+                            // then we mark the structure as needing to be re-validated
+                            //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
+                            // it won't know to invalidate it but oh well. (See java docs on innerNode for more caveats)
+                            s.markForUpdate(world, true);
+                        }
+                    }
                 }
             }
         }

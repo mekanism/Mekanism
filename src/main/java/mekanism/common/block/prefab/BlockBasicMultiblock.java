@@ -34,18 +34,6 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
     }
 
     @Override
-    @Deprecated
-    public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
-          boolean isMoving) {
-        if (!world.isRemote) {
-            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-            if (tile != null) {
-                tile.onNeighborChange(neighborBlock, neighborPos);
-            }
-        }
-    }
-
-    @Override
     public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType type, @Nullable EntityType<?> entityType) {
         TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile != null && tile.getMultiblock().isFormed()) {
