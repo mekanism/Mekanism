@@ -48,7 +48,7 @@
   "description.mekanismgenerators.fission_fuel_assembly": "Un ammasso di Barre usate per alloggiare il carburante per il Reattore a Fissione. Possono essere impilati l'uno sopra l'altro.",
   "description.mekanismgenerators.fission_reactor_casing": "Un involucro d'acciaio infuso con piombo utilizzato per creare il reattore a fissione. Principalmente resistente al calore, per lo più resistente alle radiazioni, e abbastanza sicuro!",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "Un blocco che può essere utilizzato per monitorare e controllare il Reattore a Fissione con la pietrarossa.",
-  "description.mekanismgenerators.fission_reactor_port": "Una valvola che può essere posizionata su un reattore a fissione per trasferire il refrigerante, il carburante, le scorie e l'energia.",
+  "description.mekanismgenerators.fission_reactor_port": "Una valvola che può essere posizionata su un reattore a fissione per trasferire il refrigerante, il carburante e le scorie.",
   "description.mekanismgenerators.fusion_reactor_controller": "Il blocco di controllo dell'intera struttura del Reattore a fusione.",
   "description.mekanismgenerators.fusion_reactor_frame": "Telaio rinforzato che può essere usato nella costruzione di un Reattore a fusione.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Un blocco che può essere usato per monitorare un Reattore usando la redstone.",
