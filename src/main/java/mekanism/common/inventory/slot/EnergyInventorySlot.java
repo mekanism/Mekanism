@@ -1,7 +1,6 @@
 package mekanism.common.inventory.slot;
 
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -43,18 +42,17 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     public static EnergyInventorySlot fillOrConvert(IEnergyContainer energyContainer, Supplier<World> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
-        Function<ItemStack, FloatingLong> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
         return new EnergyInventorySlot(energyContainer, worldSupplier, stack -> {
             //Always allow extraction if something went horribly wrong and we are not an energy container item or we are no longer a valid conversion
             // This might happen after a reload for example
-            return !EnergyCompatUtils.hasStrictEnergyHandler(stack) && potentialConversionSupplier.apply(stack).isZero();
+            return !EnergyCompatUtils.hasStrictEnergyHandler(stack) && getPotentialConversion(worldSupplier.get(), stack).isZero();
         }, stack -> {
             if (fillInsertCheck(stack)) {
                 return true;
             }
-            FloatingLong conversion = potentialConversionSupplier.apply(stack);
             //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
-            return !conversion.isZero() && energyContainer.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).smallerThan(conversion);
+            // Unlike with the chemical conversions, we don't check if the type is "valid" as we only have one "type" of energy.
+            return !getPotentialConversion(worldSupplier.get(), stack).isZero();
         }, stack -> {
             //Note: we mark all energy handler items as valid and have a more restrictive insert check so that we allow full containers when they are done being filled
             // We also allow energy conversion of items that can be converted

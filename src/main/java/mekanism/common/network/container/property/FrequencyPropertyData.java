@@ -16,7 +16,7 @@ public class FrequencyPropertyData<FREQUENCY extends Frequency> extends Property
     }
 
     public static <FREQUENCY extends Frequency> FrequencyPropertyData<FREQUENCY> readFrequency(short property, PacketBuffer buffer) {
-        return new FrequencyPropertyData<>(property, buffer.readBoolean() ? (FREQUENCY) Frequency.readFromPacket(buffer) : null);
+        return new FrequencyPropertyData<>(property, buffer.readBoolean() ? Frequency.readFromPacket(buffer) : null);
     }
 
     @Override

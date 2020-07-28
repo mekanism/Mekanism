@@ -82,7 +82,16 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
             }
             STACK conversion = potentialConversionSupplier.apply(stack);
             //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
-            return !conversion.isEmpty() && chemicalTank.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < conversion.getAmount();
+            if (conversion.isEmpty()) {
+                return false;
+            }
+            if (chemicalTank.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < conversion.getAmount()) {
+                //If we can insert the converted substance into the tank allow insertion
+                return true;
+            }
+            //If we can't because the tank is full, we do a slightly less accurate check and validate that the type matches the stored type
+            // and that it is still actually valid for the tank, as a reload could theoretically make it no longer be valid while there is still some stored
+            return chemicalTank.getNeeded() == 0 && chemicalTank.isTypeEqual(conversion) && chemicalTank.isValid(conversion);
         };
     }
 
