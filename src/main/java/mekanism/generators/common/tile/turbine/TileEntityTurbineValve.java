@@ -359,20 +359,17 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		if(resource.getFluid()==FluidRegistry.WATER){
 			return 0;
 		}
-		if(!resource.getFluid().getUnlocalizedName().equals("fluid.steam")){
-			return 0;
-		}
 		int filled = fluidTank.fill(resource, doFill);
 		if(doFill)
 		{
 			structure.newSteamInput += filled;
 		}
-		
+
 		if(filled < structure.getFluidCapacity() && structure.dumpMode != GasMode.IDLE)
 		{
 			filled = structure.getFluidCapacity();
 		}
-		
+
 		return filled;
 	}
 
