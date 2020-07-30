@@ -108,7 +108,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 		{
 			if(getReactor() != null)
 			{
-				getReactor().formMultiblock(false);
+				getReactor().formMultiblock(true);
 			}
 			else {
 				updateController();
@@ -124,7 +124,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 			
 			if(found != null && (found.getReactor() == null || !found.getReactor().isFormed()))
 			{
-				found.formMultiblock(false);
+				found.formMultiblock(true);
 			}
 		}
 	}
