@@ -3,17 +3,21 @@ package mekanism.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.Arrays;
+import mekanism.api.MekanismAPI;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
+import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector3i;
 
 /**
  * Adapted from BuildCraft
@@ -59,7 +63,9 @@ public class RenderResizableCuboid {
         Vector3d size = new Vector3d(cube.sizeX(), cube.sizeY(), cube.sizeZ());
         matrix.push();
         matrix.translate(cube.minX, cube.minY, cube.minZ);
-        Matrix4f matrix4f = matrix.getLast().getMatrix();
+        MatrixStack.Entry lastMatrix = matrix.getLast();
+        Matrix4f matrix4f = lastMatrix.getMatrix();
+        Matrix3f normal = lastMatrix.getNormal();
         for (Direction face : EnumUtils.DIRECTIONS) {
             if (cube.shouldSideRender(face)) {
                 int ordinal = face.ordinal();
@@ -99,15 +105,15 @@ public class RenderResizableCuboid {
                             }
                             float[] xyz = new float[]{uIndex, (float) (uIndex + addU), vIndex, (float) (vIndex + addV)};
 
-                            renderPoint(matrix4f, buffer, face, u, v, other, uv, xyz, true, false, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, face, u, v, other, uv, xyz, true, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, face, u, v, other, uv, xyz, false, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, face, u, v, other, uv, xyz, false, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, true, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, true, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, false, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, false, false, red, green, blue, alpha, light);
 
-                            renderPoint(matrix4f, buffer, opposite, u, v, other, uv, xyz, false, false, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, opposite, u, v, other, uv, xyz, false, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, opposite, u, v, other, uv, xyz, true, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, buffer, opposite, u, v, other, uv, xyz, true, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, false, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, false, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, true, true, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, true, false, red, green, blue, alpha, light);
                         }
                     }
                 }
@@ -116,13 +122,33 @@ public class RenderResizableCuboid {
         matrix.pop();
     }
 
-    private void renderPoint(Matrix4f matrix4f, IVertexBuilder buffer, Direction face, Axis u, Axis v, float other, float[] uv, float[] xyz, boolean minU, boolean minV,
-          float red, float green, float blue, float alpha, int light) {
+    private void renderPoint(Matrix4f matrix4f, Matrix3f normal, IVertexBuilder buffer, Direction face, Axis u, Axis v, float other, float[] uv, float[] xyz,
+          boolean minU, boolean minV, float red, float green, float blue, float alpha, int light) {
         int U_ARRAY = minU ? U_MIN : U_MAX;
         int V_ARRAY = minV ? V_MIN : V_MAX;
         Vector3f vertex = withValue(VEC_ZERO, u, xyz[U_ARRAY]);
         vertex = withValue(vertex, v, xyz[V_ARRAY]);
         vertex = withValue(vertex, face.getAxis(), other);
-        buffer.pos(matrix4f, vertex.getX(), vertex.getY(), vertex.getZ()).color(red, green, blue, alpha).tex(uv[U_ARRAY], uv[V_ARRAY]).lightmap(light).endVertex();
+        if (MekanismAPI.debug) {
+            //Use old way so that we can compare it better
+            buffer.pos(matrix4f, vertex.getX(), vertex.getY(), vertex.getZ())
+                  .color(red, green, blue, alpha)
+                  .tex(uv[U_ARRAY], uv[V_ARRAY])
+                  .lightmap(light)
+                  .endVertex();
+            return;
+        }
+        //TODO: Evaluate, this seems a bit darker than it used to be, but maybe it just used to be brighter than it should have been
+        // test with something other than water
+        Vector3i normalForFace = face.getDirectionVec();
+        buffer.pos(matrix4f, vertex.getX(), vertex.getY(), vertex.getZ())
+              .color(red, green, blue, alpha)
+              .tex(uv[U_ARRAY], uv[V_ARRAY])
+              //TODO: Figure out what the overlay value should be, I believe it is actually unused except for ISTERs?
+              .overlay(OverlayTexture.NO_OVERLAY)
+              .lightmap(light)
+              //TODO: FIXME this normal vector makes it look darker due to diffuse lighting
+              .normal(normal, normalForFace.getX(), normalForFace.getY(), normalForFace.getZ())
+              .endVertex();
     }
 }

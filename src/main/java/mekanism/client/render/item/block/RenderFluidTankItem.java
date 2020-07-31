@@ -42,7 +42,7 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
                 } else {
                     modelNumber = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
                 }
-                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
+                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboidOld()),
                       MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid));
             }
         }

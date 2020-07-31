@@ -3,6 +3,8 @@ package mekanism.client.render;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
+import mekanism.api.MekanismAPI;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -51,6 +53,7 @@ public class MekanismRenderType extends RenderType {
         return makeType("mek_blade", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, false, state);
     }
 
+    //TODO: Transition this over to entity translucent cull?
     public static RenderType renderFlame(ResourceLocation resourceLocation) {
         RenderType.State state = RenderType.State.getBuilder()
               .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
@@ -62,6 +65,7 @@ public class MekanismRenderType extends RenderType {
         return makeType("mek_flame", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, false, state);
     }
 
+    @Deprecated
     public static RenderType transmitterContents(ResourceLocation resourceLocation) {
         return makeType("transmitter_contents", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, false,
               preset(resourceLocation).build(true));
@@ -75,12 +79,29 @@ public class MekanismRenderType extends RenderType {
               .shadeModel(SHADE_ENABLED);//shadeModel(GL11.GL_SMOOTH)
     }
 
-    public static RenderType resizableCuboid() {
+    @Deprecated
+    public static RenderType resizableCuboidOld() {
         RenderType.State.Builder stateBuilder = preset(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
               .lightmap(LIGHTMAP_ENABLED)
               .alpha(CUBOID_ALPHA);//enableAlphaTest/alphaFunc(GL11.GL_GREATER, 0.1F)
         return makeType("resizable_cuboid", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, true, true,
               stateBuilder.build(true));
+    }
+
+    public static RenderType resizableCuboid() {
+        if (MekanismAPI.debug) {
+            return resizableCuboidOld();
+        }
+        /*RenderType.State stateBuilder = RenderType.State.getBuilder()
+         .texture(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, false))
+         .transparency(TRANSLUCENT_TRANSPARENCY)
+         .diffuseLighting(DIFFUSE_LIGHTING_ENABLED)
+         .alpha(DEFAULT_ALPHA)
+         .lightmap(LIGHTMAP_ENABLED)
+         .overlay(OVERLAY_ENABLED)
+         .build(true);
+        return makeType("mek_entity_translucent_cull", DefaultVertexFormats.ENTITY, 7, 256, true, true, stateBuilder);*/
+        return Atlases.getTranslucentCullBlockType();
     }
 
     public static RenderType getMekaSuit() {
