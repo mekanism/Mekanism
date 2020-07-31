@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -14,6 +13,7 @@ import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
@@ -41,7 +41,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             FluidStack fluid = tile.bioFuelTank.getFluid();
             float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
             MekanismRenderer.renderObject(getModel(tile.getDirection(), (int) (fluidScale * (stages - 1))), matrix,
-                  renderer.getBuffer(MekanismRenderType.resizableCuboid()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT, overlayLight);
+                  renderer.getBuffer(Atlases.getTranslucentCullBlockType()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT, overlayLight);
             matrix.pop();
         }
     }

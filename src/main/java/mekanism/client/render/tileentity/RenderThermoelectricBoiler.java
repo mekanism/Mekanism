@@ -3,7 +3,6 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
@@ -11,6 +10,7 @@ import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.GasRenderData;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -40,7 +40,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                     int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
                     matrix.push();
                     matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                    buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+                    buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
                     MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.getMultiblock().prevWaterScale), matrix, buffer,
                           data.getColorARGB(tile.getMultiblock().prevWaterScale), glow, overlayLight);
                     matrix.pop();
@@ -57,7 +57,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                     data.length = tile.getMultiblock().length();
                     data.width = tile.getMultiblock().width();
                     if (buffer == null) {
-                        buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+                        buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
                     }
                     int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
                     matrix.push();

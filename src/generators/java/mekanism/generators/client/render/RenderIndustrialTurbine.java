@@ -3,7 +3,6 @@ package mekanism.generators.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
@@ -13,6 +12,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -57,7 +57,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                     matrix.push();
                     matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                     Model3D gasModel = ModelRenderer.getModel(data, 1);
-                    MekanismRenderer.renderObject(gasModel, matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
+                    MekanismRenderer.renderObject(gasModel, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
                           data.getColorARGB(tile.getMultiblock().prevSteamScale), glow, overlayLight);
                     matrix.pop();
                 }

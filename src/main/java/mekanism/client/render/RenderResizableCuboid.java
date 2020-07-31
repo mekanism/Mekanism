@@ -3,7 +3,6 @@ package mekanism.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.Arrays;
-import mekanism.api.MekanismAPI;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
@@ -128,15 +127,6 @@ public class RenderResizableCuboid {
         Vector3f vertex = withValue(VEC_ZERO, u, xyz[U_ARRAY]);
         vertex = withValue(vertex, v, xyz[V_ARRAY]);
         vertex = withValue(vertex, face.getAxis(), other);
-        if (MekanismAPI.debug) {
-            //Use old way so that we can compare it better
-            buffer.pos(matrix4f, vertex.getX(), vertex.getY(), vertex.getZ())
-                  .color(red, green, blue, alpha)
-                  .tex(uv[U_ARRAY], uv[V_ARRAY])
-                  .lightmap(light)
-                  .endVertex();
-            return;
-        }
         Vector3i normalForFace = face.getDirectionVec();
         //TODO: Figure out how and why this works, it gives about the same brightness as we used to have but I don't understand why/how
         float adjustment = 2.5F;

@@ -7,12 +7,12 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityFluidTank;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
@@ -47,13 +47,13 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
             } else {
                 modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
             }
-            buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+            buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
             MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, buffer, MekanismRenderer.getColorARGB(fluid, fluidScale),
                   MekanismRenderer.calculateGlowLight(light, fluid), overlayLight);
         }
         if (!tile.valveFluid.isEmpty() && !tile.valveFluid.getFluid().getAttributes().isGaseous(tile.valveFluid)) {
             if (buffer == null) {
-                buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+                buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
             }
             MekanismRenderer.renderObject(getValveModel(tile.valveFluid, Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))), matrix, buffer,
                   MekanismRenderer.getColorARGB(tile.valveFluid), MekanismRenderer.calculateGlowLight(light, tile.valveFluid), overlayLight);

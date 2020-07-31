@@ -3,7 +3,6 @@ package mekanism.generators.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
@@ -13,6 +12,7 @@ import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -33,7 +33,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
           IProfiler profiler) {
         if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null) {
             BlockPos pos = tile.getPos();
-            IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
+            IVertexBuilder buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
             if (tile.getMultiblock().isBurning()) {
                 if (glowModel == null) {
                     glowModel = new Model3D();

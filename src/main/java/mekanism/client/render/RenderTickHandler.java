@@ -59,6 +59,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -370,7 +371,7 @@ public class RenderTickHandler {
                             Vector3d viewPosition = info.getProjectedView();
                             matrix.push();
                             matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
-                            MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
+                            MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
                                   MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
                             matrix.pop();
                         }

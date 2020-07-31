@@ -2,11 +2,11 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
@@ -47,7 +47,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
             //Adjust it slightly so that it does not clip into the blocks that are just on the outside of the radius
             matrix.scale(SCALE_FIX, SCALE_FIX, SCALE_FIX);
             matrix.translate(OFFSET_FIX, OFFSET_FIX, OFFSET_FIX);
-            MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
+            MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
                   MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight);
             matrix.pop();
         }

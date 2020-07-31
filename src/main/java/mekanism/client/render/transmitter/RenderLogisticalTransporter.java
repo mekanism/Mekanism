@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ProfilerConstants;
@@ -25,6 +24,7 @@ import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -99,7 +99,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     matrix.scale(0.5F, 0.5F, 0.5F);
                     matrix.translate(0.5, 0.5, 0.5);
                     DiversionControl mode = ((DiversionTransporter) transporter).modes[rayTraceResult.getFace().ordinal()];
-                    MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getFace(), mode), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
+                    MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getFace(), mode), matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
                           MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight);
                     matrix.pop();
                 }
