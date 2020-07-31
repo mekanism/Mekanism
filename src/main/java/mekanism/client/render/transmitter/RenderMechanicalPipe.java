@@ -67,7 +67,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     ConnectionType connectionType = pipe.getConnectionType(side);
                     if (connectionType == ConnectionType.NORMAL) {
-                        MekanismRenderer.renderObject(getModel(side, fluidStack, stage), matrix, buffer, color, glow);
+                        MekanismRenderer.renderObject(getModel(side, fluidStack, stage), matrix, buffer, color, glow, overlayLight);
                     } else if (connectionType != ConnectionType.NONE) {
                         connectionContents.add(side.getString() + connectionType.getString().toUpperCase());
                     }
@@ -75,7 +75,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                         model.setSideRender(side, connectionType == ConnectionType.NONE);
                     }
                 }
-                MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, fluidScale), glow);
+                MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, fluidScale), glow, overlayLight);
                 if (!connectionContents.isEmpty()) {
                     matrix.push();
                     matrix.translate(0.5, 0.5, 0.5);

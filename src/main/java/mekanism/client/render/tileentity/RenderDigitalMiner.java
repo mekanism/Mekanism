@@ -48,7 +48,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
             matrix.scale(SCALE_FIX, SCALE_FIX, SCALE_FIX);
             matrix.translate(OFFSET_FIX, OFFSET_FIX, OFFSET_FIX);
             MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
-                  MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT);
+                  MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight);
             matrix.pop();
         }
     }

@@ -8,7 +8,6 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -55,7 +54,7 @@ public class RenderResizableCuboid {
         throw new RuntimeException("Was given a null axis! That was probably not intentional, consider this a bug! (Vector = " + vector + ")");
     }
 
-    public void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int argb, int light) {
+    public void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay) {
         float red = MekanismRenderer.getRed(argb);
         float green = MekanismRenderer.getGreen(argb);
         float blue = MekanismRenderer.getBlue(argb);
@@ -105,15 +104,15 @@ public class RenderResizableCuboid {
                             }
                             float[] xyz = new float[]{uIndex, (float) (uIndex + addU), vIndex, (float) (vIndex + addV)};
 
-                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, true, false, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, true, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, false, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, false, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, true, false, red, green, blue, alpha, light, overlay);
+                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, true, true, red, green, blue, alpha, light, overlay);
+                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, false, true, red, green, blue, alpha, light, overlay);
+                            renderPoint(matrix4f, normal, buffer, face, u, v, other, uv, xyz, false, false, red, green, blue, alpha, light, overlay);
 
-                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, false, false, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, false, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, true, true, red, green, blue, alpha, light);
-                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, true, false, red, green, blue, alpha, light);
+                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, false, false, red, green, blue, alpha, light, overlay);
+                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, false, true, red, green, blue, alpha, light, overlay);
+                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, true, true, red, green, blue, alpha, light, overlay);
+                            renderPoint(matrix4f, normal, buffer, opposite, u, v, other, uv, xyz, true, false, red, green, blue, alpha, light, overlay);
                         }
                     }
                 }
@@ -123,7 +122,7 @@ public class RenderResizableCuboid {
     }
 
     private void renderPoint(Matrix4f matrix4f, Matrix3f normal, IVertexBuilder buffer, Direction face, Axis u, Axis v, float other, float[] uv, float[] xyz,
-          boolean minU, boolean minV, float red, float green, float blue, float alpha, int light) {
+          boolean minU, boolean minV, float red, float green, float blue, float alpha, int light, int overlay) {
         int U_ARRAY = minU ? U_MIN : U_MAX;
         int V_ARRAY = minV ? V_MIN : V_MAX;
         Vector3f vertex = withValue(VEC_ZERO, u, xyz[U_ARRAY]);
@@ -138,17 +137,17 @@ public class RenderResizableCuboid {
                   .endVertex();
             return;
         }
-        //TODO: Evaluate, this seems a bit darker than it used to be, but maybe it just used to be brighter than it should have been
-        // test with something other than water
         Vector3i normalForFace = face.getDirectionVec();
+        //TODO: Figure out how and why this works, it gives about the same brightness as we used to have but I don't understand why/how
+        float adjustment = 2.5F;
+        Vector3f norm = new Vector3f(normalForFace.getX() + adjustment, normalForFace.getY() + adjustment, normalForFace.getZ() + adjustment);
+        norm.normalize();
         buffer.pos(matrix4f, vertex.getX(), vertex.getY(), vertex.getZ())
               .color(red, green, blue, alpha)
               .tex(uv[U_ARRAY], uv[V_ARRAY])
-              //TODO: Figure out what the overlay value should be, I believe it is actually unused except for ISTERs?
-              .overlay(OverlayTexture.NO_OVERLAY)
+              .overlay(overlay)
               .lightmap(light)
-              //TODO: FIXME this normal vector makes it look darker due to diffuse lighting
-              .normal(normal, normalForFace.getX(), normalForFace.getY(), normalForFace.getZ())
+              .normal(normal, norm.getX(), norm.getY(), norm.getZ())
               .endVertex();
     }
 }

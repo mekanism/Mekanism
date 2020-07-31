@@ -37,9 +37,9 @@ public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<Ti
             matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
             IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
             MekanismRenderer.renderObject(ModelRenderer.getModel(data, Math.min(1, tile.getMultiblock().prevScale)), matrix, buffer,
-                  data.getColorARGB(tile.getMultiblock().prevScale), glow);
+                  data.getColorARGB(tile.getMultiblock().prevScale), glow, overlayLight);
             matrix.pop();
-            MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, data, pos, glow);
+            MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, data, pos, glow, overlayLight);
         }
     }
 

@@ -35,7 +35,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     protected void render(TileEntityTeleporter tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.shouldRender && tile.getWorld() != null) {
             MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
-                  MekanismRenderer.getColorARGB(tile.getColor(), 0.75F), MekanismRenderer.FULL_LIGHT);
+                  MekanismRenderer.getColorARGB(tile.getColor(), 0.75F), MekanismRenderer.FULL_LIGHT, overlayLight);
         }
     }
 

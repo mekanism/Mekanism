@@ -129,17 +129,17 @@ public class MekanismRenderer {
         model.setTextures(still, still, flowing, flowing, flowing, flowing);
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light) {
+    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay) {
         if (object != null) {
-            RenderResizableCuboid.INSTANCE.renderCube(object, matrix, buffer, argb, light);
+            RenderResizableCuboid.INSTANCE.renderCube(object, matrix, buffer, argb, light, overlay);
         }
     }
 
-    public static void renderValves(MatrixStack matrix, IVertexBuilder buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow) {
+    public static void renderValves(MatrixStack matrix, IVertexBuilder buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow, int overlay) {
         for (ValveData valveData : valves) {
             matrix.push();
             matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
-            MekanismRenderer.renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow);
+            renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow, overlay);
             matrix.pop();
         }
     }

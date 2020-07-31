@@ -100,7 +100,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     matrix.translate(0.5, 0.5, 0.5);
                     DiversionControl mode = ((DiversionTransporter) transporter).modes[rayTraceResult.getFace().ordinal()];
                     MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getFace(), mode), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
-                          MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT);
+                          MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight);
                     matrix.pop();
                 }
             }

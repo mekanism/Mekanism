@@ -40,8 +40,8 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             matrix.push();
             FluidStack fluid = tile.bioFuelTank.getFluid();
             float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
-            MekanismRenderer.renderObject(getModel(tile.getDirection(), (int) (fluidScale * (stages - 1))), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboid()),
-                  MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT);
+            MekanismRenderer.renderObject(getModel(tile.getDirection(), (int) (fluidScale * (stages - 1))), matrix,
+                  renderer.getBuffer(MekanismRenderType.resizableCuboid()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT, overlayLight);
             matrix.pop();
         }
     }

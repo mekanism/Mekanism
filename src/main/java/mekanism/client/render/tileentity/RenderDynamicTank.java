@@ -46,10 +46,10 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
                 matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                 int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
                 Model3D model = ModelRenderer.getModel(data, tile.getMultiblock().prevScale);
-                MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevScale), glow);
+                MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevScale), glow, overlayLight);
                 matrix.pop();
                 if (data instanceof FluidRenderData) {
-                    MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, (FluidRenderData) data, pos, glow);
+                    MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, (FluidRenderData) data, pos, glow, overlayLight);
                 }
             }
         }

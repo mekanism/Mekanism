@@ -29,7 +29,8 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
     }
 
     @Override
-    protected void render(TileEntityFissionReactorCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
+    protected void render(TileEntityFissionReactorCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+          IProfiler profiler) {
         if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null) {
             BlockPos pos = tile.getPos();
             IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
@@ -49,7 +50,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                     matrix.translate(assembly.getPos().getX() - pos.getX(), assembly.getPos().getY() - pos.getY(), assembly.getPos().getZ() - pos.getZ());
                     matrix.scale(1, assembly.getHeight(), 1);
                     int argb = MekanismRenderer.getColorARGB(0.466F, 0.882F, 0.929F, 0.6F);
-                    MekanismRenderer.renderObject(glowModel, matrix, buffer, argb, MekanismRenderer.FULL_LIGHT);
+                    MekanismRenderer.renderObject(glowModel, matrix, buffer, argb, MekanismRenderer.FULL_LIGHT, overlayLight);
                     matrix.pop();
                 }
             }
@@ -64,9 +65,10 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                     int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
                     matrix.push();
                     matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                    MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.getMultiblock().prevCoolantScale), matrix, buffer, data.getColorARGB(tile.getMultiblock().prevCoolantScale), glow);
+                    MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.getMultiblock().prevCoolantScale), matrix, buffer,
+                          data.getColorARGB(tile.getMultiblock().prevCoolantScale), glow, overlayLight);
                     matrix.pop();
-                    MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, data, pos, glow);
+                    MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, data, pos, glow, overlayLight);
                 }
             }
             if (!tile.getMultiblock().heatedCoolantTank.isEmpty()) {
@@ -82,7 +84,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                     matrix.scale(0.998F, 0.998F, 0.998F);
                     matrix.translate(data.location.getX() - pos.getX() + 0.001, data.location.getY() - pos.getY() + 0.001, data.location.getZ() - pos.getZ() + 0.001);
                     Model3D gasModel = ModelRenderer.getModel(data, 1);
-                    MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevHeatedCoolantScale), glow);
+                    MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevHeatedCoolantScale), glow, overlayLight);
                     matrix.pop();
                 }
             }

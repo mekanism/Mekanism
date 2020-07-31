@@ -30,7 +30,8 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
     }
 
     @Override
-    public void func_239207_a_(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    public void func_239207_a_(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
+          int light, int overlayLight) {
         FluidTankTier tier = ((ItemBlockFluidTank) stack.getItem()).getTier();
         FluidStack fluid = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluid.isEmpty()) {
@@ -43,7 +44,7 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
                     modelNumber = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
                 }
                 MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(MekanismRenderType.resizableCuboidOld()),
-                      MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid));
+                      MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight);
             }
         }
         matrix.push();

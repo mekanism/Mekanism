@@ -41,10 +41,11 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                     matrix.push();
                     matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                     buffer = renderer.getBuffer(MekanismRenderType.resizableCuboid());
-                    MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.getMultiblock().prevWaterScale), matrix, buffer, data.getColorARGB(tile.getMultiblock().prevWaterScale), glow);
+                    MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.getMultiblock().prevWaterScale), matrix, buffer,
+                          data.getColorARGB(tile.getMultiblock().prevWaterScale), glow, overlayLight);
                     matrix.pop();
 
-                    MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, data, pos, glow);
+                    MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, data, pos, glow, overlayLight);
                 }
             }
             if (!tile.getMultiblock().steamTank.isEmpty()) {
@@ -62,7 +63,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                     matrix.push();
                     matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                     Model3D gasModel = ModelRenderer.getModel(data, 1);
-                    MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevSteamScale), glow);
+                    MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevSteamScale), glow, overlayLight);
                     matrix.pop();
                 }
             }
