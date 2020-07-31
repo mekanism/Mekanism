@@ -2,14 +2,13 @@ package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.transmitter.UniversalCable;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 
@@ -30,8 +29,8 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
             if (network.currentScale > 0) {
                 matrix.push();
                 matrix.translate(0.5, 0.5, 0.5);
-                renderModel(tile, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), 0xFFFFFF,
-                      network.currentScale, MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.energyIcon);
+                renderModel(tile, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()), 0xFFFFFF, network.currentScale, MekanismRenderer.FULL_LIGHT,
+                      overlayLight, MekanismRenderer.energyIcon);
                 matrix.pop();
             }
         }

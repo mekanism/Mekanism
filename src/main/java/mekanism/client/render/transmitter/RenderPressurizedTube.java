@@ -3,14 +3,13 @@ package mekanism.client.render.transmitter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.BoxedChemicalNetwork;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 
@@ -31,8 +30,8 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
                 matrix.push();
                 matrix.translate(0.5, 0.5, 0.5);
                 Chemical<?> chemical = network.lastChemical.getChemical();
-                renderModel(tile, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), chemical.getTint(),
-                      network.currentScale, MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.getChemicalTexture(chemical));
+                renderModel(tile, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()), chemical.getTint(), network.currentScale,
+                      MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.getChemicalTexture(chemical));
                 matrix.pop();
             }
         }

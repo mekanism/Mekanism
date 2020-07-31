@@ -44,7 +44,7 @@ public class LookingAtUtils {
             return ((IMultiblock<?>) tile).getMultiblock();
         } else if (tile instanceof IStructuralMultiblock) {
             for (Structure s : ((IStructuralMultiblock) tile).getStructureMap().values()) {
-                if (s.isValid()) {
+                if (s.isValid()) {//TODO: FIXME, this doesn't seem to always be working due to there being a null manager in the structure map
                     return s.getMultiblockData();
                 }
             }

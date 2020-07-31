@@ -11,6 +11,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.lib.Quad;
+import mekanism.client.render.lib.QuadUtils;
+import mekanism.client.render.lib.Vertex;
 import mekanism.client.render.obj.ContentsModelConfiguration;
 import mekanism.client.render.obj.VisibleModelConfiguration;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
@@ -43,10 +46,20 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
     }
 
     private static List<BakedQuad> getBakedQuads(List<String> visible, TextureAtlasSprite icon, World world) {
-        return contentModelCache.computeIfAbsent(new ContentsModelData(visible, icon),
-              modelData -> MekanismRenderer.contentsModel.bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible), ModelLoader.instance(),
-                    material -> modelData.icon, ModelRotation.X0_Y0, ItemOverrideList.EMPTY, MODEL_LOCATION
-              ).getQuads(null, null, world.getRandom(), EmptyModelData.INSTANCE));
+        return contentModelCache.computeIfAbsent(new ContentsModelData(visible, icon), modelData -> {
+            List<BakedQuad> bakedQuads = MekanismRenderer.contentsModel.bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible),
+                  ModelLoader.instance(), material -> modelData.icon, ModelRotation.X0_Y0, ItemOverrideList.EMPTY, MODEL_LOCATION
+            ).getQuads(null, null, world.getRandom(), EmptyModelData.INSTANCE);
+            //TODO: Try to improve this/do it better. It is close enough for now given it fixes render order issues, but could be improved further
+            List<Quad> unpackedQuads = QuadUtils.unpack(bakedQuads);
+            for (Quad unpackedQuad : unpackedQuads) {
+                for (Vertex vertex : unpackedQuad.getVertices()) {
+                    //Adjust the normals so it is closer to as if there were no normals set the same way we do it in Render Resizable Cuboid
+                    vertex.normal(vertex.getNormal().add(2.5, 2.5, 2.5).normalize());
+                }
+            }
+            return QuadUtils.bake(unpackedQuads);
+        });
     }
 
     protected RenderTransmitterBase(TileEntityRendererDispatcher renderer) {
@@ -62,8 +75,7 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
     }
 
     protected void renderModel(TRANSMITTER transmitter, MatrixStack matrix, IVertexBuilder builder, float red, float green, float blue, float alpha, int light,
-          int overlayLight,
-          TextureAtlasSprite icon, List<String> visible) {
+          int overlayLight, TextureAtlasSprite icon, List<String> visible) {
         if (!visible.isEmpty()) {
             Entry entry = matrix.getLast();
             //Get all the sides

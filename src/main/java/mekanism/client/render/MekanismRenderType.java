@@ -61,17 +61,6 @@ public class MekanismRenderType extends RenderType {
         return makeType("mek_flame", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, false, state);
     }
 
-    @Deprecated//TODO: Transition this over to Atlases.getTranslucentCullBlockType()
-    public static RenderType transmitterContents(ResourceLocation resourceLocation) {
-        RenderType.State state = RenderType.State.getBuilder()
-              .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
-              .cull(CULL_ENABLED)//enableCull
-              .transparency(TRANSLUCENT_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
-              .shadeModel(SHADE_ENABLED)//shadeModel(GL11.GL_SMOOTH)
-              .build(true);
-        return makeType("transmitter_contents", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, false, state);
-    }
-
     public static RenderType getMekaSuit() {
         RenderType.State state = RenderType.State.getBuilder()
               .texture(BLOCK_SHEET)
