@@ -53,7 +53,6 @@ public class MekanismRenderType extends RenderType {
         return makeType("mek_blade", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, false, state);
     }
 
-    //TODO: Transition this over to entity translucent cull?
     public static RenderType renderFlame(ResourceLocation resourceLocation) {
         RenderType.State state = RenderType.State.getBuilder()
               .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
@@ -65,32 +64,29 @@ public class MekanismRenderType extends RenderType {
         return makeType("mek_flame", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, false, state);
     }
 
-    @Deprecated
+    @Deprecated//TODO: Transition this over to entity translucent cull
     public static RenderType transmitterContents(ResourceLocation resourceLocation) {
-        return makeType("transmitter_contents", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, false,
-              preset(resourceLocation).build(true));
-    }
-
-    private static RenderType.State.Builder preset(ResourceLocation resourceLocation) {
-        return RenderType.State.getBuilder()
+        RenderType.State state = RenderType.State.getBuilder()
               .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .cull(CULL_ENABLED)//enableCull
               .transparency(TRANSLUCENT_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
-              .shadeModel(SHADE_ENABLED);//shadeModel(GL11.GL_SMOOTH)
-    }
-
-    @Deprecated
-    public static RenderType resizableCuboidOld() {
-        RenderType.State.Builder stateBuilder = preset(AtlasTexture.LOCATION_BLOCKS_TEXTURE)
-              .lightmap(LIGHTMAP_ENABLED)
-              .alpha(CUBOID_ALPHA);//enableAlphaTest/alphaFunc(GL11.GL_GREATER, 0.1F)
-        return makeType("resizable_cuboid", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, true, true,
-              stateBuilder.build(true));
+              .shadeModel(SHADE_ENABLED)//shadeModel(GL11.GL_SMOOTH)
+              .build(true);
+        return makeType("transmitter_contents", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, false, state);
     }
 
     public static RenderType resizableCuboid() {
         if (MekanismAPI.debug) {
-            return resizableCuboidOld();
+            //Fallback to old resizable cuboid
+            RenderType.State state = RenderType.State.getBuilder()
+                  .texture(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, false))//Texture state
+                  .cull(CULL_ENABLED)//enableCull
+                  .transparency(TRANSLUCENT_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
+                  .shadeModel(SHADE_ENABLED)//shadeModel(GL11.GL_SMOOTH)
+                  .lightmap(LIGHTMAP_ENABLED)
+                  .alpha(CUBOID_ALPHA)//enableAlphaTest/alphaFunc(GL11.GL_GREATER, 0.1F)
+                  .build(true);
+            return makeType("resizable_cuboid", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, true, true, state);
         }
         /*RenderType.State stateBuilder = RenderType.State.getBuilder()
          .texture(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, false))

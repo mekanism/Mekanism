@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -17,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 public class ModelFluidTank extends MekanismJavaModel {
 
     private static final ResourceLocation TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "fluid_tank.png");
-    private static final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(TANK_TEXTURE);
+    private static final RenderType GLASS_RENDER_TYPE = RenderType.getEntityCutout(TANK_TEXTURE);
     private final RenderType RENDER_TYPE = getRenderType(TANK_TEXTURE);
 
     private final ModelRenderer Base;
