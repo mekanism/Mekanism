@@ -29,13 +29,14 @@ public class QIODriveSlot extends BasicInventorySlot {
     @Override
     public void setStack(ItemStack stack) {
         // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
-        if (!isRemote() && !getStack().isEmpty() && stack.isEmpty()) {
+        // Note: We don't check to see if the new stack is empty so that we properly are able to handle direct changes
+        if (!isRemote() && !isEmpty()) {
             removeDrive();
         }
         super.setStack(stack);
         // if we just added a new drive, add it to the frequency
         // (note that both of these operations can happen in this order if a user replaces the drive in the slot)
-        if (!isRemote() && !getStack().isEmpty()) {
+        if (!isRemote() && !isEmpty()) {
             addDrive(getStack());
         }
     }
