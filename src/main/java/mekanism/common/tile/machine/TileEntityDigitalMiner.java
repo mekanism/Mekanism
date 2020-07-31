@@ -898,7 +898,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public Set<ChunkPos> getChunkSet() {
         int chunkXMin = (pos.getX() - radius) >> 4;
         int chunkXMax = (pos.getX() + radius) >> 4;
-        int chunkZMin = (pos.getX() - radius) >> 4;
+        int chunkZMin = (pos.getZ() - radius) >> 4;
         int chunkZMax = (pos.getZ() + radius) >> 4;
         Set<ChunkPos> set = new ObjectOpenHashSet<>();
         for (int chunkX = chunkXMin; chunkX <= chunkXMax; chunkX++) {
