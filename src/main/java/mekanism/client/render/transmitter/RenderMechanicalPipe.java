@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.FluidRenderMap;
@@ -68,7 +69,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     if (connectionType == ConnectionType.NORMAL) {
                         MekanismRenderer.renderObject(getModel(side, fluidStack, stage), matrix, buffer, color, glow, overlayLight);
                     } else if (connectionType != ConnectionType.NONE) {
-                        connectionContents.add(side.getString() + connectionType.getString().toUpperCase());
+                        connectionContents.add(side.getString() + connectionType.getString().toUpperCase(Locale.ROOT));
                     }
                     if (model != null) {
                         model.setSideRender(side, connectionType == ConnectionType.NONE);

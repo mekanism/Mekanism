@@ -3,6 +3,7 @@ package mekanism.common.registries;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -225,6 +226,6 @@ public class MekanismItems {
     }
 
     private static ItemRegistryObject<ItemQIODrive> registerQIODrive(QIODriveTier tier) {
-        return ITEMS.register("qio_drive_" + tier.name().toLowerCase(), properties -> new ItemQIODrive(tier, properties));
+        return ITEMS.register("qio_drive_" + tier.name().toLowerCase(Locale.ROOT), properties -> new ItemQIODrive(tier, properties));
     }
 }

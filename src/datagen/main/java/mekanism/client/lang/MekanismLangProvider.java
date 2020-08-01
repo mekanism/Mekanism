@@ -1,6 +1,7 @@
 package mekanism.client.lang;
 
 import com.google.common.collect.Table.Cell;
+import java.util.Locale;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.slurry.Slurry;
@@ -1239,6 +1240,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private String capitalize(String s) {
-        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+        return s.substring(0, 1).toUpperCase(Locale.ROOT) + s.substring(1).toLowerCase(Locale.ROOT);
     }
 }

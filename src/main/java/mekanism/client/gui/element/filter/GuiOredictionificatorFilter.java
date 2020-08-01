@@ -2,6 +2,7 @@ package mekanism.client.gui.element.filter;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.text.ILangEntry;
@@ -76,7 +77,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             return;
         }
         String modid = "forge";
-        String newFilter = name.toLowerCase();
+        String newFilter = name.toLowerCase(Locale.ROOT);
         if (newFilter.contains(":")) {
             String[] split = newFilter.split(":");
             modid = split[0];

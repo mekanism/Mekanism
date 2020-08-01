@@ -1,6 +1,7 @@
 package mekanism.generators.common.config;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -97,7 +98,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .define("windGenerationMaxY", 255, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
         //Note: Unlike in 1.15 we don't verify the dimension exists as dimensions are a lot more dynamic now
         windGenerationDimBlacklist = CachedResourceLocationListValue.wrap(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
-              .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> o instanceof String && ResourceLocation.tryCreate(((String) o).toLowerCase()) != null));
+              .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> o instanceof String && ResourceLocation.tryCreate(((String) o).toLowerCase(Locale.ROOT)) != null));
         builder.pop();
 
         builder.comment("Hohlraum Settings").push(HOHLRAUM_CATEGORY);

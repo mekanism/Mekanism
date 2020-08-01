@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -201,7 +202,7 @@ public class MekaSuitArmor extends CustomArmor {
 
         public static ModelPos get(String name) {
             for (ModelPos pos : VALUES) {
-                if (pos.contains(name.toLowerCase())) {
+                if (pos.contains(name.toLowerCase(Locale.ROOT))) {
                     return pos;
                 }
             }

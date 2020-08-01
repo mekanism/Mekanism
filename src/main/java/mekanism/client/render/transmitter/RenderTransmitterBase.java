@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -70,7 +71,7 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
           TextureAtlasSprite icon) {
         renderModel(transmitter, matrix, builder, MekanismRenderer.getRed(rgb), MekanismRenderer.getGreen(rgb), MekanismRenderer.getBlue(rgb), alpha, light,
               overlayLight, icon, Arrays.stream(EnumUtils.DIRECTIONS)
-                    .map(side -> side.getString() + transmitter.getTransmitter().getConnectionType(side).getString().toUpperCase())
+                    .map(side -> side.getString() + transmitter.getTransmitter().getConnectionType(side).getString().toUpperCase(Locale.ROOT))
                     .collect(Collectors.toList()));
     }
 

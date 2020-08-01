@@ -1,6 +1,7 @@
 package mekanism.common.tile.prefab;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -87,7 +88,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
         for (Structure s : structures.values()) {
             IMultiblock<?> master = s.getController();
             if (master != null && getMultiblockData(s.getManager()).isFormed()) {
-                activeMultiblock = master.getManager().getName().toLowerCase();
+                activeMultiblock = master.getManager().getName().toLowerCase(Locale.ROOT);
                 break;
             }
         }

@@ -1,9 +1,11 @@
 package mekanism.common.lib;
 
+import java.util.Locale;
+
 public class WildcardMatcher {
 
     public static boolean matches(String wildcard, String text) {
-        return matches(wildcard.toLowerCase(), text.toLowerCase(), 0, 0, false);
+        return matches(wildcard.toLowerCase(Locale.ROOT), text.toLowerCase(Locale.ROOT), 0, 0, false);
     }
 
     private static boolean matches(String wildcard, String text, int wildcardStartIndex, int textIndex, boolean continueSearch) {

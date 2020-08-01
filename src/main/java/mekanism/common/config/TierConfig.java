@@ -1,5 +1,6 @@
 package mekanism.common.config;
 
+import java.util.Locale;
 import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
@@ -54,10 +55,10 @@ public class TierConfig extends BaseMekanismConfig {
         for (EnergyCubeTier tier : EnumUtils.ENERGY_CUBE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedFloatingLongValue storageReference = CachedFloatingLongValue.define(this, builder,
-                  "Maximum number of Joules " + tierName + " energy cubes can store.", tierName.toLowerCase() + "Storage", tier.getBaseMaxEnergy(),
+                  "Maximum number of Joules " + tierName + " energy cubes can store.", tierName.toLowerCase(Locale.ROOT) + "Storage", tier.getBaseMaxEnergy(),
                   CachedFloatingLongValue.POSITIVE);
             CachedFloatingLongValue outputReference = CachedFloatingLongValue.define(this, builder,
-                  "Output rate in Joules of " + tierName + " energy cubes.", tierName.toLowerCase() + "Output", tier.getBaseOutput(),
+                  "Output rate in Joules of " + tierName + " energy cubes.", tierName.toLowerCase(Locale.ROOT) + "Output", tier.getBaseOutput(),
                   CachedFloatingLongValue.POSITIVE);
             tier.setConfigReference(storageReference, outputReference);
         }
@@ -69,9 +70,9 @@ public class TierConfig extends BaseMekanismConfig {
         for (FluidTankTier tier : EnumUtils.FLUID_TANK_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedIntValue storageReference = CachedIntValue.wrap(this, builder.comment("Storage size of " + tierName + " fluid tanks in mB.")
-                  .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE));
             CachedIntValue outputReference = CachedIntValue.wrap(this, builder.comment("Output rate of " + tierName + " fluid tanks in mB.")
-                  .defineInRange(tierName.toLowerCase() + "Output", tier.getBaseOutput(), 1, Integer.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Output", tier.getBaseOutput(), 1, Integer.MAX_VALUE));
             tier.setConfigReference(storageReference, outputReference);
         }
         builder.pop();
@@ -82,9 +83,9 @@ public class TierConfig extends BaseMekanismConfig {
         for (ChemicalTankTier tier : EnumUtils.CHEMICAL_TANK_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedLongValue storageReference = CachedLongValue.wrap(this, builder.comment("Storage size of " + tierName + " chemical tanks in mB.")
-                  .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Long.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Storage", tier.getBaseStorage(), 1, Long.MAX_VALUE));
             CachedLongValue outputReference = CachedLongValue.wrap(this, builder.comment("Output rate of " + tierName + " chemical tanks in mB.")
-                  .defineInRange(tierName.toLowerCase() + "Output", tier.getBaseOutput(), 1, Long.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Output", tier.getBaseOutput(), 1, Long.MAX_VALUE));
             tier.setConfigReference(storageReference, outputReference);
         }
         builder.pop();
@@ -95,7 +96,7 @@ public class TierConfig extends BaseMekanismConfig {
         for (BinTier tier : EnumUtils.BIN_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedIntValue storageReference = CachedIntValue.wrap(this, builder.comment("The number of items " + tierName + " bins can store.")
-                  .defineInRange(tierName.toLowerCase() + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Storage", tier.getBaseStorage(), 1, Integer.MAX_VALUE));
             tier.setConfigReference(storageReference);
         }
         builder.pop();
@@ -106,13 +107,13 @@ public class TierConfig extends BaseMekanismConfig {
         for (InductionCellTier tier : EnumUtils.INDUCTION_CELL_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedFloatingLongValue storageReference = CachedFloatingLongValue.define(this, builder, "Maximum number of Joules " + tierName + " induction cells can store.",
-                  tierName.toLowerCase() + "Storage", tier.getBaseMaxEnergy(), CachedFloatingLongValue.POSITIVE);
+                  tierName.toLowerCase(Locale.ROOT) + "Storage", tier.getBaseMaxEnergy(), CachedFloatingLongValue.POSITIVE);
             tier.setConfigReference(storageReference);
         }
         for (InductionProviderTier tier : EnumUtils.INDUCTION_PROVIDER_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedFloatingLongValue outputReference = CachedFloatingLongValue.define(this, builder, "Maximum number of Joules " + tierName + " induction providers can output or accept.",
-                  tierName.toLowerCase() + "Output", tier.getBaseOutput(), CachedFloatingLongValue.POSITIVE);
+                  tierName.toLowerCase(Locale.ROOT) + "Output", tier.getBaseOutput(), CachedFloatingLongValue.POSITIVE);
             tier.setConfigReference(outputReference);
         }
         builder.pop();
@@ -133,7 +134,7 @@ public class TierConfig extends BaseMekanismConfig {
         for (CableTier tier : EnumUtils.CABLE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedFloatingLongValue capacityReference = CachedFloatingLongValue.define(this, builder, "Internal buffer in Joules of each " + tierName + " universal cable.",
-                  tierName.toLowerCase() + "Capacity", tier.getBaseCapacity(), CachedFloatingLongValue.POSITIVE);
+                  tierName.toLowerCase(Locale.ROOT) + "Capacity", tier.getBaseCapacity(), CachedFloatingLongValue.POSITIVE);
             tier.setConfigReference(capacityReference);
         }
         builder.pop();
@@ -144,9 +145,9 @@ public class TierConfig extends BaseMekanismConfig {
         for (PipeTier tier : EnumUtils.PIPE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedIntValue capacityReference = CachedIntValue.wrap(this, builder.comment("Capacity of " + tierName + " mechanical pipes in mB.")
-                  .defineInRange(tierName.toLowerCase() + "Capacity", tier.getBaseCapacity(), 1, Integer.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Capacity", tier.getBaseCapacity(), 1, Integer.MAX_VALUE));
             CachedIntValue pullReference = CachedIntValue.wrap(this, builder.comment("Pump rate of " + tierName + " mechanical pipes in mB/t.")
-                  .defineInRange(tierName.toLowerCase() + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE));
             tier.setConfigReference(capacityReference, pullReference);
         }
         builder.pop();
@@ -157,9 +158,9 @@ public class TierConfig extends BaseMekanismConfig {
         for (TubeTier tier : EnumUtils.TUBE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedLongValue capacityReference = CachedLongValue.wrap(this, builder.comment("Capacity of " + tierName + " pressurized tubes in mB.")
-                  .defineInRange(tierName.toLowerCase() + "Capacity", tier.getBaseCapacity(), 1, Long.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Capacity", tier.getBaseCapacity(), 1, Long.MAX_VALUE));
             CachedLongValue pullReference = CachedLongValue.wrap(this, builder.comment("Pump rate of " + tierName + " pressurized tubes in mB/t.")
-                  .defineInRange(tierName.toLowerCase() + "PullAmount", tier.getBasePull(), 1, Long.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "PullAmount", tier.getBasePull(), 1, Long.MAX_VALUE));
             tier.setConfigReference(capacityReference, pullReference);
         }
         builder.pop();
@@ -170,9 +171,9 @@ public class TierConfig extends BaseMekanismConfig {
         for (TransporterTier tier : EnumUtils.TRANSPORTER_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedIntValue pullReference = CachedIntValue.wrap(this, builder.comment("Item throughput rate of " + tierName + " logistical transporters in items/s.")
-                  .defineInRange(tierName.toLowerCase() + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE));
             CachedIntValue speedReference = CachedIntValue.wrap(this, builder.comment("Five times travel speed of " + tierName + " logistical transporter.")
-                  .defineInRange(tierName.toLowerCase() + "Speed", tier.getBaseSpeed(), 1, Integer.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Speed", tier.getBaseSpeed(), 1, Integer.MAX_VALUE));
             tier.setConfigReference(pullReference, speedReference);
         }
         builder.pop();
@@ -183,11 +184,11 @@ public class TierConfig extends BaseMekanismConfig {
         for (ConductorTier tier : EnumUtils.CONDUCTOR_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedDoubleValue conductionReference = CachedDoubleValue.wrap(this, builder.comment("Conduction value of " + tierName + " thermodynamic conductors.")
-                  .defineInRange(tierName.toLowerCase() + "InverseConduction", tier.getBaseConduction(), 1, Double.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "InverseConduction", tier.getBaseConduction(), 1, Double.MAX_VALUE));
             CachedDoubleValue capacityReference = CachedDoubleValue.wrap(this, builder.comment("Heat capacity of " + tierName + " thermodynamic conductors.")
-                  .defineInRange(tierName.toLowerCase() + "HeatCapacity", tier.getBaseHeatCapacity(), 1, Double.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "HeatCapacity", tier.getBaseHeatCapacity(), 1, Double.MAX_VALUE));
             CachedDoubleValue insulationReference = CachedDoubleValue.wrap(this, builder.comment("Insulation value of " + tierName + " thermodynamic conductor.")
-                  .defineInRange(tierName.toLowerCase() + "Insulation", tier.getBaseConductionInsulation(), 0, Double.MAX_VALUE));
+                  .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Insulation", tier.getBaseConductionInsulation(), 0, Double.MAX_VALUE));
             tier.setConfigReference(conductionReference, capacityReference, insulationReference);
         }
         builder.pop();

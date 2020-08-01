@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
@@ -92,7 +93,7 @@ public class TransmitterBakedModel implements IBakedModel {
             if (!modelCache.containsKey(hash)) {
                 List<String> visible = new ArrayList<>();
                 for (Direction dir : EnumUtils.DIRECTIONS) {
-                    visible.add(dir.getString() + data.getConnectionType(dir).getString().toUpperCase());
+                    visible.add(dir.getString() + data.getConnectionType(dir).getString().toUpperCase(Locale.ROOT));
                 }
                 List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData), hasColor).getQuads(state, null, rand, extraData);
                 modelCache.put(hash, result);

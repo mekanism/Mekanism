@@ -1,6 +1,7 @@
 package mekanism.additions.common.config;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -75,7 +76,7 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
                   .worldRestart()
                   .defineList("biomeBlackList", new ArrayList<>(), o -> {
                       if (o instanceof String) {
-                          ResourceLocation rl = ResourceLocation.tryCreate(((String) o).toLowerCase());
+                          ResourceLocation rl = ResourceLocation.tryCreate(((String) o).toLowerCase(Locale.ROOT));
                           if (rl != null) {
                               return ForgeRegistries.BIOMES.containsKey(rl);
                           }

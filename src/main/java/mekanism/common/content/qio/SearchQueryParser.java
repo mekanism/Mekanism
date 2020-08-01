@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -162,11 +163,11 @@ public class SearchQueryParser {
 
     public enum QueryType {
         // ~ is a dummy char, not actually used by parser
-        NAME('~', (key, stack) -> stack.getDisplayName().getString().toLowerCase().contains(key.toLowerCase())),
-        MOD_ID('@', (key, stack) -> stack.getItem().getRegistryName().getNamespace().toLowerCase().contains(key.toLowerCase())),
-        TOOLTIP('$', (key, stack) -> stack.getTooltip(null, ITooltipFlag.TooltipFlags.NORMAL).stream().map(t -> t.getString().toLowerCase())
-              .anyMatch(tooltip -> tooltip.contains(key.toLowerCase()))),
-        TAG('#', (key, stack) -> TagCache.getItemTags(stack).stream().anyMatch(itemTag -> itemTag.toLowerCase().contains(key.toLowerCase())));
+        NAME('~', (key, stack) -> stack.getDisplayName().getString().toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
+        MOD_ID('@', (key, stack) -> stack.getItem().getRegistryName().getNamespace().toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
+        TOOLTIP('$', (key, stack) -> stack.getTooltip(null, ITooltipFlag.TooltipFlags.NORMAL).stream().map(t -> t.getString().toLowerCase(Locale.ROOT))
+              .anyMatch(tooltip -> tooltip.contains(key.toLowerCase(Locale.ROOT)))),
+        TAG('#', (key, stack) -> TagCache.getItemTags(stack).stream().anyMatch(itemTag -> itemTag.toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))));
 
         private static final Char2ObjectMap<QueryType> charLookupMap = new Char2ObjectOpenHashMap<>();
 
