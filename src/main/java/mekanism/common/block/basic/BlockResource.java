@@ -6,6 +6,7 @@ import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 import net.minecraftforge.common.ToolType;
@@ -25,6 +26,13 @@ public class BlockResource extends BlockMekanism {
     @Nonnull
     public BlockResourceInfo getResourceInfo() {
         return resource;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public PushReaction getPushReaction(@Nonnull BlockState state) {
+        return resource.getPushReaction();
     }
 
     @Override

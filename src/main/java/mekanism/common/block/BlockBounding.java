@@ -13,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.chunk.ChunkRenderCache;
@@ -70,6 +71,14 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     protected void fillStateContainer(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public PushReaction getPushReaction(@Nonnull BlockState state) {
+        //Protect against mods like Quark that allow blocks with TEs to be moved
+        return PushReaction.BLOCK;
     }
 
     @Nullable

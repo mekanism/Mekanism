@@ -1,5 +1,7 @@
 package mekanism.common.resource;
 
+import net.minecraft.block.material.PushReaction;
+
 public enum BlockResourceInfo implements IResource {
     OSMIUM("osmium", 7.5F, 20, 1),
     TIN("tin", 5, 10, 1),
@@ -9,10 +11,11 @@ public enum BlockResourceInfo implements IResource {
     CHARCOAL("charcoal", 5, 10, 0, 16_000),
     BRONZE("bronze", 5, 15, 1),
     STEEL("steel", 5, 15, 1),
-    REFINED_OBSIDIAN("refined_obsidian", 50, 4_000, 2, -1, 8, false, true),
+    REFINED_OBSIDIAN("refined_obsidian", 50, 4_000, 2, -1, 8, false, true, PushReaction.BLOCK),
     REFINED_GLOWSTONE("refined_glowstone", 5, 10, 1, -1, 15);
 
     private final String registrySuffix;
+    private final PushReaction pushReaction;
     private final boolean portalFrame;
     private final boolean burnsInFire;
     private final float resistance;
@@ -31,11 +34,13 @@ public enum BlockResourceInfo implements IResource {
     }
 
     BlockResourceInfo(String registrySuffix, float hardness, float resistance, int harvestLevel, int burnTime, int lightValue) {
-        this(registrySuffix, hardness, resistance, harvestLevel, burnTime, lightValue, true, false);
+        this(registrySuffix, hardness, resistance, harvestLevel, burnTime, lightValue, true, false, PushReaction.NORMAL);
     }
 
-    BlockResourceInfo(String registrySuffix, float hardness, float resistance, int harvestLevel, int burnTime, int lightValue, boolean burnsInFire, boolean portalFrame) {
+    BlockResourceInfo(String registrySuffix, float hardness, float resistance, int harvestLevel, int burnTime, int lightValue, boolean burnsInFire, boolean portalFrame,
+          PushReaction pushReaction) {
         this.registrySuffix = registrySuffix;
+        this.pushReaction = pushReaction;
         this.portalFrame = portalFrame;
         this.burnsInFire = burnsInFire;
         this.burnTime = burnTime;
@@ -76,5 +81,9 @@ public enum BlockResourceInfo implements IResource {
 
     public boolean burnsInFire() {
         return burnsInFire;
+    }
+
+    public PushReaction getPushReaction() {
+        return pushReaction;
     }
 }

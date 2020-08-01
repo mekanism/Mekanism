@@ -36,6 +36,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.world.ClientWorld;
@@ -74,6 +75,19 @@ public abstract class BlockMekanism extends Block {
     protected BlockMekanism(Block.Properties properties) {
         super(properties);
         setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public PushReaction getPushReaction(@Nonnull BlockState state) {
+        if (hasTileEntity(state)) {
+            //Protect against mods like Quark that allow blocks with TEs to be moved
+            //TODO: Eventually it would be nice to go through this and maybe even allow some TEs to be moved if they don't strongly
+            // care about the world, but for now it is safer to just block them from being moved
+            return PushReaction.BLOCK;
+        }
+        return super.getPushReaction(state);
     }
 
     @Nonnull
