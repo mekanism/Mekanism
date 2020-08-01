@@ -52,16 +52,6 @@ public class ItemHazmatSuitArmor extends ArmorItem {
     protected static class HazmatMaterial extends BaseSpecialArmorMaterial {
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType slotType) {
-            return 0;
-        }
-
-        @Override
-        public float getToughness() {
-            return 0;
-        }
-
-        @Override
         public String getName() {
             return Mekanism.MODID + ":hazmat";
         }

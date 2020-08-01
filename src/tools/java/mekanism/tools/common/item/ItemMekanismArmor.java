@@ -10,8 +10,8 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.tools.client.render.GlowArmor;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
-import mekanism.tools.common.item.attribute.AttributeCache;
-import mekanism.tools.common.item.attribute.IAttributeRefresher;
+import mekanism.common.lib.attribute.AttributeCache;
+import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -107,11 +107,6 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
         return material.getDurability(getEquipmentSlot()) > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote We bypass calling super to ensure we get added instead of not being able to add the proper values that {@link ArmorItem} tries to set
-     */
     @Nonnull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {

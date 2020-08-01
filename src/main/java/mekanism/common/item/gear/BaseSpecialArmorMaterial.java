@@ -33,7 +33,17 @@ public abstract class BaseSpecialArmorMaterial implements IArmorMaterial {
     }
 
     @Override
+    public int getDamageReductionAmount(EquipmentSlotType slotType) {
+        return 0;
+    }
+
+    @Override
+    public float getToughness() {
+        return 0;
+    }
+
+    @Override
     public float getKnockbackResistance() {
-        return 0.0F; // knockback armor resistance
+        return 0;
     }
 }

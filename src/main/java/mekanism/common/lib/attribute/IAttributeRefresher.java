@@ -1,4 +1,4 @@
-package mekanism.tools.common.item.attribute;
+package mekanism.common.lib.attribute;
 
 import com.google.common.collect.ImmutableMultimap;
 import net.minecraft.entity.ai.attributes.Attribute;

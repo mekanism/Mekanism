@@ -184,18 +184,8 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     protected static class JetpackMaterial extends BaseSpecialArmorMaterial {
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType slotType) {
-            return 0;
-        }
-
-        @Override
         public String getName() {
             return Mekanism.MODID + ":jetpack";
-        }
-
-        @Override
-        public float getToughness() {
-            return 0;
         }
     }
 }

@@ -7,8 +7,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
-import mekanism.tools.common.item.attribute.AttributeCache;
-import mekanism.tools.common.item.attribute.IAttributeRefresher;
+import mekanism.common.lib.attribute.AttributeCache;
+import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -63,11 +63,6 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAtt
         return getTier().getMaxUses() > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote We bypass calling super to ensure we get added instead of not being able to add the proper values that {@link SwordItem} tries to set
-     */
     @Nonnull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {

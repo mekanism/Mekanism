@@ -11,8 +11,8 @@ import mekanism.api.functions.FloatSupplier;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
-import mekanism.tools.common.item.attribute.AttributeCache;
-import mekanism.tools.common.item.attribute.IAttributeRefresher;
+import mekanism.common.lib.attribute.AttributeCache;
+import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -222,11 +222,6 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         return super.getHarvestLevel(stack, tool, player, blockState);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote We bypass calling super to ensure we get added instead of not being able to add the proper values that {@link net.minecraft.item.ToolItem} tries to set
-     */
     @Nonnull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {

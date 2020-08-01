@@ -293,18 +293,8 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     protected static class MekaSuitMaterial extends BaseSpecialArmorMaterial {
 
         @Override
-        public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
-            return 0;
-        }
-
-        @Override
-        public float getToughness() {
-            return 0;
-        }
-
-        @Override
         public float getKnockbackResistance() {
-            return 0.1F; // knockback armor resistance
+            return 0.1F;
         }
 
         @Nonnull

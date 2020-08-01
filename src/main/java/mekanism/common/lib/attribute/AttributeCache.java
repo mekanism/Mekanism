@@ -1,4 +1,4 @@
-package mekanism.tools.common.item.attribute;
+package mekanism.common.lib.attribute;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
