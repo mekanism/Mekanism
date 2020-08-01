@@ -1,6 +1,7 @@
 package mekanism.common.integration.lookingat;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -25,6 +26,7 @@ import mekanism.common.capabilities.proxy.ProxyChemicalHandler;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -43,9 +45,14 @@ public class LookingAtUtils {
         if (tile instanceof IMultiblock) {
             return ((IMultiblock<?>) tile).getMultiblock();
         } else if (tile instanceof IStructuralMultiblock) {
-            for (Structure s : ((IStructuralMultiblock) tile).getStructureMap().values()) {
-                if (s.isValid()) {//TODO: FIXME, this doesn't seem to always be working due to there being a null manager in the structure map
-                    return s.getMultiblockData();
+            for (Entry<MultiblockManager<?>, Structure> entry : ((IStructuralMultiblock) tile).getStructureMap().entrySet()) {
+                if (entry.getKey() != null) {
+                    //TODO: Figure out if the structure map is supposed to be able to have nulls in it (in which handling it like this is correct)
+                    // if it is not meant to have nulls then we should modify how Structure#getManager handles things
+                    Structure s = entry.getValue();
+                    if (s.isValid()) {
+                        return s.getMultiblockData();
+                    }
                 }
             }
         }

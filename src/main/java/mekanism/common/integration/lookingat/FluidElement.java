@@ -1,6 +1,7 @@
 package mekanism.common.integration.lookingat;
 
 import javax.annotation.Nonnull;
+import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.MekanismLang;
@@ -25,7 +26,7 @@ public class FluidElement extends LookingAtElement {
         if (capacity == 0 || stored.getAmount() == Integer.MAX_VALUE) {
             return level;
         }
-        return stored.getAmount() * level / capacity;
+        return MathUtils.clampToInt(level * (double) stored.getAmount() / capacity);
     }
 
     @Override

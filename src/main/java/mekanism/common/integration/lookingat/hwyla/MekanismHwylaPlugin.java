@@ -11,8 +11,7 @@ import net.minecraft.util.ResourceLocation;
 @WailaPlugin
 public class MekanismHwylaPlugin implements IWailaPlugin {
 
-    //TODO: Rename?
-    public static final ResourceLocation tooltip = Mekanism.rl("hwlya_tooltip");
+    public static final ResourceLocation HWLYA_TOOLTIP = Mekanism.rl("hwlya_tooltip");
     public static final String TEXT = "text";
     public static final String CHEMICAL_STACK = "chemical";
 
@@ -20,6 +19,6 @@ public class MekanismHwylaPlugin implements IWailaPlugin {
     public void register(IRegistrar registrar) {
         registrar.registerBlockDataProvider(HwylaDataProvider.INSTANCE, TileEntity.class);
         registrar.registerComponentProvider(HwylaTooltipRenderer.INSTANCE, TooltipPosition.BODY, TileEntity.class);
-        registrar.registerTooltipRenderer(tooltip, HwylaTooltipRenderer.INSTANCE);
+        registrar.registerTooltipRenderer(HWLYA_TOOLTIP, HwylaTooltipRenderer.INSTANCE);
     }
 }

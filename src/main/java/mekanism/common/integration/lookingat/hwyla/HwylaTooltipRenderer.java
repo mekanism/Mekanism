@@ -40,7 +40,7 @@ public class HwylaTooltipRenderer implements IComponentProvider, ITooltipRendere
             if (!list.isEmpty()) {
                 CompoundNBT mekData = new CompoundNBT();
                 mekData.put(NBTConstants.MEK_DATA, list);
-                tooltip.add(new RenderableTextComponent(MekanismHwylaPlugin.tooltip, mekData));
+                tooltip.add(new RenderableTextComponent(MekanismHwylaPlugin.HWLYA_TOOLTIP, mekData));
             }
         }
     }
