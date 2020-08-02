@@ -711,6 +711,9 @@ public enum MekanismLang implements ILangEntry {
     MODULE_CHARGE_INVENTORY("module", "charge_inventory"),
     MODULE_SPEED_BOOST("module", "speed_boost"),
     MODULE_VISION_ENHANCEMENT("module", "vision_enhancement"),
+    MODULE_PURIFICATION_BENEFICIAL("module", "purification.beneficial"),
+    MODULE_PURIFICATION_NEUTRAL("module", "purification.neutral"),
+    MODULE_PURIFICATION_HARMFUL("module", "purification.harmful"),
 
     MODULE_ENERGY_UNIT("module", "energy_unit"),
     MODULE_EXCAVATION_ESCALATION_UNIT("module", "excavation_escalation"),

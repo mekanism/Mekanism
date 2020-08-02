@@ -17,6 +17,7 @@ import mekanism.common.content.gear.HUDElement;
 import mekanism.common.content.gear.HUDElement.HUDColor;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
+import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
@@ -37,6 +38,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.EffectType;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -107,10 +109,25 @@ public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleInhalationPurificationUnit extends ModuleMekaSuit {
 
+        private ModuleConfigItem<Boolean> beneficialEffects;
+        private ModuleConfigItem<Boolean> neutralEffects;
+        private ModuleConfigItem<Boolean> harmfulEffects;
+
+        @Override
+        public void init() {
+            super.init();
+            addConfigItem(beneficialEffects = new ModuleConfigItem<>(this, "beneficial_effects", MekanismLang.MODULE_PURIFICATION_BENEFICIAL, new BooleanData(), false));
+            addConfigItem(neutralEffects = new ModuleConfigItem<>(this, "neutral_effects", MekanismLang.MODULE_PURIFICATION_NEUTRAL, new BooleanData(), true));
+            addConfigItem(harmfulEffects = new ModuleConfigItem<>(this, "harmful_effects", MekanismLang.MODULE_PURIFICATION_HARMFUL, new BooleanData(), true));
+        }
+
         @Override
         public void tickServer(PlayerEntity player) {
             for (EffectInstance effect : player.getActivePotionEffects()) {
-                if (getContainerEnergy().smallerThan(MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get())) {
+                EffectType effectType = effect.getPotion().getEffectType();
+                if (!canHandle(effectType)) {
+                    continue;
+                } else if (getContainerEnergy().smallerThan(MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get())) {
                     break;
                 }
                 useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get());
@@ -118,6 +135,18 @@ public abstract class ModuleMekaSuit extends Module {
                     effect.tick(player, () -> MekanismUtils.onChangedPotionEffect(player, effect, true));
                 }
             }
+        }
+
+        private boolean canHandle(EffectType effectType) {
+            switch (effectType) {
+                case BENEFICIAL:
+                    return beneficialEffects.get();
+                case HARMFUL:
+                    return harmfulEffects.get();
+                case NEUTRAL:
+                    return neutralEffects.get();
+            }
+            return false;
         }
     }
 
