@@ -1,46 +1,53 @@
 package mekanism.common.tile;
 
+import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.chemical.StackedWasteBarrel;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.world.World;
 
-public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
+public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism implements IConfigurable {
 
     private static final float TOLERANCE = 0.05F;
-    private static final int MAX_PROCESS_TICKS = 1200;
+    private static final int MAX_PROCESS_TICKS = 1_200;
 
     private long lastProcessTick;
-    private IGasTank gasTank;
+    private StackedWasteBarrel gasTank;
     private float prevScale;
     private int processTicks;
 
     public TileEntityRadioactiveWasteBarrel() {
         super(MekanismBlocks.RADIOACTIVE_WASTE_BARREL);
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
     @Nonnull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSide(this::getDirection);
-        builder.addTank(gasTank = ChemicalTankBuilder.GAS.createWithValidator(MekanismConfig.general.radioactiveWasteBarrelMaxGas.get(),
-              ChemicalAttributeValidator.createStrict(GasAttributes.Radiation.class), this),
-              RelativeSide.TOP, RelativeSide.BOTTOM);
+        builder.addTank(gasTank = StackedWasteBarrel.create(this), RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }
 
@@ -54,6 +61,9 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
                 processTicks = 0;
                 gasTank.shrinkStack(1, Action.EXECUTE);
             }
+            if (getActive()) {
+                ChemicalUtil.emit(EnumSet.of(Direction.DOWN), gasTank, this);
+            }
 
             float scale = getGasScale();
             if (Math.abs(scale - prevScale) > TOLERANCE) {
@@ -63,12 +73,43 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism {
         }
     }
 
+    public StackedWasteBarrel getGasTank() {
+        return gasTank;
+    }
+
     public float getGasScale() {
         return gasTank.getStored() / (float) gasTank.getCapacity();
     }
 
     public GasStack getGas() {
         return gasTank.getStack();
+    }
+
+    @Override
+    public boolean renderUpdate() {
+        return true;
+    }
+
+    @Override
+    public boolean lightUpdate() {
+        return true;
+    }
+
+    @Override
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+        if (!isRemote()) {
+            setActive(!getActive());
+            World world = getWorld();
+            if (world != null) {
+                world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+            }
+        }
+        return ActionResultType.SUCCESS;
+    }
+
+    @Override
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        return ActionResultType.PASS;
     }
 
     @Nonnull
