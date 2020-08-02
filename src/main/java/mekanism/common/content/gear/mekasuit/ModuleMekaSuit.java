@@ -69,17 +69,17 @@ public abstract class ModuleMekaSuit extends Module {
                 FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
                 int maxRate = Math.min(productionRate, getContainerEnergy().divide(usage).intValue());
                 long hydrogenUsed = 0;
-                GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2);
+                GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2L);
                 ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
                 Optional<IGasHandler> chestCapability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
                 if (checkChestPlate(chestStack) && chestCapability.isPresent()) {
-                    hydrogenUsed = maxRate * 2 - chestCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                    hydrogenUsed = maxRate * 2L - chestCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                     hydrogenStack.shrink(hydrogenUsed);
                 }
                 ItemStack handStack = player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
                 Optional<IGasHandler> handCapability = MekanismUtils.toOptional(handStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
                 if (handCapability.isPresent()) {
-                    hydrogenUsed = maxRate * 2 - handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                    hydrogenUsed = maxRate * 2L - handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                 }
                 int oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
                 long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
