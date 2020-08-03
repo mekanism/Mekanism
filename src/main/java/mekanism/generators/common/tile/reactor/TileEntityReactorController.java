@@ -146,7 +146,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onAdded();
 		
-		formMultiblock(false);
+		formMultiblock(true);
 	}
 
 	@Override

@@ -34,32 +34,32 @@ import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
 
 @InterfaceList({
-	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-	@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
-	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2")
+		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
+		@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
+		@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2")
 })
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState
 {
 	public boolean ic2Registered = false;
-	
+
 	/** false = input, true = output */
 	public boolean mode;
-	
+
 	public TileEntityInductionPort()
 	{
 		super("InductionPort");
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		if(!ic2Registered && MekanismUtils.useIC2())
 		{
 			register();
 		}
-		
+
 		if(!worldObj.isRemote)
 		{
 			if(structure != null && mode == true)
@@ -70,7 +70,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			}
 		}
 	}
-	
+
 	@Override
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
@@ -78,7 +78,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		{
 			EnumSet set = EnumSet.allOf(ForgeDirection.class);
 			set.remove(ForgeDirection.UNKNOWN);
-			
+
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
 				if(structure.locations.contains(Coord4D.get(this).getFromSide(side)))
@@ -86,10 +86,10 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 					set.remove(side);
 				}
 			}
-			
+
 			return set;
 		}
-		
+
 		return EnumSet.noneOf(ForgeDirection.class);
 	}
 
@@ -102,17 +102,17 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			set.remove(ForgeDirection.UNKNOWN);
 			return set;
 		}
-		
+
 		return EnumSet.noneOf(ForgeDirection.class);
 	}
-	
+
 	@Method(modid = "IC2")
 	public void register()
 	{
 		if(!worldObj.isRemote)
 		{
 			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
-			
+
 			if(registered != this)
 			{
 				if(registered instanceof IEnergyTile)
@@ -134,7 +134,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		if(!worldObj.isRemote)
 		{
 			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
-			
+
 			if(registered instanceof IEnergyTile)
 			{
 				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
@@ -147,7 +147,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		return structure != null ? structure.remainingOutput : 0;
 	}
-	
+
 	private double getMaxInput()
 	{
 		return structure != null ? structure.remainingInput : 0;
@@ -157,11 +157,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
-		
+
 		if(worldObj.isRemote)
 		{
 			mode = dataStream.readBoolean();
-			
+
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
 	}
@@ -170,17 +170,17 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
+
 		data.add(mode);
-		
+
 		return data;
 	}
-	
+
 	@Override
 	public void onAdded()
 	{
 		super.onAdded();
-		
+
 		if(MekanismUtils.useIC2())
 		{
 			register();
@@ -329,7 +329,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Method(modid = "IC2")
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
-		return getConsumingSides().contains(direction);
+		return false;
+		//return getConsumingSides().contains(direction);
 	}
 
 	@Override
@@ -427,23 +428,23 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side) 
+	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
 		if(!worldObj.isRemote)
 		{
 			mode = !mode;
 			String modeText = " " + (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(mode) + ".";
 			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.inductionPortMode") + modeText));
-			
+
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			markDirty();
 		}
-		
+
 		return true;
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side) 
+	public boolean onRightClick(EntityPlayer player, int side)
 	{
 		return false;
 	}

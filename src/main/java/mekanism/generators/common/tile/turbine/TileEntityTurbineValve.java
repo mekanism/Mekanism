@@ -7,7 +7,6 @@ import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyTile;
 
 import java.util.EnumSet;
-
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.IEnergyWrapper;
@@ -357,19 +356,20 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		{
 			return 0;
 		}
-		
+		if(resource.getFluid()==FluidRegistry.WATER){
+			return 0;
+		}
 		int filled = fluidTank.fill(resource, doFill);
-		
 		if(doFill)
 		{
 			structure.newSteamInput += filled;
 		}
-		
+
 		if(filled < structure.getFluidCapacity() && structure.dumpMode != GasMode.IDLE)
 		{
 			filled = structure.getFluidCapacity();
 		}
-		
+
 		return filled;
 	}
 
