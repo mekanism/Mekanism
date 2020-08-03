@@ -58,14 +58,14 @@ public class EntityLaser extends EntityFX
 				break;
 			case WEST:
 			case EAST:
-				GL11.glRotated(90, 0, 0, 1);
+				GL11.glRotatef(90f, 0f, 0f, 1f);
 				break;
 			case NORTH:
 			case SOUTH:
-				GL11.glRotated(90, 1, 0, 0);
+				GL11.glRotatef(90f, 1f, 0f, 0f);
 				break;
 		}
-		GL11.glRotated(45, 0, 1, 0);
+		GL11.glRotatef(45f, 0f, 1f, 0f);
 		tessellator.startDrawingQuads();
 		tessellator.setColorRGBA_F(particleRed, particleGreen, particleBlue, particleAlpha);
 		tessellator.addVertexWithUV(-particleScale, -length/2, 0, 0, 0);
@@ -74,7 +74,7 @@ public class EntityLaser extends EntityFX
 		tessellator.addVertexWithUV(particleScale, -length/2, 0, 1, 0);
 		tessellator.draw();
 
-		GL11.glRotated(90, 0, 1, 0);
+		GL11.glRotatef(90f, 0f, 1f, 0f);
 		tessellator.startDrawingQuads();
 		tessellator.setColorRGBA_F(particleRed, particleGreen, particleBlue, particleAlpha);
 		tessellator.addVertexWithUV(-particleScale, -length/2, 0, 0, 0);

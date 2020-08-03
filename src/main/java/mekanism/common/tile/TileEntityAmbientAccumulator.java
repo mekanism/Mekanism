@@ -23,7 +23,7 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	public int cachedDimensionId = 0;
 	public AmbientGasRecipe cachedRecipe;
 
-	public static Random gasRand = new Random();
+	public static Random gasRand = new org.bogdang.modifications.random.XSTR();
 
 	public TileEntityAmbientAccumulator()
 	{

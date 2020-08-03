@@ -2,7 +2,11 @@ defaultTasks 'fullBuild'
 
 buildscript {
     repositories {
-        mavenCentral()
+        //mavenCentral()
+        maven { 
+            name = "maven"
+            url = "http://repo.maven.apache.org/maven2"
+        }
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"

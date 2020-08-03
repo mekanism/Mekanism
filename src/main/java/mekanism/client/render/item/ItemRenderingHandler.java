@@ -137,7 +137,7 @@ public class ItemRenderingHandler implements IItemRenderer
 
 			MekanismRenderer.blendOn();
 			
-			energyCube.render(0.0625F, tier, mc.renderEngine);
+			energyCube.render(0.0625F, tier, mc.renderEngine, true);
 			
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
@@ -148,7 +148,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			MekanismRenderer.blendOff();
 
 			GL11.glPushMatrix();
-			GL11.glTranslated(0.0, 1.0, 0.0);
+			GL11.glTranslatef(0.0f, 1.0f, 0.0f);
 			mc.renderEngine.bindTexture(RenderEnergyCube.coreTexture);
 
 			GL11.glShadeModel(GL11.GL_SMOOTH);
@@ -165,7 +165,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glTranslatef(0, (float)Math.sin(Math.toRadians((MekanismClient.ticksPassed + MekanismRenderer.getPartialTick()) * 3)) / 7, 0);
 			GL11.glRotatef((MekanismClient.ticksPassed + MekanismRenderer.getPartialTick()) * 4, 0, 1, 0);
 			GL11.glRotatef(36F + (MekanismClient.ticksPassed + MekanismRenderer.getPartialTick()) * 4, 0, 1, 1);
-			energyCore.render(0.0625F);
+			energyCore.render(0.0625F, true);
 			GL11.glPopMatrix();
 
 			MekanismRenderer.glowOff();
@@ -225,7 +225,7 @@ public class ItemRenderingHandler implements IItemRenderer
 					GL11.glTranslatef(-0.22F, -0.2F, -0.22F);
 				}
 
-				GL11.glTranslated(0.73, 0.08, 0.44);
+				GL11.glTranslatef(0.73f, 0.08f, 0.44f);
 				GL11.glRotatef(90, 0, 1, 0);
 
 				float scale = 0.03125F;
@@ -260,7 +260,7 @@ public class ItemRenderingHandler implements IItemRenderer
 
 				if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.ENTITY)
 				{
-					GL11.glTranslated(-0.5, -0.4, -0.5);
+					GL11.glTranslatef(-0.5f, -0.4f, -0.5f);
 				}
 
 				GL11.glTranslatef(0, 0.9F, 1);
@@ -467,7 +467,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		else if(item.getItem() instanceof ItemPartTransmitter)
 		{
 			GL11.glPushMatrix();
-			GL11.glTranslated(-0.5, -0.5, -0.5);
+			GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
 			MekanismRenderer.blendOn();
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			RenderPartTransmitter.getInstance().renderItem(TransmitterType.values()[item.getItemDamage()]);
@@ -479,11 +479,11 @@ public class ItemRenderingHandler implements IItemRenderer
 		{
 			GL11.glPushMatrix();
 			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-			GL11.glTranslated(-0.5, -0.5, -0.5);
-			double d = 0.15;
-			GL11.glTranslated(d, d, d);
-			GL11.glScaled(2, 2, 2);
-			GL11.glTranslated(0.4-2*d, -2*d, -2*d);
+			GL11.glTranslatef(-0.5f, -0.5f, -0.5f);
+			float d = 0.15f;
+			GL11.glTranslatef(d, d, d);
+			GL11.glScalef(2, 2, 2);
+			GL11.glTranslatef(0.4f-2f*d, -2f*d, -2f*d);
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			RenderHelper.disableStandardItemLighting();
 			RenderGlowPanel.getInstance().renderItem(item.getItemDamage());

@@ -27,7 +27,7 @@ public final class MinerVisualRenderer
 	public static void render(TileEntityDigitalMiner miner)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslated(getX(miner.xCoord), getY(miner.yCoord), getZ(miner.zCoord));
+		GL11.glTranslatef((float)getX(miner.xCoord), (float)getY(miner.yCoord), (float)getZ(miner.zCoord));
 		MekanismRenderer.blendOn();
 		MekanismRenderer.glowOn();
 		GL11.glEnable(GL11.GL_CULL_FACE);

@@ -53,7 +53,7 @@ public class RenderBalloon extends Render
 	public void render(EnumColor color, double x, double y, double z)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslated(x, y, z);
+		GL11.glTranslatef((float)x, (float)y, (float)z);
 		GL11.glRotatef(180, 1, 0, 0);
 		GL11.glTranslatef(0, 0.9F, 0);
 

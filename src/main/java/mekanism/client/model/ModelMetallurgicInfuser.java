@@ -135,25 +135,30 @@ public class ModelMetallurgicInfuser extends ModelBase
 		setRotation(bar2, 0F, 0F, 0F);
 	}
 
-	public void render(float size) 
+	public void render(float size)
+	{
+		render(size, false);
+	}
+
+	public void render(float size, boolean inventory) 
 	{
 		base.render(size);
 		back.render(size);
-		connector1.render(size);
-		connector2.render(size);
+		if (!inventory)  { connector1.render(size);
+		connector2.render(size);}
 		sideRight.render(size);
 		top.render(size);
 		sideLeft.render(size);
-		tap1.render(size);
-		tap2.render(size);
+		if (!inventory)  { tap1.render(size);
+		tap2.render(size);}
 		tapBase1.render(size);
 		tapBase2.render(size);
 		divider.render(size);
-		plate1.render(size);
+		if (!inventory) { plate1.render(size);
 		plate2.render(size);
 		plate3.render(size);
 		bar1.render(size);
-		bar2.render(size);
+		bar2.render(size);}
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

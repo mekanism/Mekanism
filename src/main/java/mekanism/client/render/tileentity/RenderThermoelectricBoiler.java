@@ -59,7 +59,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				{
 					push();
 
-					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+					GL11.glTranslatef((float)getX(data.location.xCoord), (float)getY(data.location.yCoord), (float)getZ(data.location.zCoord));
 
 					MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
 					MekanismRenderer.colorFluid(tileEntity.structure.waterStored.getFluid());
@@ -84,7 +84,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 					{
 						push();
 
-						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
+						GL11.glTranslatef((float)getX(valveData.location.xCoord), (float)getY(valveData.location.yCoord), (float)getZ(valveData.location.zCoord));
 
 						MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
 
@@ -113,7 +113,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer
 				{
 					push();
 					
-					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+					GL11.glTranslatef((float)getX(data.location.xCoord), (float)getY(data.location.yCoord), (float)getZ(data.location.zCoord));
 					
 					MekanismRenderer.glowOn(tileEntity.structure.steamStored.getFluid().getLuminosity());
 					MekanismRenderer.colorFluid(tileEntity.structure.steamStored.getFluid());

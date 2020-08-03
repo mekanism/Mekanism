@@ -86,17 +86,22 @@ public class ModelPressurizedReactionChamber extends ModelBase
 		setRotation(frontDivider2, 0F, 0F, 0F);
 	}
 
-	public void render(float size) 
+	public void render(float size)
+	{
+		render(size, false);
+	}
+
+	public void render(float size, boolean inventory) 
 	{
 		frontDivider1.render(size);
 		base.render(size);
 		front.render(size);
-		bar1.render(size);
+		if (!inventory) bar1.render(size);
 		body.render(size);
-		bar5.render(size);
+		if (!inventory) { bar5.render(size);
 		bar4.render(size);
 		bar3.render(size);
-		bar2.render(size);
+		bar2.render(size);}
 		frontDivider2.render(size);
 	}
 

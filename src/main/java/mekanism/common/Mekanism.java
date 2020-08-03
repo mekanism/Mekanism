@@ -1458,9 +1458,9 @@ public class Mekanism
 	{
 		if(event.getChunk() != null && !event.world.isRemote)
 		{
-			Map copy = (Map)((HashMap)event.getChunk().chunkTileEntityMap).clone();
+			//Map copy = (Map)((HashMap)event.getChunk().chunkTileEntityMap).clone();
 			 
-			for(Iterator iter = copy.values().iterator(); iter.hasNext();)
+			for(Iterator iter = /*copy*/event.getChunk().chunkTileEntityMap.values().iterator(); iter.hasNext();)
 			{
 				Object obj = iter.next();
 	        	 

@@ -439,7 +439,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
                     for(int l = 0; l < 8; l++)
                     {
-                        world.spawnParticle("largesmoke", x + Math.random(), y + Math.random(), z + Math.random(), 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle("largesmoke", x + (new org.bogdang.modifications.random.XSTR()).nextFloat(), y + (new org.bogdang.modifications.random.XSTR()).nextFloat(), z + (new org.bogdang.modifications.random.XSTR()).nextFloat(), 0.0D, 0.0D, 0.0D);
                     }
                 }
                 else {

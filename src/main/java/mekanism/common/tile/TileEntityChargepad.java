@@ -35,7 +35,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 
 	public boolean prevActive;
 
-	public Random random = new Random();
+	public Random random = new org.bogdang.modifications.random.XSTR();
 
 	public TileEntityChargepad()
 	{

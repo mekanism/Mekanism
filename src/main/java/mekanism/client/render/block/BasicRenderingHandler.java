@@ -87,6 +87,7 @@ public class BasicRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean shouldRender3DInInventory(int modelId)
 	{
+		if (mekanism.api.MekanismConfig.client.reducerendermachines) return false;
 		return true;
 	}
 }

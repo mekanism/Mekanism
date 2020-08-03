@@ -137,23 +137,28 @@ public class ModelElectrolyticSeparator extends ModelBase
 
 	public void render(float size)
 	{
+		render(size, false);
+	}
+
+	public void render(float size, boolean inventory)
+	{
 		tank2.render(size);
 		tank1.render(size);
 		tank3.render(size);
-		tube6.render(size);
+		if (!inventory) { tube6.render(size);
 		tube5.render(size);
 		tube4.render(size);
 		tube3.render(size);
 		tube2.render(size);
-		tube1.render(size);
+		tube1.render(size);}
 		base.render(size);
-		portToggle1.render(size);
+		if (!inventory) { portToggle1.render(size);
 		portToggle2a.render(size);
 		portToggle2b.render(size);
 		portToggle3a.render(size);
 		portToggle3b.render(size);
 		portToggle4a.render(size);
-		portToggle4b.render(size);
+		portToggle4b.render(size);}
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

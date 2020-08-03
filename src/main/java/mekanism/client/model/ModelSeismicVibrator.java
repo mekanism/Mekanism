@@ -333,36 +333,41 @@ public class ModelSeismicVibrator extends ModelBase
 
 	public void render(float size)
 	{
-		plate3.render(size);
+		render(size, false);
+	}
+
+	public void render(float size, boolean inventory)
+	{
+		if (!inventory) plate3.render(size);
 		baseBack.render(size);
 		motor.render(size);
-		port.render(size);
+		if (!inventory) port.render(size);
 		pole4.render(size);
 		shaft2.render(size);
 		shaft1.render(size);
-		arm3.render(size);
+		if (!inventory) { arm3.render(size);
 		plate2.render(size);
 		arm2.render(size);
-		arm1.render(size);
+		arm1.render(size);}
 		top.render(size);
-		frameBack5.render(size);
+		if (!inventory) frameBack5.render(size);
 		pole3.render(size);
-		frameRight5.render(size);
+		if (!inventory) frameRight5.render(size);
 		baseRight.render(size);
 		baseFront.render(size);
 		baseLeft.render(size);
-		frameRight3.render(size);
+		if (!inventory) frameRight3.render(size);
 		pole1.render(size);
-		frameRight4.render(size);
+		if (!inventory) { frameRight4.render(size);
 		frameRight1.render(size);
 		frameRight2.render(size);
 		frameLeft5.render(size);
 		frameLeft4.render(size);
 		frameBack3.render(size);
 		frameLeft2.render(size);
-		frameLeft1.render(size);
+		frameLeft1.render(size);}
 		pole2.render(size);
-		frameBack1.render(size);
+		if (!inventory) { frameBack1.render(size);
 		frameBack2.render(size);
 		frameBack4.render(size);
 		frameLeft3.render(size);
@@ -377,7 +382,7 @@ public class ModelSeismicVibrator extends ModelBase
 		rivet3.render(size);
 		rivet8.render(size);
 		rivet4.render(size);
-		rivet9.render(size);
+		rivet9.render(size);}
 	}
 
 	public void renderWithPiston(float piston, float size)

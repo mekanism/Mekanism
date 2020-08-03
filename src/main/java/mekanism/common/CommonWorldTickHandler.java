@@ -105,7 +105,7 @@ public class CommonWorldTickHandler
 						break; 
 					}
 
-			        Random fmlRandom = new Random(world.getSeed());
+			        Random fmlRandom = new org.bogdang.modifications.random.XSTR(world.getSeed());
 			        long xSeed = fmlRandom.nextLong() >> 2 + 1L;
 			        long zSeed = fmlRandom.nextLong() >> 2 + 1L;
 			        fmlRandom.setSeed((xSeed*nextChunk.chunkXPos + zSeed*nextChunk.chunkZPos) ^ world.getSeed());
