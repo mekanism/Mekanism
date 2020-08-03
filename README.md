@@ -1,14 +1,22 @@
-# ATTENTION #
+# Mekanism Terralization version with bugfixes from community
 
-This repo is thirdparty version,sometimes will not working
+### This is an custom version that is using several forked versions of mekanism and can be unstable, i used other peoples fixes to bugs and dupes because i dont do work when someone else has already done it
 
-If have more bugs,please post to issues,I'll take a favour
+## Fixes by
 
-# FIX LOG #
+Clienthax : dupe bug with chemical washer and fluidtank, fixes issue with railcraft
+draksterau : personal chest bug and a server crash bug
+iKEVAREZ : and the turbine bug involving each fluid being sucked in.
+kmecpp : dupe bug with factories
+DEv0on : and the turbine bug involving each fluid being sucked in.
+awesomely2002 : improvment for Entangloporters need to transport more
 
+q1051278389 : 
+Turbine and matrix bug
 fix industrialTrubine can input Water or some liquid with another mod's pipe(now only accept water)
-
 fix EnergyMatrix use IC2 cable(EnergyNetBug) connecting valve as a loop to fully charge the Matrix(now IC2Cable can't connect the MatrixValve which in "Input Mode")
+
+
 
 
 # Mekanism for Minecraft 1.7.10 #
