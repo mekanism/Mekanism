@@ -20,11 +20,10 @@ import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.Rectangle2d;
 
-public class GhostIngredientHandler implements IGhostIngredientHandler<GuiMekanism> {
+public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhostIngredientHandler<GUI> {
 
     @Override
-    public <INGREDIENT> List<Target<INGREDIENT>> getTargets(GuiMekanism genericGui, INGREDIENT ingredient, boolean doStart) {
-        GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
+    public <INGREDIENT> List<Target<INGREDIENT>> getTargets(GUI gui, INGREDIENT ingredient, boolean doStart) {
         boolean hasTargets = false;
         int depth = 0;
         Int2ObjectLinkedOpenHashMap<List<TargetInfo<INGREDIENT>>> depthBasedTargets = new Int2ObjectLinkedOpenHashMap<>();

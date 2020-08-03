@@ -17,7 +17,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.Rectangle2d;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
+public class GuiElementHandler<GUI extends GuiMekanism<?>> implements IGuiContainerHandler<GUI> {
 
     private static void addAreaIfOutside(List<Rectangle2d> areas, int parentX, int parentY, int parentWidth, int parentHeight, Widget element) {
         if (element.visible) {
@@ -43,8 +43,7 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
     }
 
     @Override
-    public List<Rectangle2d> getGuiExtraAreas(GuiMekanism genericGui) {
-        GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
+    public List<Rectangle2d> getGuiExtraAreas(GUI gui) {
         int parentX = gui.getLeft();
         int parentY = gui.getTop();
         int parentWidth = gui.getWidth();
@@ -60,8 +59,7 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
 
     @Nullable
     @Override
-    public Object getIngredientUnderMouse(GuiMekanism genericGui, double mouseX, double mouseY) {
-        GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
+    public Object getIngredientUnderMouse(GUI gui, double mouseX, double mouseY) {
         GuiWindow guiWindow = gui.getWindowHovering(mouseX, mouseY);
         if (guiWindow == null) {
             //If no window is being hovered, then check the elements in general
@@ -82,8 +80,7 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
     }
 
     @Override
-    public Collection<IGuiClickableArea> getGuiClickableAreas(GuiMekanism genericGui, double mouseX, double mouseY) {
-        GuiMekanism<?> gui = (GuiMekanism<?>) genericGui;
+    public Collection<IGuiClickableArea> getGuiClickableAreas(GUI gui, double mouseX, double mouseY) {
         //Make mouseX and mouseY not be relative
         mouseX += gui.getGuiLeft();
         mouseY += gui.getGuiTop();
