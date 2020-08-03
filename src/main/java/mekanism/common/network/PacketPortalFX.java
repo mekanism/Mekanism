@@ -19,7 +19,7 @@ public class PacketPortalFX implements IMessageHandler<PortalFXMessage, IMessage
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		Random random = new org.bogdang.modifications.random.XSTR();
+		Random random = new Random();
 
 		for(int i = 0; i < 50; i++)
 		{

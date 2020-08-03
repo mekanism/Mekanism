@@ -123,26 +123,21 @@ public class ModelFluidicPlenisher extends ModelBase
 
 	public void render(float size)
 	{
-		render(size, false);
-	}
-
-	public void render(float size, boolean inventory)
-	{
-		if (!inventory) { bearingRight.render(size);
+		bearingRight.render(size);
 		ringTank.render(size);
 		portTop.render(size);
 		portBack.render(size);
 		Connector.render(size);
 		//pipeToggle.render(size);
 		ringTop.render(size);
-		ringBottom.render(size);}
+		ringBottom.render(size);
 		tank.render(size);
-		if (!inventory) { bearingLeft.render(size);
+		bearingLeft.render(size);
 		connectorRing.render(size);
 		rod4.render(size);
 		rod3.render(size);
 		rod2.render(size);
-		rod1.render(size);}
+		rod1.render(size);
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z) 

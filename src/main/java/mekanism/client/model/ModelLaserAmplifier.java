@@ -67,18 +67,13 @@ public class ModelLaserAmplifier extends ModelBase
 
 	public void render(float size)
 	{
-		render(size, false);
-	}
-
-	public void render(float size, boolean inventory)
-	{
-		if (!inventory) { S1.render(size);
+		S1.render(size);
 		S2.render(size);
 		S3.render(size);
 		S4.render(size);
-		S5.render(size);}
+		S5.render(size);
 		Base.render(size);
-		if (!inventory) S6.render(size);
+		S6.render(size);
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z) 

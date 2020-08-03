@@ -347,41 +347,36 @@ public class ModelSolarNeutronActivator extends ModelBase
 
 	public void render(float size)
 	{
-		render(size, false);
-	}
-
-	public void render(float size, boolean inventory)
-	{
-		if (!inventory) { pole.render(size);
+		pole.render(size);
 		panel3.render(size);
 		port.render(size);
 		panel1.render(size);
-		panel2.render(size);}
+		panel2.render(size);
 		panelBase.render(size);
 		panelBraceLeft2.render(size);
 		panelBraceRight2.render(size);
 		panelBraceLeft1.render(size);
 		panelBraceRight1.render(size);
 		panelBrace.render(size);
-		if (!inventory) bridge.render(size);
+		bridge.render(size);
 		platform.render(size);
-		if (!inventory) { hole2.render(size);
+		hole2.render(size);
 		hole4.render(size);
 		hole1.render(size);
-		hole3.render(size);}
+		hole3.render(size);
 		brace2.render(size);
-		if (!inventory) { tube2c.render(size);
+		tube2c.render(size);
 		tube1b.render(size);
 		tube1c.render(size);
 		tube2b.render(size);
 		tube2a.render(size);
 		tube1a.render(size);
-		conduit.render(size);}
+		conduit.render(size);
 		brace1.render(size);
 		tank.render(size);
-		if (!inventory) laser.render(size);
+		laser.render(size);
 		base.render(size);
-		if (!inventory) { support1.render(size);
+		support1.render(size);
 		support2.render(size);
 		support3.render(size);
 		support4.render(size);
@@ -398,7 +393,7 @@ public class ModelSolarNeutronActivator extends ModelBase
 		support15.render(size);
 		support16.render(size);
 		portConnector.render(size);
-		laserBeamToggle.render(size);}
+		laserBeamToggle.render(size);
 	}
 	
 	private void setRotation(ModelRenderer model, float x, float y, float z) 

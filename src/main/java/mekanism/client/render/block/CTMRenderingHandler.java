@@ -91,7 +91,6 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean shouldRender3DInInventory(int renderId)
 	{
-		if (mekanism.api.MekanismConfig.client.reducerendermachines) return false;
 		return true;
 	}
 

@@ -179,14 +179,9 @@ public class ModelChemicalWasher extends ModelBase
 
 	public void render(float size)
 	{
-		render(size, false);
-	}
-
-	public void render(float size, boolean inventory)
-	{
 		tankBack.render(size);
 		base.render(size);
-		if (!inventory) { portTop.render(size);
+		portTop.render(size);
 		pipe1.render(size);
 		pipe2b.render(size);
 		portRight.render(size);
@@ -195,18 +190,18 @@ public class ModelChemicalWasher extends ModelBase
 		bridge3.render(size);
 		conduit.render(size);
 		bridge4.render(size);
-		pipe2.render(size);}
+		pipe2.render(size);
 		tankLeft.render(size);
-		if (!inventory) { connectorRight.render(size);
+		connectorRight.render(size);
 		portLeft.render(size);
-		connectorLeft.render(size);}
+		connectorLeft.render(size);
 		tankRight.render(size);
-		if (!inventory) { tubeLeft1.render(size);
+		tubeLeft1.render(size);
 		tubeLeft2.render(size);
 		tubeRight3.render(size);
 		tubeRight1.render(size);
 		tubeRight2.render(size);
-		tubeLeft3.render(size);}
+		tubeLeft3.render(size);
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

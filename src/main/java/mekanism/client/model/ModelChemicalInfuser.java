@@ -221,13 +221,8 @@ public class ModelChemicalInfuser extends ModelBase
 
 	public void render(float size)
 	{
-		render(size, false);
-	}
-
-	public void render(float size, boolean inventory)
-	{
 		base.render(size);
-		if (!inventory) { tank2.render(size);
+		tank2.render(size);
 		portRight.render(size);
 		portBack.render(size);
 		portLeft.render(size);
@@ -237,9 +232,9 @@ public class ModelChemicalInfuser extends ModelBase
 		pipeAngle2.render(size);
 		connectorAngle.render(size);
 		pipe2.render(size);
-		connector.render(size);}
+		connector.render(size);
 		compressor.render(size);
-		if (!inventory) { tube10.render(size);
+		tube10.render(size);
 		tube8.render(size);
 		tube9.render(size);
 		tube7.render(size);
@@ -254,7 +249,7 @@ public class ModelChemicalInfuser extends ModelBase
 		exhaust4.render(size);
 		exhaust3.render(size);
 		exhaust2.render(size);
-		exhaust1.render(size);}
+		exhaust1.render(size);
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

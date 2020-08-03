@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class ChanceOutput extends MachineOutput<ChanceOutput>
 {
-	private static Random rand = new org.bogdang.modifications.random.XSTR();
+	private static Random rand = new Random();
 
 	public ItemStack primaryOutput;
 

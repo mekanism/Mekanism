@@ -353,11 +353,6 @@ public class ModelEnergyCube extends ModelBase
 
 	public void render(float size, EnergyCubeTier tier, TextureManager manager)
 	{
-		render(size, tier, manager, false);
-	}
-
-	public void render(float size, EnergyCubeTier tier, TextureManager manager, boolean inventory)
-	{
 		frame12.render(size);
 		frame11.render(size);
 		frame10.render(size);
@@ -371,14 +366,14 @@ public class ModelEnergyCube extends ModelBase
 		frame2.render(size);
 		frame1.render(size);
 		
-		if (!inventory) { corner8.render(size);
+		corner8.render(size);
 		corner7.render(size);
 		corner6.render(size);
 		corner5.render(size);
 		corner4.render(size);
 		corner3.render(size);
 		corner2.render(size);
-		corner1.render(size);}
+		corner1.render(size);
 		
 		GL11.glPushMatrix();
 		GL11.glScalef(1.0001F, 1.0001F, 1.0001F);
@@ -386,14 +381,14 @@ public class ModelEnergyCube extends ModelBase
 		manager.bindTexture(RenderEnergyCube.resources.get(tier));
 		MekanismRenderer.glowOn();
 		
-		if (!inventory) { corner8.render(size);
+		corner8.render(size);
 		corner7.render(size);
 		corner6.render(size);
 		corner5.render(size);
 		corner4.render(size);
 		corner3.render(size);
 		corner2.render(size);
-		corner1.render(size);}
+		corner1.render(size);
 		
 		MekanismRenderer.glowOff();
 		GL11.glPopMatrix();
@@ -455,14 +450,9 @@ public class ModelEnergyCube extends ModelBase
 			cube.mirror = true;
 		}
 
-	public void render(float size)
-	{
-		render(size, false);
-	}
-
-		public void render(float size, boolean inventory)
+		public void render(float size)
 		{
-			if (!inventory) cube.render(0.0625F);
+			cube.render(0.0625F);
 		}
 	}
 }

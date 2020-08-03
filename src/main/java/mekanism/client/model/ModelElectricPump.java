@@ -158,21 +158,16 @@ public class ModelElectricPump extends ModelBase
 
 	public void render(float size)
 	{
-		render(size, false);
-	}
-
-	public void render(float size, boolean inventory)
-	{
-		if (!inventory) pumpRingTop.render(size);
+		pumpRingTop.render(size);
 		pumpPortTop.render(size);
 		pumpCasing.render(size);
 		pumpBase.render(size);
 		powerPort.render(size);
 		powerConnector.render(size);
-		if (!inventory) { powerConnectorFrame4.render(size);
+		powerConnectorFrame4.render(size);
 		powerConnectorFrame3.render(size);
 		powerConnectorFrame2.render(size);
-		powerConnectorFrame1.render(size);}
+		powerConnectorFrame1.render(size);
 		/*pipeToggleBack.render(size);
 		pipeToggleRingBack.render(size);
 		pipeTogglePortBack.render(size);

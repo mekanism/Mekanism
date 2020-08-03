@@ -80,8 +80,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) electricPump.render(0.0560F, true);
-			else electricPump.render(0.0560F);
+			electricPump.render(0.0560F);
 		}
 		else if(type == MachineType.METALLURGIC_INFUSER)
 		{
@@ -89,16 +88,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) metallurgicInfuser.render(0.0625F, true);
-			else metallurgicInfuser.render(0.0625F);
+			metallurgicInfuser.render(0.0625F);
 		}
 		else if(type == MachineType.CHARGEPAD)
 		{
 			GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.1F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) chargepad.render(0.0625F, mc.renderEngine, true);
-			else chargepad.render(0.0625F, mc.renderEngine);
+			chargepad.render(0.0625F, mc.renderEngine);
 		}
 		else if(type == MachineType.LOGISTICAL_SORTER)
 		{
@@ -106,8 +103,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalSorter.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) logisticalSorter.render(0.0625F, false, true);
-			else logisticalSorter.render(0.0625F, false);
+			logisticalSorter.render(0.0625F, false);
 		}
 		else if(type == MachineType.DIGITAL_MINER)
 		{
@@ -115,8 +111,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(-180F, 0.0F, 1.0F, 0.0F);
 			GL11.glTranslatef(0.35F, 0.1F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) digitalMiner.render(0.022F, false, mc.renderEngine, true);
-			else digitalMiner.render(0.022F, false, mc.renderEngine);
+			digitalMiner.render(0.022F, false, mc.renderEngine);
 		}
 		else if(type == MachineType.ROTARY_CONDENSENTRATOR)
 		{
@@ -124,8 +119,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RotaryCondensentrator.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) rotaryCondensentrator.render(0.0625F, true);
-			else rotaryCondensentrator.render(0.0625F);
+			rotaryCondensentrator.render(0.0625F);
 		}
 		else if(type == MachineType.CHEMICAL_OXIDIZER)
 		{
@@ -133,8 +127,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.00F, 0.05F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalOxidizer.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) chemicalOxidizer.render(0.0625F, true);
-			else chemicalOxidizer.render(0.0625F);
+			chemicalOxidizer.render(0.0625F);
 		}
 		else if(type == MachineType.CHEMICAL_INFUSER)
 		{
@@ -142,17 +135,15 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180f, 0.0F, 1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -0.96F, 0.05F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalInfuser.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) chemicalInfuser.render(0.0625F, true);
-			else chemicalInfuser.render(0.0625F);
+			chemicalInfuser.render(0.0625F);
 		}
 		else if(type == MachineType.ELECTROLYTIC_SEPARATOR)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(-90F, 0.0F, 1.0F, 0.0F);
-			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
+			GL11.glTranslated(0.0F, -1.0F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectrolyticSeparator.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) electrolyticSeparator.render(0.0625F, true);
-			else electrolyticSeparator.render(0.0625F);
+			electrolyticSeparator.render(0.0625F);
 		}
 		else if(type == MachineType.CHEMICAL_DISSOLUTION_CHAMBER)
 		{
@@ -160,8 +151,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalDissolutionChamber.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) chemicalDissolutionChamber.render(0.0625F, true);
-			else chemicalDissolutionChamber.render(0.0625F);
+			chemicalDissolutionChamber.render(0.0625F);
 		}
 		else if(type == MachineType.CHEMICAL_WASHER)
 		{
@@ -169,8 +159,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalWasher.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) chemicalWasher.render(0.0625F, true);
-			else chemicalWasher.render(0.0625F);
+			chemicalWasher.render(0.0625F);
 		}
 		else if(type == MachineType.CHEMICAL_CRYSTALLIZER)
 		{
@@ -178,8 +167,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystallizer.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) chemicalCrystallizer.render(0.0625F, true);
-			else chemicalCrystallizer.render(0.0625F);
+			chemicalCrystallizer.render(0.0625F);
 		}
 		else if(type == MachineType.SEISMIC_VIBRATOR)
 		{
@@ -188,8 +176,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glScalef(0.6F, 0.6F, 0.6F);
 			GL11.glTranslatef(0.0F, -0.55F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) seismicVibrator.render(0.0625F, true);
-			else seismicVibrator.render(0.0625F);
+			seismicVibrator.render(0.0625F);
 		}
 		else if(type == MachineType.PRESSURIZED_REACTION_CHAMBER)
 		{
@@ -197,8 +184,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PressurizedReactionChamber.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) pressurizedReactionChamber.render(0.0625F, true);
-			else pressurizedReactionChamber.render(0.0625F);
+			pressurizedReactionChamber.render(0.0625F);
 		}
 		else if(type == MachineType.FLUIDIC_PLENISHER)
 		{
@@ -206,8 +192,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidicPlenisher.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) fluidicPlenisher.render(0.0560F, true);
-			else fluidicPlenisher.render(0.0560F);
+			fluidicPlenisher.render(0.0560F);
 		}
 		else if(type == MachineType.LASER)
 		{
@@ -215,8 +200,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Laser.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) laser.render(0.0560F, true);
-			else laser.render(0.0560F);
+			laser.render(0.0560F);
 		}
 		else if(type == MachineType.LASER_AMPLIFIER)
 		{
@@ -224,8 +208,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LaserAmplifier.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) laserAmplifier.render(0.0560F, true);
-			else laserAmplifier.render(0.0560F);
+			laserAmplifier.render(0.0560F);
 		}
 		else if(type == MachineType.LASER_TRACTOR_BEAM)
 		{
@@ -233,8 +216,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LaserTractorBeam.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) laserAmplifier.render(0.0560F, true);
-			else laserAmplifier.render(0.0560F);
+			laserAmplifier.render(0.0560F);
 		}
 		else if(type == MachineType.RESISTIVE_HEATER)
 		{
@@ -242,8 +224,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.05F, -0.96F, 0.05F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) resistiveHeater.render(0.0625F, false, mc.renderEngine, true);
-			else resistiveHeater.render(0.0625F, false, mc.renderEngine);
+			resistiveHeater.render(0.0625F, false, mc.renderEngine);
 		}
 		else if(type == MachineType.SOLAR_NEUTRON_ACTIVATOR)
 		{
@@ -252,8 +233,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glScalef(0.6F, 0.6F, 0.6F);
 			GL11.glTranslatef(0.0F, -0.55F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) solarNeutronActivator.render(0.0625F, true);
-			else solarNeutronActivator.render(0.0625F);
+			solarNeutronActivator.render(0.0625F);
 		}
 		else if(type == MachineType.QUANTUM_ENTANGLOPORTER)
 		{
@@ -261,8 +241,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "QuantumEntangloporter.png"));
-			if (mekanism.api.MekanismConfig.client.reducerendermachines) quantumEntangloporter.render(0.0625F, mc.renderEngine, true);
-			else quantumEntangloporter.render(0.0625F, mc.renderEngine);
+			quantumEntangloporter.render(0.0625F, mc.renderEngine);
 		}
 		else {
 			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
@@ -282,7 +261,6 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean shouldRender3DInInventory(int modelId)
 	{
-		if (mekanism.api.MekanismConfig.client.reducerendermachines) return false;
 		return true;
 	}
 
