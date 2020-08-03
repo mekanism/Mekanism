@@ -390,7 +390,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		if(fluid == FluidRegistry.getFluid("steam"))
 		{
-			return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
+			return ((!worldObj.isRemote && structure != null) || (!worldObj.isRemote && clientHasStructure));
 		}
 		
 		return false;
