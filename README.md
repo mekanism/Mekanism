@@ -4,14 +4,25 @@
 
 ## Fixes by
 
-#### Clienthax #### : dupe bug with chemical washer and fluidtank, fixes issue with railcraft
-#### draksterau #### : personal chest bug and a server crash bug
-#### iKEVAREZ #### : and the turbine bug involving each fluid being sucked in.
-#### kmecpp #### : dupe bug with factories
-#### DEv0on #### : and the turbine bug involving each fluid being sucked in.
-#### awesomely2002 #### : improvment for Entangloporters need to transport more
+#### Clienthax : 
+dupe bug with chemical washer and fluidtank, fixes issue with railcraft
 
-#### q1051278389 #### : 
+#### draksterau : 
+personal chest bug and a server crash bug
+
+#### iKEVAREZ : 
+and the turbine bug involving each fluid being sucked in.
+
+#### kmecpp : 
+dupe bug with factories
+
+#### DEv0on : 
+and the turbine bug involving each fluid being sucked in.
+
+#### awesomely2002 : 
+improvment for Entangloporters need to transport more
+
+#### q1051278389 : 
 Turbine and matrix bug
 fix industrialTrubine can input Water or some liquid with another mod's pipe(now only accept water)
 fix EnergyMatrix use IC2 cable(EnergyNetBug) connecting valve as a loop to fully charge the Matrix(now IC2Cable can't connect the MatrixValve which in "Input Mode")
