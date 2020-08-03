@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile;
 
-import buildcraft.api.core.Position;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
@@ -14,9 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import rpcore.api.DimensionAPI;
-import rpcore.constants.CelestialType;
-import rpcore.module.dimension.ForgeDimension;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock
 {
@@ -40,20 +36,15 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 		{
 			ChargeUtils.charge(0, this);
 			
-                            ForgeDimension dim = ((ForgeDimension)DimensionAPI.getForgeDimension(this.worldObj.provider.dimensionId));
-                            if (dim != null && (dim.getType().equals(CelestialType.System) || dim.getType().equals(CelestialType.Cluster)) && getActive()) {
-                                setActive(false);
-                            } else {
-                                if(ticker % 20 == 0)
-                                {
-                                        setActive((currentMultiplier = getMultiplier()) > 0);
-                                }
-
-                                if(getActive())
-                                {
-                                        setEnergy(electricityStored + (generators.windGenerationMin*currentMultiplier));
-                                }
-                            }
+			if(ticker % 20 == 0)
+			{
+				setActive((currentMultiplier = getMultiplier()) > 0);
+			}
+			
+			if(getActive())
+			{
+				setEnergy(electricityStored + (generators.windGenerationMin*currentMultiplier));
+			}
 		}
 	}
 	
