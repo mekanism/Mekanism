@@ -70,7 +70,11 @@ public class InventoryPersonalChest extends InventoryBasic
 
 		if(getStack() != null)
 		{
-			((ISustainedInventory)getStack().getItem()).setInventory(tagList, getStack());
+			if (getStack().getItem() instanceof ISustainedInventory) {
+                            ((ISustainedInventory)getStack().getItem()).setInventory(tagList, getStack());
+                        } else {
+                            System.out.println("Avoiding a server crash as : " + getStack().getItem().getClass().getName() + " is not a sustained inventory.");
+                        }
 		}
 	}
 
@@ -81,6 +85,7 @@ public class InventoryPersonalChest extends InventoryBasic
 			return;
 		}
 
+                if (getStack() != null && !(getStack().getItem() instanceof ISustainedInventory)) return;
 		reading = true;
 
 		NBTTagList tagList = ((ISustainedInventory)getStack().getItem()).getInventory(getStack());
