@@ -1,71 +1,61 @@
-#################################################
-         ForgeGradle 1.2-SNAPSHOT-fb514d3        
-  https://github.com/MinecraftForge/ForgeGradle  
-#################################################
-               Powered by MCP unknown               
-             http://modcoderpack.com             
-         by: Searge, ProfMobius, Fesh0r,         
-         R4wk, ZeuX, IngisKahn, bspkrs           
-#################################################
-:MDKZip
-:extractMcpData
+:downloadClient SKIPPED
+:downloadServer SKIPPED
 :getVersionJson
 :extractUserDev
+:mergeJars SKIPPED
+:applyBinPatches SKIPPED
+:downloadMcpTools SKIPPED
+:extractMcpData
 :genSrgs SKIPPED
-:compileApiJava警告: [options] 未与 -source 1.7 一起设置引导类路径
-注: C:\Users\Xmsoft\IdeaProjects\Mekanism\src\api\java\dan200\computercraft\api\ComputerCraftAPI.java使用了未经检查或不安全的操作。
-注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
-1 个警告
+:deobfBinJar SKIPPED
+:compileApiJavawarning: [options] bootstrap class path not set in conjunction with -source 1.7
+Note: C:\Users\magna\OneDrive\Documents\GitHub\Mekanism\src\api\java\dan200\computercraft\api\ComputerCraftAPI.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+1 warning
 
 :processApiResources UP-TO-DATE
 :apiClasses
 :sourceMainJava
-:compileJava警告: [options] 未与 -source 1.7 一起设置引导类路径
-C:\Users\Xmsoft\IdeaProjects\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:12: 警告: URLClassPath是内部专用 API, 可能会在未来发行版中删除
+:compileJavawarning: [options] bootstrap class path not set in conjunction with -source 1.7
+C:\Users\magna\OneDrive\Documents\GitHub\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:12: warning: URLClassPath is internal proprietary API and may be removed in a future release
 import sun.misc.URLClassPath;
                ^
-C:\Users\Xmsoft\IdeaProjects\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:13: 警告: URLUtil是内部专用 API, 可能会在未来发行版中删除
+C:\Users\magna\OneDrive\Documents\GitHub\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:13: warning: URLUtil is internal proprietary API and may be removed in a future release
 import sun.net.util.URLUtil;
                    ^
-C:\Users\Xmsoft\IdeaProjects\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:302: 警告: URLClassPath是内部专用 API, 可能会在未来发行版中删除
+C:\Users\magna\OneDrive\Documents\GitHub\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:302: warning: URLClassPath is internal proprietary API and may be removed in a future release
                 Field f_loaders = URLClassPath.class.getDeclaredField("loaders");
                                   ^
-C:\Users\Xmsoft\IdeaProjects\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:303: 警告: URLClassPath是内部专用 API, 可能会在未来发行版中删除
+C:\Users\magna\OneDrive\Documents\GitHub\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:303: warning: URLClassPath is internal proprietary API and may be removed in a future release
                 Field f_lmap = URLClassPath.class.getDeclaredField("lmap");
                                ^
-C:\Users\Xmsoft\IdeaProjects\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:308: 警告: URLClassPath是内部专用 API, 可能会在未来发行版中删除
+C:\Users\magna\OneDrive\Documents\GitHub\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:308: warning: URLClassPath is internal proprietary API and may be removed in a future release
                 URLClassPath ucp = (URLClassPath) f_ucp.get(cl);
                 ^
-C:\Users\Xmsoft\IdeaProjects\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:308: 警告: URLClassPath是内部专用 API, 可能会在未来发行版中删除
+C:\Users\magna\OneDrive\Documents\GitHub\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:308: warning: URLClassPath is internal proprietary API and may be removed in a future release
                 URLClassPath ucp = (URLClassPath) f_ucp.get(cl);
                                     ^
-C:\Users\Xmsoft\IdeaProjects\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:309: 警告: URLUtil是内部专用 API, 可能会在未来发行版中删除
+C:\Users\magna\OneDrive\Documents\GitHub\Mekanism\build\sources\java\codechicken\core\launch\DepLoader.java:309: warning: URLUtil is internal proprietary API and may be removed in a future release
                 Closeable loader = ((Map<String, Closeable>) f_lmap.get(ucp)).remove(URLUtil.urlNoFragString(url));
                                                                                      ^
-注: 某些输入文件使用或覆盖了已过时的 API。
-注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
-注: 某些输入文件使用了未经检查或不安全的操作。
-注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
-8 个警告
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+8 warnings
 
 :processResources
 :classes
 :jar
+:compileTestJava UP-TO-DATE
+:processTestResources UP-TO-DATE
+:testClasses UP-TO-DATE
+:test UP-TO-DATE
 :reobf
-:coreJar
-:generatorsJar
-:toolsJar
-:releaseJars
-FAILURE: Build failed with an exception.
+:assemble
+:check UP-TO-DATE
+:build
 
-* What went wrong:
-Failed to capture snapshot of output files for task 'releaseJars' during up-to-date check.  See stacktrace for details.
-> Failed to create MD5 hash for file C:\Users\Xmsoft\IdeaProjects\Mekanism\.gradle\2.7\taskArtifacts\cache.properties.lock.
+BUILD SUCCESSFUL
 
-* Try:
-Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
-
-
-BUILD FAILED
-
-Total time: 39.754 secs
+Total time: 20.389 secs
