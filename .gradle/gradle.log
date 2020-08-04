@@ -1,61 +1,27 @@
-:downloadClient SKIPPED
-:downloadServer SKIPPED
-:getVersionJson
-:extractUserDev
-:mergeJars SKIPPED
-:applyBinPatches SKIPPED
-:downloadMcpTools SKIPPED
-:extractMcpData UP-TO-DATE
-:genSrgs SKIPPED
-:deobfBinJar SKIPPED
-:compileApiJavawarning: [options] bootstrap class path not set in conjunction with -source 1.7
-Note: C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\src\api\java\dan200\computercraft\api\ComputerCraftAPI.java uses unchecked or unsafe operations.
-Note: Recompile with -Xlint:unchecked for details.
-1 warning
-
+:compileApiJava UP-TO-DATE
 :processApiResources UP-TO-DATE
-:apiClasses
+:apiClasses UP-TO-DATE
 :sourceMainJava
 :compileJavawarning: [options] bootstrap class path not set in conjunction with -source 1.7
-C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\build\sources\java\codechicken\core\launch\DepLoader.java:12: warning: URLClassPath is internal proprietary API and may be removed in a future release
-import sun.misc.URLClassPath;
-               ^
-C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\build\sources\java\codechicken\core\launch\DepLoader.java:13: warning: URLUtil is internal proprietary API and may be removed in a future release
-import sun.net.util.URLUtil;
-                   ^
-C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\build\sources\java\codechicken\core\launch\DepLoader.java:302: warning: URLClassPath is internal proprietary API and may be removed in a future release
-                Field f_loaders = URLClassPath.class.getDeclaredField("loaders");
-                                  ^
-C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\build\sources\java\codechicken\core\launch\DepLoader.java:303: warning: URLClassPath is internal proprietary API and may be removed in a future release
-                Field f_lmap = URLClassPath.class.getDeclaredField("lmap");
-                               ^
-C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\build\sources\java\codechicken\core\launch\DepLoader.java:308: warning: URLClassPath is internal proprietary API and may be removed in a future release
-                URLClassPath ucp = (URLClassPath) f_ucp.get(cl);
-                ^
-C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\build\sources\java\codechicken\core\launch\DepLoader.java:308: warning: URLClassPath is internal proprietary API and may be removed in a future release
-                URLClassPath ucp = (URLClassPath) f_ucp.get(cl);
-                                    ^
-C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\build\sources\java\codechicken\core\launch\DepLoader.java:309: warning: URLUtil is internal proprietary API and may be removed in a future release
-                Closeable loader = ((Map<String, Closeable>) f_lmap.get(ucp)).remove(URLUtil.urlNoFragString(url));
-                                                                                     ^
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-Note: Some input files use unchecked or unsafe operations.
-Note: Recompile with -Xlint:unchecked for details.
-8 warnings
+C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\build\sources\java\mekanism\common\item\ItemBlockBasic.java:88: error: <identifier> expected
+			return new 1;
+			          ^
+C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\build\sources\java\mekanism\common\item\ItemBlockBasic.java:88: error: '(' or '[' expected
+			return new 1;
+			           ^
+2 errors
+1 warning
+ FAILED
 
-:processResources
-:classes
-:jar
-:compileTestJava UP-TO-DATE
-:processTestResources UP-TO-DATE
-:testClasses UP-TO-DATE
-:test UP-TO-DATE
-:reobf
-:assemble
-:check UP-TO-DATE
-:build
+FAILURE: Build failed with an exception.
 
-BUILD SUCCESSFUL
+* What went wrong:
+Execution failed for task ':compileJava'.
+> Compilation failed; see the compiler error output for details.
 
-Total time: 24.106 secs
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
+
+BUILD FAILED
+
+Total time: 6.521 secs

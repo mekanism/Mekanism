@@ -85,7 +85,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
     {
 		if(BasicType.get(stack) == BasicType.BIN)
 		{
-			return new 1;
+			return 1;
 		}
 		
 		return super.getItemStackLimit(stack);
