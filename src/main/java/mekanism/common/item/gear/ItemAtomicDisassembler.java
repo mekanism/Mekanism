@@ -12,13 +12,13 @@ import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.IDisableableEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.render.item.ISTERProvider;
@@ -29,6 +29,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.item.interfaces.IRadialModeItem;
+import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import mekanism.common.network.PacketLightningRender;
 import mekanism.common.network.PacketLightningRender.LightningPreset;
 import mekanism.common.tags.MekanismTags;
@@ -52,6 +54,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -62,7 +65,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IModeItem {
+public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IModeItem, IRadialModeItem<ItemAtomicDisassembler.DisassemblerMode> {
 
     private final Multimap<Attribute, AttributeModifier> attributes;
 
@@ -228,12 +231,27 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return hardness == 0 ? destroyEnergy.divide(2) : destroyEnergy;
     }
 
+    @Override
     public DisassemblerMode getMode(ItemStack itemStack) {
         return DisassemblerMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.MODE));
     }
 
-    public void setMode(ItemStack itemStack, DisassemblerMode mode) {
-        ItemDataUtils.setInt(itemStack, NBTConstants.MODE, mode.ordinal());
+    @Override
+    public DisassemblerMode getModeByIndex(int ordinal) {
+        return DisassemblerMode.byIndexStatic(ordinal);
+    }
+
+    // Player has indicated via radial menu they want to change weapon mode.
+    @Override
+    public void setMode(ItemStack stack, PlayerEntity player, DisassemblerMode mode) {
+       ItemDataUtils.setInt(stack, NBTConstants.MODE, mode.ordinal());
+    }
+
+    // Returns the class object
+    // Used by the radial menu
+    @Override
+    public Class<ItemAtomicDisassembler.DisassemblerMode> getModeClass() {
+        return ItemAtomicDisassembler.DisassemblerMode.class;
     }
 
     @Nonnull
@@ -254,7 +272,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         DisassemblerMode mode = getMode(stack);
         DisassemblerMode newMode = mode.adjust(shift);
         if (mode != newMode) {
-            setMode(stack, newMode);
+            setMode(stack, player, newMode);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                       MekanismLang.DISASSEMBLER_MODE_CHANGE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, newMode, EnumColor.AQUA, newMode.getEfficiency())),
@@ -279,24 +297,41 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return super.initCapabilities(stack, nbt);
     }
 
-    public enum DisassemblerMode implements IDisableableEnum<DisassemblerMode>, IHasTranslationKey {
-        NORMAL(MekanismLang.DISASSEMBLER_NORMAL, 20, () -> true),
-        SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode),
-        FAST(MekanismLang.DISASSEMBLER_FAST, 128, MekanismConfig.gear.disassemblerFastMode),
-        VEIN(MekanismLang.DISASSEMBLER_VEIN, 20, MekanismConfig.gear.disassemblerVeinMining),
-        EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, MekanismConfig.gear.disassemblerExtendedMining),
-        OFF(MekanismLang.DISASSEMBLER_OFF, 0, () -> true);
+    /*
+     * Modes available to the disassembler.
+     */
+    public enum DisassemblerMode implements IRadialSelectorEnum<DisassemblerMode>, IHasTranslationKey, IHasTextComponent {
+        NORMAL(MekanismLang.DISASSEMBLER_NORMAL, 20, () -> true, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_normal.png")),
+        SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_slow.png")),
+        FAST(MekanismLang.DISASSEMBLER_FAST, 128, MekanismConfig.gear.disassemblerFastMode, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_fast.png")),
+        VEIN(MekanismLang.DISASSEMBLER_VEIN, 20, MekanismConfig.gear.disassemblerVeinMining, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_vein.png")),
+        EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, MekanismConfig.gear.disassemblerExtendedMining, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_extended_vein.png")),
+        OFF(MekanismLang.DISASSEMBLER_OFF, 0, () -> true, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "void.png"));
 
         private static final DisassemblerMode[] MODES = values();
 
+        // ??
         private final BooleanSupplier checkEnabled;
+
+        // Translation matrix
         private final ILangEntry langEntry;
+
+        // Mining speed
         private final int efficiency;
 
-        DisassemblerMode(ILangEntry langEntry, int efficiency, BooleanSupplier checkEnabled) {
+        // Radial menu display colour
+        private final EnumColor color;
+
+        // Icon to display in radial
+        private final ResourceLocation icon;
+
+        // Convenience constructor
+        DisassemblerMode(ILangEntry langEntry, int efficiency, BooleanSupplier checkEnabled, EnumColor color, ResourceLocation icon) {
             this.langEntry = langEntry;
             this.efficiency = efficiency;
             this.checkEnabled = checkEnabled;
+            this.color = color;
+            this.icon = icon;
         }
 
         /**
@@ -314,18 +349,40 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             return MathUtils.getByIndexMod(MODES, index);
         }
 
+        // This is kinda hacky. A couple duplicates here to allow the different interfaces to play nicely.
         @Override
         public String getTranslationKey() {
             return langEntry.getTranslationKey();
         }
 
+        // Required by IRadialSelectorEnum
+        @Override
+        public ITextComponent getTextComponent() { return langEntry.translate(color); }
+
+        // Required by IRadialSelectorEnum.
+        // Used for radial menu identifiers
+        @Override
+        public ITextComponent getShortText() {
+            return this.getTextComponent();
+        }
+
+        // Efficiency of block destruction
         public int getEfficiency() {
             return efficiency;
         }
 
-        @Override
+        // The old interface required an override here. Left it here so that this would be easier to revert if necessary.
+        // @Override
         public boolean isEnabled() {
             return checkEnabled.getAsBoolean();
         }
+
+        // Icon to display on selection
+        @Override
+        public ResourceLocation getIcon() { return icon; }
+
+        // Radial menu colour
+        @Override
+        public EnumColor getColor() { return color; }
     }
 }
