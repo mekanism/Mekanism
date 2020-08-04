@@ -991,7 +991,7 @@
   "miner.mekanism.searching": "搜尋",
   "miner.mekanism.silk_enabled": "精準: %s",
   "miner.mekanism.silk_touch": "絲綢之觸",
-  "miner.mekanism.to_mine": "採掘:",
+  "miner.mekanism.to_mine": "挖掘: %s",
   "miner.mekanism.visuals": "顯示模式: %s",
   "miner.mekanism.visuals.too_big": "範圍太大無法顯示",
   "miner.mekanism.well": "一切正常!",
