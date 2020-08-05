@@ -233,6 +233,12 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             ItemStack harvestTool = stack.copy();
             if (silk) {
                 harvestTool.addEnchantment(Enchantments.SILK_TOUCH, 1);
+                //Calculate the proper amount of xp that the state would drop if broken with a silk touch tool
+                //Note: This fixes ores and the like dropping xp when broken with silk touch but makes it so that
+                // BlockEvent.BreakEvent is unable to be used to adjust the amount of xp dropped.
+                //TODO: look into if there is a better way for us to handle this as BlockEvent.BreakEvent goes based
+                // of the item in the main hand so there isn't an easy way to change this without actually enchanting the meka-tool
+                exp = state.getExpDrop(world, pos, 0, 1);
             }
             block.harvestBlock(world, player, pos, state, tileEntity, harvestTool);
             player.addStat(Stats.ITEM_USED.get(this));
