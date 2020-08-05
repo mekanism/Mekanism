@@ -101,8 +101,9 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
             IChemicalHandler<CHEMICAL, STACK> handler = handlerFunction.apply(stack);
             if (handler != null) {
                 for (int tank = 0; tank < handler.getTanks(); tank++) {
-                    if (chemicalTank.isValid(handler.getChemicalInTank(tank))) {
-                        //False if the items contents are still valid
+                    STACK storedChemical = handler.getChemicalInTank(tank);
+                    if (!storedChemical.isEmpty() && chemicalTank.isValid(storedChemical)) {
+                        //False if the item isn't empty and the contents are still valid
                         return false;
                     }
                 }

@@ -43,9 +43,9 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         return new EnergyInventorySlot(energyContainer, worldSupplier, stack -> {
-            //Always allow extraction if something went horribly wrong and we are not an energy container item or we are no longer a valid conversion
-            // This might happen after a reload for example
-            return !EnergyCompatUtils.hasStrictEnergyHandler(stack) && getPotentialConversion(worldSupplier.get(), stack).isZero();
+            //Allow extraction if something went horribly wrong and we are not an energy container item or no longer have any energy left to give
+            // or we are no longer a valid conversion, this might happen after a reload for example
+            return !fillInsertCheck(stack) && getPotentialConversion(worldSupplier.get(), stack).isZero();
         }, stack -> {
             if (fillInsertCheck(stack)) {
                 return true;
@@ -65,7 +65,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      */
     public static EnergyInventorySlot fill(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
-        return new EnergyInventorySlot(energyContainer, stack -> !EnergyCompatUtils.hasStrictEnergyHandler(stack), EnergyInventorySlot::fillInsertCheck,
+        return new EnergyInventorySlot(energyContainer, stack -> !fillInsertCheck(stack), EnergyInventorySlot::fillInsertCheck,
               EnergyCompatUtils::hasStrictEnergyHandler, listener, x, y);
     }
 
