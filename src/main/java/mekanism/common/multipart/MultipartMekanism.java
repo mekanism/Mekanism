@@ -13,7 +13,6 @@ import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
 import codechicken.multipart.TMultiPart;
 import cpw.mods.fml.common.event.FMLInterModComms;
-import codechicken.multipart.BlockMultipart;
 
 public class MultipartMekanism implements IPartFactory
 {
