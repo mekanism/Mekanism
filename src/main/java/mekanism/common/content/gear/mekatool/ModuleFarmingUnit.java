@@ -1,8 +1,6 @@
 package mekanism.common.content.gear.mekatool;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.ToIntFunction;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
@@ -17,16 +15,12 @@ import mekanism.common.network.PacketLightningRender;
 import mekanism.common.network.PacketLightningRender.LightningPreset;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.ShovelItem;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
@@ -36,16 +30,12 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.Constants.BlockFlags;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.eventbus.api.Event.Result;
 
 public class ModuleFarmingUnit extends ModuleMekaTool {
 
@@ -65,10 +55,9 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
               //Then as a shovel
               //Fire a generic use event, if we are allowed to use the tool return zero otherwise return -1
               // This is to mirror how onHoeUse returns of 0 if allowed, -1 if not allowed, and 1 if processing happened in the event
-              () -> tillAOE(context, ShovelItem.SHOVEL_LOOKUP, ctx -> onToolUse(ctx.getPlayer(), ctx.getHand(), ctx.getPos(), ctx.getFace()) ? 0 : -1,
-                    SoundEvents.ITEM_SHOVEL_FLATTEN, MekanismConfig.gear.mekaToolEnergyUsageShovel.get()),
+              () -> tillAOE(context, ToolType.SHOVEL, SoundEvents.ITEM_SHOVEL_FLATTEN, MekanismConfig.gear.mekaToolEnergyUsageShovel.get()),
               //Finally as a hoe
-              () -> tillAOE(context, HoeItem.HOE_LOOKUP, ForgeEventFactory::onHoeUse, SoundEvents.ITEM_HOE_TILL, MekanismConfig.gear.mekaToolEnergyUsageHoe.get())
+              () -> tillAOE(context, ToolType.HOE, SoundEvents.ITEM_HOE_TILL, MekanismConfig.gear.mekaToolEnergyUsageHoe.get())
         );
     }
 
@@ -97,7 +86,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         }
     }
 
-    private ActionResultType tillAOE(ItemUseContext context, Map<Block, BlockState> lookup, ToIntFunction<ItemUseContext> onItemUse, SoundEvent sound, FloatingLong energyUsage) {
+    private ActionResultType tillAOE(ItemUseContext context, ToolType toolType, SoundEvent sound, FloatingLong energyUsage) {
         PlayerEntity player = context.getPlayer();
         if (player == null || player.isSneaking()) {
             //Skip if we don't have a player or they are sneaking
@@ -126,7 +115,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         }
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        BlockState tilledState = lookup.get(world.getBlockState(pos).getBlock());
+        BlockState tilledState = world.getBlockState(pos).getToolModifiedState(world, pos, player, stack, toolType);
         if (tilledState == null) {
             //Skip tilling the blocks if the one we clicked cannot be tilled
             return ActionResultType.PASS;
@@ -138,52 +127,37 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
             //If the block above our source is opaque, just skip tiling in general
             return ActionResultType.PASS;
         }
-        int useResult = onItemUse.applyAsInt(context);
-        if (useResult < 0) {
-            return ActionResultType.PASS;
-        } else if (world.isRemote) {
+        if (world.isRemote) {
             return ActionResultType.SUCCESS;
         }
-        if (useResult == 0) {
-            //Processing did not happen in the hook so we need to process it
-            world.setBlockState(pos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
-            Material aboveMaterial = aboveState.getMaterial();
-            if (aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) {
-                world.destroyBlock(abovePos, true);
-            }
-            world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        //Processing did not happen in the hook so we need to process it
+        world.setBlockState(pos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
+        Material aboveMaterial = aboveState.getMaterial();
+        if (aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) {
+            world.destroyBlock(abovePos, true);
         }
+        world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
         FloatingLong energyUsed = energyUsage.copy();
         int radius = (diameter - 1) / 2;
         for (BlockPos newPos : BlockPos.getAllInBoxMutable(pos.add(-radius, 0, -radius), pos.add(radius, 0, radius))) {
             if (pos.equals(newPos)) {
                 //Skip the source position as it is free and we manually handled it before the loop
                 continue;
-            }
-            if (energyUsed.add(energyUsage).greaterThan(energy)) {
+            } else if (energyUsed.add(energyUsage).greaterThan(energy)) {
                 break;
             }
             BlockState stateAbove = world.getBlockState(newPos.up());
             //Check to make sure the block above is not opaque and that the result we would get from tilling the other block is
             // the same as the one we got on the initial block we interacted with
-            if (!stateAbove.isOpaqueCube(world, newPos.up()) && tilledState == lookup.get(world.getBlockState(newPos).getBlock())) {
+            if (!stateAbove.isOpaqueCube(world, newPos.up()) && tilledState == world.getBlockState(newPos).getToolModifiedState(world, newPos, player, stack, toolType)) {
                 //Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
                 // matter we make sure to get an immutable instance of newPos
                 newPos = newPos.toImmutable();
-                useResult = onItemUse.applyAsInt(new ItemUseContext(player, hand, new BlockRayTraceResult(Vector3d.ZERO, Direction.UP, newPos, false)));
-                if (useResult < 0) {
-                    //We were denied from using the item so continue to the next block
-                    continue;
-                }
                 //Add energy cost
                 energyUsed = energyUsed.plusEqual(energyUsage);
-                if (useResult > 0) {
-                    //Processing happened in the hook so we use our desired fuel amount
-                    continue;
-                } //else we are allowed to use the item
                 //Replace the block. Note it just directly sets it (in the same way that HoeItem/ShovelItem do)
                 world.setBlockState(newPos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
-                Material aboveMaterial = stateAbove.getMaterial();
+                aboveMaterial = stateAbove.getMaterial();
                 if (aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) {
                     //If the block above the one we tilled is a plant, then we try to remove it
                     world.destroyBlock(newPos.up(), true);
@@ -222,10 +196,9 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         }
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        Map<Block, Block> lookup = AxeItem.BLOCK_STRIPPING_MAP;
         BlockState clickedState = world.getBlockState(pos);
-        Block strippedBlock = lookup.get(clickedState.getBlock());
-        if (strippedBlock == null) {
+        BlockState strippedState = clickedState.getToolModifiedState(world, pos, player, stack, ToolType.AXE);
+        if (strippedState == null) {
             //Skip stripping the blocks if the one we clicked cannot be stripped
             return ActionResultType.PASS;
         }
@@ -235,7 +208,6 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
             return ActionResultType.SUCCESS;
         }
         Axis axis = clickedState.get(RotatedPillarBlock.AXIS);
-        BlockState strippedState = strippedBlock.getDefaultState().with(RotatedPillarBlock.AXIS, axis);
         //Process the block we interacted with initially and play the sound
         world.setBlockState(pos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
         world.playSound(null, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
@@ -246,21 +218,16 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
             if (pos.equals(newPos)) {
                 //Skip the source position as it is free and we manually handled it before the loop
                 continue;
-            }
-            if (energyUsed.add(energyUsage).greaterThan(energy)) {
+            } else if (energyUsed.add(energyUsage).greaterThan(energy)) {
                 break;
             }
             //Check to make that the result we would get from stripping the other block is the same as the one we got on the initial block we interacted with
             // Also make sure that it is on the same axis as the block we initially clicked
             BlockState state = world.getBlockState(newPos);
-            if (strippedBlock == lookup.get(state.getBlock()) && axis == state.get(RotatedPillarBlock.AXIS)) {
+            if (strippedState == state.getToolModifiedState(world, newPos, player, stack, ToolType.AXE) && axis == state.get(RotatedPillarBlock.AXIS)) {
                 //Some of the below methods don't behave properly when the BlockPos is mutable, so now that we are onto ones where it may actually
                 // matter we make sure to get an immutable instance of newPos
                 newPos = newPos.toImmutable();
-                if (!onToolUse(player, hand, newPos, side)) {
-                    //We were denied from using the item so continue to the next block
-                    continue;
-                } //else we are allowed to use the item
                 //Add energy cost
                 energyUsed = energyUsed.plusEqual(energyUsage);
                 //Replace the block. Note it just directly sets it (in the same way that AxeItem does).
@@ -293,11 +260,5 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
                 return BlockPos.getAllInBoxMutable(BlockPos.ZERO, BlockPos.ZERO);
         }
         return BlockPos.getAllInBoxMutable(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
-    }
-
-    private static boolean onToolUse(PlayerEntity player, Hand hand, BlockPos pos, Direction face) {
-        RightClickBlock event = ForgeHooks.onRightClickBlock(player, hand, pos, face);
-        //Nothing happens if it is cancelled or we are not allowed to use the item so return false
-        return !event.isCanceled() && event.getUseItem() != Result.DENY;
     }
 }

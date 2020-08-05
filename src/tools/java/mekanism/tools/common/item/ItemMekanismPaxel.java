@@ -8,17 +8,16 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.functions.FloatSupplier;
+import mekanism.common.lib.attribute.AttributeCache;
+import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
-import mekanism.common.lib.attribute.AttributeCache;
-import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CampfireBlock;
-import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -158,19 +157,18 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         World world = context.getWorld();
         BlockPos blockpos = context.getPos();
         PlayerEntity player = context.getPlayer();
+        ItemStack stack = context.getItem();
         BlockState blockstate = world.getBlockState(blockpos);
-        BlockState resultToSet = null;
-        Block strippedResult = AxeItem.BLOCK_STRIPPING_MAP.get(blockstate.getBlock());
-        if (strippedResult != null) {
+        BlockState resultToSet = blockstate.getToolModifiedState(world, blockpos, player, stack, ToolType.AXE);
+        if (resultToSet != null) {
             //We can strip the item as an axe
             world.playSound(player, blockpos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            resultToSet = strippedResult.getDefaultState().with(RotatedPillarBlock.AXIS, blockstate.get(RotatedPillarBlock.AXIS));
         } else {
             //We cannot strip the item that was right clicked, so attempt to use the paxel as a shovel
             if (context.getFace() == Direction.DOWN) {
                 return ActionResultType.PASS;
             }
-            BlockState foundResult = ShovelItem.SHOVEL_LOOKUP.get(blockstate.getBlock());
+            BlockState foundResult = blockstate.getToolModifiedState(world, blockpos, player, stack, ToolType.SHOVEL);
             if (foundResult != null && world.isAirBlock(blockpos.up())) {
                 //We can flatten the item as a shovel
                 world.playSound(player, blockpos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
@@ -187,7 +185,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         if (!world.isRemote) {
             world.setBlockState(blockpos, resultToSet, BlockFlags.DEFAULT_AND_RERENDER);
             if (player != null) {
-                context.getItem().damageItem(1, player, onBroken -> onBroken.sendBreakAnimation(context.getHand()));
+                stack.damageItem(1, player, onBroken -> onBroken.sendBreakAnimation(context.getHand()));
             }
         }
         return ActionResultType.SUCCESS;
