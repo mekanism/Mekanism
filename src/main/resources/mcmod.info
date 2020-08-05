@@ -3,7 +3,7 @@
   "modid": "Mekanism",
   "name": "Mekanism",
   "description": "Energy, Armor, Tools, Weapons, Machines, Magic.",
-  "version": "9.10.2",
+  "version": "9.10.3",
   "mcversion": "1.7.10",
   "updateUrl": "",
   "authorList": [
@@ -18,7 +18,7 @@
   "modid": "MekanismGenerators",
   "name": "MekanismGenerators",
   "description": "Generators module of Mekanism.",
-  "version": "9.10.1",
+  "version": "9.10.3",
   "mcversion": "1.7.10",
   "updateUrl": "",
   "authorList": [
@@ -33,7 +33,7 @@
   "modid": "MekanismTools",
   "name": "MekanismTools",
   "description": "Tools module for Mekanism.",
-  "version": "9.10.1",
+  "version": "9.10.3",
   "mcversion": "1.7.10",
   "updateUrl": "",
   "authorList": [
