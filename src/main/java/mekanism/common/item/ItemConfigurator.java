@@ -343,5 +343,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
         public ResourceLocation getIcon() {
             return icon;
         }
+
+        /*
+         * Required by GuiRadialSelector via IRadialSelectorEnum
+         * This class does not make use of runtime disabling of modes, so always return true.
+         */
+        @Override
+        public boolean isEnabled() { return true; }
     }
 }

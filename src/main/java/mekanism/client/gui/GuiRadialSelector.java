@@ -53,10 +53,18 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         matrix.translate(centerX, centerY, 0);
         RenderSystem.disableTexture();
 
+        // Calculate number of available modes to switch between
+        int activeModes = 0;
+        for (int i = 0; i < types.length; i++) {
+            if (types[i].isEnabled())
+                activeModes++;
+        }
+
         // draw base
         RenderSystem.color4f(0.3F, 0.3F, 0.3F, 0.5F);
         drawTorus(matrix, 0, 360);
 
+        // Draw segments
         TYPE cur = curSupplier.get();
         if (cur != null) {
             // draw current selected
@@ -65,24 +73,29 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             } else {
                 MekanismRenderer.color(cur.getColor(), 0.3F);
             }
-            drawTorus(matrix, -90F + 360F * (-0.5F + cur.ordinal()) / types.length, 360F / types.length);
+            drawTorus(matrix, -90F + 360F * (-0.5F + cur.ordinal()) / activeModes, 360F / activeModes);
 
             double xDiff = mouseX - centerX;
             double yDiff = mouseY - centerY;
+
             if (Math.sqrt(xDiff * xDiff + yDiff * yDiff) >= SELECT_RADIUS) {
-                // draw mouse selection highlight
+                // Draw mouse selection highlight
                 float angle = (float) Math.toDegrees(Math.atan2(yDiff, xDiff));
                 RenderSystem.color4f(0.8F, 0.8F, 0.8F, 0.3F);
-                drawTorus(matrix, 360F * (-0.5F / types.length) + angle, 360F / types.length);
+                drawTorus(matrix, 360F * (-0.5F / activeModes) + angle, 360F / activeModes);
 
-                float selectionAngle = angle + 90F + (360F * (0.5F / types.length));
+                float selectionAngle = angle + 90F + (360F * (0.5F / activeModes));
                 while (selectionAngle < 0) {
                     selectionAngle += 360F;
                 }
-                selection = types[(int) (selectionAngle * (types.length / 360F))];
+
+                int selection_drawn_pos = (int) (selectionAngle *(activeModes / 360F));
+                int selection_enum_pos = getIndexFromPosition(types, selection_drawn_pos);
+                selection = types[selection_enum_pos];
+
                 // draw hovered selection
                 RenderSystem.color4f(0.6F, 0.6F, 0.6F, 0.7F);
-                drawTorus(matrix, -90F + 360F * (-0.5F + selection.ordinal()) / types.length, 360F / types.length);
+                drawTorus(matrix, -90F + 360F * (-0.5F + selection_drawn_pos) / activeModes, 360F / activeModes);
             } else {
                 selection = null;
             }
@@ -90,21 +103,30 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
 
         MekanismRenderer.resetColor();
 
+        // Icons & Labels
         RenderSystem.enableTexture();
+        int position = 0;
         for (int i = 0; i < types.length; i++) {
-            double angle = Math.toRadians(270 + 360 * ((float) i / types.length));
+            if (!types[i].isEnabled())
+                // Mode disabled, skip it.
+                continue;
+
+            double angle = Math.toRadians(270 + 360 * ((float) position / activeModes));
             float x = (float) Math.cos(angle) * (INNER + OUTER) / 2F;
             float y = (float) Math.sin(angle) * (INNER + OUTER) / 2F;
-            // draw icon
+
+            // Draw icon
             minecraft.textureManager.bindTexture(types[i].getIcon());
             blit(matrix, Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
-            // draw label
+
+            // Draw label
             matrix.push();
             int width = minecraft.fontRenderer.getStringWidth(types[i].getShortText().getString());
             matrix.translate(x, y, 0);
             matrix.scale(0.6F, 0.6F, 0.6F);
             minecraft.fontRenderer.func_238422_b_(matrix, types[i].getShortText(), -width / 2F, 8, 0xCCFFFFFF);
             matrix.pop();
+            position++;
         }
 
         MekanismRenderer.resetColor();
@@ -155,5 +177,31 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
 
     public Class<TYPE> getEnumClass() {
         return enumClass;
+    }
+
+    /*
+     * We don't necessarily draw all of the modes coded in.
+     * If we have the mouse pointed at, say, the second drawn mode of four, which one is that in the full array?
+     * Used for mode selection.
+     */
+    private int getIndexFromPosition(TYPE[] array, int index)
+    {
+        // We want a zero based index, but we haven't found the first one yet.
+        // Start counting at -1
+        int count = -1;
+        int lastFound = 0;
+        for (int i = 0; i < array.length; i++)
+        {
+            if (!array[i].isEnabled())
+                continue;
+            count++;
+            lastFound = count;
+
+            if (count == index)
+                return i;
+        }
+
+        // Sanity failsafe
+        return lastFound;
     }
 }

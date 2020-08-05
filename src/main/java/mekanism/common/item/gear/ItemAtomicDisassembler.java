@@ -300,13 +300,13 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     /*
      * Modes available to the disassembler.
      */
-    public enum DisassemblerMode implements IRadialSelectorEnum<DisassemblerMode>, IHasTranslationKey, IHasTextComponent {
+    public enum DisassemblerMode implements IRadialSelectorEnum<DisassemblerMode>, IHasTextComponent {
+        OFF(MekanismLang.DISASSEMBLER_OFF, 0, () -> true, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "void.png")),
         NORMAL(MekanismLang.DISASSEMBLER_NORMAL, 20, () -> true, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_normal.png")),
         SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_slow.png")),
         FAST(MekanismLang.DISASSEMBLER_FAST, 128, MekanismConfig.gear.disassemblerFastMode, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_fast.png")),
         VEIN(MekanismLang.DISASSEMBLER_VEIN, 20, MekanismConfig.gear.disassemblerVeinMining, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_vein.png")),
-        EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, MekanismConfig.gear.disassemblerExtendedMining, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_extended_vein.png")),
-        OFF(MekanismLang.DISASSEMBLER_OFF, 0, () -> true, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "void.png"));
+        EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, MekanismConfig.gear.disassemblerExtendedMining, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_extended_vein.png"));
 
         private static final DisassemblerMode[] MODES = values();
 
@@ -349,12 +349,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             return MathUtils.getByIndexMod(MODES, index);
         }
 
-        // This is kinda hacky. A couple duplicates here to allow the different interfaces to play nicely.
-        @Override
-        public String getTranslationKey() {
-            return langEntry.getTranslationKey();
-        }
-
         // Required by IRadialSelectorEnum
         @Override
         public ITextComponent getTextComponent() { return langEntry.translate(color); }
@@ -371,8 +365,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             return efficiency;
         }
 
-        // The old interface required an override here. Left it here so that this would be easier to revert if necessary.
-        // @Override
+        /*
+         * Required by IRadialSelectorEnum
+         * Is this mode enabled?
+         */
+        @Override
         public boolean isEnabled() {
             return checkEnabled.getAsBoolean();
         }
