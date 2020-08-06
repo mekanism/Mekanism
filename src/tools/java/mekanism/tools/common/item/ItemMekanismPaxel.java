@@ -14,7 +14,6 @@ import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.material.MaterialCreator;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CampfireBlock;
@@ -119,8 +118,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
                 return true;
             }
         }
-        Block block = state.getBlock();
-        if (block == Blocks.SNOW || block == Blocks.SNOW_BLOCK) {
+        if (state.isIn(Blocks.SNOW) || state.isIn(Blocks.SNOW_BLOCK)) {
             //Extra hardcoded shovel checks
             return true;
         }
@@ -138,9 +136,10 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
     @Override
     public float getDestroySpeed(@Nonnull ItemStack stack, BlockState state) {
         Material material = state.getMaterial();
-        boolean pickaxeShortcut = material == Material.IRON || material == Material.ANVIL || material == Material.ROCK;
-        boolean axeShortcut = material == Material.WOOD || material == Material.PLANTS || material == Material.TALL_PLANTS || material == Material.BAMBOO;
-        if (pickaxeShortcut || axeShortcut || getToolTypes(stack).stream().anyMatch(state::isToolEffective) || effectiveBlocks.contains(state.getBlock())) {
+        //If pickaxe hardcoded shortcut, or axe hardcoded shortcut or ToolItem#getDestroySpeed checks
+        //Note: We do it this way so that we don't need to check if the AxeItem material set contains the material if one of the pickaxe checks match
+        if (material == Material.IRON || material == Material.ANVIL || material == Material.ROCK || AxeItem.field_234662_c_.contains(material) ||
+            getToolTypes(stack).stream().anyMatch(state::isToolEffective) || effectiveBlocks.contains(state.getBlock())) {
             return paxelEfficiency.getAsFloat();
         }
         return 1;
@@ -175,7 +174,10 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
                 resultToSet = foundResult;
             } else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.get(CampfireBlock.LIT)) {
                 //We can use the paxel as a shovel to extinguish a campfire
-                world.playEvent(null, WorldEvents.FIRE_EXTINGUISH_SOUND, blockpos, 0);
+                if (!world.isRemote) {
+                    world.playEvent(null, WorldEvents.FIRE_EXTINGUISH_SOUND, blockpos, 0);
+                }
+                CampfireBlock.extinguish(world, blockpos, blockstate);
                 resultToSet = blockstate.with(CampfireBlock.LIT, false);
             }
         }
@@ -188,7 +190,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
                 stack.damageItem(1, player, onBroken -> onBroken.sendBreakAnimation(context.getHand()));
             }
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.func_233537_a_(world.isRemote);
     }
 
     @Override

@@ -5,13 +5,12 @@ import com.google.common.collect.Multimap;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.tools.common.IHasRepairType;
-import mekanism.tools.common.ToolsLang;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
+import mekanism.tools.common.IHasRepairType;
+import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -57,14 +56,12 @@ public class ItemMekanismAxe extends AxeItem implements IHasRepairType, IAttribu
     /**
      * {@inheritDoc}
      *
-     * @implNote Wrap {@link AxeItem#getDestroySpeed(ItemStack, BlockState)} and  {@link net.minecraft.item.ToolItem#getDestroySpeed(ItemStack, BlockState)} to return our
+     * @implNote Wrap {@link AxeItem#getDestroySpeed(ItemStack, BlockState)} and {@link net.minecraft.item.ToolItem#getDestroySpeed(ItemStack, BlockState)} to return our
      * efficiency level
      */
     @Override
     public float getDestroySpeed(@Nonnull ItemStack stack, BlockState state) {
-        Material material = state.getMaterial();
-        if (material == Material.WOOD || material == Material.PLANTS || material == Material.TALL_PLANTS || material == Material.BAMBOO ||
-            getToolTypes(stack).stream().anyMatch(state::isToolEffective) || effectiveBlocks.contains(state.getBlock())) {
+        if (field_234662_c_.contains(state.getMaterial()) || getToolTypes(stack).stream().anyMatch(state::isToolEffective) || effectiveBlocks.contains(state.getBlock())) {
             return getTier().getEfficiency();
         }
         return 1;
