@@ -100,7 +100,7 @@
   "fission.mekanismgenerators.scram": "緊急停機",
   "fission.mekanismgenerators.set_rate_limit": "設定速率上限:",
   "fission.mekanismgenerators.stats": "裂變反應爐數據",
-  "fission.mekanismgenerators.surface_area": "燃料表面積: %s m2",
+  "fission.mekanismgenerators.surface_area": "燃料表面積: %s m²",
   "fission.mekanismgenerators.waste_tank": "廢料槽",
   "fluid.mekanismgenerators.bioethanol": "生物乙醇",
   "fluid.mekanismgenerators.deuterium": "液態氘",
