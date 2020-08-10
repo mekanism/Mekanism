@@ -1208,7 +1208,7 @@
   "sound_event.mekanism.tile.machine.sps": "超臨界移相器嗡嗡聲",
   "sps.mekanism.energy_input": "能量輸入: %s/t",
   "sps.mekanism.invalid_disconnected_coil": "無法形成, 發現一個未連接到超臨界移相器端口的線圈.",
-  "sps.mekanism.port_mode": "切換超臨界移相器端口模式至: %s.",
+  "sps.mekanism.port_mode": "超臨界移相器端口切換至 %s 模式.",
   "sps.mekanism.sps": "超臨界移相器",
   "status.mekanism.format": "狀態: %s",
   "status.mekanism.ok": "一切正常",
