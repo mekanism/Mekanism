@@ -1251,7 +1251,7 @@
   "tooltip.mekanism.stored.free_runners": "助跑器能量: %s",
   "tooltip.mekanism.stored.jetpack": "噴射背包燃料: %s",
   "tooltip.mekanism.stored_energy": "存儲能量: %s",
-  "tooltip.mekanism.stored_mb_percentage": "存儲%s: %s mB (%s)",
+  "tooltip.mekanism.stored_mb_percentage": "已存儲 %s: %s mB (%s)",
   "transmission.mekanism.energy": "能量",
   "transmission.mekanism.fluids": "流體",
   "transmission.mekanism.gases": "氣體",
