@@ -98,6 +98,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaToolEnergyUsageHoe;
     public final CachedFloatingLongValue mekaToolEnergyUsageShovel;
     public final CachedFloatingLongValue mekaToolEnergyUsageAxe;
+    public final CachedBooleanValue mekaToolExtendedMining;
     //MekaSuit
     public final CachedFloatingLongValue mekaSuitBaseEnergyCapacity;
     public final CachedFloatingLongValue mekaSuitBaseChargeRate;
@@ -265,6 +266,8 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsageShovel", FloatingLong.createConst(10));
         mekaToolEnergyUsageAxe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as an axe for stripping logs.",
               "energyUsageAxe", FloatingLong.createConst(10));
+        mekaToolExtendedMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Extended Vein Mining' mode for the Meka-Tool. (Allows vein mining everything not just ores/logs)")
+                .define("extendedMining", true));
         builder.pop();
 
         builder.comment("MekaSuit Settings").push(MEKASUIT_CATEGORY);

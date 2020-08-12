@@ -31,12 +31,17 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
     @Override
     public void init() {
         super.init();
-        addConfigItem(extendedMode = new ModuleConfigItem<>(this, "extended_mode", MekanismLang.MODULE_EXTENDED_MODE, new BooleanData(), false));
+
+        //Only show extended vein mining option if enabled in config
+        if (MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean()) {
+            addConfigItem(extendedMode = new ModuleConfigItem<>(this, "extended_mode", MekanismLang.MODULE_EXTENDED_MODE, new BooleanData(), false));
+        }
+
         addConfigItem(excavationRange = new ModuleConfigItem<>(this, "excavation_range", MekanismLang.MODULE_EXCAVATION_RANGE, new EnumData<>(ExcavationRange.class, getInstalledCount() + 1), ExcavationRange.LOW));
     }
 
     public boolean isExtended() {
-        return extendedMode.get();
+        return MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean() && extendedMode.get();
     }
 
     public int getExcavationRange() {
@@ -80,9 +85,13 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
         if (!isEnabled()) {
             return;
         }
-        list.add(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,
-              isExtended() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED,
-              isExtended() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER));
+
+        //Only add hud string for extended vein mining if enabled in config
+        if (MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean()) {
+            list.add(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,
+                    isExtended() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED,
+                    isExtended() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER));
+        }
     }
 
     public enum ExcavationRange implements IHasTextComponent {
