@@ -66,9 +66,14 @@ public class StorageUtils {
     }
 
     public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, boolean showAttributes) {
-        addStoredChemical(stack, tooltip, showMissingCap, showAttributes, MekanismLang.NO_GAS, stored -> {
+        addStoredGas(stack, tooltip, showMissingCap, showAttributes, MekanismLang.NO_GAS);
+    }
+
+    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, boolean showAttributes,
+          ILangEntry emptyLangEntry) {
+        addStoredChemical(stack, tooltip, showMissingCap, showAttributes, emptyLangEntry, stored -> {
             if (stored.isEmpty()) {
-                return MekanismLang.NO_GAS.translateColored(EnumColor.GRAY);
+                return emptyLangEntry.translateColored(EnumColor.GRAY);
             }
             return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
                   MekanismLang.GENERIC_MB.translate(TextUtils.format(stored.getAmount())));
