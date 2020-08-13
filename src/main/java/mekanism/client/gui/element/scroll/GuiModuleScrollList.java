@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -156,5 +157,12 @@ public class GuiModuleScrollList extends GuiScrollList {
 
     private void renderModule(MatrixStack matrix, ModuleData<?> type, int x, int y, float size) {
         guiObj.renderItem(matrix, type.getStack(), (int) (x / size), (int) (y / size), size);
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        GuiModuleScrollList old = (GuiModuleScrollList) element;
+        setSelected(old.selectIndex);
     }
 }

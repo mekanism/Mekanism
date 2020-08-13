@@ -20,6 +20,11 @@ public class DictionaryContainer extends MekanismItemContainer {
         this(id, inv, buf.readEnumValue(Hand.class), getStackFromBuffer(buf, ItemDictionary.class));
     }
 
+    @Override
+    protected int getInventoryYOffset() {
+        return super.getInventoryYOffset() + 5;
+    }
+
     @Nonnull
     @Override
     public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotID) {

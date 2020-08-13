@@ -40,7 +40,6 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     @Override
     public void onRelease(double mouseX, double mouseY) {
         super.onRelease(mouseX, mouseY);
-
         if (isHolding) {
             isHolding = false;
             if (isOpen && mouseY > y + 11) {
@@ -53,13 +52,12 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-
+        int maxWidth = width - 11;
         TYPE current = curType.get();
-        drawScaledTextScaledBound(matrix, current.getShortName(), relativeX + 4, relativeY + 2, screenTextColor(), 30, 0.8F);
-
+        drawScaledTextScaledBound(matrix, current.getShortName(), relativeX + 4, relativeY + 2, screenTextColor(), maxWidth, 0.8F);
         if (isOpen) {
             for (int i = 0; i < options.length; i++) {
-                drawScaledTextScaledBound(matrix, options[i].getShortName(), relativeX + 4, relativeY + 11 + 2 + 10 * i, screenTextColor(), 30, 0.8F);
+                drawScaledTextScaledBound(matrix, options[i].getShortName(), relativeX + 4, relativeY + 11 + 2 + 10 * i, screenTextColor(), maxWidth, 0.8F);
             }
         }
     }
@@ -67,6 +65,10 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+        matrix.push();
+        //TODO: Figure out why we need a translation of 1 to fix the text intersecting for the dictionary but it works just fine
+        // for the QIO item viewer
+        matrix.translate(0, 0, 1);
         renderBackgroundTexture(matrix, getResource(), 4, 4);
 
         int index = getHoveredIndex(mouseX, mouseY);
@@ -84,11 +86,12 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
             for (int i = 0; i < options.length; i++) {
                 ResourceLocation icon = options[i].getIcon();
                 if (icon != null) {
-                    minecraft.textureManager.bindTexture(options[i].getIcon());
+                    minecraft.textureManager.bindTexture(icon);
                     blit(matrix, x + width - 9, y + 12 + 2 + 10 * i, 0, 0, 6, 6, 6, 6);
                 }
             }
         }
+        matrix.pop();
     }
 
     @Override

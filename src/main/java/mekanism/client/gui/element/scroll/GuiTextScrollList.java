@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -81,5 +82,13 @@ public class GuiTextScrollList extends GuiScrollList {
             blit(matrix, x + 1, y + 1 + (selected - scrollIndex) * elementHeight, barX - x - 2, elementHeight,
                   4, 2, 2, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        GuiTextScrollList old = (GuiTextScrollList) element;
+        setText(old.textEntries);
+        setSelected(old.getSelection());
     }
 }

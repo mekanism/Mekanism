@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.scroll;
 
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
 import net.minecraft.util.ResourceLocation;
 
@@ -104,5 +105,23 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean hasPersistentData() {
+        return true;
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        GuiScrollableElement old = (GuiScrollableElement) element;
+        if (needsScrollBars() && old.needsScrollBars()) {
+            //Only copy scrolling if we need scroll bars and used to also need scroll bars
+            scroll = old.scroll;
+        }
+        //Note: We don't care about dragging as there is no way for the user while continuing to have MC focussed can change the window size
+        // switching into full screen makes MC lose focus briefly anyways so dragging events don't continue to fire so that is not a case
+        // that we need to worry about
     }
 }

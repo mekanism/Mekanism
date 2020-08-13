@@ -207,6 +207,7 @@ public class GuiTextField extends GuiRelativeElement {
 
     @Override
     public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
         textField.setText(((GuiTextField) element).getText());
         setFocused(element.isFocused());
     }

@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Upgrade;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -120,5 +121,12 @@ public class GuiUpgradeScrollList extends GuiScrollList {
 
     private void renderUpgrade(MatrixStack matrix, Upgrade type, int x, int y, float size) {
         guiObj.renderItem(matrix, UpgradeUtils.getStack(type), (int) (x / size), (int) (y / size), size);
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        GuiUpgradeScrollList old = (GuiUpgradeScrollList) element;
+        selectedType = old.selectedType;
     }
 }

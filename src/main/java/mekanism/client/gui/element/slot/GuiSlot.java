@@ -85,18 +85,18 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     @Override
     public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (!renderAboveSlots) {
-            draw(matrix, mouseX, mouseY);
+            draw(matrix);
         }
     }
 
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (renderAboveSlots) {
-            draw(matrix, mouseX, mouseY);
+            draw(matrix);
         }
     }
 
-    private void draw(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    private void draw(@Nonnull MatrixStack matrix) {
         minecraft.textureManager.bindTexture(getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
         if (hasValidityCheck) {

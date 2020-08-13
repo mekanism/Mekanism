@@ -618,14 +618,22 @@ public final class MekanismUtils {
      * @return raytraced value
      */
     public static BlockRayTraceResult rayTrace(PlayerEntity player) {
-        return rayTrace(player, Mekanism.proxy.getReach(player));
+        return rayTrace(player, FluidMode.NONE);
+    }
+
+    public static BlockRayTraceResult rayTrace(PlayerEntity player, FluidMode fluidMode) {
+        return rayTrace(player, Mekanism.proxy.getReach(player), fluidMode);
     }
 
     public static BlockRayTraceResult rayTrace(PlayerEntity player, double reach) {
+        return rayTrace(player, reach, FluidMode.NONE);
+    }
+
+    public static BlockRayTraceResult rayTrace(PlayerEntity player, double reach, FluidMode fluidMode) {
         Vector3d headVec = getHeadVec(player);
         Vector3d lookVec = player.getLook(1);
         Vector3d endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
-        return player.getEntityWorld().rayTraceBlocks(new RayTraceContext(headVec, endVec, BlockMode.OUTLINE, FluidMode.NONE, player));
+        return player.getEntityWorld().rayTraceBlocks(new RayTraceContext(headVec, endVec, BlockMode.OUTLINE, fluidMode, player));
     }
 
     /**

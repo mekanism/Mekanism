@@ -717,6 +717,23 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DICTIONARY_KEY, " - %s");
         add(MekanismLang.DICTIONARY_NO_KEY, "No key.");
         add(MekanismLang.DICTIONARY_KEYS_FOUND, "Key(s) found:");
+        add(MekanismLang.DICTIONARY_TAG_TYPE, "Tag Type:");
+        add(MekanismLang.DICTIONARY_ITEM, "Item");
+        add(MekanismLang.DICTIONARY_ITEM_DESC, "Display Item Tags");
+        add(MekanismLang.DICTIONARY_BLOCK, "Block");
+        add(MekanismLang.DICTIONARY_BLOCK_DESC, "Display Block Tags");
+        add(MekanismLang.DICTIONARY_FLUID, "Fluid");
+        add(MekanismLang.DICTIONARY_FLUID_DESC, "Display Fluid Tags");
+        add(MekanismLang.DICTIONARY_ENTITY_TYPE, "Entity Type");
+        add(MekanismLang.DICTIONARY_ENTITY_TYPE_DESC, "Display Entity Type Tags");
+        add(MekanismLang.DICTIONARY_GAS, "Gas");
+        add(MekanismLang.DICTIONARY_GAS_DESC, "Display Gas Tags");
+        add(MekanismLang.DICTIONARY_INFUSE_TYPE, "Infuse Type");
+        add(MekanismLang.DICTIONARY_INFUSE_TYPE_DESC, "Display Infuse Type Tags");
+        add(MekanismLang.DICTIONARY_PIGMENT, "Pigment");
+        add(MekanismLang.DICTIONARY_PIGMENT_DESC, "Display Pigment Tags");
+        add(MekanismLang.DICTIONARY_SLURRY, "Slurry");
+        add(MekanismLang.DICTIONARY_SLURRY_DESC, "Display Slurry Tags");
         //Oredictionificator
         add(MekanismLang.LAST_ITEM, "Last Item");
         add(MekanismLang.NEXT_ITEM, "Next Item");
@@ -1075,6 +1092,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_QIO_IMPORTER, "A QIO-linked item import unit. Place on a block and import its contents to your QIO system.");
         add(MekanismLang.DESCRIPTION_QIO_EXPORTER, "A QIO-linked item export unit. Place on a block and export its contents to your QIO system.");
         add(MekanismLang.DESCRIPTION_QIO_REDSTONE_ADAPTER, "A QIO-linked redstone adapter. Use to monitor your QIO system's contents.");
+        add(MekanismLang.DESCRIPTION_DICTIONARY, "A tool used for viewing the tags of various components such as: items, blocks, and fluids.");
         add(MekanismLang.DESCRIPTION_SEISMIC_READER, "A portable machine that uses seismic vibrations to provide information on differing layers of the world.");
         add(MekanismLang.DESCRIPTION_BIN, "A block used to store large quantities of a single type of item.");
         add(MekanismLang.DESCRIPTION_TELEPORTER_FRAME, "The frame used to construct the Teleporter multiblock, allowing a portal to be generated within the structure.");
