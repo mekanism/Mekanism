@@ -13,6 +13,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
+import mekanism.common.content.gear.ModuleConfigItem.DisableableModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
@@ -57,6 +58,12 @@ public class GuiModuleScreen extends GuiRelativeElement {
                 ModuleConfigItem<?> configItem = module.getConfigItems().get(i);
                 // Don't show the enabled option if this is enabled by default
                 if (configItem.getData() instanceof BooleanData && (!configItem.getName().equals(Module.ENABLED_KEY) || !module.getData().isNoDisable())) {
+                    if (configItem instanceof DisableableModuleConfigItem && !((DisableableModuleConfigItem) configItem).isConfigEnabled()) {
+                        //Skip options that are force disabled by the config
+                        //TODO: Eventually we may want to make it slightly "faster" in that it allows updating the toggle elements rather than just
+                        // not adding them back when switching to another module and then back again
+                        continue;
+                    }
                     newElements.add(new BooleanToggle((ModuleConfigItem<Boolean>) configItem, 2, startY));
                     startY += 24;
                 } else if (configItem.getData() instanceof EnumData) {
