@@ -14,13 +14,14 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import net.minecraftforge.common.ToolType;
 
 public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlock, IStateFluidLoggable {
 
     private final EnumColor color;
 
     public BlockPlasticFenceGate(EnumColor color) {
-        super(Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F));
+        super(Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).harvestTool(ToolType.PICKAXE));
         this.color = color;
         this.setDefaultState(getDefaultState().with(BlockStateHelper.FLUID_LOGGED, false));
     }

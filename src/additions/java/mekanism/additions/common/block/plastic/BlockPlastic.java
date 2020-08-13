@@ -5,6 +5,7 @@ import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraftforge.common.ToolType;
 
 public class BlockPlastic extends Block implements IColoredBlock {
 
@@ -13,7 +14,7 @@ public class BlockPlastic extends Block implements IColoredBlock {
     private final EnumColor color;
 
     public BlockPlastic(EnumColor color) {
-        super(Block.Properties.create(PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F));
+        super(Block.Properties.create(PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).harvestTool(ToolType.PICKAXE));
         this.color = color;
     }
 

@@ -15,14 +15,15 @@ import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraftforge.common.ToolType;
 
 public class BlockPlasticTransparentStairs extends StairsBlock implements IColoredBlock {
 
     private final EnumColor color;
 
     public BlockPlasticTransparentStairs(IBlockProvider blockProvider, EnumColor color) {
-        super(() -> blockProvider.getBlock().getDefaultState(),
-              Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).notSolid());
+        super(() -> blockProvider.getBlock().getDefaultState(), Properties.create(BlockPlastic.PLASTIC, color.getMapColor())
+              .hardnessAndResistance(5F, 10F).notSolid().harvestTool(ToolType.PICKAXE));
         this.color = color;
     }
 

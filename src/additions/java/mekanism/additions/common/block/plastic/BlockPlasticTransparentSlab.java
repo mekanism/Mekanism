@@ -14,13 +14,14 @@ import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraftforge.common.ToolType;
 
 public class BlockPlasticTransparentSlab extends SlabBlock implements IColoredBlock {
 
     private final EnumColor color;
 
     public BlockPlasticTransparentSlab(EnumColor color) {
-        super(Block.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).notSolid());
+        super(Block.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).notSolid().harvestTool(ToolType.PICKAXE));
         this.color = color;
     }
 

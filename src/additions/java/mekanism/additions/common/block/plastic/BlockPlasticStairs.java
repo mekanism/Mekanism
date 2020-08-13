@@ -4,13 +4,15 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.StairsBlock;
+import net.minecraftforge.common.ToolType;
 
 public class BlockPlasticStairs extends StairsBlock implements IColoredBlock {
 
     private final EnumColor color;
 
     public BlockPlasticStairs(IBlockProvider blockProvider, EnumColor color) {
-        super(() -> blockProvider.getBlock().getDefaultState(), Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F));
+        super(() -> blockProvider.getBlock().getDefaultState(), Properties.create(BlockPlastic.PLASTIC, color.getMapColor())
+              .hardnessAndResistance(5F, 10F).harvestTool(ToolType.PICKAXE));
         this.color = color;
     }
 
