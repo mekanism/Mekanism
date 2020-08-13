@@ -17,12 +17,10 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.SpecialColors;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
-import mekanism.client.model.baked.MekanismModel;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.lib.ColorAtlas;
-import mekanism.client.render.obj.TransmitterLoader;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderTeleporter;
@@ -51,7 +49,6 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.ModelSettings;
@@ -75,15 +72,6 @@ public class MekanismRenderer {
     public static TextureAtlasSprite redstoneTorch;
     public static TextureAtlasSprite redstonePulse;
     public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
-
-    //We ignore the warning, due to this actually being able to be null during runData
-    @SuppressWarnings("ConstantConditions")
-    public static void registerModelLoader() {
-        if (Minecraft.getInstance() != null) {
-            ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
-            ModelLoaderRegistry.registerLoader(Mekanism.rl("mekanism"), MekanismModel.Loader.INSTANCE);
-        }
-    }
 
     /**
      * Get a fluid texture when a stack does not exist.

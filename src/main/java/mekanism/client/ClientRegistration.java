@@ -73,6 +73,7 @@ import mekanism.client.model.MekanismModelCache;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
+import mekanism.client.model.baked.MekanismModel;
 import mekanism.client.model.baked.QIORedstoneAdapterBakedModel;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
@@ -83,6 +84,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.layer.MekanismArmorLayer;
+import mekanism.client.render.obj.TransmitterLoader;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
@@ -147,7 +149,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -341,6 +345,12 @@ public class ClientRegistration {
 
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.BOILER_STATS, GuiBoilerStats::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.MATRIX_STATS, GuiMatrixStats::new);
+    }
+
+    @SubscribeEvent
+    public static void registerModelLoaders(ModelRegistryEvent event) {
+        ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(Mekanism.rl("mekanism"), MekanismModel.Loader.INSTANCE);
     }
 
     @SubscribeEvent

@@ -13,7 +13,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.IModule;
 import mekanism.common.base.KeySync;
 import mekanism.common.base.MekFakePlayer;
@@ -89,7 +88,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -221,11 +219,6 @@ public class Mekanism {
         modEventBus.addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
-
-        //Register our model loader as soon as we can to avoid it not existing when models are loaded
-        // as there seems to be some odd race condition which allows for the model loader to sometimes not be loaded
-        // when the client starts loading models. Even if we register our loader as early as ClientSetupEvent
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> MekanismRenderer::registerModelLoader);
     }
 
     //Register the empty chemicals
