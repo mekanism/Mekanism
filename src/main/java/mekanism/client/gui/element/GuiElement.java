@@ -112,7 +112,20 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     public void syncFrom(GuiElement element) {
-        children.forEach(child -> child.syncFrom(element));
+        int numChildren = children.size();
+        if (numChildren > 0) {
+            for (int i = 0; i < element.children.size(); i++) {
+                GuiElement prevChild = element.children.get(i);
+                if (prevChild.hasPersistentData() && i < numChildren) {
+                    GuiElement child = children.get(i);
+                    // we're forced to assume that the children list is the same before and after the resize.
+                    // for verification, we run a lightweight class equality check
+                    if (child.getClass() == prevChild.getClass()) {
+                        child.syncFrom(prevChild);
+                    }
+                }
+            }
+        }
     }
 
     public final void onRenderForeground(MatrixStack matrix, int mouseX, int mouseY, int zOffset, int totalOffset) {
