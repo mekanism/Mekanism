@@ -11,10 +11,6 @@ public interface IRadialSelectorEnum<TYPE extends Enum<TYPE> & IRadialSelectorEn
 
     ResourceLocation getIcon();
 
-    // Permit runtime disabling of radial options.
-    // Useful for modpack designers.
-    boolean isEnabled();
-
     default EnumColor getColor() {
         return null;
     }

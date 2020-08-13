@@ -12,6 +12,7 @@ import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.IDisableableEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
@@ -19,7 +20,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
@@ -27,6 +27,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
+import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IRadialModeItem;
@@ -65,7 +66,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IModeItem, IRadialModeItem<ItemAtomicDisassembler.DisassemblerMode> {
+public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IModeItem, IRadialModeItem<DisassemblerMode> {
 
     private final Multimap<Attribute, AttributeModifier> attributes;
 
@@ -241,17 +242,19 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return DisassemblerMode.byIndexStatic(ordinal);
     }
 
-    // Player has indicated via radial menu they want to change weapon mode.
     @Override
     public void setMode(ItemStack stack, PlayerEntity player, DisassemblerMode mode) {
-       ItemDataUtils.setInt(stack, NBTConstants.MODE, mode.ordinal());
+        ItemDataUtils.setInt(stack, NBTConstants.MODE, mode.ordinal());
     }
 
-    // Returns the class object
-    // Used by the radial menu
     @Override
-    public Class<ItemAtomicDisassembler.DisassemblerMode> getModeClass() {
-        return ItemAtomicDisassembler.DisassemblerMode.class;
+    public DisassemblerMode getDefaultMode() {
+        return DisassemblerMode.NORMAL;
+    }
+
+    @Override
+    public Class<DisassemblerMode> getModeClass() {
+        return DisassemblerMode.class;
     }
 
     @Nonnull
@@ -297,10 +300,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return super.initCapabilities(stack, nbt);
     }
 
-    /*
-     * Modes available to the disassembler.
-     */
-    public enum DisassemblerMode implements IRadialSelectorEnum<DisassemblerMode>, IHasTextComponent {
+    public enum DisassemblerMode implements IDisableableEnum<DisassemblerMode>, IRadialSelectorEnum<DisassemblerMode>, IHasTextComponent {
         OFF(MekanismLang.DISASSEMBLER_OFF, 0, () -> true, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "void.png")),
         NORMAL(MekanismLang.DISASSEMBLER_NORMAL, 20, () -> true, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_normal.png")),
         SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_slow.png")),
@@ -310,22 +310,12 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
         private static final DisassemblerMode[] MODES = values();
 
-        // ??
         private final BooleanSupplier checkEnabled;
-
-        // Translation matrix
         private final ILangEntry langEntry;
-
-        // Mining speed
         private final int efficiency;
-
-        // Radial menu display colour
         private final EnumColor color;
-
-        // Icon to display in radial
         private final ResourceLocation icon;
 
-        // Convenience constructor
         DisassemblerMode(ILangEntry langEntry, int efficiency, BooleanSupplier checkEnabled, EnumColor color, ResourceLocation icon) {
             this.langEntry = langEntry;
             this.efficiency = efficiency;
@@ -349,37 +339,33 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             return MathUtils.getByIndexMod(MODES, index);
         }
 
-        // Required by IRadialSelectorEnum
         @Override
-        public ITextComponent getTextComponent() { return langEntry.translate(color); }
-
-        // Required by IRadialSelectorEnum.
-        // Used for radial menu identifiers
-        @Override
-        public ITextComponent getShortText() {
-            return this.getTextComponent();
+        public ITextComponent getTextComponent() {
+            return langEntry.translate(color);
         }
 
-        // Efficiency of block destruction
+        @Override
+        public ITextComponent getShortText() {
+            return getTextComponent();
+        }
+
         public int getEfficiency() {
             return efficiency;
         }
 
-        /*
-         * Required by IRadialSelectorEnum
-         * Is this mode enabled?
-         */
         @Override
         public boolean isEnabled() {
             return checkEnabled.getAsBoolean();
         }
 
-        // Icon to display on selection
         @Override
-        public ResourceLocation getIcon() { return icon; }
+        public ResourceLocation getIcon() {
+            return icon;
+        }
 
-        // Radial menu colour
         @Override
-        public EnumColor getColor() { return color; }
+        public EnumColor getColor() {
+            return color;
+        }
     }
 }

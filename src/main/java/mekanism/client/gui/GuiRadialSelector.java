@@ -2,9 +2,11 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import mekanism.api.IDisableableEnum;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import net.minecraft.client.Minecraft;
@@ -29,6 +31,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     private final TYPE[] types;
     private final Supplier<TYPE> curSupplier;
     private final Consumer<TYPE> changeHandler;
+    private final boolean isDisableable;
 
     private TYPE selection = null;
 
@@ -37,6 +40,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         this.enumClass = enumClass;
         this.curSupplier = curSupplier;
         this.changeHandler = changeHandler;
+        isDisableable = IDisableableEnum.class.isAssignableFrom(enumClass);
         types = enumClass.getEnumConstants();
     }
 
@@ -54,18 +58,19 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         RenderSystem.disableTexture();
 
         // Calculate number of available modes to switch between
-        int activeModes = 0;
-        for (int i = 0; i < types.length; i++) {
-            if (types[i].isEnabled())
-                activeModes++;
+        int activeModes;
+        if (isDisableable) {
+            activeModes = (int) Arrays.stream(types).filter(type -> ((IDisableableEnum) type).isEnabled()).count();
+        } else {
+            activeModes = types.length;
         }
 
         // draw base
         RenderSystem.color4f(0.3F, 0.3F, 0.3F, 0.5F);
         drawTorus(matrix, 0, 360);
 
-        // Draw segments
         TYPE cur = curSupplier.get();
+        // Draw segments
         if (cur != null) {
             // draw current selected
             if (cur.getColor() == null) {
@@ -73,13 +78,27 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             } else {
                 MekanismRenderer.color(cur.getColor(), 0.3F);
             }
-            drawTorus(matrix, -90F + 360F * (-0.5F + cur.ordinal()) / activeModes, 360F / activeModes);
+            int section;
+            if (isDisableable) {
+                //Calculate the proper section to highlight as green in case one of the earlier ones is disabled
+                section = 0;
+                for (TYPE type : types) {
+                    if (((IDisableableEnum) type).isEnabled()) {
+                        if (type == cur) {
+                            break;
+                        }
+                        section++;
+                    }
+                }
+            } else {
+                section = cur.ordinal();
+            }
+            drawTorus(matrix, -90F + 360F * (-0.5F + section) / activeModes, 360F / activeModes);
 
             double xDiff = mouseX - centerX;
             double yDiff = mouseY - centerY;
-
             if (Math.sqrt(xDiff * xDiff + yDiff * yDiff) >= SELECT_RADIUS) {
-                // Draw mouse selection highlight
+                // draw mouse selection highlight
                 float angle = (float) Math.toDegrees(Math.atan2(yDiff, xDiff));
                 RenderSystem.color4f(0.8F, 0.8F, 0.8F, 0.3F);
                 drawTorus(matrix, 360F * (-0.5F / activeModes) + angle, 360F / activeModes);
@@ -88,10 +107,21 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
                 while (selectionAngle < 0) {
                     selectionAngle += 360F;
                 }
-
-                int selection_drawn_pos = (int) (selectionAngle *(activeModes / 360F));
-                int selection_enum_pos = getIndexFromPosition(types, selection_drawn_pos);
-                selection = types[selection_enum_pos];
+                int selection_drawn_pos = (int) (selectionAngle * (activeModes / 360F));
+                if (isDisableable) {
+                    int count = 0;
+                    for (TYPE type : types) {
+                        if (((IDisableableEnum) type).isEnabled()) {
+                            if (count == selection_drawn_pos) {
+                                selection = type;
+                                break;
+                            }
+                            count++;
+                        }
+                    }
+                } else {
+                    selection = types[selection_drawn_pos];
+                }
 
                 // draw hovered selection
                 RenderSystem.color4f(0.6F, 0.6F, 0.6F, 0.7F);
@@ -106,25 +136,24 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         // Icons & Labels
         RenderSystem.enableTexture();
         int position = 0;
-        for (int i = 0; i < types.length; i++) {
-            if (!types[i].isEnabled())
+        for (TYPE type : types) {
+            if (isDisableable && !((IDisableableEnum) type).isEnabled()) {
                 // Mode disabled, skip it.
                 continue;
+            }
 
             double angle = Math.toRadians(270 + 360 * ((float) position / activeModes));
             float x = (float) Math.cos(angle) * (INNER + OUTER) / 2F;
             float y = (float) Math.sin(angle) * (INNER + OUTER) / 2F;
-
-            // Draw icon
-            minecraft.textureManager.bindTexture(types[i].getIcon());
+            // draw icon
+            minecraft.textureManager.bindTexture(type.getIcon());
             blit(matrix, Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
-
-            // Draw label
+            // draw label
             matrix.push();
-            int width = minecraft.fontRenderer.getStringWidth(types[i].getShortText().getString());
+            int width = minecraft.fontRenderer.func_238414_a_(type.getShortText());
             matrix.translate(x, y, 0);
             matrix.scale(0.6F, 0.6F, 0.6F);
-            minecraft.fontRenderer.func_238422_b_(matrix, types[i].getShortText(), -width / 2F, 8, 0xCCFFFFFF);
+            minecraft.fontRenderer.func_238422_b_(matrix, type.getShortText(), -width / 2F, 8, 0xCCFFFFFF);
             matrix.pop();
             position++;
         }
@@ -177,31 +206,5 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
 
     public Class<TYPE> getEnumClass() {
         return enumClass;
-    }
-
-    /*
-     * We don't necessarily draw all of the modes coded in.
-     * If we have the mouse pointed at, say, the second drawn mode of four, which one is that in the full array?
-     * Used for mode selection.
-     */
-    private int getIndexFromPosition(TYPE[] array, int index)
-    {
-        // We want a zero based index, but we haven't found the first one yet.
-        // Start counting at -1
-        int count = -1;
-        int lastFound = 0;
-        for (int i = 0; i < array.length; i++)
-        {
-            if (!array[i].isEnabled())
-                continue;
-            count++;
-            lastFound = count;
-
-            if (count == index)
-                return i;
-        }
-
-        // Sanity failsafe
-        return lastFound;
     }
 }
