@@ -248,11 +248,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public DisassemblerMode getDefaultMode() {
-        return DisassemblerMode.NORMAL;
-    }
-
-    @Override
     public Class<DisassemblerMode> getModeClass() {
         return DisassemblerMode.class;
     }
