@@ -58,7 +58,7 @@ public class PacketQIOItemViewerSlotInteract {
                         }
                         ((ServerPlayerEntity) player).connection.sendPacket(new SSetSlotPacket(-1, -1, player.inventory.getItemStack()));
                     } else if (message.type == Type.SHIFT_TAKE) {
-                        ItemStack ret = freq.removeByType(message.itemType, 64);
+                        ItemStack ret = freq.removeByType(message.itemType, message.itemType.getStack().getMaxStackSize());
                         ItemStack remainder = container.insertIntoPlayerInventory(ret);
                         if (!remainder.isEmpty()) {
                             remainder = freq.addItem(remainder);

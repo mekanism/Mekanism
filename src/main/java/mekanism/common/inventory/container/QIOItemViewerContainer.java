@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -335,13 +336,18 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
         if (button == 0) {
             if (heldItem.isEmpty() && slot != null) {
-                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItem(), 64));
+                HashedItem item = slot.getItem();
+                int toTake = Math.min(item.getStack().getMaxStackSize(), MathUtils.clampToInt(slot.getCount()));
+                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(item, toTake));
             } else if (!heldItem.isEmpty()) {
                 Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.put(heldItem.getCount()));
             }
         } else if (button == 1) {
             if (heldItem.isEmpty() && slot != null) {
-                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItem(), (int) Math.min(32, slot.getCount() / 2)));
+                HashedItem item = slot.getItem();
+                //Cap it out at the max stack size of the item, but try to take half of what is stored (taking at least one if it is a single item)
+                int toTake = Math.min(item.getStack().getMaxStackSize(), Math.max(1, MathUtils.clampToInt(slot.getCount() / 2)));
+                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(item, toTake));
             } else if (!heldItem.isEmpty()) {
                 Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.put(1));
             }
