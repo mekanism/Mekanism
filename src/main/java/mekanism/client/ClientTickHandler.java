@@ -298,7 +298,7 @@ public class ClientTickHandler {
                         return ((IRadialModeItem<TYPE>) s.getItem()).getMode(s);
                     }
                 }
-                return modeClass.getEnumConstants()[0];
+                return modeItem.getDefaultMode();
             }, type -> {
                 if (minecraft.player != null) {
                     Mekanism.packetHandler.sendToServer(new PacketRadialModeChange(EquipmentSlotType.MAINHAND, type.ordinal()));

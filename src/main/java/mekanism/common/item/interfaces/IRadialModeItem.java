@@ -7,6 +7,10 @@ public interface IRadialModeItem<TYPE extends Enum<TYPE> & IRadialSelectorEnum<T
 
     Class<TYPE> getModeClass();
 
+    default TYPE getDefaultMode() {
+        return getModeClass().getEnumConstants()[0];
+    }
+
     TYPE getModeByIndex(int ordinal);
 
     TYPE getMode(ItemStack stack);

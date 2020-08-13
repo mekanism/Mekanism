@@ -2,9 +2,11 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import mekanism.api.IDisableableEnum;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import net.minecraft.client.Minecraft;
@@ -29,6 +31,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     private final TYPE[] types;
     private final Supplier<TYPE> curSupplier;
     private final Consumer<TYPE> changeHandler;
+    private final boolean isDisableable;
 
     private TYPE selection = null;
 
@@ -37,6 +40,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         this.enumClass = enumClass;
         this.curSupplier = curSupplier;
         this.changeHandler = changeHandler;
+        isDisableable = IDisableableEnum.class.isAssignableFrom(enumClass);
         types = enumClass.getEnumConstants();
     }
 
@@ -53,11 +57,20 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         matrix.translate(centerX, centerY, 0);
         RenderSystem.disableTexture();
 
+        // Calculate number of available modes to switch between
+        int activeModes;
+        if (isDisableable) {
+            activeModes = (int) Arrays.stream(types).filter(type -> ((IDisableableEnum) type).isEnabled()).count();
+        } else {
+            activeModes = types.length;
+        }
+
         // draw base
         RenderSystem.color4f(0.3F, 0.3F, 0.3F, 0.5F);
         drawTorus(matrix, 0, 360);
 
         TYPE cur = curSupplier.get();
+        // Draw segments
         if (cur != null) {
             // draw current selected
             if (cur.getColor() == null) {
@@ -65,7 +78,22 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             } else {
                 MekanismRenderer.color(cur.getColor(), 0.3F);
             }
-            drawTorus(matrix, -90F + 360F * (-0.5F + cur.ordinal()) / types.length, 360F / types.length);
+            int section;
+            if (isDisableable) {
+                //Calculate the proper section to highlight as green in case one of the earlier ones is disabled
+                section = 0;
+                for (TYPE type : types) {
+                    if (((IDisableableEnum) type).isEnabled()) {
+                        if (type == cur) {
+                            break;
+                        }
+                        section++;
+                    }
+                }
+            } else {
+                section = cur.ordinal();
+            }
+            drawTorus(matrix, -90F + 360F * (-0.5F + section) / activeModes, 360F / activeModes);
 
             double xDiff = mouseX - centerX;
             double yDiff = mouseY - centerY;
@@ -73,16 +101,31 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
                 // draw mouse selection highlight
                 float angle = (float) Math.toDegrees(Math.atan2(yDiff, xDiff));
                 RenderSystem.color4f(0.8F, 0.8F, 0.8F, 0.3F);
-                drawTorus(matrix, 360F * (-0.5F / types.length) + angle, 360F / types.length);
+                drawTorus(matrix, 360F * (-0.5F / activeModes) + angle, 360F / activeModes);
 
-                float selectionAngle = angle + 90F + (360F * (0.5F / types.length));
+                float selectionAngle = angle + 90F + (360F * (0.5F / activeModes));
                 while (selectionAngle < 0) {
                     selectionAngle += 360F;
                 }
-                selection = types[(int) (selectionAngle * (types.length / 360F))];
+                int selection_drawn_pos = (int) (selectionAngle * (activeModes / 360F));
+                if (isDisableable) {
+                    int count = 0;
+                    for (TYPE type : types) {
+                        if (((IDisableableEnum) type).isEnabled()) {
+                            if (count == selection_drawn_pos) {
+                                selection = type;
+                                break;
+                            }
+                            count++;
+                        }
+                    }
+                } else {
+                    selection = types[selection_drawn_pos];
+                }
+
                 // draw hovered selection
                 RenderSystem.color4f(0.6F, 0.6F, 0.6F, 0.7F);
-                drawTorus(matrix, -90F + 360F * (-0.5F + selection.ordinal()) / types.length, 360F / types.length);
+                drawTorus(matrix, -90F + 360F * (-0.5F + selection_drawn_pos) / activeModes, 360F / activeModes);
             } else {
                 selection = null;
             }
@@ -90,21 +133,29 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
 
         MekanismRenderer.resetColor();
 
+        // Icons & Labels
         RenderSystem.enableTexture();
-        for (int i = 0; i < types.length; i++) {
-            double angle = Math.toRadians(270 + 360 * ((float) i / types.length));
+        int position = 0;
+        for (TYPE type : types) {
+            if (isDisableable && !((IDisableableEnum) type).isEnabled()) {
+                // Mode disabled, skip it.
+                continue;
+            }
+
+            double angle = Math.toRadians(270 + 360 * ((float) position / activeModes));
             float x = (float) Math.cos(angle) * (INNER + OUTER) / 2F;
             float y = (float) Math.sin(angle) * (INNER + OUTER) / 2F;
             // draw icon
-            minecraft.textureManager.bindTexture(types[i].getIcon());
+            minecraft.textureManager.bindTexture(type.getIcon());
             blit(matrix, Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
             // draw label
             matrix.push();
-            int width = minecraft.fontRenderer.getStringWidth(types[i].getShortText().getString());
+            int width = minecraft.fontRenderer.func_238414_a_(type.getShortText());
             matrix.translate(x, y, 0);
             matrix.scale(0.6F, 0.6F, 0.6F);
-            minecraft.fontRenderer.func_238422_b_(matrix, types[i].getShortText(), -width / 2F, 8, 0xCCFFFFFF);
+            minecraft.fontRenderer.func_238422_b_(matrix, type.getShortText(), -width / 2F, 8, 0xCCFFFFFF);
             matrix.pop();
+            position++;
         }
 
         MekanismRenderer.resetColor();
