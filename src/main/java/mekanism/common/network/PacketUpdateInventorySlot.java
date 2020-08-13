@@ -30,10 +30,10 @@ public class PacketUpdateInventorySlot {
 
     public static void encode(PacketUpdateInventorySlot pkt, PacketBuffer buf) {
         buf.writeItemStack(pkt.containerStack);
-        buf.writeInt(pkt.slotId);
+        buf.writeVarInt(pkt.slotId);
     }
 
     public static PacketUpdateInventorySlot decode(PacketBuffer buf) {
-        return new PacketUpdateInventorySlot(buf.readItemStack(), buf.readInt());
+        return new PacketUpdateInventorySlot(buf.readItemStack(), buf.readVarInt());
     }
 }

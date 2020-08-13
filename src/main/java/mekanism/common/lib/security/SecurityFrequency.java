@@ -75,7 +75,7 @@ public class SecurityFrequency extends Frequency {
         super.write(buffer);
         buffer.writeBoolean(override);
         buffer.writeEnumValue(securityMode);
-        buffer.writeInt(trustedCache.size());
+        buffer.writeVarInt(trustedCache.size());
         trustedCache.forEach(buffer::writeString);
     }
 
@@ -85,7 +85,7 @@ public class SecurityFrequency extends Frequency {
         override = dataStream.readBoolean();
         securityMode = dataStream.readEnumValue(SecurityMode.class);
         trustedCache = new ArrayList<>();
-        int count = dataStream.readInt();
+        int count = dataStream.readVarInt();
         for (int i = 0; i < count; i++) {
             trustedCache.add(BasePacketHandler.readString(dataStream));
         }

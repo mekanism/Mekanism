@@ -85,13 +85,13 @@ public class PacketQIOItemViewerSlotInteract {
         switch (pkt.type) {
             case TAKE:
                 buf.writeItemStack(pkt.itemType.getStack());
-                buf.writeInt(pkt.count);
+                buf.writeVarInt(pkt.count);
                 break;
             case SHIFT_TAKE:
                 buf.writeItemStack(pkt.itemType.getStack());
                 break;
             case PUT:
-                buf.writeInt(pkt.count);
+                buf.writeVarInt(pkt.count);
                 break;
         }
     }
@@ -103,13 +103,13 @@ public class PacketQIOItemViewerSlotInteract {
         switch (type) {
             case TAKE:
                 item = new HashedItem(buf.readItemStack());
-                count = buf.readInt();
+                count = buf.readVarInt();
                 break;
             case SHIFT_TAKE:
                 item = new HashedItem(buf.readItemStack());
                 break;
             case PUT:
-                count = buf.readInt();
+                count = buf.readVarInt();
                 break;
         }
         return new PacketQIOItemViewerSlotInteract(type, item, count);
