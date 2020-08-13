@@ -7,6 +7,7 @@ public class TileEntityIndustrialAlarm extends TileEntityMekanism {
 
     public TileEntityIndustrialAlarm() {
         super(MekanismBlocks.INDUSTRIAL_ALARM);
+        delaySupplier = () -> 3;
         this.onPowerChange();
     }
 
