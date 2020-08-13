@@ -501,7 +501,7 @@
   "description.mekanism.purification_chamber": "An advanced machine capable of processing ores into three clumps, serving as the initial stage of 300% ore processing.",
   "description.mekanism.qio_dashboard": "A placeable monitor used to access an Quantum Item Orchestration system's contents.",
   "description.mekanism.qio_drive_array": "The foundation of any Quantum Item Orchestration system. QIO Drives are stored here.",
-  "description.mekanism.qio_exporter": "A QIO-linked item export unit. Place on a block and export its contents to your QIO system.",
+  "description.mekanism.qio_exporter": "A QIO-linked item export unit. Place on a block and export contents from your QIO system to the block.",
   "description.mekanism.qio_importer": "A QIO-linked item import unit. Place on a block and import its contents to your QIO system.",
   "description.mekanism.qio_redstone_adapter": "A QIO-linked redstone adapter. Use to monitor your QIO system's contents.",
   "description.mekanism.quantum_entangloporter": "A highly-advanced block capable of transmitting any practical resource across long distances and dimensions.",

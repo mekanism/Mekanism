@@ -1090,7 +1090,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_QIO_DRIVE_ARRAY, "The foundation of any Quantum Item Orchestration system. QIO Drives are stored here.");
         add(MekanismLang.DESCRIPTION_QIO_DASHBOARD, "A placeable monitor used to access an Quantum Item Orchestration system's contents.");
         add(MekanismLang.DESCRIPTION_QIO_IMPORTER, "A QIO-linked item import unit. Place on a block and import its contents to your QIO system.");
-        add(MekanismLang.DESCRIPTION_QIO_EXPORTER, "A QIO-linked item export unit. Place on a block and export its contents to your QIO system.");
+        add(MekanismLang.DESCRIPTION_QIO_EXPORTER, "A QIO-linked item export unit. Place on a block and export contents from your QIO system to the block.");
         add(MekanismLang.DESCRIPTION_QIO_REDSTONE_ADAPTER, "A QIO-linked redstone adapter. Use to monitor your QIO system's contents.");
         add(MekanismLang.DESCRIPTION_DICTIONARY, "A tool used for viewing the tags of various components such as: items, blocks, and fluids.");
         add(MekanismLang.DESCRIPTION_SEISMIC_READER, "A portable machine that uses seismic vibrations to provide information on differing layers of the world.");
