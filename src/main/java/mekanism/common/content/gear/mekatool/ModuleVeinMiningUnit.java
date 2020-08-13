@@ -10,7 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.ModuleConfigItem;
-import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
+import mekanism.common.content.gear.ModuleConfigItem.DisableableModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.network.PacketLightningRender;
 import mekanism.common.network.PacketLightningRender.LightningPreset;
@@ -31,17 +31,12 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
     @Override
     public void init() {
         super.init();
-
-        //Only show extended vein mining option if enabled in config
-        if (MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean()) {
-            addConfigItem(extendedMode = new ModuleConfigItem<>(this, "extended_mode", MekanismLang.MODULE_EXTENDED_MODE, new BooleanData(), false));
-        }
-
+        addConfigItem(extendedMode = new DisableableModuleConfigItem(this, "extended_mode", MekanismLang.MODULE_EXTENDED_MODE, false, MekanismConfig.gear.mekaToolExtendedMining));
         addConfigItem(excavationRange = new ModuleConfigItem<>(this, "excavation_range", MekanismLang.MODULE_EXCAVATION_RANGE, new EnumData<>(ExcavationRange.class, getInstalledCount() + 1), ExcavationRange.LOW));
     }
 
     public boolean isExtended() {
-        return MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean() && extendedMode.get();
+        return extendedMode.get();
     }
 
     public int getExcavationRange() {
@@ -85,7 +80,6 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
         if (!isEnabled()) {
             return;
         }
-
         //Only add hud string for extended vein mining if enabled in config
         if (MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean()) {
             list.add(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,

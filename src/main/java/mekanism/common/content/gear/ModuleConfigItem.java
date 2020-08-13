@@ -1,5 +1,6 @@
 package mekanism.common.content.gear;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
@@ -78,6 +79,25 @@ public class ModuleConfigItem<TYPE> {
         void read(String name, CompoundNBT tag);
 
         void write(String name, CompoundNBT tag);
+    }
+
+    public static class DisableableModuleConfigItem extends ModuleConfigItem<Boolean> {
+
+        private final BooleanSupplier isConfigEnabled;
+
+        public DisableableModuleConfigItem(Module module, String name, ILangEntry description, boolean def, BooleanSupplier isConfigEnabled) {
+            super(module, name, description, new BooleanData(), def);
+            this.isConfigEnabled = isConfigEnabled;
+        }
+
+        @Override
+        public Boolean get() {
+            return isConfigEnabled() && super.get();
+        }
+
+        public boolean isConfigEnabled() {
+            return isConfigEnabled.getAsBoolean();
+        }
     }
 
     public static class BooleanData implements ConfigData<Boolean> {
