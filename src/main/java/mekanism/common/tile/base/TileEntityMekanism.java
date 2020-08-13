@@ -124,7 +124,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional,
@@ -588,6 +587,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             currentActive = nbtTags.getBoolean(NBTConstants.ACTIVE_STATE);
             updateDelay = nbtTags.getInt(NBTConstants.UPDATE_DELAY);
         }
+        if (supportsComparator()) {
+            //Update our stored comparator level as the inventory or things may have changed to the same value it had when the block got saved
+            if (hasWorld()) {
+                //If we have a world update it properly
+                markDirtyComparator();
+            } else {
+                //Otherwise just recalculate the redstone level
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    currentRedstoneLevel = newRedstoneLevel;
+                }
+            }
+        }
     }
 
     @Nonnull
@@ -788,7 +800,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public int getRedstoneLevel() {
         if (supportsComparator()) {
             if (hasInventory()) {
-                return ItemHandlerHelper.calcRedstoneFromInventory(this);
+                return MekanismUtils.redstoneLevelFromContents(getInventorySlots(null));
             }
             //TODO: Do we want some other defaults as well?
         }

@@ -17,6 +17,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -84,6 +85,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -1051,6 +1053,26 @@ public final class MekanismUtils {
             return 0;
         }
         return 1 + amount.divide(capacity).multiply(14).intValue();
+    }
+
+    /**
+     * Calculates the redstone level based on the percentage of amount stored. Like {@link net.minecraftforge.items.ItemHandlerHelper#calcRedstoneFromInventory(IItemHandler)}
+     * except without limiting slots to the max stack size of the item to allow for better support for bins
+     *
+     * @return A redstone level based on the percentage of the amount stored.
+     */
+    public static int redstoneLevelFromContents(List<IInventorySlot> slots) {
+        long totalCount = 0;
+        long totalLimit = 0;
+        for (IInventorySlot slot : slots) {
+            if (slot.isEmpty()) {
+                totalLimit += slot.getLimit(ItemStack.EMPTY);
+            } else {
+                totalCount += slot.getCount();
+                totalLimit += slot.getLimit(slot.getStack());
+            }
+        }
+        return redstoneLevelFromContents(totalCount, totalLimit);
     }
 
     /**
