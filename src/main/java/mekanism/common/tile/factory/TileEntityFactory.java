@@ -201,8 +201,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                         continue;
                     }
                     //Output/Input will not match; Only check if the input spot is empty otherwise assume it works
-                    if (stack.isEmpty() && !inputProducesOutput(checkInfo.getProcess(), checkStack, primaryInfo.getOutputSlot(), primaryInfo.getSecondaryOutputSlot(), true) ||
-                        checkStack.isEmpty() && !inputProducesOutput(primaryInfo.getProcess(), stack, checkInfo.getOutputSlot(), checkInfo.getSecondaryOutputSlot(), true)) {
+                    if (stack.isEmpty() && !inputProducesOutput(primaryInfo.getProcess(), checkStack, primaryInfo.getOutputSlot(), primaryInfo.getSecondaryOutputSlot(), true) ||
+                        checkStack.isEmpty() && !inputProducesOutput(checkInfo.getProcess(), stack, checkInfo.getOutputSlot(), checkInfo.getSecondaryOutputSlot(), true)) {
                         continue;
                     }
 
