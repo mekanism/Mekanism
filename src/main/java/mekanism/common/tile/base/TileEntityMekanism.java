@@ -568,7 +568,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.read(state, nbtTags);
-        redstone = nbtTags.getBoolean(NBTConstants.REDSTONE);
+        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.REDSTONE, value -> redstone = value);
         for (ITileComponent component : components) {
             component.read(nbtTags);
         }
@@ -584,21 +584,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
         if (isActivatable()) {
-            currentActive = nbtTags.getBoolean(NBTConstants.ACTIVE_STATE);
-            updateDelay = nbtTags.getInt(NBTConstants.UPDATE_DELAY);
+            NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.ACTIVE_STATE, value -> currentActive = value);
+            NBTUtils.setIntIfPresent(nbtTags, NBTConstants.UPDATE_DELAY, value -> updateDelay = value);
         }
         if (supportsComparator()) {
-            //Update our stored comparator level as the inventory or things may have changed to the same value it had when the block got saved
-            if (hasWorld()) {
-                //If we have a world update it properly
-                markDirtyComparator();
-            } else {
-                //Otherwise just recalculate the redstone level
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    currentRedstoneLevel = newRedstoneLevel;
-                }
-            }
+            NBTUtils.setIntIfPresent(nbtTags, NBTConstants.CURRENT_REDSTONE, value -> currentRedstoneLevel = value);
         }
     }
 
@@ -626,6 +616,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (isActivatable()) {
             nbtTags.putBoolean(NBTConstants.ACTIVE_STATE, currentActive);
             nbtTags.putInt(NBTConstants.UPDATE_DELAY, updateDelay);
+        }
+        if (supportsComparator()) {
+            nbtTags.putInt(NBTConstants.CURRENT_REDSTONE, currentRedstoneLevel);
         }
         return nbtTags;
     }
