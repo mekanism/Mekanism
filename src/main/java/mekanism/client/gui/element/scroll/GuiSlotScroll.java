@@ -145,7 +145,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
         matrix.scale(scale, scale, scale);
 
         IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-        getFont().renderString(text, 0, 0, 0xFFFFFF, true, matrix.getLast().getMatrix(), buffer, false, 0, 15728880);
+        getFont().renderString(text, 0, 0, 0xFFFFFF, true, matrix.getLast().getMatrix(), buffer, false, 0, MekanismRenderer.FULL_LIGHT);
         buffer.finish();
         matrix.pop();
     }

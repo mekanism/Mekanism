@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.SawmillRecipe;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.GuiProgress;
@@ -62,7 +63,7 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
         super.draw(recipe, matrix, mouseX, mouseY);
         double secondaryChance = recipe.getSecondaryChance();
         if (secondaryChance > 0) {
-            getFont().drawString(matrix, Math.round(secondaryChance * 100) + "%", 104, 41, 0x404040);
+            getFont().drawString(matrix, Math.round(secondaryChance * 100) + "%", 104, 41, SpecialColors.TEXT_TITLE.argb());
         }
     }
 }

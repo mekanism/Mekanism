@@ -188,7 +188,7 @@ public class RenderTickHandler {
                 matrix.scale(HUD_SCALE, HUD_SCALE, HUD_SCALE);
                 for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
                     for (ITextComponent text : entry.getValue()) {
-                        drawString(window, matrix, text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
+                        drawString(window, matrix, text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xC8C8C8);
                         start -= 9;
                     }
                     start -= 2;

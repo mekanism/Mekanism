@@ -212,11 +212,11 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         Frequency frequency = getFrequency();
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (frequency == null) {
-            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
-            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
+            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, subheadingTextColor());
+            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, subheadingTextColor());
         } else {
-            drawTextScaledBound(matrix, frequency.getName(), 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
-            drawString(matrix, getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
+            drawTextScaledBound(matrix, frequency.getName(), 32 + frequencyOffset, 81, subheadingTextColor(), xSize - 32 - frequencyOffset - 4);
+            drawString(matrix, getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, subheadingTextColor());
         }
         drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
         super.drawForegroundText(matrix, mouseX, mouseY);

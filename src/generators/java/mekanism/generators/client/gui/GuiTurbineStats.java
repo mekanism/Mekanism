@@ -59,12 +59,12 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
                                          < vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get();
             boolean ventsLimiting = lowerVolume * clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get()
                                     > vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get();
-            drawString(matrix, GeneratorsLang.TURBINE_STEAM_FLOW.translate(), 8, 40, 0x797979);
+            drawString(matrix, GeneratorsLang.TURBINE_STEAM_FLOW.translate(), 8, 40, subheadingTextColor());
             drawString(matrix, GeneratorsLang.TURBINE_DISPERSERS.translate(clientDispersers, dispersersLimiting ? limiting : ""), 14, 49, titleTextColor());
             drawString(matrix, GeneratorsLang.TURBINE_VENTS.translate(vents, ventsLimiting ? limiting : ""), 14, 58, titleTextColor());
             int coils = tile.getMultiblock().coils;
             int blades = tile.getMultiblock().blades;
-            drawString(matrix, GeneratorsLang.TURBINE_PRODUCTION.translate(), 8, 72, 0x797979);
+            drawString(matrix, GeneratorsLang.TURBINE_PRODUCTION.translate(), 8, 72, subheadingTextColor());
             drawString(matrix, GeneratorsLang.TURBINE_BLADES.translate(blades, coils * 4 > blades ? limiting : ""), 14, 81, titleTextColor());
             drawString(matrix, GeneratorsLang.TURBINE_COILS.translate(coils, coils * 4 < blades ? limiting : ""), 14, 90, titleTextColor());
             FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)

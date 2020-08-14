@@ -88,7 +88,7 @@ public class GuiTransporterConfig extends GuiWindow {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
         drawTextScaledBound(matrix, MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(getTile().getEjector().hasStrictInput())), relativeX + 43, relativeY + 17, screenTextColor(), 70);
-        drawString(matrix, MekanismLang.INPUT.translate(), relativeX + 38, relativeY + 81, 0x787878);
-        drawString(matrix, MekanismLang.OUTPUT.translate(), relativeX + 104, relativeY + 68, 0x787878);
+        drawString(matrix, MekanismLang.INPUT.translate(), relativeX + 38, relativeY + 81, subheadingTextColor());
+        drawString(matrix, MekanismLang.OUTPUT.translate(), relativeX + 104, relativeY + 68, subheadingTextColor());
     }
 }

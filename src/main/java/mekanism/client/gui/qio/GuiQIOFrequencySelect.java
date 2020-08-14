@@ -169,11 +169,11 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
         Frequency frequency = getFrequency();
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (frequency == null) {
-            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 84, 0x797979);
-            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 94, 0x797979);
+            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 84, subheadingTextColor());
+            drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 94, subheadingTextColor());
         } else {
-            drawTextScaledBound(matrix, frequency.getName(), 32 + frequencyOffset, 84, 0x797979, xSize - 32 - frequencyOffset - 4);
-            drawString(matrix, getSecurity(frequency), 32 + getStringWidth(securityComponent), 94, 0x797979);
+            drawTextScaledBound(matrix, frequency.getName(), 32 + frequencyOffset, 84, subheadingTextColor(), xSize - 32 - frequencyOffset - 4);
+            drawString(matrix, getSecurity(frequency), 32 + getStringWidth(securityComponent), 94, subheadingTextColor());
         }
         drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 107, titleTextColor(), 20);
         super.drawForegroundText(matrix, mouseX, mouseY);

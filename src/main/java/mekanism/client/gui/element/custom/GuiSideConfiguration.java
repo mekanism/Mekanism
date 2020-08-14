@@ -114,6 +114,6 @@ public class GuiSideConfiguration extends GuiWindow {
         } else {
             drawString(matrix, MekanismLang.EJECT.translate(OnOff.of(config.isEjecting())), relativeX + 43, relativeY + 27, screenTextColor());
         }
-        drawString(matrix, MekanismLang.SLOTS.translate(), relativeX + 67, relativeY + 96, 0x787878);
+        drawString(matrix, MekanismLang.SLOTS.translate(), relativeX + 67, relativeY + 96, subheadingTextColor());
     }
 }

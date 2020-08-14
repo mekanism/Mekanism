@@ -24,7 +24,7 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        drawString(matrix, OnOff.of(tile.isSorting()).getTextComponent(), x + 5, y + 24, 0x0404040);
+        drawString(matrix, OnOff.of(tile.isSorting()).getTextComponent(), x + 5, y + 24, titleTextColor());
         MekanismRenderer.resetColor();
     }
 

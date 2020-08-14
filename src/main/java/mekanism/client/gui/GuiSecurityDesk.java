@@ -164,7 +164,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         ITextComponent ownerComponent = OwnerDisplay.of(tile.ownerUUID, tile.clientOwner).getTextComponent();
         drawString(matrix, ownerComponent, getXSize() - 7 - getStringWidth(ownerComponent), (getYSize() - 96) + 2, titleTextColor());
         drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
-        drawCenteredText(matrix, MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, 0x787878);
+        drawCenteredText(matrix, MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, subheadingTextColor());
         if (tile.getFreq() != null) {
             drawString(matrix, MekanismLang.SECURITY.translate(tile.getFreq().getSecurityMode()), 13, 103, titleTextColor());
         } else {
