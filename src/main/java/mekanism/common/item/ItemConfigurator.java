@@ -24,6 +24,8 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -172,10 +174,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                 if (tile instanceof TileEntityMekanism) {
                     if (SecurityUtils.canAccess(player, tile)) {
                         TileEntityMekanism tileMekanism = (TileEntityMekanism) tile;
-                        if (!player.isSneaking()) {
-                            tileMekanism.setFacing(side);
-                        } else if (player.isSneaking()) {
-                            tileMekanism.setFacing(side.getOpposite());
+                        if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
+                            if (!player.isSneaking()) {
+                                tileMekanism.setFacing(side);
+                            } else if (player.isSneaking()) {
+                                tileMekanism.setFacing(side.getOpposite());
+                            }
                         }
                     } else {
                         SecurityUtils.displayNoAccess(player);

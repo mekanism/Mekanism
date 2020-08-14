@@ -414,7 +414,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.MODIFICATION_STATION)
           .withEnergyConfig(MekanismConfig.usage.modificationStation, MekanismConfig.storage.modificationStation)
           .withCustomContainerProvider((tile) -> (i, inv, player) -> new ModificationStationContainer(i, inv, (TileEntityModificationStation) tile))
-          .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeRedstone(), new AttributeSecurity())
+          .with(new AttributeInventory(), new AttributeStateFacing(false), new AttributeRedstone(), new AttributeSecurity())
           .withCustomShape(BlockShapes.MODIFICATION_STATION)
           .with(new AttributeCustomSelectionBox(false))
           .build();

@@ -4,11 +4,14 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IMekWrench;
@@ -365,6 +368,34 @@ public final class MekanismUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if all the positions are valid and the current block in them can be replaced.
+     *
+     * @return True if the blocks can be replaced and is within the world's bounds.
+     */
+    public static boolean areBlocksValidAndReplaceable(@Nonnull IBlockReader world, @Nonnull BlockPos... positions) {
+        return areBlocksValidAndReplaceable(world, Arrays.stream(positions));
+    }
+
+    /**
+     * Checks if all the positions are valid and the current block in them can be replaced.
+     *
+     * @return True if the blocks can be replaced and is within the world's bounds.
+     */
+    public static boolean areBlocksValidAndReplaceable(@Nonnull IBlockReader world, @Nonnull Collection<BlockPos> positions) {
+        //TODO: Potentially move more block placement over to these methods
+        return areBlocksValidAndReplaceable(world, positions.stream());
+    }
+
+    /**
+     * Checks if all the positions are valid and the current block in them can be replaced.
+     *
+     * @return True if the blocks can be replaced and is within the world's bounds.
+     */
+    public static boolean areBlocksValidAndReplaceable(@Nonnull IBlockReader world, @Nonnull Stream<BlockPos> positions) {
+        return positions.allMatch(pos -> isValidReplaceableBlock(world, pos));
     }
 
     /**

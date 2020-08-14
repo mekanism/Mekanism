@@ -1,6 +1,6 @@
 package mekanism.common.item.block;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.block.attribute.Attribute;
@@ -22,14 +22,9 @@ public class ItemBlockModificationStation extends ItemBlockMachine {
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        List<BlockPos> checkList = new ArrayList<>();
         Direction side = MekanismUtils.getRight(Attribute.getFacing(state));
-        checkList.add(context.getPos().up());
-        checkList.add(context.getPos().offset(side));
-        checkList.add(context.getPos().up().offset(side));
-        if (checkList.stream().anyMatch(pos -> !MekanismUtils.isValidReplaceableBlock(context.getWorld(), pos))) {
-            return false;
-        }
-        return super.placeBlock(context, state);
+        BlockPos pos = context.getPos();
+        List<BlockPos> checkList = Arrays.asList(pos.up(), pos.offset(side), pos.up().offset(side));
+        return MekanismUtils.areBlocksValidAndReplaceable(context.getWorld(), checkList) && super.placeBlock(context, state);
     }
 }

@@ -426,8 +426,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                         return WrenchResult.DISMANTLED;
                     }
                     //Special ITileDirectional handling
-                    if (isDirectional()) {
-                        //TODO: Extract this out into a handleRotation method?
+                    if (isDirectional() && Attribute.get(getBlockType(), AttributeStateFacing.class).canRotate()) {
                         setFacing(getDirection().rotateY());
                     }
                     return WrenchResult.SUCCESS;

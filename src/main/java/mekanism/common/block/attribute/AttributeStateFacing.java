@@ -22,18 +22,36 @@ public class AttributeStateFacing extends AttributeState {
 
     private final DirectionProperty facingProperty;
     private final FacePlacementType placementType;
+    private final boolean canRotate;
 
     public AttributeStateFacing() {
-        this(BlockStateProperties.HORIZONTAL_FACING);
+        this(true);
+    }
+
+    public AttributeStateFacing(boolean canRotate) {
+        this(BlockStateProperties.HORIZONTAL_FACING, canRotate);
     }
 
     public AttributeStateFacing(DirectionProperty facingProperty) {
-        this(facingProperty, FacePlacementType.PLAYER_LOCATION);
+        this(facingProperty,true);
+    }
+
+    public AttributeStateFacing(DirectionProperty facingProperty, boolean canRotate) {
+        this(facingProperty, FacePlacementType.PLAYER_LOCATION, canRotate);
     }
 
     public AttributeStateFacing(DirectionProperty facingProperty, FacePlacementType placementType) {
+        this(facingProperty, placementType, true);
+    }
+
+    public AttributeStateFacing(DirectionProperty facingProperty, FacePlacementType placementType, boolean canRotate) {
         this.facingProperty = facingProperty;
         this.placementType = placementType;
+        this.canRotate = canRotate;
+    }
+
+    public boolean canRotate() {
+        return canRotate;
     }
 
     public Direction getDirection(BlockState state) {
@@ -125,7 +143,6 @@ public class AttributeStateFacing extends AttributeState {
     }
 
     public static BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation rotation) {
-        //TODO: use the world and pos to check that it still fits (used for multiblocks like digital miner)
         return rotate(state, rotation);
     }
 
@@ -133,7 +150,9 @@ public class AttributeStateFacing extends AttributeState {
         Block block = state.getBlock();
         if (Attribute.has(block, AttributeStateFacing.class)) {
             AttributeStateFacing blockFacing = Attribute.get(block, AttributeStateFacing.class);
-            return rotate(blockFacing, blockFacing.getFacingProperty(), state, rotation);
+            if (blockFacing.canRotate()) {
+                return rotate(blockFacing, blockFacing.getFacingProperty(), state, rotation);
+            }
         }
         return state;
     }
@@ -142,8 +161,10 @@ public class AttributeStateFacing extends AttributeState {
         Block block = state.getBlock();
         if (Attribute.has(block, AttributeStateFacing.class)) {
             AttributeStateFacing blockFacing = Attribute.get(block, AttributeStateFacing.class);
-            DirectionProperty property = blockFacing.getFacingProperty();
-            return rotate(blockFacing, property, state, mirror.toRotation(state.get(property)));
+            if (blockFacing.canRotate()) {
+                DirectionProperty property = blockFacing.getFacingProperty();
+                return rotate(blockFacing, property, state, mirror.toRotation(state.get(property)));
+            }
         }
         return state;
     }
