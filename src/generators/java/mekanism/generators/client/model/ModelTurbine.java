@@ -72,6 +72,7 @@ public class ModelTurbine extends MekanismJavaModel {
     public void render(@Nonnull MatrixStack matrix, IVertexBuilder buffer, int light, int overlayLight, int index) {
         matrix.push();
         matrix.rotate(Vector3f.YP.rotationDegrees(index * 5));
+        render(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
         float scale = index * 0.5F;
         float widthDiv = 16;
         renderBlade(matrix, buffer, light, overlayLight, blade_west, scale, scale / widthDiv, -0.25, 0);

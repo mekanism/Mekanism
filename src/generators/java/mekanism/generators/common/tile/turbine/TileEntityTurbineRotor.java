@@ -83,8 +83,14 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         } else if (blades < 2) {
             // Add the blades to this rotor
             blades++;
-            // Update client state
-            sendUpdatePacket();
+            if (position == -1) {
+                //If we haven't gotten a position assigned yet (single rotor height) then rescan it to set things to the correct values
+                // This will also handle sending the update to the client
+                scanRotors(0);
+            } else {
+                // Update client state
+                sendUpdatePacket();
+            }
             return true;
         }
 
