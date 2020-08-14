@@ -83,8 +83,8 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
         //Only add hud string for extended vein mining if enabled in config
         if (MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean()) {
             list.add(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,
-                    isExtended() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED,
-                    isExtended() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER));
+                  isExtended() ? EnumColor.BRIGHT_GREEN : EnumColor.DARK_RED,
+                  isExtended() ? MekanismLang.MODULE_ENABLED_LOWER : MekanismLang.MODULE_DISABLED_LOWER));
         }
     }
 

@@ -33,7 +33,7 @@ public class AttributeStateFacing extends AttributeState {
     }
 
     public AttributeStateFacing(DirectionProperty facingProperty) {
-        this(facingProperty,true);
+        this(facingProperty, true);
     }
 
     public AttributeStateFacing(DirectionProperty facingProperty, boolean canRotate) {
