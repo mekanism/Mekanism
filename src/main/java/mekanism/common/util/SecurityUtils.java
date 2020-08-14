@@ -82,7 +82,7 @@ public final class SecurityUtils {
     }
 
     public static void displayNoAccess(PlayerEntity player) {
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NO_ACCESS.translateColored(EnumColor.RED)), Util.DUMMY_UUID);
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.RED, MekanismLang.NO_ACCESS), Util.DUMMY_UUID);
     }
 
     public static SecurityMode getSecurity(ISecurityTile security, Dist side) {

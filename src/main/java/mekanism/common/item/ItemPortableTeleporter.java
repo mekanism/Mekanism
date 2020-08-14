@@ -53,7 +53,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
             if (getOwnerUUID(stack) == null) {
                 setOwnerUUID(stack, player.getUniqueID());
                 Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NOW_OWN.translateColored(EnumColor.GRAY)), Util.DUMMY_UUID);
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.NOW_OWN), Util.DUMMY_UUID);
             } else if (SecurityUtils.canAccess(player, stack)) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PortableTeleporterContainer(i, inv, hand, stack)), buf -> {
                     buf.writeEnumValue(hand);

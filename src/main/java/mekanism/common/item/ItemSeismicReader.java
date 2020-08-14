@@ -55,13 +55,13 @@ public class ItemSeismicReader extends ItemEnergized {
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         if (!MekanismUtils.isChunkVibrated(new ChunkPos(player.getPosition()), player.world)) {
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NO_VIBRATIONS.translateColored(EnumColor.RED)), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.RED, MekanismLang.NO_VIBRATIONS), Util.DUMMY_UUID);
         } else {
             if (!player.isCreative()) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 FloatingLong energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
                 if (energyContainer == null || energyContainer.extract(energyUsage, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyUsage)) {
-                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NEEDS_ENERGY.translateColored(EnumColor.RED)), Util.DUMMY_UUID);
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.RED, MekanismLang.NEEDS_ENERGY), Util.DUMMY_UUID);
                     return new ActionResult<>(ActionResultType.SUCCESS, stack);
                 }
                 energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);

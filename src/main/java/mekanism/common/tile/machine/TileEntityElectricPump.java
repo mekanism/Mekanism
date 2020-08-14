@@ -306,7 +306,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.PUMP_RESET.translateColored(EnumColor.GRAY)), Util.DUMMY_UUID);
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.PUMP_RESET), Util.DUMMY_UUID);
         return ActionResultType.SUCCESS;
     }
 

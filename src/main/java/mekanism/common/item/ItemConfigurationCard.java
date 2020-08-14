@@ -86,8 +86,8 @@ public class ItemConfigurationCard extends Item {
                                   MekanismLang.CONFIG_CARD_SET.translateColored(EnumColor.DARK_GREEN, EnumColor.INDIGO,
                                         TextComponentUtil.translate(getDataType(stack)))), Util.DUMMY_UUID);
                         } else {
-                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                                  MekanismLang.CONFIG_CARD_UNEQUAL.translateColored(EnumColor.RED)), Util.DUMMY_UUID);
+                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.RED,
+                                  MekanismLang.CONFIG_CARD_UNEQUAL), Util.DUMMY_UUID);
                         }
                         return ActionResultType.SUCCESS;
                     }

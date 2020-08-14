@@ -86,9 +86,9 @@ public class ItemCraftingFormula extends Item {
             return super.getDisplayName(stack);
         }
         if (isInvalid(stack)) {
-            return TextComponentUtil.build(super.getDisplayName(stack), " ", MekanismLang.INVALID.translateColored(EnumColor.DARK_RED));
+            return TextComponentUtil.build(super.getDisplayName(stack), " ", EnumColor.DARK_RED, MekanismLang.INVALID);
         }
-        return TextComponentUtil.build(super.getDisplayName(stack), " ", MekanismLang.ENCODED.translateColored(EnumColor.DARK_GREEN));
+        return TextComponentUtil.build(super.getDisplayName(stack), " ", EnumColor.DARK_GREEN, MekanismLang.ENCODED);
     }
 
     public boolean isInvalid(ItemStack stack) {
