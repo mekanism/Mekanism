@@ -1076,7 +1076,7 @@
   "network.mekanism.description": "[%s] %s개의 전송기, %s개의 수신기",
   "network.mekanism.energy": "에너지 네트워크",
   "network.mekanism.fluid": "액체 네트워크",
-  "network.mekanism.fluid_needed": "%s000 mB",
+  "network.mekanism.fluid_needed": "%s buckets",
   "network.mekanism.heat": "열 네트워크",
   "network.mekanism.heat_flow": "%s가 수신기로 전송됨, %s가 자연적으로 소멸됨.",
   "network.mekanism.heat_flow.efficiency": "%s가 수신기로 전송됨, %s가 자연적으로 소멸됨. 효율: %s",
