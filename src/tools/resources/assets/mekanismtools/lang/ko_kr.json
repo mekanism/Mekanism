@@ -117,7 +117,7 @@
   "item.mekanismtools.refined_obsidian_helmet": "흑요석 투구",
   "item.mekanismtools.refined_obsidian_hoe": "흑요석 괭이",
   "item.mekanismtools.refined_obsidian_leggings": "흑요석 각반",
-  "item.mekanismtools.refined_obsidian_paxel": "흑요석 팩셀",
+  "item.mekanismtools.refined_obsidian_paxel": "정제된 흑요석 팩셀",
   "item.mekanismtools.refined_obsidian_pickaxe": "흑요석 곡괭이",
   "item.mekanismtools.refined_obsidian_shield": "정제된 흑요석 방패",
   "item.mekanismtools.refined_obsidian_shield.black": "검은색 정제된 흑요석 방패",
@@ -167,5 +167,5 @@
   "item.mekanismtools.steel_sword": "강철 검",
   "item.mekanismtools.stone_paxel": "돌 팩셀",
   "item.mekanismtools.wood_paxel": "나무 팩셀",
-  "tooltip.mekanismtools.hp": "HP: %s"
+  "tooltip.mekanismtools.hp": "내구도: %s"
 }
