@@ -105,7 +105,7 @@
   "block.mekanismadditions.light_blue_reinforced_plastic": "淡蓝色强化塑料方块",
   "block.mekanismadditions.light_blue_slick_plastic": "淡蓝色光滑塑料方块",
   "block.mekanismadditions.light_gray_glow_panel": "淡灰色荧光板",
-  "block.mekanismadditions.light_gray_plastic": "淡灰色 塑料方块",
+  "block.mekanismadditions.light_gray_plastic": "淡灰色塑料方块",
   "block.mekanismadditions.light_gray_plastic_fence": "淡灰色塑料栅栏",
   "block.mekanismadditions.light_gray_plastic_fence_gate": "淡灰色塑料栅栏门",
   "block.mekanismadditions.light_gray_plastic_glow": "淡灰色塑料荧光方块",
@@ -147,8 +147,8 @@
   "block.mekanismadditions.magenta_plastic_transparent": "品红色透明塑料方块",
   "block.mekanismadditions.magenta_plastic_transparent_slab": "品红色透明塑料半砖",
   "block.mekanismadditions.magenta_plastic_transparent_stairs": "品红色透明塑料楼梯",
-  "block.mekanismadditions.magenta_reinforced_plastic": "品红色 强化塑料方块",
-  "block.mekanismadditions.magenta_slick_plastic": "品红色 光滑塑料方块",
+  "block.mekanismadditions.magenta_reinforced_plastic": "品红色强化塑料方块",
+  "block.mekanismadditions.magenta_slick_plastic": "品红色光滑塑料方块",
   "block.mekanismadditions.obsidian_tnt": "黑曜石TNT",
   "block.mekanismadditions.orange_glow_panel": "橙色荧光板",
   "block.mekanismadditions.orange_plastic": "橙色塑料方块",
@@ -273,7 +273,7 @@
   "item.mekanismadditions.yellow_balloon": "黄色气球",
   "key.mekanismadditions.voice": "语音",
   "sound_event.mekanismadditions.entity.balloon.pop": "气球爆炸声",
-  "walkie.mekanismadditions.channel": "频道: %s",
+  "walkie.mekanismadditions.channel": "频道：%s",
   "walkie.mekanismadditions.channel.change": "频道切换为：%s",
   "walkie.mekanismadditions.disabled": "语音服务器已禁用。"
 }
