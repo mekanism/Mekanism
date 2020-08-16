@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.common.MekanismLang;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
@@ -30,7 +31,7 @@ public class ModuleJetpackUnit extends ModuleMekaSuit {
             return;
         }
         GasStack stored = ((ItemMekaSuitArmor) getContainer().getItem()).getContainedGas(getContainer(), MekanismGases.HYDROGEN.get());
-        double ratio = StorageUtils.getRatio(stored.getAmount(), ItemMekaSuitArmor.MAX_JETPACK_FUEL);
+        double ratio = StorageUtils.getRatio(stored.getAmount(), MekanismConfig.gear.mekaSuitJetpackMaxStorage.getAsLong());
         list.add(HUDElement.percent(jetpackMode.get().getHUDIcon(), ratio));
     }
 

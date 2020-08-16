@@ -313,7 +313,7 @@ public abstract class ModuleMekaSuit extends Module {
                 return;
             }
             GasStack stored = ((ItemMekaSuitArmor) getContainer().getItem()).getContainedGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get());
-            double ratio = StorageUtils.getRatio(stored.getAmount(), ItemMekaSuitArmor.MAX_NUTRITIONAL_PASTE);
+            double ratio = StorageUtils.getRatio(stored.getAmount(), MekanismConfig.gear.mekaSuitNutritionalMaxStorage.getAsLong());
             list.add(HUDElement.percent(icon, ratio));
         }
     }

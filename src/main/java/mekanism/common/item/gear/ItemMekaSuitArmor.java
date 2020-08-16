@@ -70,10 +70,6 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
           DamageSource.ON_FIRE, DamageSource.SWEET_BERRY_BUSH, DamageSource.WITHER));
 
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
-    //TODO: Make this a config option?
-    private static final int GAS_TRANSFER_RATE = 256;
-    public static final int MAX_JETPACK_FUEL = 24_000;
-    public static final int MAX_NUTRITIONAL_PASTE = 16_000;
 
     private final Set<GasTankSpec> gasTankSpecs = new HashSet<>();
     private float absorption;
@@ -85,11 +81,13 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         if (slot == EquipmentSlotType.HEAD) {
             Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT, Modules.VISION_ENHANCEMENT_UNIT,
                   Modules.SOLAR_RECHARGING_UNIT, Modules.NUTRITIONAL_INJECTION_UNIT);
-            gasTankSpecs.add(GasTankSpec.createFillOnly(() -> GAS_TRANSFER_RATE, () -> MAX_NUTRITIONAL_PASTE, gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
+            gasTankSpecs.add(GasTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
+                  gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
             absorption = 0.15F;
         } else if (slot == EquipmentSlotType.CHEST) {
             Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT, Modules.DOSIMETER_UNIT);
-            gasTankSpecs.add(GasTankSpec.createFillOnly(() -> GAS_TRANSFER_RATE, () -> MAX_JETPACK_FUEL, gas -> gas == MekanismGases.HYDROGEN.get()));
+            gasTankSpecs.add(GasTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, MekanismConfig.gear.mekaSuitJetpackMaxStorage,
+                  gas -> gas == MekanismGases.HYDROGEN.get()));
             absorption = 0.4F;
         } else if (slot == EquipmentSlotType.LEGS) {
             Modules.setSupported(this, Modules.LOCOMOTIVE_BOOSTING_UNIT);
