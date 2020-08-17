@@ -274,6 +274,6 @@
   "key.mekanismadditions.voice": "音声",
   "sound_event.mekanismadditions.entity.balloon.pop": "Balloon pops",
   "walkie.mekanismadditions.channel": "チャンネル: %s",
-  "walkie.mekanismadditions.channel.change": "チャンネルを変更: %s",
+  "walkie.mekanismadditions.channel.change": "チャンネルを%sに変更しました",
   "walkie.mekanismadditions.disabled": "ボイスサーバーが無効です"
 }
