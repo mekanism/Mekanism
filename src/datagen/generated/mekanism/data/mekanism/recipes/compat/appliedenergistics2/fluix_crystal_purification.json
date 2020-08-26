@@ -1,0 +1,24 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "appliedenergistics2",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": [
+    {
+      "ingredient": {
+        "item": "appliedenergistics2:fluix_crystal"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "appliedenergistics2:fluix_dust"
+      }
+    }
+  ],
+  "output": {
+    "item": "appliedenergistics2:purified_fluix_crystal"
+  }
+}
