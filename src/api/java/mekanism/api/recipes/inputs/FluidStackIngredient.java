@@ -93,8 +93,6 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
-            //TODO - 1.16.2: Verify
-            //ITag<Fluid> tag = TagCollectionManager.func_232928_e_().func_232926_c_().get(resourceLocation);
             ITag<Fluid> tag = TagCollectionManager.func_242178_a().func_241837_c().get(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown fluid tag '" + resourceLocation + "'");
@@ -223,8 +221,6 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnumValue(IngredientType.TAGGED);
-            //TODO - 1.16.2: Verify
-            //buffer.writeResourceLocation(TagCollectionManager.func_232928_e_().func_232926_c_().func_232975_b_(tag));
             buffer.writeResourceLocation(TagCollectionManager.func_242178_a().func_241837_c().func_232975_b_(tag));
             buffer.writeVarInt(amount);
         }
@@ -234,8 +230,6 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             json.addProperty(JsonConstants.AMOUNT, amount);
-            //TODO - 1.16.2: Verify
-            //json.addProperty(JsonConstants.TAG, TagCollectionManager.func_232928_e_().func_232926_c_().func_232975_b_(tag).toString());
             json.addProperty(JsonConstants.TAG, TagCollectionManager.func_242178_a().func_241837_c().func_232975_b_(tag).toString());
             return json;
         }

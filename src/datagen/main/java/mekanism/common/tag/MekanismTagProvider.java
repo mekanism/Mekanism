@@ -2,8 +2,8 @@ package mekanism.common.tag;
 
 import com.google.common.collect.Table.Cell;
 import java.util.Map;
+import javax.annotation.Nullable;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.datagen.tag.ForgeRegistryTagBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -28,11 +28,12 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class MekanismTagProvider extends BaseTagProvider {
 
-    public MekanismTagProvider(DataGenerator gen) {
-        super(gen, Mekanism.MODID);
+    public MekanismTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
+        super(gen, Mekanism.MODID, existingFileHelper);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mekanism.additions.common;
 
+import javax.annotation.Nullable;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
@@ -10,11 +11,12 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class AdditionsTagProvider extends BaseTagProvider {
 
-    public AdditionsTagProvider(DataGenerator gen) {
-        super(gen, MekanismAdditions.MODID);
+    public AdditionsTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
+        super(gen, MekanismAdditions.MODID, existingFileHelper);
     }
 
     @Override

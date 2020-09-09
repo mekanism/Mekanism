@@ -23,7 +23,7 @@ public class ToolsDataGenerator {
         }
         if (event.includeServer()) {
             //Server side data generators
-            gen.addProvider(new ToolsTagProvider(gen));
+            gen.addProvider(new ToolsTagProvider(gen, existingFileHelper));
             gen.addProvider(new ToolsRecipeProvider(gen));
         }
     }

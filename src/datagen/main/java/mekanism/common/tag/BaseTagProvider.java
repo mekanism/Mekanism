@@ -1,23 +1,18 @@
 package mekanism.common.tag;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
-import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.datagen.tag.ForgeRegistryTagBuilder;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IEntityTypeProvider;
@@ -35,23 +30,25 @@ import net.minecraft.data.IDataProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class BaseTagProvider implements IDataProvider {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
-    private final Map<TagType<?>, TagTypeMap<?>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<TagType<?>, Map<INamedTag<?>, Tag.Builder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
+    private final ExistingFileHelper existingFileHelper;
     private final DataGenerator gen;
     private final String modid;
 
-    protected BaseTagProvider(DataGenerator gen, String modid) {
+    protected BaseTagProvider(DataGenerator gen, String modid, @Nullable ExistingFileHelper existingFileHelper) {
         this.gen = gen;
         this.modid = modid;
+        this.existingFileHelper = existingFileHelper;
         addTagType(TagType.ITEM);
         addTagType(TagType.BLOCK);
         addTagType(TagType.ENTITY_TYPE);
@@ -70,38 +67,49 @@ public abstract class BaseTagProvider implements IDataProvider {
 
     //Protected to allow for extensions to add their own supported types if they have one
     protected <TYPE extends IForgeRegistryEntry<TYPE>> void addTagType(TagType<TYPE> tagType) {
-        supportedTagTypes.putIfAbsent(tagType, new TagTypeMap<>(tagType));
+        supportedTagTypes.computeIfAbsent(tagType, type -> new Object2ObjectLinkedOpenHashMap<>());
     }
 
     protected abstract void registerTags();
 
     @Override
     public void act(@Nonnull DirectoryCache cache) {
-        supportedTagTypes.values().forEach(TagTypeMap::clear);
+        supportedTagTypes.values().forEach(Map::clear);
         registerTags();
-        supportedTagTypes.values().forEach(tagTypeMap -> act(cache, tagTypeMap));
+        supportedTagTypes.forEach((tagType, tagTypeMap) -> act(cache, tagType, tagTypeMap));
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull DirectoryCache cache, TagTypeMap<TYPE> tagTypeMap) {
+    private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull DirectoryCache cache, TagType<TYPE> tagType, Map<INamedTag<?>, Tag.Builder> tagTypeMap) {
         if (!tagTypeMap.isEmpty()) {
-            String tagTypePath = tagTypeMap.getTagType().getPath();
-            tagTypeMap.getBuilders().forEach((id, tagBuilder) -> {
-                Path path = gen.getOutputFolder().resolve("data/" + id.getNamespace() + "/tags/" + tagTypePath + "/" + id.getPath() + ".json");
-                try {
-                    String json = GSON.toJson(cleanJsonTag(tagBuilder.serialize()));
-                    String hash = HASH_FUNCTION.hashUnencodedChars(json).toString();
-                    if (!Objects.equals(cache.getPreviousHash(path), hash) || !Files.exists(path)) {
-                        Files.createDirectories(path.getParent());
-                        try (BufferedWriter bufferedwriter = Files.newBufferedWriter(path)) {
-                            bufferedwriter.write(json);
+            //Create a dummy forge registry tags provider and pass all our collected data through to it
+            new ForgeRegistryTagsProvider<TYPE>(gen, tagType.getRegistry(), modid, existingFileHelper) {
+                @Override
+                protected void registerTags() {
+                    //Add each tag builder to the wrapped provider's builder, but wrap the builder so that we
+                    // make sure to first cleanup and remove excess/unused json components
+                    // Note: We only override the methods used by the TagsProvider rather than proxying everything back to the original tag builder
+                    tagTypeMap.forEach((tag, tagBuilder) -> tagToBuilder.put(tag.getName(), new ITag.Builder() {
+                        @Nonnull
+                        @Override
+                        public JsonObject serialize() {
+                            return cleanJsonTag(tagBuilder.serialize());
                         }
-                    }
-                    cache.recordHash(path, hash);
-                } catch (IOException exception) {
-                    LOGGER.error("Couldn't save tags to {}", path, exception);
+
+                        @Nonnull
+                        @Override
+                        public <T> Stream<ITag.Proxy> func_232963_b_(@Nonnull Function<ResourceLocation, ITag<T>> resourceTagFunction,
+                              @Nonnull Function<ResourceLocation, T> resourceElementFunction) {
+                            return tagBuilder.func_232963_b_(resourceTagFunction, resourceElementFunction);
+                        }
+                    }));
                 }
-            });
+
+                @Nonnull
+                @Override
+                public String getName() {
+                    return tagType.getName() + " Tags: " + modid;
+                }
+            }.act(cache);
         }
     }
 
@@ -117,12 +125,8 @@ public abstract class BaseTagProvider implements IDataProvider {
     }
 
     //Protected to allow for extensions to add retrieve their own supported types if they have any
-    protected <TYPE extends IForgeRegistryEntry<TYPE>> TagTypeMap<TYPE> getTagTypeMap(TagType<TYPE> tagType) {
-        return (TagTypeMap<TYPE>) supportedTagTypes.get(tagType);
-    }
-
     protected <TYPE extends IForgeRegistryEntry<TYPE>> ForgeRegistryTagBuilder<TYPE> getBuilder(TagType<TYPE> tagType, INamedTag<TYPE> tag) {
-        return getTagTypeMap(tagType).getBuilder(tag, modid);
+        return new ForgeRegistryTagBuilder<>(supportedTagTypes.get(tagType).computeIfAbsent(tag, ignored -> Tag.Builder.create()), modid);
     }
 
     protected ForgeRegistryTagBuilder<Item> getItemBuilder(INamedTag<Item> tag) {

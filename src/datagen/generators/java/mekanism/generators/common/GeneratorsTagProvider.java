@@ -1,16 +1,18 @@
 package mekanism.generators.common;
 
+import javax.annotation.Nullable;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import net.minecraft.data.DataGenerator;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class GeneratorsTagProvider extends BaseTagProvider {
 
-    public GeneratorsTagProvider(DataGenerator gen) {
-        super(gen, MekanismGenerators.MODID);
+    public GeneratorsTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
+        super(gen, MekanismGenerators.MODID, existingFileHelper);
     }
 
     @Override

@@ -1,14 +1,16 @@
 package mekanism.tools.common;
 
+import javax.annotation.Nullable;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.ItemTags;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ToolsTagProvider extends BaseTagProvider {
 
-    public ToolsTagProvider(DataGenerator gen) {
-        super(gen, MekanismTools.MODID);
+    public ToolsTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
+        super(gen, MekanismTools.MODID, existingFileHelper);
     }
 
     @Override
