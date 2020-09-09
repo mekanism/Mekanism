@@ -4,7 +4,7 @@ import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.client.sound.BaseSoundProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class AdditionsSoundProvider extends BaseSoundProvider {
 

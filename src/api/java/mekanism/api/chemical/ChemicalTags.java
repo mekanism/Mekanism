@@ -2,45 +2,55 @@ package mekanism.api.chemical;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.Supplier;
+import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.tags.TagCollection;
-import net.minecraft.tags.TagRegistry;
+import net.minecraft.tags.ITagCollection;
+import net.minecraft.tags.TagCollectionManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeTagHandler;
+import net.minecraftforge.common.Tags.IOptionalNamedTag;
+import net.minecraftforge.registries.IForgeRegistry;
 
 public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
 
-    public static final ChemicalTags<Gas> GAS = new ChemicalTags<>();
-    public static final ChemicalTags<InfuseType> INFUSE_TYPE = new ChemicalTags<>();
-    public static final ChemicalTags<Pigment> PIGMENT = new ChemicalTags<>();
-    public static final ChemicalTags<Slurry> SLURRY = new ChemicalTags<>();
+    public static final ChemicalTags<Gas> GAS = new ChemicalTags<>(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "gas"), MekanismAPI::gasRegistry);
+    public static final ChemicalTags<InfuseType> INFUSE_TYPE = new ChemicalTags<>(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "infuse_type"), MekanismAPI::infuseTypeRegistry);
+    public static final ChemicalTags<Pigment> PIGMENT = new ChemicalTags<>(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pigment"), MekanismAPI::pigmentRegistry);
+    public static final ChemicalTags<Slurry> SLURRY = new ChemicalTags<>(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "slurry"), MekanismAPI::slurryRegistry);
 
-    private final TagRegistry<CHEMICAL> collection = new TagRegistry<>();
+    private final Supplier<IForgeRegistry<CHEMICAL>> registrySupplier;
+    private final ResourceLocation registryName;
 
-    private ChemicalTags() {
+    private ChemicalTags(ResourceLocation registryName, Supplier<IForgeRegistry<CHEMICAL>> registrySupplier) {
+        this.registrySupplier = registrySupplier;
+        this.registryName = registryName;
     }
 
-    public void setCollection(TagCollection<CHEMICAL> collectionIn) {
-        collection.func_232935_a_(collectionIn);
-    }
-
-    public TagCollection<CHEMICAL> getCollection() {
-        return collection.func_232939_b_();
+    public ITagCollection<CHEMICAL> getCollection() {
+        IForgeRegistry<CHEMICAL> registry = registrySupplier.get();
+        if (registry == null) {
+            return (ITagCollection<CHEMICAL>) TagCollectionManager.func_242178_a().getCustomTypeCollection(registryName);
+        }
+        return TagCollectionManager.func_242178_a().getCustomTypeCollection(registry);
     }
 
     public ResourceLocation lookupTag(ITag<CHEMICAL> tag) {
         //Manual and slightly modified implementation of TagCollection#func_232975_b_ to have better reverse lookup handling
-        TagCollection<CHEMICAL> collection = getCollection();
+        ITagCollection<CHEMICAL> collection = getCollection();
         ResourceLocation resourceLocation = collection.func_232973_a_(tag);
         if (resourceLocation == null) {
             //If we failed to get the resource location, try manually looking it up by a "matching" entry
             // as the objects are different and neither Tag nor NamedTag override equals and hashCode
             List<CHEMICAL> chemicals = tag.getAllElements();
-            for (Entry<ResourceLocation, ITag<CHEMICAL>> entry : collection.getTagMap().entrySet()) {
+            for (Entry<ResourceLocation, ITag<CHEMICAL>> entry : collection.func_241833_a().entrySet()) {
                 if (chemicals.equals(entry.getValue().getAllElements())) {
                     resourceLocation = entry.getKey();
                     break;
@@ -53,23 +63,23 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
         return resourceLocation;
     }
 
-    public static INamedTag<Gas> gasTag(ResourceLocation resourceLocation) {
-        return chemicalTag(resourceLocation, GAS);
+    public INamedTag<CHEMICAL> tag(ResourceLocation name) {
+        IForgeRegistry<CHEMICAL> registry = registrySupplier.get();
+        if (registry == null) {
+            return ForgeTagHandler.makeWrapperTag(registryName, name);
+        }
+        return ForgeTagHandler.makeWrapperTag(registry, name);
     }
 
-    public static INamedTag<InfuseType> infusionTag(ResourceLocation resourceLocation) {
-        return chemicalTag(resourceLocation, INFUSE_TYPE);
+    public IOptionalNamedTag<CHEMICAL> optionalTag(ResourceLocation name) {
+        return optionalTag(name, null);
     }
 
-    public static INamedTag<Pigment> pigmentTag(ResourceLocation resourceLocation) {
-        return chemicalTag(resourceLocation, PIGMENT);
-    }
-
-    public static INamedTag<Slurry> slurryTag(ResourceLocation resourceLocation) {
-        return chemicalTag(resourceLocation, SLURRY);
-    }
-
-    public static <CHEMICAL extends Chemical<CHEMICAL>> INamedTag<CHEMICAL> chemicalTag(ResourceLocation resourceLocation, ChemicalTags<CHEMICAL> chemicalTags) {
-        return chemicalTags.collection.func_232937_a_(resourceLocation.toString());
+    public IOptionalNamedTag<CHEMICAL> optionalTag(ResourceLocation name, @Nullable Supplier<Set<CHEMICAL>> defaults) {
+        IForgeRegistry<CHEMICAL> registry = registrySupplier.get();
+        if (registry == null) {
+            return ForgeTagHandler.createOptionalTag(registryName, name, defaults);
+        }
+        return ForgeTagHandler.createOptionalTag(registry, name, defaults);
     }
 }

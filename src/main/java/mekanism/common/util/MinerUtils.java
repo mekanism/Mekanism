@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 
 public final class MinerUtils {
@@ -23,9 +24,10 @@ public final class MinerUtils {
         if (silk) {
             stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
         }
+        //TODO - 1.16.2: Test
         LootContext.Builder lootContextBuilder = new LootContext.Builder(world)
               .withRandom(world.rand)
-              .withParameter(LootParameters.POSITION, pos)
+              .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
               .withParameter(LootParameters.TOOL, stack)
               .withNullableParameter(LootParameters.THIS_ENTITY, Mekanism.proxy.getDummyPlayer(world, minerPosition).get())
               .withNullableParameter(LootParameters.BLOCK_ENTITY, MekanismUtils.getTileEntity(world, pos));

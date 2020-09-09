@@ -9,14 +9,13 @@ import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
 public interface IGasItem {
 
     @Nonnull
     default GasStack useGas(ItemStack stack, long amount) {
-        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler) {

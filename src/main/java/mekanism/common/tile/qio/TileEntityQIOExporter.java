@@ -176,7 +176,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             Map<HashedItem, Integer> removed = new Object2IntOpenHashMap<>();
             int amountRemoved = 0;
 
-            Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, getDirection()));
+            Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, getDirection()).resolve();
 
             if (capability.isPresent()) {
                 IItemHandler inventory = capability.get();

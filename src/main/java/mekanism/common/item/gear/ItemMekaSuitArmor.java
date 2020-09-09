@@ -39,7 +39,6 @@ import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.ISpecialGear;
 import mekanism.common.registries.MekanismGases;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -188,7 +187,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
 
     @Nonnull
     public GasStack useGas(ItemStack stack, Gas type, long amount) {
-        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             return gasHandlerItem.extractChemical(new GasStack(type, amount), Action.EXECUTE);
@@ -197,7 +196,7 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
     }
 
     public GasStack getContainedGas(ItemStack stack, Gas type) {
-        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             for (int i = 0; i < gasHandlerItem.getTanks(); i++) {

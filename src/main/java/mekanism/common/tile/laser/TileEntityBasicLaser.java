@@ -189,8 +189,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     digging = result.getType() == Type.MISS ? null : hitPos;
                     diggingProgress = FloatingLong.ZERO;
                 }
-                Optional<ILaserReceptor> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(MekanismUtils.getTileEntity(world, hitPos),
-                      Capabilities.LASER_RECEPTOR_CAPABILITY, result.getFace()));
+                Optional<ILaserReceptor> capability = CapabilityUtils.getCapability(MekanismUtils.getTileEntity(world, hitPos), Capabilities.LASER_RECEPTOR_CAPABILITY,
+                      result.getFace()).resolve();
                 if (capability.isPresent() && !capability.get().canLasersDig()) {
                     //Give the energy to the receptor
                     capability.get().receiveLaserEnergy(remainingEnergy, result.getFace());

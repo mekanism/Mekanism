@@ -8,10 +8,10 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.item.BucketItem;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public abstract class BaseItemModelProvider extends ItemModelProvider {
 

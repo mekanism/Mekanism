@@ -41,7 +41,7 @@ public class GuiArrowSelection extends GuiTexturedElement {
             matrix.push();
             //Make sure the text is above other renders like JEI
             matrix.translate(0.0D, 0.0D, 300);
-            getFont().func_238416_a_(component, tooltipX, tooltipY, screenTextColor(), false, matrix.getLast().getMatrix(),
+            getFont().func_243247_a(component, tooltipX, tooltipY, screenTextColor(), false, matrix.getLast().getMatrix(),
                   renderType, false, 0, MekanismRenderer.FULL_LIGHT);
             matrix.pop();
             renderType.finish();

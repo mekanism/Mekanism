@@ -52,7 +52,6 @@ import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.util.MekanismUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
@@ -109,7 +108,7 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static String getChemicalComponent(ItemStack stack, Capability<? extends IChemicalHandler<?, ?>> capability) {
-        Optional<? extends IChemicalHandler<?, ?>> cap = MekanismUtils.toOptional(stack.getCapability(capability));
+        Optional<? extends IChemicalHandler<?, ?>> cap = stack.getCapability(capability).resolve();
         if (cap.isPresent()) {
             IChemicalHandler<?, ?> handler = cap.get();
             String component = "";
@@ -127,7 +126,7 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static String getEnergyComponent(ItemStack stack) {
-        Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
+        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
         if (capability.isPresent()) {
             IStrictEnergyHandler energyHandlerItem = capability.get();
             String component = "";
@@ -238,7 +237,7 @@ public class MekanismJEI implements IModPlugin {
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
         registry.addRecipeClickArea(GuiRobitRepair.class, 102, 48, 22, 15, VanillaRecipeCategoryUid.ANVIL);
-        registry.addGuiContainerHandler(GuiMekanism.class, new GuiElementHandler<>());
+        registry.addGenericGuiContainerHandler(GuiMekanism.class, new GuiElementHandler());
         registry.addGhostIngredientHandler(GuiMekanism.class, new GhostIngredientHandler<>());
     }
 

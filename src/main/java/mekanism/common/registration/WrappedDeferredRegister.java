@@ -36,6 +36,14 @@ public class WrappedDeferredRegister<T extends IForgeRegistryEntry<T>> {
         register(bus);
     }
 
+    /**
+     * Only call this from mekanism and for custom registries
+     */
+    public void createAndRegisterWithTags(IEventBus bus, String name, String tagFolder) {
+        internal.makeRegistry(name, () -> new RegistryBuilder<T>().tagFolder(tagFolder));
+        register(bus);
+    }
+
     public void register(IEventBus bus) {
         internal.register(bus);
     }

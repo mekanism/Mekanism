@@ -59,7 +59,7 @@ public class ItemConfigurationCard extends Item {
                 if (SecurityUtils.canAccess(player, tile)) {
                     ItemStack stack = player.getHeldItem(context.getHand());
                     if (player.isSneaking()) {
-                        Optional<ISpecialConfigData> configData = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side));
+                        Optional<ISpecialConfigData> configData = CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).resolve();
                         CompoundNBT data = configData.isPresent() ? configData.get().getConfigurationData(getBaseData(tile)) : getBaseData(tile);
                         if (data != null) {
                             data.putString(NBTConstants.DATA_TYPE, getNameFromTile(tile, side));
@@ -122,7 +122,7 @@ public class ItemConfigurationCard extends Item {
     }
 
     private String getNameFromTile(TileEntity tile, Direction side) {
-        Optional<ISpecialConfigData> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side));
+        Optional<ISpecialConfigData> capability = CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).resolve();
         if (capability.isPresent()) {
             return capability.get().getDataType();
         }

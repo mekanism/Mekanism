@@ -3,7 +3,7 @@ package mekanism.client.sound;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class MekanismSoundProvider extends BaseSoundProvider {
 

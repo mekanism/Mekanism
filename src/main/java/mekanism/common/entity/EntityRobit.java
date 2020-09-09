@@ -327,7 +327,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     private ItemStack getItemVariant() {
         ItemStack stack = MekanismItems.ROBIT.getItemStack();
-        Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
+        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
         if (capability.isPresent()) {
             IStrictEnergyHandler energyHandlerItem = capability.get();
             if (energyHandlerItem.getEnergyContainerCount() > 0) {

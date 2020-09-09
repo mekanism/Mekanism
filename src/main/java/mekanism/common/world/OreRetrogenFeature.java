@@ -10,7 +10,6 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.OreFeature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 public class OreRetrogenFeature extends OreFeature {
 
@@ -19,8 +18,7 @@ public class OreRetrogenFeature extends OreFeature {
     }
 
     @Override
-    public boolean func_230362_a_(@Nonnull ISeedReader seedReader, @Nonnull StructureManager structureManager, @Nonnull ChunkGenerator chunkGenerator, Random rand,
-          BlockPos pos, OreFeatureConfig config) {
+    public boolean func_241855_a(@Nonnull ISeedReader seedReader, @Nonnull ChunkGenerator chunkGenerator, Random rand, BlockPos pos, OreFeatureConfig config) {
         float angle = rand.nextFloat() * (float) Math.PI;
         float f1 = config.size / 8.0F;
         int i = MathHelper.ceil((f1 + 1.0F) / 2.0F);

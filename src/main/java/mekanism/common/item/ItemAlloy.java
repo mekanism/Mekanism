@@ -38,7 +38,7 @@ public class ItemAlloy extends Item {
             if (capability.isPresent()) {
                 if (!world.isRemote) {
                     Hand hand = context.getHand();
-                    MekanismUtils.toOptional(capability).get().onAlloyInteraction(player, hand, player.getHeldItem(hand), tier);
+                    capability.resolve().get().onAlloyInteraction(player, hand, player.getHeldItem(hand), tier);
                 }
                 return ActionResultType.SUCCESS;
             }

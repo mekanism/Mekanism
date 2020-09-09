@@ -50,7 +50,6 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketLightningRender.class, PacketLightningRender::encode, PacketLightningRender::decode, PacketLightningRender::handle);
         registerServerToClient(PacketUpdateTile.class, PacketUpdateTile::encode, PacketUpdateTile::decode, PacketUpdateTile::handle);
         registerServerToClient(PacketPlayerData.class, PacketPlayerData::encode, PacketPlayerData::decode, PacketPlayerData::handle);
-        registerServerToClient(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
         registerServerToClient(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
         registerServerToClient(PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
         registerServerToClient(PacketRadiationData.class, PacketRadiationData::encode, PacketRadiationData::decode, PacketRadiationData::handle);

@@ -9,8 +9,8 @@ import net.minecraft.block.StairsBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.state.properties.SlabType;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class AdditionsBlockStateProvider extends BaseBlockStateProvider<AdditionsBlockModelProvider> {
 

@@ -5,8 +5,8 @@ import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.BaseItemModelProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class AdditionsItemModelProvider extends BaseItemModelProvider {
 

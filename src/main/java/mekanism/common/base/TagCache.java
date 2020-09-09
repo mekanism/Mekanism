@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.ITagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -65,7 +65,7 @@ public final class TagCache {
         if (itemTagStacks.get(oreName) != null) {
             return itemTagStacks.get(oreName);
         }
-        TagCollection<Item> tagCollection = ItemTags.getCollection();
+        ITagCollection<Item> tagCollection = ItemTags.getCollection();
         List<ResourceLocation> keys = tagCollection.getRegisteredTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
         Set<Item> items = new HashSet<>();
         for (ResourceLocation key : keys) {
@@ -83,7 +83,7 @@ public final class TagCache {
         if (blockTagStacks.get(oreName) != null) {
             return blockTagStacks.get(oreName);
         }
-        TagCollection<Block> tagCollection = BlockTags.getCollection();
+        ITagCollection<Block> tagCollection = BlockTags.getCollection();
         List<ResourceLocation> keys = tagCollection.getRegisteredTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
         Set<Block> blocks = new HashSet<>();
         for (ResourceLocation key : keys) {

@@ -5,7 +5,6 @@ import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
 import mekanism.common.network.PacketClearRecipeCache;
-import mekanism.common.network.PacketMekanismTags;
 import mekanism.common.network.PacketPlayerData;
 import mekanism.common.network.PacketRadiationData;
 import mekanism.common.network.PacketResetPlayerClient;
@@ -50,7 +49,6 @@ public class CommonPlayerTracker {
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         if (!event.getPlayer().world.isRemote) {
             Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(), (ServerPlayerEntity) event.getPlayer());
-            Mekanism.packetHandler.sendTo(new PacketMekanismTags(Mekanism.instance.getTagManager()), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketClearRecipeCache(), (ServerPlayerEntity) event.getPlayer());
             event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayerEntity) event.getPlayer()));
         }

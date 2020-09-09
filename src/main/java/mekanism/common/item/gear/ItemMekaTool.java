@@ -63,6 +63,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
@@ -244,7 +245,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             player.addStat(Stats.ITEM_USED.get(this));
             if (exp > 0) {
                 //If we have xp drop it
-                block.dropXpOnBlockBreak(world, pos, exp);
+                block.dropXpOnBlockBreak((ServerWorld) world, pos, exp);
             }
             //Use energy
             energyContainer.extract(destroyEnergy, Action.EXECUTE, AutomationType.MANUAL);

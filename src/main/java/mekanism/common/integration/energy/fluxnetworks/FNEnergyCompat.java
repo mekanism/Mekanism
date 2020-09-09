@@ -51,6 +51,6 @@ public class FNEnergyCompat implements IEnergyCompat {
     @Nonnull
     @Override
     public LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side) {
-        return CapabilityUtils.getCapability(provider, FNEnergyCapability.FN_ENERGY_STORAGE, side).map(FNStrictEnergyHandler::new);
+        return CapabilityUtils.getCapability(provider, FNEnergyCapability.FN_ENERGY_STORAGE, side).lazyMap(FNStrictEnergyHandler::new);
     }
 }*/

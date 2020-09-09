@@ -62,7 +62,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
             } else if (entity instanceof EntityRobit) {
                 provideEnergy((EntityRobit) entity);
             } else if (entity instanceof PlayerEntity) {
-                Optional<IItemHandler> itemHandlerCap = MekanismUtils.toOptional(entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+                Optional<IItemHandler> itemHandlerCap = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
                 //Ensure that we have an item handler capability, because if for example the player is dead we will not
                 if (itemHandlerCap.isPresent()) {
                     IItemHandler itemHandler = itemHandlerCap.get();

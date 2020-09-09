@@ -2,7 +2,7 @@ package mekanism.client.model;
 
 import mekanism.common.Mekanism;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class MekanismBlockModelProvider extends BaseBlockModelProvider {
 

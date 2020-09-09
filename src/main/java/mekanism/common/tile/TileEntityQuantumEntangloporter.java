@@ -211,7 +211,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
                 TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-                return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
+                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
             }
         }
         return null;

@@ -12,7 +12,6 @@ import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -81,7 +80,7 @@ public class EnergyCompatUtils {
 
     @Nullable//TODO: Transition usages of this to getLazyStrictEnergyHandler?
     public static IStrictEnergyHandler getStrictEnergyHandler(@Nonnull ItemStack stack) {
-        return MekanismUtils.toOptional(getLazyStrictEnergyHandler(stack)).orElse(null);
+        return getLazyStrictEnergyHandler(stack).resolve().orElse(null);
     }
 
     @Nonnull

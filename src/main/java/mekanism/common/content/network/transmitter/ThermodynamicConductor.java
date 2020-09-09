@@ -22,7 +22,6 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -132,7 +131,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             //Note: We use the acceptor cache as the heat network is different and the transmitters count the other transmitters in the
             // network as valid acceptors
-            return MekanismUtils.toOptional(getAcceptorCache().getConnectedAcceptor(side)).orElse(null);
+            return getAcceptorCache().getConnectedAcceptor(side).resolve().orElse(null);
         }
         return null;
     }

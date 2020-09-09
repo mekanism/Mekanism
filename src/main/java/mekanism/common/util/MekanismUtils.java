@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -30,7 +29,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.GenericWrench;
 import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -84,7 +82,6 @@ import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -119,30 +116,6 @@ public final class MekanismUtils {
         if (!actual.isZero()) {
             Mekanism.logger.error("Energy value changed by a different amount (" + actual + ") than requested (zero).", new Exception());
         }
-    }
-
-    /**
-     * REMOVE THIS AS SOON AS POSSIBLE, this is to make it easier to just add a small if statement to early exit out of events if we are in an invalid state so that we
-     * don't get blamed for crashes by https://github.com/MinecraftForge/MinecraftForge/issues/6374
-     */
-    @Deprecated
-    public static boolean isGameStateInvalid() {
-        return !MekanismItems.ATOMIC_ALLOY.doesItemExist();
-    }
-
-    /**
-     * Converts a {@link LazyOptional} to a normal {@link Optional}. This is useful for if we are going to resolve the value anyways if it is present.
-     *
-     * @param lazyOptional The lazy optional to convert
-     * @param <T>          The type of the optional
-     *
-     * @return A normal {@link Optional} or {@link Optional#empty()} if the lazy optional is not present.
-     */
-    public static <T> Optional<T> toOptional(@Nonnull LazyOptional<T> lazyOptional) {
-        if (lazyOptional.isPresent()) {
-            return Optional.of(lazyOptional.orElseThrow(() -> new RuntimeException("Failed to retrieve value of lazy optional when it claimed it was present.")));
-        }
-        return Optional.empty();
     }
 
     /**
@@ -235,7 +208,7 @@ public final class MekanismUtils {
 
     //Vanilla copy of ClientWorld#getSunBrightness used to be World#getSunBrightness
     public static float getSunBrightness(World world, float partialTicks) {
-        float f = world.getCelestialAngle(partialTicks);
+        float f = world.func_242415_f(partialTicks);
         float f1 = 1.0F - (MathHelper.cos(f * ((float) Math.PI * 2F)) * 2.0F + 0.2F);
         f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
         f1 = 1.0F - f1;

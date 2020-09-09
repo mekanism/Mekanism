@@ -209,7 +209,7 @@ public class MekanismTags {
         public static final INamedTag<Gas> WATER_VAPOR = tag("water_vapor");
 
         private static INamedTag<Gas> tag(String name) {
-            return ChemicalTags.gasTag(Mekanism.rl(name));
+            return ChemicalTags.GAS.tag(Mekanism.rl(name));
         }
     }
 
@@ -225,14 +225,14 @@ public class MekanismTags {
         public static final INamedTag<InfuseType> TIN = tag("tin");
 
         private static INamedTag<InfuseType> tag(String name) {
-            return ChemicalTags.infusionTag(Mekanism.rl(name));
+            return ChemicalTags.INFUSE_TYPE.tag(Mekanism.rl(name));
         }
     }
 
     public static class Pigments {
 
         private static INamedTag<Pigment> tag(String name) {
-            return ChemicalTags.pigmentTag(Mekanism.rl(name));
+            return ChemicalTags.PIGMENT.tag(Mekanism.rl(name));
         }
     }
 
@@ -242,7 +242,7 @@ public class MekanismTags {
         public static final INamedTag<Slurry> CLEAN = tag("clean");
 
         private static INamedTag<Slurry> tag(String name) {
-            return ChemicalTags.slurryTag(Mekanism.rl(name));
+            return ChemicalTags.SLURRY.tag(Mekanism.rl(name));
         }
     }
 }

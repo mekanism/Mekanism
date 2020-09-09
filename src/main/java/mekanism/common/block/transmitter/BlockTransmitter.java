@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.IMekWrench;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.IStateFluidLoggable;
@@ -68,7 +69,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     }
 
     @Override
-    public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull LivingEntity placer, @Nonnull ItemStack stack) {
+    public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
         TileEntityTransmitter tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
             tile.onAdded();

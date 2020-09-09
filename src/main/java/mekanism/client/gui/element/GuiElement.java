@@ -50,6 +50,11 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         guiObj = gui;
     }
 
+    @Deprecated//TODO - 1.16.2: Remove this when mappings are updated/fixed
+    public int getHeight() {
+        return getWidth_CLASH();
+    }
+
     protected void addChild(GuiElement element) {
         children.add(element);
         if (isOverlay) {

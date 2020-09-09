@@ -20,7 +20,6 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -63,7 +62,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
             return true;
         }
         Item item = stack.getItem();
-        Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
+        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         if (capability.isPresent()) {
             IStrictEnergyHandler energyHandler = capability.get();

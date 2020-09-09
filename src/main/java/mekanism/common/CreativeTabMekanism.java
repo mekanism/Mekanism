@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 
 public class CreativeTabMekanism extends ItemGroup {
 
@@ -19,8 +20,8 @@ public class CreativeTabMekanism extends ItemGroup {
 
     @Nonnull
     @Override
-    public String getTranslationKey() {
+    public ITextComponent func_242392_c() {
         //Overwrite the lang key to match the one representing Mekanism
-        return MekanismLang.MEKANISM.getTranslationKey();
+        return MekanismLang.MEKANISM.translate();
     }
 }

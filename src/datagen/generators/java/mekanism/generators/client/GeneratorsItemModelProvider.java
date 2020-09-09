@@ -5,7 +5,7 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class GeneratorsItemModelProvider extends BaseItemModelProvider {
 

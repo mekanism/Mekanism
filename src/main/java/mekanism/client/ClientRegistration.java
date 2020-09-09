@@ -364,10 +364,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        if (MekanismUtils.isGameStateInvalid()) {
-            //Exit early to avoid getting blamed for crashes due to https://github.com/MinecraftForge/MinecraftForge/issues/6374
-            return;
-        }
         ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.LASER, LaserParticle.Factory::new);
         ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.JETPACK_FLAME, JetpackFlameParticle.Factory::new);
         ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.JETPACK_SMOKE, JetpackSmokeParticle.Factory::new);
@@ -377,10 +373,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
-        if (MekanismUtils.isGameStateInvalid()) {
-            //Exit early to avoid getting blamed for crashes due to https://github.com/MinecraftForge/MinecraftForge/issues/6374
-            return;
-        }
         BlockColors blockColors = event.getBlockColors();
         ItemColors itemColors = event.getItemColors();
         ClientRegistrationUtil.registerBlockColorHandler(blockColors, (state, world, pos, tintIndex) -> {

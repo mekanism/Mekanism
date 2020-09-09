@@ -3,8 +3,8 @@ package mekanism.client.model.builder;
 import com.google.gson.JsonObject;
 import mekanism.common.DataGenJsonConstants;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class CustomLoaderItemModelBuilder extends ItemModelBuilder {
 

@@ -97,13 +97,13 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
             //Don't allow tilling a block from underneath
             return ActionResultType.PASS;
         }
-        Hand hand = context.getHand();
-        ItemStack stack = player.getHeldItem(hand);
         int diameter = farmingRadius.get().getRadius();
         if (diameter == 0) {
             //If we don't have any blocks we are going to want to do, then skip it
             return ActionResultType.PASS;
         }
+        Hand hand = context.getHand();
+        ItemStack stack = player.getHeldItem(hand);
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer == null) {
             return ActionResultType.FAIL;
@@ -130,7 +130,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         if (world.isRemote) {
             return ActionResultType.SUCCESS;
         }
-        //Processing did not happen in the hook so we need to process it
+        //Processing did not happen, so we need to process it
         world.setBlockState(pos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
         Material aboveMaterial = aboveState.getMaterial();
         if (aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) {
@@ -177,13 +177,13 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
             //Skip if we don't have a player or they are sneaking
             return ActionResultType.PASS;
         }
-        Hand hand = context.getHand();
-        ItemStack stack = player.getHeldItem(hand);
         int diameter = farmingRadius.get().getRadius();
         if (diameter == 0) {
             //If we don't have any blocks we are going to want to do, then skip it
             return ActionResultType.PASS;
         }
+        Hand hand = context.getHand();
+        ItemStack stack = player.getHeldItem(hand);
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer == null) {
             return ActionResultType.FAIL;
@@ -201,10 +201,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
         if (strippedState == null) {
             //Skip stripping the blocks if the one we clicked cannot be stripped
             return ActionResultType.PASS;
-        }
-        //Note: We don't need to fire a check for the tool being used here as we never would have had our current method get called
-        // if a generic interact was not allowed
-        if (world.isRemote) {
+        } else if (world.isRemote) {
             return ActionResultType.SUCCESS;
         }
         Axis axis = clickedState.get(RotatedPillarBlock.AXIS);

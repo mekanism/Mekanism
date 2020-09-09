@@ -17,7 +17,6 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -62,7 +61,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
             return true;
         }
         Item item = stack.getItem();
-        Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
+        Optional<IFluidHandlerItem> capability = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve();
         List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
         if (capability.isPresent()) {
             IFluidHandlerItem fluidHandler = capability.get();

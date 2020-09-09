@@ -22,7 +22,6 @@ import mekanism.common.recipe.upgrade.RecipeUpgradeData;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -80,7 +79,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
             return true;
         }
         HANDLER handler;
-        Optional<HANDLER> capability = MekanismUtils.toOptional(stack.getCapability(getCapability()));
+        Optional<HANDLER> capability = stack.getCapability(getCapability()).resolve();
         if (capability.isPresent()) {
             handler = capability.get();
         } else if (stack.getItem() instanceof BlockItem) {

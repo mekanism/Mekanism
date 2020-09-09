@@ -14,7 +14,6 @@ import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.merged.GaugeDropperContentsHandler;
 import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -66,7 +65,7 @@ public class ItemGaugeDropper extends Item {
     public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isSneaking() && !world.isRemote) {
-            Optional<IFluidHandlerItem> fluidCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
+            Optional<IFluidHandlerItem> fluidCapability = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve();
             if (fluidCapability.isPresent()) {
                 IFluidHandlerItem fluidHandler = fluidCapability.get();
                 if (fluidHandler instanceof IExtendedFluidHandler) {
@@ -87,7 +86,7 @@ public class ItemGaugeDropper extends Item {
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void clearChemicalTanks(ItemStack stack, STACK empty) {
-        Optional<IChemicalHandler<CHEMICAL, STACK>> cap = MekanismUtils.toOptional(stack.getCapability(ChemicalUtil.getCapabilityForChemical(empty)));
+        Optional<IChemicalHandler<CHEMICAL, STACK>> cap = stack.getCapability(ChemicalUtil.getCapabilityForChemical(empty)).resolve();
         if (cap.isPresent()) {
             IChemicalHandler<CHEMICAL, STACK> handler = cap.get();
             for (int tank = 0; tank < handler.getTanks(); tank++) {

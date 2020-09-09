@@ -71,13 +71,13 @@ public abstract class ModuleMekaSuit extends Module {
                 long hydrogenUsed = 0;
                 GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2L);
                 ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-                Optional<IGasHandler> chestCapability = MekanismUtils.toOptional(chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+                Optional<IGasHandler> chestCapability = chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
                 if (checkChestPlate(chestStack) && chestCapability.isPresent()) {
                     hydrogenUsed = maxRate * 2L - chestCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                     hydrogenStack.shrink(hydrogenUsed);
                 }
                 ItemStack handStack = player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
-                Optional<IGasHandler> handCapability = MekanismUtils.toOptional(handStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+                Optional<IGasHandler> handCapability = handStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
                 if (handCapability.isPresent()) {
                     hydrogenUsed = maxRate * 2L - handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                 }
@@ -327,8 +327,7 @@ public abstract class ModuleMekaSuit extends Module {
             if (!isEnabled()) {
                 return;
             }
-            Optional<IRadiationEntity> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(Minecraft.getInstance().player,
-                  Capabilities.RADIATION_ENTITY_CAPABILITY, null));
+            Optional<IRadiationEntity> capability = CapabilityUtils.getCapability(Minecraft.getInstance().player, Capabilities.RADIATION_ENTITY_CAPABILITY, null).resolve();
             if (capability.isPresent()) {
                 double radiation = capability.get().getRadiation();
                 HUDElement e = HUDElement.of(icon, UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2));

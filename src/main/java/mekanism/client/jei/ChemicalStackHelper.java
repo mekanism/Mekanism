@@ -43,6 +43,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     @Nullable
     @Override
     public STACK getMatch(Iterable<STACK> ingredients, @Nonnull STACK toMatch) {
+        //TODO - 1.16.2: See if we should be making use of https://github.com/mezz/JustEnoughItems/commit/d0af18c4d59de6e38037899c375270d9c219cf3a
         for (STACK stack : ingredients) {
             if (toMatch.isTypeEqual(stack)) {
                 return stack;

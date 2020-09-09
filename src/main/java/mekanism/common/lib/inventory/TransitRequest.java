@@ -10,7 +10,6 @@ import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -68,7 +67,7 @@ public abstract class TransitRequest {
         if (isEmpty()) {
             return getEmptyResponse();
         }
-        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
+        Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).resolve();
         if (capability.isPresent()) {
             IItemHandler inventory = capability.get();
             for (ItemData data : getItemData()) {

@@ -33,7 +33,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -116,9 +115,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         //Lava boost
         FloatingLong boost = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(Arrays.stream(EnumUtils.DIRECTIONS)
               .filter(side -> world.getFluidState(pos.offset(side)).isTagged(FluidTags.LAVA)).count());
-        if (world.func_234922_V_() == DimensionType.THE_NETHER) {
+        //TODO - 1.16.2: Fixme - we probably need to AT the dimension type's registry key so that we can compare it
+        /*if (world.func_234922_V_() == DimensionType.THE_NETHER) {
             boost = boost.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
-        }
+        }*/
         return boost;
     }
 
@@ -144,7 +144,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     public IHeatHandler getAdjacent(Direction side) {
         if (side == Direction.DOWN) {
             TileEntity adj = MekanismUtils.getTileEntity(getWorld(), pos.down());
-            return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
+            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
         }
         return null;
     }

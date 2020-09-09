@@ -153,7 +153,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             int width = minecraft.fontRenderer.func_238414_a_(type.getShortText());
             matrix.translate(x, y, 0);
             matrix.scale(0.6F, 0.6F, 0.6F);
-            minecraft.fontRenderer.func_238422_b_(matrix, type.getShortText(), -width / 2F, 8, 0xCCFFFFFF);
+            minecraft.fontRenderer.func_243248_b(matrix, type.getShortText(), -width / 2F, 8, 0xCCFFFFFF);
             matrix.pop();
             position++;
         }

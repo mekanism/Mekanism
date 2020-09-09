@@ -42,6 +42,6 @@ public class ForgeEnergyCompat implements IEnergyCompat {
     @Nonnull
     @Override
     public LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side) {
-        return CapabilityUtils.getCapability(provider, CapabilityEnergy.ENERGY, side).map(ForgeStrictEnergyHandler::new);
+        return CapabilityUtils.getCapability(provider, CapabilityEnergy.ENERGY, side).lazyMap(ForgeStrictEnergyHandler::new);
     }
 }

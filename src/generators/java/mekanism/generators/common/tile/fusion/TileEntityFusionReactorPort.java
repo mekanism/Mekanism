@@ -98,7 +98,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
         if (adj instanceof TileEntityFusionReactorBlock) {
             return null;
         }
-        return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
+        return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
     }
 
     @Override

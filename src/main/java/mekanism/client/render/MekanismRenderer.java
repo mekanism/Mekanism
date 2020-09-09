@@ -32,7 +32,6 @@ import mekanism.common.lib.Color;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.LightTexture;
@@ -373,10 +372,6 @@ public class MekanismRenderer {
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>> void addChemicalSprites(TextureStitchEvent.Pre event, IForgeRegistry<CHEMICAL> chemicalRegistry) {
-        if (MekanismUtils.isGameStateInvalid()) {
-            //Exit early to avoid getting blamed for crashes due to https://github.com/MinecraftForge/MinecraftForge/issues/6374
-            return;
-        }
         for (Chemical<?> chemical : chemicalRegistry.getValues()) {
             event.addSprite(chemical.getIcon());
         }

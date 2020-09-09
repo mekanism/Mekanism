@@ -80,7 +80,7 @@ public final class FluidUtils {
 
     public static boolean handleTankInteraction(PlayerEntity player, Hand hand, ItemStack itemStack, IExtendedFluidTank fluidTank) {
         ItemStack copyStack = StackUtils.size(itemStack, 1);
-        Optional<IFluidHandlerItem> fluidHandlerItem = MekanismUtils.toOptional(FluidUtil.getFluidHandler(copyStack));
+        Optional<IFluidHandlerItem> fluidHandlerItem = FluidUtil.getFluidHandler(copyStack).resolve();
         if (fluidHandlerItem.isPresent()) {
             IFluidHandlerItem handler = fluidHandlerItem.get();
             FluidStack fluidInItem;

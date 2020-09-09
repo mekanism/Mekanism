@@ -157,7 +157,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                     if (!world.isBlockModifiable(player, pos)) {
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
-                    Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
+                    Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack).resolve();
                     if (!capability.isPresent()) {
                         //If something went wrong and we don't have a fluid handler on our tank, then fail
                         return new ActionResult<>(ActionResultType.FAIL, stack);

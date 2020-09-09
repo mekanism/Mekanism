@@ -13,7 +13,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
 import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsLang;
@@ -42,7 +41,7 @@ public class ItemHohlraum extends Item {
     public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
             //Ensure the capability is not null, as the first call to addInformation happens before capability injection
-            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+            Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
             if (capability.isPresent()) {
                 IGasHandler gasHandlerItem = capability.get();
                 if (gasHandlerItem.getTanks() > 0) {

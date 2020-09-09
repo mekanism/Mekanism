@@ -18,7 +18,6 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedInventory;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -65,7 +64,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         }
         Item item = stack.getItem();
         boolean isBin = item instanceof ItemBlockBin;
-        Optional<IItemHandler> capability = MekanismUtils.toOptional(stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY));
+        Optional<IItemHandler> capability = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
         List<IInventorySlot> slots = new ArrayList<>();
         if (capability.isPresent()) {
             IItemHandler itemHandler = capability.get();

@@ -29,7 +29,7 @@ public final class InventoryUtils {
 
     @Nullable
     public static IItemHandler assertItemHandler(String desc, TileEntity tile, Direction side) {
-        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side));
+        Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).resolve();
         if (capability.isPresent()) {
             return capability.get();
         }

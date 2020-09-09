@@ -1,6 +1,5 @@
 package mekanism.common.inventory.slot.chemical;
 
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -34,13 +33,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     @Nullable
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
     HANDLER getCapability(ItemStack stack, Capability<HANDLER> capability) {
-        if (!stack.isEmpty()) {
-            Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
-            if (cap.isPresent()) {
-                return cap.get();
-            }
-        }
-        return null;
+        return stack.isEmpty() ? null : stack.getCapability(capability).resolve().orElse(null);
     }
 
     /**

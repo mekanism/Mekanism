@@ -65,7 +65,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
         if (!importWithoutFilter && getFilters().isEmpty()) {
             return;
         }
-        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(back, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, getDirection()));
+        Optional<IItemHandler> capability = CapabilityUtils.getCapability(back, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, getDirection()).resolve();
         if (!capability.isPresent()) {
             return;
         }

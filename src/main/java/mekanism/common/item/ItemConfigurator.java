@@ -127,7 +127,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     return ActionResultType.SUCCESS;
                 }
                 if (SecurityUtils.canAccess(player, tile)) {
-                    Optional<IConfigurable> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side));
+                    Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).resolve();
                     if (capability.isPresent()) {
                         IConfigurable config = capability.get();
                         if (player.isSneaking()) {

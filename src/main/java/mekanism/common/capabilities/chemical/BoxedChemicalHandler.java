@@ -14,7 +14,6 @@ import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
 
@@ -26,7 +25,7 @@ public class BoxedChemicalHandler {
     @Nullable
     public <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> IChemicalHandler<CHEMICAL, STACK> getHandlerFor(ChemicalType chemicalType) {
         if (handlers.containsKey(chemicalType)) {
-            Optional<? extends IChemicalHandler<?, ?>> handler = MekanismUtils.toOptional(handlers.get(chemicalType));
+            Optional<? extends IChemicalHandler<?, ?>> handler = handlers.get(chemicalType).resolve();
             if (handler.isPresent()) {
                 return (IChemicalHandler<CHEMICAL, STACK>) handler.get();
             }

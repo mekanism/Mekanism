@@ -93,7 +93,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         if (tile != null) {
             TOPLookingAtHelper helper = new TOPLookingAtHelper(info);
             MultiblockData structure = LookingAtUtils.getMultiblock(tile);
-            Optional<IStrictEnergyHandler> energyCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null));
+            Optional<IStrictEnergyHandler> energyCapability = CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null).resolve();
             if (energyCapability.isPresent()) {
                 LookingAtUtils.displayEnergy(helper, energyCapability.get());
             } else if (structure != null && structure.isFormed()) {
@@ -108,7 +108,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
             if (mode == requiredMode) {
                 //Fluid - only add it to our own tiles in which we disable the default display for
                 if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
-                    Optional<IFluidHandler> fluidCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null));
+                    Optional<IFluidHandler> fluidCapability = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).resolve();
                     if (fluidCapability.isPresent()) {
                         LookingAtUtils.displayFluid(helper, fluidCapability.get());
                     } else if (structure != null && structure.isFormed()) {

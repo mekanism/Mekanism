@@ -129,7 +129,7 @@ public class PacketDropperUse {
                 tank.setEmpty();
             }
         } else {
-            Optional<IChemicalHandler<CHEMICAL, STACK>> cap = MekanismUtils.toOptional(stack.getCapability(ChemicalUtil.getCapabilityForChemical(tank)));
+            Optional<IChemicalHandler<CHEMICAL, STACK>> cap = stack.getCapability(ChemicalUtil.getCapabilityForChemical(tank)).resolve();
             if (cap.isPresent()) {
                 IChemicalHandler<CHEMICAL, STACK> handler = cap.get();
                 if (handler instanceof IMekanismChemicalHandler) {
@@ -156,7 +156,7 @@ public class PacketDropperUse {
             fluidTank.setEmpty();
             return;
         }
-        Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
+        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack).resolve();
         if (capability.isPresent()) {
             IFluidHandlerItem fluidHandlerItem = capability.get();
             if (fluidHandlerItem instanceof IMekanismFluidHandler) {

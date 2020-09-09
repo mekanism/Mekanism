@@ -66,11 +66,13 @@ public class ChemicalUtil {
         }
     }
 
-    public static <HANDLER extends IChemicalHandler<?, ?>> Capability<HANDLER> getCapabilityForChemical(ChemicalStack<?> stack) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> Capability<HANDLER>
+    getCapabilityForChemical(STACK stack) {
         return getCapabilityForChemical(stack.getType());
     }
 
-    public static <HANDLER extends IChemicalHandler<?, ?>> Capability<HANDLER> getCapabilityForChemical(IChemicalTank<?, ?> tank) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> Capability<HANDLER>
+    getCapabilityForChemical(IChemicalTank<CHEMICAL, STACK> tank) {
         //Note: We just use getEmptyStack as it still has enough information
         return getCapabilityForChemical(tank.getEmptyStack());
     }
@@ -232,7 +234,7 @@ public class ChemicalUtil {
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> boolean hasChemical(
           ItemStack stack, Predicate<STACK> validityCheck, Capability<HANDLER> capability) {
-        Optional<HANDLER> cap = MekanismUtils.toOptional(stack.getCapability(capability));
+        Optional<HANDLER> cap = stack.getCapability(capability).resolve();
         if (cap.isPresent()) {
             HANDLER handler = cap.get();
             for (int tank = 0; tank < handler.getTanks(); tank++) {

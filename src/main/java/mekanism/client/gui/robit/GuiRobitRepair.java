@@ -95,7 +95,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
             if (flag) {
                 int width = getXSize() - 8 - getStringWidth(component) - 2;
                 fill(matrix, width - 2, 67, getXSize() - 8, 79, 0x4F000000);
-                getFont().func_238407_a_(matrix, component, width, 69.0F, k);
+                getFont().func_243246_a(matrix, component, width, 69.0F, k);
                 MekanismRenderer.resetColor();
             }
         }

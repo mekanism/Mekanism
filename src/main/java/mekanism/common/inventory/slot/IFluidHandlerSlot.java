@@ -37,7 +37,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             } else if (editMode == ContainerEditMode.EMPTY) {
                 fillTank(outputSlot);
             } else if (editMode == ContainerEditMode.BOTH) {
-                Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(getStack()));
+                Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(getStack()).resolve();
                 if (cap.isPresent()) {
                     IFluidHandlerItem fluidHandlerItem = cap.get();
                     boolean hasEmpty = false;
@@ -76,7 +76,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     default void fillTank(IInventorySlot outputSlot) {
         if (!isEmpty()) {
             //Try filling from the tank's item
-            Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(getStack()));
+            Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(getStack()).resolve();
             if (capability.isPresent()) {
                 IFluidHandlerItem itemFluidHandler = capability.get();
                 int itemTanks = itemFluidHandler.getTanks();
@@ -142,7 +142,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     return;
                 }
                 ItemStack inputCopy = StackUtils.size(getStack(), 1);
-                Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(inputCopy));
+                Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(inputCopy).resolve();
                 if (cap.isPresent()) {
                     //The capability should be present based on checks that happen before this method, but verify to make sure it is present
                     IFluidHandlerItem fluidHandlerItem = cap.get();
@@ -150,7 +150,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     // and it does not actually matter that we are directly executing on the item
                     int toDrain = fluidHandlerItem.fill(fluidInTank, FluidAction.EXECUTE);
                     if (getCount() == 1) {
-                        Optional<IFluidHandlerItem> containerCap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(fluidHandlerItem.getContainer()));
+                        Optional<IFluidHandlerItem> containerCap = FluidUtil.getFluidHandler(fluidHandlerItem.getContainer()).resolve();
                         if (containerCap.isPresent() && containerCap.get().fill(fluidInTank, FluidAction.SIMULATE) > 0) {
                             //If we have a single item in the input slot, and we can continue to fill it after
                             // our current fill, then mark that we don't want to move it to the output slot yet
@@ -194,7 +194,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         }
 
         ItemStack input = StackUtils.size(getStack(), 1);
-        Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(input));
+        Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(input).resolve();
         if (!cap.isPresent()) {
             //The capability should be present based on checks that happen before this method, but if for some reason it isn't just exit
             return false;
@@ -208,7 +208,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             return false;
         }
         if (getCount() == 1) {
-            Optional<IFluidHandlerItem> containerCap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(fluidHandlerItem.getContainer()));
+            Optional<IFluidHandlerItem> containerCap = FluidUtil.getFluidHandler(fluidHandlerItem.getContainer()).resolve();
             if (containerCap.isPresent() && !containerCap.get().drain(Integer.MAX_VALUE, FluidAction.SIMULATE).isEmpty()) {
                 //If we have a single item in the input slot, and we can continue to drain from it
                 // after our current drain, then we allow for draining and actually fill our handler
@@ -259,7 +259,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     default boolean fillTank() {
         if (getCount() == 1) {
             //Try filling from the tank's item
-            Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(getStack()));
+            Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(getStack()).resolve();
             if (capability.isPresent()) {
                 IFluidHandlerItem itemFluidHandler = capability.get();
                 int tanks = itemFluidHandler.getTanks();

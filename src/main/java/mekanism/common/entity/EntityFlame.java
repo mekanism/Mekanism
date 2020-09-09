@@ -150,7 +150,8 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
                 PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
                 BlockPos sidePos = hitPos.offset(hitSide);
                 BlockState hitState = world.getBlockState(hitPos);
-                if (AbstractFireBlock.canLightBlock(world, sidePos)) {
+                //TODO - 1.16.2: Re-evaluate, make sure this lights things like planks on fire properly?
+                if (AbstractFireBlock.canLightBlock(world, sidePos, hitSide)) {
                     world.setBlockState(sidePos, AbstractFireBlock.getFireForPlacement(world, sidePos));
                 } else if (CampfireBlock.canBeLit(hitState)) {
                     world.setBlockState(hitPos, hitState.with(BlockStateProperties.LIT, true));

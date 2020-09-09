@@ -75,15 +75,10 @@ import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
-import mekanism.common.tags.MekanismTagManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.resources.IFutureReloadListener;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.resources.SimpleReloadableResourceManager;
-import net.minecraft.tags.NetworkTagManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -173,7 +168,6 @@ public class Mekanism {
     public static final KeySync keyMap = new KeySync();
     public static final Set<Coord4D> activeVibrators = new ObjectOpenHashSet<>();
 
-    private MekanismTagManager mekanismTagManager;
     private ReloadListener recipeCacheManager;
 
     public Mekanism() {
@@ -189,7 +183,6 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::onWorldUnload);
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
-        MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
         MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
@@ -208,10 +201,10 @@ public class Mekanism {
         MekanismPlacements.PLACEMENTS.register(modEventBus);
         MekanismFeatures.FEATURES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
-        MekanismGases.GASES.createAndRegister(modEventBus, "gas");
-        MekanismInfuseTypes.INFUSE_TYPES.createAndRegister(modEventBus, "infuse_type");
-        MekanismPigments.PIGMENTS.createAndRegister(modEventBus, "pigment");
-        MekanismSlurries.SLURRIES.createAndRegister(modEventBus, "slurry");
+        MekanismGases.GASES.createAndRegisterWithTags(modEventBus, "gas", "gases");
+        MekanismInfuseTypes.INFUSE_TYPES.createAndRegisterWithTags(modEventBus, "infuse_type", "infuse_types");
+        MekanismPigments.PIGMENTS.createAndRegisterWithTags(modEventBus, "pigment", "pigments");
+        MekanismSlurries.SLURRIES.createAndRegisterWithTags(modEventBus, "slurry", "slurries");
         modEventBus.addGenericListener(Gas.class, this::registerGases);
         modEventBus.addGenericListener(InfuseType.class, this::registerInfuseTypes);
         modEventBus.addGenericListener(Pigment.class, this::registerPigments);
@@ -246,18 +239,6 @@ public class Mekanism {
         return new ResourceLocation(Mekanism.MODID, path);
     }
 
-    private void setTagManager(MekanismTagManager manager) {
-        if (mekanismTagManager == null) {
-            mekanismTagManager = manager;
-        } else {
-            logger.warn("Mekanism Tag Manager has already been set.");
-        }
-    }
-
-    public MekanismTagManager getTagManager() {
-        return mekanismTagManager;
-    }
-
     private void setRecipeCacheManager(ReloadListener manager) {
         if (recipeCacheManager == null) {
             recipeCacheManager = manager;
@@ -272,30 +253,6 @@ public class Mekanism {
 
     private void onTagsReload(TagsUpdatedEvent event) {
         TagCache.resetTagCaches();
-    }
-
-    private void addReloadListeners(AddReloadListenerEvent event) {
-        boolean added = false;
-        IResourceManager resourceManager = event.getDataPackRegistries().getResourceManager();
-        if (resourceManager instanceof SimpleReloadableResourceManager) {
-            //Note: We "hack" it so that our tag manager gets registered directly after the normal tag manager
-            // to ensure that it is before the recipe manager and that the custom tags can be properly resolved
-            //TODO: It would make sense to eventually make a PR to forge to make custom tags easier to do
-            SimpleReloadableResourceManager manager = (SimpleReloadableResourceManager) resourceManager;
-            for (int i = 0; i < manager.reloadListeners.size(); i++) {
-                IFutureReloadListener listener = manager.reloadListeners.get(i);
-                if (listener instanceof NetworkTagManager) {
-                    manager.reloadListeners.add(i + 1, getTagManager());
-                    manager.initTaskQueue.add(i + 1, getTagManager());
-                    added = true;
-                    break;
-                }
-            }
-        }
-        if (!added) {
-            //Fallback to trying to just add it even though this is probably too late to do so properly
-            event.addListener(getTagManager());
-        }
     }
 
     private void addReloadListenersLowest(AddReloadListenerEvent event) {
@@ -336,7 +293,6 @@ public class Mekanism {
     private void commonSetup(FMLCommonSetupEvent event) {
         hooks.hookCommonSetup();
         Capabilities.registerCapabilities();
-        setTagManager(new MekanismTagManager());
         setRecipeCacheManager(new ReloadListener());
 
         DeferredWorkQueue.runLater(() -> {

@@ -18,7 +18,7 @@ import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.SpawnListEntry;
+import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -26,8 +26,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class SpawnHelper {
 
     public static void addSpawns() {
+        //TODO - 1.16.2: Re-evaluate if this is being ran too early
         for (Biome biome : ForgeRegistries.BIOMES) {
-            List<SpawnListEntry> monsterSpawns = biome.getSpawns(EntityClassification.MONSTER);
+            List<MobSpawnInfo.Spawners> monsterSpawns = biome.func_242433_b().func_242559_a(EntityClassification.MONSTER);
             //Fail quick if no monsters can spawn in this biome anyways
             if (!monsterSpawns.isEmpty()) {
                 ResourceLocation biomeName = biome.getRegistryName();
@@ -39,7 +40,7 @@ public class SpawnHelper {
             }
         }
         //Add special spawns to the fortress for baby wither skeletons and skeletons
-        List<SpawnListEntry> fortressSpawns = Structure.field_236378_n_.getSpawnList();
+        List<MobSpawnInfo.Spawners> fortressSpawns = Structure.field_236378_n_.getSpawnList();
         addSpawn(AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityType.WITHER_SKELETON, MekanismAdditionsConfig.common.babyWitherSkeleton, fortressSpawns);
         addSpawn(AdditionsEntityTypes.BABY_SKELETON, EntityType.SKELETON, MekanismAdditionsConfig.common.babySkeleton, fortressSpawns);
 
@@ -58,29 +59,30 @@ public class SpawnHelper {
     }
 
     private static void addSpawn(IEntityTypeProvider entityTypeProvider, EntityType<?> parent, AdditionsCommonConfig.SpawnConfig spawnConfig,
-          List<SpawnListEntry> monsterSpawns) {
+          List<MobSpawnInfo.Spawners> monsterSpawns) {
         if (spawnConfig.shouldSpawn.get()) {
             addSpawn(entityTypeProvider, parent, spawnConfig, monsterSpawns, "to nether fortresses");
         }
     }
 
     private static void addSpawn(IEntityTypeProvider entityTypeProvider, EntityType<?> parent, AdditionsCommonConfig.SpawnConfig spawnConfig,
-          List<SpawnListEntry> monsterSpawns, ResourceLocation biomeName) {
+          List<MobSpawnInfo.Spawners> monsterSpawns, ResourceLocation biomeName) {
         if (spawnConfig.shouldSpawn.get() && !spawnConfig.biomeBlackList.get().contains(biomeName)) {
             addSpawn(entityTypeProvider, parent, spawnConfig, monsterSpawns, "in biome " + biomeName);
         }
     }
 
     private static void addSpawn(IEntityTypeProvider entityTypeProvider, EntityType<?> parent, AdditionsCommonConfig.SpawnConfig spawnConfig,
-          List<SpawnListEntry> monsterSpawns, String location) {
-        monsterSpawns.stream().filter(monsterSpawn -> monsterSpawn.entityType == parent).findFirst().ifPresent(parentEntry -> {
+          List<MobSpawnInfo.Spawners> monsterSpawns, String location) {
+        monsterSpawns.stream().filter(monsterSpawn -> monsterSpawn.field_242588_c == parent).findFirst().ifPresent(parentEntry -> {
             //If the adult mob can spawn in this biome let the baby mob spawn in it
             //Note: We adjust the mob's spawning based on the adult's spawn rates
             EntityType<?> entityType = entityTypeProvider.getEntityType();
             int weight = (int) Math.ceil(parentEntry.itemWeight * spawnConfig.weightPercentage.get());
-            int minSize = (int) Math.ceil(parentEntry.minGroupCount * spawnConfig.minSizePercentage.get());
-            int maxSize = (int) Math.ceil(parentEntry.maxGroupCount * spawnConfig.maxSizePercentage.get());
-            monsterSpawns.add(new SpawnListEntry(entityType, weight, minSize, Math.max(minSize, maxSize)));
+            int minSize = (int) Math.ceil(parentEntry.field_242589_d * spawnConfig.minSizePercentage.get());
+            int maxSize = (int) Math.ceil(parentEntry.field_242590_e * spawnConfig.maxSizePercentage.get());
+            //TODO - 1.16.2: FIXME - monsterSpawns is immutable now
+            //monsterSpawns.add(new MobSpawnInfo.Spawners(entityType, weight, minSize, Math.max(minSize, maxSize)));
             Mekanism.logger.debug("Adding spawn rate for {} {}, with weight: {}, minSize: {}, maxSize: {}", entityType.getRegistryName(),
                   location, weight, minSize, maxSize);
         });

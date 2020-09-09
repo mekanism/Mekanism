@@ -33,7 +33,7 @@ public interface IFancyFontRenderer {
     }
 
     default int drawString(MatrixStack matrix, ITextComponent component, int x, int y, int color) {
-        return getFont().func_238422_b_(matrix, component, x, y, color);
+        return getFont().func_243248_b(matrix, component, x, y, color);
     }
 
     default int getStringWidth(ITextComponent component) {

@@ -14,7 +14,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -40,7 +39,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
 
     protected static Predicate<ItemStack> getInputPredicate(IExtendedFluidTank fluidTank) {
         return (stack) -> {
-            Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
+            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
                 boolean hasEmpty = false;
@@ -71,7 +70,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> {
-            Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
+            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
             if (cap.isPresent()) {
                 boolean mode = modeSupplier.getAsBoolean();
                 //Mode == true if fluid to gas
@@ -96,7 +95,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             if (capability.isPresent()) {
                 if (modeSupplier.getAsBoolean()) {
                     //Input tank, so we want to fill it
-                    IFluidHandlerItem fluidHandlerItem = MekanismUtils.toOptional(capability).get();
+                    IFluidHandlerItem fluidHandlerItem = capability.resolve().get();
                     for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
                         FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
                         if (!fluidInTank.isEmpty() && fluidTank.isFluidValid(fluidInTank)) {
@@ -118,7 +117,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     public static FluidInventorySlot fill(IExtendedFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> {
-            Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
+            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
                 for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
@@ -155,7 +154,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
                 if (fluidInTank.isEmpty()) {
                     return true;
                 }
-                IFluidHandlerItem itemFluidHandler = MekanismUtils.toOptional(cap).get();
+                IFluidHandlerItem itemFluidHandler = cap.resolve().get();
                 //True if the tanks contents are valid and we can fill the item with any of the contents
                 return itemFluidHandler.fill(fluidInTank, FluidAction.SIMULATE) > 0;
             }
@@ -165,7 +164,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
 
     //TODO: Should we make this also have the fluid type have to match a desired type???
     private static boolean isNonFullFluidContainer(LazyOptional<IFluidHandlerItem> capability) {
-        Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(capability);
+        Optional<IFluidHandlerItem> cap = capability.resolve();
         if (cap.isPresent()) {
             IFluidHandlerItem fluidHandler = cap.get();
             for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {

@@ -17,7 +17,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -104,7 +103,7 @@ public class ItemCanteen extends Item implements IGasItem {
     }
 
     private GasStack getGas(ItemStack stack) {
-        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem instanceof IMekanismGasHandler) {

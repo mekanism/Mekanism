@@ -4,11 +4,11 @@ import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.PlacementDeferredRegister;
 import mekanism.common.registration.impl.PlacementRegistryObject;
 import mekanism.common.world.TopSolidRetrogenPlacement;
-import net.minecraft.world.gen.placement.FrequencyConfig;
+import net.minecraft.world.gen.placement.NoPlacementConfig;
 
 public class MekanismPlacements {
 
     public static final PlacementDeferredRegister PLACEMENTS = new PlacementDeferredRegister(Mekanism.MODID);
 
-    public static final PlacementRegistryObject<FrequencyConfig, TopSolidRetrogenPlacement> TOP_SOLID_RETROGEN = PLACEMENTS.register("top_solid_retrogen", () -> new TopSolidRetrogenPlacement(FrequencyConfig.field_236971_a_));
+    public static final PlacementRegistryObject<NoPlacementConfig, TopSolidRetrogenPlacement> TOP_SOLID_RETROGEN = PLACEMENTS.register("top_solid_retrogen", () -> new TopSolidRetrogenPlacement(NoPlacementConfig.field_236555_a_));
 }

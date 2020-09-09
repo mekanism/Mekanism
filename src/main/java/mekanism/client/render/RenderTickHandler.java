@@ -244,7 +244,7 @@ public class RenderTickHandler {
                             ItemStack currentItem = p.getHeldItemMainhand();
                             if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem)) {
                                 Pos3D flameVec;
-                                if (player == p && minecraft.gameSettings.thirdPersonView == 0) {
+                                if (player == p && minecraft.gameSettings.func_243230_g().func_243192_a()) {
                                     flameVec = new Pos3D(1, 1, 1).multiply(p.getLook(1)).rotateYaw(5).translate(0, p.getEyeHeight() - 0.1, 0);
                                 } else {
                                     double flameXCoord = -0.2;
@@ -440,7 +440,7 @@ public class RenderTickHandler {
                         int x = minecraft.getMainWindow().getScaledWidth();
                         int y = minecraft.getMainWindow().getScaledHeight();
                         int color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F).argb();
-                        minecraft.fontRenderer.func_238422_b_(matrix, scrollTextComponent, x / 2 - minecraft.fontRenderer.func_238414_a_(scrollTextComponent) / 2, y - 60, color);
+                        minecraft.fontRenderer.func_243248_b(matrix, scrollTextComponent, x / 2 - minecraft.fontRenderer.func_238414_a_(scrollTextComponent) / 2, y - 60, color);
                     }
                 }
             }
@@ -457,10 +457,10 @@ public class RenderTickHandler {
         FontRenderer font = minecraft.fontRenderer;
         // Note that we always offset by 2 pixels when left or right aligned
         if (leftSide) {
-            font.func_238407_a_(matrix, text, 2, y, color);
+            font.func_243246_a(matrix, text, 2, y, color);
         } else {
             int width = font.func_238414_a_(text) + 2;
-            font.func_238407_a_(matrix, text, window.getScaledWidth() - width, y, color);
+            font.func_243246_a(matrix, text, window.getScaledWidth() - width, y, color);
         }
     }
 

@@ -18,7 +18,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 
 public class EntityBabyStray extends StrayEntity {
@@ -26,7 +26,7 @@ public class EntityBabyStray extends StrayEntity {
     private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.createKey(EntityBabyStray.class, DataSerializers.BOOLEAN);
 
     //Copy of stray spawn restrictions
-    public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, IWorld world, SpawnReason reason, BlockPos pos, Random random) {
+    public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, IServerWorld world, SpawnReason reason, BlockPos pos, Random random) {
         return canMonsterSpawnInLight(type, world, reason, pos, random) && (reason == SpawnReason.SPAWNER || world.canSeeSky(pos));
     }
 

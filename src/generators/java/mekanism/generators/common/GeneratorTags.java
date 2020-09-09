@@ -28,7 +28,7 @@ public class GeneratorTags {
         public static final INamedTag<Gas> FUSION_FUEL = tag("fusion_fuel");
 
         private static INamedTag<Gas> tag(String name) {
-            return ChemicalTags.gasTag(Mekanism.rl(name));
+            return ChemicalTags.GAS.tag(Mekanism.rl(name));
         }
     }
 }

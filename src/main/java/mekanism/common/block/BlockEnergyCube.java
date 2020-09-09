@@ -149,7 +149,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
                 //TODO: Move this to being set in the variant added to the item group
                 ConfigInfo energyConfig = ((TileEntityEnergyCube) tile).configComponent.getConfig(TransmissionType.ENERGY);
                 if (energyConfig != null) {
-                    Optional<IStrictEnergyHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY));
+                    Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
                     if (capability.isPresent()) {
                         IStrictEnergyHandler energyHandlerItem = capability.get();
                         if (energyHandlerItem.getEnergyContainerCount() > 0) {
