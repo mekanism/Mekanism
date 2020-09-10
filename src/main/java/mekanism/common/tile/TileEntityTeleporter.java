@@ -265,7 +265,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     @Override
                     public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
                         Entity repositionedEntity = repositionEntity.apply(false);
-                        repositionedEntity.setPositionAndUpdate(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
+                        if (repositionedEntity != null) {
+                            repositionedEntity.setPositionAndUpdate(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
+                        }
                         return repositionedEntity;
                     }
                 });
