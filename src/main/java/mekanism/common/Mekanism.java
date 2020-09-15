@@ -186,6 +186,7 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
         MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, GenHandler::onBiomeLoad);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);

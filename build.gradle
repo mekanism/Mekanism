@@ -276,7 +276,7 @@ repositories {
     }
     maven {
         name 'prog'
-        url 'http://dvs1.progwml6.com/files/maven'
+        url 'https://dvs1.progwml6.com/files/maven'
     }
     maven {
         name 'tterrag'
@@ -306,8 +306,8 @@ dependencies {
 
     compileOnly "org.jetbrains:annotations:${jb_annotations}"
 
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-1.16.2:${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.16.2:${jei_version}")
 
     runtimeOnly fg.deobf("team.chisel.ctm:CTM:MC1.16.1-${ctm_version}")
 

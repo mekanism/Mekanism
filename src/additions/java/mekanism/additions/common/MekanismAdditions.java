@@ -30,6 +30,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -74,6 +75,8 @@ public class MekanismAdditions implements IModule {
         AdditionsBlocks.BLOCKS.register(modEventBus);
         AdditionsEntityTypes.ENTITY_TYPES.register(modEventBus);
         AdditionsSounds.SOUND_EVENTS.register(modEventBus);
+
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, SpawnHelper::onBiomeLoad);
 
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());

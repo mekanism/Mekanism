@@ -4,13 +4,13 @@ import java.lang.ref.WeakReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.LocatableSound;
+import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 
-public abstract class PlayerSound extends LocatableSound implements ITickableSound {
+//TODO - 1.16.2: Should this extend EntityTickableSound
+public abstract class PlayerSound extends TickableSound {
 
     @Nonnull
     private WeakReference<PlayerEntity> playerReference;
@@ -20,8 +20,6 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
 
     private float fadeUpStep = 0.1f;
     private float fadeDownStep = 0.1f;
-
-    private boolean donePlaying = false;
 
     public PlayerSound(@Nonnull PlayerEntity player, @Nonnull SoundEvent sound) {
         super(sound, SoundCategory.PLAYERS);
@@ -81,7 +79,8 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
     public void tick() {
         PlayerEntity player = getPlayer();
         if (player == null || !player.isAlive()) {
-            this.donePlaying = true;
+            //TODO - 1.16.2: Re-evaluate sounds because I feel like we may not be properly reinitializing the sounds after we mark it as being done playing
+            func_239509_o_();
             this.volume = 0.0F;
             return;
         }
@@ -97,16 +96,25 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
         }
     }
 
-    @Override
-    public boolean isDonePlaying() {
-        return donePlaying;
-    }
-
     public abstract boolean shouldPlaySound(@Nonnull PlayerEntity player);
 
     @Override
     public float getVolume() {
         return super.getVolume() * MekanismConfig.client.baseSoundVolume.get();
+    }
+
+    @Override
+    public boolean canBeSilent() {
+        return true;
+    }
+
+    @Override
+    public boolean func_230510_t_() {
+        PlayerEntity player = getPlayer();
+        if (player == null) {
+            return super.func_230510_t_();
+        }
+        return !player.isSilent();
     }
 
     public enum SoundType {

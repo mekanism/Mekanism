@@ -54,7 +54,7 @@ public class PlayerState {
     public void clearPlayer(UUID uuid) {
         activeJetpacks.remove(uuid);
         activeScubaMasks.remove(uuid);
-        stepAssistedPlayers.remove(uuid);
+        stepAssistedPlayers.removeFloat(uuid);
         activeGravitationalModulators.remove(uuid);
         flightInfoMap.remove(uuid);
         activeFlamethrowers.remove(uuid);

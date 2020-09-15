@@ -30,7 +30,7 @@ public class WorldConfig extends BaseMekanismConfig {
             ores.put(ore, new OreConfig(this, builder, ore.getResource().getRegistrySuffix(), true, ore.getPerChunk(), ore.getMaxVeinSize(), ore.getBottomOffset(),
                   ore.getTopOffset(), ore.getMaxHeight()));
         }
-        salt = new SaltConfig(this, builder, true, 2, 6, 1);
+        salt = new SaltConfig(this, builder, true, 2, 2, 3, 1);
         builder.pop();
         configSpec = builder.build();
     }
@@ -60,8 +60,6 @@ public class WorldConfig extends BaseMekanismConfig {
         public final CachedBooleanValue shouldGenerate;
         public final CachedIntValue perChunk;
         public final CachedIntValue maxVeinSize;
-        public final CachedIntValue bottomOffset;
-        public final CachedIntValue topOffset;
         public final CachedIntValue maxHeight;
 
         private OreConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, String ore, boolean shouldGenerate, int perChunk, int maxVeinSize, int bottomOffset,
@@ -73,27 +71,12 @@ public class WorldConfig extends BaseMekanismConfig {
             //TODO: Improve upon it at some point so that the max vein size then gets determined by per chunk as well
             this.perChunk = CachedIntValue.wrap(config, builder.comment("Chance that " + ore + " generates in a chunk.")
                   .defineInRange("perChunk", perChunk, 1, 512));
+            //TODO - 1.16.2: Re-evaluate the naming of these two config options as well as their descriptiongs
             this.maxVeinSize = CachedIntValue.wrap(config, builder.comment("Maximum number of blocks in a vein of " + ore + ".")
                   .defineInRange("maxVeinSize", maxVeinSize, 1, 512));
             //TODO: See if we can use world.getHeight() somehow
-            this.maxHeight = CachedIntValue.wrap(config, builder.comment("Base maximum height (exclusive) that veins of " + ore + " can spawn. Height is calculated by: random.nextInt(maxHeight - topOffset) + bottomOffset")
+            this.maxHeight = CachedIntValue.wrap(config, builder.comment("Maximum height (exclusive) that veins of " + ore + " can spawn.")
                   .defineInRange("maxHeight", maxHeight, 1, 256));
-            this.topOffset = CachedIntValue.wrap(config, builder.comment("Top offset for calculating height that veins of " + ore + " can spawn. Height is calculated by: random.nextInt(maxHeight - topOffset) + bottomOffset")
-                  .define("topOffset", topOffset, value -> {
-                      if (value instanceof Integer) {
-                          int val = (int) value;
-                          return val >= 0 && val < this.maxHeight.get();
-                      }
-                      return false;
-                  }));
-            this.bottomOffset = CachedIntValue.wrap(config, builder.comment("Bottom offset for calculating height that veins of " + ore + " can spawn. Height is calculated by: random.nextInt(maxHeight - topOffset) + bottomOffset")
-                  .define("bottomOffset", bottomOffset, value -> {
-                      if (value instanceof Integer) {
-                          int val = (int) value;
-                          return val >= 0 && val <= 256 - this.maxHeight.get() + this.topOffset.get();
-                      }
-                      return false;
-                  }));
             builder.pop();
         }
     }
@@ -103,10 +86,11 @@ public class WorldConfig extends BaseMekanismConfig {
 
         public final CachedBooleanValue shouldGenerate;
         public final CachedIntValue perChunk;
-        public final CachedIntValue maxVeinSize;
+        public final CachedIntValue baseRadius;
+        public final CachedIntValue spread;
         public final CachedIntValue ySize;
 
-        private SaltConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, boolean shouldGenerate, int perChunk, int maxVeinSize, int ySize) {
+        private SaltConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, boolean shouldGenerate, int perChunk, int baseRadius, int spread, int ySize) {
             builder.comment("Generation Settings for salt.").push("salt");
             this.shouldGenerate = CachedBooleanValue.wrap(config, builder.comment("Determines if salt should be added to world generation.")
                   .define("shouldGenerate", shouldGenerate));
@@ -114,8 +98,10 @@ public class WorldConfig extends BaseMekanismConfig {
             //TODO: Improve upon it at some point so that the max vein size then gets determined by per chunk as well
             this.perChunk = CachedIntValue.wrap(config, builder.comment("Chance that salt generates in a chunk.")
                   .defineInRange("perChunk", perChunk, 1, 65536));
-            this.maxVeinSize = CachedIntValue.wrap(config, builder.comment("Maximum number of blocks in a vein of salt.")
-                  .defineInRange("maxVeinSize", maxVeinSize, 1, 65536));
+            this.baseRadius = CachedIntValue.wrap(config, builder.comment("Base radius of a vein of salt.")
+                  .defineInRange("baseRadius", baseRadius, 1, 65536));
+            this.spread = CachedIntValue.wrap(config, builder.comment("Extended variability (spread) for the radius in a vein of salt.")
+                  .defineInRange("spread", spread, 1, 65536));
             //TODO: Improve the max value of ySize
             this.ySize = CachedIntValue.wrap(config, builder.comment("Number of blocks to extend up and down when placing a vein of salt.")
                   .defineInRange("ySize", ySize, 0, 127));

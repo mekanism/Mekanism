@@ -44,6 +44,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -208,6 +209,7 @@ public class RadiationManager {
         if (!MekanismConfig.general.radiationEnabled.get()) {
             return;
         }
+        LazyOptional<IRadiationEntity> radiationCap = entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY);
         // each tick, there is a 1/20 chance we will apply radiation to each player
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
         if (entity.world.getRandom().nextInt(20) == 0) {
@@ -216,7 +218,7 @@ public class RadiationManager {
                 // apply radiation to the player
                 radiate(entity, magnitude / 3_600D); // convert to Sv/s
             }
-            entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(IRadiationEntity::decay);
+            radiationCap.ifPresent(IRadiationEntity::decay);
             if (entity instanceof ServerPlayerEntity) {
                 ServerPlayerEntity player = (ServerPlayerEntity) entity;
                 RadiationScale scale = RadiationScale.get(magnitude);
@@ -227,7 +229,7 @@ public class RadiationManager {
             }
         }
         // update the radiation capability (decay, sync, effects)
-        entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.update(entity));
+        radiationCap.ifPresent(c -> c.update(entity));
     }
 
     public void tickServerWorld(World world) {

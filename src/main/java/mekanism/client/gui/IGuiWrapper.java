@@ -29,8 +29,7 @@ public interface IGuiWrapper {
     }
 
     default void displayTooltips(MatrixStack matrix, List<ITextComponent> components, int xAxis, int yAxis, int maxWidth) {
-        //TODO - 1.16.2: https://github.com/MinecraftForge/MinecraftForge/pull/7268
-        //net.minecraftforge.fml.client.gui.GuiUtils.drawHoveringText(matrix, components, xAxis, yAxis, getWidth(), getHeight(), maxWidth, getFont());
+        net.minecraftforge.fml.client.gui.GuiUtils.drawHoveringText(matrix, components, xAxis, yAxis, getWidth(), getHeight(), maxWidth, getFont());
     }
 
     default int getLeft() {
