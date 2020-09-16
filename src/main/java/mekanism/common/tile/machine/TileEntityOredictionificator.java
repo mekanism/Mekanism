@@ -268,7 +268,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
                 filterTag = ItemTags.makeWrapperTag(filterLocation.toString());
             } else {
                 //If the filter doesn't exist (because we loaded a tag that is no longer valid), then just set the filter to being empty
-                filterTag = Tag.func_241284_a_();
+                filterTag = Tag.getEmptyTag();
             }
         }
 

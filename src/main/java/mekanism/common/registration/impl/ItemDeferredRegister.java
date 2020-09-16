@@ -55,7 +55,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> registerUnburnable(String name, Function<Item.Properties, ITEM> sup) {
-        return register(name, () -> sup.apply(getMekBaseProperties().isBurnable()));
+        return register(name, () -> sup.apply(getMekBaseProperties().isImmuneToFire()));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Supplier<? extends ITEM> sup) {

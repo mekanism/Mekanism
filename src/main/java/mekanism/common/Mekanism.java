@@ -362,7 +362,7 @@ public class Mekanism {
         if (world instanceof World && !world.isRemote() && MekanismConfig.world.enableRegeneration.get()) {
             CompoundNBT levelTag = event.getData().getCompound(NBTConstants.CHUNK_DATA_LEVEL);
             if (levelTag.getInt(NBTConstants.WORLD_GEN_VERSION) < MekanismConfig.world.userGenVersion.get()) {
-                worldTickHandler.addRegenChunk(((World) world).func_234923_W_(), event.getChunk().getPos());
+                worldTickHandler.addRegenChunk(((World) world).getDimensionKey(), event.getChunk().getPos());
             }
         }
     }

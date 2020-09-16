@@ -80,7 +80,7 @@ public abstract class PlayerSound extends TickableSound {
         PlayerEntity player = getPlayer();
         if (player == null || !player.isAlive()) {
             //TODO - 1.16.2: Re-evaluate sounds because I feel like we may not be properly reinitializing the sounds after we mark it as being done playing
-            func_239509_o_();
+            finishPlaying();
             this.volume = 0.0F;
             return;
         }
@@ -109,10 +109,10 @@ public abstract class PlayerSound extends TickableSound {
     }
 
     @Override
-    public boolean func_230510_t_() {
+    public boolean shouldPlaySound() {
         PlayerEntity player = getPlayer();
         if (player == null) {
-            return super.func_230510_t_();
+            return super.shouldPlaySound();
         }
         return !player.isSilent();
     }

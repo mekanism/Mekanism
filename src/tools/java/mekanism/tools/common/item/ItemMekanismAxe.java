@@ -61,7 +61,7 @@ public class ItemMekanismAxe extends AxeItem implements IHasRepairType, IAttribu
      */
     @Override
     public float getDestroySpeed(@Nonnull ItemStack stack, BlockState state) {
-        if (field_234662_c_.contains(state.getMaterial()) || getToolTypes(stack).stream().anyMatch(state::isToolEffective) || effectiveBlocks.contains(state.getBlock())) {
+        if (EFFECTIVE_ON_MATERIALS.contains(state.getMaterial()) || getToolTypes(stack).stream().anyMatch(state::isToolEffective) || effectiveBlocks.contains(state.getBlock())) {
             return getTier().getEfficiency();
         }
         return 1;

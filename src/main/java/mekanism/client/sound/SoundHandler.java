@@ -247,7 +247,7 @@ public class SoundHandler {
                     volume = originalVolume * getTileVolumeFactor();
                 } else if (s == null) {
                     // Full on mute; go ahead and shutdown
-                    func_239509_o_();
+                    finishPlaying();
                 } else {
                     // Altered sound returned; adjust volume
                     volume = s.getVolume() * getTileVolumeFactor();

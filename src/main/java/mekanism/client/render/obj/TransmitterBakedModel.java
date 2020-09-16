@@ -158,8 +158,8 @@ public class TransmitterBakedModel implements IBakedModel {
     }
 
     @Override
-    public boolean func_230044_c_() {
-        return bakedVariant.func_230044_c_();
+    public boolean isSideLit() {
+        return bakedVariant.isSideLit();
     }
 
     @Override

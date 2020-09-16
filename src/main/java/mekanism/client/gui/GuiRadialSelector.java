@@ -150,7 +150,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             blit(matrix, Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
             // draw label
             matrix.push();
-            int width = minecraft.fontRenderer.func_238414_a_(type.getShortText());
+            int width = minecraft.fontRenderer.getStringPropertyWidth(type.getShortText());
             matrix.translate(x, y, 0);
             matrix.scale(0.6F, 0.6F, 0.6F);
             minecraft.fontRenderer.func_243248_b(matrix, type.getShortText(), -width / 2F, 8, 0xCCFFFFFF);

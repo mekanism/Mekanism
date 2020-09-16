@@ -280,7 +280,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             return;
         }
         setFollowing(false);
-        if (world.func_234923_W_() == homeLocation.dimension) {
+        if (world.getDimensionKey() == homeLocation.dimension) {
             setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
         } else {
             ServerWorld newWorld = ((ServerWorld) world).getServer().getWorld(homeLocation.dimension);

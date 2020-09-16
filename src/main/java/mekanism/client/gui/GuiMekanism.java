@@ -212,7 +212,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
         // render item tooltips
         RenderSystem.translatef(-guiLeft, -guiTop, 0);
-        func_230459_a_(matrix, mouseX, mouseY);
+        renderHoveredTooltip(matrix, mouseX, mouseY);
         RenderSystem.translatef(guiLeft, guiTop, 0);
 
         // IMPORTANT: additional hacky translation so held items render okay. re-evaluate as discussed above

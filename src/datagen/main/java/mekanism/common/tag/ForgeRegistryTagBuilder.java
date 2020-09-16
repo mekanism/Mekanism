@@ -51,7 +51,7 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
     @SafeVarargs
     public final ForgeRegistryTagBuilder<TYPE> add(RegistryKey<TYPE>... keys) {
         for (RegistryKey<TYPE> key : keys) {
-            builder.addItemEntry(key.func_240901_a_(), modID);
+            builder.addItemEntry(key.getLocation(), modID);
         }
         return this;
     }

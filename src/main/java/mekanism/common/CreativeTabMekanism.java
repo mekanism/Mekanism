@@ -20,7 +20,7 @@ public class CreativeTabMekanism extends ItemGroup {
 
     @Nonnull
     @Override
-    public ITextComponent func_242392_c() {
+    public ITextComponent getGroupName() {
         //Overwrite the lang key to match the one representing Mekanism
         return MekanismLang.MEKANISM.translate();
     }

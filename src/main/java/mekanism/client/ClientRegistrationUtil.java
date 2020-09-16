@@ -93,7 +93,7 @@ public class ClientRegistrationUtil {
     }
 
     public static void setPropertyOverride(IItemProvider itemProvider, ResourceLocation override, IItemPropertyGetter propertyGetter) {
-        ItemModelsProperties.func_239418_a_(itemProvider.getItem(), override, propertyGetter);
+        ItemModelsProperties.registerProperty(itemProvider.getItem(), override, propertyGetter);
     }
 
     public static void registerItemColorHandler(ItemColors colors, IItemColor itemColor, IItemProvider... items) {

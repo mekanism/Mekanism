@@ -342,7 +342,7 @@ public class MekanismBlocks {
     private static BlockRegistryObject<BlockResource, ItemBlockResource> registerResourceBlock(BlockResourceInfo resource) {
         return BLOCKS.registerDefaultProperties("block_" + resource.getRegistrySuffix(), () -> new BlockResource(resource), (block, properties) -> {
             if (!block.getResourceInfo().burnsInFire()) {
-                properties = properties.isBurnable();
+                properties = properties.isImmuneToFire();
             }
             return new ItemBlockResource(block, properties);
         });

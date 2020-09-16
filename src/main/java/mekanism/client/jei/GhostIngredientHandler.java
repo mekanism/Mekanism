@@ -83,8 +83,8 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
                 IGhostIngredientConsumer ghostHandler = ghostTarget.getGhostHandler();
                 if (ghostHandler != null && ghostHandler.supportsIngredient(ingredient)) {
                     Widget element = (Widget) child;
-                    //TODO - 1.16.2: Fix after mappings update getWidth_CLASH is really getHeight
-                    ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, element.x, element.y, element.getWidth(), element.getWidth_CLASH()));
+                    //TODO - 1.16.2: Fix after mappings update getHeightRealms is really getHeight
+                    ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, element.x, element.y, element.getWidth(), element.getHeightRealms()));
                 }
             }
         }

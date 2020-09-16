@@ -37,7 +37,7 @@ public interface IFancyFontRenderer {
     }
 
     default int getStringWidth(ITextComponent component) {
-        return getFont().func_238414_a_(component);
+        return getFont().getStringPropertyWidth(component);
     }
 
     default void drawCenteredText(MatrixStack matrix, ITextComponent component, float x, float y, int color) {

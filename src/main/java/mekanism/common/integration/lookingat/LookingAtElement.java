@@ -61,7 +61,7 @@ public abstract class LookingAtElement {
     }
 
     public static void renderScaledText(Minecraft mc, @Nonnull MatrixStack matrix, int x, int y, int color, int maxWidth, ITextComponent component) {
-        int length = mc.fontRenderer.func_238414_a_(component);
+        int length = mc.fontRenderer.getStringPropertyWidth(component);
         if (length <= maxWidth) {
             mc.fontRenderer.func_243248_b(matrix, component, x, y, color);
         } else {

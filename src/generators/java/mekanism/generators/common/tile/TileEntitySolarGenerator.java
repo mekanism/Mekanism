@@ -83,7 +83,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // significant penalty.
         World world = getWorld();
         if (world != null) {
-            seesSun = world.isDaytime() && canSeeSky() && world.func_230315_m_().hasSkyLight();
+            seesSun = world.isDaytime() && canSeeSky() && world.getDimensionType().hasSkyLight();
         }
 
         if (seesSun && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero()) {

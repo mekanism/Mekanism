@@ -31,7 +31,7 @@ public class CommonWorldTickHandler {
         if (chunkRegenMap == null) {
             chunkRegenMap = new Object2ObjectArrayMap<>();
         }
-        ResourceLocation dimensionName = dimension.func_240901_a_();
+        ResourceLocation dimensionName = dimension.getLocation();
         if (!chunkRegenMap.containsKey(dimensionName)) {
             LinkedList<ChunkPos> list = new LinkedList<>();
             list.add(chunkCoord);
@@ -86,7 +86,7 @@ public class CommonWorldTickHandler {
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;
             }
-            ResourceLocation dimensionName = world.func_234923_W_().func_240901_a_();
+            ResourceLocation dimensionName = world.getDimensionKey().getLocation();
             //Credit to E. Beef
             if (chunkRegenMap.containsKey(dimensionName)) {
                 Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionName);

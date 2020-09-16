@@ -27,7 +27,7 @@ public class Range3D {
 
     @Override
     public String toString() {
-        return "[Range3D: " + xMin + ", " + zMin + ", " + xMax + ", " + zMax + ", dim=" + dimension.func_240901_a_() + "]";
+        return "[Range3D: " + xMin + ", " + zMin + ", " + xMax + ", " + zMax + ", dim=" + dimension.getLocation() + "]";
     }
 
     @Override

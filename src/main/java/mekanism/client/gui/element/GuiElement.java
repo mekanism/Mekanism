@@ -52,7 +52,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Deprecated//TODO - 1.16.2: Remove this when mappings are updated/fixed
     public int getHeight() {
-        return getWidth_CLASH();
+        return getHeightRealms();
     }
 
     protected void addChild(GuiElement element) {

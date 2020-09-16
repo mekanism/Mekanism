@@ -113,7 +113,7 @@ public class HUDRenderer {
 
         matrix.push();
         for (HUDElement element : elements) {
-            int elementWidth = 24 + minecraft.fontRenderer.func_238414_a_(element.getText());
+            int elementWidth = 24 + minecraft.fontRenderer.getStringPropertyWidth(element.getText());
             curY -= 18;
             renderHUDElement(matrix, startX - elementWidth, curY, element, color, true);
         }
@@ -130,7 +130,7 @@ public class HUDRenderer {
             MekanismRenderer.resetColor();
             minecraft.fontRenderer.func_243248_b(matrix, element.getText(), x + 18, y + 5, element.getColor());
         } else {
-            AbstractGui.blit(matrix, x + minecraft.fontRenderer.func_238414_a_(element.getText()) + 2, y, 0, 0, 16, 16, 16, 16);
+            AbstractGui.blit(matrix, x + minecraft.fontRenderer.getStringPropertyWidth(element.getText()) + 2, y, 0, 0, 16, 16, 16, 16);
             MekanismRenderer.resetColor();
             minecraft.fontRenderer.func_243248_b(matrix, element.getText(), x, y + 5, element.getColor());
         }
@@ -146,7 +146,7 @@ public class HUDRenderer {
         matrix.push();
         matrix.scale(0.7F, 0.7F, 0.7F);
         ITextComponent coords = MekanismLang.GENERIC_BLOCK_POS.translate((int) minecraft.player.getPosX(), (int) minecraft.player.getPosY(), (int) minecraft.player.getPosZ());
-        minecraft.fontRenderer.func_243248_b(matrix, coords, -minecraft.fontRenderer.func_238414_a_(coords) / 2F, -4, color);
+        minecraft.fontRenderer.func_243248_b(matrix, coords, -minecraft.fontRenderer.getStringPropertyWidth(coords) / 2F, -4, color);
         matrix.pop();
         matrix.rotate(Vector3f.XP.rotationDegrees(-60));
         matrix.rotate(Vector3f.ZP.rotationDegrees(angle));

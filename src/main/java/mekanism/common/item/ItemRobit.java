@@ -81,6 +81,6 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
 
     public ITextComponent getName(ItemStack stack) {
         String name = ItemDataUtils.getString(stack, NBTConstants.NAME);
-        return name.isEmpty() ? MekanismLang.ROBIT.translate() : ITextComponent.Serializer.func_240643_a_(name);
+        return name.isEmpty() ? MekanismLang.ROBIT.translate() : ITextComponent.Serializer.getComponentFromJson(name);
     }
 }

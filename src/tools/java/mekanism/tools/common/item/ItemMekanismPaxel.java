@@ -53,7 +53,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
     private static Item.Properties getItemProperties(ItemTier material) {
         Item.Properties properties = ItemDeferredRegister.getMekBaseProperties();
         if (material == ItemTier.NETHERITE) {
-            properties = properties.isBurnable();
+            properties = properties.isImmuneToFire();
         }
         return addHarvestLevel(properties, material.getHarvestLevel());
     }
@@ -100,7 +100,8 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
     }
 
-    private float getAttackDamage() {
+    @Override
+    public float getAttackDamage() {
         return paxelDamage.getAsFloat() + getTier().getAttackDamage();
     }
 
@@ -138,7 +139,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         Material material = state.getMaterial();
         //If pickaxe hardcoded shortcut, or axe hardcoded shortcut or ToolItem#getDestroySpeed checks
         //Note: We do it this way so that we don't need to check if the AxeItem material set contains the material if one of the pickaxe checks match
-        if (material == Material.IRON || material == Material.ANVIL || material == Material.ROCK || AxeItem.field_234662_c_.contains(material) ||
+        if (material == Material.IRON || material == Material.ANVIL || material == Material.ROCK || AxeItem.EFFECTIVE_ON_MATERIALS.contains(material) ||
             getToolTypes(stack).stream().anyMatch(state::isToolEffective) || effectiveBlocks.contains(state.getBlock())) {
             return paxelEfficiency.getAsFloat();
         }

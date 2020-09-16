@@ -148,7 +148,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
 
     public void setColorFromAtlas(int[] color) {
         rgbCode = color;
-        this.color = Color.func_240743_a_(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
+        this.color = Color.fromInt(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
     }
 
     public int[] getRgbCode() {

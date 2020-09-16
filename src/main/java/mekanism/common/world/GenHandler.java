@@ -23,7 +23,7 @@ import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.FeatureSpread;
-import net.minecraft.world.gen.feature.Features;
+import net.minecraft.world.gen.feature.Features.Placements;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
 import net.minecraft.world.gen.feature.SphereReplaceConfig;
@@ -46,7 +46,7 @@ public class GenHandler {
         for (OreType type : EnumUtils.ORE_TYPES) {
             ORES.put(type, getOreFeature(MekanismBlocks.ORES.get(type), MekanismConfig.world.ores.get(type), Feature.ORE));
         }
-        SALT_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt, Features.Placements.field_243995_f);
+        SALT_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt, Placements.KELP_PLACEMENT);
         //Retrogen features
         if (MekanismConfig.world.enableRegeneration.get()) {
             for (OreType type : EnumUtils.ORE_TYPES) {
@@ -78,7 +78,7 @@ public class GenHandler {
 
     private static void addFeature(BiomeGenerationSettingsBuilder generation, @Nullable ConfiguredFeature<?, ?> feature) {
         if (feature != null) {
-            generation.func_242513_a(GenerationStage.Decoration.UNDERGROUND_ORES, feature);
+            generation.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, feature);
         }
     }
 

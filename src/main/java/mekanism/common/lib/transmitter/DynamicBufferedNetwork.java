@@ -208,7 +208,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
                 initialized = true;
             }
         }
-        return new Range3D(minX, minZ, maxX, maxZ, world.func_234923_W_());
+        return new Range3D(minX, minZ, maxX, maxZ, world.getDimensionKey());
     }
 
     public static class TransferEvent<NETWORK extends DynamicBufferedNetwork<?, NETWORK, ?, ?>> extends Event {

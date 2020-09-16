@@ -37,20 +37,20 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
     public ITagCollection<CHEMICAL> getCollection() {
         IForgeRegistry<CHEMICAL> registry = registrySupplier.get();
         if (registry == null) {
-            return (ITagCollection<CHEMICAL>) TagCollectionManager.func_242178_a().getCustomTypeCollection(registryName);
+            return (ITagCollection<CHEMICAL>) TagCollectionManager.getManager().getCustomTypeCollection(registryName);
         }
-        return TagCollectionManager.func_242178_a().getCustomTypeCollection(registry);
+        return TagCollectionManager.getManager().getCustomTypeCollection(registry);
     }
 
     public ResourceLocation lookupTag(ITag<CHEMICAL> tag) {
-        //Manual and slightly modified implementation of TagCollection#func_232975_b_ to have better reverse lookup handling
+        //Manual and slightly modified implementation of TagCollection#getDirectIdFromTag to have better reverse lookup handling
         ITagCollection<CHEMICAL> collection = getCollection();
-        ResourceLocation resourceLocation = collection.func_232973_a_(tag);
+        ResourceLocation resourceLocation = collection.getDirectIdFromTag(tag);
         if (resourceLocation == null) {
             //If we failed to get the resource location, try manually looking it up by a "matching" entry
             // as the objects are different and neither Tag nor NamedTag override equals and hashCode
             List<CHEMICAL> chemicals = tag.getAllElements();
-            for (Entry<ResourceLocation, ITag<CHEMICAL>> entry : collection.func_241833_a().entrySet()) {
+            for (Entry<ResourceLocation, ITag<CHEMICAL>> entry : collection.getIDTagMap().entrySet()) {
                 if (chemicals.equals(entry.getValue().getAllElements())) {
                     resourceLocation = entry.getKey();
                     break;

@@ -529,7 +529,7 @@ public final class MekanismUtils {
         boolean isReplaceable = state.isReplaceable(fluid);
         boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
         if (world.isAirBlock(pos) || isReplaceable || canContainFluid) {
-            if (world.func_230315_m_().func_236040_e_() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
+            if (world.getDimensionType().isUltrawarm() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
                 fluid.getAttributes().vaporize(player, world, pos, fluidStack);
             } else if (canContainFluid) {
                 if (((ILiquidContainer) state.getBlock()).receiveFluid(world, pos, state, ((FlowingFluid) fluid).getStillFluidState(false))) {
@@ -788,7 +788,7 @@ public final class MekanismUtils {
      * @return if the chunk is being vibrated
      */
     public static boolean isChunkVibrated(ChunkPos chunk, World world) {
-        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.func_234923_W_() && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
+        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.getDimensionKey() && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
     }
 
     /**

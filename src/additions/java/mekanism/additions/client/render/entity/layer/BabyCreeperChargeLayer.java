@@ -18,8 +18,8 @@ public class BabyCreeperChargeLayer extends EnergyLayer<EntityBabyCreeper, Model
     }
 
     @Override
-    protected float func_225634_a_(float p_225634_1_) {
-        return p_225634_1_ * 0.01F;
+    protected float func_225634_a_(float modifier) {
+        return modifier * 0.01F;
     }
 
     @Nonnull

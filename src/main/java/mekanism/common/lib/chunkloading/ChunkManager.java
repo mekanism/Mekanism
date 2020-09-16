@@ -61,7 +61,7 @@ public class ChunkManager extends WorldSavedData {
 
     public static void worldLoad(ServerWorld world) {
         ChunkManager savedData = getInstance(world);
-        LOGGER.info("Loading {} chunks for dimension {}", savedData.chunks.size(), world.func_234923_W_().func_240901_a_());
+        LOGGER.info("Loading {} chunks for dimension {}", savedData.chunks.size(), world.getDimensionKey().getLocation());
         savedData.chunks.long2ObjectEntrySet().fastForEach(entry -> {
             //Add a separate ticket (which has a timout) to let the chunk tick for a short while (chunkloader will refresh if it's able)
             // This is required as we cannot do any validation about tiles (or blocks) being valid still or not, due to the multithreading

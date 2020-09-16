@@ -139,7 +139,7 @@ public class CommandMek {
                         .executes(ctx -> {
                             try {
                                 CommandSource source = ctx.getSource();
-                                Coord4D location = new Coord4D(source.getPos().x, source.getPos().y, source.getPos().z, source.getWorld().func_234923_W_());
+                                Coord4D location = new Coord4D(source.getPos().x, source.getPos().y, source.getPos().z, source.getWorld().getDimensionKey());
                                 double magnitude = DoubleArgumentType.getDouble(ctx, "magnitude");
                                 Mekanism.radiationManager.radiate(location, magnitude);
                                 source.sendFeedback(MekanismLang.COMMAND_RADIATION_ADD.translate(location), true);
@@ -151,7 +151,7 @@ public class CommandMek {
                   .then(Commands.literal("get")
                         .executes(ctx -> {
                             CommandSource source = ctx.getSource();
-                            Coord4D location = new Coord4D(source.getPos().x, source.getPos().y, source.getPos().z, source.getWorld().func_234923_W_());
+                            Coord4D location = new Coord4D(source.getPos().x, source.getPos().y, source.getPos().z, source.getWorld().getDimensionKey());
                             double radiation = Mekanism.radiationManager.getRadiationLevel(location);
                             source.sendFeedback(MekanismLang.COMMAND_RADIATION_GET.translate(radiation), true);
                             return 0;

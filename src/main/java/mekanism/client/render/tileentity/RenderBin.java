@@ -109,7 +109,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
 
         FontRenderer font = renderDispatcher.getFontRenderer();
 
-        int requiredWidth = Math.max(font.func_238414_a_(text), 1);
+        int requiredWidth = Math.max(font.getStringPropertyWidth(text), 1);
         int requiredHeight = font.FONT_HEIGHT + 2;
         float scaler = 0.4F;
         float scaleX = displayWidth / requiredWidth;

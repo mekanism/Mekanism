@@ -62,8 +62,8 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     }
 
     @Override
-    public boolean func_230044_c_() {
-        return original.func_230044_c_();
+    public boolean isSideLit() {
+        return original.isSideLit();
     }
 
     @Override
