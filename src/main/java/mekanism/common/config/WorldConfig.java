@@ -27,8 +27,7 @@ public class WorldConfig extends BaseMekanismConfig {
         userGenVersion = CachedIntValue.wrap(this, builder.comment("Change this value to cause Mekanism to regen its ore in all loaded chunks.")
               .defineInRange("userWorldGenVersion", 0, 0, Integer.MAX_VALUE));
         for (OreType ore : EnumUtils.ORE_TYPES) {
-            ores.put(ore, new OreConfig(this, builder, ore.getResource().getRegistrySuffix(), true, ore.getPerChunk(), ore.getMaxVeinSize(), ore.getBottomOffset(),
-                  ore.getTopOffset(), ore.getMaxHeight()));
+            ores.put(ore, new OreConfig(this, builder, ore.getResource().getRegistrySuffix(), true, ore.getPerChunk(), ore.getMaxVeinSize(), ore.getMaxHeight()));
         }
         salt = new SaltConfig(this, builder, true, 2, 2, 3, 1);
         builder.pop();
@@ -62,8 +61,7 @@ public class WorldConfig extends BaseMekanismConfig {
         public final CachedIntValue maxVeinSize;
         public final CachedIntValue maxHeight;
 
-        private OreConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, String ore, boolean shouldGenerate, int perChunk, int maxVeinSize, int bottomOffset,
-              int topOffset, int maxHeight) {
+        private OreConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, String ore, boolean shouldGenerate, int perChunk, int maxVeinSize, int maxHeight) {
             builder.comment("Generation Settings for " + ore + " ore.").push(ore);
             this.shouldGenerate = CachedBooleanValue.wrap(config, builder.comment("Determines if " + ore + " ore should be added to world generation.")
                   .define("shouldGenerate", shouldGenerate));
@@ -71,7 +69,6 @@ public class WorldConfig extends BaseMekanismConfig {
             //TODO: Improve upon it at some point so that the max vein size then gets determined by per chunk as well
             this.perChunk = CachedIntValue.wrap(config, builder.comment("Chance that " + ore + " generates in a chunk.")
                   .defineInRange("perChunk", perChunk, 1, 512));
-            //TODO - 1.16.2: Re-evaluate the naming of these two config options as well as their descriptiongs
             this.maxVeinSize = CachedIntValue.wrap(config, builder.comment("Maximum number of blocks in a vein of " + ore + ".")
                   .defineInRange("maxVeinSize", maxVeinSize, 1, 512));
             //TODO: See if we can use world.getHeight() somehow

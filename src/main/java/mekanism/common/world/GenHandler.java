@@ -42,7 +42,7 @@ public class GenHandler {
     private static ConfiguredFeature<?, ?> SALT_FEATURE;
     private static ConfiguredFeature<?, ?> SALT_RETROGEN_FEATURE;
 
-    public static void setupWorldGeneration() {
+    public static void setupWorldGenFeatures() {
         for (OreType type : EnumUtils.ORE_TYPES) {
             ORES.put(type, getOreFeature(MekanismBlocks.ORES.get(type), MekanismConfig.world.ores.get(type), Feature.ORE));
         }
@@ -64,8 +64,6 @@ public class GenHandler {
             for (ConfiguredFeature<?, ?> feature : ORES.values()) {
                 addFeature(generation, feature);
             }
-            //TODO - 1.16.2: Look at uses of DefaultBiomeFeatures#func_243754_n as I think we maybe should only be adding
-            // things like salt to specific biome types??
             //Add salt
             addFeature(generation, SALT_FEATURE);
         }
@@ -122,7 +120,6 @@ public class GenHandler {
 
     private static boolean placeFeature(@Nullable ConfiguredFeature<?, ?> feature, ServerWorld world, Random random, BlockPos blockPos) {
         if (feature != null) {
-            //TODO - 1.16.2: Test this
             feature.func_242765_a(world, world.getChunkProvider().getChunkGenerator(), random, blockPos);
             return true;
         }

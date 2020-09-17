@@ -15,7 +15,6 @@ public class TopSolidRetrogenPlacement extends TopSolidOnce {
     @Nonnull
     @Override
     protected Heightmap.Type func_241858_a(@Nonnull NoPlacementConfig config) {
-        //TODO - 1.16.2: Verify this
         return Heightmap.Type.OCEAN_FLOOR;
     }
 }

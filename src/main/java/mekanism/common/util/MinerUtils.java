@@ -24,7 +24,6 @@ public final class MinerUtils {
         if (silk) {
             stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
         }
-        //TODO - 1.16.2: Test
         LootContext.Builder lootContextBuilder = new LootContext.Builder(world)
               .withRandom(world.rand)
               .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))

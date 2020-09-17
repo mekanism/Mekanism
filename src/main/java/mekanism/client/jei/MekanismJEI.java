@@ -88,6 +88,9 @@ public class MekanismJEI implements IModPlugin {
     private static final ResourceLocation GAS_CONVERSION = Mekanism.rl("gas_conversion");
     private static final ResourceLocation INFUSION_CONVERSION = Mekanism.rl("infusion_conversion");
 
+    //TODO: Make use of https://github.com/mezz/JustEnoughItems/commit/d0af18c4d59de6e38037899c375270d9c219cf3a if it gets
+    // modified to have a good way to specify recipe components should show in the JEI menu but even in recipe portions
+    // shouldn't have a subtype interpreter
     private static final ISubtypeInterpreter MEKANISM_NBT_INTERPRETER = stack -> {
         if (!stack.hasTag()) {
             return ISubtypeInterpreter.NONE;

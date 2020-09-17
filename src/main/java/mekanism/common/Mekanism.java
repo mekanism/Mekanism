@@ -298,7 +298,7 @@ public class Mekanism {
 
         DeferredWorkQueue.runLater(() -> {
             //Register the mod's world generators
-            GenHandler.setupWorldGeneration();
+            GenHandler.setupWorldGenFeatures();
             //Collect sync mapper scan data
             SyncMapper.collectScanData();
             //Entity attribute assignments
