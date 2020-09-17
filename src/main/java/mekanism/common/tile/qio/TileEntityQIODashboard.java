@@ -10,9 +10,8 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent {
     }
 
     @Override
-    public void onUpdateServer() {
+    protected void onUpdateServer() {
         super.onUpdateServer();
-
         if (world.getGameTime() % 10 == 0) {
             QIOFrequency frequency = getQIOFrequency();
             setActive(frequency != null);

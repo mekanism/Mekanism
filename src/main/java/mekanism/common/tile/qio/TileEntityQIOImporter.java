@@ -38,9 +38,8 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    public void onUpdateServer() {
+    protected void onUpdateServer() {
         super.onUpdateServer();
-
         if (MekanismUtils.canFunction(this)) {
             if (delay > 0) {
                 delay--;

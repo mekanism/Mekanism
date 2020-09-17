@@ -69,7 +69,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               "heatGeneration", FloatingLong.createConst(200));
         heatGenerationLava = CachedFloatingLongValue.define(this, builder, "Multiplier of effectiveness of Lava in the Heat Generator.",
               "heatGenerationLava", FloatingLong.createConst(30));
-        heatGenerationNether = CachedFloatingLongValue.define(this, builder, "Add this amount of Joules to the energy produced by a heat generator if it is in the Nether.",
+        heatGenerationNether = CachedFloatingLongValue.define(this, builder, "Add this amount of Joules to the energy produced by a heat generator if it is in an 'ultrawarm' dimension, in vanilla this is just the Nether.",
               "heatGenerationNether", FloatingLong.createConst(100));
         builder.pop();
 

@@ -52,7 +52,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     @Override
-    public void onUpdateServer() {
+    protected void onUpdateServer() {
         super.onUpdateServer();
         if (world.getGameTime() > lastProcessTick) {
             //If we are not on the same tick do stuff, otherwise ignore it (anti tick accellerator protection)

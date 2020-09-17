@@ -13,7 +13,7 @@ import net.minecraft.util.SoundEvent;
 public abstract class PlayerSound extends TickableSound {
 
     @Nonnull
-    private WeakReference<PlayerEntity> playerReference;
+    private final WeakReference<PlayerEntity> playerReference;
     private float lastX;
     private float lastY;
     private float lastZ;

@@ -24,7 +24,6 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
             int x = element.x;
             int y = element.y;
             int width = element.getWidth();
-            //TODO - 1.16.2: Fix after mappings update getHeightRealms is really getHeight
             int height = element.getHeightRealms();
             if (x < parentX || y < parentY || x + width > parentX + parentWidth || y + height > parentY + parentHeight) {
                 //If the element sticks out at all add it
@@ -105,7 +104,7 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
                         GuiRelativeElement element = (GuiRelativeElement) child;
                         //TODO: Decide if we want our own implementation to overwrite the getTooltipStrings and have it show something like "Crusher Recipes"
                         IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(), element.getWidth(),
-                              element.getHeight(), categories);
+                              element.getHeightRealms(), categories);
                         return Collections.singleton(clickableArea);
                     }
                 }

@@ -53,9 +53,8 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     @Override
-    public void onUpdateServer() {
+    protected void onUpdateServer() {
         super.onUpdateServer();
-
         if (world.getGameTime() % 10 == 0) {
             QIOFrequency frequency = getQIOFrequency();
             setActive(frequency != null);

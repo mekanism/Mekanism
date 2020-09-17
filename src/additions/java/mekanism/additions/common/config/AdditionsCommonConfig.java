@@ -56,6 +56,8 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
         public final CachedDoubleValue weightPercentage;
         public final CachedDoubleValue minSizePercentage;
         public final CachedDoubleValue maxSizePercentage;
+        public final CachedDoubleValue spawnCostPerEntityPercentage;
+        public final CachedDoubleValue maxSpawnCostPercentage;
         public final CachedResourceLocationListValue biomeBlackList;
 
         private SpawnConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, String name) {
@@ -72,6 +74,12 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
             this.maxSizePercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for maximum group size of " + name + " spawns, compared to the adult mob.")
                   .worldRestart()
                   .defineInRange("maxSizePercentage", 0.5, 0, 100));
+            this.spawnCostPerEntityPercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for spawn cost per entity of " + name + " spawns, compared to the adult mob.")
+                  .worldRestart()
+                  .defineInRange("spawnCostPerEntityPercentage", 1D, 0, 100));
+            this.maxSpawnCostPercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for max spawn cost of " + name + " spawns, compared to the adult mob.")
+                  .worldRestart()
+                  .defineInRange("maxSpawnCostPercentage", 1D, 0, 100));
             this.biomeBlackList = CachedResourceLocationListValue.wrap(config, builder.comment("The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
                   .worldRestart()
                   .defineList("biomeBlackList", new ArrayList<>(), o -> {

@@ -25,7 +25,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    public void onUpdateServer() {
+    protected void onUpdateServer() {
         super.onUpdateServer();
         EnumColor prev = lastColor;
         lastColor = getQIOFrequency() != null ? getQIOFrequency().getColor() : null;

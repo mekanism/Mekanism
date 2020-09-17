@@ -77,7 +77,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void onUpdateServer() {
+    protected void onUpdateServer() {
         super.onUpdateServer();
         structures.entrySet().removeIf(entry -> !entry.getValue().isValid());
         if (ticker >= 3 && structures.isEmpty()) {

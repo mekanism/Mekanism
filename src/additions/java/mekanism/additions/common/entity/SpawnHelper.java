@@ -18,6 +18,7 @@ import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.MobSpawnInfo;
+import net.minecraft.world.biome.MobSpawnInfo.SpawnCosts;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.common.world.MobSpawnInfoBuilder;
@@ -26,8 +27,6 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
 public class SpawnHelper {
 
     public static void addSpawns() {
-        //TODO - 1.16.2: Re-evaluate if this is being ran too early
-        //TODO: Figure this out
         //Add special spawns to the fortress for baby wither skeletons and skeletons
         List<MobSpawnInfo.Spawners> fortressSpawns = Structure.field_236378_n_.getSpawnList();
         addSpawn(AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityType.WITHER_SKELETON, MekanismAdditionsConfig.common.babyWitherSkeleton, fortressSpawns);
@@ -71,7 +70,7 @@ public class SpawnHelper {
                 int weight = (int) Math.ceil(parentEntry.itemWeight * spawnConfig.weightPercentage.get());
                 int minSize = (int) Math.ceil(parentEntry.minCount * spawnConfig.minSizePercentage.get());
                 int maxSize = (int) Math.ceil(parentEntry.maxCount * spawnConfig.maxSizePercentage.get());
-                //TODO - 1.16.2: FIXME - monsterSpawns is immutable now
+                //TODO - 1.16.2: FIXME - monsterSpawns is immutable now so we are not actually able to add the spawns to the fortress
                 //monsterSpawns.add(new MobSpawnInfo.Spawners(entityType, weight, minSize, Math.max(minSize, maxSize)));
                 Mekanism.logger.debug("Adding spawn rate for {} to nether fortresses, with weight: {}, minSize: {}, maxSize: {}", entityType.getRegistryName(),
                       weight, minSize, maxSize);
@@ -81,9 +80,7 @@ public class SpawnHelper {
 
     private static void addSpawn(MobSpawnInfoBuilder spawns, IEntityTypeProvider entityTypeProvider, EntityType<?> parent, AdditionsCommonConfig.SpawnConfig spawnConfig,
           List<MobSpawnInfo.Spawners> monsterSpawns, ResourceLocation biomeName) {
-        //TODO - 1.16.2: The getEntityTypes is wrong it is for cost not for types, do we need to be adding to costs as well
-        // or is this fine, if this is fine we shouldn't be checking the costs at all
-        if (spawnConfig.shouldSpawn.get() && !spawnConfig.biomeBlackList.get().contains(biomeName) && spawns.getEntityTypes().contains(parent)) {
+        if (spawnConfig.shouldSpawn.get() && !spawnConfig.biomeBlackList.get().contains(biomeName)) {
             monsterSpawns.stream().filter(monsterSpawn -> monsterSpawn.type == parent).findFirst().ifPresent(parentEntry -> {
                 //If the adult mob can spawn in this biome let the baby mob spawn in it
                 //Note: We adjust the mob's spawning based on the adult's spawn rates
@@ -92,8 +89,17 @@ public class SpawnHelper {
                 int minSize = (int) Math.ceil(parentEntry.minCount * spawnConfig.minSizePercentage.get());
                 int maxSize = (int) Math.ceil(parentEntry.maxCount * spawnConfig.maxSizePercentage.get());
                 spawns.withSpawner(EntityClassification.MONSTER, new MobSpawnInfo.Spawners(entityType, weight, minSize, Math.max(minSize, maxSize)));
-                Mekanism.logger.debug("Adding spawn rate for {} in biome {}, with weight: {}, minSize: {}, maxSize: {}", entityType.getRegistryName(),
-                      biomeName, weight, minSize, maxSize);
+                SpawnCosts parentCost = spawns.getCost(parent);
+                if (parentCost != null) {
+                    double spawnCostPerEntity = parentCost.getEntitySpawnCost() * spawnConfig.spawnCostPerEntityPercentage.get();
+                    double maxSpawnCost = parentCost.getMaxSpawnCost() * spawnConfig.maxSpawnCostPercentage.get();
+                    spawns.withSpawnCost(entityType, spawnCostPerEntity, maxSpawnCost);
+                    Mekanism.logger.debug("Adding spawn rate for {} in biome {}, with weight: {}, minSize: {}, maxSize: {}, spawnCostPerEntity: {}, maxSpawnCost: {}",
+                          entityType.getRegistryName(), biomeName, weight, minSize, maxSize, spawnCostPerEntity, maxSpawnCost);
+                } else {
+                    Mekanism.logger.debug("Adding spawn rate for {} in biome {}, with weight: {}, minSize: {}, maxSize: {}", entityType.getRegistryName(),
+                          biomeName, weight, minSize, maxSize);
+                }
             });
         }
     }

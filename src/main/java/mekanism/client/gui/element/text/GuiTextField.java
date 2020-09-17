@@ -133,7 +133,6 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     private void updateTextField() {
-        //TODO - 1.16.2: Fix after mappings update getHeightRealms is really getHeight
         //width is scaled based on text scale
         textField.setWidth(Math.round((width - (checkmarkButton != null ? textField.getHeightRealms() + 2 : 0) - (iconType != null ? iconType.getOffsetX() : 0)) * (1 / textScale)));
         textField.x = x + textOffsetX + 2 + (iconType != null ? iconType.getOffsetX() : 0);

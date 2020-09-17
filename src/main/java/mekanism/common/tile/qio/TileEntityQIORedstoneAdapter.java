@@ -54,7 +54,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public void onUpdateServer() {
+    protected void onUpdateServer() {
         super.onUpdateServer();
         boolean powering = isPowering();
         if (powering != prevPowering) {

@@ -115,10 +115,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         //Lava boost
         FloatingLong boost = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(Arrays.stream(EnumUtils.DIRECTIONS)
               .filter(side -> world.getFluidState(pos.offset(side)).isTagged(FluidTags.LAVA)).count());
-        //TODO - 1.16.2: Fixme - we probably need to AT the dimension type's registry key so that we can compare it
-        /*if (world.func_234922_V_() == DimensionType.THE_NETHER) {
+        if (world.getDimensionType().isUltrawarm()) {
             boost = boost.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
-        }*/
+        }
         return boost;
     }
 

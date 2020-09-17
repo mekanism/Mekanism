@@ -73,7 +73,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         //Draw the bar overlay
         minecraft.textureManager.bindTexture(getResource());
         GaugeOverlay gaugeOverlay = gaugeType.getGaugeOverlay();
-        blit(matrix, x + 1, y + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
+        blit(matrix, x + 1, y + 1, getWidth() - 2, getHeightRealms() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }
 
     @Override

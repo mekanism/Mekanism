@@ -79,7 +79,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
             float startY = relativeY + padding;
             if (centerY) {
                 int totalHeight = list.size() * 8 + spacing * (list.size() - 1);
-                startY = relativeY + getHeight() / 2F - totalHeight / 2F;
+                startY = relativeY + getHeightRealms() / 2F - totalHeight / 2F;
             }
             for (ITextComponent text : renderStrings.get()) {
                 drawText(matrix, text, relativeX + padding, startY);
