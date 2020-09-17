@@ -241,15 +241,19 @@ public abstract class BlockMekanism extends Block {
         Item item = stack.getItem();
         setTileData(world, pos, state, placer, stack, tile);
 
-        if (tile instanceof TileEntitySecurityDesk) {
+        if (tile instanceof TileEntitySecurityDesk && placer != null) {
             tile.getSecurity().setOwnerUUID(placer.getUniqueID());
         }
         if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
             tile.getSecurity().setMode(securityItem.getSecurity(stack));
             UUID ownerUUID = securityItem.getOwnerUUID(stack);
-            tile.getSecurity().setOwnerUUID(ownerUUID == null ? placer.getUniqueID() : ownerUUID);
-            if (!world.isRemote) {
+            if (ownerUUID != null) {
+                tile.getSecurity().setOwnerUUID(ownerUUID);
+            } else if (placer != null) {
+                tile.getSecurity().setOwnerUUID(placer.getUniqueID());
+            }
+            if (!world.isRemote && placer != null) {
                 Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(placer.getUniqueID(), null));
             }
         }
@@ -280,7 +284,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     //Method to override for setting some simple tile specific stuff
-    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
+    public void setTileData(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
     }
 
     @Override

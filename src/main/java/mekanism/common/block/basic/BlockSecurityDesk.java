@@ -2,6 +2,7 @@ package mekanism.common.block.basic;
 
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
@@ -30,8 +31,8 @@ public class BlockSecurityDesk extends BlockTileModel<TileEntitySecurityDesk, Bl
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
-        if (tile instanceof TileEntitySecurityDesk) {
+    public void setTileData(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
+        if (tile instanceof TileEntitySecurityDesk && placer != null) {
             ((TileEntitySecurityDesk) tile).ownerUUID = placer.getUniqueID();
         }
     }

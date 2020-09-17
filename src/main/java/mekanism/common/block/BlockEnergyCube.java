@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.block.attribute.Attribute;
@@ -143,7 +144,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
+    public void setTileData(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityEnergyCube) {
             if (Attribute.getTier(this, EnergyCubeTier.class) == EnergyCubeTier.CREATIVE) {
                 //TODO: Move this to being set in the variant added to the item group

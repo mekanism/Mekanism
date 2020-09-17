@@ -1,6 +1,7 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.IMekWrench;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
@@ -31,7 +32,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
+    public void setTileData(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityLogisticalSorter) {
             TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tile;
             if (!transporter.hasConnectedInventory()) {
