@@ -8,6 +8,7 @@ import mekanism.common.item.block.ItemBlockPersonalChest;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -58,12 +59,16 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
     @Nonnull
     @Override
     public ItemStack slotClick(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
-        //TODO: Re-evaluate
-        int hotbarSlotId = slotId - 81;
         //Disallow moving Personal Chest if held and accessed directly from inventory (not from a placed block)
-        if (hotbarSlotId >= 0 && hotbarSlotId < 9 && player.inventory.currentItem == hotbarSlotId) {
-            ItemStack itemStack = player.inventory.getStackInSlot(hotbarSlotId);
-            if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemBlockPersonalChest) {
+        if (player.inventory.currentItem == slotId - 81) {
+            ItemStack stack = player.inventory.getCurrentItem();
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemBlockPersonalChest) {
+                return ItemStack.EMPTY;
+            }
+        }
+        if (clickType == ClickType.SWAP && dragType == 40) {
+            ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.OFFHAND);
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemBlockPersonalChest) {
                 return ItemStack.EMPTY;
             }
         }
