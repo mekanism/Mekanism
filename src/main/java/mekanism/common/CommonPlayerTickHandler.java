@@ -50,7 +50,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommonPlayerTickHandler {
 
-    public static boolean isOnGround(PlayerEntity player) {
+    public static boolean isOnGroundOrSleeping(PlayerEntity player) {
+        if (player.isSleeping()) {
+            return true;
+        }
         int x = MathHelper.floor(player.getPosX());
         int y = MathHelper.floor(player.getPosY() - 0.01);
         int z = MathHelper.floor(player.getPosZ());
@@ -131,13 +134,13 @@ public class CommonPlayerTickHandler {
                     if (motion.getY() > 0) {
                         player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, 0), motion.getZ());
                     } else if (motion.getY() < 0) {
-                        if (!isOnGround(player)) {
+                        if (!isOnGroundOrSleeping(player)) {
                             player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0), motion.getZ());
                         }
                     }
                 } else if (ascending) {
                     player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.2D), motion.getZ());
-                } else if (!isOnGround(player)) {
+                } else if (!isOnGroundOrSleeping(player)) {
                     player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, -0.2D), motion.getZ());
                 }
             }
@@ -184,7 +187,7 @@ public class CommonPlayerTickHandler {
                     boolean ascending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.ASCEND);
                     boolean descending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.DESCEND);
                     if (!ascending || descending) {
-                        return !isOnGround(player);
+                        return !isOnGroundOrSleeping(player);
                     }
                     return true;
                 }

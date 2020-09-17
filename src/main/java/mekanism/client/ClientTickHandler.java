@@ -94,7 +94,7 @@ public class ClientTickHandler {
                     boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
                     boolean descending = minecraft.gameSettings.keyBindSneak.isKeyDown();
                     if (!ascending || descending || minecraft.currentScreen != null) {
-                        return !CommonPlayerTickHandler.isOnGround(player);
+                        return !CommonPlayerTickHandler.isOnGroundOrSleeping(player);
                     }
                     return true;
                 }
@@ -235,13 +235,13 @@ public class ClientTickHandler {
                         if (motion.getY() > 0) {
                             minecraft.player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, 0), motion.getZ());
                         } else if (motion.getY() < 0) {
-                            if (!CommonPlayerTickHandler.isOnGround(minecraft.player)) {
+                            if (!CommonPlayerTickHandler.isOnGroundOrSleeping(minecraft.player)) {
                                 minecraft.player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0), motion.getZ());
                             }
                         }
                     } else if (ascending) {
                         minecraft.player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.2D), motion.getZ());
-                    } else if (!CommonPlayerTickHandler.isOnGround(minecraft.player)) {
+                    } else if (!CommonPlayerTickHandler.isOnGroundOrSleeping(minecraft.player)) {
                         minecraft.player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, -0.2D), motion.getZ());
                     }
                     minecraft.player.fallDistance = 0.0F;
