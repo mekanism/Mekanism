@@ -1,5 +1,6 @@
 package mekanism.common.lib.transmitter.acceptor;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -79,20 +80,30 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAccep
      * Gets the listener that will refresh connections on a given side.
      */
     protected NonNullConsumer<LazyOptional<ACCEPTOR>> getRefreshListener(@Nonnull Direction side) {
-        return cachedListeners.computeIfAbsent(side, this::getUncachedRefreshListener);
+        return cachedListeners.computeIfAbsent(side, s -> new RefreshListener<>(transmitterTile, s));
     }
 
-    /**
-     * Computes the listener that will refresh connections on a given side.
-     */
-    private NonNullConsumer<LazyOptional<ACCEPTOR>> getUncachedRefreshListener(Direction side) {
-        return ignored -> {
+    private static class RefreshListener<ACCEPTOR> implements NonNullConsumer<LazyOptional<ACCEPTOR>> {
+
+        //Note: We only keep a weak reference to the tile from inside the listener so that if it gets unloaded it can be released from memory
+        // instead of being referenced by the listener still in the tile in a neighboring chunk
+        private final WeakReference<TileEntityTransmitter> tile;
+        private final Direction side;
+
+        private RefreshListener(TileEntityTransmitter tile, Direction side) {
+            this.tile = new WeakReference<>(tile);
+            this.side = side;
+        }
+
+        @Override
+        public void accept(@Nonnull LazyOptional<ACCEPTOR> ignored) {
+            TileEntityTransmitter transmitterTile = tile.get();
             //Check to make sure the transmitter is still valid and that the position we are going to check is actually still loaded
-            if (!transmitterTile.isRemoved() && transmitterTile.hasWorld() && transmitterTile.isLoaded() &&
+            if (transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasWorld() && transmitterTile.isLoaded() &&
                 MekanismUtils.isBlockLoaded(transmitterTile.getWorld(), transmitterTile.getPos().offset(side))) {
                 //If it is, then refresh the connection
-                transmitter.refreshConnections(side);
+                transmitterTile.getTransmitter().refreshConnections(side);
             }
-        };
+        }
     }
 }
