@@ -6,6 +6,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
+import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
@@ -26,15 +27,14 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
         //Don't allow inserting if we are on output mode, or extracting if we are on input mode
-        return ProxiedEnergyContainerHolder.create(side -> !getActive(), side -> getActive(),
-              side -> getMultiblock().getEnergyContainers(side));
+        return ProxiedEnergyContainerHolder.create(side -> !getActive(), side -> getActive(), side -> getMultiblock().getEnergyContainers(side));
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (getMultiblock().isFormed() && getActive()) {
-            CableUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().getEnergyContainer(), this);
+    protected void onUpdateServer(MatrixMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
+        if (multiblock.isFormed() && getActive()) {
+            CableUtils.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.getEnergyContainer(), this);
         }
     }
 

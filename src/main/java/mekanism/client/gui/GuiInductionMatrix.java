@@ -15,6 +15,7 @@ import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiMatrixTab;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.util.text.EnergyDisplay;
@@ -38,12 +39,13 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         super.init();
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
-        addButton(new GuiInnerScreen(this, 49, 21, 84, 46, () -> Arrays.asList(
-              MekanismLang.ENERGY.translate(EnergyDisplay.of(tile.getMultiblock().getEnergy())),
-              MekanismLang.CAPACITY.translate(EnergyDisplay.of(tile.getMultiblock().getStorageCap())),
-              MekanismLang.MATRIX_INPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput()))),
-              MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput())))
-        )).spacing(2));
+        addButton(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {
+            MatrixMultiblockData multiblock = tile.getMultiblock();
+            return Arrays.asList(MekanismLang.ENERGY.translate(EnergyDisplay.of(multiblock.getEnergy())),
+                  MekanismLang.CAPACITY.translate(EnergyDisplay.of(multiblock.getStorageCap())),
+                  MekanismLang.MATRIX_INPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(multiblock.getLastInput()))),
+                  MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(multiblock.getLastOutput()))));
+        }).spacing(2));
         addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT));
         addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
@@ -56,10 +58,12 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
                 return tile.getMultiblock().getStorageCap();
             }
         }, GaugeType.MEDIUM, this, 7, 16, 34, 56));
-        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getMultiblock().getEnergy(), tile.getMultiblock().getStorageCap())),
-              MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput())),
-              MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput()))
-        ), this));
+        addButton(new GuiEnergyTab(() -> {
+            MatrixMultiblockData multiblock = tile.getMultiblock();
+            return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.getEnergy(), multiblock.getStorageCap())),
+                  MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastInput())),
+                  MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastOutput())));
+        }, this));
     }
 
     @Override

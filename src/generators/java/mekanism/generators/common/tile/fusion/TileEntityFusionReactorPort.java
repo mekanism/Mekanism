@@ -23,6 +23,7 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -82,12 +83,12 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (getActive() && getMultiblock().isFormed()) {
-            Set<Direction> directionsToEmit = getMultiblock().getDirectionsToEmit(getPos());
-            ChemicalUtil.emit(directionsToEmit, getMultiblock().steamTank, this);
-            CableUtils.emit(directionsToEmit, getMultiblock().energyContainer, this);
+    protected void onUpdateServer(FusionReactorMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
+        if (getActive() && multiblock.isFormed()) {
+            Set<Direction> directionsToEmit = multiblock.getDirectionsToEmit(getPos());
+            ChemicalUtil.emit(directionsToEmit, multiblock.steamTank, this);
+            CableUtils.emit(directionsToEmit, multiblock.energyContainer, this);
         }
     }
 

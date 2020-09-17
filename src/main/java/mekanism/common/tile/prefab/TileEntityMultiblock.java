@@ -108,9 +108,25 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (ticker >= 3) {
             structure.tick(this);
         }
-        if (!getMultiblock().isFormed()) {
+        T multiblock = getMultiblock();
+        if (multiblock.isFormed()) {
+            if (!prevStructure) {
+                structureChanged();
+                prevStructure = true;
+            }
+            if (multiblock.inventoryID != null) {
+                cachedID = multiblock.inventoryID;
+                getManager().updateCache(this);
+                if (isMaster) {
+                    if (multiblock.tick(world)) {
+                        sendUpdatePacket();
+                    }
+                    // mark the chunk dirty each tick to make sure we save
+                    markDirty(false);
+                }
+            }
+        } else {
             playersUsing.forEach(PlayerEntity::closeScreen);
-
             if (cachedID != null) {
                 getManager().updateCache(this);
             }
@@ -119,38 +135,27 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 prevStructure = false;
             }
             isMaster = false;
-        } else {
-            if (!prevStructure) {
-                structureChanged();
-                prevStructure = true;
-            }
-            if (getMultiblock().inventoryID != null) {
-                cachedID = getMultiblock().inventoryID;
-                getManager().updateCache(this);
-                if (isMaster) {
-                    if (getMultiblock().tick(world)) {
-                        sendUpdatePacket();
-                    }
-                    // mark the chunk dirty each tick to make sure we save
-                    markDirty(false);
-                }
-            }
         }
+        onUpdateServer(multiblock);
+    }
+
+    protected void onUpdateServer(T multiblock) {
     }
 
     private void structureChanged() {
         invalidateCachedCapabilities();
-        if (getMultiblock().isFormed() && !getMultiblock().hasMaster && canBeMaster()) {
-            getMultiblock().hasMaster = true;
+        T multiblock = getMultiblock();
+        if (multiblock.isFormed() && !multiblock.hasMaster && canBeMaster()) {
+            multiblock.hasMaster = true;
             isMaster = true;
             //Force update the structure's comparator level as it may be incorrect due to not having a capacity while unformed
-            getMultiblock().forceUpdateComparatorLevel();
+            multiblock.forceUpdateComparatorLevel();
             //If we are the block that is rendering the structure make sure to tell all the valves to update their comparator levels
-            getMultiblock().notifyAllUpdateComparator(world);
+            multiblock.notifyAllUpdateComparator(world);
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos pos = getPos().offset(side);
-            if (!getMultiblock().isFormed() || (!getMultiblock().locations.contains(pos) && !getMultiblock().internalLocations.contains(pos))) {
+            if (!multiblock.isFormed() || (!multiblock.locations.contains(pos) && !multiblock.internalLocations.contains(pos))) {
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);
                 if (!world.isAirBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
                     MekanismUtils.notifyNeighborOfChange(world, pos, getPos());
@@ -158,7 +163,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             }
         }
         sendUpdatePacket();
-        if (!getMultiblock().isFormed()) {
+        if (!multiblock.isFormed()) {
             //If we have no structure just mark the comparator as dirty for each block,
             // this will only perform neighbor updates if the block supports comparators
             markDirtyComparator();
@@ -235,9 +240,10 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
         updateTag.putBoolean(NBTConstants.RENDERING, isMaster);
-        updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, getMultiblock().isFormed());
-        if (getMultiblock().isFormed() && isMaster) {
-            getMultiblock().writeUpdateTag(updateTag);
+        T multiblock = getMultiblock();
+        updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, multiblock.isFormed());
+        if (multiblock.isFormed() && isMaster) {
+            multiblock.writeUpdateTag(updateTag);
         }
         return updateTag;
     }
@@ -246,19 +252,20 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
         super.handleUpdateTag(state, tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isMaster = value);
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> getMultiblock().setFormedForce(value));
+        T multiblock = getMultiblock();
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, multiblock::setFormedForce);
         if (isMaster) {
-            if (getMultiblock().isFormed()) {
-                getMultiblock().readUpdateTag(tag);
-                if (getMultiblock().renderLocation != null && !prevStructure && unformedTicks >= 5) {
-                    Mekanism.proxy.doMultiblockSparkle(this, getMultiblock().renderLocation, getMultiblock().length() - 1, getMultiblock().width() - 1, getMultiblock().height() - 1);
+            if (multiblock.isFormed()) {
+                multiblock.readUpdateTag(tag);
+                if (multiblock.renderLocation != null && !prevStructure && unformedTicks >= 5) {
+                    Mekanism.proxy.doMultiblockSparkle(this, multiblock.renderLocation, multiblock.length() - 1, multiblock.width() - 1, multiblock.height() - 1);
                 }
             } else {
                 // this will consecutively be set on the server
                 isMaster = false;
             }
         }
-        prevStructure = getMultiblock().isFormed();
+        prevStructure = multiblock.isFormed();
     }
 
     @Override
@@ -283,8 +290,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             nbtTags.putUniqueId(NBTConstants.INVENTORY_ID, cachedID);
             if (cachedData != null) {
                 // sync one last time if this is the master
-                if (getMultiblock().isFormed()) {
-                    cachedData.sync(getMultiblock());
+                T multiblock = getMultiblock();
+                if (multiblock.isFormed()) {
+                    cachedData.sync(multiblock);
                 }
                 CompoundNBT cacheTags = new CompoundNBT();
                 cachedData.save(cacheTags);
@@ -304,11 +312,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        if (getMultiblock().isFormed() && isMaster && getMultiblock().getBounds() != null) {
-            //TODO: Eventually we may want to look into caching this
-            //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
-            // how the specific multiblock wants to render, that it is being viewed
-            return new AxisAlignedBB(getMultiblock().getMinPos(), getMultiblock().getMaxPos().add(1, 1, 1));
+        if (isMaster) {
+            T multiblock = getMultiblock();
+            if (multiblock.isFormed() && multiblock.getBounds() != null) {
+                //TODO: Eventually we may want to look into caching this
+                //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
+                // how the specific multiblock wants to render, that it is being viewed
+                return new AxisAlignedBB(multiblock.getMinPos(), multiblock.getMaxPos().add(1, 1, 1));
+            }
         }
         return super.getRenderBoundingBox();
     }
@@ -341,14 +352,17 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         // For now we "ignore" this case as the structure can be rechecked manually with a configurator
         // and checking on every neighbor changed when we don't have a multiblock (so don't know its bounds)
         // would not be very performant
-        if (!isRemote() && getMultiblock().isPositionInsideBounds(getStructure(), neighborPos)) {
-            //If the neighbor change happened from inside the bounds of the multiblock,
-            if (!getMultiblock().innerNodes.contains(neighborPos) || world.isAirBlock(neighborPos)) {
-                //And we are not already an internal part of the structure, or we are changing an internal part to air
-                // then we mark the structure as needing to be re-validated
-                //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
-                // it won't know to invalidate it but oh well. (See java docs on innerNode for more caveats)
-                getStructure().markForUpdate(world, true);
+        if (!isRemote()) {
+            T multiblock = getMultiblock();
+            if (multiblock.isPositionInsideBounds(getStructure(), neighborPos)) {
+                //If the neighbor change happened from inside the bounds of the multiblock,
+                if (!multiblock.innerNodes.contains(neighborPos) || world.isAirBlock(neighborPos)) {
+                    //And we are not already an internal part of the structure, or we are changing an internal part to air
+                    // then we mark the structure as needing to be re-validated
+                    //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
+                    // it won't know to invalidate it but oh well. (See java docs on innerNode for more caveats)
+                    getStructure().markForUpdate(world, true);
+                }
             }
         }
     }

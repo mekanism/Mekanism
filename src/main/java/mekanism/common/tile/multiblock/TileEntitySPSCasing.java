@@ -37,9 +37,9 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        boolean active = getMultiblock().isFormed() && getMultiblock().handlesSound(this) && getMultiblock().lastProcessed > 0;
+    protected void onUpdateServer(SPSMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
+        boolean active = multiblock.isFormed() && multiblock.handlesSound(this) && multiblock.lastProcessed > 0;
         if (active != prevActive) {
             prevActive = active;
             sendUpdatePacket();
@@ -58,16 +58,18 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
 
     @Override
     protected boolean canPlaySound() {
-        return getMultiblock().isFormed() && getMultiblock().lastProcessed > 0 && handleSound;
+        SPSMultiblockData multiblock = getMultiblock();
+        return multiblock.isFormed() && multiblock.lastProcessed > 0 && handleSound;
     }
 
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        updateTag.putBoolean(NBTConstants.HANDLE_SOUND, getMultiblock().isFormed() && getMultiblock().handlesSound(this));
-        if (getMultiblock().isFormed()) {
-            updateTag.putDouble(NBTConstants.LAST_PROCESSED, getMultiblock().lastProcessed);
+        SPSMultiblockData multiblock = getMultiblock();
+        updateTag.putBoolean(NBTConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this));
+        if (multiblock.isFormed()) {
+            updateTag.putDouble(NBTConstants.LAST_PROCESSED, multiblock.lastProcessed);
         }
         return updateTag;
     }
@@ -76,8 +78,9 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
     public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
         super.handleUpdateTag(state, tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
-        if (getMultiblock().isFormed()) {
-            getMultiblock().lastProcessed = tag.getDouble(NBTConstants.LAST_PROCESSED);
+        SPSMultiblockData multiblock = getMultiblock();
+        if (multiblock.isFormed()) {
+            multiblock.lastProcessed = tag.getDouble(NBTConstants.LAST_PROCESSED);
         }
     }
 }

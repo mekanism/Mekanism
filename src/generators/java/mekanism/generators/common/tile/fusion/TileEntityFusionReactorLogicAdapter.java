@@ -14,6 +14,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
+import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
 import net.minecraft.block.BlockState;
@@ -34,8 +35,8 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected void onUpdateServer(FusionReactorMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
         boolean outputting = checkMode();
         if (outputting != prevOutputting) {
             World world = getWorld();
@@ -50,21 +51,22 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         if (isRemote()) {
             return prevOutputting;
         }
-        if (!getMultiblock().isFormed()) {
-            return false;
+        FusionReactorMultiblockData multiblock = getMultiblock();
+        if (multiblock.isFormed()) {
+            switch (logicType) {
+                case READY:
+                    return multiblock.getLastPlasmaTemp() >= multiblock.getIgnitionTemperature(activeCooled);
+                case CAPACITY:
+                    return multiblock.getLastPlasmaTemp() >= multiblock.getMaxPlasmaTemperature(activeCooled);
+                case DEPLETED:
+                    return (multiblock.deuteriumTank.getStored() < multiblock.getInjectionRate() / 2) ||
+                           (multiblock.tritiumTank.getStored() < multiblock.getInjectionRate() / 2);
+                case DISABLED:
+                default:
+                    return false;
+            }
         }
-        switch (logicType) {
-            case READY:
-                return getMultiblock().getLastPlasmaTemp() >= getMultiblock().getIgnitionTemperature(activeCooled);
-            case CAPACITY:
-                return getMultiblock().getLastPlasmaTemp() >= getMultiblock().getMaxPlasmaTemperature(activeCooled);
-            case DEPLETED:
-                return (getMultiblock().deuteriumTank.getStored() < getMultiblock().getInjectionRate() / 2) ||
-                       (getMultiblock().tritiumTank.getStored() < getMultiblock().getInjectionRate() / 2);
-            case DISABLED:
-            default:
-                return false;
-        }
+        return false;
     }
 
     @Override

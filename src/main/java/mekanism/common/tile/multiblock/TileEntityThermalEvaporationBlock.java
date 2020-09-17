@@ -23,9 +23,10 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<Evap
     public void onNeighborChange(Block block, BlockPos neighborPos) {
         super.onNeighborChange(block, neighborPos);
         if (!isRemote()) {
-            if (getMultiblock().isFormed()) {
-                if (getMultiblock().isSolarSpot(neighborPos)) {
-                    getMultiblock().updateSolars(getWorld());
+            EvaporationMultiblockData multiblock = getMultiblock();
+            if (multiblock.isFormed()) {
+                if (multiblock.isSolarSpot(neighborPos)) {
+                    multiblock.updateSolars(getWorld());
                 }
             }
         }

@@ -119,15 +119,15 @@ public class MultiblockManager<T extends MultiblockData> {
 
         public void update(IMultiblock<T> tile) {
             locations.add(Coord4D.get((TileEntity) tile));
-
-            if (tile.getMultiblock().isFormed()) {
+            T multiblock = tile.getMultiblock();
+            if (multiblock.isFormed()) {
                 if (tile.isMaster()) {
                     // create a new cache for the tile if it needs one
                     if (!tile.hasCache()) {
                         tile.setCache(createCache());
                     }
                     // if this is the master tile, sync the cache with the multiblock and then update our reference
-                    tile.getCache().sync(tile.getMultiblock());
+                    tile.getCache().sync(multiblock);
                     cache = tile.getCache();
                 }
             } else {

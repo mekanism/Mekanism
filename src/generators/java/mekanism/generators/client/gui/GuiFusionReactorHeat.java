@@ -22,6 +22,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiFusionReactorTab;
 import mekanism.generators.client.gui.element.GuiFusionReactorTab.FusionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
@@ -39,10 +40,11 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING
-                    .translate(EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy())),
-              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getMultiblock().getPassiveGeneration(false, true)))),
-              this));
+        addButton(new GuiEnergyTab(() -> {
+            FusionReactorMultiblockData multiblock = tile.getMultiblock();
+            return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy())),
+                  GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, true))));
+        }, this));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
@@ -64,7 +66,10 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
                 return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 7, 50));
-        addButton(new GuiProgress(() -> tile.getMultiblock().getLastPlasmaTemp() > tile.getMultiblock().getLastCaseTemp() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 29, 76));
+        addButton(new GuiProgress(() -> {
+            FusionReactorMultiblockData multiblock = tile.getMultiblock();
+            return multiblock.getLastPlasmaTemp() > multiblock.getLastCaseTemp() ? 1 : 0;
+        }, ProgressType.SMALL_RIGHT, this, 29, 76));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
@@ -87,9 +92,10 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
             }
         }, GaugeType.STANDARD, this, 61, 50));
         addButton(new GuiProgress(() -> tile.getMultiblock().getCaseTemp() > 0 ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));
-        addButton(new GuiProgress(() -> (tile.getMultiblock().getCaseTemp() > 0 && !tile.getMultiblock().waterTank.isEmpty() &&
-                                         tile.getMultiblock().steamTank.getStored() < tile.getMultiblock().steamTank.getCapacity()) ? 1 : 0,
-              ProgressType.SMALL_RIGHT, this, 83, 91));
+        addButton(new GuiProgress(() -> {
+            FusionReactorMultiblockData multiblock = tile.getMultiblock();
+            return multiblock.getCaseTemp() > 0 && !multiblock.waterTank.isEmpty() && multiblock.steamTank.getStored() < multiblock.steamTank.getCapacity() ? 1 : 0;
+        }, ProgressType.SMALL_RIGHT, this, 83, 91));
         addButton(new GuiFluidGauge(() -> tile.getMultiblock().waterTank, () -> tile.getFluidTanks(null), GaugeType.SMALL, this, 115, 84));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().steamTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 151, 84));
         addButton(new GuiEnergyGauge(tile.getMultiblock().energyContainer, GaugeType.SMALL, this, 115, 46));

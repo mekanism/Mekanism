@@ -10,6 +10,7 @@ import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.GasRenderData;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.common.GeneratorsProfilerConstants;
+import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.client.renderer.Atlases;
@@ -31,61 +32,64 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
     @Override
     protected void render(TileEntityFissionReactorCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null) {
-            BlockPos pos = tile.getPos();
-            IVertexBuilder buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
-            if (tile.getMultiblock().isBurning()) {
-                if (glowModel == null) {
-                    glowModel = new Model3D();
-                    glowModel.minX = 0.05;
-                    glowModel.minY = 0.01;
-                    glowModel.minZ = 0.05;
-                    glowModel.maxX = 0.95;
-                    glowModel.maxY = 0.99;
-                    glowModel.maxZ = 0.95;
-                    glowModel.setTexture(MekanismRenderer.whiteIcon);
+        if (tile.isMaster) {
+            FissionReactorMultiblockData multiblock = tile.getMultiblock();
+            if (multiblock.isFormed() && multiblock.renderLocation != null) {
+                BlockPos pos = tile.getPos();
+                IVertexBuilder buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
+                if (multiblock.isBurning()) {
+                    if (glowModel == null) {
+                        glowModel = new Model3D();
+                        glowModel.minX = 0.05;
+                        glowModel.minY = 0.01;
+                        glowModel.minZ = 0.05;
+                        glowModel.maxX = 0.95;
+                        glowModel.maxY = 0.99;
+                        glowModel.maxZ = 0.95;
+                        glowModel.setTexture(MekanismRenderer.whiteIcon);
+                    }
+                    for (FormedAssembly assembly : multiblock.assemblies) {
+                        matrix.push();
+                        matrix.translate(assembly.getPos().getX() - pos.getX(), assembly.getPos().getY() - pos.getY(), assembly.getPos().getZ() - pos.getZ());
+                        matrix.scale(1, assembly.getHeight(), 1);
+                        int argb = MekanismRenderer.getColorARGB(0.466F, 0.882F, 0.929F, 0.6F);
+                        MekanismRenderer.renderObject(glowModel, matrix, buffer, argb, MekanismRenderer.FULL_LIGHT, overlayLight);
+                        matrix.pop();
+                    }
                 }
-                for (FormedAssembly assembly : tile.getMultiblock().assemblies) {
-                    matrix.push();
-                    matrix.translate(assembly.getPos().getX() - pos.getX(), assembly.getPos().getY() - pos.getY(), assembly.getPos().getZ() - pos.getZ());
-                    matrix.scale(1, assembly.getHeight(), 1);
-                    int argb = MekanismRenderer.getColorARGB(0.466F, 0.882F, 0.929F, 0.6F);
-                    MekanismRenderer.renderObject(glowModel, matrix, buffer, argb, MekanismRenderer.FULL_LIGHT, overlayLight);
-                    matrix.pop();
+                if (!multiblock.fluidCoolantTank.isEmpty()) {
+                    int height = multiblock.height() - 2;
+                    if (height >= 1) {
+                        FluidRenderData data = new FluidRenderData(multiblock.fluidCoolantTank.getFluid());
+                        data.location = multiblock.renderLocation;
+                        data.height = height;
+                        data.length = multiblock.length();
+                        data.width = multiblock.width();
+                        int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
+                        matrix.push();
+                        matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
+                        MekanismRenderer.renderObject(ModelRenderer.getModel(data, multiblock.prevCoolantScale), matrix, buffer,
+                              data.getColorARGB(multiblock.prevCoolantScale), glow, overlayLight);
+                        matrix.pop();
+                        MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, data, pos, glow, overlayLight);
+                    }
                 }
-            }
-            if (!tile.getMultiblock().fluidCoolantTank.isEmpty()) {
-                int height = tile.getMultiblock().height() - 2;
-                if (height >= 1) {
-                    FluidRenderData data = new FluidRenderData(tile.getMultiblock().fluidCoolantTank.getFluid());
-                    data.location = tile.getMultiblock().renderLocation;
-                    data.height = height;
-                    data.length = tile.getMultiblock().length();
-                    data.width = tile.getMultiblock().width();
-                    int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
-                    matrix.push();
-                    matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                    MekanismRenderer.renderObject(ModelRenderer.getModel(data, tile.getMultiblock().prevCoolantScale), matrix, buffer,
-                          data.getColorARGB(tile.getMultiblock().prevCoolantScale), glow, overlayLight);
-                    matrix.pop();
-                    MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, data, pos, glow, overlayLight);
-                }
-            }
-            if (!tile.getMultiblock().heatedCoolantTank.isEmpty()) {
-                int height = tile.getMultiblock().height() - 2;
-                if (height >= 1) {
-                    GasRenderData data = new GasRenderData(tile.getMultiblock().heatedCoolantTank.getStack());
-                    data.location = tile.getMultiblock().renderLocation;
-                    data.height = height;
-                    data.length = tile.getMultiblock().length();
-                    data.width = tile.getMultiblock().width();
-                    int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
-                    matrix.push();
-                    matrix.scale(0.998F, 0.998F, 0.998F);
-                    matrix.translate(data.location.getX() - pos.getX() + 0.001, data.location.getY() - pos.getY() + 0.001, data.location.getZ() - pos.getZ() + 0.001);
-                    Model3D gasModel = ModelRenderer.getModel(data, 1);
-                    MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevHeatedCoolantScale), glow, overlayLight);
-                    matrix.pop();
+                if (!multiblock.heatedCoolantTank.isEmpty()) {
+                    int height = multiblock.height() - 2;
+                    if (height >= 1) {
+                        GasRenderData data = new GasRenderData(multiblock.heatedCoolantTank.getStack());
+                        data.location = multiblock.renderLocation;
+                        data.height = height;
+                        data.length = multiblock.length();
+                        data.width = multiblock.width();
+                        int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
+                        matrix.push();
+                        matrix.scale(0.998F, 0.998F, 0.998F);
+                        matrix.translate(data.location.getX() - pos.getX() + 0.001, data.location.getY() - pos.getY() + 0.001, data.location.getZ() - pos.getZ() + 0.001);
+                        Model3D gasModel = ModelRenderer.getModel(data, 1);
+                        MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(multiblock.prevHeatedCoolantScale), glow, overlayLight);
+                        matrix.pop();
+                    }
                 }
             }
         }
@@ -98,6 +102,10 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
 
     @Override
     public boolean isGlobalRenderer(TileEntityFissionReactorCasing tile) {
-        return tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null;
+        if (tile.isMaster) {
+            FissionReactorMultiblockData multiblock = tile.getMultiblock();
+            return multiblock.isFormed() && multiblock.renderLocation != null;
+        }
+        return false;
     }
 }

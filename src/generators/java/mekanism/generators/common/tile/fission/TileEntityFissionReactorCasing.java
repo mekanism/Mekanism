@@ -27,9 +27,9 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        boolean burning = getMultiblock().isFormed() && getMultiblock().handlesSound(this) && getMultiblock().isBurning();
+    protected void onUpdateServer(FissionReactorMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
+        boolean burning = multiblock.isFormed() && multiblock.handlesSound(this) && multiblock.isBurning();
         if (burning != prevBurning) {
             prevBurning = burning;
             sendUpdatePacket();
@@ -80,16 +80,18 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
 
     @Override
     protected boolean canPlaySound() {
-        return getMultiblock().isFormed() && getMultiblock().isBurning() && handleSound;
+        FissionReactorMultiblockData multiblock = getMultiblock();
+        return multiblock.isFormed() && multiblock.isBurning() && handleSound;
     }
 
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        updateTag.putBoolean(NBTConstants.HANDLE_SOUND, getMultiblock().isFormed() && getMultiblock().handlesSound(this));
-        if (getMultiblock().isFormed()) {
-            updateTag.putDouble(NBTConstants.BURNING, getMultiblock().lastBurnRate);
+        FissionReactorMultiblockData multiblock = getMultiblock();
+        updateTag.putBoolean(NBTConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this));
+        if (multiblock.isFormed()) {
+            updateTag.putDouble(NBTConstants.BURNING, multiblock.lastBurnRate);
         }
         return updateTag;
     }
@@ -98,8 +100,9 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
         super.handleUpdateTag(state, tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
-        if (getMultiblock().isFormed()) {
-            NBTUtils.setDoubleIfPresent(tag, NBTConstants.BURNING, value -> getMultiblock().lastBurnRate = value);
+        FissionReactorMultiblockData multiblock = getMultiblock();
+        if (multiblock.isFormed()) {
+            NBTUtils.setDoubleIfPresent(tag, NBTConstants.BURNING, value -> multiblock.lastBurnRate = value);
         }
     }
 }

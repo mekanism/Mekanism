@@ -23,6 +23,7 @@ import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.content.turbine.TurbineValidator;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerInventory;
@@ -40,14 +41,15 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         super.init();
         addButton(new GuiInnerScreen(this, 50, 18, 112, 50, () -> {
             List<ITextComponent> list = new ArrayList<>();
-            if (tile.getMultiblock().isFormed()) {
+            TurbineMultiblockData multiblock = tile.getMultiblock();
+            if (multiblock.isFormed()) {
                 FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
-                      .multiply(Math.min(tile.getMultiblock().blades, tile.getMultiblock().coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-                double rate = tile.getMultiblock().lowerVolume * (tile.getMultiblock().clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
-                rate = Math.min(rate, tile.getMultiblock().vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
-                list.add(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(EnergyDisplay.of(energyMultiplier.multiply(tile.getMultiblock().clientFlow))));
-                list.add(GeneratorsLang.TURBINE_FLOW_RATE.translate(formatInt(tile.getMultiblock().clientFlow)));
-                list.add(GeneratorsLang.TURBINE_CAPACITY.translate(formatInt(tile.getMultiblock().getSteamCapacity())));
+                      .multiply(Math.min(multiblock.blades, multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
+                double rate = multiblock.lowerVolume * (multiblock.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+                rate = Math.min(rate, multiblock.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+                list.add(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(EnergyDisplay.of(energyMultiplier.multiply(multiblock.clientFlow))));
+                list.add(GeneratorsLang.TURBINE_FLOW_RATE.translate(formatInt(multiblock.clientFlow)));
+                list.add(GeneratorsLang.TURBINE_CAPACITY.translate(formatInt(multiblock.getSteamCapacity())));
                 list.add(GeneratorsLang.TURBINE_MAX_FLOW.translate(formatInt((long) rate)));
             }
             return list;
@@ -56,18 +58,20 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                if (!tile.getMultiblock().isFormed()) {
-                    return EnergyDisplay.ZERO.getTextComponent();
+                TurbineMultiblockData multiblock = tile.getMultiblock();
+                if (multiblock.isFormed()) {
+                    return EnergyDisplay.of(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy()).getTextComponent();
                 }
-                return EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy()).getTextComponent();
+                return EnergyDisplay.ZERO.getTextComponent();
             }
 
             @Override
             public double getLevel() {
-                if (!tile.getMultiblock().isFormed()) {
-                    return 1;
+                TurbineMultiblockData multiblock = tile.getMultiblock();
+                if (multiblock.isFormed()) {
+                    return multiblock.energyContainer.getEnergy().divideToLevel(multiblock.energyContainer.getMaxEnergy());
                 }
-                return tile.getMultiblock().energyContainer.getEnergy().divideToLevel(tile.getMultiblock().energyContainer.getMaxEnergy());
+                return 1;
             }
         }, 164, 16));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
@@ -78,30 +82,31 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
 
             @Override
             public double getLevel() {
-                if (!tile.getMultiblock().isFormed()) {
+                TurbineMultiblockData multiblock = tile.getMultiblock();
+                if (!multiblock.isFormed()) {
                     return 0;
                 }
-                double rate = Math.min(tile.getMultiblock().lowerVolume * tile.getMultiblock().clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get(),
-                      tile.getMultiblock().vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+                double rate = Math.min(multiblock.lowerVolume * multiblock.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get(),
+                      multiblock.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
                 if (rate == 0) {
                     return 0;
                 }
-                return tile.getMultiblock().lastSteamInput / rate;
+                return multiblock.lastSteamInput / rate;
             }
         }, 40, 13));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().gasTank,
-              () -> tile.getMultiblock().getGasTanks(null), GaugeType.MEDIUM, this, 6, 13));
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().gasTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.MEDIUM, this, 6, 13));
         addButton(new GuiEnergyTab(() -> {
             EnergyDisplay storing;
             EnergyDisplay producing;
-            if (!tile.getMultiblock().isFormed()) {
+            TurbineMultiblockData multiblock = tile.getMultiblock();
+            if (multiblock.isFormed()) {
+                storing = EnergyDisplay.of(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy());
+                producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
+                      .multiply(multiblock.clientFlow * Math.min(multiblock.blades,
+                            multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));
+            } else {
                 storing = EnergyDisplay.ZERO;
                 producing = EnergyDisplay.ZERO;
-            } else {
-                storing = EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy());
-                producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
-                      .multiply(tile.getMultiblock().clientFlow * Math.min(tile.getMultiblock().blades,
-                            tile.getMultiblock().coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));
             }
             return Arrays.asList(MekanismLang.STORING.translate(storing), GeneratorsLang.PRODUCING_AMOUNT.translate(producing));
         }, this));

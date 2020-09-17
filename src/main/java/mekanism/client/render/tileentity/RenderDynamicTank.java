@@ -32,24 +32,27 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     protected void render(TileEntityDynamicTank tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null) {
-            RenderData data = getRenderData(tile.getMultiblock());
-            if (data != null) {
-                data.location = tile.getMultiblock().renderLocation;
-                data.height = tile.getMultiblock().height() - 2;
-                data.length = tile.getMultiblock().length();
-                data.width = tile.getMultiblock().width();
-                matrix.push();
+        if (tile.isMaster) {
+            TankMultiblockData multiblock = tile.getMultiblock();
+            if (multiblock.isFormed() && multiblock.renderLocation != null) {
+                RenderData data = getRenderData(multiblock);
+                if (data != null) {
+                    data.location = multiblock.renderLocation;
+                    data.height = multiblock.height() - 2;
+                    data.length = multiblock.length();
+                    data.width = multiblock.width();
+                    matrix.push();
 
-                IVertexBuilder buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
-                BlockPos pos = tile.getPos();
-                matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
-                Model3D model = ModelRenderer.getModel(data, tile.getMultiblock().prevScale);
-                MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(tile.getMultiblock().prevScale), glow, overlayLight);
-                matrix.pop();
-                if (data instanceof FluidRenderData) {
-                    MekanismRenderer.renderValves(matrix, buffer, tile.getMultiblock().valves, (FluidRenderData) data, pos, glow, overlayLight);
+                    IVertexBuilder buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
+                    BlockPos pos = tile.getPos();
+                    matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
+                    int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
+                    Model3D model = ModelRenderer.getModel(data, multiblock.prevScale);
+                    MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevScale), glow, overlayLight);
+                    matrix.pop();
+                    if (data instanceof FluidRenderData) {
+                        MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, (FluidRenderData) data, pos, glow, overlayLight);
+                    }
                 }
             }
         }
@@ -79,6 +82,10 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     public boolean isGlobalRenderer(TileEntityDynamicTank tile) {
-        return tile.isMaster && tile.getMultiblock().isFormed() && !tile.getMultiblock().isEmpty() && tile.getMultiblock().renderLocation != null;
+        if (tile.isMaster) {
+            TankMultiblockData multiblock = tile.getMultiblock();
+            return multiblock.isFormed() && !multiblock.isEmpty() && multiblock.renderLocation != null;
+        }
+        return false;
     }
 }

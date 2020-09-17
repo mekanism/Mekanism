@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.generators.common.GeneratorsProfilerConstants;
+import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -29,11 +30,12 @@ public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFu
     @Override
     protected void render(TileEntityFusionReactorController tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        if (tile.getMultiblock().isFormed() && tile.getMultiblock().isBurning()) {
+        FusionReactorMultiblockData multiblock = tile.getMultiblock();
+        if (multiblock.isFormed() && multiblock.isBurning()) {
             matrix.push();
             matrix.translate(0.5, -1.5, 0.5);
 
-            long scaledTemp = Math.round(tile.getMultiblock().getLastPlasmaTemp() / SCALE);
+            long scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
             float ticks = MekanismClient.ticksPassed + partialTick;
             double scale = 1 + 0.7 * Math.sin(Math.toRadians(ticks * 3.14 * scaledTemp + 135F));
             IVertexBuilder buffer = core.getBuffer(renderer);
@@ -67,6 +69,7 @@ public class RenderFusionReactor extends MekanismTileEntityRenderer<TileEntityFu
 
     @Override
     public boolean isGlobalRenderer(TileEntityFusionReactorController tile) {
-        return tile.getMultiblock().isFormed() && tile.getMultiblock().isBurning();
+        FusionReactorMultiblockData multiblock = tile.getMultiblock();
+        return multiblock.isFormed() && multiblock.isBurning();
     }
 }

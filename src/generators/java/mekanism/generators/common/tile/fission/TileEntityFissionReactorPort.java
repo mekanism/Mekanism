@@ -18,6 +18,7 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
+import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
@@ -32,15 +33,14 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (getMultiblock().isFormed()) {
+    protected void onUpdateServer(FissionReactorMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
+        if (multiblock.isFormed()) {
             FissionPortMode mode = getMode();
-
             if (mode == FissionPortMode.OUTPUT_COOLANT) {
-                ChemicalUtil.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().heatedCoolantTank, this);
+                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.heatedCoolantTank, this);
             } else if (mode == FissionPortMode.OUTPUT_WASTE) {
-                ChemicalUtil.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().wasteTank, this);
+                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.wasteTank, this);
             }
         }
     }

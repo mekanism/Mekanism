@@ -16,6 +16,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiContainerEditModeTab;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import net.minecraft.entity.player.PlayerInventory;
@@ -41,29 +42,30 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 50));
         addButton(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {
             List<ITextComponent> ret = new ArrayList<>();
-            switch (tile.getMultiblock().mergedTank.getCurrentType()) {
+            TankMultiblockData multiblock = tile.getMultiblock();
+            switch (multiblock.mergedTank.getCurrentType()) {
                 case EMPTY:
                     ret.add(MekanismLang.EMPTY.translate());
                     break;
                 case FLUID:
-                    addStored(ret, tile.getMultiblock().getFluidTank().getFluid(), FluidStack::getAmount);
+                    addStored(ret, multiblock.getFluidTank().getFluid(), FluidStack::getAmount);
                     break;
                 case GAS:
-                    addStored(ret, tile.getMultiblock().getGasTank());
+                    addStored(ret, multiblock.getGasTank());
                     break;
                 case INFUSION:
-                    addStored(ret, tile.getMultiblock().getInfusionTank());
+                    addStored(ret, multiblock.getInfusionTank());
                     break;
                 case PIGMENT:
-                    addStored(ret, tile.getMultiblock().getPigmentTank());
+                    addStored(ret, multiblock.getPigmentTank());
                     break;
                 case SLURRY:
-                    addStored(ret, tile.getMultiblock().getSlurryTank());
+                    addStored(ret, multiblock.getSlurryTank());
                     break;
             }
             ret.add(MekanismLang.CAPACITY.translate(""));
             // capacity is the same for the tank no matter what type it is currently stored
-            ret.add(MekanismLang.GENERIC_MB.translate(formatInt(tile.getMultiblock().getTankCapacity())));
+            ret.add(MekanismLang.GENERIC_MB.translate(formatInt(multiblock.getTankCapacity())));
             return ret;
         }).defaultFormat().spacing(2));
         addButton(new GuiDownArrow(this, 150, 39));

@@ -12,6 +12,7 @@ import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
+import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
@@ -40,15 +41,14 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (getMultiblock().isFormed()) {
+    protected void onUpdateServer(BoilerMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
+        if (multiblock.isFormed()) {
             BoilerValveMode mode = getMode();
-
             if (mode == BoilerValveMode.OUTPUT_STEAM) {
-                ChemicalUtil.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().steamTank, this);
+                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.steamTank, this);
             } else if (mode == BoilerValveMode.OUTPUT_COOLANT) {
-                ChemicalUtil.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().cooledCoolantTank, this);
+                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.cooledCoolantTank, this);
             }
         }
     }

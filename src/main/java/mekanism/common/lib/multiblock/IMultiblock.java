@@ -7,7 +7,12 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
     T createMultiblock();
 
     default T getMultiblock() {
-        return (T) IMultiblockBase.super.getMultiblockData(getManager());
+        //Basically the same as getMultiblockData(getManager()) except we skip over validating the manager is itself
+        MultiblockData data = getStructure().getMultiblockData();
+        if (data != null && data.isFormed()) {
+            return (T) data;
+        }
+        return getDefaultData();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mekanism.common.tile.multiblock;
 
+import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
 
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock {
@@ -10,9 +11,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public void onUpdateServer() {
-        super.onUpdateServer();
-        setActive(getMultiblock().isFormed());
+    protected void onUpdateServer(EvaporationMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
+        setActive(multiblock.isFormed());
     }
 
     @Override

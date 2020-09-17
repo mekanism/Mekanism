@@ -33,8 +33,8 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected void onUpdateServer(FissionReactorMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
         RedstoneStatus status = getStatus();
         if (status != prevStatus) {
             World world = getWorld();
@@ -59,18 +59,19 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         if (isRemote()) {
             return prevStatus;
         }
-        if (getMultiblock().isFormed()) {
+        FissionReactorMultiblockData multiblock = getMultiblock();
+        if (multiblock.isFormed()) {
             switch (logicType) {
                 case ACTIVATION:
                     return isPowered() ? RedstoneStatus.POWERED : RedstoneStatus.IDLE;
                 case TEMPERATURE:
-                    return getMultiblock().heatCapacitor.getTemperature() >= FissionReactorMultiblockData.MIN_DAMAGE_TEMPERATURE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
+                    return multiblock.heatCapacitor.getTemperature() >= FissionReactorMultiblockData.MIN_DAMAGE_TEMPERATURE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 case EXCESS_WASTE:
-                    return getMultiblock().wasteTank.getNeeded() == 0 ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
+                    return multiblock.wasteTank.getNeeded() == 0 ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 case DAMAGED:
-                    return getMultiblock().reactorDamage >= FissionReactorMultiblockData.MAX_DAMAGE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
+                    return multiblock.reactorDamage >= FissionReactorMultiblockData.MAX_DAMAGE ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 case DEPLETED:
-                    return getMultiblock().fuelTank.isEmpty() ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
+                    return multiblock.fuelTank.isEmpty() ? RedstoneStatus.OUTPUTTING : RedstoneStatus.IDLE;
                 default:
                     break;
             }
@@ -86,9 +87,12 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     public void onPowerChange() {
         super.onPowerChange();
-        if (!isRemote() && getMultiblock().isFormed()) {
-            if (logicType == FissionReactorLogic.ACTIVATION) {
-                getMultiblock().setActive(isPowered());
+        if (!isRemote()) {
+            FissionReactorMultiblockData multiblock = getMultiblock();
+            if (multiblock.isFormed()) {
+                if (logicType == FissionReactorLogic.ACTIVATION) {
+                    multiblock.setActive(isPowered());
+                }
             }
         }
     }

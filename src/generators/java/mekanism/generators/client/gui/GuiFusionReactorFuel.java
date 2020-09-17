@@ -17,6 +17,7 @@ import mekanism.generators.client.gui.element.GuiFusionReactorTab;
 import mekanism.generators.client.gui.element.GuiFusionReactorTab.FusionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.network.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
@@ -34,10 +35,11 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.STORING.translate(
-              EnergyDisplay.of(tile.getMultiblock().energyContainer.getEnergy(), tile.getMultiblock().energyContainer.getMaxEnergy())),
-              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getMultiblock().getPassiveGeneration(false, true)))),
-              this));
+        addButton(new GuiEnergyTab(() -> {
+            FusionReactorMultiblockData multiblock = tile.getMultiblock();
+            return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy())),
+                  GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, true))));
+        }, this));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().deuteriumTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.SMALL, this, 25, 64));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 79, 50));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().tritiumTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.SMALL, this, 133, 64));

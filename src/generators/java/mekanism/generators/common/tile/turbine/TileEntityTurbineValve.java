@@ -8,6 +8,7 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
+import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 
 public class TileEntityTurbineValve extends TileEntityTurbineCasing {
@@ -29,10 +30,10 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (getMultiblock().isFormed()) {
-            CableUtils.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().energyContainer, this);
+    protected void onUpdateServer(TurbineMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
+        if (multiblock.isFormed()) {
+            CableUtils.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.energyContainer, this);
         }
     }
 

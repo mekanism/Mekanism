@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.FluidUtils;
+import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 
 public class TileEntityTurbineVent extends TileEntityTurbineCasing {
@@ -20,10 +21,10 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (getMultiblock().isFormed()) {
-            FluidUtils.emit(getMultiblock().ventTank, this);
+    protected void onUpdateServer(TurbineMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
+        if (multiblock.isFormed()) {
+            FluidUtils.emit(multiblock.ventTank, this);
         }
     }
 

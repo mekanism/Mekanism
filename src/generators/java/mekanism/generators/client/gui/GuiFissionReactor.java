@@ -49,26 +49,24 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     public void init() {
         super.init();
         addButton(new GuiFissionReactorTab(this, tile, FissionReactorTab.STAT));
-        addButton(new GuiInnerScreen(this, 45, 17, 105, 56, () -> Arrays.asList(
-              MekanismLang.STATUS.translate(tile.getMultiblock().isActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(tile.getMultiblock().isActive())),
-              GeneratorsLang.GAS_BURN_RATE.translate(tile.getMultiblock().lastBurnRate),
-              GeneratorsLang.FISSION_HEATING_RATE.translate(formatInt(tile.getMultiblock().lastBoilRate)),
-              MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(tile.getMultiblock().heatCapacitor.getTemperature(), TemperatureUnit.KELVIN, true)),
-              GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
-        )).defaultFormat().spacing(2));
-        addButton(new GuiHybridGauge(
-              () -> tile.getMultiblock().gasCoolantTank, () -> tile.getMultiblock().getGasTanks(null),
-              () -> tile.getMultiblock().fluidCoolantTank, () -> tile.getMultiblock().getFluidTanks(null),
-              GaugeType.STANDARD, this, 6, 13)
+        addButton(new GuiInnerScreen(this, 45, 17, 105, 56, () -> {
+            FissionReactorMultiblockData multiblock = tile.getMultiblock();
+            return Arrays.asList(
+                  MekanismLang.STATUS.translate(multiblock.isActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(multiblock.isActive())),
+                  GeneratorsLang.GAS_BURN_RATE.translate(multiblock.lastBurnRate),
+                  GeneratorsLang.FISSION_HEATING_RATE.translate(formatInt(multiblock.lastBoilRate)),
+                  MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(multiblock.heatCapacitor.getTemperature(), TemperatureUnit.KELVIN, true)),
+                  GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
+            );
+        }).defaultFormat().spacing(2));
+        addButton(new GuiHybridGauge(() -> tile.getMultiblock().gasCoolantTank, () -> tile.getMultiblock().getGasTanks(null),
+              () -> tile.getMultiblock().fluidCoolantTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 6, 13)
               .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().fuelTank,
-              () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 25, 13)
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 25, 13)
               .setLabel(GeneratorsLang.FISSION_FUEL_TANK.translateColored(EnumColor.DARK_GREEN)));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().heatedCoolantTank,
-              () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 152, 13)
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().heatedCoolantTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 152, 13)
               .setLabel(GeneratorsLang.FISSION_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE)));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().wasteTank,
-              () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 171, 13)
+        addButton(new GuiGasGauge(() -> tile.getMultiblock().wasteTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 171, 13)
               .setLabel(GeneratorsLang.FISSION_WASTE_TANK.translateColored(EnumColor.BROWN)));
         addButton(new GuiHeatTab(() -> {
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
@@ -98,8 +96,9 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     }
 
     private void updateButtons() {
-        activateButton.active = !tile.getMultiblock().isActive();
-        scramButton.active = tile.getMultiblock().isActive();
+        FissionReactorMultiblockData multiblock = tile.getMultiblock();
+        activateButton.active = !multiblock.isActive();
+        scramButton.active = multiblock.isActive();
     }
 
     @Override

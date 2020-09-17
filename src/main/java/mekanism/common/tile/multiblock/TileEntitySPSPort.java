@@ -12,6 +12,7 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
@@ -31,15 +32,14 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (getMultiblock().isFormed()) {
+    protected void onUpdateServer(SPSMultiblockData multiblock) {
+        super.onUpdateServer(multiblock);
+        if (multiblock.isFormed()) {
             if (getActive()) {
-                ChemicalUtil.emit(getMultiblock().getDirectionsToEmit(getPos()), getMultiblock().outputTank, this);
+                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.outputTank, this);
             }
-
-            if (!energyContainer.isEmpty() && getMultiblock().canSupplyCoilEnergy(this)) {
-                getMultiblock().supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
+            if (!energyContainer.isEmpty() && multiblock.canSupplyCoilEnergy(this)) {
+                multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
             }
         }
     }

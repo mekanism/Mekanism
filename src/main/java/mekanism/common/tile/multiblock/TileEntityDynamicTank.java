@@ -29,12 +29,15 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (!player.isSneaking() && getMultiblock().isFormed()) {
-            if (manageInventory(player, hand, stack)) {
-                player.inventory.markDirty();
-                return ActionResultType.SUCCESS;
+        if (!player.isSneaking()) {
+            TankMultiblockData multiblock = getMultiblock();
+            if (multiblock.isFormed()) {
+                if (manageInventory(multiblock, player, hand, stack)) {
+                    player.inventory.markDirty();
+                    return ActionResultType.SUCCESS;
+                }
+                return openGui(player);
             }
-            return openGui(player);
         }
         return ActionResultType.PASS;
     }
@@ -57,13 +60,14 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
 
     @Override
     public void nextMode() {
-        getMultiblock().editMode = getMultiblock().editMode.getNext();
+        TankMultiblockData multiblock = getMultiblock();
+        multiblock.editMode = multiblock.editMode.getNext();
     }
 
-    private boolean manageInventory(PlayerEntity player, Hand hand, ItemStack itemStack) {
-        if (!getMultiblock().isFormed()) {
-            return false;
+    private boolean manageInventory(TankMultiblockData multiblock, PlayerEntity player, Hand hand, ItemStack itemStack) {
+        if (multiblock.isFormed()) {
+            return FluidUtils.handleTankInteraction(player, hand, itemStack, multiblock.getFluidTank());
         }
-        return FluidUtils.handleTankInteraction(player, hand, itemStack, getMultiblock().getFluidTank());
+        return false;
     }
 }

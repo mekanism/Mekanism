@@ -51,50 +51,53 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
 
     @Override
     protected void render(TileEntitySPSCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null && tile.getMultiblock().getBounds() != null) {
-            BoltRenderer bolts = boltRendererMap.computeIfAbsent(tile.getMultiblock().inventoryID, multiblock -> new BoltRenderer());
-            Vector3d center = Vector3d.copy(tile.getMultiblock().getMinPos()).add(Vector3d.copy(tile.getMultiblock().getMaxPos())).add(new Vector3d(1, 1, 1)).scale(0.5);
-            Vector3d renderCenter = center.subtract(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
-            if (!minecraft.isGamePaused()) {
-                for (CoilData data : tile.getMultiblock().coilData.coilMap.values()) {
-                    if (data.prevLevel > 0) {
-                        bolts.update(data.coilPos.hashCode(), getBoltFromData(data, tile.getPos(), tile.getMultiblock(), renderCenter), partialTick);
+        if (tile.isMaster) {
+            SPSMultiblockData multiblock = tile.getMultiblock();
+            if (multiblock.isFormed() && multiblock.renderLocation != null && multiblock.getBounds() != null) {
+                BoltRenderer bolts = boltRendererMap.computeIfAbsent(multiblock.inventoryID, mb -> new BoltRenderer());
+                Vector3d center = Vector3d.copy(multiblock.getMinPos()).add(Vector3d.copy(multiblock.getMaxPos())).add(new Vector3d(1, 1, 1)).scale(0.5);
+                Vector3d renderCenter = center.subtract(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
+                if (!minecraft.isGamePaused()) {
+                    for (CoilData data : multiblock.coilData.coilMap.values()) {
+                        if (data.prevLevel > 0) {
+                            bolts.update(data.coilPos.hashCode(), getBoltFromData(data, tile.getPos(), multiblock, renderCenter), partialTick);
+                        }
                     }
                 }
-            }
 
-            float energyScale = getEnergyScale(tile.getMultiblock().lastProcessed);
-            int targetEffectCount = 0;
+                float energyScale = getEnergyScale(multiblock.lastProcessed);
+                int targetEffectCount = 0;
 
-            if (!minecraft.isGamePaused() && !tile.getMultiblock().lastReceivedEnergy.isZero()) {
-                if (rand.nextDouble() < getBoundedScale(energyScale, 0.01F, 0.4F)) {
-                    CuboidSide side = CuboidSide.SIDES[rand.nextInt(6)];
-                    Plane plane = Plane.getInnerCuboidPlane(tile.getMultiblock().getBounds(), side);
-                    Vector3d endPos = plane.getRandomPoint(rand).subtract(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
-                    BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, renderCenter, endPos, 15)
-                          .size(0.01F * getBoundedScale(energyScale, 0.5F, 5))
-                          .lifespan(8)
-                          .spawn(SpawnFunction.NO_DELAY);
-                    bolts.update(Objects.hashCode(side.hashCode(), endPos.hashCode()), bolt, partialTick);
+                if (!minecraft.isGamePaused() && !multiblock.lastReceivedEnergy.isZero()) {
+                    if (rand.nextDouble() < getBoundedScale(energyScale, 0.01F, 0.4F)) {
+                        CuboidSide side = CuboidSide.SIDES[rand.nextInt(6)];
+                        Plane plane = Plane.getInnerCuboidPlane(multiblock.getBounds(), side);
+                        Vector3d endPos = plane.getRandomPoint(rand).subtract(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
+                        BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, renderCenter, endPos, 15)
+                              .size(0.01F * getBoundedScale(energyScale, 0.5F, 5))
+                              .lifespan(8)
+                              .spawn(SpawnFunction.NO_DELAY);
+                        bolts.update(Objects.hashCode(side.hashCode(), endPos.hashCode()), bolt, partialTick);
+                    }
+                    targetEffectCount = (int) getBoundedScale(energyScale, 10, 120);
                 }
-                targetEffectCount = (int) getBoundedScale(energyScale, 10, 120);
+
+                if (tile.orbitEffects.size() > targetEffectCount) {
+                    tile.orbitEffects.poll();
+                } else if (tile.orbitEffects.size() < targetEffectCount && rand.nextDouble() < 0.5) {
+                    tile.orbitEffects.add(new SPSOrbitEffect(multiblock, center));
+                }
+
+                bolts.render(partialTick, matrix, renderer);
+
+                if (multiblock.lastProcessed > 0) {
+                    CORE.setPos(center);
+                    CORE.setScale(getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE));
+                    BillboardingEffectRenderer.render(CORE, tile.getPos(), matrix, renderer, tile.getWorld().getGameTime(), partialTick);
+                }
+
+                tile.orbitEffects.forEach(effect -> BillboardingEffectRenderer.render(effect, tile.getPos(), matrix, renderer, tile.getWorld().getGameTime(), partialTick));
             }
-
-            if (tile.orbitEffects.size() > targetEffectCount) {
-                tile.orbitEffects.poll();
-            } else if (tile.orbitEffects.size() < targetEffectCount && rand.nextDouble() < 0.5) {
-                tile.orbitEffects.add(new SPSOrbitEffect(tile.getMultiblock(), center));
-            }
-
-            bolts.render(partialTick, matrix, renderer);
-
-            if (tile.getMultiblock().lastProcessed > 0) {
-                CORE.setPos(center);
-                CORE.setScale(getBoundedScale(energyScale, MIN_SCALE, MAX_SCALE));
-                BillboardingEffectRenderer.render(CORE, tile.getPos(), matrix, renderer, tile.getWorld().getGameTime(), partialTick);
-            }
-
-            tile.orbitEffects.forEach(effect -> BillboardingEffectRenderer.render(effect, tile.getPos(), matrix, renderer, tile.getWorld().getGameTime(), partialTick));
         }
     }
 
@@ -122,6 +125,10 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
 
     @Override
     public boolean isGlobalRenderer(TileEntitySPSCasing tile) {
-        return tile.isMaster && tile.getMultiblock().isFormed() && tile.getMultiblock().renderLocation != null;
+        if (tile.isMaster) {
+            SPSMultiblockData multiblock = tile.getMultiblock();
+            return multiblock.isFormed() && multiblock.renderLocation != null;
+        }
+        return false;
     }
 }
