@@ -50,7 +50,8 @@ public abstract class MekKeyHandler {
     }
 
     public static boolean isKeyDown(KeyBinding keyBinding) {
-        return InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), keyBinding.getKey().getKeyCode());
+        int keyCode = keyBinding.getKey().getKeyCode();
+        return keyCode != InputMappings.INPUT_INVALID.getKeyCode() && InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), keyCode);
     }
 
     private static boolean isKeyPressed(KeyBinding keyBinding) {
