@@ -2,6 +2,7 @@ package mekanism.common.entity;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -17,6 +18,7 @@ import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.TNTBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
@@ -44,7 +46,12 @@ import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.Constants.WorldEvents;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -144,19 +151,21 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         boolean hitFluid = !world.getFluidState(hitPos).isEmpty();
         if (!world.isRemote && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
             if (mode == FlamethrowerMode.HEAT) {
-                smeltBlock(hitPos);
+                Entity owner = func_234616_v_();
+                if (owner instanceof PlayerEntity) {
+                    smeltBlock((PlayerEntity) owner, hitPos, hitSide);
+                }
             } else if (mode == FlamethrowerMode.INFERNO) {
                 Entity owner = func_234616_v_();
-                PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
                 BlockPos sidePos = hitPos.offset(hitSide);
                 BlockState hitState = world.getBlockState(hitPos);
-                //TODO - 1.16.2: Re-evaluate, make sure this lights things like planks on fire properly?
-                if (AbstractFireBlock.canLightBlock(world, sidePos, hitSide)) {
-                    world.setBlockState(sidePos, AbstractFireBlock.getFireForPlacement(world, sidePos));
-                } else if (CampfireBlock.canBeLit(hitState)) {
-                    world.setBlockState(hitPos, hitState.with(BlockStateProperties.LIT, true));
+                if (CampfireBlock.canBeLit(hitState)) {
+                    tryPlace(owner, hitPos, hitSide, hitState.with(BlockStateProperties.LIT, true));
+                } else if (AbstractFireBlock.canLightBlock(world, sidePos, hitSide)) {
+                    tryPlace(owner, sidePos, hitSide, AbstractFireBlock.getFireForPlacement(world, sidePos));
                 } else if (hitState.isFlammable(world, hitPos, hitSide)) {
-                    hitState.catchFire(world, hitPos, hitSide, shooter);
+                    //TODO: Is there some event we should/can be firing here?
+                    hitState.catchFire(world, hitPos, hitSide, owner instanceof LivingEntity ? (LivingEntity) owner : null);
                     if (hitState.getBlock() instanceof TNTBlock) {
                         world.removeBlock(hitPos, false);
                     }
@@ -168,6 +177,18 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
             playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
         }
         remove();
+    }
+
+    private boolean tryPlace(@Nullable Entity shooter, BlockPos pos, Direction hitSide, BlockState newState) {
+        BlockSnapshot blockSnapshot = BlockSnapshot.create(world.getDimensionKey(), world, pos);
+        world.setBlockState(pos, newState);
+        if (ForgeEventFactory.onBlockPlace(shooter, blockSnapshot, hitSide)) {
+            world.restoringBlockSnapshots = true;
+            blockSnapshot.restore(true, false);
+            world.restoringBlockSnapshots = false;
+            return false;
+        }
+        return true;
     }
 
     private boolean smeltItem(ItemEntity item) {
@@ -183,38 +204,38 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         return false;
     }
 
-    private boolean smeltBlock(BlockPos blockPos) {
+    private void smeltBlock(PlayerEntity shooter, BlockPos blockPos, Direction hitSide) {
         if (world.isAirBlock(blockPos)) {
-            return false;
+            return;
         }
         ItemStack stack = new ItemStack(world.getBlockState(blockPos).getBlock());
         if (stack.isEmpty()) {
-            return false;
+            return;
         }
         Optional<FurnaceRecipe> recipe;
         try {
             recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(stack), world);
         } catch (Exception e) {
-            return false;
+            return;
         }
         if (recipe.isPresent()) {
             if (!world.isRemote) {
                 BlockState state = world.getBlockState(blockPos);
+                if (MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(world, blockPos, state, shooter))) {
+                    //We can't break the block exit
+                    return;
+                }
                 ItemStack result = recipe.get().getRecipeOutput();
-                if (result.getItem() instanceof BlockItem) {
-                    world.setBlockState(blockPos, Block.getBlockFromItem(result.getItem().getItem()).getDefaultState());
-                } else {
+                if (!(result.getItem() instanceof BlockItem) || !tryPlace(shooter, blockPos, hitSide, Block.getBlockFromItem(result.getItem().getItem()).getDefaultState())) {
                     world.removeBlock(blockPos, false);
                     ItemEntity item = new ItemEntity(world, blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());
                     item.setMotion(0, 0, 0);
                     world.addEntity(item);
                 }
                 world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, blockPos, Block.getStateId(state));
+                spawnParticlesAt((ServerWorld) world, blockPos);
             }
-            spawnParticlesAt(blockPos.add(0.5, 0.5, 0.5));
-            return true;
         }
-        return false;
     }
 
     private void burn(Entity entity) {
@@ -226,6 +247,13 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         for (int i = 0; i < 10; i++) {
             world.addParticle(ParticleTypes.SMOKE, pos.getX() + (rand.nextFloat() - 0.5), pos.getY() + (rand.nextFloat() - 0.5),
                   pos.getZ() + (rand.nextFloat() - 0.5), 0, 0, 0);
+        }
+    }
+
+    private void spawnParticlesAt(ServerWorld world, BlockPos pos) {
+        for (int i = 0; i < 10; i++) {
+            world.spawnParticle(ParticleTypes.SMOKE, pos.getX() + (rand.nextFloat() - 0.5), pos.getY() + (rand.nextFloat() - 0.5),
+                  pos.getZ() + (rand.nextFloat() - 0.5), 3, 0, 0, 0, 0);
         }
     }
 
