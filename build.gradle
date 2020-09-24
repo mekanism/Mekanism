@@ -240,6 +240,9 @@ minecraft {
         data {
             workingDirectory project.file("run")
             environment 'target', 'fmluserdevdata'
+            // This fixes Mixin application problems from other mods because their refMaps are SRG-based,
+            // but we're in a MCP env
+            property "mixin.env.disableRefMap", "true"
 
             args '--all', '--output', file('src/datagen/generated/'),
                     '--mod', 'mekanism',
@@ -292,6 +295,10 @@ repositories {
         url 'https://www.cursemaven.com'
     }
     maven {
+        name 'Modmaven'
+        url 'https://modmaven.k-4u.nl'
+    }
+    maven {
         name 'HWYLA'
         url "https://maven.tehnut.info"
     }
@@ -327,6 +334,7 @@ dependencies {
     //compileOnly fg.deobf("curse.maven:flux-networks:${flux_networks_id}")
 
     //Dependencies for data generators for mod compat reference
+    datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
     datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api:${biomesoplenty_api_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_id}")
     //TODO: Switch this to datagenmainImplementation once it updates to 1.16.3
