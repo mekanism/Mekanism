@@ -24,6 +24,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         addCrusherBioFuelRecipes(consumer, basePath + "biofuel/");
         addCrusherStoneRecipes(consumer, basePath + "stone/");
         addCrusherBlackstoneRecipes(consumer, basePath + "blackstone/");
+        addCrusherQuartzRecipes(consumer, basePath + "quartz/");
         //Charcoal -> Charcoal Dust
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Items.CHARCOAL),
@@ -161,6 +162,44 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS),
               new ItemStack(Blocks.POLISHED_BLACKSTONE)
         ).build(consumer, Mekanism.rl(basePath + "from_cracked_bricks"));
+    }
+
+    private void addCrusherQuartzRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Quartz Block -> Smooth Quartz Block
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Tags.Items.STORAGE_BLOCKS_QUARTZ),
+              new ItemStack(Blocks.SMOOTH_QUARTZ)
+        ).build(consumer, Mekanism.rl(basePath + "to_smooth_quartz"));
+        //Quartz Slab -> Smooth Quartz Slab
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Blocks.QUARTZ_SLAB),
+              new ItemStack(Blocks.SMOOTH_QUARTZ_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "slab_to_smooth_slab"));
+        //Quartz Stairs -> Smooth Quartz Stairs
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Blocks.QUARTZ_STAIRS),
+              new ItemStack(Blocks.SMOOTH_QUARTZ_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "stairs_to_smooth_stairs"));
+        //Smooth Quartz Block -> Quartz Bricks
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Blocks.SMOOTH_QUARTZ),
+              new ItemStack(Blocks.QUARTZ_BRICKS)
+        ).build(consumer, Mekanism.rl(basePath + "smooth_to_bricks"));
+        //Quartz Bricks -> Chiseled Quartz Block
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Blocks.QUARTZ_BRICKS),
+              new ItemStack(Blocks.CHISELED_QUARTZ_BLOCK)
+        ).build(consumer, Mekanism.rl(basePath + "bricks_to_chiseled"));
+        //Chiseled Quartz Block -> Quartz Pillar
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Blocks.CHISELED_QUARTZ_BLOCK),
+              new ItemStack(Blocks.QUARTZ_PILLAR)
+        ).build(consumer, Mekanism.rl(basePath + "chiseled_to_pillar"));
+        //Quartz Pillar -> Quartz Block
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Blocks.QUARTZ_PILLAR),
+              new ItemStack(Blocks.QUARTZ_BLOCK)
+        ).build(consumer, Mekanism.rl(basePath + "from_pillar"));
     }
 
     private void addCrusherBioFuelRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/quartz"
+    }
+  },
+  "output": {
+    "item": "minecraft:smooth_quartz"
+  }
+}

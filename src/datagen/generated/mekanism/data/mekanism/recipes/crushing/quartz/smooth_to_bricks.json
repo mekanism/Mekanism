@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:smooth_quartz"
+    }
+  },
+  "output": {
+    "item": "minecraft:quartz_bricks"
+  }
+}

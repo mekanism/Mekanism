@@ -1,0 +1,29 @@
+{
+  "type": "mekanism:enriching",
+  "input": [
+    {
+      "ingredient": {
+        "tag": "forge:storage_blocks/quartz"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:quartz_bricks"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:chiseled_quartz_block"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:quartz_pillar"
+      }
+    }
+  ],
+  "output": {
+    "item": "minecraft:quartz",
+    "count": 4
+  }
+}

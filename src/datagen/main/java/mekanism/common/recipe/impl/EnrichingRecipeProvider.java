@@ -60,6 +60,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
     private void addEnrichingConversionRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         addEnrichingStoneConversionRecipes(consumer, basePath + "stone/");
         addEnrichingBlackstoneConversionRecipes(consumer, basePath + "blackstone/");
+        addEnrichingQuartzRecipes(consumer, basePath + "quartz/");
         addEnrichingMossyConversionRecipes(consumer, basePath + "mossy/");
         //Gravel -> flint
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -142,6 +143,34 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Blocks.POLISHED_BLACKSTONE_BRICKS),
               new ItemStack(Blocks.CHISELED_POLISHED_BLACKSTONE)
         ).build(consumer, Mekanism.rl(basePath + "bricks_to_chiseled_bricks"));
+    }
+
+    private void addEnrichingQuartzRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Quartz Block -> Quartz Item
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.createMulti(
+                    ItemStackIngredient.from(Tags.Items.STORAGE_BLOCKS_QUARTZ),
+                    ItemStackIngredient.from(Blocks.QUARTZ_BRICKS),
+                    ItemStackIngredient.from(Blocks.CHISELED_QUARTZ_BLOCK),
+                    ItemStackIngredient.from(Blocks.QUARTZ_PILLAR)
+              ),
+              new ItemStack(Items.QUARTZ, 4)
+        ).build(consumer, Mekanism.rl(basePath + "to_item"));
+        //Smooth Quartz Block -> Quartz Block
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.SMOOTH_QUARTZ),
+              new ItemStack(Blocks.QUARTZ_BLOCK)
+        ).build(consumer, Mekanism.rl(basePath + "from_smooth_quartz"));
+        //Smooth Quartz Slab -> Quartz Slab
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.SMOOTH_QUARTZ_SLAB),
+              new ItemStack(Blocks.QUARTZ_SLAB)
+        ).build(consumer, Mekanism.rl(basePath + "smooth_slab_to_slab"));
+        //Smooth Quartz Stairs -> Quartz Stairs
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Blocks.SMOOTH_QUARTZ_STAIRS),
+              new ItemStack(Blocks.QUARTZ_STAIRS)
+        ).build(consumer, Mekanism.rl(basePath + "smooth_stairs_to_stairs"));
     }
 
     private void addEnrichingMossyConversionRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
