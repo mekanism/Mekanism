@@ -114,12 +114,17 @@ configurations {
     // they can see all the dependencies we have in dependencies including forge
     def compileExtenders = [apiCompile, additionsCompile, generatorsCompile, defenseCompile, toolsCompile, testCompile,
                             datagenmainCompile, datagenadditionsCompile, datagengeneratorsCompile, datagendefenseCompile, datagentoolsCompile]
+    def implementationExtenders = [apiImplementation, additionsImplementation, generatorsImplementation, defenseImplementation, toolsImplementation, testImplementation,
+                            datagenmainImplementation, datagenadditionsImplementation, datagengeneratorsImplementation, datagendefenseImplementation, datagentoolsImplementation]
     def compileOnlyExtenders = [apiCompileOnly, additionsCompileOnly, generatorsCompileOnly, defenseCompileOnly, toolsCompileOnly, testCompileOnly,
                                 datagenmainCompileOnly, datagenadditionsCompileOnly, datagengeneratorsCompileOnly, datagendefenseCompileOnly, datagentoolsCompileOnly]
     def runtimeOnlyExtenders = [apiRuntimeOnly, additionsRuntimeOnly, generatorsRuntimeOnly, defenseRuntimeOnly, toolsRuntimeOnly,
                                 datagenmainRuntimeOnly, datagenadditionsRuntimeOnly, datagengeneratorsRuntimeOnly, datagendefenseRuntimeOnly, datagentoolsRuntimeOnly]
     for (def compileExtender : compileExtenders) {
         compileExtender.extendsFrom(compile)
+    }
+    for (def implementationExtender : implementationExtenders) {
+        implementationExtender.extendsFrom(implementation)
     }
     for (def compileOnlyExtender : compileOnlyExtenders) {
         compileOnlyExtender.extendsFrom(compileOnly)
@@ -324,7 +329,8 @@ dependencies {
     //Dependencies for data generators for mod compat reference
     datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api:${biomesoplenty_api_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_id}")
-    //datagenmainCompile fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
+    //TODO: Switch this to datagenmainImplementation once it updates to 1.16.3
+    datagenmainCompileOnly fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
 }
 
 processResources {

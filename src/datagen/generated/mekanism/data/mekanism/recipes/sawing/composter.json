@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:composter"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:oak_slab",
+    "count": 7
+  }
+}

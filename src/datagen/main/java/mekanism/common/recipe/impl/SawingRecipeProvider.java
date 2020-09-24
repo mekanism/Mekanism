@@ -53,6 +53,11 @@ class SawingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Items.CHEST),
               new ItemStack(Items.OAK_PLANKS, 8)
         ).build(consumer, Mekanism.rl(basePath + "chest"));
+        //Composter
+        SawmillRecipeBuilder.sawing(
+              ItemStackIngredient.from(Items.COMPOSTER),
+              new ItemStack(Items.OAK_SLAB, 7)
+        ).build(consumer, Mekanism.rl(basePath + "composter"));
         //Crafting table
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(Items.CRAFTING_TABLE),
@@ -63,6 +68,13 @@ class SawingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Tags.Items.FENCES_WOODEN),
               new ItemStack(Items.STICK, 3)
         ).build(consumer, Mekanism.rl(basePath + "fences"));
+        //Item Frame
+        SawmillRecipeBuilder.sawing(
+              ItemStackIngredient.from(Items.ITEM_FRAME),
+              new ItemStack(Items.STICK, 8),
+              new ItemStack(Items.LEATHER),
+              1
+        ).build(consumer, Mekanism.rl(basePath + "item_frame"));
         //Jukebox
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(Items.JUKEBOX),

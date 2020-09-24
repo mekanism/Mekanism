@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:item_frame"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:stick",
+    "count": 8
+  },
+  "secondaryOutput": {
+    "item": "minecraft:leather"
+  },
+  "secondaryChance": 1.0
+}

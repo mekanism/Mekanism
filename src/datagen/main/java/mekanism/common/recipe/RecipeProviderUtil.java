@@ -92,12 +92,12 @@ public class RecipeProviderUtil {
         builder.build(consumer, Mekanism.rl(path));
     }
 
-    public static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, String basePath, Item bed, Item wool, String name) {
+    public static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider bed, IItemProvider wool, String name) {
         addPrecisionSawmillBedRecipe(consumer, basePath, bed, Items.OAK_PLANKS, wool, name, null);
     }
 
-    public static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, String basePath, Item bed, Item planks, Item wool, String name,
-          @Nullable ICondition condition) {
+    public static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider bed, IItemProvider planks, IItemProvider wool,
+          String name, @Nullable ICondition condition) {
         SawmillRecipeBuilder bedRecipeBuilder = SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(bed),
               new ItemStack(planks, 3),
