@@ -97,9 +97,9 @@ public abstract class BaseTagProvider implements IDataProvider {
 
                         @Nonnull
                         @Override
-                        public <T> Stream<ITag.Proxy> func_232963_b_(@Nonnull Function<ResourceLocation, ITag<T>> resourceTagFunction,
+                        public <T> Stream<ITag.Proxy> getProxyTags(@Nonnull Function<ResourceLocation, ITag<T>> resourceTagFunction,
                               @Nonnull Function<ResourceLocation, T> resourceElementFunction) {
-                            return tagBuilder.func_232963_b_(resourceTagFunction, resourceElementFunction);
+                            return tagBuilder.getProxyTags(resourceTagFunction, resourceElementFunction);
                         }
                     }));
                 }

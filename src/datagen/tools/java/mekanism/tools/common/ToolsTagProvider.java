@@ -15,7 +15,7 @@ public class ToolsTagProvider extends BaseTagProvider {
 
     @Override
     protected void registerTags() {
-        addToTag(ItemTags.field_232903_N_,
+        addToTag(ItemTags.PIGLIN_LOVED,
               ToolsItems.GOLD_PAXEL,
               ToolsItems.REFINED_GLOWSTONE_PICKAXE,
               ToolsItems.REFINED_GLOWSTONE_AXE,

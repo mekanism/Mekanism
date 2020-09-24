@@ -36,7 +36,7 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
                                 .acceptFunction(LootingEnchantBonus.builder(RandomValueRange.of(0.0F, 1.0F)))
                           )
               ).addLootPool(LootPool.builder()
-                    .addEntry(TagLootEntry.func_216176_b(ItemTags.MUSIC_DISCS))
+                    .addEntry(TagLootEntry.getBuilder(ItemTags.MUSIC_DISCS))
                     .acceptCondition(EntityHasProperty.builder(LootContext.EntityTarget.KILLER, EntityPredicate.Builder.create().type(EntityTypeTags.SKELETONS)))
               )
         );

@@ -64,8 +64,8 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
         addToTag(BlockTags.GUARDED_BY_PIGLINS, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismBlocks.PERSONAL_CHEST);
         addToTag(BlockTags.HOGLIN_REPELLENTS, MekanismBlocks.TELEPORTER, MekanismBlocks.QUANTUM_ENTANGLOPORTER);
-        addToTag(ItemTags.field_232903_N_, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismItems.REFINED_GLOWSTONE_INGOT);
-        addToTag(EntityTypeTags.field_232893_e_, MekanismEntityTypes.FLAME);
+        addToTag(ItemTags.PIGLIN_LOVED, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismItems.REFINED_GLOWSTONE_INGOT);
+        addToTag(EntityTypeTags.IMPACT_PROJECTILES, MekanismEntityTypes.FLAME);
     }
 
     private void addProcessedResources() {
@@ -117,7 +117,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.STEEL_BLOCK
         );
         //Beacon payment items
-        addToTag(ItemTags.field_232908_Z_,
+        addToTag(ItemTags.BEACON_PAYMENT_ITEMS,
               MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
               MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER),
               MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN),
@@ -141,7 +141,15 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR,
               MekanismBlocks.MODIFICATION_STATION,
               MekanismBlocks.ISOTOPIC_CENTRIFUGE,
-              MekanismBlocks.RADIOACTIVE_WASTE_BARREL // closing all the loopholes!
+              //Don't allow blocks that may have a radioactive substance in them to be picked up as it
+              // will effectively dupe the radiation and also leak out into the atmosphere which is not
+              // what people want, and means that it is likely someone miss clicked.
+              MekanismBlocks.RADIOACTIVE_WASTE_BARREL,
+              MekanismBlocks.PRESSURIZED_REACTION_CHAMBER,
+              MekanismBlocks.BASIC_PRESSURIZED_TUBE,
+              MekanismBlocks.ADVANCED_PRESSURIZED_TUBE,
+              MekanismBlocks.ELITE_PRESSURIZED_TUBE,
+              MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE
         );
         getBlockBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST)
               .add(MekanismTags.Blocks.RELOCATION_NOT_SUPPORTED)
