@@ -240,7 +240,7 @@ minecraft {
         data {
             workingDirectory project.file("run")
             environment 'target', 'fmluserdevdata'
-            // This fixes Mixin application problems from other mods because their refMaps are SRG-based,
+            //This fixes Mixin application problems from other mods because their refMaps are SRG-based,
             // but we're in a MCP env
             property "mixin.env.disableRefMap", "true"
 

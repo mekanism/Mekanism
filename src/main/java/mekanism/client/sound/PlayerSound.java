@@ -9,7 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 
-//TODO - 1.16.2: Should this extend EntityTickableSound
+//TODO: Decide if this should this extend EntityTickableSound, given then our reference isn't weak which I am not sure if it matters
 public abstract class PlayerSound extends TickableSound {
 
     @Nonnull
@@ -79,7 +79,8 @@ public abstract class PlayerSound extends TickableSound {
     public void tick() {
         PlayerEntity player = getPlayer();
         if (player == null || !player.isAlive()) {
-            //TODO - 1.16.2: Re-evaluate sounds because I feel like we may not be properly reinitializing the sounds after we mark it as being done playing
+            //TODO: Re-evaluate sounds because I feel like we may not be properly reinitializing the sounds after we mark it as being done playing
+            // though from testing they do seem to somehow work properly
             finishPlaying();
             this.volume = 0.0F;
             return;
