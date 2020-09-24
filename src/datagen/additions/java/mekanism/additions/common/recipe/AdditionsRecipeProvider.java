@@ -24,10 +24,10 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.tags.ITag;
 import net.minecraftforge.common.Tags;
 
@@ -70,7 +70,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(TNT_CHAR, TNT_CHAR, TNT_CHAR),
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR))
               ).key(OBSIDIAN_CHAR, Tags.Items.OBSIDIAN)
-              .key(TNT_CHAR, Items.TNT)
+              .key(TNT_CHAR, Blocks.TNT)
               .build(consumer);
         registerBalloons(consumer);
         registerGlowPanels(consumer);

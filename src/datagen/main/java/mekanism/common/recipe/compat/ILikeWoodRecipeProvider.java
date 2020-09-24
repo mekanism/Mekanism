@@ -165,21 +165,21 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
 
     private void addPrecisionSawmillBedRecipes(Consumer<IFinishedRecipe> consumer, ICondition condition, IItemProvider planks, String basePath) {
         //TODO: FIXME, use the correct type of bed, and implement once beds are added back into the mod
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLACK_BED, planks, Items.BLACK_WOOL, "black", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLUE_BED, planks, Items.BLUE_WOOL, "blue", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BROWN_BED, planks, Items.BROWN_WOOL, "brown", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.CYAN_BED, planks, Items.CYAN_WOOL, "cyan", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.GRAY_BED, planks, Items.GRAY_WOOL, "gray", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.GREEN_BED, planks, Items.GREEN_WOOL, "green", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIGHT_BLUE_BED, planks, Items.LIGHT_BLUE_WOOL, "light_blue", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIGHT_GRAY_BED, planks, Items.LIGHT_GRAY_WOOL, "light_gray", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIME_BED, planks, Items.LIME_WOOL, "lime", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.MAGENTA_BED, planks, Items.MAGENTA_WOOL, "magenta", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.ORANGE_BED, planks, Items.ORANGE_WOOL, "orange", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.PINK_BED, planks, Items.PINK_WOOL, "pink", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.PURPLE_BED, planks, Items.PURPLE_WOOL, "purple", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.RED_BED, planks, Items.RED_WOOL, "red", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.WHITE_BED, planks, Items.WHITE_WOOL, "white", condition);
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.YELLOW_BED, planks, Items.YELLOW_WOOL, "yellow", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLACK_BED, planks, Blocks.BLACK_WOOL, "black", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLUE_BED, planks, Blocks.BLUE_WOOL, "blue", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BROWN_BED, planks, Blocks.BROWN_WOOL, "brown", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.CYAN_BED, planks, Blocks.CYAN_WOOL, "cyan", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.GRAY_BED, planks, Blocks.GRAY_WOOL, "gray", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.GREEN_BED, planks, Blocks.GREEN_WOOL, "green", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIGHT_BLUE_BED, planks, Blocks.LIGHT_BLUE_WOOL, "light_blue", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIGHT_GRAY_BED, planks, Blocks.LIGHT_GRAY_WOOL, "light_gray", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIME_BED, planks, Blocks.LIME_WOOL, "lime", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.MAGENTA_BED, planks, Blocks.MAGENTA_WOOL, "magenta", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.ORANGE_BED, planks, Blocks.ORANGE_WOOL, "orange", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.PINK_BED, planks, Blocks.PINK_WOOL, "pink", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.PURPLE_BED, planks, Blocks.PURPLE_WOOL, "purple", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.RED_BED, planks, Blocks.RED_WOOL, "red", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.WHITE_BED, planks, Blocks.WHITE_WOOL, "white", condition);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.YELLOW_BED, planks, Blocks.YELLOW_WOOL, "yellow", condition);
     }
 }

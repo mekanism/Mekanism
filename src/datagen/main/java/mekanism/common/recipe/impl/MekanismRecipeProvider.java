@@ -433,7 +433,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
               ).key(Pattern.CONSTANT, Tags.Items.CHESTS_WOODEN)
-              .key(Pattern.PREVIOUS, Items.CRAFTING_TABLE)
+              .key(Pattern.PREVIOUS, Blocks.CRAFTING_TABLE)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
@@ -457,7 +457,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
-              .key(Pattern.CONSTANT, Items.FURNACE)
+              .key(Pattern.CONSTANT, Blocks.FURNACE)
               .build(consumer);
         //Scuba mask
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SCUBA_MASK)
@@ -622,7 +622,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
               ).key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
-              .key(Pattern.CONSTANT, Items.PISTON)
+              .key(Pattern.CONSTANT, Blocks.PISTON)
               .build(consumer);
         //Metallurgic infuser
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.METALLURGIC_INFUSER)
@@ -633,7 +633,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
-              .key(Pattern.CONSTANT, Items.FURNACE)
+              .key(Pattern.CONSTANT, Blocks.FURNACE)
               .build(consumer);
         //Network reader
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.NETWORK_READER)
@@ -713,7 +713,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL),
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT),
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
-              ).key(Pattern.CONSTANT, Items.IRON_BARS)
+              ).key(Pattern.CONSTANT, Blocks.IRON_BARS)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .build(consumer);
@@ -753,7 +753,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
               .build(consumer);
         //Rail
-        ExtendedShapedRecipeBuilder.shapedRecipe(Items.RAIL, 24)
+        ExtendedShapedRecipeBuilder.shapedRecipe(Blocks.RAIL, 24)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.OSMIUM, Pattern.EMPTY, Pattern.OSMIUM),
                     TripleLine.of(Pattern.OSMIUM, Pattern.CONSTANT, Pattern.OSMIUM),

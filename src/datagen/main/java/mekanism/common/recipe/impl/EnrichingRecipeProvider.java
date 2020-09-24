@@ -42,7 +42,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "clay_ball"));
         //Glowstone dust
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.GLOWSTONE),
+              ItemStackIngredient.from(Blocks.GLOWSTONE),
               new ItemStack(Items.GLOWSTONE_DUST, 4)
         ).build(consumer, Mekanism.rl(basePath + "glowstone_dust"));
         //HDPE Sheet
@@ -74,7 +74,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         //Sand -> gravel
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Tags.Items.SAND),
-              new ItemStack(Items.GRAVEL)
+              new ItemStack(Blocks.GRAVEL)
         ).build(consumer, Mekanism.rl(basePath + "sand_to_gravel"));
         //Soul Sand -> soul soil
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -184,80 +184,80 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
     private void addEnrichingDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Black
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.WITHER_ROSE),
+              ItemStackIngredient.from(Blocks.WITHER_ROSE),
               new ItemStack(Items.BLACK_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "black"));
         //Blue
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.CORNFLOWER),
+              ItemStackIngredient.from(Blocks.CORNFLOWER),
               new ItemStack(Items.BLUE_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "blue"));
         //Green
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.CACTUS),
+              ItemStackIngredient.from(Blocks.CACTUS),
               new ItemStack(Items.GREEN_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "green"));
         //Magenta
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.LILAC),
+              ItemStackIngredient.from(Blocks.LILAC),
               new ItemStack(Items.MAGENTA_DYE, 4)
         ).build(consumer, Mekanism.rl(basePath + "large_magenta"));
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.ALLIUM),
+              ItemStackIngredient.from(Blocks.ALLIUM),
               new ItemStack(Items.MAGENTA_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "small_magenta"));
         //Pink
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.PEONY),
+              ItemStackIngredient.from(Blocks.PEONY),
               new ItemStack(Items.PINK_DYE, 4)
         ).build(consumer, Mekanism.rl(basePath + "large_pink"));
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.PINK_TULIP),
+              ItemStackIngredient.from(Blocks.PINK_TULIP),
               new ItemStack(Items.PINK_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "small_pink"));
         //Red
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.ROSE_BUSH),
+              ItemStackIngredient.from(Blocks.ROSE_BUSH),
               new ItemStack(Items.RED_DYE, 4)
         ).build(consumer, Mekanism.rl(basePath + "large_red"));
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Items.RED_TULIP),
-                    ItemStackIngredient.from(Items.POPPY)
+                    ItemStackIngredient.from(Blocks.RED_TULIP),
+                    ItemStackIngredient.from(Blocks.POPPY)
               ),
               new ItemStack(Items.RED_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "small_red"));
         //Yellow
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.SUNFLOWER),
+              ItemStackIngredient.from(Blocks.SUNFLOWER),
               new ItemStack(Items.YELLOW_DYE, 4)
         ).build(consumer, Mekanism.rl(basePath + "large_yellow"));
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.DANDELION),
+              ItemStackIngredient.from(Blocks.DANDELION),
               new ItemStack(Items.YELLOW_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "small_yellow"));
         //Light blue
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.BLUE_ORCHID),
+              ItemStackIngredient.from(Blocks.BLUE_ORCHID),
               new ItemStack(Items.LIGHT_BLUE_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "light_blue"));
         //Light gray
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Items.OXEYE_DAISY),
-                    ItemStackIngredient.from(Items.AZURE_BLUET),
-                    ItemStackIngredient.from(Items.WHITE_TULIP)
+                    ItemStackIngredient.from(Blocks.OXEYE_DAISY),
+                    ItemStackIngredient.from(Blocks.AZURE_BLUET),
+                    ItemStackIngredient.from(Blocks.WHITE_TULIP)
               ),
               new ItemStack(Items.LIGHT_GRAY_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "light_gray"));
         //Orange
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.ORANGE_TULIP),
+              ItemStackIngredient.from(Blocks.ORANGE_TULIP),
               new ItemStack(Items.ORANGE_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "orange"));
         //White
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(Items.LILY_OF_THE_VALLEY),
+              ItemStackIngredient.from(Blocks.LILY_OF_THE_VALLEY),
               new ItemStack(Items.WHITE_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "white"));
     }

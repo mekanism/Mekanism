@@ -10,6 +10,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
 import mekanism.common.registries.MekanismItems;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -93,7 +94,7 @@ public class RecipeProviderUtil {
     }
 
     public static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider bed, IItemProvider wool, String name) {
-        addPrecisionSawmillBedRecipe(consumer, basePath, bed, Items.OAK_PLANKS, wool, name, null);
+        addPrecisionSawmillBedRecipe(consumer, basePath, bed, Blocks.OAK_PLANKS, wool, name, null);
     }
 
     public static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider bed, IItemProvider planks, IItemProvider wool,

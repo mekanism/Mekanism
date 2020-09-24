@@ -32,7 +32,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         //Cobblestone -> Gravel
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Tags.Items.COBBLESTONE),
-              new ItemStack(Items.GRAVEL)
+              new ItemStack(Blocks.GRAVEL)
         ).build(consumer, Mekanism.rl(basePath + "cobblestone_to_gravel"));
         //Flint -> Gunpowder
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -42,28 +42,28 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         //Gravel -> Sand
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Tags.Items.GRAVEL),
-              new ItemStack(Items.SAND)
+              new ItemStack(Blocks.SAND)
         ).build(consumer, Mekanism.rl(basePath + "gravel_to_sand"));
         //TODO: Do we just want to make a clear and red tag for sandstone?
         //Red Sandstone -> Sand
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Items.RED_SANDSTONE),
-                    ItemStackIngredient.from(Items.CHISELED_RED_SANDSTONE),
-                    ItemStackIngredient.from(Items.CUT_RED_SANDSTONE),
-                    ItemStackIngredient.from(Items.SMOOTH_RED_SANDSTONE)
+                    ItemStackIngredient.from(Blocks.RED_SANDSTONE),
+                    ItemStackIngredient.from(Blocks.CHISELED_RED_SANDSTONE),
+                    ItemStackIngredient.from(Blocks.CUT_RED_SANDSTONE),
+                    ItemStackIngredient.from(Blocks.SMOOTH_RED_SANDSTONE)
               ),
-              new ItemStack(Items.RED_SAND, 2)
+              new ItemStack(Blocks.RED_SAND, 2)
         ).build(consumer, Mekanism.rl(basePath + "red_sandstone_to_sand"));
         //Sandstone -> Sand
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Items.SANDSTONE),
-                    ItemStackIngredient.from(Items.CHISELED_SANDSTONE),
-                    ItemStackIngredient.from(Items.CUT_SANDSTONE),
-                    ItemStackIngredient.from(Items.SMOOTH_SANDSTONE)
+                    ItemStackIngredient.from(Blocks.SANDSTONE),
+                    ItemStackIngredient.from(Blocks.CHISELED_SANDSTONE),
+                    ItemStackIngredient.from(Blocks.CUT_SANDSTONE),
+                    ItemStackIngredient.from(Blocks.SMOOTH_SANDSTONE)
               ),
-              new ItemStack(Items.SAND, 2)
+              new ItemStack(Blocks.SAND, 2)
         ).build(consumer, Mekanism.rl(basePath + "sandstone_to_sand"));
         //Wool -> String
         ItemStackToItemStackRecipeBuilder.crushing(

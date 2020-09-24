@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "item": "minecraft:ancient_debris"
+      "tag": "forge:ores/netherite_scrap"
     }
   },
   "output": {

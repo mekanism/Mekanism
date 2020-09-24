@@ -67,13 +67,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         addNetheriteProcessingRecipes(consumer, basePath + "netherite/");
         addBronzeProcessingRecipes(consumer, basePath + "bronze/");
         addCoalOreProcessingRecipes(consumer, basePath + "coal/");
-        addOreProcessingGemRecipes(consumer, basePath + "diamond/", Items.DIAMOND_ORE, Tags.Items.ORES_DIAMOND, MekanismItems.DIAMOND_DUST,
+        addOreProcessingGemRecipes(consumer, basePath + "diamond/", Blocks.DIAMOND_ORE, Tags.Items.ORES_DIAMOND, MekanismItems.DIAMOND_DUST,
               MekanismTags.Items.DUSTS_DIAMOND, Items.DIAMOND, Tags.Items.GEMS_DIAMOND, 2, 3, Tags.Items.COBBLESTONE);
-        addOreProcessingGemRecipes(consumer, basePath + "emerald/", Items.EMERALD_ORE, Tags.Items.ORES_EMERALD, MekanismItems.EMERALD_DUST,
+        addOreProcessingGemRecipes(consumer, basePath + "emerald/", Blocks.EMERALD_ORE, Tags.Items.ORES_EMERALD, MekanismItems.EMERALD_DUST,
               MekanismTags.Items.DUSTS_EMERALD, Items.EMERALD, Tags.Items.GEMS_EMERALD, 2, 3, Tags.Items.COBBLESTONE);
-        addOreProcessingGemRecipes(consumer, basePath + "lapis_lazuli/", Items.LAPIS_ORE, Tags.Items.ORES_LAPIS, MekanismItems.LAPIS_LAZULI_DUST,
+        addOreProcessingGemRecipes(consumer, basePath + "lapis_lazuli/", Blocks.LAPIS_ORE, Tags.Items.ORES_LAPIS, MekanismItems.LAPIS_LAZULI_DUST,
               MekanismTags.Items.DUSTS_LAPIS, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 16, Tags.Items.COBBLESTONE);
-        addOreProcessingGemRecipes(consumer, basePath + "quartz/", Items.NETHER_QUARTZ_ORE, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
+        addOreProcessingGemRecipes(consumer, basePath + "quartz/", Blocks.NETHER_QUARTZ_ORE, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
               MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 6, 8, Tags.Items.NETHERRACK);
         addOreProcessingGemRecipes(consumer, basePath + "fluorite/", MekanismBlocks.ORES.get(OreType.FLUORITE), MekanismTags.Items.ORES.get(OreType.FLUORITE),
               MekanismItems.FLUORITE_DUST, MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 8,
@@ -231,7 +231,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         CombinerRecipeBuilder.combining(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL, 8),
               ItemStackIngredient.from(Tags.Items.COBBLESTONE),
-              new ItemStack(Items.COAL_ORE)
+              new ItemStack(Blocks.COAL_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
     }
 
@@ -260,17 +260,22 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
     }
 
-    //TODO: Once forge figures out default tags for netherite stuff, start using them and maybe add one for dirty netherite scram
     private void addNetheriteProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Ancient Debris to Dirty Netherite Scrap
-        ItemStackToItemStackRecipeBuilder.crushing(ItemStackIngredient.from(Blocks.ANCIENT_DEBRIS), MekanismItems.DIRTY_NETHERITE_SCRAP.getItemStack(3))
-              .build(consumer, Mekanism.rl(basePath + "ancient_debris_to_dirty_scrap"));
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Tags.Items.ORES_NETHERITE_SCRAP),
+              MekanismItems.DIRTY_NETHERITE_SCRAP.getItemStack(3)
+        ).build(consumer, Mekanism.rl(basePath + "ancient_debris_to_dirty_scrap"));
         //Dirty Netherite Scrap to Netherite Scrap
-        ItemStackToItemStackRecipeBuilder.enriching(ItemStackIngredient.from(MekanismItems.DIRTY_NETHERITE_SCRAP), new ItemStack(Items.NETHERITE_SCRAP))
-              .build(consumer, Mekanism.rl(basePath + "dirty_scrap_to_scrap"));
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(MekanismItems.DIRTY_NETHERITE_SCRAP),
+              new ItemStack(Items.NETHERITE_SCRAP)
+        ).build(consumer, Mekanism.rl(basePath + "dirty_scrap_to_scrap"));
         //Ancient Debris to Netherite Scrap
-        ItemStackToItemStackRecipeBuilder.enriching(ItemStackIngredient.from(Blocks.ANCIENT_DEBRIS), new ItemStack(Items.NETHERITE_SCRAP, 2))
-              .build(consumer, Mekanism.rl(basePath + "ancient_debris_to_scrap"));
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Tags.Items.ORES_NETHERITE_SCRAP),
+              new ItemStack(Items.NETHERITE_SCRAP, 2)
+        ).build(consumer, Mekanism.rl(basePath + "ancient_debris_to_scrap"));
         //Netherite scrap to netherite dust
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(Items.NETHERITE_SCRAP, 4),
@@ -281,8 +286,10 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(MekanismTags.Items.DUSTS_NETHERITE), Items.NETHERITE_INGOT, 2, 200,
               Mekanism.rl(basePath + "ingot_from_dust_blasting"), Mekanism.rl(basePath + "ingot_from_dust_smelting"));
         //Netherite Ingot to Netherite Dust
-        ItemStackToItemStackRecipeBuilder.crushing(ItemStackIngredient.from(Items.NETHERITE_INGOT), MekanismItems.NETHERITE_DUST.getItemStack())
-              .build(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Tags.Items.INGOTS_NETHERITE),
+              MekanismItems.NETHERITE_DUST.getItemStack()
+        ).build(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
         //Netherite Dust to Ancient Debris
         // Note: We only require two dust as that is equivalent to 8 scrap
         CombinerRecipeBuilder.combining(
@@ -336,7 +343,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         CombinerRecipeBuilder.combining(
               ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE, 16),
               ItemStackIngredient.from(Tags.Items.COBBLESTONE),
-              new ItemStack(Items.REDSTONE_ORE)
+              new ItemStack(Blocks.REDSTONE_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
     }
 

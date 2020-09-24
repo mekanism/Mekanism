@@ -6,6 +6,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -21,13 +22,13 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         CombinerRecipeBuilder.combining(
               ItemStackIngredient.from(Items.FLINT),
               ItemStackIngredient.from(Tags.Items.COBBLESTONE),
-              new ItemStack(Items.GRAVEL)
+              new ItemStack(Blocks.GRAVEL)
         ).build(consumer, Mekanism.rl(basePath + "gravel"));
         //Obsidian
         CombinerRecipeBuilder.combining(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_OBSIDIAN, 4),
               ItemStackIngredient.from(Tags.Items.COBBLESTONE),
-              new ItemStack(Items.OBSIDIAN)
+              new ItemStack(Blocks.OBSIDIAN)
         ).build(consumer, Mekanism.rl(basePath + "obsidian"));
     }
 

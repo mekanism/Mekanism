@@ -15,6 +15,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -45,13 +46,13 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.REDSTONE, Pattern.REDSTONE, Pattern.REDSTONE))
               ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
-              .key(Pattern.CONSTANT, Items.IRON_BARS)
+              .key(Pattern.CONSTANT, Blocks.IRON_BARS)
               .build(consumer, Mekanism.rl(basePath + "diversion_transporter"));
         //Restrictive
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESTRICTIVE_TRANSPORTER, 2)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.CONSTANT, Items.IRON_BARS)
+              .key(Pattern.CONSTANT, Blocks.IRON_BARS)
               .build(consumer, Mekanism.rl(basePath + "restrictive_transporter"));
     }
 

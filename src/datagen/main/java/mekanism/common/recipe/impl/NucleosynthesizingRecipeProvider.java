@@ -10,6 +10,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -33,27 +34,27 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "emerald"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              ItemStackIngredient.from(Items.RED_WOOL),
+              ItemStackIngredient.from(Blocks.RED_WOOL),
               GasStackIngredient.from(MekanismGases.ANTIMATTER, 2),
-              new ItemStack(Items.REDSTONE_BLOCK),
+              new ItemStack(Blocks.REDSTONE_BLOCK),
               500
         ).build(consumer, Mekanism.rl(basePath + "redstone_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              ItemStackIngredient.from(Items.YELLOW_WOOL),
+              ItemStackIngredient.from(Blocks.YELLOW_WOOL),
               GasStackIngredient.from(MekanismGases.ANTIMATTER, 2),
-              new ItemStack(Items.GLOWSTONE),
+              new ItemStack(Blocks.GLOWSTONE),
               500
         ).build(consumer, Mekanism.rl(basePath + "glowstone_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              ItemStackIngredient.from(Items.BLUE_WOOL),
+              ItemStackIngredient.from(Blocks.BLUE_WOOL),
               GasStackIngredient.from(MekanismGases.ANTIMATTER, 2),
-              new ItemStack(Items.LAPIS_BLOCK),
+              new ItemStack(Blocks.LAPIS_BLOCK),
               500
         ).build(consumer, Mekanism.rl(basePath + "lapis_block"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              ItemStackIngredient.from(Items.LIGHT_GRAY_WOOL),
+              ItemStackIngredient.from(Blocks.LIGHT_GRAY_WOOL),
               GasStackIngredient.from(MekanismGases.ANTIMATTER, 2),
-              new ItemStack(Items.QUARTZ_BLOCK),
+              new ItemStack(Blocks.QUARTZ_BLOCK),
               500
         ).build(consumer, Mekanism.rl(basePath + "quartz_block"));
 

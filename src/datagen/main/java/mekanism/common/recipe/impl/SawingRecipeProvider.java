@@ -38,30 +38,30 @@ class SawingRecipeProvider implements ISubRecipeProvider {
               ItemTags.WARPED_STEMS, Blocks.WARPED_PRESSURE_PLATE, Blocks.WARPED_TRAPDOOR, "warped");
         //Barrel
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Items.BARREL),
-              new ItemStack(Items.OAK_PLANKS, 7)
+              ItemStackIngredient.from(Blocks.BARREL),
+              new ItemStack(Blocks.OAK_PLANKS, 7)
         ).build(consumer, Mekanism.rl(basePath + "barrel"));
         //Bookshelf
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Items.BOOKSHELF),
-              new ItemStack(Items.OAK_PLANKS, 6),
+              ItemStackIngredient.from(Blocks.BOOKSHELF),
+              new ItemStack(Blocks.OAK_PLANKS, 6),
               new ItemStack(Items.BOOK, 3),
               1
         ).build(consumer, Mekanism.rl(basePath + "bookshelf"));
         //Chest
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Items.CHEST),
-              new ItemStack(Items.OAK_PLANKS, 8)
+              ItemStackIngredient.from(Blocks.CHEST),
+              new ItemStack(Blocks.OAK_PLANKS, 8)
         ).build(consumer, Mekanism.rl(basePath + "chest"));
         //Composter
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Items.COMPOSTER),
-              new ItemStack(Items.OAK_SLAB, 7)
+              ItemStackIngredient.from(Blocks.COMPOSTER),
+              new ItemStack(Blocks.OAK_SLAB, 7)
         ).build(consumer, Mekanism.rl(basePath + "composter"));
         //Crafting table
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Items.CRAFTING_TABLE),
-              new ItemStack(Items.OAK_PLANKS, 4)
+              ItemStackIngredient.from(Blocks.CRAFTING_TABLE),
+              new ItemStack(Blocks.OAK_PLANKS, 4)
         ).build(consumer, Mekanism.rl(basePath + "crafting_table"));
         //Fences
         SawmillRecipeBuilder.sawing(
@@ -77,27 +77,27 @@ class SawingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "item_frame"));
         //Jukebox
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Items.JUKEBOX),
-              new ItemStack(Items.OAK_PLANKS, 8),
+              ItemStackIngredient.from(Blocks.JUKEBOX),
+              new ItemStack(Blocks.OAK_PLANKS, 8),
               new ItemStack(Items.DIAMOND),
               1
         ).build(consumer, Mekanism.rl(basePath + "jukebox"));
         //Ladder
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Items.LADDER, 3),
+              ItemStackIngredient.from(Blocks.LADDER, 3),
               new ItemStack(Items.STICK, 7)
         ).build(consumer, Mekanism.rl(basePath + "ladder"));
         //Lectern
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Items.LECTERN),
-              new ItemStack(Items.OAK_PLANKS, 8),
+              ItemStackIngredient.from(Blocks.LECTERN),
+              new ItemStack(Blocks.OAK_PLANKS, 8),
               new ItemStack(Items.BOOK, 3),
               1
         ).build(consumer, Mekanism.rl(basePath + "lectern"));
         //Note block
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Items.NOTE_BLOCK),
-              new ItemStack(Items.OAK_PLANKS, 8),
+              ItemStackIngredient.from(Blocks.NOTE_BLOCK),
+              new ItemStack(Blocks.OAK_PLANKS, 8),
               new ItemStack(Items.REDSTONE),
               1
         ).build(consumer, Mekanism.rl(basePath + "note_block"));
@@ -150,29 +150,29 @@ class SawingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "soul_torch"));
         //Trapped chest
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Items.TRAPPED_CHEST),
-              new ItemStack(Items.OAK_PLANKS, 8),
-              new ItemStack(Items.TRIPWIRE_HOOK),
+              ItemStackIngredient.from(Blocks.TRAPPED_CHEST),
+              new ItemStack(Blocks.OAK_PLANKS, 8),
+              new ItemStack(Blocks.TRIPWIRE_HOOK),
               0.75
         ).build(consumer, Mekanism.rl(basePath + "trapped_chest"));
     }
 
     private void addPrecisionSawmillBedRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLACK_BED, Items.BLACK_WOOL, "black");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLUE_BED, Items.BLUE_WOOL, "blue");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BROWN_BED, Items.BROWN_WOOL, "brown");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.CYAN_BED, Items.CYAN_WOOL, "cyan");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.GRAY_BED, Items.GRAY_WOOL, "gray");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.GREEN_BED, Items.GREEN_WOOL, "green");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIGHT_BLUE_BED, Items.LIGHT_BLUE_WOOL, "light_blue");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIGHT_GRAY_BED, Items.LIGHT_GRAY_WOOL, "light_gray");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIME_BED, Items.LIME_WOOL, "lime");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.MAGENTA_BED, Items.MAGENTA_WOOL, "magenta");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.ORANGE_BED, Items.ORANGE_WOOL, "orange");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.PINK_BED, Items.PINK_WOOL, "pink");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.PURPLE_BED, Items.PURPLE_WOOL, "purple");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.RED_BED, Items.RED_WOOL, "red");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.WHITE_BED, Items.WHITE_WOOL, "white");
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.YELLOW_BED, Items.YELLOW_WOOL, "yellow");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLACK_BED, Blocks.BLACK_WOOL, "black");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLUE_BED, Blocks.BLUE_WOOL, "blue");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BROWN_BED, Blocks.BROWN_WOOL, "brown");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.CYAN_BED, Blocks.CYAN_WOOL, "cyan");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.GRAY_BED, Blocks.GRAY_WOOL, "gray");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.GREEN_BED, Blocks.GREEN_WOOL, "green");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIGHT_BLUE_BED, Blocks.LIGHT_BLUE_WOOL, "light_blue");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIGHT_GRAY_BED, Blocks.LIGHT_GRAY_WOOL, "light_gray");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.LIME_BED, Blocks.LIME_WOOL, "lime");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.MAGENTA_BED, Blocks.MAGENTA_WOOL, "magenta");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.ORANGE_BED, Blocks.ORANGE_WOOL, "orange");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.PINK_BED, Blocks.PINK_WOOL, "pink");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.PURPLE_BED, Blocks.PURPLE_WOOL, "purple");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.RED_BED, Blocks.RED_WOOL, "red");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.WHITE_BED, Blocks.WHITE_WOOL, "white");
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.YELLOW_BED, Blocks.YELLOW_WOOL, "yellow");
     }
 }
