@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
-import mekanism.api.RelativeSide;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
@@ -83,8 +82,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, this, 146, 19), RelativeSide.TOP);
-        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 146, 51), RelativeSide.BOTTOM);
+        builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, this, 146, 19));
+        builder.addSlot(outputSlot = OutputInventorySlot.at(this, 146, 51));
         inputSlot.setSlotOverlay(SlotOverlay.INPUT);
         outputSlot.setSlotOverlay(SlotOverlay.OUTPUT);
         return builder.build();

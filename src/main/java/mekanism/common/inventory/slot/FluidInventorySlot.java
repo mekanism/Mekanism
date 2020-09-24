@@ -14,6 +14,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -39,7 +40,10 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
 
     protected static Predicate<ItemStack> getInputPredicate(IExtendedFluidTank fluidTank) {
         return (stack) -> {
-            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
+            //If we have more than one item in the input, check if we can fill a single item of it
+            // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
+            // though we have special handling to only move one item at a time anyways
+            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? StackUtils.size(stack, 1) : stack).resolve();
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
                 boolean hasEmpty = false;
@@ -145,10 +149,11 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot drain(IExtendedFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid handler cannot be null");
-        //TODO: Stacked buckets are not accepted by this because FluidBucketWrapper#fill returns false if it is stacked
-        // One potential fix would be to copy it to a size of 1
         return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> {
-            LazyOptional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack);
+            //If we have more than one item in the input, check if we can fill a single item of it
+            // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
+            // though we have special handling to only move one item at a time anyways
+            LazyOptional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? StackUtils.size(stack, 1) : stack);
             if (cap.isPresent()) {
                 FluidStack fluidInTank = fluidTank.getFluid();
                 if (fluidInTank.isEmpty()) {

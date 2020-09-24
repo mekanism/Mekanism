@@ -37,7 +37,11 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             } else if (editMode == ContainerEditMode.EMPTY) {
                 fillTank(outputSlot);
             } else if (editMode == ContainerEditMode.BOTH) {
-                Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(getStack()).resolve();
+                ItemStack stack = getStack();
+                //If we have more than one item in the input, check against a single item of it
+                // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
+                // though we have special handling to only move one item at a time anyways
+                Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? StackUtils.size(stack, 1) : stack).resolve();
                 if (cap.isPresent()) {
                     IFluidHandlerItem fluidHandlerItem = cap.get();
                     boolean hasEmpty = false;
@@ -53,7 +57,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     }
                     if (isFilling()) {
                         //if we were filling, but can no longer fill the tank, attempt to move the item to the output slot
-                        if (moveItem(outputSlot, getStack())) {
+                        if (moveItem(outputSlot, stack)) {
                             setFilling(false);
                         }
                     }
