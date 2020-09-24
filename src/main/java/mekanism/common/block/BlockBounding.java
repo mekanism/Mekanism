@@ -22,6 +22,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
@@ -37,9 +39,12 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -148,6 +153,29 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             }
         }
         return super.removedByPlayer(state, world, pos, player, false, fluidState);
+    }
+
+    @Override
+    public void onBlockExploded(BlockState state, World world, BlockPos pos, Explosion explosion) {
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos != null) {
+            BlockState mainState = world.getBlockState(mainPos);
+            if (!mainState.isAir(world, mainPos)) {
+                //Proxy the explosion to the main block which, will set it to air causing it to invalidate the rest of the bounding blocks
+                LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerWorld) world)
+                      .withRandom(world.rand)
+                      .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(mainPos))
+                      .withParameter(LootParameters.TOOL, ItemStack.EMPTY)
+                      .withNullableParameter(LootParameters.BLOCK_ENTITY, mainState.hasTileEntity() ? MekanismUtils.getTileEntity(world, mainPos) : null)
+                      .withNullableParameter(LootParameters.THIS_ENTITY, explosion.getExploder());
+                if (explosion.mode == Explosion.Mode.DESTROY) {
+                    lootContextBuilder.withParameter(LootParameters.EXPLOSION_RADIUS, explosion.size);
+                }
+                mainState.getDrops(lootContextBuilder).forEach(stack -> Block.spawnAsEntity(world, mainPos, stack));
+                mainState.onBlockExploded(world, mainPos, explosion);
+            }
+        }
+        super.onBlockExploded(state, world, pos, explosion);
     }
 
     @Override
