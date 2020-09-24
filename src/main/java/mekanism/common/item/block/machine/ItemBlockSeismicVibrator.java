@@ -61,7 +61,7 @@ public class ItemBlockSeismicVibrator extends ItemBlockTooltip<BlockTile<?, ?>> 
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        FloatingLong maxEnergy = MekanismUtils.getMaxEnergy(stack, Attribute.get(getBlock(), AttributeEnergy.class).getStorage());
+        FloatingLong maxEnergy = Attribute.get(getBlock(), AttributeEnergy.class).getStorage();
         return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
     }
 }

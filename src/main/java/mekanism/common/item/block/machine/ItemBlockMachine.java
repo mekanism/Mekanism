@@ -1,14 +1,13 @@
 package mekanism.common.item.block.machine;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -30,7 +29,6 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
-import mekanism.common.util.text.UpgradeDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemStack;
@@ -74,20 +72,61 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
         if (Attribute.has(getBlock(), AttributeInventory.class)) {
             tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
         }
-        if (Attribute.has(getBlock(), AttributeUpgradeSupport.class) && ItemDataUtils.hasData(stack, NBTConstants.UPGRADES, NBT.TAG_LIST)) {
-            Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(stack));
-            for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-                tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
-            }
+        if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
+            MekanismUtils.addUpgradesToTooltip(stack, tooltip);
         }
     }
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         if (Attribute.has(getBlock(), AttributeEnergy.class)) {
-            FloatingLong maxEnergy = MekanismUtils.getMaxEnergy(stack, Attribute.get(getBlock(), AttributeEnergy.class).getStorage());
-            return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
+            FloatingLong baseStorage = Attribute.get(getBlock(), AttributeEnergy.class).getStorage();
+            FloatingLongSupplier maxEnergy;
+            if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
+                //If our block supports upgrades, make a more dynamically updating cache for our item's max energy
+                maxEnergy = new UpgradeBasedFloatingLongCache(stack, baseStorage);
+            } else {
+                //Otherwise just return that the max is what the base max is
+                maxEnergy = () -> baseStorage;
+            }
+            return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
         }
         return super.initCapabilities(stack, nbt);
+    }
+
+    private static class UpgradeBasedFloatingLongCache implements FloatingLongSupplier {
+
+        private final ItemStack stack;
+        private final FloatingLong baseStorage;
+        @Nullable
+        private CompoundNBT lastNBT;
+        private FloatingLong value;
+
+        private UpgradeBasedFloatingLongCache(ItemStack stack, FloatingLong baseStorage) {
+            this.stack = stack;
+            if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
+                this.lastNBT = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE).copy();
+            } else {
+                this.lastNBT = null;
+            }
+            this.baseStorage = baseStorage;
+            this.value = MekanismUtils.getMaxEnergy(this.stack, this.baseStorage);
+        }
+
+        @Nonnull
+        @Override
+        public FloatingLong get() {
+            if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
+                CompoundNBT upgrades = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
+                if (lastNBT == null || !lastNBT.equals(upgrades)) {
+                    lastNBT = upgrades.copy();
+                    value = MekanismUtils.getMaxEnergy(stack, baseStorage);
+                }
+            } else if (lastNBT != null) {
+                lastNBT = null;
+                value = MekanismUtils.getMaxEnergy(stack, baseStorage);
+            }
+            return value;
+        }
     }
 }

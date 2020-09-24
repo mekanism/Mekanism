@@ -11,7 +11,6 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,7 +31,7 @@ public class ItemBlockChargepad extends ItemBlockTooltip<BlockTileModel<?, ?>> {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        FloatingLong maxEnergy = MekanismUtils.getMaxEnergy(stack, Attribute.get(getBlock(), AttributeEnergy.class).getStorage());
+        FloatingLong maxEnergy = Attribute.get(getBlock(), AttributeEnergy.class).getStorage();
         return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
     }
 }

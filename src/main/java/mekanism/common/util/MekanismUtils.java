@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -37,6 +38,7 @@ import mekanism.common.tile.interfaces.IRedstoneControl;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.common.util.text.UpgradeDisplay;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -283,15 +285,15 @@ public final class MekanismUtils {
     /**
      * Gets the maximum energy for a machine's item form via it's upgrades.
      *
-     * @param itemStack - stack holding energy upgrades
-     * @param def       - original, default max energy
+     * @param stack - stack holding energy upgrades
+     * @param def   - original, default max energy
      *
      * @return max energy
      */
-    public static FloatingLong getMaxEnergy(ItemStack itemStack, FloatingLong def) {
+    public static FloatingLong getMaxEnergy(ItemStack stack, FloatingLong def) {
         float numUpgrades = 0;
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.UPGRADES, NBT.TAG_LIST)) {
-            Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemStack));
+        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
+            Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
             if (upgrades.containsKey(Upgrade.ENERGY)) {
                 numUpgrades = upgrades.get(Upgrade.ENERGY);
             }
@@ -655,6 +657,15 @@ public final class MekanismUtils {
             posY -= 0.08;
         }
         return new Vector3d(player.getPosX(), posY, player.getPosZ());
+    }
+
+    public static void addUpgradesToTooltip(ItemStack stack, List<ITextComponent> tooltip) {
+        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
+            Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
+            for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
+                tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
+            }
+        }
     }
 
     public static ITextComponent getEnergyDisplayShort(FloatingLong energy) {
