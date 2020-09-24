@@ -105,7 +105,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitBaseChargeRate;
     public final CachedFloatingLongValue mekaSuitBaseJumpEnergyUsage;
     public final CachedFloatingLongValue mekaSuitEnergyUsagePotionTick;
-    public final CachedFloatingLongValue mekaSuitEnergyUsageMagicPrevent;
+    public final CachedFloatingLongValue mekaSuitEnergyUsageMagicReduce;
     public final CachedFloatingLongValue mekaSuitEnergyUsageSprintBoost;
     public final CachedFloatingLongValue mekaSuitEnergyUsageGravitationalModulation;
     public final CachedFloatingLongValue mekaSuitInventoryChargeRate;
@@ -286,8 +286,8 @@ public class GearConfig extends BaseMekanismConfig {
               "baseJumpEnergyUsage", FloatingLong.createConst(1_000));
         mekaSuitEnergyUsagePotionTick = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when lessening a potion effect.",
               "energyUsagePotionTick", FloatingLong.createConst(40_000));
-        mekaSuitEnergyUsageMagicPrevent = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when preventing a negative potion effect.",
-              "energyUsageMagicPrevent", FloatingLong.createConst(10_000));
+        mekaSuitEnergyUsageMagicReduce = CachedFloatingLongValue.define(this, builder, "Energy cost/multiplier in Joules for reducing magic damage via the inhalation purification unit. Energy cost is: MagicDamage * energyUsageMagicPrevent. (1 MagicDamage is 1 half heart).",
+              "energyUsageMagicReduce", FloatingLong.createConst(1_000));
         mekaSuitEnergyUsageSprintBoost = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to sprint motion.",
               "energyUsageSprintBoost", FloatingLong.createConst(100));
         mekaSuitEnergyUsageGravitationalModulation = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick when flying via Gravitational Modulation.",

@@ -76,6 +76,14 @@ public abstract class Module {
         return energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
     }
 
+    public boolean canUseEnergy(LivingEntity wearer, FloatingLong energy) {
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
+        if ((!(wearer instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) wearer)) && energyContainer != null) {
+            return energyContainer.extract(energy, Action.SIMULATE, AutomationType.MANUAL).equals(energy);
+        }
+        return false;
+    }
+
     public FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
         if ((!(wearer instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) wearer)) && energyContainer != null) {
