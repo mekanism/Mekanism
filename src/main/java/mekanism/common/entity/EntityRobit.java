@@ -565,7 +565,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             public <T> Optional<T> apply(@Nonnull BiFunction<World, BlockPos, T> worldBlockPosTBiFunction) {
                 //Note: We use an anonymous class implementation rather than using IWorldPosCallable.of, so that if the robit moves
                 // this uses the proper updated position
-                return Optional.of(worldBlockPosTBiFunction.apply(getEntityWorld(), getPosition()));
+                return Optional.ofNullable(worldBlockPosTBiFunction.apply(getEntityWorld(), getPosition()));
             }
         };
     }

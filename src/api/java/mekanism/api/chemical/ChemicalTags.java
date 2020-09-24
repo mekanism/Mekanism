@@ -75,7 +75,7 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
         return optionalTag(name, null);
     }
 
-    public IOptionalNamedTag<CHEMICAL> optionalTag(ResourceLocation name, @Nullable Supplier<Set<CHEMICAL>> defaults) {
+    public IOptionalNamedTag<CHEMICAL> optionalTag(ResourceLocation name, @Nullable Set<Supplier<CHEMICAL>> defaults) {
         IForgeRegistry<CHEMICAL> registry = registrySupplier.get();
         if (registry == null) {
             return ForgeTagHandler.createOptionalTag(registryName, name, defaults);
