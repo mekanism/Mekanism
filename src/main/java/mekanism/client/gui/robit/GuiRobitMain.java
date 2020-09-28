@@ -10,7 +10,6 @@ import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.custom.GuiRobitRename;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
@@ -37,12 +36,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSideHolder(this, 176, 6, 106, false) {
-            @Override
-            protected void colorTab() {
-                MekanismRenderer.color(SpecialColors.TAB_ROBIT_MENU.get());
-            }
-        });
+        addButton(GuiSideHolder.create(this, 176, 6, 106, false, SpecialColors.TAB_ROBIT_MENU));
         addButton(new GuiInnerScreen(this, 27, 16, 122, 56));
         addButton(new GuiHorizontalPowerBar(this, robit.getEnergyContainer(), 27, 74, 120));
         addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 16, 18, getButtonLocation("home"), () -> {

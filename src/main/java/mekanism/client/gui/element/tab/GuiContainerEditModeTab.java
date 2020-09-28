@@ -48,6 +48,6 @@ public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidCon
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.TAB_CONTAINER_EDIT_MODE.get());
+        MekanismRenderer.color(SpecialColors.TAB_CONTAINER_EDIT_MODE);
     }
 }

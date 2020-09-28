@@ -35,7 +35,7 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.TAB_FACTORY_SORT.get());
+        MekanismRenderer.color(SpecialColors.TAB_FACTORY_SORT);
     }
 
     @Override

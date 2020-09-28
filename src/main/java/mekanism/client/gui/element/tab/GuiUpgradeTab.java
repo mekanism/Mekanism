@@ -32,6 +32,6 @@ public class GuiUpgradeTab extends GuiInsetElement<TileEntity> {
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.TAB_UPGRADE.get());
+        MekanismRenderer.color(SpecialColors.TAB_UPGRADE);
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.tab;
 
+import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -12,5 +13,9 @@ public interface TabType<TILE extends TileEntity> {
 
     ITextComponent getDescription();
 
-    int getYPos();
+    default int getYPos() {
+        return 6;
+    }
+
+    ColorRegistryObject getTabColor();
 }

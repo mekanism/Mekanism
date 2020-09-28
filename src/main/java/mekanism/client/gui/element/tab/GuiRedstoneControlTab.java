@@ -54,7 +54,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.TAB_REDSTONE_CONTROL.get());
+        MekanismRenderer.color(SpecialColors.TAB_REDSTONE_CONTROL);
     }
 
     @Override

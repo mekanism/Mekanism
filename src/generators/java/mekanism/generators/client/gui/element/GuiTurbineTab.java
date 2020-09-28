@@ -1,9 +1,11 @@
 package mekanism.generators.client.gui.element;
 
 import mekanism.api.text.ILangEntry;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiTabElementType;
 import mekanism.client.gui.element.tab.TabType;
+import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -23,17 +25,19 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
     }
 
     public enum TurbineTab implements TabType<TileEntityTurbineCasing> {
-        MAIN("gases.png", MekanismLang.MAIN_TAB, ClickedGeneratorsTileButton.TAB_MAIN),
-        STAT("stats.png", GeneratorsLang.TURBINE_STATS, ClickedGeneratorsTileButton.TAB_STATS);
+        MAIN("gases.png", MekanismLang.MAIN_TAB, ClickedGeneratorsTileButton.TAB_MAIN, SpecialColors.TAB_MULTIBLOCK_MAIN),
+        STAT("stats.png", GeneratorsLang.TURBINE_STATS, ClickedGeneratorsTileButton.TAB_STATS, SpecialColors.TAB_MULTIBLOCK_STATS);
 
         private final ClickedGeneratorsTileButton button;
+        private final ColorRegistryObject colorRO;
         private final ILangEntry description;
         private final String path;
 
-        TurbineTab(String path, ILangEntry description, ClickedGeneratorsTileButton button) {
+        TurbineTab(String path, ILangEntry description, ClickedGeneratorsTileButton button, ColorRegistryObject colorRO) {
             this.path = path;
             this.description = description;
             this.button = button;
+            this.colorRO = colorRO;
         }
 
         @Override
@@ -52,8 +56,8 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
         }
 
         @Override
-        public int getYPos() {
-            return 6;
+        public ColorRegistryObject getTabColor() {
+            return colorRO;
         }
     }
 }

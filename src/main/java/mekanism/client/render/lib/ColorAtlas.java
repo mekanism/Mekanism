@@ -55,7 +55,14 @@ public class ColorAtlas {
         IResource resource = Minecraft.getInstance().getResourceManager().getResource(rl);
         BufferedImage img = ImageIO.read(resource.getInputStream());
         for (int i = 0; i < count; i++) {
-            ret.add(Color.argb(img.getRGB(i % ATLAS_SIZE, i / ATLAS_SIZE)));
+            int rgb = img.getRGB(i % ATLAS_SIZE, i / ATLAS_SIZE);
+            if (rgb >> 24 == 0) {
+                //Don't allow fully transparent colors, fallback to no color (white)
+                ret.add(Color.WHITE);
+                Mekanism.logger.warn("Unable to retrieve color marker: '{}' for atlas: '{}'. This is likely due to an out of date resource pack.", count, rl);
+            } else {
+                ret.add(Color.argb(rgb));
+            }
         }
     }
 

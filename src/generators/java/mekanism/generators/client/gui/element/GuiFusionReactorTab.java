@@ -1,11 +1,14 @@
 package mekanism.generators.client.gui.element;
 
 import mekanism.api.text.ILangEntry;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiTabElementType;
 import mekanism.client.gui.element.tab.TabType;
+import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.generators.client.GeneratorsSpecialColors;
 import mekanism.generators.client.gui.element.GuiFusionReactorTab.FusionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
@@ -22,20 +25,22 @@ public class GuiFusionReactorTab extends GuiTabElementType<TileEntityFusionReact
     }
 
     public enum FusionReactorTab implements TabType<TileEntityFusionReactorController> {
-        HEAT(MekanismUtils.getResource(ResourceType.GUI, "heat.png"), GeneratorsLang.HEAT_TAB, 6, ClickedGeneratorsTileButton.TAB_HEAT),
-        FUEL(MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "fuel.png"), GeneratorsLang.FUEL_TAB, 34, ClickedGeneratorsTileButton.TAB_FUEL),
-        STAT(MekanismUtils.getResource(ResourceType.GUI, "stats.png"), GeneratorsLang.STATS_TAB, 62, ClickedGeneratorsTileButton.TAB_STATS);
+        HEAT(MekanismUtils.getResource(ResourceType.GUI, "heat.png"), GeneratorsLang.HEAT_TAB, 6, ClickedGeneratorsTileButton.TAB_HEAT, GeneratorsSpecialColors.TAB_MULTIBLOCK_HEAT),
+        FUEL(MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "fuel.png"), GeneratorsLang.FUEL_TAB, 34, ClickedGeneratorsTileButton.TAB_FUEL, GeneratorsSpecialColors.TAB_MULTIBLOCK_FUEL),
+        STAT(MekanismUtils.getResource(ResourceType.GUI, "stats.png"), GeneratorsLang.STATS_TAB, 62, ClickedGeneratorsTileButton.TAB_STATS, SpecialColors.TAB_MULTIBLOCK_STATS);
 
         private final ClickedGeneratorsTileButton button;
+        private final ColorRegistryObject colorRO;
         private final ILangEntry description;
         private final ResourceLocation path;
         private final int yPos;
 
-        FusionReactorTab(ResourceLocation path, ILangEntry description, int y, ClickedGeneratorsTileButton button) {
+        FusionReactorTab(ResourceLocation path, ILangEntry description, int y, ClickedGeneratorsTileButton button, ColorRegistryObject colorRO) {
             this.path = path;
             this.description = description;
-            yPos = y;
+            this.yPos = y;
             this.button = button;
+            this.colorRO = colorRO;
         }
 
         @Override
@@ -56,6 +61,11 @@ public class GuiFusionReactorTab extends GuiTabElementType<TileEntityFusionReact
         @Override
         public int getYPos() {
             return yPos;
+        }
+
+        @Override
+        public ColorRegistryObject getTabColor() {
+            return colorRO;
         }
     }
 }

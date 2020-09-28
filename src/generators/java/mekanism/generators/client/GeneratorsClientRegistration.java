@@ -35,6 +35,7 @@ import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.math.vector.Vector3d;
@@ -99,6 +100,10 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
+        if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+            return;
+        }
         RenderBioGenerator.resetCachedModels();
+        GeneratorsSpecialColors.GUI_OBJECTS.parse(MekanismGenerators.rl("textures/colormap/gui_objects.png"));
     }
 }

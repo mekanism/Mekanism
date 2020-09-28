@@ -21,6 +21,7 @@ import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.lib.ColorAtlas;
+import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderTeleporter;
@@ -158,6 +159,10 @@ public class MekanismRenderer {
 
     public static void color(int color) {
         RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), getAlpha(color));
+    }
+
+    public static void color(ColorRegistryObject colorRO) {
+        color(colorRO.get());
     }
 
     public static void color(Color color) {

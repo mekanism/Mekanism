@@ -3,6 +3,7 @@ package mekanism.client.gui.machine;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiSideHolder;
@@ -33,7 +34,7 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
     @Override
     protected void initPreSlots() {
         //Add the side holder before the slots, as it holds a couple of the slots
-        addButton(new GuiSideHolder(this, getXSize(), 66, 57, false));
+        addButton(GuiSideHolder.create(this, getXSize(), 66, 57, false, SpecialColors.TAB_CHEMICAL_WASHER));
     }
 
     @Override

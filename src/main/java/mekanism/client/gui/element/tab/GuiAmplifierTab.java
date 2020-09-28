@@ -2,8 +2,10 @@ package mekanism.client.gui.element.tab;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.PacketGuiInteract;
@@ -42,5 +44,10 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     @Override
     public void onClick(double mouseX, double mouseY) {
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile));
+    }
+
+    @Override
+    protected void colorTab() {
+        MekanismRenderer.color(SpecialColors.TAB_LASER_AMPLIFIER);
     }
 }

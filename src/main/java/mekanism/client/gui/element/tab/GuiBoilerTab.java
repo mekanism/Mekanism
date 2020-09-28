@@ -1,8 +1,10 @@
 package mekanism.client.gui.element.tab;
 
 import mekanism.api.text.ILangEntry;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
+import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.PacketGuiButtonPress;
@@ -20,17 +22,19 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
     }
 
     public enum BoilerTab implements TabType<TileEntityBoilerCasing> {
-        MAIN("gases.png", MekanismLang.MAIN_TAB, ClickedTileButton.TAB_MAIN),
-        STAT("stats.png", MekanismLang.BOILER_STATS, ClickedTileButton.TAB_STATS);
+        MAIN("gases.png", MekanismLang.MAIN_TAB, ClickedTileButton.TAB_MAIN, SpecialColors.TAB_MULTIBLOCK_MAIN),
+        STAT("stats.png", MekanismLang.BOILER_STATS, ClickedTileButton.TAB_STATS, SpecialColors.TAB_MULTIBLOCK_STATS);
 
+        private final ColorRegistryObject colorRO;
         private final ClickedTileButton button;
         private final ILangEntry description;
         private final String path;
 
-        BoilerTab(String path, ILangEntry desc, ClickedTileButton button) {
+        BoilerTab(String path, ILangEntry description, ClickedTileButton button, ColorRegistryObject colorRO) {
             this.path = path;
-            description = desc;
+            this.description = description;
             this.button = button;
+            this.colorRO = colorRO;
         }
 
         @Override
@@ -49,8 +53,8 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
         }
 
         @Override
-        public int getYPos() {
-            return 6;
+        public ColorRegistryObject getTabColor() {
+            return colorRO;
         }
     }
 }

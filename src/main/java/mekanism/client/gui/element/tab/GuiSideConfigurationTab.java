@@ -26,7 +26,7 @@ public class GuiSideConfigurationTab extends GuiWindowCreatorTab<GuiSideConfigur
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.TAB_CONFIGURATION.get());
+        MekanismRenderer.color(SpecialColors.TAB_CONFIGURATION);
     }
 
     @Override

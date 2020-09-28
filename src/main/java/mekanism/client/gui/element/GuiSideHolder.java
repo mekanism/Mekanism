@@ -4,11 +4,21 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiSideHolder extends GuiTexturedElement {
+public abstract class GuiSideHolder extends GuiTexturedElement {
+
+    public static GuiSideHolder create(IGuiWrapper gui, int x, int y, int height, boolean left, ColorRegistryObject tabColor) {
+        return new GuiSideHolder(gui, x, y, height, left) {
+            @Override
+            protected void colorTab() {
+                MekanismRenderer.color(tabColor);
+            }
+        };
+    }
 
     private static final ResourceLocation HOLDER_LEFT = MekanismUtils.getResource(ResourceType.GUI, "holder_left.png");
     private static final ResourceLocation HOLDER_RIGHT = MekanismUtils.getResource(ResourceType.GUI, "holder_right.png");
@@ -17,16 +27,14 @@ public class GuiSideHolder extends GuiTexturedElement {
 
     protected final boolean left;
 
-    public GuiSideHolder(IGuiWrapper gui, int x, int y, int height, boolean left) {
+    protected GuiSideHolder(IGuiWrapper gui, int x, int y, int height, boolean left) {
         super(left ? HOLDER_LEFT : HOLDER_RIGHT, gui, x, y, TEXTURE_WIDTH, height);
         this.left = left;
         active = false;
         setButtonBackground(ButtonBackground.DEFAULT);
     }
 
-    protected void colorTab() {
-        //Don't do any coloring by default
-    }
+    protected abstract void colorTab();
 
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {

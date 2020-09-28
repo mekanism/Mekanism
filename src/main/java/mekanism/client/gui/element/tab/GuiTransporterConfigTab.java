@@ -26,7 +26,7 @@ public class GuiTransporterConfigTab extends GuiWindowCreatorTab<GuiTransporterC
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.TAB_TRANSPORTER.get());
+        MekanismRenderer.color(SpecialColors.TAB_TRANSPORTER);
     }
 
     @Override

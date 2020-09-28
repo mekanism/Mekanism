@@ -37,28 +37,28 @@ public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
     protected void colorTab() {
         switch (transmission) {
             case ENERGY:
-                MekanismRenderer.color(SpecialColors.TAB_ENERGY_CONFIG.get());
+                MekanismRenderer.color(SpecialColors.TAB_ENERGY_CONFIG);
                 break;
             case FLUID:
-                MekanismRenderer.color(SpecialColors.TAB_FLUID_CONFIG.get());
+                MekanismRenderer.color(SpecialColors.TAB_FLUID_CONFIG);
                 break;
             case GAS:
-                MekanismRenderer.color(SpecialColors.TAB_GAS_CONFIG.get());
+                MekanismRenderer.color(SpecialColors.TAB_GAS_CONFIG);
                 break;
             case INFUSION:
-                MekanismRenderer.color(SpecialColors.TAB_INFUSION_CONFIG.get());
+                MekanismRenderer.color(SpecialColors.TAB_INFUSION_CONFIG);
                 break;
             case PIGMENT:
-                MekanismRenderer.color(SpecialColors.TAB_PIGMENT_CONFIG.get());
+                MekanismRenderer.color(SpecialColors.TAB_PIGMENT_CONFIG);
                 break;
             case SLURRY:
-                MekanismRenderer.color(SpecialColors.TAB_SLURRY_CONFIG.get());
+                MekanismRenderer.color(SpecialColors.TAB_SLURRY_CONFIG);
                 break;
             case ITEM:
-                MekanismRenderer.color(SpecialColors.TAB_ITEM_CONFIG.get());
+                MekanismRenderer.color(SpecialColors.TAB_ITEM_CONFIG);
                 break;
             case HEAT:
-                MekanismRenderer.color(SpecialColors.TAB_HEAT_CONFIG.get());
+                MekanismRenderer.color(SpecialColors.TAB_HEAT_CONFIG);
                 break;
         }
     }

@@ -33,7 +33,7 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
 
     @Override
     protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.TAB_DIGITAL_MINER_VISUAL.get());
+        MekanismRenderer.color(SpecialColors.TAB_DIGITAL_MINER_VISUAL);
     }
 
     @Override
