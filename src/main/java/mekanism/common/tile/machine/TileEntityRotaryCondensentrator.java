@@ -253,7 +253,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
                       //Short circuit that if we already can't perform any outputs, just return
                       return currentMax;
                   }
-                  int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+                  int possibleProcess = Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
                   if (mode) {
                       //Fluid to gas
                       return Math.min(Math.min(fluidTank.getFluidAmount(), MathUtils.clampToInt(gasTank.getNeeded())), possibleProcess);
