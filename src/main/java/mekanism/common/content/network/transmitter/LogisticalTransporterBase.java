@@ -232,7 +232,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     @Override
     public void remove() {
         super.remove();
-        if (!isRemote()) {
+        if (!isRemote() && !isUpgrading) {
             for (TransporterStack stack : getTransit()) {
                 TransporterUtils.drop(this, stack);
             }

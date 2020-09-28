@@ -65,6 +65,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     private boolean redstoneSet;
     private NETWORK theNetwork = null;
     private boolean orphaned = true;
+    protected boolean isUpgrading;
 
     public Transmitter(TileEntityTransmitter transmitterTile, TransmissionType... transmissionTypes) {
         this.transmitterTile = transmitterTile;
@@ -583,4 +584,10 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public abstract void takeShare();
+
+    public void startUpgrading() {
+        isUpgrading = true;
+        takeShare();
+        setTransmitterNetwork(null);
+    }
 }

@@ -19,8 +19,10 @@ import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
+import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.base.CapabilityTileEntity;
@@ -277,9 +279,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                 }
                 return 0;
             });
+            boolean sharesSet = false;
             int upgraded = 0;
             for (Transmitter<?, ?, ?> transmitter : list) {
-                //TODO: Re-evaluate
                 TileEntityTransmitter transmitterTile = transmitter.getTransmitterTile();
                 if (transmitterTile.canUpgrade(tier)) {
                     BlockState state = transmitterTile.getBlockState();
@@ -288,8 +290,14 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                         //Skip if it would not actually upgrade anything
                         continue;
                     }
-                    transmitter.takeShare();
-                    transmitter.setTransmitterNetwork(null);
+                    if (!sharesSet) {
+                        if (transmitterNetwork instanceof DynamicBufferedNetwork) {
+                            //Ensure we save the shares to the tiles so that they can properly take them and they don't get voided
+                            ((DynamicBufferedNetwork) transmitterNetwork).validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter);
+                        }
+                        sharesSet = true;
+                    }
+                    transmitter.startUpgrading();
                     TransmitterUpgradeData upgradeData = transmitterTile.getUpgradeData();
                     if (upgradeData == null) {
                         Mekanism.logger.warn("Got no upgrade data for transmitter at position: {} in {} but it said it would be able to provide some.",
