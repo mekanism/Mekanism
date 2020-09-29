@@ -1,0 +1,31 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewood",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "amount": 4,
+    "ingredient": {
+      "item": "ilikewood:jacaranda_torch"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:jacaranda_stick"
+  },
+  "secondaryOutput": {
+    "item": "minecraft:coal"
+  },
+  "secondaryChance": 1.0
+}

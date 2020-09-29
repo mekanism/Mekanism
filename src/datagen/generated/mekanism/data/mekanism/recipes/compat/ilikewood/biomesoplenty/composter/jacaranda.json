@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:jacaranda_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:jacaranda_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "biomesoplenty:jacaranda_fence",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

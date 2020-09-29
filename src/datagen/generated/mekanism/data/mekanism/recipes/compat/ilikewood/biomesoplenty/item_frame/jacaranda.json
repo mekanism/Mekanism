@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:jacaranda_item_frame"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:jacaranda_stick",
+    "count": 8
+  },
+  "secondaryOutput": {
+    "item": "minecraft:leather"
+  },
+  "secondaryChance": 1.0
+}

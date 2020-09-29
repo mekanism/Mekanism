@@ -337,8 +337,7 @@ dependencies {
     datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
     datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api:${biomesoplenty_api_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_id}")
-    //TODO: Switch this to datagenmainImplementation once it updates to 1.16.3
-    datagenmainCompileOnly fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
+    datagenmainImplementation fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
 }
 
 processResources {
@@ -751,7 +750,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "biomes-o-plenty"
                     //optionalDependency "flux-networks"
                     optionalDependency "hwyla"
-                    //optionalDependency "i-like-wood"
+                    optionalDependency "i-like-wood"
                     //optionalDependency "projecte"
                     optionalDependency "the-one-probe"
                 }

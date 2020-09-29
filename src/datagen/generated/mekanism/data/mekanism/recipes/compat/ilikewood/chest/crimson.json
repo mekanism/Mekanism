@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "ilikewood",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:crimson_chest"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:crimson_planks",
+    "count": 8
+  }
+}

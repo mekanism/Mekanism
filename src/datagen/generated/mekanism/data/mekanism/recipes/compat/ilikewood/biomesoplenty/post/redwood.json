@@ -1,0 +1,38 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewood",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": [
+    {
+      "ingredient": {
+        "item": "ilikewood:redwood_post"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "ilikewood:stripped_redwood_post"
+      }
+    }
+  ],
+  "mainOutput": {
+    "item": "biomesoplenty:redwood_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  },
+  "secondaryChance": 0.125
+}

@@ -1,0 +1,38 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewood",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": [
+    {
+      "ingredient": {
+        "item": "ilikewood:dead_post"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "ilikewood:stripped_dead_post"
+      }
+    }
+  ],
+  "mainOutput": {
+    "item": "biomesoplenty:dead_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  },
+  "secondaryChance": 0.125
+}

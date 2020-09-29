@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:willow_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:willow_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "biomesoplenty:willow_fence",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewood",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:cherry_lectern"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:cherry_planks",
+    "count": 8
+  },
+  "secondaryOutput": {
+    "item": "minecraft:book",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

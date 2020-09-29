@@ -1,0 +1,27 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewood",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:redwood_barrel"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:redwood_planks",
+    "count": 7
+  }
+}

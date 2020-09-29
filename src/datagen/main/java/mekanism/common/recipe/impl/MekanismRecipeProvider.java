@@ -20,6 +20,7 @@ import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.compat.AE2RecipeProvider;
 import mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider;
+import mekanism.common.recipe.compat.ILikeWoodRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -104,8 +105,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               new UpgradeRecipeProvider(),
               //Mod Compat Recipe providers
               new AE2RecipeProvider(),
-              new BiomesOPlentyRecipeProvider()
-              //new ILikeWoodRecipeProvider()//TODO - ILikeWood
+              new BiomesOPlentyRecipeProvider(),
+              new ILikeWoodRecipeProvider()
         );
     }
 

@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:umbran_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:umbran_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "biomesoplenty:umbran_fence",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

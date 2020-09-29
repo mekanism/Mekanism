@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:spruce_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:spruce_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:spruce_fence",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

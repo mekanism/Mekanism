@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:warped_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:warped_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:warped_fence",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

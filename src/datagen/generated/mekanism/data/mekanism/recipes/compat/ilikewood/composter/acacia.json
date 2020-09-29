@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:acacia_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:acacia_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:acacia_log",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

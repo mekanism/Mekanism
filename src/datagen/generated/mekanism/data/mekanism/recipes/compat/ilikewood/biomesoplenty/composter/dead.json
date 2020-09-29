@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:dead_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:dead_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "biomesoplenty:dead_fence",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

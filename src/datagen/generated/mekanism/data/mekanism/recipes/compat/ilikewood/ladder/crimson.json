@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "ilikewood",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "amount": 3,
+    "ingredient": {
+      "item": "ilikewood:crimson_ladder"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:crimson_stick",
+    "count": 7
+  }
+}

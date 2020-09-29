@@ -1,0 +1,29 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "ilikewood",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": [
+    {
+      "ingredient": {
+        "item": "ilikewood:oak_post"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "ilikewood:stripped_oak_post"
+      }
+    }
+  ],
+  "mainOutput": {
+    "item": "minecraft:oak_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  },
+  "secondaryChance": 0.125
+}

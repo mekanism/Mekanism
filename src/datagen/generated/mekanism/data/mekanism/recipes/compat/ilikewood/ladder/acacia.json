@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "ilikewood",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "amount": 3,
+    "ingredient": {
+      "item": "ilikewood:acacia_ladder"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:acacia_stick",
+    "count": 7
+  }
+}

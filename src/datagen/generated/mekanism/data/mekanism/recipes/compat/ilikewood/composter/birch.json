@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:birch_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:birch_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:birch_fence",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}
