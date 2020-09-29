@@ -85,7 +85,7 @@ public class ModuleChargeDistributionUnit extends ModuleMekaSuit {
             FloatingLong remaining = handler.insertEnergy(amount, Action.SIMULATE);
             if (remaining.smallerThan(amount)) {
                 //If we can actually insert any energy into
-                return handler.insertEnergy(useEnergy(player, amount.subtract(remaining)), Action.EXECUTE).add(remaining);
+                return handler.insertEnergy(useEnergy(player, amount.subtract(remaining), false), Action.EXECUTE).add(remaining);
             }
         }
         return amount;
