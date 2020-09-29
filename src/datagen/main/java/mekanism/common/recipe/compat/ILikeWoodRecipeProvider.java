@@ -98,7 +98,8 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               new ItemStack(planks, 3),
               new ItemStack(fences, 4),
               1
-        ).build(consumer, Mekanism.rl(basePath + "composter/" + name));
+        ).addCondition(condition)
+              .build(consumer, Mekanism.rl(basePath + "composter/" + name));
         //Crafting table
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectType.CRAFTING_TABLE, woodType)),
@@ -111,7 +112,8 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               new ItemStack(stick, 8),
               new ItemStack(Items.LEATHER),
               1
-        ).build(consumer, Mekanism.rl(basePath + "item_frame/" + name));
+        ).addCondition(condition)
+              .build(consumer, Mekanism.rl(basePath + "item_frame/" + name));
         //Ladder
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectType.LADDER, woodType), 3),
