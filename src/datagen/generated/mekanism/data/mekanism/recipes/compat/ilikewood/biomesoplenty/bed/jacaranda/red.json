@@ -1,0 +1,33 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewood",
+          "minVersion": "1.16.3-4.0.2.0",
+          "type": "mekanism:mod_version_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:red_jacaranda_bed"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:jacaranda_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:red_wool",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}
