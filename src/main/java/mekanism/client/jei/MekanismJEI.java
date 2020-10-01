@@ -58,6 +58,7 @@ import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -69,6 +70,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @JeiPlugin
@@ -88,19 +92,27 @@ public class MekanismJEI implements IModPlugin {
     private static final ResourceLocation GAS_CONVERSION = Mekanism.rl("gas_conversion");
     private static final ResourceLocation INFUSION_CONVERSION = Mekanism.rl("infusion_conversion");
 
-    //TODO: Make use of https://github.com/mezz/JustEnoughItems/commit/d0af18c4d59de6e38037899c375270d9c219cf3a if it gets
-    // modified to have a good way to specify recipe components should show in the JEI menu but even in recipe portions
-    // shouldn't have a subtype interpreter
-    private static final ISubtypeInterpreter MEKANISM_NBT_INTERPRETER = stack -> {
-        if (!stack.hasTag()) {
-            return ISubtypeInterpreter.NONE;
+    private static final ISubtypeInterpreter MEKANISM_NBT_INTERPRETER = new ISubtypeInterpreter() {
+        @Override
+        public String apply(ItemStack stack) {
+            if (!stack.hasTag()) {
+                return ISubtypeInterpreter.NONE;
+            }
+            String nbtRepresentation = addInterpretation("", getChemicalComponent(stack, Capabilities.GAS_HANDLER_CAPABILITY));
+            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION_HANDLER_CAPABILITY));
+            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT_HANDLER_CAPABILITY));
+            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY_HANDLER_CAPABILITY));
+            nbtRepresentation = addInterpretation(nbtRepresentation, getFluidComponent(stack));
+            nbtRepresentation = addInterpretation(nbtRepresentation, getEnergyComponent(stack));
+            return nbtRepresentation;
         }
-        String nbtRepresentation = addInterpretation("", getChemicalComponent(stack, Capabilities.GAS_HANDLER_CAPABILITY));
-        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION_HANDLER_CAPABILITY));
-        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT_HANDLER_CAPABILITY));
-        nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY_HANDLER_CAPABILITY));
-        nbtRepresentation = addInterpretation(nbtRepresentation, getEnergyComponent(stack));
-        return nbtRepresentation;
+
+        @Override
+        public String apply(ItemStack stack, UidContext context) {
+            //Only use the old method if we are an ingredient, for recipes ignore all the NBT
+            //Note: There are still some "issues" with this due to: https://github.com/mezz/JustEnoughItems/issues/2102
+            return context == UidContext.Ingredient ? apply(stack) : ISubtypeInterpreter.NONE;
+        }
     };
 
     private static String addInterpretation(String nbtRepresentation, String component) {
@@ -119,6 +131,24 @@ public class MekanismJEI implements IModPlugin {
                 ChemicalStack<?> chemicalStack = handler.getChemicalInTank(tank);
                 if (!chemicalStack.isEmpty()) {
                     component = addInterpretation(component, chemicalStack.getTypeRegistryName().toString());
+                } else if (tanks > 1) {
+                    component = addInterpretation(component, "empty");
+                }
+            }
+            return component;
+        }
+        return ISubtypeInterpreter.NONE;
+    }
+
+    private static String getFluidComponent(ItemStack stack) {
+        Optional<IFluidHandlerItem> cap = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve();
+        if (cap.isPresent()) {
+            IFluidHandlerItem handler = cap.get();
+            String component = "";
+            for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
+                FluidStack fluidStack = handler.getFluidInTank(tank);
+                if (!fluidStack.isEmpty()) {
+                    component = addInterpretation(component, fluidStack.getFluid().getRegistryName().toString());
                 } else if (tanks > 1) {
                     component = addInterpretation(component, "empty");
                 }
@@ -159,7 +189,7 @@ public class MekanismJEI implements IModPlugin {
             ItemStack itemStack = itemProvider.getItemStack();
             if (itemStack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).isPresent() || itemStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent() ||
                 itemStack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent() || itemStack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY).isPresent() ||
-                itemStack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY).isPresent()) {
+                itemStack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY).isPresent() || itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent()) {
                 registry.registerSubtypeInterpreter(itemProvider.getItem(), MEKANISM_NBT_INTERPRETER);
             }
         }

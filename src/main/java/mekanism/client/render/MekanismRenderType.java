@@ -61,6 +61,18 @@ public class MekanismRenderType extends RenderType {
         return makeType("mek_flame", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, false, state);
     }
 
+    public static RenderType getEntityTranslucentCullNoDiffuse(ResourceLocation locationIn) {
+        //Copy of getEntityTranslucentCull except without enabling diffuse lighting
+        RenderType.State state = RenderType.State.getBuilder()
+              .texture(new RenderState.TextureState(locationIn, false, false))
+              .transparency(TRANSLUCENT_TRANSPARENCY)
+              .alpha(DEFAULT_ALPHA)
+              .lightmap(LIGHTMAP_ENABLED)
+              .overlay(OVERLAY_ENABLED)
+              .build(true);
+        return makeType("entity_translucent_cull_no_diffuse", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, true, state);
+    }
+
     public static RenderType getMekaSuit() {
         RenderType.State state = RenderType.State.getBuilder()
               .texture(BLOCK_SHEET)
@@ -69,7 +81,7 @@ public class MekanismRenderType extends RenderType {
               .alpha(HALF_ALPHA)
               .lightmap(LIGHTMAP_ENABLED)
               .build(true);
-        return makeType("mekasuit", DefaultVertexFormats.BLOCK, 7, 131_072, true, true, state);
+        return makeType("mekasuit", DefaultVertexFormats.BLOCK, GL11.GL_QUADS, 131_072, true, true, state);
     }
 
     public static RenderType renderSPS(ResourceLocation resourceLocation) {
