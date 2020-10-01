@@ -13,9 +13,13 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.item.ItemRobit;
 import mekanism.common.item.block.ItemBlockBin;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import net.minecraft.block.Block;
@@ -90,6 +94,26 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
                 int slot = i;
                 slots.add(new DummyInventorySlot(tile.getSlotLimit(slot), itemStack -> mekTile.isItemValid(slot, itemStack), isBin));
             }
+        } else if (item instanceof ItemRobit) {
+            //Special casing for the robit so that we don't void items from a personal chest when upgrading to a robit
+            //Inventory slots
+            for (int slotY = 0; slotY < 3; slotY++) {
+                for (int slotX = 0; slotX < 9; slotX++) {
+                    slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, BasicInventorySlot.alwaysTrue, false));
+                }
+            }
+            //Energy slot
+            slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, itemStack -> {
+                if (EnergyCompatUtils.hasStrictEnergyHandler(itemStack)) {
+                    return true;
+                }
+                ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.findFirst(null, recipe -> recipe.getInput().testType(itemStack));
+                return foundRecipe != null && !foundRecipe.getOutput(itemStack).isZero();
+            }, false));
+            //Smelting input slot
+            slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, itemStack -> MekanismRecipeType.SMELTING.contains(null, recipe -> recipe.getInput().testType(itemStack)), false));
+            //Smelting output slot
+            slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, BasicInventorySlot.alwaysTrue, false));
         } else if (item instanceof ISustainedInventory) {
             //Fallback just save it all
             for (IInventorySlot slot : this.slots) {

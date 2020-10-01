@@ -286,7 +286,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 lastRemainingItems = EMPTY_LIST;
 
                 if (!cachedRecipe.isPresent() || !cachedRecipe.get().matches(dummyInv, world)) {
-                    //TODO: Check other places CraftingManager was
                     cachedRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, dummyInv, world);
                 }
                 if (cachedRecipe.isPresent()) {
