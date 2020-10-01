@@ -1,6 +1,8 @@
 
 [![Build Status](https://travis-ci.com/mekanism/Mekanism.svg?branch=1.16.x)](https://travis-ci.com/mekanism/Mekanism)
 
+![Mekanism Logo](logo.png)
+
 # Mekanism for Minecraft 1.16 #
 
 Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, 

@@ -10,6 +10,7 @@ license="MIT"
     displayURL="http://aidancbrady.com/mekanism/"
     authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
     credits="unpairedbracket, CyanideX and many others"
+    logoFile="logo.png"
     description='''Generators module for Mekanism'''
 
 [[dependencies.mekanismgenerators]]

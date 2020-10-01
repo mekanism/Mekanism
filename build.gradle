@@ -115,7 +115,7 @@ configurations {
     def compileExtenders = [apiCompile, additionsCompile, generatorsCompile, defenseCompile, toolsCompile, testCompile,
                             datagenmainCompile, datagenadditionsCompile, datagengeneratorsCompile, datagendefenseCompile, datagentoolsCompile]
     def implementationExtenders = [apiImplementation, additionsImplementation, generatorsImplementation, defenseImplementation, toolsImplementation, testImplementation,
-                            datagenmainImplementation, datagenadditionsImplementation, datagengeneratorsImplementation, datagendefenseImplementation, datagentoolsImplementation]
+                                   datagenmainImplementation, datagenadditionsImplementation, datagengeneratorsImplementation, datagendefenseImplementation, datagentoolsImplementation]
     def compileOnlyExtenders = [apiCompileOnly, additionsCompileOnly, generatorsCompileOnly, defenseCompileOnly, toolsCompileOnly, testCompileOnly,
                                 datagenmainCompileOnly, datagenadditionsCompileOnly, datagengeneratorsCompileOnly, datagendefenseCompileOnly, datagentoolsCompileOnly]
     def runtimeOnlyExtenders = [apiRuntimeOnly, additionsRuntimeOnly, generatorsRuntimeOnly, defenseRuntimeOnly, toolsRuntimeOnly,
@@ -343,6 +343,8 @@ dependencies {
 processResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
+    //Add our logo file
+    from("${projectDir}") { include 'logo.png' }
     finalizedBy mainReplaceResources
     //Minify json resources
     doLast {
@@ -355,6 +357,8 @@ processResources {
 processAdditionsResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
+    //Add our logo file
+    from("${projectDir}") { include 'logo.png' }
     finalizedBy additionsReplaceResources
     //Minify json resources
     doLast {
@@ -367,6 +371,8 @@ processAdditionsResources {
 processDefenseResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
+    //Add our logo file
+    from("${projectDir}") { include 'logo.png' }
     finalizedBy defenseReplaceResources
     //Minify json resources
     doLast {
@@ -379,6 +385,8 @@ processDefenseResources {
 processGeneratorsResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
+    //Add our logo file
+    from("${projectDir}") { include 'logo.png' }
     finalizedBy generatorsReplaceResources
     //Minify json resources
     doLast {
@@ -391,6 +399,8 @@ processGeneratorsResources {
 processToolsResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
+    //Add our logo file
+    from("${projectDir}") { include 'logo.png' }
     finalizedBy toolsReplaceResources
     //Minify json resources
     doLast {
@@ -496,29 +506,15 @@ task allJar(type: Jar) {
     }
     from(sourceSets.api.output)
     from(sourceSets.main.output) {
-        exclude 'META-INF/mods.toml'
-        exclude 'META-INF/accesstransformer.cfg'
+        exclude 'META-INF/mods.toml', 'META-INF/accesstransformer.cfg'
     }
-    from(sourceSets.additions.output) {
-        exclude 'META-INF/mods.toml'
-        exclude 'META-INF/accesstransformer.cfg'
-        exclude 'pack.mcmeta'
+    Closure excluded = {
+        exclude 'META-INF/mods.toml', 'META-INF/accesstransformer.cfg', 'logo.png', 'pack.mcmeta'
     }
-    from(sourceSets.defense.output) {
-        exclude 'META-INF/mods.toml'
-        exclude 'META-INF/accesstransformer.cfg'
-        exclude 'pack.mcmeta'
-    }
-    from(sourceSets.generators.output) {
-        exclude 'META-INF/mods.toml'
-        exclude 'META-INF/accesstransformer.cfg'
-        exclude 'pack.mcmeta'
-    }
-    from(sourceSets.tools.output) {
-        exclude 'META-INF/mods.toml'
-        exclude 'META-INF/accesstransformer.cfg'
-        exclude 'pack.mcmeta'
-    }
+    from(sourceSets.additions.output, excluded)
+    from(sourceSets.defense.output, excluded)
+    from(sourceSets.generators.output, excluded)
+    from(sourceSets.tools.output, excluded)
     //Copy over the generated files
     from("$buildDir/generated") {
         include 'META-INF/mods.toml'
