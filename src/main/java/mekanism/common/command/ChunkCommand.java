@@ -33,7 +33,7 @@ public class ChunkCommand {
 
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("watch")
-                  .requires(cs -> cs.hasPermissionLevel(4))
+                  .requires(cs -> cs.hasPermissionLevel(2))
                   .executes(ctx -> {
                       CommandSource source = ctx.getSource();
                       Entity entity = source.getEntity();
@@ -49,7 +49,7 @@ public class ChunkCommand {
 
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("unwatch")
-                  .requires(cs -> cs.hasPermissionLevel(4))
+                  .requires(cs -> cs.hasPermissionLevel(2))
                   .executes(ctx -> {
                       CommandSource source = ctx.getSource();
                       Entity entity = source.getEntity();
@@ -65,7 +65,7 @@ public class ChunkCommand {
 
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("clear")
-                  .requires(cs -> cs.hasPermissionLevel(4))
+                  .requires(cs -> cs.hasPermissionLevel(2))
                   .executes(ctx -> {
                       int count = chunkWatchers.size();
                       chunkWatchers.clear();
@@ -79,7 +79,7 @@ public class ChunkCommand {
 
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("flush")
-                  .requires(cs -> cs.hasPermissionLevel(4))
+                  .requires(cs -> cs.hasPermissionLevel(2))
                   .executes(ctx -> {
                       CommandSource source = ctx.getSource();
                       ServerChunkProvider sp = source.getWorld().getChunkProvider();

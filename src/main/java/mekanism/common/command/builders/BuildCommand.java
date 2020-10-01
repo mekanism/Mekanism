@@ -22,7 +22,7 @@ public class BuildCommand {
 
     public static final ArgumentBuilder<CommandSource, ?> COMMAND = Commands.literal("build")
           .then(Commands.literal("remove")
-                .requires(cs -> cs.hasPermissionLevel(4))
+                .requires(cs -> cs.hasPermissionLevel(2))
                 .executes(ctx -> {
                     CommandSource source = ctx.getSource();
                     Entity entity = source.getEntity();
@@ -38,7 +38,7 @@ public class BuildCommand {
 
     public static void register(String name, StructureBuilder builder) {
         COMMAND.then(Commands.literal(name)
-              .requires(cs -> cs.hasPermissionLevel(4))
+              .requires(cs -> cs.hasPermissionLevel(2))
               .executes(ctx -> {
                   CommandSource source = ctx.getSource();
                   Entity entity = source.getEntity();

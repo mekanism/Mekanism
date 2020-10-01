@@ -48,7 +48,7 @@ public class CommandMek {
 
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("debug")
-                  .requires(cs -> cs.hasPermissionLevel(4))
+                  .requires(cs -> cs.hasPermissionLevel(2))
                   .executes(ctx -> {
                       MekanismAPI.debug = !MekanismAPI.debug;
                       ctx.getSource().sendFeedback(MekanismLang.COMMAND_DEBUG.translate(OnOff.of(MekanismAPI.debug)), true);
@@ -61,7 +61,7 @@ public class CommandMek {
 
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("testrules")
-                  .requires(cs -> cs.hasPermissionLevel(4))
+                  .requires(cs -> cs.hasPermissionLevel(2))
                   .executes(ctx -> {
                       CommandSource source = ctx.getSource();
                       MinecraftServer server = source.getServer();
@@ -82,7 +82,7 @@ public class CommandMek {
 
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("tp")
-                  .requires(cs -> cs.hasPermissionLevel(4))
+                  .requires(cs -> cs.hasPermissionLevel(2))
                   .then(Commands.argument("location", Vec3Argument.vec3())
                         .executes(ctx -> {
                             CommandSource source = ctx.getSource();
@@ -109,7 +109,7 @@ public class CommandMek {
 
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("tpop")
-                  .requires(cs -> cs.hasPermissionLevel(4))
+                  .requires(cs -> cs.hasPermissionLevel(2))
                   .executes(ctx -> {
                       CommandSource source = ctx.getSource();
                       UUID player = source.getEntity().getUniqueID();
@@ -134,7 +134,7 @@ public class CommandMek {
 
         static ArgumentBuilder<CommandSource, ?> register() {
             return Commands.literal("radiation")
-                  .requires(cs -> cs.hasPermissionLevel(4))
+                  .requires(cs -> cs.hasPermissionLevel(2))
                   .then(Commands.literal("add").then(Commands.argument("magnitude", DoubleArgumentType.doubleArg(0, 10_000))
                         .executes(ctx -> {
                             try {
