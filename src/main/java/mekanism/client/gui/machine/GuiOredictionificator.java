@@ -50,7 +50,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
         addButton(scrollBar = new GuiScrollBar(this, 153, 17, 90, () -> getFilters().size(), () -> FILTER_COUNT));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiProgress(() -> tile.didProcess ? 1 : 0, ProgressType.LARGE_RIGHT, this, 64, 119));
+        addButton(new GuiProgress(() -> tile.didProcess, ProgressType.LARGE_RIGHT, this, 64, 119));
         addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(GuiOredictionificatorFilter.create(this, tile))));
         //Add each of the buttons and then just change visibility state to match filter info

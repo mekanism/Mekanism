@@ -68,7 +68,7 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
         }, GaugeType.STANDARD, this, 7, 50));
         addButton(new GuiProgress(() -> {
             FusionReactorMultiblockData multiblock = tile.getMultiblock();
-            return multiblock.getLastPlasmaTemp() > multiblock.getLastCaseTemp() ? 1 : 0;
+            return multiblock.getLastPlasmaTemp() > multiblock.getLastCaseTemp();
         }, ProgressType.SMALL_RIGHT, this, 29, 76));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
@@ -91,10 +91,10 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
                 return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 61, 50));
-        addButton(new GuiProgress(() -> tile.getMultiblock().getCaseTemp() > 0 ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));
+        addButton(new GuiProgress(() -> tile.getMultiblock().getCaseTemp() > 0, ProgressType.SMALL_RIGHT, this, 83, 61));
         addButton(new GuiProgress(() -> {
             FusionReactorMultiblockData multiblock = tile.getMultiblock();
-            return multiblock.getCaseTemp() > 0 && !multiblock.waterTank.isEmpty() && multiblock.steamTank.getStored() < multiblock.steamTank.getCapacity() ? 1 : 0;
+            return multiblock.getCaseTemp() > 0 && !multiblock.waterTank.isEmpty() && multiblock.steamTank.getStored() < multiblock.steamTank.getCapacity();
         }, ProgressType.SMALL_RIGHT, this, 83, 91));
         addButton(new GuiFluidGauge(() -> tile.getMultiblock().waterTank, () -> tile.getFluidTanks(null), GaugeType.SMALL, this, 115, 84));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().steamTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 151, 84));

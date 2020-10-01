@@ -11,7 +11,7 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
-import mekanism.client.gui.element.progress.IProgressInfoHandler;
+import mekanism.client.gui.element.progress.IProgressInfoHandler.IBooleanProgressInfoHandler;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
@@ -50,10 +50,10 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getEnergyContainer().getNeeded()))), this));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 133, 13));
         addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 25, 13));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
+        addButton(new GuiProgress(new IBooleanProgressInfoHandler() {
             @Override
-            public double getProgress() {
-                return tile.getActive() ? 1 : 0;
+            public boolean fillProgressBar() {
+                return tile.getActive();
             }
 
             @Override
@@ -61,10 +61,10 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
                 return !tile.mode;
             }
         }, ProgressType.LARGE_RIGHT, this, 64, 39).jeiCategories(condensentrating));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
+        addButton(new GuiProgress(new IBooleanProgressInfoHandler() {
             @Override
-            public double getProgress() {
-                return tile.getActive() ? 1 : 0;
+            public boolean fillProgressBar() {
+                return tile.getActive();
             }
 
             @Override

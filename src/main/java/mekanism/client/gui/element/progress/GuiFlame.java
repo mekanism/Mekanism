@@ -16,7 +16,7 @@ public class GuiFlame extends GuiProgress {
         minecraft.textureManager.bindTexture(getResource());
         blit(matrix, x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
         if (handler.isActive()) {
-            int displayInt = (int) (handler.getProgress() * height);
+            int displayInt = (int) (getProgress() * height);
             blit(matrix, x, y + height - displayInt, width, height - displayInt, width, displayInt, type.getTextureWidth(), type.getTextureHeight());
         }
     }

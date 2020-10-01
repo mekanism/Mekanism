@@ -43,8 +43,8 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
         addButton(new GuiGasGauge(() -> tile.getMultiblock().deuteriumTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.SMALL, this, 25, 64));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 79, 50));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().tritiumTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.SMALL, this, 133, 64));
-        addButton(new GuiProgress(() -> tile.getMultiblock().isBurning() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 47, 76));
-        addButton(new GuiProgress(() -> tile.getMultiblock().isBurning() ? 1 : 0, ProgressType.SMALL_LEFT, this, 101, 76));
+        addButton(new GuiProgress(() -> tile.getMultiblock().isBurning(), ProgressType.SMALL_RIGHT, this, 47, 76));
+        addButton(new GuiProgress(() -> tile.getMultiblock().isBurning(), ProgressType.SMALL_LEFT, this, 101, 76));
         addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
         addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
         addButton(injectionRateField = new GuiTextField(this, 98, 115, 26, 11));
