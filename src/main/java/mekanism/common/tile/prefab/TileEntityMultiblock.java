@@ -116,7 +116,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             }
             if (multiblock.inventoryID != null) {
                 cachedID = multiblock.inventoryID;
-                getManager().updateCache(this);
+                getManager().updateCache(this, multiblock);
                 if (isMaster) {
                     if (multiblock.tick(world)) {
                         sendUpdatePacket();
@@ -128,7 +128,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         } else {
             playersUsing.forEach(PlayerEntity::closeScreen);
             if (cachedID != null) {
-                getManager().updateCache(this);
+                getManager().updateCache(this, multiblock);
             }
             if (prevStructure) {
                 structureChanged();

@@ -105,7 +105,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
                 IMultiblock<T> multiblockTile = (IMultiblock<T>) tile;
                 UUID uuid = multiblockTile.getCacheID();
                 if (uuid != null && multiblockTile.getManager() == manager && multiblockTile.hasCache()) {
-                    manager.updateCache(multiblockTile);
+                    manager.updateCache(multiblockTile, multiblockTile.getMultiblock());
                     ctx.idsFound.add(uuid);
                 }
             }

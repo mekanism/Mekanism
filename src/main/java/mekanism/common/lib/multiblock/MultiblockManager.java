@@ -104,8 +104,8 @@ public class MultiblockManager<T extends MultiblockData> {
         return UUID.randomUUID();
     }
 
-    public void updateCache(IMultiblock<T> tile) {
-        inventories.computeIfAbsent(tile.getCacheID(), id -> new CacheWrapper()).update(tile);
+    public void updateCache(IMultiblock<T> tile, T multiblock) {
+        inventories.computeIfAbsent(tile.getCacheID(), id -> new CacheWrapper()).update(tile, multiblock);
     }
 
     private class CacheWrapper {
@@ -117,9 +117,8 @@ public class MultiblockManager<T extends MultiblockData> {
             return cache;
         }
 
-        public void update(IMultiblock<T> tile) {
+        public void update(IMultiblock<T> tile, T multiblock) {
             locations.add(Coord4D.get((TileEntity) tile));
-            T multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
                 if (tile.isMaster()) {
                     // create a new cache for the tile if it needs one
