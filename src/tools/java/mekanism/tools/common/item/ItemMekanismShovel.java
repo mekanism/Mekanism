@@ -45,6 +45,7 @@ public class ItemMekanismShovel extends ShovelItem implements IHasRepairType, IA
         tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
     }
 
+    @Override
     public float getAttackDamage() {
         return material.getShovelDamage() + getTier().getAttackDamage();
     }

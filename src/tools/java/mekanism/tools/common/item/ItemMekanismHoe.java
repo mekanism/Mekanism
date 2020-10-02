@@ -45,6 +45,7 @@ public class ItemMekanismHoe extends HoeItem implements IHasRepairType, IAttribu
         tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
     }
 
+    @Override
     public float getAttackDamage() {
         return material.getHoeDamage() + getTier().getAttackDamage();
     }

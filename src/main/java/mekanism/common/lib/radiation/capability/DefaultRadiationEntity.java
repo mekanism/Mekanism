@@ -52,7 +52,6 @@ public class DefaultRadiationEntity implements IRadiationEntity {
         double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
 
         // Hurt randomly
-        chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
         if (severityScale > chance && rand.nextInt() % 2 == 0) {
             entity.attackEntityFrom(MekanismDamageSource.RADIATION, 1);
         }

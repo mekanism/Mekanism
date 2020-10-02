@@ -44,7 +44,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 //Registered via IMC
-@SuppressWarnings("unused")
 public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, Void> {
 
     private boolean displayFluidTanks;

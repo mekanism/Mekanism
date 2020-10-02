@@ -46,6 +46,7 @@ public class ItemMekanismPickaxe extends PickaxeItem implements IHasRepairType, 
         tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
     }
 
+    @Override
     public float getAttackDamage() {
         return material.getPickaxeDamage() + getTier().getAttackDamage();
     }

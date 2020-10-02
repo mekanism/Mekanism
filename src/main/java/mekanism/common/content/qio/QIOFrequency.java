@@ -107,7 +107,7 @@ public class QIOFrequency extends Frequency {
             return ItemStack.EMPTY;
         }
 
-        QIOItemTypeData data = null;
+        QIOItemTypeData data;
         if (itemType == null) {
             Map.Entry<HashedItem, QIOItemTypeData> entry = itemDataMap.entrySet().iterator().next();
             itemType = entry.getKey();

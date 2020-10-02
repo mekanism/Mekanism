@@ -45,6 +45,7 @@ public class ItemMekanismAxe extends AxeItem implements IHasRepairType, IAttribu
         tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
     }
 
+    @Override
     public float getAttackDamage() {
         return material.getAxeDamage() + getTier().getAttackDamage();
     }

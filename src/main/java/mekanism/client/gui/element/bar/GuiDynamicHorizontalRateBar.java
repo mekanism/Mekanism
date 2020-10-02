@@ -1,11 +1,9 @@
 package mekanism.client.gui.element.bar;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -33,8 +31,7 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
         int displayInt = (int) (getHandler().getLevel() * (width - 2));
         for (int i = 0; i < displayInt; i++) {
             float level = (float) i / (float) (width - 2);
-            Color color = colorFunction.getColor(level);
-            RenderSystem.color4f(color.rf(), color.gf(), color.bf(), color.af());
+            MekanismRenderer.color(colorFunction.getColor(level));
             if (i == 0) {
                 blit(matrix, x + 1, y + 1, 0, 0, 1, texHeight, texWidth, texHeight);
             } else if (i == displayInt - 1) {
