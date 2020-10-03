@@ -8,7 +8,7 @@
 
 # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
 DEFAULT_JVM_OPTS=""
-JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64/"
+JAVA_HOME="C:\Program Files\AdoptOpenJDK\jdk-8.0.265.01-hotspot\"
 APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
