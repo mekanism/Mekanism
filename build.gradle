@@ -56,7 +56,7 @@ dependencies {
     compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.CCC_version}:dev"
 }
 
-version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
+version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "terralization")
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
 distsDirName = "../output"
@@ -94,6 +94,21 @@ task coreJar(type: Jar) {
     }
 }
 
+task alltJar(type: Jar) {
+    baseName = 'MekanismALLT'
+    manifest {
+        attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
+        attributes 'FMLCorePluginContainsFMLMod': 'true'
+    }
+    from('etc/core') {
+        include '*.info'
+        expand 'version': config.mod_version, 'mc_version': config.minecraft_version, 'fmp_version': config.FMP_version
+    }
+    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
+        exclude 'mcmod.info'
+    }
+}
+
 task toolsJar(type: Jar) {
     baseName = 'MekanismTools'
 
@@ -123,6 +138,8 @@ task generatorsJar(type: Jar) {
 coreJar.dependsOn('reobf')
 toolsJar.dependsOn('reobf')
 generatorsJar.dependsOn('reobf')
+alltJar.dependsOn('reobf')
+
 
 task MDKZip(type: Zip) {
     baseName = 'MDK'
@@ -135,13 +152,16 @@ task releaseJars(type: Copy) {
     from toolsJar
     from generatorsJar
     from MDKZip
+    from alltJar
     rename '-(.*)jar', '.jar'
     rename '-(.*)zip', '.zip'
     into '.'
 }
+
 
 task fullBuild(type: Delete) {
     delete jar
 }
 
 fullBuild.dependsOn('releaseJars')
+
