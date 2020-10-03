@@ -33,7 +33,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     BRIGHT_GREEN("\u00a7a", APILang.COLOR_BRIGHT_GREEN, "Lime", "Lime", "lime", new int[]{117, 255, 137}, DyeColor.LIME),
     AQUA("\u00a7b", APILang.COLOR_AQUA, "Aqua", null, "aqua", new int[]{48, 255, 249}, MaterialColor.LIGHT_BLUE, Tags.Items.DYES_LIGHT_BLUE),
     RED("\u00a7c", APILang.COLOR_RED, "Red", "Red", "red", new int[]{255, 56, 60}, DyeColor.RED),
-    PINK("\u00a7d", APILang.COLOR_PINK, "Magenta", "Magenta", "magenta", new int[]{255, 164, 249}, DyeColor.MAGENTA),
+    PINK("\u00a7d", APILang.COLOR_PINK, "Magenta", "Magenta", "magenta", new int[]{213, 94, 203}, DyeColor.MAGENTA),
     YELLOW("\u00a7e", APILang.COLOR_YELLOW, "Yellow", "Yellow", "yellow", new int[]{255, 221, 79}, DyeColor.YELLOW),
     WHITE("\u00a7f", APILang.COLOR_WHITE, "White", "White", "white", new int[]{255, 255, 255}, DyeColor.WHITE),
     //Extras for dye-completeness
