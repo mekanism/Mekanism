@@ -194,10 +194,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         if (!fluidState.isEmpty() && fluidState.isSource()) {
             //Just in case someone does weird things and has a fluid state that is empty and a source
             // only allow collecting from non empty sources
-            Fluid fluid = fluidState.getFluid();
-            FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
-            if (hasFilter && fluid == Fluids.WATER) {
-                fluid = MekanismFluids.HEAVY_WATER.getStillFluid();
+            Fluid sourceFluid = fluidState.getFluid();
+            FluidStack fluidStack = new FluidStack(sourceFluid, FluidAttributes.BUCKET_VOLUME);
+            if (hasFilter && sourceFluid == Fluids.WATER) {
                 fluidStack = MekanismFluids.HEAVY_WATER.getFluidStack(10);
             }
             //Note: we get the block state from the world and not the fluid state
@@ -214,21 +213,20 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 }
             } else if (block instanceof IBucketPickupHandler && validFluid(fluidStack, false)) {
                 //If it can be picked up by a bucket and we actually want to pick it up, do so to update the fluid type we are doing
-                if (shouldTake(fluid)) {
-                    //Note we only attempt taking if we should take the fluid type
+                if (sourceFluid != Fluids.WATER || MekanismConfig.general.pumpWaterSources.get()) {
+                    //Note we only attempt taking if it is not water, or we want to pump water sources
                     // otherwise we assume the type from the fluid state is correct
-                    fluid = ((IBucketPickupHandler) block).pickupFluid(world, pos, blockState);
+                    sourceFluid = ((IBucketPickupHandler) block).pickupFluid(world, pos, blockState);
                     //Update the fluid stack in case something somehow changed about the type
                     // making sure that we replace to heavy water if we got heavy water
-                    if (hasFilter && fluid == Fluids.WATER) {
-                        fluid = MekanismFluids.HEAVY_WATER.getStillFluid();
+                    if (hasFilter && sourceFluid == Fluids.WATER) {
                         fluidStack = MekanismFluids.HEAVY_WATER.getFluidStack(10);
                     } else {
-                        fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
+                        fluidStack = new FluidStack(sourceFluid, FluidAttributes.BUCKET_VOLUME);
                     }
                     if (!validFluid(fluidStack, false)) {
                         Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                              fluidState.getFluid(), pos, world, fluid);
+                              fluidState.getFluid(), pos, world, sourceFluid);
                         return false;
                     }
                 }
@@ -264,10 +262,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     public void reset() {
         activeType = FluidStack.EMPTY;
         recurringNodes.clear();
-    }
-
-    private boolean shouldTake(@Nonnull Fluid fluid) {
-        return fluid != Fluids.WATER && fluid != MekanismFluids.HEAVY_WATER.getStillFluid() || MekanismConfig.general.pumpWaterSources.get();
     }
 
     @Nonnull
