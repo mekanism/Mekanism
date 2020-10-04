@@ -169,17 +169,20 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 if (tile != null) {
                                     TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this),
                                           stack.getPathType() == Path.HOME);
-                                    // Nothing was rejected; remove the stack from the prediction tracker and
-                                    // schedule this stack for deletion. Continue the loop thereafter
-                                    ItemStack rejected = response.getRejected();
-                                    if (rejected.isEmpty()) {
-                                        TransporterManager.remove(getTileWorld(), stack);
-                                        deletes.add(stackId);
-                                        continue;
-                                    }
-                                    // Some portion of the stack got rejected; save the remainder and
-                                    // let the recalculate below sort out what to do next
-                                    stack.itemStack = rejected;
+                                    if (!response.isEmpty()) {
+                                        //We were able to add at least part of the stack to the inventory
+                                        ItemStack rejected = response.getRejected();
+                                        if (rejected.isEmpty()) {
+                                            //Nothing was rejected (it was all accepted); remove the stack from the prediction
+                                            // tracker and schedule this stack for deletion. Continue the loop thereafter
+                                            TransporterManager.remove(getTileWorld(), stack);
+                                            deletes.add(stackId);
+                                            continue;
+                                        }
+                                        //Some portion of the stack got rejected; save the remainder and
+                                        // let the recalculate below sort out what to do next
+                                        stack.itemStack = rejected;
+                                    }//else the entire stack got rejected (Note: we don't need to update the stack to point to itself)
                                     prevSet = next;
                                 }
                             }
@@ -197,10 +200,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     if (stack.isFinal(this)) {
                         Path pathType = stack.getPathType();
                         if (pathType == Path.DEST || pathType == Path.HOME) {
-                            ConnectionType connectionType = getConnectionType(stack.getSide(this));
+                            Direction side = stack.getSide(this);
+                            ConnectionType connectionType = getConnectionType(side);
                             tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH ||
                                              !TransporterUtils.canInsert(MekanismUtils.getTileEntity(getTileWorld(), stack.getDest()), stack.color, stack.itemStack,
-                                                   stack.getSide(this), pathType == Path.HOME);
+                                                   side, pathType == Path.HOME);
                         } else {
                             tryRecalculate = pathType == Path.NONE;
                         }

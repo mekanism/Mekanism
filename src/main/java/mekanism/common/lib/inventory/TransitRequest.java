@@ -184,7 +184,7 @@ public abstract class TransitRequest {
 
         private final List<ItemData> slotData = new ArrayList<>();
 
-        public SimpleTransitRequest(ItemStack stack) {
+        protected SimpleTransitRequest(ItemStack stack) {
             slotData.add(new SimpleItemData(stack));
         }
 

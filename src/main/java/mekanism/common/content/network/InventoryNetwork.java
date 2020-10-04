@@ -11,6 +11,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
+import mekanism.api.RelativeSide;
+import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.PathfinderCache;
@@ -19,6 +21,7 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.DynamicNetwork;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -64,7 +67,17 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
                         Direction side = acceptorEntry.getKey();
                         //TODO: Figure out how we want to best handle the color check, as without doing it here we don't
                         // actually need to even query the TE
-                        TransitResponse response = TransporterManager.getPredictedInsert(acceptor, position, handler.get(), stack.color, request, side);
+                        if (acceptor instanceof ISideConfiguration) {
+                            //If the acceptor in question implements the mekanism interface, check that the color matches and bail fast if it doesn't
+                            ISideConfiguration config = (ISideConfiguration) acceptor;
+                            if (config.getEjector().hasStrictInput()) {
+                                EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(config.getOrientation(), side));
+                                if (configColor != null && configColor != stack.color) {
+                                    continue;
+                                }
+                            }
+                        }
+                        TransitResponse response = TransporterManager.getPredictedInsert(position, handler.get(), request);
                         if (!response.isEmpty()) {
                             Direction opposite = side.getOpposite();
                             if (data == null) {
