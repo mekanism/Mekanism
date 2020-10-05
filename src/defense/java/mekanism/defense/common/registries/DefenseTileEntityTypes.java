@@ -5,5 +5,8 @@ import mekanism.defense.common.MekanismDefense;
 
 public class DefenseTileEntityTypes {
 
+    private DefenseTileEntityTypes() {
+    }
+
     public static final TileEntityTypeDeferredRegister TILE_ENTITY_TYPES = new TileEntityTypeDeferredRegister(MekanismDefense.MODID);
 }

@@ -50,8 +50,8 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
 
     @Override
     protected ResourceLocation getResource() {
-        return icons.computeIfAbsent(MekanismConfig.general.energyUnit.get(), (type) -> MekanismUtils.getResource(ResourceType.GUI, "tabs/energy_info_" +
-                                                                                                                                    type.name().toLowerCase(Locale.ROOT) + ".png"));
+        return icons.computeIfAbsent(MekanismConfig.general.energyUnit.get(), type -> MekanismUtils.getResource(ResourceType.GUI,
+              "tabs/energy_info_" + type.name().toLowerCase(Locale.ROOT) + ".png"));
     }
 
     @Override

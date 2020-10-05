@@ -6,6 +6,7 @@ import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.util.VoxelShapeUtils;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.TNTBlock;
@@ -52,7 +53,7 @@ public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
     );
 
     public BlockObsidianTNT() {
-        super(Block.Properties.create(Material.TNT));
+        super(AbstractBlock.Properties.create(Material.TNT));
         //Uses getDefaultState as starting state to take into account the stuff from super
         setDefaultState(BlockStateHelper.getDefaultState(getDefaultState()));
     }

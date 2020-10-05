@@ -7,6 +7,9 @@ import net.minecraft.util.SoundEvent;
 
 public final class MekanismSounds {
 
+    private MekanismSounds() {
+    }
+
     public static final SoundEventDeferredRegister SOUND_EVENTS = new SoundEventDeferredRegister(Mekanism.MODID);
 
     public static final SoundEventRegistryObject<SoundEvent> CHARGEPAD = SOUND_EVENTS.register("tile.machine.chargepad");

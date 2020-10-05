@@ -47,6 +47,9 @@ import net.minecraft.particles.ParticleTypes;
 
 public class GeneratorsBlockTypes {
 
+    private GeneratorsBlockTypes() {
+    }
+
     //TODO: Do this in a cleaner way
     private static final FloatingLong STORAGE = FloatingLong.createConst(160_000);
     private static final FloatingLong STORAGE2 = FloatingLong.createConst(200_000);
@@ -60,8 +63,8 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.HEAT_GENERATOR)
           .withSound(GeneratorsSounds.HEAT_GENERATOR)
           .with(new AttributeParticleFX()
-                .add(ParticleTypes.SMOKE, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
-                .add(ParticleTypes.FLAME, (rand) -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
+                .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
+                .add(ParticleTypes.FLAME, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
           .build();
     // Bio Generator
     public static final Generator<TileEntityBioGenerator> BIO_GENERATOR = GeneratorBuilder
@@ -71,7 +74,7 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.BIO_GENERATOR)
           .withSound(GeneratorsSounds.BIO_GENERATOR)
           .with(new AttributeParticleFX()
-                .add(ParticleTypes.SMOKE, (rand) -> new Pos3D(0, 0.3, -0.25)))
+                .add(ParticleTypes.SMOKE, rand -> new Pos3D(0, 0.3, -0.25)))
           .build();
     // Solar Generator
     public static final Generator<TileEntitySolarGenerator> SOLAR_GENERATOR = GeneratorBuilder
@@ -166,7 +169,7 @@ public class GeneratorsBlockTypes {
     // Fission Reactor Logic Adapter
     public static final BlockTypeTile<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_LOGIC_ADAPTER)
-          .with(new AttributeRedstoneEmitter<>((tile) -> tile.getStatus() == RedstoneStatus.OUTPUTTING ? 15 : 0))
+          .with(new AttributeRedstoneEmitter<>(tile -> tile.getStatus() == RedstoneStatus.OUTPUTTING ? 15 : 0))
           .with(new AttributeRedstone(), new AttributeMultiblock())
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
           .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
@@ -207,7 +210,7 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityFusionReactorLogicAdapter> FUSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_LOGIC_ADAPTER)
           .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
-          .with(new AttributeRedstoneEmitter<>((tile) -> tile.checkMode() ? 15 : 0))
+          .with(new AttributeRedstoneEmitter<>(tile -> tile.checkMode() ? 15 : 0))
           .with(new AttributeMultiblock())
           .withEmptyContainer(GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
           .build();

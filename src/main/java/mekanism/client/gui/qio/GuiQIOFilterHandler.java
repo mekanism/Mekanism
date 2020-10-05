@@ -81,7 +81,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                 if (index < tile.getFilters().size() - 1) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
                 }
-            }, this::onClick, (filter) -> {
+            }, this::onClick, filter -> {
                 List<ItemStack> list = new ArrayList<>();
                 if (filter != null) {
                     if (filter instanceof IItemStackFilter) {

@@ -35,7 +35,7 @@ public class PacketRadiationData {
 
     public static void handle(PacketRadiationData message, Supplier<Context> context) {
         // Queue up the processing on the central thread
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }

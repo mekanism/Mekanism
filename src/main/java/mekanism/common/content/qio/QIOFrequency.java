@@ -322,7 +322,7 @@ public class QIOFrequency extends Frequency {
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, (value) -> color = value);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, value -> color = value);
     }
 
     public void addDrive(QIODriveKey key) {

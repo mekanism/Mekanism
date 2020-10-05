@@ -7,7 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.Property;
 
-public class AttributeStateActive extends AttributeState {
+public class AttributeStateActive implements AttributeState {
 
     private static final BooleanProperty activeProperty = BooleanProperty.create("active");
 

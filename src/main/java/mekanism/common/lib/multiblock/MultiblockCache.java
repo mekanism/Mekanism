@@ -195,29 +195,22 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     }
 
     public enum CacheSubstance {
-        ITEMS(NBTConstants.ITEMS, (cache) -> cache.inventorySlots.add(BasicInventorySlot.at(cache, 0, 0)),
-              (holder) -> ((IMekanismInventory) holder).getInventorySlots(null)),
-
-        FLUID(NBTConstants.FLUID_TANKS, (cache) -> cache.fluidTanks.add(BasicFluidTank.create(Integer.MAX_VALUE, cache)),
-              (holder) -> ((IMekanismFluidHandler) holder).getFluidTanks(null)),
-
-        GAS(NBTConstants.GAS_TANKS, (cache) -> cache.gasTanks.add(ChemicalTankBuilder.GAS.createAllValid(Long.MAX_VALUE, cache)),
-              (holder) -> ((IGasTracker) holder).getGasTanks(null)),
-
-        INFUSION(NBTConstants.INFUSION_TANKS, (cache) -> cache.infusionTanks.add(ChemicalTankBuilder.INFUSION.createAllValid(Long.MAX_VALUE, cache)),
-              (holder) -> ((IInfusionTracker) holder).getInfusionTanks(null)),
-
-        PIGMENT(NBTConstants.PIGMENT_TANKS, (cache) -> cache.pigmentTanks.add(ChemicalTankBuilder.PIGMENT.createAllValid(Long.MAX_VALUE, cache)),
-              (holder) -> ((IPigmentTracker) holder).getPigmentTanks(null)),
-
-        SLURRY(NBTConstants.SLURRY_TANKS, (cache) -> cache.slurryTanks.add(ChemicalTankBuilder.SLURRY.createAllValid(Long.MAX_VALUE, cache)),
-              (holder) -> ((ISlurryTracker) holder).getSlurryTanks(null)),
-
-        ENERGY(NBTConstants.ENERGY_CONTAINERS, (cache) -> cache.energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, cache)),
-              (holder) -> ((IMekanismStrictEnergyHandler) holder).getEnergyContainers(null)),
-
-        HEAT(NBTConstants.HEAT_CAPACITORS, (cache) -> cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, cache)),
-              (holder) -> ((IMekanismHeatHandler) holder).getHeatCapacitors(null));
+        ITEMS(NBTConstants.ITEMS, cache -> cache.inventorySlots.add(BasicInventorySlot.at(cache, 0, 0)),
+              holder -> ((IMekanismInventory) holder).getInventorySlots(null)),
+        FLUID(NBTConstants.FLUID_TANKS, cache -> cache.fluidTanks.add(BasicFluidTank.create(Integer.MAX_VALUE, cache)),
+              holder -> ((IMekanismFluidHandler) holder).getFluidTanks(null)),
+        GAS(NBTConstants.GAS_TANKS, cache -> cache.gasTanks.add(ChemicalTankBuilder.GAS.createAllValid(Long.MAX_VALUE, cache)),
+              holder -> ((IGasTracker) holder).getGasTanks(null)),
+        INFUSION(NBTConstants.INFUSION_TANKS, cache -> cache.infusionTanks.add(ChemicalTankBuilder.INFUSION.createAllValid(Long.MAX_VALUE, cache)),
+              holder -> ((IInfusionTracker) holder).getInfusionTanks(null)),
+        PIGMENT(NBTConstants.PIGMENT_TANKS, cache -> cache.pigmentTanks.add(ChemicalTankBuilder.PIGMENT.createAllValid(Long.MAX_VALUE, cache)),
+              holder -> ((IPigmentTracker) holder).getPigmentTanks(null)),
+        SLURRY(NBTConstants.SLURRY_TANKS, cache -> cache.slurryTanks.add(ChemicalTankBuilder.SLURRY.createAllValid(Long.MAX_VALUE, cache)),
+              holder -> ((ISlurryTracker) holder).getSlurryTanks(null)),
+        ENERGY(NBTConstants.ENERGY_CONTAINERS, cache -> cache.energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, cache)),
+              holder -> ((IMekanismStrictEnergyHandler) holder).getEnergyContainers(null)),
+        HEAT(NBTConstants.HEAT_CAPACITORS, cache -> cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, cache)),
+              holder -> ((IMekanismHeatHandler) holder).getHeatCapacitors(null));
 
         private final String tagKey;
         private final Consumer<MultiblockCache<?>> defaultPrefab;
@@ -262,13 +255,12 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
                 case ENERGY:
                     ((IEnergyContainer) cache).setEnergy(((IEnergyContainer) data).getEnergy());
                     break;
-                case HEAT: {
+                case HEAT:
                     ((IHeatCapacitor) cache).setHeat(((IHeatCapacitor) data).getHeat());
                     if (cache instanceof BasicHeatCapacitor) {
                         ((BasicHeatCapacitor) cache).setHeatCapacity(((IHeatCapacitor) data).getHeatCapacity(), false);
                     }
                     break;
-                }
             }
         }
 

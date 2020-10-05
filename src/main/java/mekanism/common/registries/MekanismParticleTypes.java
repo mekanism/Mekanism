@@ -9,6 +9,9 @@ import net.minecraft.particles.BasicParticleType;
 
 public class MekanismParticleTypes {
 
+    private MekanismParticleTypes() {
+    }
+
     public static final ParticleTypeDeferredRegister PARTICLE_TYPES = new ParticleTypeDeferredRegister(Mekanism.MODID);
 
     public static final ParticleTypeRegistryObject<LaserParticleData> LASER = PARTICLE_TYPES.register("laser", LaserParticleType::new);

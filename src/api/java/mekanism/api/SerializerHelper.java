@@ -33,6 +33,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 @MethodsReturnNonnullByDefault
 public class SerializerHelper {
 
+    private SerializerHelper() {
+    }
+
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public static FloatingLong getFloatingLong(@Nonnull JsonObject json, @Nonnull String key) {

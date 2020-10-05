@@ -16,6 +16,9 @@ import org.apache.logging.log4j.Logger;
 
 public class MekanismAPI {
 
+    private MekanismAPI() {
+    }
+
     /**
      * The version of the api classes - may not always match the mod's version
      */

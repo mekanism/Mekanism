@@ -668,7 +668,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             for (IHeatCapacitor capacitor : heatCapacitors) {
                 container.track(SyncableDouble.create(capacitor::getHeat, capacitor::setHeat));
                 if (capacitor instanceof BasicHeatCapacitor) {
-                    container.track(SyncableDouble.create(capacitor::getHeatCapacity, (capacity) -> ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacity, false)));
+                    container.track(SyncableDouble.create(capacitor::getHeatCapacity, capacity -> ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacity, false)));
                 }
             }
         }

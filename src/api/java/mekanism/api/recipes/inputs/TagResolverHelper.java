@@ -9,6 +9,9 @@ import net.minecraft.tags.ITag;
  */
 public class TagResolverHelper {
 
+    private TagResolverHelper() {
+    }
+
     public static <TYPE> List<TYPE> getRepresentations(ITag<TYPE> tag) {
         try {
             return tag.getAllElements();

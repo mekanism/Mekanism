@@ -23,6 +23,9 @@ import net.minecraft.item.ItemTier;
 
 public class ToolsItems {
 
+    private ToolsItems() {
+    }
+
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismTools.MODID);
 
     public static final ItemRegistryObject<ItemMekanismPaxel> WOOD_PAXEL = registerPaxel(ItemTier.WOOD);

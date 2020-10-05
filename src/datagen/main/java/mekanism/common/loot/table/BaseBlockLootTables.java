@@ -34,10 +34,8 @@ import net.minecraft.loot.functions.ApplyBonus;
 import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.loot.functions.CopyNbt.Source;
 import net.minecraft.loot.functions.SetCount;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IItemProvider;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
 
 public abstract class BaseBlockLootTables extends BlockLootTables {
@@ -139,12 +137,9 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             if (tile instanceof TileEntityMekanism) {
                 TileEntityMekanism tileEntity = (TileEntityMekanism) tile;
                 for (SubstanceType type : EnumUtils.SUBSTANCES) {
-                    if (tileEntity.handles(type)) {
-                        List<? extends INBTSerializable<CompoundNBT>> list = type.getContainers(tileEntity);
-                        if (list.size() > 0) {
-                            nbtBuilder.replaceOperation(type.getContainerTag(), NBTConstants.MEK_DATA + "." + type.getContainerTag());
-                            hasData = true;
-                        }
+                    if (tileEntity.handles(type) && !type.getContainers(tileEntity).isEmpty()) {
+                        nbtBuilder.replaceOperation(type.getContainerTag(), NBTConstants.MEK_DATA + "." + type.getContainerTag());
+                        hasData = true;
                     }
                 }
             }

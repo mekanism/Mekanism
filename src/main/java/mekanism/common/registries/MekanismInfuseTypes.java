@@ -7,6 +7,9 @@ import mekanism.common.registration.impl.InfuseTypeRegistryObject;
 
 public class MekanismInfuseTypes {
 
+    private MekanismInfuseTypes() {
+    }
+
     public static final InfuseTypeDeferredRegister INFUSE_TYPES = new InfuseTypeDeferredRegister(Mekanism.MODID);
 
     public static final InfuseTypeRegistryObject<InfuseType> CARBON = INFUSE_TYPES.register("carbon", 0x404040);

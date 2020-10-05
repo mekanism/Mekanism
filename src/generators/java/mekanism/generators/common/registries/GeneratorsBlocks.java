@@ -43,6 +43,9 @@ import net.minecraft.block.Block;
 
 public class GeneratorsBlocks {
 
+    private GeneratorsBlocks() {
+    }
+
     public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(MekanismGenerators.MODID);
 
     public static final BlockRegistryObject<BlockTileModel<TileEntityHeatGenerator, Generator<TileEntityHeatGenerator>>, ItemBlockMachine> HEAT_GENERATOR = BLOCKS.register("heat_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.HEAT_GENERATOR), ItemBlockMachine::new);

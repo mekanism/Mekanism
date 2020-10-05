@@ -15,6 +15,9 @@ import net.minecraft.entity.EntityType;
 
 public class AdditionsEntityTypes {
 
+    private AdditionsEntityTypes() {
+    }
+
     public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(MekanismAdditions.MODID);
 
     public static final EntityTypeRegistryObject<EntityBabyCreeper> BABY_CREEPER = ENTITY_TYPES.register("baby_creeper", EntityType.Builder.create(EntityBabyCreeper::new, EntityClassification.MONSTER).size(0.6F, 1.7F));

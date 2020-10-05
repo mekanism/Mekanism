@@ -2,6 +2,9 @@ package mekanism.api.math;
 
 public class MathUtils {
 
+    private MathUtils() {
+    }
+
     private static final long UNSIGNED_MASK = 0x7FFFFFFFFFFFFFFFL;
 
     /**

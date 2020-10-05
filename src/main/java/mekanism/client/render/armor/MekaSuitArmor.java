@@ -240,7 +240,7 @@ public class MekaSuitArmor extends CustomArmor {
         Map<String, Pair<ModelData, String>> overrides = new Object2ObjectOpenHashMap<>();
         Set<String> ignored = new HashSet<>();
 
-        if (modules.size() > 0) {
+        if (!modules.isEmpty()) {
             Map<ModelPos, Set<String>> moduleQuadsToRender = specialQuadsToRenderMap.computeIfAbsent(MekanismModelCache.INSTANCE.MEKASUIT_MODULES, d -> new Object2ObjectOpenHashMap<>());
             Map<ModelPos, Set<String>> moduleLEDQuadsToRender = specialLEDQuadsToRenderMap.computeIfAbsent(MekanismModelCache.INSTANCE.MEKASUIT_MODULES, d -> new Object2ObjectOpenHashMap<>());
 
@@ -257,7 +257,7 @@ public class MekaSuitArmor extends CustomArmor {
                 if (type == matchingSpec.slotType) {
                     ModelPos pos = ModelPos.get(name);
                     if (pos == null) {
-                        Mekanism.logger.warn("MekaSuit part '" + name + "' is invalid from modules model. Ignoring.");
+                        Mekanism.logger.warn("MekaSuit part '{}' is invalid from modules model. Ignoring.", name);
                     }
                     if (name.contains(LED_TAG)) {
                         moduleLEDQuadsToRender.computeIfAbsent(pos, p -> new HashSet<>()).add(name);
@@ -298,7 +298,7 @@ public class MekaSuitArmor extends CustomArmor {
 
             ModelPos pos = ModelPos.get(name);
             if (pos == null) {
-                Mekanism.logger.warn("MekaSuit part '" + name + "' is invalid. Ignoring.");
+                Mekanism.logger.warn("MekaSuit part '{}' is invalid. Ignoring.", name);
             }
 
             if (!ignored.contains(name)) {
@@ -385,7 +385,7 @@ public class MekaSuitArmor extends CustomArmor {
             this.module = module;
             this.slotType = slotType;
             this.name = name;
-            this.modelSpec = (s) -> s.contains(name + "_");
+            this.modelSpec = s -> s.contains(name + "_");
         }
 
         public boolean contains(String s) {

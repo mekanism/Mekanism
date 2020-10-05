@@ -4,7 +4,9 @@ import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.ToIntFunction;
 import mekanism.common.lib.math.voxel.BlockPosBuilder;
@@ -23,8 +25,8 @@ public class Structure {
 
     private final Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
 
-    private final Map<Axis, TreeMap<Integer, VoxelPlane>> minorPlaneMap = new EnumMap<>(Axis.class);
-    private final Map<Axis, TreeMap<Integer, VoxelPlane>> planeMap = new EnumMap<>(Axis.class);
+    private final Map<Axis, SortedMap<Integer, VoxelPlane>> minorPlaneMap = new EnumMap<>(Axis.class);
+    private final Map<Axis, NavigableMap<Integer, VoxelPlane>> planeMap = new EnumMap<>(Axis.class);
 
     private boolean valid;
 
@@ -72,11 +74,11 @@ public class Structure {
         return nodes.get(pos);
     }
 
-    public TreeMap<Integer, VoxelPlane> getMinorAxisMap(Axis axis) {
+    public SortedMap<Integer, VoxelPlane> getMinorAxisMap(Axis axis) {
         return minorPlaneMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
     }
 
-    public TreeMap<Integer, VoxelPlane> getMajorAxisMap(Axis axis) {
+    public NavigableMap<Integer, VoxelPlane> getMajorAxisMap(Axis axis) {
         return planeMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
     }
 

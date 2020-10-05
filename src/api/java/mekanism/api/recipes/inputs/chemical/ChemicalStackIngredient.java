@@ -18,11 +18,10 @@ import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer.Ingre
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ITag;
 
-public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements
+public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends
       IChemicalStackIngredient<CHEMICAL, STACK> {
 
-    public static abstract class SingleIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends
-          ChemicalStackIngredient<CHEMICAL, STACK> {
+    abstract class SingleIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ChemicalStackIngredient<CHEMICAL, STACK> {
 
         @Nonnull
         private final STACK chemicalInstance;
@@ -78,8 +77,7 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
         }
     }
 
-    public static abstract class TaggedIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends
-          ChemicalStackIngredient<CHEMICAL, STACK> {
+    abstract class TaggedIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ChemicalStackIngredient<CHEMICAL, STACK> {
 
         @Nonnull
         private final ITag<CHEMICAL> tag;
@@ -144,8 +142,8 @@ public abstract class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL
         }
     }
 
-    public static abstract class MultiIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends ChemicalStackIngredient<CHEMICAL, STACK> {
+    abstract class MultiIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
+          INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> implements ChemicalStackIngredient<CHEMICAL, STACK> {
 
         private final INGREDIENT[] ingredients;
 

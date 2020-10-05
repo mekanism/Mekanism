@@ -39,6 +39,9 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  */
 public class LookingAtUtils {
 
+    private LookingAtUtils() {
+    }
+
     @Nullable
     public static MultiblockData getMultiblock(@Nonnull TileEntity tile) {
         if (tile instanceof IMultiblock) {
@@ -134,7 +137,6 @@ public class LookingAtUtils {
             MergedChemicalTank mergedTank = ((ChemicalTankWrapper<CHEMICAL, STACK>) chemicalTank).getMergedTank();
             if (mergedTank instanceof MergedTank) {
                 //If we are also support fluid, only show if we are the correct type
-                CurrentType currentType = ((MergedTank) mergedTank).getCurrentType();
                 if (((MergedTank) mergedTank).getCurrentType() != matchingCurrentType) {
                     //Skip if the tank is not the correct chemical type (fluid is default for merged tanks when empty)
                     return;

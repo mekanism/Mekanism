@@ -50,6 +50,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = MekanismGenerators.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class GeneratorsClientRegistration {
 
+    private GeneratorsClientRegistration() {
+    }
+
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.BIO_GENERATOR, RenderBioGenerator::new);

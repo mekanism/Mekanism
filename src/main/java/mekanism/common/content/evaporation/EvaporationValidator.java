@@ -3,7 +3,7 @@ package mekanism.common.content.evaporation;
 import java.util.EnumSet;
 import java.util.Set;
 import mekanism.common.MekanismLang;
-import mekanism.common.content.blocktype.BlockTypeTile;
+import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
 import mekanism.common.lib.math.voxel.VoxelCuboid.WallRelative;
@@ -54,11 +54,11 @@ public class EvaporationValidator extends CuboidStructureValidator<EvaporationMu
     @Override
     protected CasingType getCasingType(BlockPos pos, BlockState state) {
         Block block = state.getBlock();
-        if (BlockTypeTile.is(block, MekanismBlockTypes.THERMAL_EVAPORATION_BLOCK)) {
+        if (BlockType.is(block, MekanismBlockTypes.THERMAL_EVAPORATION_BLOCK)) {
             return CasingType.FRAME;
-        } else if (BlockTypeTile.is(block, MekanismBlockTypes.THERMAL_EVAPORATION_VALVE)) {
+        } else if (BlockType.is(block, MekanismBlockTypes.THERMAL_EVAPORATION_VALVE)) {
             return CasingType.VALVE;
-        } else if (BlockTypeTile.is(block, MekanismBlockTypes.THERMAL_EVAPORATION_CONTROLLER)) {
+        } else if (BlockType.is(block, MekanismBlockTypes.THERMAL_EVAPORATION_CONTROLLER)) {
             return CasingType.OTHER;
         }
         return CasingType.INVALID;

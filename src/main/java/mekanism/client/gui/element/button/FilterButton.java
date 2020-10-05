@@ -1,8 +1,8 @@
 package mekanism.client.gui.element.button;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import java.util.function.BiConsumer;
 import java.util.function.IntSupplier;
+import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
@@ -29,7 +29,7 @@ public class FilterButton extends MekanismButton {
     protected final int index;
 
     public FilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, Supplier<HashList<? extends IFilter<?>>> filters,
-          BiConsumer<IFilter<?>, Integer> onPress) {
+          ObjIntConsumer<IFilter<?>> onPress) {
         super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, StringTextComponent.EMPTY,
               () -> onPress.accept(filters.get().getOrNull(filterIndex.getAsInt() + index), filterIndex.getAsInt() + index), null);
         this.index = index;

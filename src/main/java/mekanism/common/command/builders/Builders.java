@@ -8,6 +8,9 @@ import net.minecraft.world.World;
 
 public class Builders {
 
+    private Builders() {
+    }
+
     public static class BoilerBuilder extends StructureBuilder {
 
         public BoilerBuilder() {

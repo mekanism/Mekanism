@@ -12,6 +12,9 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class InventoryUtils {
 
+    private InventoryUtils() {
+    }
+
     /**
      * Like {@link ItemHandlerHelper#canItemStacksStack(ItemStack, ItemStack)} but empty stacks mean equal (either param). Thiakil: not sure why.
      *
@@ -33,7 +36,7 @@ public final class InventoryUtils {
         if (capability.isPresent()) {
             return capability.get();
         }
-        Mekanism.logger.warn("'" + desc + "' was wrapped around a non-IItemHandler inventory. This should not happen!", new Exception());
+        Mekanism.logger.warn("'{}' was wrapped around a non-IItemHandler inventory. This should not happen!", desc, new Exception());
         if (tile == null) {
             Mekanism.logger.warn(" - null tile");
         } else {

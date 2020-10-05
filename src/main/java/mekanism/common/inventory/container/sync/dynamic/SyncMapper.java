@@ -49,6 +49,9 @@ import org.objectweb.asm.Type;
 
 public class SyncMapper {
 
+    private SyncMapper() {
+    }
+
     public static final String DEFAULT_TAG = "default";
     private static final List<SpecialPropertyHandler<?>> specialProperties = new ArrayList<>();
     private static final Map<Class<?>, PropertyDataClassCache> syncablePropertyMap = new Object2ObjectOpenHashMap<>();
@@ -292,7 +295,7 @@ public class SyncMapper {
             return create(() -> {
                 Object dataObj = obj.get();
                 return dataObj == null ? getDefault() : get(dataObj);
-            }, (val) -> {
+            }, val -> {
                 Object dataObj = obj.get();
                 if (dataObj != null) {
                     set(dataObj, val);
@@ -336,7 +339,7 @@ public class SyncMapper {
         }
 
         protected <ENUM extends Enum<ENUM>> ISyncableData createData(ENUM[] constants, Supplier<Object> getter, Consumer<Object> setter) {
-            return SyncableEnum.create((val) -> constants[val], constants[0], () -> (ENUM) getter.get(), setter::accept);
+            return SyncableEnum.create(val -> constants[val], constants[0], () -> (ENUM) getter.get(), setter::accept);
         }
 
         @Override

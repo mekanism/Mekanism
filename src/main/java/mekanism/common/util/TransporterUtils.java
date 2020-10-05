@@ -24,6 +24,9 @@ import net.minecraftforge.items.IItemHandler;
 
 public final class TransporterUtils {
 
+    private TransporterUtils() {
+    }
+
     public static final List<EnumColor> colors = Arrays.asList(EnumColor.DARK_BLUE, EnumColor.DARK_GREEN, EnumColor.DARK_AQUA, EnumColor.DARK_RED, EnumColor.PURPLE,
           EnumColor.INDIGO, EnumColor.BRIGHT_GREEN, EnumColor.AQUA, EnumColor.RED, EnumColor.PINK, EnumColor.YELLOW, EnumColor.BLACK);
 

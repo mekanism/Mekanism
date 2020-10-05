@@ -2,6 +2,9 @@ package mekanism.common;
 
 public class DataGenJsonConstants {
 
+    private DataGenJsonConstants() {
+    }
+
     //Vanilla constants used in data generators
     //Recipes
     public static final String BASE = "base";

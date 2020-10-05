@@ -24,7 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public class SearchQueryParser {
 
-    private static final ISearchQuery INVALID = (stack) -> false;
+    private static final ISearchQuery INVALID = stack -> false;
     private static final Set<Character> TERMINATORS = Sets.newHashSet('|', '(', '\"', '\'');
 
     public static ISearchQuery parse(String query) {

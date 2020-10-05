@@ -62,7 +62,7 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
         return LazyOptional.empty();
     }
 
-    public static abstract class ItemCapability {
+    public abstract static class ItemCapability {
 
         private final CapabilityCache capabilityCache = new CapabilityCache();
         private ItemCapabilityWrapper wrapper;

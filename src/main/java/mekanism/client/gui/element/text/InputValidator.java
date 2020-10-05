@@ -7,6 +7,9 @@ import mekanism.api.functions.CharPredicate;
 
 public class InputValidator {
 
+    private InputValidator() {
+    }
+
     public static final CharPredicate ALL = c -> true;
     public static final CharPredicate DIGIT = Character::isDigit;
     public static final CharPredicate LETTER = Character::isLetter;
@@ -25,7 +28,7 @@ public class InputValidator {
     }
 
     public static CharPredicate or(CharPredicate... validators) {
-        return (c) -> Arrays.stream(validators).anyMatch(v -> v.test(c));
+        return c -> Arrays.stream(validators).anyMatch(v -> v.test(c));
     }
 
     private static class SetInputValidator implements CharPredicate {

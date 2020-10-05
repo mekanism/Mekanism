@@ -21,6 +21,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.VoxelShapeUtils;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -45,11 +46,12 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     private static final Map<ConnectionInfo, VoxelShape> cachedShapes = new HashMap<>();
 
     protected BlockTransmitter() {
-        super(Block.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F));
+        super(AbstractBlock.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F));
     }
 
     @Nonnull
     @Override
+    @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         ItemStack stack = player.getHeldItem(hand);
@@ -57,13 +59,11 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
             return ActionResultType.PASS;
         }
         IMekWrench wrenchHandler = MekanismUtils.getWrench(stack);
-        if (wrenchHandler != null) {
-            if (wrenchHandler.canUseWrench(stack, player, hit.getPos()) && player.isSneaking()) {
-                if (!world.isRemote) {
-                    MekanismUtils.dismantleBlock(state, world, pos);
-                }
-                return ActionResultType.SUCCESS;
+        if (wrenchHandler != null && wrenchHandler.canUseWrench(stack, player, hit.getPos()) && player.isSneaking()) {
+            if (!world.isRemote) {
+                MekanismUtils.dismantleBlock(state, world, pos);
             }
+            return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
     }

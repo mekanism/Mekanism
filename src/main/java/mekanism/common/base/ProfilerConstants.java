@@ -2,6 +2,9 @@ package mekanism.common.base;
 
 public class ProfilerConstants {
 
+    private ProfilerConstants() {
+    }
+
     //Tile
     public static final String BIN = "bin";
     public static final String CHEMICAL_CRYSTALLIZER = "chemicalCrystallizer";

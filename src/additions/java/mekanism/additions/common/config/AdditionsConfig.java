@@ -13,7 +13,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
     public final CachedIntValue obsidianTNTDelay;
     public final CachedIntValue obsidianTNTBlastRadius;
     public final CachedBooleanValue voiceServerEnabled;
-    public final CachedIntValue VOICE_PORT;
+    public final CachedIntValue voicePort;
 
     AdditionsConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -26,7 +26,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
 
         voiceServerEnabled = CachedBooleanValue.wrap(this, builder.comment("Enables the voice server for Walkie Talkies.")
               .define("voiceServerEnabled", false));
-        VOICE_PORT = CachedIntValue.wrap(this, builder.comment("TCP port for the Voice server to listen on.")
+        voicePort = CachedIntValue.wrap(this, builder.comment("TCP port for the Voice server to listen on.")
               .defineInRange("VoicePort", 36_123, 1, 65_535));
         builder.pop();
         configSpec = builder.build();

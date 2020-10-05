@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.registration.DoubleDeferredRegister;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -20,7 +21,7 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
         super(modid, ForgeRegistries.BLOCKS, ForgeRegistries.ITEMS);
     }
 
-    public BlockRegistryObject<Block, BlockItem> register(String name, Block.Properties properties) {
+    public BlockRegistryObject<Block, BlockItem> register(String name, AbstractBlock.Properties properties) {
         return registerDefaultProperties(name, () -> new Block(properties), BlockItem::new);
     }
 

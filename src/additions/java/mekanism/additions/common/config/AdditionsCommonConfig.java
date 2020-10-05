@@ -61,7 +61,7 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
         public final CachedResourceLocationListValue biomeBlackList;
 
         private SpawnConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, String name) {
-            builder.comment("Config options regarding " + name + ".").push(name.replaceAll(" ", "-"));
+            builder.comment("Config options regarding " + name + ".").push(name.replace(" ", "-"));
             this.shouldSpawn = CachedBooleanValue.wrap(config, builder.comment("Enable the spawning of " + name + ". Think baby zombies.")
                   .worldRestart()
                   .define("shouldSpawn", true));

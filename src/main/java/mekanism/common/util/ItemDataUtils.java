@@ -13,6 +13,9 @@ import net.minecraftforge.common.util.Constants.NBT;
 // And then for some things we may want when they go back to a full empty state make the NBT go away
 public final class ItemDataUtils {
 
+    private ItemDataUtils() {
+    }
+
     @Nonnull
     public static CompoundNBT getDataMap(ItemStack stack) {
         initStack(stack);

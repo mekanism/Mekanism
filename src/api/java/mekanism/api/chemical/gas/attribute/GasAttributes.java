@@ -13,6 +13,9 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GasAttributes {
 
+    private GasAttributes() {
+    }
+
     /**
      * This defines the radioactivity of a certain chemical. This attribute <i>requires validation</i>, meaning chemical containers won't be able to accept chemicals with
      * this attribute by default. Radioactivity is measured in Sv/h.
@@ -56,7 +59,7 @@ public class GasAttributes {
      *
      * @author aidancbrady
      */
-    public static abstract class Coolant extends ChemicalAttribute {
+    public abstract static class Coolant extends ChemicalAttribute {
 
         private final double thermalEnthalpy;
         private final double conductivity;

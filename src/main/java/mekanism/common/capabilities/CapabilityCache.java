@@ -40,7 +40,7 @@ public class CapabilityCache {
         for (Capability<?> supportedCapability : supportedCapabilities) {
             //Don't add null capabilities. (Either ones that are not loaded mod wise or get fired during startup)
             if (supportedCapability != null && capabilityResolvers.put(supportedCapability, resolver) != null) {
-                Mekanism.logger.warn("Multiple capability resolvers registered for " + supportedCapability.getName() + ". Overriding", new Exception());
+                Mekanism.logger.warn("Multiple capability resolvers registered for {}. Overriding", supportedCapability.getName(), new Exception());
             }
         }
     }

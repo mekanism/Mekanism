@@ -158,19 +158,13 @@ public class Quad {
                 case COLOR:
                     vertex.color(Color.rgbad(f0, f1, f2, f3));
                     break;
-                case UV: {
-                    switch (element.getIndex()) {
-                        case 0:
-                            vertex.texRaw(f0, f1);
-                            break;
-                        case 2:
-                            vertex.lightRaw(f0, f1);
-                            break;
-                        default:
-                            break;
+                case UV:
+                    if (element.getIndex() == 0) {
+                        vertex.texRaw(f0, f1);
+                    } else if (element.getIndex() == 2) {
+                        vertex.lightRaw(f0, f1);
                     }
                     break;
-                }
                 default:
                     break;
             }

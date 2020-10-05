@@ -69,7 +69,7 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
             return IconStatus.NO_SHOW;
         }
         boolean hasConnection = modelData.getConnectionType(side) != ConnectionType.NONE;
-        Predicate<Direction> has = (dir) -> modelData.getConnectionType(dir) != ConnectionType.NONE;
+        Predicate<Direction> has = dir -> modelData.getConnectionType(dir) != ConnectionType.NONE;
         if (!hasConnection) {
             //If we don't have a connection coming out of this side
             boolean hasUpDown = has.test(Direction.DOWN) || has.test(Direction.UP);

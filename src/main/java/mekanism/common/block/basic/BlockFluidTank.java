@@ -12,7 +12,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,7 +30,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> implements IColoredBlock {
 
     public BlockFluidTank(Machine<TileEntityFluidTank> type) {
-        super(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).setRequiresTool());
+        super(type, AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).setRequiresTool());
     }
 
     @Override

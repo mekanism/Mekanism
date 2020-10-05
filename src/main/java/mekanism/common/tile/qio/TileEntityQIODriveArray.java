@@ -69,6 +69,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
                 if (data.getTotalCount() == data.getCountCapacity() && data.getTotalTypes() == data.getTypeCapacity()) {
                     setDriveStatus(i, DriveStatus.FULL);
                 } else if (data.getTotalCount() == data.getCountCapacity() && data.getTotalTypes() == data.getTypeCapacity()) {
+                    //TODO: FIXME, this never is matched
                     setDriveStatus(i, DriveStatus.NEAR_FULL);
                 } else {
                     setDriveStatus(i, DriveStatus.READY);

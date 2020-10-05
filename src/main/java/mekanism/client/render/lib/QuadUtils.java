@@ -1,5 +1,6 @@
 package mekanism.client.render.lib;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -7,6 +8,9 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public class QuadUtils {
+
+    private QuadUtils() {
+    }
 
     private static final float eps = 1F / 0x100;
 
@@ -23,15 +27,31 @@ public class QuadUtils {
     }
 
     public static List<Quad> transformQuads(List<Quad> orig, QuadTransformation transformation) {
-        return orig.stream().peek(transformation::transform).collect(Collectors.toList());
+        List<Quad> list = new ArrayList<>();
+        for (Quad quad : orig) {
+            transformation.transform(quad);
+            list.add(quad);
+        }
+        return list;
     }
 
     public static List<BakedQuad> transformBakedQuads(List<BakedQuad> orig, QuadTransformation transformation) {
-        return orig.stream().map(Quad::new).peek(transformation::transform).map(Quad::bake).collect(Collectors.toList());
+        List<BakedQuad> list = new ArrayList<>();
+        for (BakedQuad bakedQuad : orig) {
+            Quad quad = new Quad(bakedQuad);
+            transformation.transform(quad);
+            list.add(quad.bake());
+        }
+        return list;
     }
 
     public static List<BakedQuad> transformAndBake(List<Quad> orig, QuadTransformation transformation) {
-        return orig.stream().peek(transformation::transform).map(Quad::bake).collect(Collectors.toList());
+        List<BakedQuad> list = new ArrayList<>();
+        for (Quad quad : orig) {
+            transformation.transform(quad);
+            list.add(quad.bake());
+        }
+        return list;
     }
 
     public static void remapUVs(Quad quad, TextureAtlasSprite newTexture) {

@@ -15,6 +15,9 @@ import net.minecraft.world.World;
 
 public class EmitUtils {
 
+    private EmitUtils() {
+    }
+
     /**
      * @param <HANDLER>        The handler of our target.
      * @param <TYPE>           The type of the number

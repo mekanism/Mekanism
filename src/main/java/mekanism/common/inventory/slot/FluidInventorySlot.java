@@ -39,7 +39,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     protected static Predicate<ItemStack> getInputPredicate(IExtendedFluidTank fluidTank) {
-        return (stack) -> {
+        return stack -> {
             //If we have more than one item in the input, check if we can fill a single item of it
             // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
             // though we have special handling to only move one item at a time anyways

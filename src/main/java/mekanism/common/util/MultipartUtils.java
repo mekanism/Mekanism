@@ -13,6 +13,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public final class MultipartUtils {
 
+    private MultipartUtils() {
+    }
+
     /* taken from MCMP */
     public static Pair<Vector3d, Vector3d> getRayTraceVectors(Entity entity) {
         float pitch = entity.rotationPitch;

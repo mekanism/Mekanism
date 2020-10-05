@@ -5,6 +5,9 @@ import net.minecraftforge.fml.ModLoadingContext;
 
 public class MekanismConfig {
 
+    private MekanismConfig() {
+    }
+
     public static final ClientConfig client = new ClientConfig();
     public static final GeneralConfig general = new GeneralConfig();
     public static final GearConfig gear = new GearConfig();

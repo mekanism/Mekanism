@@ -5,6 +5,9 @@ import net.minecraftforge.fml.ModLoadingContext;
 
 public class MekanismToolsConfig {
 
+    private MekanismToolsConfig() {
+    }
+
     public static final ToolsConfig tools = new ToolsConfig();
 
     public static void registerConfigs(ModLoadingContext modLoadingContext) {

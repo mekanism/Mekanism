@@ -14,6 +14,9 @@ import mekanism.common.registration.impl.GasRegistryObject;
 
 public class MekanismGases {
 
+    private MekanismGases() {
+    }
+
     public static final GasDeferredRegister GASES = new GasDeferredRegister(Mekanism.MODID);
 
     public static final GasRegistryObject<Gas> HYDROGEN = GASES.register(ChemicalConstants.HYDROGEN, new Fuel(() -> 1, MekanismConfig.general.FROM_H2));
@@ -45,6 +48,9 @@ public class MekanismGases {
 
     @SuppressWarnings("Convert2MethodRef")
     public static class Coolants {
+
+        private Coolants() {
+        }
 
         // Do not change this to directly reference IGasProvider objects. This prevents a circular reference loop.
         public static final CooledCoolant SODIUM_COOLANT = new CooledCoolant(() -> SUPERHEATED_SODIUM.get(), 5, 1);

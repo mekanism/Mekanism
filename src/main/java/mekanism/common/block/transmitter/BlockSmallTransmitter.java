@@ -14,7 +14,6 @@ public abstract class BlockSmallTransmitter extends BlockTransmitter {
     public static final VoxelShape center;
 
     static {
-        //VoxelShapes.create(0.3, 0.0, 0.3, 0.7, 0.3, 0.7)
         VoxelShapeUtils.setShape(makeCuboidShape(5, 0, 5, 11, 5, 11), SIDES, true);
         VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               makeCuboidShape(5, 4, 5, 11, 5, 11),
@@ -27,7 +26,6 @@ public abstract class BlockSmallTransmitter extends BlockTransmitter {
               makeCuboidShape(7, 0, 7, 9, 1, 9)
         ), SIDES_PUSH, true);
         center = makeCuboidShape(5, 5, 5, 11, 11, 11);
-        //center = VoxelShapes.create(0.3, 0.3, 0.3, 0.7, 0.7, 0.7);
     }
 
     public static VoxelShape getSideForType(ConnectionType type, Direction side) {

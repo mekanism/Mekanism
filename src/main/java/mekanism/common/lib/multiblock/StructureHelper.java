@@ -1,8 +1,8 @@
 package mekanism.common.lib.multiblock;
 
-import java.util.EnumSet;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.NavigableMap;
+import java.util.Set;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidBuilder;
 import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
@@ -11,6 +11,9 @@ import mekanism.common.lib.math.voxel.VoxelPlane;
 import mekanism.common.lib.multiblock.Structure.Axis;
 
 public class StructureHelper {
+
+    private StructureHelper() {
+    }
 
     /**
      * Fetch a cuboid with all 6 sides present. Quicker than using the below algorithm with all sides.
@@ -24,7 +27,7 @@ public class StructureHelper {
     public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds) {
         VoxelCuboid prev = null;
         for (Axis axis : Axis.AXES) {
-            TreeMap<Integer, VoxelPlane> map = structure.getMajorAxisMap(axis);
+            NavigableMap<Integer, VoxelPlane> map = structure.getMajorAxisMap(axis);
             Map.Entry<Integer, VoxelPlane> first = map.firstEntry(), last = map.lastEntry();
             if (first == null || !first.getValue().equals(last.getValue()) || !first.getValue().isFull()) {
                 return null;
@@ -55,7 +58,7 @@ public class StructureHelper {
      *
      * @return found cuboid, or null if it doesn't exist
      */
-    public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds, EnumSet<CuboidSide> sides, int tolerance) {
+    public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds, Set<CuboidSide> sides, int tolerance) {
         // make sure we have enough sides to create cuboidal dimensions
         if (sides.size() < 2) {
             return null;
@@ -64,7 +67,7 @@ public class StructureHelper {
         CuboidBuilder builder = new CuboidBuilder();
         for (CuboidSide side : sides) {
             Axis axis = side.getAxis(), horizontal = side.getAxis().horizontal(), vertical = side.getAxis().vertical();
-            TreeMap<Integer, VoxelPlane> map = structure.getMajorAxisMap(axis);
+            NavigableMap<Integer, VoxelPlane> map = structure.getMajorAxisMap(axis);
             Map.Entry<Integer, VoxelPlane> entry = side.getFace().isPositive() ? map.lastEntry() : map.firstEntry();
             // fail fast if the plane doesn't exist
             if (entry == null) {

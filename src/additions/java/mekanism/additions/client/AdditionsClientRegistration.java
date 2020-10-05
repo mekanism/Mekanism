@@ -34,6 +34,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = MekanismAdditions.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AdditionsClientRegistration {
 
+    private AdditionsClientRegistration() {
+    }
+
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         new AdditionsKeyHandler();

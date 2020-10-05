@@ -11,7 +11,7 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,7 +31,7 @@ import net.minecraft.world.World;
 public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
     public BlockCardboardBox() {
-        super(Block.Properties.create(Material.WOOL).hardnessAndResistance(0.5F, 1F));
+        super(AbstractBlock.Properties.create(Material.WOOL).hardnessAndResistance(0.5F, 1F));
     }
 
     @Nonnull

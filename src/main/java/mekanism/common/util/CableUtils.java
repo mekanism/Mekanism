@@ -14,6 +14,9 @@ import net.minecraft.util.Direction;
 
 public final class CableUtils {
 
+    private CableUtils() {
+    }
+
     public static void emit(IEnergyContainer energyContainer, TileEntity from) {
         emit(EnumSet.allOf(Direction.class), energyContainer, from);
     }

@@ -26,6 +26,9 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 public class SpawnHelper {
 
+    private SpawnHelper() {
+    }
+
     public static void addSpawns() {
         //Add special spawns to the fortress for baby wither skeletons and skeletons
         List<MobSpawnInfo.Spawners> fortressSpawns = Structure.field_236378_n_.getSpawnList();

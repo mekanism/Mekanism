@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
@@ -22,7 +22,7 @@ import net.minecraftforge.common.ToolType;
 public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockTile<TILE, TYPE> {
 
     public BlockTileGlass(TYPE type) {
-        super(type, Block.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 16F).notSolid().setRequiresTool().harvestTool(ToolType.PICKAXE));
+        super(type, AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 16F).notSolid().setRequiresTool().harvestTool(ToolType.PICKAXE));
     }
 
     @Override

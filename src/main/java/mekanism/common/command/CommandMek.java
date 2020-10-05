@@ -30,6 +30,9 @@ import net.minecraft.world.server.ServerWorld;
 
 public class CommandMek {
 
+    private CommandMek() {
+    }
+
     private static final Map<UUID, Stack<BlockPos>> tpStack = new Object2ObjectOpenHashMap<>();
 
     public static LiteralArgumentBuilder<CommandSource> register() {

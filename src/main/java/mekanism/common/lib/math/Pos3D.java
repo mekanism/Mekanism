@@ -379,9 +379,9 @@ public class Pos3D extends Vector3d {
     @Override
     public int hashCode() {
         int code = 1;
-        code = 31 * code + new Double(x).hashCode();
-        code = 31 * code + new Double(y).hashCode();
-        code = 31 * code + new Double(z).hashCode();
+        code = 31 * code + Double.hashCode(x);
+        code = 31 * code + Double.hashCode(y);
+        code = 31 * code + Double.hashCode(z);
         return code;
     }
 }

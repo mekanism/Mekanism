@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
@@ -14,10 +13,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -31,15 +26,15 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommonPlayerTracker {
 
-    private static final ITextComponent ALPHA_WARNING;
+    //private static final ITextComponent ALPHA_WARNING;
     public static boolean monitoringCardboardBox;
 
-    static {
+    /*static {
         TranslationTextComponent hereComponent = MekanismLang.ALPHA_WARNING_HERE.translate();
         hereComponent.getStyle().setUnderlined(true).setColor(EnumColor.INDIGO.getColor())
               .setClickEvent(new ClickEvent(Action.OPEN_URL, "https://github.com/mekanism/Mekanism#alpha-status"));
         ALPHA_WARNING = MekanismLang.LOG_FORMAT.translateColored(EnumColor.RED, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.ALPHA_WARNING.translate(hereComponent));
-    }
+    }*/
 
     public CommonPlayerTracker() {
         MinecraftForge.EVENT_BUS.register(this);

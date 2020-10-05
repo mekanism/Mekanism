@@ -23,6 +23,9 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public final class FluidUtils {
 
+    private FluidUtils() {
+    }
+
     public static void emit(IExtendedFluidTank tank, TileEntity from) {
         emit(EnumSet.allOf(Direction.class), tank, from);
     }

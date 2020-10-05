@@ -24,7 +24,13 @@ import net.minecraft.tags.ItemTags;
 
 public class MekanismTags {
 
+    private MekanismTags() {
+    }
+
     public static class Items {
+
+        private Items() {
+        }
 
         public static final Table<ResourceType, PrimaryResource, INamedTag<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
         public static final Map<PrimaryResource, INamedTag<Item>> PROCESSED_RESOURCE_BLOCKS = new EnumMap<>(PrimaryResource.class);
@@ -146,6 +152,9 @@ public class MekanismTags {
 
     public static class Blocks {
 
+        private Blocks() {
+        }
+
         public static final Map<PrimaryResource, INamedTag<Block>> RESOURCE_STORAGE_BLOCKS = new EnumMap<>(PrimaryResource.class);
         public static final Map<OreType, INamedTag<Block>> ORES = new EnumMap<>(OreType.class);
 
@@ -184,6 +193,9 @@ public class MekanismTags {
 
     public static class Fluids {
 
+        private Fluids() {
+        }
+
         public static final INamedTag<Fluid> BRINE = forgeTag("brine");
         public static final INamedTag<Fluid> CHLORINE = forgeTag("chlorine");
         public static final INamedTag<Fluid> ETHENE = forgeTag("ethene");
@@ -206,6 +218,9 @@ public class MekanismTags {
 
     public static class Gases {
 
+        private Gases() {
+        }
+
         public static final INamedTag<Gas> WATER_VAPOR = tag("water_vapor");
 
         private static INamedTag<Gas> tag(String name) {
@@ -214,6 +229,9 @@ public class MekanismTags {
     }
 
     public static class InfuseTypes {
+
+        private InfuseTypes() {
+        }
 
         public static final INamedTag<InfuseType> CARBON = tag("carbon");
         public static final INamedTag<InfuseType> REDSTONE = tag("redstone");
@@ -231,12 +249,18 @@ public class MekanismTags {
 
     public static class Pigments {
 
+        private Pigments() {
+        }
+
         private static INamedTag<Pigment> tag(String name) {
             return ChemicalTags.PIGMENT.tag(Mekanism.rl(name));
         }
     }
 
     public static class Slurries {
+
+        private Slurries() {
+        }
 
         public static final INamedTag<Slurry> DIRTY = tag("dirty");
         public static final INamedTag<Slurry> CLEAN = tag("clean");

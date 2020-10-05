@@ -4,6 +4,9 @@ import java.util.Locale;
 
 public class WildcardMatcher {
 
+    private WildcardMatcher() {
+    }
+
     public static boolean matches(String wildcard, String text) {
         return matches(wildcard.toLowerCase(Locale.ROOT), text.toLowerCase(Locale.ROOT), 0, 0, false);
     }

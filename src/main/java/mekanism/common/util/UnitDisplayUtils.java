@@ -49,8 +49,8 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
         return getDisplay(value, unit, 2, true);
     }
 
-    public static ITextComponent getDisplay(double T, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort) {
-        return getDisplayBase(unit.convertFromK(T, shift), unit, decimalPlaces, isShort, false);
+    public static ITextComponent getDisplay(double temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort) {
+        return getDisplayBase(unit.convertFromK(temp, shift), unit, decimalPlaces, isShort, false);
     }
 
     public static ITextComponent getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
@@ -162,12 +162,12 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
             this.intervalSize = size;
         }
 
-        public double convertFromK(double T, boolean shift) {
-            return (T * intervalSize) - (shift ? zeroOffset : 0);
+        public double convertFromK(double temp, boolean shift) {
+            return (temp * intervalSize) - (shift ? zeroOffset : 0);
         }
 
-        public double convertToK(double T, boolean shift) {
-            return (T + (shift ? zeroOffset : 0)) / intervalSize;
+        public double convertToK(double temp, boolean shift) {
+            return (temp + (shift ? zeroOffset : 0)) / intervalSize;
         }
 
         @Override

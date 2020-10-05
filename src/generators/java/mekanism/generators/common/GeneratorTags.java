@@ -9,7 +9,13 @@ import net.minecraft.tags.ITag.INamedTag;
 
 public class GeneratorTags {
 
+    private GeneratorTags() {
+    }
+
     public static class Fluids {
+
+        private Fluids() {
+        }
 
         public static final INamedTag<Fluid> BIOETHANOL = forgeTag("bioethanol");
         public static final INamedTag<Fluid> DEUTERIUM = forgeTag("deuterium");
@@ -22,6 +28,9 @@ public class GeneratorTags {
     }
 
     public static class Gases {
+
+        private Gases() {
+        }
 
         public static final INamedTag<Gas> DEUTERIUM = tag("deuterium");
         public static final INamedTag<Gas> TRITIUM = tag("tritium");

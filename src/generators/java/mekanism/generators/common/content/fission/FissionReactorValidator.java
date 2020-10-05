@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.blocktype.BlockType;
-import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
@@ -31,11 +31,11 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
     @Override
     protected CasingType getCasingType(BlockPos pos, BlockState state) {
         Block block = state.getBlock();
-        if (BlockTypeTile.is(block, GeneratorsBlockTypes.FISSION_REACTOR_CASING)) {
+        if (BlockType.is(block, GeneratorsBlockTypes.FISSION_REACTOR_CASING)) {
             return CasingType.FRAME;
-        } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.FISSION_REACTOR_PORT)) {
+        } else if (BlockType.is(block, GeneratorsBlockTypes.FISSION_REACTOR_PORT)) {
             return CasingType.VALVE;
-        } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.FISSION_REACTOR_LOGIC_ADAPTER)) {
+        } else if (BlockType.is(block, GeneratorsBlockTypes.FISSION_REACTOR_LOGIC_ADAPTER)) {
             return CasingType.OTHER;
         }
         return CasingType.INVALID;
@@ -109,7 +109,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
 
     public static class FuelAssembly {
 
-        public final TreeSet<BlockPos> fuelAssemblies = new TreeSet<>(Comparator.comparingInt(Vector3i::getY));
+        public final SortedSet<BlockPos> fuelAssemblies = new TreeSet<>(Comparator.comparingInt(Vector3i::getY));
         public BlockPos controlRodAssembly;
 
         public FuelAssembly(BlockPos start, boolean isControlRod) {

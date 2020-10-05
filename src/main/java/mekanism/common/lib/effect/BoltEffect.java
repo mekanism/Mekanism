@@ -236,13 +236,13 @@ public class BoltEffect {
     public interface SpreadFunction {
 
         /** A steady linear increase in perpendicular noise. */
-        SpreadFunction LINEAR_ASCENT = (progress) -> progress;
+        SpreadFunction LINEAR_ASCENT = progress -> progress;
         /**
          * A steady linear increase in perpendicular noise, followed by a steady decrease after the halfway point.
          */
-        SpreadFunction LINEAR_ASCENT_DESCENT = (progress) -> (progress - Math.max(0, 2 * progress - 1)) / 0.5F;
+        SpreadFunction LINEAR_ASCENT_DESCENT = progress -> (progress - Math.max(0, 2 * progress - 1)) / 0.5F;
         /** Represents a unit sine wave from 0 to PI, scaled by progress. */
-        SpreadFunction SINE = (progress) -> (float) Math.sin(Math.PI * progress);
+        SpreadFunction SINE = progress -> (float) Math.sin(Math.PI * progress);
 
         float getMaxSpread(float progress);
     }
@@ -303,7 +303,7 @@ public class BoltEffect {
     public interface SpawnFunction {
 
         /** Allow for bolts to be spawned each update call without any delay. */
-        SpawnFunction NO_DELAY = (rand) -> Pair.of(0F, 0F);
+        SpawnFunction NO_DELAY = rand -> Pair.of(0F, 0F);
         /** Will re-spawn a bolt each time one expires. */
         SpawnFunction CONSECUTIVE = new SpawnFunction() {
             @Override
@@ -319,14 +319,14 @@ public class BoltEffect {
 
         /** Spawn bolts with a specified constant delay. */
         static SpawnFunction delay(float delay) {
-            return (rand) -> Pair.of(delay, delay);
+            return rand -> Pair.of(delay, delay);
         }
 
         /**
          * Spawns bolts with a specified delay and specified noise value, which will be randomly applied at either end of the delay bounds.
          */
         static SpawnFunction noise(float delay, float noise) {
-            return (rand) -> Pair.of(delay - noise, delay + noise);
+            return rand -> Pair.of(delay - noise, delay + noise);
         }
 
         Pair<Float, Float> getSpawnDelayBounds(Random rand);

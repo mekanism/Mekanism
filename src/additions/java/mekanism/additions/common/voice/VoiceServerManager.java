@@ -20,7 +20,7 @@ public class VoiceServerManager {
         Mekanism.logger.info("VoiceServer: Starting up server...");
         try {
             running = true;
-            serverSocket = new ServerSocket(MekanismAdditionsConfig.additions.VOICE_PORT.get());
+            serverSocket = new ServerSocket(MekanismAdditionsConfig.additions.voicePort.get());
             (listenThread = new ListenThread()).start();
         } catch (Exception ignored) {
         }

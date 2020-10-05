@@ -109,7 +109,7 @@ public final class HolidayManager {
         }
     }
 
-    public static abstract class Holiday {
+    public abstract static class Holiday {
 
         private boolean hasNotified;
         private boolean isToday;

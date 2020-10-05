@@ -15,6 +15,9 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 @EventBusSubscriber(modid = MekanismGenerators.MODID, bus = Bus.MOD)
 public class GeneratorsDataGenerator {
 
+    private GeneratorsDataGenerator() {
+    }
+
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();

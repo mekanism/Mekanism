@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeState;
-import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,13 +16,15 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import org.jetbrains.annotations.Contract;
 
 public class BlockStateHelper {
+
+    private BlockStateHelper() {
+    }
 
     //Cardboard Box storage
     public static final BooleanProperty storageProperty = BooleanProperty.create("storage");
@@ -84,13 +85,6 @@ public class BlockStateHelper {
             state = state.with(FLUID_LOGGED, fluidState.getFluid() == Fluids.WATER);
         }
         return state;
-    }
-
-    private static boolean isStoring(@Nonnull TileEntity tile) {
-        if (tile instanceof TileEntityCardboardBox) {
-            return ((TileEntityCardboardBox) tile).storedData != null;
-        }
-        return false;
     }
 
     public static BlockState copyStateData(BlockState oldState, BlockState newState) {

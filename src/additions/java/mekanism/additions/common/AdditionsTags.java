@@ -10,7 +10,13 @@ import net.minecraft.tags.ItemTags;
 
 public class AdditionsTags {
 
+    private AdditionsTags() {
+    }
+
     public static class Items {
+
+        private Items() {
+        }
 
         public static final INamedTag<Item> BALLOONS = tag("balloons");
 
@@ -44,6 +50,9 @@ public class AdditionsTags {
 
     public static class Blocks {
 
+        private Blocks() {
+        }
+
         public static final INamedTag<Block> FENCES_PLASTIC = forgeTag("fences/plastic");
         public static final INamedTag<Block> FENCE_GATES_PLASTIC = forgeTag("fence_gates/plastic");
         public static final INamedTag<Block> STAIRS_PLASTIC = forgeTag("stairs/plastic");
@@ -73,6 +82,9 @@ public class AdditionsTags {
     }
 
     public static class Entities {
+
+        private Entities() {
+        }
 
         public static final INamedTag<EntityType<?>> CREEPERS = forgeTag("creepers");
         public static final INamedTag<EntityType<?>> ENDERMEN = forgeTag("endermen");

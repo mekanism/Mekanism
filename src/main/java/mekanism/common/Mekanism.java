@@ -94,7 +94,6 @@ import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -299,7 +298,7 @@ public class Mekanism {
         Capabilities.registerCapabilities();
         setRecipeCacheManager(new ReloadListener());
 
-        DeferredWorkQueue.runLater(() -> {
+        event.enqueueWork(() -> {
             //Register the mod's world generators
             GenHandler.setupWorldGenFeatures();
             //Collect sync mapper scan data

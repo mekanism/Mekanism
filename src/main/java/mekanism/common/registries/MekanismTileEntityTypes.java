@@ -95,6 +95,9 @@ import mekanism.common.util.EnumUtils;
 
 public class MekanismTileEntityTypes {
 
+    private MekanismTileEntityTypes() {
+    }
+
     public static final TileEntityTypeDeferredRegister TILE_ENTITY_TYPES = new TileEntityTypeDeferredRegister(Mekanism.MODID);
 
     private static final Table<FactoryTier, FactoryType, TileEntityTypeRegistryObject<? extends TileEntityFactory<?>>> FACTORIES = HashBasedTable.create();

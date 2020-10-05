@@ -1,11 +1,11 @@
 package mekanism.common.network;
 
-import java.util.Random;
 import java.util.function.Supplier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketPortalFX {
@@ -22,12 +22,13 @@ public class PacketPortalFX {
             return;
         }
         context.get().enqueueWork(() -> {
-            Random random = new Random();
+            World world = player.world;
+            BlockPos pos = message.pos;
             for (int i = 0; i < 50; i++) {
-                player.world.addParticle(ParticleTypes.PORTAL, message.pos.getX() + random.nextFloat(), message.pos.getY() + random.nextFloat(),
-                      message.pos.getZ() + random.nextFloat(), 0.0F, 0.0F, 0.0F);
-                player.world.addParticle(ParticleTypes.PORTAL, message.pos.getX() + random.nextFloat(), message.pos.getY() + 1 + random.nextFloat(),
-                      message.pos.getZ() + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+                world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.rand.nextFloat(), pos.getY() + world.rand.nextFloat(),
+                      pos.getZ() + world.rand.nextFloat(), 0.0F, 0.0F, 0.0F);
+                world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.rand.nextFloat(), pos.getY() + 1 + world.rand.nextFloat(),
+                      pos.getZ() + world.rand.nextFloat(), 0.0F, 0.0F, 0.0F);
             }
         });
         context.get().setPacketHandled(true);

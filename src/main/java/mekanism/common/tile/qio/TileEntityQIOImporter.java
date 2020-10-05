@@ -128,7 +128,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableBoolean.create(this::getImportWithoutFilter, (value) -> importWithoutFilter = value));
+        container.track(SyncableBoolean.create(this::getImportWithoutFilter, value -> importWithoutFilter = value));
     }
 
     @Override
@@ -160,6 +160,6 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
         super.setConfigurationData(nbtTags);
-        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.AUTO, (value) -> importWithoutFilter = value);
+        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.AUTO, value -> importWithoutFilter = value);
     }
 }

@@ -7,6 +7,9 @@ import net.minecraftforge.fml.loading.FMLPaths;
 
 public class MekanismConfigHelper {
 
+    private MekanismConfigHelper() {
+    }
+
     public static final Path CONFIG_DIR;
 
     static {

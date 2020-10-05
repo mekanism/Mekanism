@@ -11,6 +11,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
+import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -27,11 +28,10 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     @Override
     protected ResourceLocation getOverlay() {
-        switch (tile.outputMode) {
-            case ENTITY_DETECTION:
-                return ENTITY;
-            case ENERGY_CONTENTS:
-                return CONTENTS;
+        if (tile.outputMode == RedstoneOutput.ENTITY_DETECTION) {
+            return ENTITY;
+        } else if (tile.outputMode == RedstoneOutput.ENERGY_CONTENTS) {
+            return CONTENTS;
         }
         return super.getOverlay();
     }

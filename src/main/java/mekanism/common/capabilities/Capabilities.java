@@ -33,6 +33,9 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 
 public class Capabilities {
 
+    private Capabilities() {
+    }
+
     @CapabilityInject(IGasHandler.class)
     public static Capability<IGasHandler> GAS_HANDLER_CAPABILITY = null;
 

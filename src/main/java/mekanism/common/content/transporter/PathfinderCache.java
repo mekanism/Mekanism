@@ -12,6 +12,9 @@ import net.minecraft.util.math.BlockPos;
 
 public class PathfinderCache {
 
+    private PathfinderCache() {
+    }
+
     private static final Map<UUID, Map<PathData, CachedPath>> cachedPaths = new Object2ObjectOpenHashMap<>();
 
     public static void onChanged(InventoryNetwork... networks) {

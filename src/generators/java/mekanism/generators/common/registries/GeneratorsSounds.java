@@ -7,6 +7,9 @@ import net.minecraft.util.SoundEvent;
 
 public class GeneratorsSounds {
 
+    private GeneratorsSounds() {
+    }
+
     public static final SoundEventDeferredRegister SOUND_EVENTS = new SoundEventDeferredRegister(MekanismGenerators.MODID);
 
     public static final SoundEventRegistryObject<SoundEvent> FUSION_REACTOR = SOUND_EVENTS.register("tile.machine.fusion_reactor");

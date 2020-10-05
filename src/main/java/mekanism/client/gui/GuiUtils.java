@@ -26,6 +26,9 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiUtils {
 
+    private GuiUtils() {
+    }
+
     // Note: Does not validate that the passed in dimensions are valid
     // this strategy starts with a small texture and will expand it (by scaling) to meet the size requirements. good for small widgets
     // where the background texture is a single color
@@ -254,7 +257,7 @@ public class GuiUtils {
                 RenderSystem.disableDepthTest();
                 matrix.pop();
             } catch (Exception e) {
-                Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
+                Mekanism.logger.error("Failed to render stack into gui: {}", stack, e);
             }
         }
     }

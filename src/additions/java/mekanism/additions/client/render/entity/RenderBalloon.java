@@ -50,16 +50,17 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
         JSONModelData model = balloon.isLatched() ? AdditionsModelCache.INSTANCE.BALLOON : AdditionsModelCache.INSTANCE.BALLOON_FREE;
 
-        List<BakedQuad> quads = model.getBakedModel().getQuads(null, null, null);
+        List<BakedQuad> quads = model.getBakedModel().getQuads(null, null, balloon.world.rand);
         RenderType renderType = RenderType.getEntityTranslucent(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         IVertexBuilder builder = renderer.getBuffer(renderType);
         MatrixStack.Entry last = matrix.getLast();
         for (BakedQuad quad : quads) {
             float[] color = new float[]{1, 1, 1, 1};
             if (quad.getTintIndex() == 0) {
-                color[0] = balloon.color.getRgbCode()[0] / 255F;
-                color[1] = balloon.color.getRgbCode()[1] / 255F;
-                color[2] = balloon.color.getRgbCode()[2] / 255F;
+                int[] rgbCode = balloon.getColor().getRgbCode();
+                color[0] = rgbCode[0] / 255F;
+                color[1] = rgbCode[1] / 255F;
+                color[2] = rgbCode[2] / 255F;
             }
             builder.addVertexData(last, quad, color[0], color[1], color[2], color[3], light, OverlayTexture.NO_OVERLAY);
         }

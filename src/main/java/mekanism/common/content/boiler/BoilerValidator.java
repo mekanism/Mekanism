@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
-import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
 import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
@@ -23,9 +22,9 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
     @Override
     protected CasingType getCasingType(BlockPos pos, BlockState state) {
         Block block = state.getBlock();
-        if (BlockTypeTile.is(block, MekanismBlockTypes.BOILER_CASING)) {
+        if (BlockType.is(block, MekanismBlockTypes.BOILER_CASING)) {
             return CasingType.FRAME;
-        } else if (BlockTypeTile.is(block, MekanismBlockTypes.BOILER_VALVE)) {
+        } else if (BlockType.is(block, MekanismBlockTypes.BOILER_VALVE)) {
             return CasingType.VALVE;
         }
         return CasingType.INVALID;

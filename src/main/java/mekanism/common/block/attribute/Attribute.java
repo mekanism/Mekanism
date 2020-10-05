@@ -9,6 +9,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
@@ -17,7 +18,7 @@ public interface Attribute {
 
     interface TileAttribute<TILE extends TileEntityMekanism> extends Attribute {}
 
-    default void adjustProperties(Block.Properties props) {
+    default void adjustProperties(AbstractBlock.Properties props) {
     }
 
     static boolean has(Block block, Class<? extends Attribute> type) {

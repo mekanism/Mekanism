@@ -17,6 +17,9 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TextComponentUtil {
 
+    private TextComponentUtil() {
+    }
+
     public static IFormattableTextComponent getFormattableComponent(ITextComponent component) {
         return component instanceof IFormattableTextComponent ? (IFormattableTextComponent) component : component.deepCopy();
     }
@@ -106,7 +109,7 @@ public class TextComponentUtil {
     }
 
     private static String cleanString(String component) {
-        return component.replaceAll("\\u00A0", " ");
+        return component.replace("\u00A0", " ");
     }
 
     public static TranslationTextComponent translate(String key, Object... args) {

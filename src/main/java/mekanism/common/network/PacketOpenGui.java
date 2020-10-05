@@ -20,7 +20,7 @@ public class PacketOpenGui {
     }
 
     public static void handle(PacketOpenGui message, Supplier<Context> context) {
-        PlayerEntity player = PacketHandler.getPlayer(context);
+        PlayerEntity player = BasePacketHandler.getPlayer(context);
         if (player == null) {
             return;
         }

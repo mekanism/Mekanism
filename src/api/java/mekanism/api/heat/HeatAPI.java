@@ -2,6 +2,9 @@ package mekanism.api.heat;
 
 public class HeatAPI {
 
+    private HeatAPI() {
+    }
+
     /**
      * Default atmospheric temperature, automatically set in all heat capacitors. Heat is grounded in 0 degrees Kelvin.
      */

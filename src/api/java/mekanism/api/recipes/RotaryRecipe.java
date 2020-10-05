@@ -16,8 +16,8 @@ import org.jetbrains.annotations.Contract;
 @MethodsReturnNonnullByDefault
 public abstract class RotaryRecipe extends MekanismRecipe {
 
-    private final static GasStackIngredient EMPTY_GAS_INPUT = GasStackIngredient.from(GasStack.EMPTY);
-    private final static FluidStackIngredient EMPTY_FLUID_INPUT = FluidStackIngredient.from(FluidStack.EMPTY);
+    private static final GasStackIngredient EMPTY_GAS_INPUT = GasStackIngredient.from(GasStack.EMPTY);
+    private static final FluidStackIngredient EMPTY_FLUID_INPUT = FluidStackIngredient.from(FluidStack.EMPTY);
     private final GasStackIngredient gasInput;
     private final FluidStackIngredient fluidInput;
     private final FluidStack fluidOutput;

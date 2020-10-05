@@ -10,7 +10,7 @@ import mekanism.common.block.prefab.BlockBase.BlockBaseModel;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
-import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -34,7 +34,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     private final EnumColor color;
 
     public BlockGlowPanel(EnumColor color) {
-        super(AdditionsBlockTypes.GLOW_PANEL, Block.Properties.create(Material.PISTON, color.getMapColor()).hardnessAndResistance(1F, 10F).setLightLevel(state -> 15));
+        super(AdditionsBlockTypes.GLOW_PANEL, AbstractBlock.Properties.create(Material.PISTON, color.getMapColor()).hardnessAndResistance(1F, 10F).setLightLevel(state -> 15));
         this.color = color;
     }
 

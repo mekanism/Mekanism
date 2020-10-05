@@ -21,7 +21,7 @@ public class QIODriveSlot extends BasicInventorySlot {
     private final QIODriveKey key;
 
     public <TILE extends IMekanismInventory & IQIODriveHolder> QIODriveSlot(TILE inventory, int slot, int x, int y) {
-        super(notExternal, notExternal, (stack) -> stack.getItem() instanceof IQIODriveItem, inventory, x, y);
+        super(notExternal, notExternal, stack -> stack.getItem() instanceof IQIODriveItem, inventory, x, y);
         key = new QIODriveKey(inventory, slot);
         driveHolder = inventory;
     }

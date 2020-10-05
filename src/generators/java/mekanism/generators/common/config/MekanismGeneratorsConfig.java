@@ -5,6 +5,9 @@ import net.minecraftforge.fml.ModLoadingContext;
 
 public class MekanismGeneratorsConfig {
 
+    private MekanismGeneratorsConfig() {
+    }
+
     public static final GeneratorsConfig generators = new GeneratorsConfig();
 
     public static void registerConfigs(ModLoadingContext modLoadingContext) {

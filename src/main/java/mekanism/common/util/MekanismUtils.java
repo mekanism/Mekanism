@@ -110,13 +110,13 @@ public final class MekanismUtils {
     // possible, and also ideally would use our normal logger instead of the API logger
     public static void logMismatchedStackSize(long actual, long expected) {
         if (expected != actual) {
-            Mekanism.logger.error("Stack size changed by a different amount (" + actual + ") than requested (" + expected + ").", new Exception());
+            Mekanism.logger.error("Stack size changed by a different amount ({}) than requested ({}).", actual, expected, new Exception());
         }
     }
 
     public static void logExpectedZero(FloatingLong actual) {
         if (!actual.isZero()) {
-            Mekanism.logger.error("Energy value changed by a different amount (" + actual + ") than requested (zero).", new Exception());
+            Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual, new Exception());
         }
     }
 
@@ -315,9 +315,7 @@ public final class MekanismUtils {
             if (isBlockLoaded(world, pos) && isBlockLoaded(world, offset)) {
                 BlockState blockState = world.getBlockState(offset);
                 boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
-                if (weakPower && isDirectlyGettingPowered(world, offset)) {
-                    return true;
-                } else if (!weakPower && blockState.getWeakPower(world, offset, side) > 0) {
+                if (weakPower && isDirectlyGettingPowered(world, offset) || !weakPower && blockState.getWeakPower(world, offset, side) > 0) {
                     return true;
                 }
             }
@@ -719,23 +717,23 @@ public final class MekanismUtils {
     /**
      * Gets a rounded energy display of a defined amount of energy.
      *
-     * @param T - temperature to display
+     * @param temp - temperature to display
      *
      * @return rounded energy display
      */
-    public static ITextComponent getTemperatureDisplay(double T, TemperatureUnit unit, boolean shift) {
-        double TK = unit.convertToK(T, true);
+    public static ITextComponent getTemperatureDisplay(double temp, TemperatureUnit unit, boolean shift) {
+        double tempKelvin = unit.convertToK(temp, true);
         switch (MekanismConfig.general.tempUnit.get()) {
             case K:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.KELVIN, shift);
+                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.KELVIN, shift);
             case C:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.CELSIUS, shift);
+                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.CELSIUS, shift);
             case R:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.RANKINE, shift);
+                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.RANKINE, shift);
             case F:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.FAHRENHEIT, shift);
+                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.FAHRENHEIT, shift);
             case STP:
-                return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT, shift);
+                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.AMBIENT, shift);
         }
         return MekanismLang.ERROR.translate();
     }

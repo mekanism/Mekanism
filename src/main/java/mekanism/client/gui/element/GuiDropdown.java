@@ -33,7 +33,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     public void onClick(double mouseX, double mouseY) {
         super.onClick(mouseX, mouseY);
         isHolding = true;
-        setOpen(!isOpen || !(mouseY <= y + 11));
+        setOpen(!isOpen || mouseY > y + 11);
         minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
     }
 

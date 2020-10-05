@@ -71,7 +71,7 @@ public class HwylaDataProvider implements IServerDataProvider<TileEntity> {
         LookingAtUtils.addInfo(tile, structure, Capabilities.PIGMENT_HANDLER_CAPABILITY, multiblock -> multiblock.getPigmentTanks(null), helper, MekanismLang.PIGMENT, Current.PIGMENT, CurrentType.PIGMENT);
         LookingAtUtils.addInfo(tile, structure, Capabilities.SLURRY_HANDLER_CAPABILITY, multiblock -> multiblock.getSlurryTanks(null), helper, MekanismLang.SLURRY, Current.SLURRY, CurrentType.SLURRY);
         //Add our data if we have any
-        helper.finalize(data);
+        helper.finalizeData(data);
     }
 
     private static class HwylaLookingAtHelper implements LookingAtHelper {
@@ -109,7 +109,7 @@ public class HwylaDataProvider implements IServerDataProvider<TileEntity> {
             data.add(chemicalData);
         }
 
-        private void finalize(CompoundNBT data) {
+        private void finalizeData(CompoundNBT data) {
             if (!this.data.isEmpty()) {
                 data.put(NBTConstants.MEK_DATA, this.data);
             }

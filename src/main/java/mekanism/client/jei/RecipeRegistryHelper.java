@@ -27,6 +27,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class RecipeRegistryHelper {
 
+    private RecipeRegistryHelper() {
+    }
+
     public static void registerCondensentrator(IRecipeRegistration registry) {
         List<RotaryRecipe> condensentratorRecipes = new ArrayList<>();
         List<RotaryRecipe> decondensentratorRecipes = new ArrayList<>();

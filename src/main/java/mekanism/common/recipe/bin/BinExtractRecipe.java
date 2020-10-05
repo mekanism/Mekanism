@@ -83,12 +83,11 @@ public class BinExtractRecipe extends BinRecipe {
                 ItemStack binStack = stackInSlot.copy();
                 BinInventorySlot slot = convertToSlot(binStack);
                 ItemStack bottomStack = slot.getBottomStack();
-                if (bottomStack.isEmpty()) {
-                    //Don't attempt to do anything if there is no items to try and remove
-                    break;
+                if (!bottomStack.isEmpty()) {
+                    //Only attempt to do anything if there are items to try and remove
+                    MekanismUtils.logMismatchedStackSize(slot.shrinkStack(bottomStack.getCount(), Action.EXECUTE), bottomStack.getCount());
+                    remaining.set(i, binStack);
                 }
-                MekanismUtils.logMismatchedStackSize(slot.shrinkStack(bottomStack.getCount(), Action.EXECUTE), bottomStack.getCount());
-                remaining.set(i, binStack);
                 break;
             }
         }

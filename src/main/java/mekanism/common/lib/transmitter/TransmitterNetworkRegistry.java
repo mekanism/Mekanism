@@ -76,7 +76,7 @@ public class TransmitterNetworkRegistry {
         Coord4D coord = Coord4D.get(transmitter.getTransmitterTile());
         Transmitter<?, ?, ?> previous = getInstance().newOrphanTransmitters.put(coord, transmitter);
         if (previous != null && previous != transmitter) {
-            Mekanism.logger.error("Different orphan transmitter was already registered at location! {}", coord.toString());
+            Mekanism.logger.error("Different orphan transmitter was already registered at location! {}", coord);
         }
     }
 

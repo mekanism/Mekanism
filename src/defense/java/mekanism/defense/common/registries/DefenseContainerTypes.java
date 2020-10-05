@@ -5,5 +5,8 @@ import mekanism.defense.common.MekanismDefense;
 
 public class DefenseContainerTypes {
 
+    private DefenseContainerTypes() {
+    }
+
     public static final ContainerTypeDeferredRegister CONTAINER_TYPES = new ContainerTypeDeferredRegister(MekanismDefense.MODID);
 }

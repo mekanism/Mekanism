@@ -4,16 +4,12 @@ import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.ToolType;
 
@@ -57,23 +53,6 @@ public class BlockPlasticTransparentStairs extends StairsBlock implements IColor
     @Override
     @Deprecated
     public boolean isSideInvisible(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
-        final Block adjacentBlock = adjacentBlockState.getBlock();
-        if (adjacentBlock instanceof BlockPlasticTransparent || adjacentBlock instanceof BlockPlasticTransparentSlab
-            || adjacentBlock instanceof BlockPlasticTransparentStairs) {
-            IColoredBlock plastic = ((IColoredBlock) adjacentBlock);
-            if (plastic.getColor() == getColor()) {
-                try {
-                    VoxelShape shape = state.getShape(null, null);
-                    VoxelShape adjacentShape = adjacentBlockState.getShape(null, null);
-
-                    VoxelShape faceShape = shape.project(side);
-                    VoxelShape adjacentFaceShape = adjacentShape.project(side.getOpposite());
-                    return !VoxelShapes.compare(faceShape, adjacentFaceShape, IBooleanFunction.ONLY_FIRST);
-                } catch (Exception ignored) {
-                    //Something might have errored due to the null world and position
-                }
-            }
-        }
-        return false;
+        return BlockPlasticTransparent.isSideInvisible(this, state, adjacentBlockState, side);
     }
 }

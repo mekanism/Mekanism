@@ -20,6 +20,9 @@ import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 //This class is used to prevent class loading issues on the server without having to use OnlyIn hacks
 public class ISTERProvider {
 
+    private ISTERProvider() {
+    }
+
     public static Callable<ItemStackTileEntityRenderer> energyCube() {
         return RenderEnergyCubeItem::new;
     }

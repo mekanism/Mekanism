@@ -9,6 +9,9 @@ import net.minecraft.util.math.shapes.VoxelShape;
 
 public final class BlockShapes {
 
+    private BlockShapes() {
+    }
+
     public static final VoxelShape[] GLOW_PANEL = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {

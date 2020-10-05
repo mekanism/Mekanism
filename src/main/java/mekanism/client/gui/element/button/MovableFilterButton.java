@@ -2,10 +2,10 @@ package mekanism.client.gui.element.button;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
+import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
@@ -30,13 +30,12 @@ public class MovableFilterButton extends FilterButton {
     private IFilter<?> prevFilter;
 
     public MovableFilterButton(IGuiWrapper gui, int x, int y, int index, IntSupplier filterIndex, Supplier<HashList<? extends IFilter<?>>> filters,
-          IntConsumer upButtonPress, IntConsumer downButtonPress, BiConsumer<IFilter<?>, Integer> onPress,
-          Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
+          IntConsumer upButtonPress, IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
         this(gui, x, y, TEXTURE_WIDTH, TEXTURE_HEIGHT / 2, index, filterIndex, filters, upButtonPress, downButtonPress, onPress, renderStackSupplier);
     }
 
     public MovableFilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex,
-          Supplier<HashList<? extends IFilter<?>>> filters, IntConsumer upButtonPress, IntConsumer downButtonPress, BiConsumer<IFilter<?>, Integer> onPress,
+          Supplier<HashList<? extends IFilter<?>>> filters, IntConsumer upButtonPress, IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress,
           Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
         super(gui, x, y, width, height, index, filterIndex, filters, onPress);
         int arrowX = this.x + width - 12;

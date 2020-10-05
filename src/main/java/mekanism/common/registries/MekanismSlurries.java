@@ -11,6 +11,9 @@ import mekanism.common.util.EnumUtils;
 
 public class MekanismSlurries {
 
+    private MekanismSlurries() {
+    }
+
     public static final SlurryDeferredRegister SLURRIES = new SlurryDeferredRegister(Mekanism.MODID);
 
     public static final Map<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> PROCESSED_RESOURCES = new LinkedHashMap<>();

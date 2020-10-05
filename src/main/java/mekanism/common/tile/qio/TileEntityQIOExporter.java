@@ -39,9 +39,9 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     private boolean exportWithoutFilter;
 
     private final EfficientEjector<Object2LongMap.Entry<HashedItem>> filterEjector =
-          new EfficientEjector<>(Entry::getKey, (e) -> (int) Math.min(Integer.MAX_VALUE, e.getLongValue()));
+          new EfficientEjector<>(Entry::getKey, e -> (int) Math.min(Integer.MAX_VALUE, e.getLongValue()));
     private final EfficientEjector<Map.Entry<HashedItem, QIOItemTypeData>> filterlessEjector =
-          new EfficientEjector<>(Entry::getKey, (e) -> (int) Math.min(Integer.MAX_VALUE, e.getValue().getCount()));
+          new EfficientEjector<>(Entry::getKey, e -> (int) Math.min(Integer.MAX_VALUE, e.getValue().getCount()));
 
     public TileEntityQIOExporter() {
         super(MekanismBlocks.QIO_EXPORTER);
@@ -107,7 +107,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableBoolean.create(this::getExportWithoutFilter, (value) -> exportWithoutFilter = value));
+        container.track(SyncableBoolean.create(this::getExportWithoutFilter, value -> exportWithoutFilter = value));
     }
 
     @Override
@@ -139,7 +139,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
         super.setConfigurationData(nbtTags);
-        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.AUTO, (value) -> exportWithoutFilter = value);
+        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.AUTO, value -> exportWithoutFilter = value);
     }
 
     /**

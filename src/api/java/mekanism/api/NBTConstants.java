@@ -2,6 +2,9 @@ package mekanism.api;
 
 public final class NBTConstants {
 
+    private NBTConstants() {
+    }
+
     //Ones that also are used for interacting with forge/vanilla
     public static final String BASE = "Base";
     public static final String BLOCK_ENTITY_TAG = "BlockEntityTag";

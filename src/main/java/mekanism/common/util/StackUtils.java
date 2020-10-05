@@ -20,6 +20,9 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class StackUtils {
 
+    private StackUtils() {
+    }
+
     public static ItemStack size(ItemStack stack, int size) {
         if (size <= 0 || stack.isEmpty()) {
             return ItemStack.EMPTY;

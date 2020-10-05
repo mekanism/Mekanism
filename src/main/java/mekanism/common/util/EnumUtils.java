@@ -30,6 +30,9 @@ import net.minecraft.util.Direction;
 
 public class EnumUtils {
 
+    private EnumUtils() {
+    }
+
     /**
      * Cached collection of armor slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
      */

@@ -14,6 +14,9 @@ import net.minecraft.util.text.ITextComponent;
 
 public class UpgradeUtils {
 
+    private UpgradeUtils() {
+    }
+
     public static ItemStack getStack(Upgrade upgrade) {
         switch (upgrade) {
             case SPEED:

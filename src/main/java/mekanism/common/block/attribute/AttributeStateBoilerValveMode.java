@@ -15,7 +15,7 @@ import net.minecraft.state.Property;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
 
-public class AttributeStateBoilerValveMode extends AttributeState {
+public class AttributeStateBoilerValveMode implements AttributeState {
 
     public static final EnumProperty<BoilerValveMode> modeProperty = EnumProperty.create("mode", BoilerValveMode.class);
 

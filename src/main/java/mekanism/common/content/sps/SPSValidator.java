@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import java.util.Set;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
-import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
 import mekanism.common.lib.math.voxel.VoxelCuboid.WallRelative;
@@ -49,9 +48,9 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
     @Override
     protected CasingType getCasingType(BlockPos pos, BlockState state) {
         Block block = state.getBlock();
-        if (BlockTypeTile.is(block, MekanismBlockTypes.SPS_CASING)) {
+        if (BlockType.is(block, MekanismBlockTypes.SPS_CASING)) {
             return CasingType.FRAME;
-        } else if (BlockTypeTile.is(block, MekanismBlockTypes.SPS_PORT)) {
+        } else if (BlockType.is(block, MekanismBlockTypes.SPS_PORT)) {
             return CasingType.VALVE;
         }
         return CasingType.INVALID;

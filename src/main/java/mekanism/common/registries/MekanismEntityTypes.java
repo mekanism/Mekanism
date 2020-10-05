@@ -10,6 +10,9 @@ import net.minecraft.entity.EntityType;
 
 public class MekanismEntityTypes {
 
+    private MekanismEntityTypes() {
+    }
+
     public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(Mekanism.MODID);
 
     public static final EntityTypeRegistryObject<EntityFlame> FLAME = ENTITY_TYPES.register("flame", EntityType.Builder.<EntityFlame>create(EntityFlame::new, EntityClassification.MISC).size(0.5F, 0.5F).immuneToFire());

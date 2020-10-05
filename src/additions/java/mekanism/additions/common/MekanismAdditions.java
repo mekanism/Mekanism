@@ -32,7 +32,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -107,9 +106,7 @@ public class MekanismAdditions implements IModule {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        //Note: This deprecation can be safely ignored - Forge hasn't added the proposed replacement for it yet.
-        //noinspection deprecation
-        DeferredWorkQueue.runLater(() -> {
+        event.enqueueWork(() -> {
             SpawnHelper.addSpawns();
             registerSpawnEggDelayed(AdditionsItems.BABY_CREEPER_SPAWN_EGG, AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, AdditionsItems.BABY_SKELETON_SPAWN_EGG,
                   AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);

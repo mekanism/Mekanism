@@ -2,6 +2,9 @@ package mekanism.common.recipe.pattern;
 
 public class Pattern {
 
+    private Pattern() {
+    }
+
     public static final char EMPTY = ' ';
     //A misc constant character that is the majority of what the recipe is (such as for recolors or the like)
     public static final char CONSTANT = '#';

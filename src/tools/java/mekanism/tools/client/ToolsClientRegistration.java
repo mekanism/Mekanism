@@ -16,6 +16,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = MekanismTools.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ToolsClientRegistration {
 
+    private ToolsClientRegistration() {
+    }
+
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         addShieldPropertyOverrides(MekanismTools.rl("blocking"),

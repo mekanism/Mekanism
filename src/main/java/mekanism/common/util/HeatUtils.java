@@ -9,6 +9,9 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 
 public class HeatUtils {
 
+    private HeatUtils() {
+    }
+
     public static final Int2ObjectMap<Color> colorCache = new Int2ObjectOpenHashMap<>();
 
     public static final double BASE_BOIL_TEMP = TemperatureUnit.CELSIUS.zeroOffset + 100;

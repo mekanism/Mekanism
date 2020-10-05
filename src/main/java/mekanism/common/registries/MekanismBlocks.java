@@ -157,6 +157,7 @@ import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -165,6 +166,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Rarity;
 
 public class MekanismBlocks {
+
+    private MekanismBlocks() {
+    }
 
     public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(Mekanism.MODID);
 
@@ -253,7 +257,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityChemicalInjectionChamber, FactoryMachine<TileEntityChemicalInjectionChamber>>, ItemBlockMachine> CHEMICAL_INJECTION_CHAMBER = BLOCKS.register("chemical_injection_chamber", () -> new BlockFactoryMachine<>(MekanismBlockTypes.CHEMICAL_INJECTION_CHAMBER), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityElectrolyticSeparator, Machine<TileEntityElectrolyticSeparator>>, ItemBlockMachine> ELECTROLYTIC_SEPARATOR = BLOCKS.register("electrolytic_separator", () -> new BlockTileModel<>(MekanismBlockTypes.ELECTROLYTIC_SEPARATOR), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityPrecisionSawmill, FactoryMachine<TileEntityPrecisionSawmill>>, ItemBlockMachine> PRECISION_SAWMILL = BLOCKS.register("precision_sawmill", () -> new BlockFactoryMachine<>(MekanismBlockTypes.PRECISION_SAWMILL), ItemBlockMachine::new);
-    public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalDissolutionChamber, Machine<TileEntityChemicalDissolutionChamber>>, ItemBlockMachine> CHEMICAL_DISSOLUTION_CHAMBER = BLOCKS.register("chemical_dissolution_chamber", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_DISSOLUTION_CHAMBER), (block) -> new ItemBlockMachine(block, ISTERProvider::dissolution));
+    public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalDissolutionChamber, Machine<TileEntityChemicalDissolutionChamber>>, ItemBlockMachine> CHEMICAL_DISSOLUTION_CHAMBER = BLOCKS.register("chemical_dissolution_chamber", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_DISSOLUTION_CHAMBER), block -> new ItemBlockMachine(block, ISTERProvider::dissolution));
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalWasher, Machine<TileEntityChemicalWasher>>, ItemBlockMachine> CHEMICAL_WASHER = BLOCKS.register("chemical_washer", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_WASHER), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalCrystallizer, Machine<TileEntityChemicalCrystallizer>>, ItemBlockMachine> CHEMICAL_CRYSTALLIZER = BLOCKS.register("chemical_crystallizer", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_CRYSTALLIZER), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntitySeismicVibrator, Machine<TileEntitySeismicVibrator>>, ItemBlockSeismicVibrator> SEISMIC_VIBRATOR = BLOCKS.register("seismic_vibrator", () -> new BlockTileModel<>(MekanismBlockTypes.SEISMIC_VIBRATOR), ItemBlockSeismicVibrator::new);
@@ -333,7 +337,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>, ItemBlockChemicalTank> CREATIVE_CHEMICAL_TANK = registerChemicalTank(MekanismBlockTypes.CREATIVE_CHEMICAL_TANK);
 
     public static final BlockRegistryObject<BlockCardboardBox, ItemBlockCardboardBox> CARDBOARD_BOX = BLOCKS.register("cardboard_box", BlockCardboardBox::new, ItemBlockCardboardBox::new);
-    public static final BlockRegistryObject<Block, BlockItem> SALT_BLOCK = BLOCKS.register("block_salt", Block.Properties.create(Material.SAND).hardnessAndResistance(0.5F, 0).sound(SoundType.SAND));
+    public static final BlockRegistryObject<Block, BlockItem> SALT_BLOCK = BLOCKS.register("block_salt", AbstractBlock.Properties.create(Material.SAND).hardnessAndResistance(0.5F, 0).sound(SoundType.SAND));
 
     private static BlockRegistryObject<BlockBounding, BlockItem> registerBoundingBlock(String name, Supplier<BlockBounding> blockSupplier) {
         return BLOCKS.register(name, blockSupplier, block -> new BlockItem(block, new Item.Properties()));

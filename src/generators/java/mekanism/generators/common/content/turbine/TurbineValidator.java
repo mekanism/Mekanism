@@ -3,7 +3,6 @@ package mekanism.generators.common.content.turbine;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import mekanism.common.content.blocktype.BlockType;
-import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol;
@@ -36,11 +35,11 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
     @Override
     protected CasingType getCasingType(BlockPos pos, BlockState state) {
         Block block = state.getBlock();
-        if (BlockTypeTile.is(block, GeneratorsBlockTypes.TURBINE_CASING)) {
+        if (BlockType.is(block, GeneratorsBlockTypes.TURBINE_CASING)) {
             return CasingType.FRAME;
-        } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.TURBINE_VALVE)) {
+        } else if (BlockType.is(block, GeneratorsBlockTypes.TURBINE_VALVE)) {
             return CasingType.VALVE;
-        } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.TURBINE_VENT)) {
+        } else if (BlockType.is(block, GeneratorsBlockTypes.TURBINE_VENT)) {
             return CasingType.OTHER;
         }
         return CasingType.INVALID;

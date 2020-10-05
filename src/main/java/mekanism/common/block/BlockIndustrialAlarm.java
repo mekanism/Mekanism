@@ -9,7 +9,7 @@ import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
-import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
@@ -31,7 +31,7 @@ public class BlockIndustrialAlarm extends BlockTile<TileEntityIndustrialAlarm, B
     }
 
     public BlockIndustrialAlarm() {
-        super(MekanismBlockTypes.INDUSTRIAL_ALARM, Block.Properties.create(Material.GLASS).hardnessAndResistance(2F, 4F));
+        super(MekanismBlockTypes.INDUSTRIAL_ALARM, AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(2F, 4F));
     }
 
     @Nonnull

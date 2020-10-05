@@ -9,6 +9,9 @@ import net.minecraft.world.World;
 
 public class GeneratorsBuilders {
 
+    private GeneratorsBuilders() {
+    }
+
     public static class TurbineBuilder extends StructureBuilder {
 
         public TurbineBuilder() {

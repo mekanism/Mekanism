@@ -27,6 +27,9 @@ import net.minecraftforge.common.crafting.conditions.ICondition;
 @ParametersAreNonnullByDefault
 public class RecipeProviderUtil {
 
+    private RecipeProviderUtil() {
+    }
+
     public static void addSmeltingBlastingRecipes(Consumer<IFinishedRecipe> consumer, Ingredient smeltingInput, IItemProvider output, float experience, int smeltingTime,
           ResourceLocation blastingLocation, ResourceLocation smeltingLocation, RecipeCriterion... criteria) {
         ExtendedCookingRecipeBuilder blastingRecipe = ExtendedCookingRecipeBuilder.blasting(output, smeltingInput, smeltingTime / 2).experience(experience);

@@ -5,5 +5,8 @@ import mekanism.common.registration.impl.PigmentDeferredRegister;
 
 public class MekanismPigments {
 
+    private MekanismPigments() {
+    }
+
     public static final PigmentDeferredRegister PIGMENTS = new PigmentDeferredRegister(Mekanism.MODID);
 }

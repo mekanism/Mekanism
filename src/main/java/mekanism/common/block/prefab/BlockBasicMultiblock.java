@@ -7,7 +7,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
@@ -26,10 +26,10 @@ import net.minecraft.world.World;
 public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends BlockTile<TILE, BlockTypeTile<TILE>> {
 
     public BlockBasicMultiblock(BlockTypeTile<TILE> type) {
-        this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F).setRequiresTool());
+        this(type, AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F).setRequiresTool());
     }
 
-    public BlockBasicMultiblock(BlockTypeTile<TILE> type, Block.Properties properties) {
+    public BlockBasicMultiblock(BlockTypeTile<TILE> type, AbstractBlock.Properties properties) {
         super(type, properties);
     }
 

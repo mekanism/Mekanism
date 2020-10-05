@@ -79,11 +79,11 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
         }
 
         public T withCustomContainerProvider(Function<TileEntityMekanism, IContainerProvider> providerFunction) {
-            return withNamedContainerProvider((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), providerFunction.apply(tile)));
+            return withNamedContainerProvider(tile -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), providerFunction.apply(tile)));
         }
 
         public T withEmptyContainer(ContainerTypeRegistryObject<?> container) {
-            return withCustomContainerProvider((tile) -> ((i, inv, player) -> new EmptyTileContainer<>(container, i, inv, tile)));
+            return withCustomContainerProvider(tile -> ((i, inv, player) -> new EmptyTileContainer<>(container, i, inv, tile)));
         }
 
         public T withSupportedUpgrades(Set<Upgrade> upgrades) {

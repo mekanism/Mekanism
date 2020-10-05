@@ -37,6 +37,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public final class TransporterPathfinder {
 
+    private TransporterPathfinder() {
+    }
+
     private static List<Destination> getPaths(LogisticalTransporterBase start, TransporterStack stack, TransitRequest request, int min) {
         InventoryNetwork network = start.getTransmitterNetwork();
         if (network == null) {

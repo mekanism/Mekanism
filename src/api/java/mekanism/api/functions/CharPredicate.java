@@ -39,7 +39,7 @@ public interface CharPredicate {
      */
     default CharPredicate and(CharPredicate other) {
         Objects.requireNonNull(other);
-        return (value) -> test(value) && other.test(value);
+        return value -> test(value) && other.test(value);
     }
 
     /**

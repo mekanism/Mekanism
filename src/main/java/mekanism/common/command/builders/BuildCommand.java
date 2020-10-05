@@ -1,9 +1,10 @@
 package mekanism.common.command.builders;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Stack;
 import mekanism.common.Mekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -19,6 +20,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class BuildCommand {
+
+    private BuildCommand() {
+    }
 
     public static final ArgumentBuilder<CommandSource, ?> COMMAND = Commands.literal("build")
           .then(Commands.literal("remove")
@@ -56,7 +60,7 @@ public class BuildCommand {
 
     private static void destroy(World world, BlockPos pos) {
         Set<BlockPos> traversed = new HashSet<>();
-        Stack<BlockPos> openSet = new Stack<>();
+        Deque<BlockPos> openSet = new ArrayDeque<>();
         openSet.add(pos);
         traversed.add(pos);
         while (!openSet.isEmpty()) {

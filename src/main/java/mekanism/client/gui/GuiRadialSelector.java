@@ -26,7 +26,6 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     private static final float INNER = 40, OUTER = 100;
     private static final float SELECT_RADIUS = 10;
 
-    private final Minecraft minecraft = Minecraft.getInstance();
     private final Class<TYPE> enumClass;
     private final TYPE[] types;
     private final Supplier<TYPE> curSupplier;
@@ -47,8 +46,8 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     @Override
     public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTick) {
         // center of screen
-        float centerX = minecraft.getMainWindow().getScaledWidth() / 2F;
-        float centerY = minecraft.getMainWindow().getScaledHeight() / 2F;
+        float centerX = Minecraft.getInstance().getMainWindow().getScaledWidth() / 2F;
+        float centerY = Minecraft.getInstance().getMainWindow().getScaledHeight() / 2F;
 
         matrix.push();
         RenderSystem.enableBlend();
@@ -107,12 +106,12 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
                 while (selectionAngle < 0) {
                     selectionAngle += 360F;
                 }
-                int selection_drawn_pos = (int) (selectionAngle * (activeModes / 360F));
+                int selectionDrawnPos = (int) (selectionAngle * (activeModes / 360F));
                 if (isDisableable) {
                     int count = 0;
                     for (TYPE type : types) {
                         if (((IDisableableEnum) type).isEnabled()) {
-                            if (count == selection_drawn_pos) {
+                            if (count == selectionDrawnPos) {
                                 selection = type;
                                 break;
                             }
@@ -120,12 +119,12 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
                         }
                     }
                 } else {
-                    selection = types[selection_drawn_pos];
+                    selection = types[selectionDrawnPos];
                 }
 
                 // draw hovered selection
                 RenderSystem.color4f(0.6F, 0.6F, 0.6F, 0.7F);
-                drawTorus(matrix, -90F + 360F * (-0.5F + selection_drawn_pos) / activeModes, 360F / activeModes);
+                drawTorus(matrix, -90F + 360F * (-0.5F + selectionDrawnPos) / activeModes, 360F / activeModes);
             } else {
                 selection = null;
             }
@@ -146,14 +145,14 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             float x = (float) Math.cos(angle) * (INNER + OUTER) / 2F;
             float y = (float) Math.sin(angle) * (INNER + OUTER) / 2F;
             // draw icon
-            minecraft.textureManager.bindTexture(type.getIcon());
+            Minecraft.getInstance().textureManager.bindTexture(type.getIcon());
             blit(matrix, Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
             // draw label
             matrix.push();
-            int width = minecraft.fontRenderer.getStringPropertyWidth(type.getShortText());
+            int width = font.getStringPropertyWidth(type.getShortText());
             matrix.translate(x, y, 0);
             matrix.scale(0.6F, 0.6F, 0.6F);
-            minecraft.fontRenderer.func_243248_b(matrix, type.getShortText(), -width / 2F, 8, 0xCCFFFFFF);
+            font.func_243248_b(matrix, type.getShortText(), -width / 2F, 8, 0xCCFFFFFF);
             matrix.pop();
             position++;
         }

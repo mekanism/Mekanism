@@ -44,6 +44,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class Modules {
 
+    private Modules() {
+    }
+
     private static final Map<String, ModuleData<?>> MODULES = new Object2ObjectOpenHashMap<>();
     private static final Map<Item, Set<ModuleData<?>>> SUPPORTED_MODULES = new Object2ObjectOpenHashMap<>();
     private static final Map<ModuleData<?>, Set<Item>> SUPPORTED_CONTAINERS = new Object2ObjectOpenHashMap<>();

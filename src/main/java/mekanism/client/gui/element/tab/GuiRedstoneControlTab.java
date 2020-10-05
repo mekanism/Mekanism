@@ -11,7 +11,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.IRedstoneControl;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -31,7 +30,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        displayTooltip(matrix, ((IRedstoneControl) tile).getControlType().getTextComponent(), mouseX, mouseY);
+        displayTooltip(matrix, tile.getControlType().getTextComponent(), mouseX, mouseY);
     }
 
     @Override
@@ -41,7 +40,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     protected ResourceLocation getOverlay() {
-        switch (((IRedstoneControl) tile).getControlType()) {
+        switch (tile.getControlType()) {
             case HIGH:
                 return HIGH;
             case LOW:
@@ -60,7 +59,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        if (((IRedstoneControl) tile).getControlType() == RedstoneControl.PULSE) {
+        if (tile.getControlType() == RedstoneControl.PULSE) {
             //Draw the button background
             drawButton(matrix, mouseX, mouseY);
             //Draw the overlay onto the button

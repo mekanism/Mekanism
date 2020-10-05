@@ -16,6 +16,9 @@ import net.minecraft.util.math.vector.Vector3f;
 
 public class BillboardingEffectRenderer {
 
+    private BillboardingEffectRenderer() {
+    }
+
     private static final Minecraft minecraft = Minecraft.getInstance();
 
     public static void render(CustomEffect effect, BlockPos renderPos, MatrixStack matrixStack, IRenderTypeBuffer renderer, long time, float partialTick) {

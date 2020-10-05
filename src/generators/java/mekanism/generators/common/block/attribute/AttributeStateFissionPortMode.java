@@ -17,7 +17,7 @@ import net.minecraft.state.Property;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
 
-public class AttributeStateFissionPortMode extends AttributeState {
+public class AttributeStateFissionPortMode implements AttributeState {
 
     public static final EnumProperty<FissionPortMode> modeProperty = EnumProperty.create("mode", FissionPortMode.class);
 

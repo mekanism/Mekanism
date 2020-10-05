@@ -13,6 +13,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class CatalystRegistryHelper {
 
+    private CatalystRegistryHelper() {
+    }
+
     public static void register(IRecipeCatalystRegistration registry, IBlockProvider mekanismBlock, ResourceLocation... additionalCategories) {
         ResourceLocation[] categories = new ResourceLocation[additionalCategories.length + 1];
         categories[0] = mekanismBlock.getRegistryName();
@@ -28,7 +31,7 @@ public class CatalystRegistryHelper {
 
     public static void registerRecipeItem(IRecipeCatalystRegistration registry, IBlockProvider mekanismBlock, ResourceLocation... categories) {
         registry.addRecipeCatalyst(mekanismBlock.getItemStack(), categories);
-        Attribute.ifHas(mekanismBlock.getBlock(), AttributeFactoryType.class, (attr) -> {
+        Attribute.ifHas(mekanismBlock.getBlock(), AttributeFactoryType.class, attr -> {
             for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
                 registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, attr.getFactoryType()).getItemStack(), categories);
             }

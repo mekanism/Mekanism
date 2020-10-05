@@ -10,14 +10,15 @@ import net.minecraft.client.Minecraft;
 
 public class AdditionsClient {
 
+    private AdditionsClient() {
+    }
+
     private static VoiceClient voiceClient;
 
     public static void reset() {
-        if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
-            if (voiceClient != null) {
-                voiceClient.disconnect();
-                voiceClient = null;
-            }
+        if (MekanismAdditionsConfig.additions.voiceServerEnabled.get() && voiceClient != null) {
+            voiceClient.disconnect();
+            voiceClient = null;
         }
     }
 

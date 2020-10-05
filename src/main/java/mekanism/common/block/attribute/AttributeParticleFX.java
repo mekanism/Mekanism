@@ -16,7 +16,7 @@ public class AttributeParticleFX implements Attribute {
     }
 
     public AttributeParticleFX add(IParticleData type, Function<Random, Pos3D> posSupplier) {
-        particleFunctions.add((random) -> new Particle(type, posSupplier.apply(random)));
+        particleFunctions.add(random -> new Particle(type, posSupplier.apply(random)));
         return this;
     }
 

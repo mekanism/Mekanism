@@ -11,6 +11,9 @@ import net.minecraft.util.math.vector.Vector3d;
 
 public final class BlockShapes {
 
+    private BlockShapes() {
+    }
+
     public static final VoxelShape[] HEAT_GENERATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] WIND_GENERATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] BIO_GENERATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];

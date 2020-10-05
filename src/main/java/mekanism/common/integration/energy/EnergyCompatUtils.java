@@ -21,6 +21,9 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class EnergyCompatUtils {
 
+    private EnergyCompatUtils() {
+    }
+
     private static final List<IEnergyCompat> energyCompats = Collections.unmodifiableList(Arrays.asList(
           //We always have our own energy capability as the first one we check
           new StrictEnergyCompat(),

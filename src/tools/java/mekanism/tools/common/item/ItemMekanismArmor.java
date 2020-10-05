@@ -64,12 +64,12 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel _default) {
+    public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel defaultModel) {
         if (itemStack.getItem() == ToolsItems.REFINED_GLOWSTONE_HELMET.getItem() || itemStack.getItem() == ToolsItems.REFINED_GLOWSTONE_CHESTPLATE.getItem()
             || itemStack.getItem() == ToolsItems.REFINED_GLOWSTONE_LEGGINGS.getItem() || itemStack.getItem() == ToolsItems.REFINED_GLOWSTONE_BOOTS.getItem()) {
             return GlowArmor.getGlow(armorSlot);
         }
-        return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
+        return super.getArmorModel(entityLiving, itemStack, armorSlot, defaultModel);
     }
 
     @Override

@@ -12,6 +12,9 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 @EventBusSubscriber(modid = MekanismDefense.MODID, bus = Bus.MOD)
 public class DefenseDataGenerator {
 
+    private DefenseDataGenerator() {
+    }
+
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();

@@ -36,6 +36,9 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 public class GenHandler {
 
+    private GenHandler() {
+    }
+
     private static final Map<OreType, ConfiguredFeature<?, ?>> ORES = new EnumMap<>(OreType.class);
     private static final Map<OreType, ConfiguredFeature<?, ?>> ORE_RETROGENS = new EnumMap<>(OreType.class);
 

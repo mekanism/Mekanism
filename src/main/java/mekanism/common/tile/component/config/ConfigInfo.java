@@ -102,15 +102,15 @@ public class ConfigInfo {
         // set up mapping
         if (info instanceof ChemicalSlotInfo) {
             for (IChemicalTank<?, ?> tank : ((ChemicalSlotInfo<?, ?, ?>) info).getTanks()) {
-                containerTypeMapping.computeIfAbsent(tank, (t) -> new ArrayList<>()).add(dataType);
+                containerTypeMapping.computeIfAbsent(tank, t -> new ArrayList<>()).add(dataType);
             }
         } else if (info instanceof FluidSlotInfo) {
             for (IExtendedFluidTank tank : ((FluidSlotInfo) info).getTanks()) {
-                containerTypeMapping.computeIfAbsent(tank, (t) -> new ArrayList<>()).add(dataType);
+                containerTypeMapping.computeIfAbsent(tank, t -> new ArrayList<>()).add(dataType);
             }
         } else if (info instanceof InventorySlotInfo) {
             for (IInventorySlot slot : ((InventorySlotInfo) info).getSlots()) {
-                containerTypeMapping.computeIfAbsent(slot, (t) -> new ArrayList<>()).add(dataType);
+                containerTypeMapping.computeIfAbsent(slot, t -> new ArrayList<>()).add(dataType);
             }
         }
     }

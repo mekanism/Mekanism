@@ -80,6 +80,9 @@ import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 
 public class MekanismContainerTypes {
 
+    private MekanismContainerTypes() {
+    }
+
     public static final ContainerTypeDeferredRegister CONTAINER_TYPES = new ContainerTypeDeferredRegister(Mekanism.MODID);
 
     //No bound

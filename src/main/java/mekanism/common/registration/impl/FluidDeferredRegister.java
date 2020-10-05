@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
@@ -74,7 +75,7 @@ public class FluidDeferredRegister {
               ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).containerItem(Items.BUCKET))));
         //Note: The block properties used here is a copy of the ones for water
         fluidRegistryObject.updateBlock(blockRegister.register(name, () -> new FlowingFluidBlock(fluidRegistryObject::getStillFluid,
-              Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops())));
+              AbstractBlock.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops())));
         allFluids.add(fluidRegistryObject);
         return fluidRegistryObject;
     }

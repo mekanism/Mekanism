@@ -15,10 +15,10 @@ public class MekanismModelCache extends BaseModelCache {
     public final OBJModelData MEKASUIT_MODULES = registerOBJ(Mekanism.rl("models/entity/mekasuit_modules.obj"));
     public final OBJModelData MEKATOOL = registerOBJ(Mekanism.rl("models/entity/mekatool.obj"));
 
-    public final JSONModelData[] QIO_DRIVES = new JSONModelData[DriveStatus.values().length];
+    public final JSONModelData[] QIO_DRIVES = new JSONModelData[DriveStatus.STATUSES.length];
 
-    {
-        for (DriveStatus status : DriveStatus.values()) {
+    public MekanismModelCache() {
+        for (DriveStatus status : DriveStatus.STATUSES) {
             if (status == DriveStatus.NONE) {
                 continue;
             }

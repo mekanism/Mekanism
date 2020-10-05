@@ -5,6 +5,9 @@ import net.minecraftforge.fml.ModLoadingContext;
 
 public class MekanismDefenseConfig {
 
+    private MekanismDefenseConfig() {
+    }
+
     public static final DefenseConfig defense = new DefenseConfig();
 
     public static void registerConfigs(ModLoadingContext modLoadingContext) {

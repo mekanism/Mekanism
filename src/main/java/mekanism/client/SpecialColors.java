@@ -5,6 +5,9 @@ import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 
 public class SpecialColors {
 
+    private SpecialColors() {
+    }
+
     public static final ColorAtlas GUI_OBJECTS = new ColorAtlas("gui_objects");
     public static final ColorAtlas GUI_TEXT = new ColorAtlas("gui_text");
 

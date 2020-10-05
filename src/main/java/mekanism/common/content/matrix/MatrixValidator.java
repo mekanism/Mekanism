@@ -3,7 +3,7 @@ package mekanism.common.content.matrix;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import mekanism.common.content.blocktype.BlockTypeTile;
+import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
@@ -24,9 +24,9 @@ public class MatrixValidator extends CuboidStructureValidator<MatrixMultiblockDa
     @Override
     protected CasingType getCasingType(BlockPos pos, BlockState state) {
         Block block = state.getBlock();
-        if (BlockTypeTile.is(block, MekanismBlockTypes.INDUCTION_CASING)) {
+        if (BlockType.is(block, MekanismBlockTypes.INDUCTION_CASING)) {
             return CasingType.FRAME;
-        } else if (BlockTypeTile.is(block, MekanismBlockTypes.INDUCTION_PORT)) {
+        } else if (BlockType.is(block, MekanismBlockTypes.INDUCTION_PORT)) {
             return CasingType.VALVE;
         }
         return CasingType.INVALID;

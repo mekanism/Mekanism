@@ -126,21 +126,15 @@ public class Vertex {
                     ret[i][2] = color.bf();
                     ret[i][3] = color.af();
                     break;
-                case UV: {
-                    switch (element.getIndex()) {
-                        case 0:
-                            ret[i][0] = texU;
-                            ret[i][1] = texV;
-                            break;
-                        case 2:
-                            ret[i][0] = lightU;
-                            ret[i][1] = lightV;
-                            break;
-                        default:
-                            break;
+                case UV:
+                    if (element.getIndex() == 0) {
+                        ret[i][0] = texU;
+                        ret[i][1] = texV;
+                    } else if (element.getIndex() == 2) {
+                        ret[i][0] = lightU;
+                        ret[i][1] = lightV;
                     }
                     break;
-                }
                 default:
                     break;
             }

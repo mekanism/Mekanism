@@ -5,5 +5,8 @@ import mekanism.defense.common.MekanismDefense;
 
 public class DefenseItems {
 
+    private DefenseItems() {
+    }
+
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismDefense.MODID);
 }

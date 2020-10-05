@@ -4,6 +4,9 @@ import java.util.Random;
 
 public class StatUtils {
 
+    private StatUtils() {
+    }
+
     public static final Random rand = new Random();
 
     public static int inversePoisson(double mean) {

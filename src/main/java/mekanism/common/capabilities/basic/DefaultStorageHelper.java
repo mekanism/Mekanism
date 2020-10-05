@@ -12,6 +12,9 @@ import net.minecraftforge.common.util.INBTSerializable;
  */
 public class DefaultStorageHelper {
 
+    private DefaultStorageHelper() {
+    }
+
     public static class DefaultStorage<T> implements IStorage<T> {
 
         @Override

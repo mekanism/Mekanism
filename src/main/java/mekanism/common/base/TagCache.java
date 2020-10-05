@@ -25,6 +25,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public final class TagCache {
 
+    private TagCache() {
+    }
+
     private static final Map<String, List<ItemStack>> blockTagStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<String, List<ItemStack>> itemTagStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<String, List<ItemStack>> modIDStacks = new Object2ObjectOpenHashMap<>();

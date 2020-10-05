@@ -102,7 +102,7 @@ public class BoxedChemicalInputHandler {
 
     private static void logMismatchedStackSize(long actual, long expected) {
         if (expected != actual) {
-            MekanismAPI.logger.error("Stack size changed by a different amount (" + actual + ") than requested (" + expected + ").", new Exception());
+            MekanismAPI.logger.error("Stack size changed by a different amount ({}) than requested ({}).", actual, expected, new Exception());
         }
     }
 }

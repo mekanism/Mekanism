@@ -32,7 +32,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
@@ -40,7 +39,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public abstract class BaseTagProvider implements IDataProvider {
 
-    private final Map<TagType<?>, Map<INamedTag<?>, Tag.Builder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<TagType<?>, Map<INamedTag<?>, ITag.Builder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
     private final ExistingFileHelper existingFileHelper;
     private final DataGenerator gen;
     private final String modid;
@@ -79,7 +78,7 @@ public abstract class BaseTagProvider implements IDataProvider {
         supportedTagTypes.forEach((tagType, tagTypeMap) -> act(cache, tagType, tagTypeMap));
     }
 
-    private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull DirectoryCache cache, TagType<TYPE> tagType, Map<INamedTag<?>, Tag.Builder> tagTypeMap) {
+    private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull DirectoryCache cache, TagType<TYPE> tagType, Map<INamedTag<?>, ITag.Builder> tagTypeMap) {
         if (!tagTypeMap.isEmpty()) {
             //Create a dummy forge registry tags provider and pass all our collected data through to it
             new ForgeRegistryTagsProvider<TYPE>(gen, tagType.getRegistry(), modid, existingFileHelper) {
@@ -126,7 +125,7 @@ public abstract class BaseTagProvider implements IDataProvider {
 
     //Protected to allow for extensions to add retrieve their own supported types if they have any
     protected <TYPE extends IForgeRegistryEntry<TYPE>> ForgeRegistryTagBuilder<TYPE> getBuilder(TagType<TYPE> tagType, INamedTag<TYPE> tag) {
-        return new ForgeRegistryTagBuilder<>(supportedTagTypes.get(tagType).computeIfAbsent(tag, ignored -> Tag.Builder.create()), modid);
+        return new ForgeRegistryTagBuilder<>(supportedTagTypes.get(tagType).computeIfAbsent(tag, ignored -> ITag.Builder.create()), modid);
     }
 
     protected ForgeRegistryTagBuilder<Item> getItemBuilder(INamedTag<Item> tag) {

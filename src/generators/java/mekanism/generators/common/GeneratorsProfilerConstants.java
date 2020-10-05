@@ -2,6 +2,9 @@ package mekanism.generators.common;
 
 public class GeneratorsProfilerConstants {
 
+    private GeneratorsProfilerConstants() {
+    }
+
     //Tile
     public static final String ADVANCED_SOLAR_GENERATOR = "advancedSolarGenerator";
     public static final String BIO_GENERATOR = "bioGenerator";

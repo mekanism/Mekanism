@@ -57,6 +57,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  */
 public class SoundHandler {
 
+    private SoundHandler() {
+    }
+
     private static final Set<UUID> jetpackSounds = new ObjectOpenHashSet<>();
     private static final Set<UUID> scubaMaskSounds = new ObjectOpenHashSet<>();
     private static final Set<UUID> flamethrowerSounds = new ObjectOpenHashSet<>();

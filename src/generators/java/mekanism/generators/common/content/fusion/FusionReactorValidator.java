@@ -2,7 +2,7 @@ package mekanism.generators.common.content.fusion;
 
 import java.util.EnumSet;
 import mekanism.common.MekanismLang;
-import mekanism.common.content.blocktype.BlockTypeTile;
+import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
 import mekanism.common.lib.math.voxel.VoxelCuboid.WallRelative;
@@ -57,11 +57,11 @@ public class FusionReactorValidator extends CuboidStructureValidator<FusionReact
     @Override
     protected CasingType getCasingType(BlockPos pos, BlockState state) {
         Block block = state.getBlock();
-        if (BlockTypeTile.is(block, GeneratorsBlockTypes.FUSION_REACTOR_FRAME)) {
+        if (BlockType.is(block, GeneratorsBlockTypes.FUSION_REACTOR_FRAME)) {
             return CasingType.FRAME;
-        } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.FUSION_REACTOR_PORT)) {
+        } else if (BlockType.is(block, GeneratorsBlockTypes.FUSION_REACTOR_PORT)) {
             return CasingType.VALVE;
-        } else if (BlockTypeTile.is(block, GeneratorsBlockTypes.FUSION_REACTOR_CONTROLLER,
+        } else if (BlockType.is(block, GeneratorsBlockTypes.FUSION_REACTOR_CONTROLLER,
               GeneratorsBlockTypes.FUSION_REACTOR_LOGIC_ADAPTER, GeneratorsBlockTypes.LASER_FOCUS_MATRIX)) {
             return CasingType.OTHER;
         }

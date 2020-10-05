@@ -44,6 +44,9 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class StorageUtils {
 
+    private StorageUtils() {
+    }
+
     public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap) {
         addStoredEnergy(stack, tooltip, showMissingCap, MekanismLang.STORED_ENERGY);
     }

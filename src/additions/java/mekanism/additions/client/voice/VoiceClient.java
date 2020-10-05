@@ -30,7 +30,7 @@ public class VoiceClient extends Thread {
         Mekanism.logger.info("VoiceServer: Starting client connection...");
 
         try {
-            socket = new Socket(ip, MekanismAdditionsConfig.additions.VOICE_PORT.get());
+            socket = new Socket(ip, MekanismAdditionsConfig.additions.voicePort.get());
             running = true;
 
             input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));

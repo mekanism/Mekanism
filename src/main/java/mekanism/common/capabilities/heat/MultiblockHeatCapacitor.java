@@ -17,12 +17,13 @@ public class MultiblockHeatCapacitor<MULTIBLOCK extends MultiblockData> extends 
     protected final MULTIBLOCK multiblock;
     protected final TileEntityMultiblock<MULTIBLOCK> tile;
 
-    public static <MULTIBLOCK extends MultiblockData> MultiblockHeatCapacitor<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, double heatCapacity) {
+    public static <MULTIBLOCK extends MultiblockData> MultiblockHeatCapacitor<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
+          double heatCapacity) {
         return create(multiblock, tile, heatCapacity, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION);
     }
 
-    public static <MULTIBLOCK extends MultiblockData> MultiblockHeatCapacitor<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile, double heatCapacity,
-          DoubleSupplier conductionCoefficient, DoubleSupplier insulationCoefficient) {
+    public static <MULTIBLOCK extends MultiblockData> MultiblockHeatCapacitor<MULTIBLOCK> create(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
+          double heatCapacity, DoubleSupplier conductionCoefficient, DoubleSupplier insulationCoefficient) {
         Objects.requireNonNull(conductionCoefficient, "Conduction coefficient supplier cannot be null");
         Objects.requireNonNull(insulationCoefficient, "Insulation coefficient supplier cannot be null");
         return new MultiblockHeatCapacitor<>(multiblock, tile, heatCapacity, conductionCoefficient, insulationCoefficient);

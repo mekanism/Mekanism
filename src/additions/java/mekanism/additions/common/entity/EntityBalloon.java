@@ -44,7 +44,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
     private static final double OFFSET = -0.275;
 
-    public EnumColor color = EnumColor.DARK_BLUE;
+    private EnumColor color = EnumColor.DARK_BLUE;
     private BlockPos latched;
     public LivingEntity latchedEntity;
     /* server-only */
@@ -109,6 +109,10 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         dataManager.set(LATCHED_X, latched.getX());
         dataManager.set(LATCHED_Y, latched.getY());
         dataManager.set(LATCHED_Z, latched.getZ());
+    }
+
+    public EnumColor getColor() {
+        return color;
     }
 
     @Override

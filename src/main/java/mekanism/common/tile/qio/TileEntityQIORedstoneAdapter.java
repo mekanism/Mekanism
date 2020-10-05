@@ -97,8 +97,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.read(state, nbtTags);
-        NBTUtils.setItemStackIfPresent(nbtTags, NBTConstants.SINGLE_ITEM, (item) -> itemType = new HashedItem(item));
-        NBTUtils.setLongIfPresent(nbtTags, NBTConstants.AMOUNT, (value) -> count = value);
+        NBTUtils.setItemStackIfPresent(nbtTags, NBTConstants.SINGLE_ITEM, item -> itemType = new HashedItem(item));
+        NBTUtils.setLongIfPresent(nbtTags, NBTConstants.AMOUNT, value -> count = value);
     }
 
     @Nonnull
@@ -132,17 +132,17 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableItemStack.create(this::getItemType, (value) -> {
+        container.track(SyncableItemStack.create(this::getItemType, value -> {
             if (value.isEmpty()) {
                 itemType = null;
             } else {
                 itemType = new HashedItem(value);
             }
         }));
-        container.track(SyncableLong.create(this::getCount, (value) -> count = value));
+        container.track(SyncableLong.create(this::getCount, value -> count = value));
         container.track(SyncableLong.create(() -> {
             QIOFrequency freq = getQIOFrequency();
             return freq != null && itemType != null ? freq.getStored(itemType) : 0;
-        }, (value) -> clientStoredCount = value));
+        }, value -> clientStoredCount = value));
     }
 }

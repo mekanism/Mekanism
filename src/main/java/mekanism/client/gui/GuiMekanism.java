@@ -233,7 +233,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         hasClicked = true;
         // first try to send the mouse event to our overlays
-        GuiWindow top = windows.size() > 0 ? windows.iterator().next() : null;
+        GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
         GuiWindow focused = windows.stream().filter(overlay -> overlay.mouseClicked(mouseX, mouseY, button)).findFirst().orElse(null);
         if (focused != null) {
             setListener(focused);
@@ -273,14 +273,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return windows.stream().anyMatch(window -> window.keyPressed(keyCode, scanCode, modifiers)) ||
-               GuiUtils.checkChildren(buttons, (child) -> child.keyPressed(keyCode, scanCode, modifiers)) ||
-               super.keyPressed(keyCode, scanCode, modifiers);
+               GuiUtils.checkChildren(buttons, child -> child.keyPressed(keyCode, scanCode, modifiers)) || super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        return windows.stream().anyMatch(window -> window.charTyped(c, keyCode)) ||
-               GuiUtils.checkChildren(buttons, (child) -> child.charTyped(c, keyCode)) ||
+        return windows.stream().anyMatch(window -> window.charTyped(c, keyCode)) || GuiUtils.checkChildren(buttons, child -> child.charTyped(c, keyCode)) ||
                super.charTyped(c, keyCode);
     }
 

@@ -9,13 +9,13 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public enum SubstanceType {
-    ENERGY(NBTConstants.ENERGY_CONTAINERS, (tile) -> tile.getEnergyContainers(null)),
-    FLUID(NBTConstants.FLUID_TANKS, (tile) -> tile.getFluidTanks(null)),
-    GAS(NBTConstants.GAS_TANKS, (tile) -> tile.getGasTanks(null)),
-    INFUSION(NBTConstants.INFUSION_TANKS, (tile) -> tile.getInfusionTanks(null)),
-    PIGMENT(NBTConstants.PIGMENT_TANKS, (tile) -> tile.getPigmentTanks(null)),
-    SLURRY(NBTConstants.SLURRY_TANKS, (tile) -> tile.getSlurryTanks(null)),
-    HEAT(NBTConstants.HEAT_CAPACITORS, (tile) -> tile.getHeatCapacitors(null));
+    ENERGY(NBTConstants.ENERGY_CONTAINERS, tile -> tile.getEnergyContainers(null)),
+    FLUID(NBTConstants.FLUID_TANKS, tile -> tile.getFluidTanks(null)),
+    GAS(NBTConstants.GAS_TANKS, tile -> tile.getGasTanks(null)),
+    INFUSION(NBTConstants.INFUSION_TANKS, tile -> tile.getInfusionTanks(null)),
+    PIGMENT(NBTConstants.PIGMENT_TANKS, tile -> tile.getPigmentTanks(null)),
+    SLURRY(NBTConstants.SLURRY_TANKS, tile -> tile.getSlurryTanks(null)),
+    HEAT(NBTConstants.HEAT_CAPACITORS, tile -> tile.getHeatCapacitors(null));
 
     private final String containerTag;
     private final Function<TileEntityMekanism, List<? extends INBTSerializable<CompoundNBT>>> containerSupplier;

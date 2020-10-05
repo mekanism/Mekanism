@@ -63,11 +63,10 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
         if (data != null && data.override) {
             mode = data.mode;
         }
-        switch (mode) {
-            case PRIVATE:
-                return PRIVATE;
-            case TRUSTED:
-                return PROTECTED;
+        if (mode == SecurityMode.PRIVATE) {
+            return PRIVATE;
+        } else if (mode == SecurityMode.TRUSTED) {
+            return PROTECTED;
         }
         return super.getOverlay();
     }

@@ -105,12 +105,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
     public static final FloatingLong MAX_ENERGY = FloatingLong.createConst(100_000);
     private static final FloatingLong DISTANCE_MULTIPLIER = FloatingLong.createConst(1.5);
+    //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
+    //TODO: Allow for upgrades in the robit?
+    private static final int ticksRequired = 100;
     public Coord4D homeLocation;
     public boolean texTick;
     private int progress;
-    //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
-    //TODO: Allow for upgrades in the robit?
-    private final int ticksRequired = 100;
 
     private CachedRecipe<ItemStackToItemStackRecipe> cachedRecipe = null;
 
@@ -337,7 +337,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             }
         }
         ItemRobit item = (ItemRobit) stack.getItem();
-        item.setInventory(((ISustainedInventory) this).getInventory(), stack);
+        item.setInventory(getInventory(), stack);
         item.setName(stack, getName());
         return stack;
     }

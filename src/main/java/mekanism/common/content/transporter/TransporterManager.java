@@ -20,6 +20,9 @@ import net.minecraftforge.items.IItemHandler;
 
 public class TransporterManager {
 
+    private TransporterManager() {
+    }
+
     private static final Map<Coord4D, Set<TransporterStack>> flowingStacks = new Object2ObjectOpenHashMap<>();
 
     public static void reset() {

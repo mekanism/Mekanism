@@ -5,6 +5,9 @@ package mekanism.api;
  */
 public class JsonConstants {
 
+    private JsonConstants() {
+    }
+
     //Ingredients
     public static final String INGREDIENT = "ingredient";
     public static final String AMOUNT = "amount";

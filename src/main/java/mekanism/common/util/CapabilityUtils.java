@@ -10,6 +10,9 @@ import net.minecraftforge.common.util.NonNullConsumer;
 
 public final class CapabilityUtils {
 
+    private CapabilityUtils() {
+    }
+
     @Nonnull
     public static <T> LazyOptional<T> getCapability(@Nullable ICapabilityProvider provider, @Nullable Capability<T> cap, @Nullable Direction side) {
         if (provider == null || cap == null) {

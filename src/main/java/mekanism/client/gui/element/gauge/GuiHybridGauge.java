@@ -14,7 +14,6 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelper {
 
     private final Supplier<IGasTank> gasTankSupplier;
-    private final Supplier<IExtendedFluidTank> fluidTankSupplier;
 
     private final GuiGasGauge gasGauge;
     private final GuiFluidGauge fluidGauge;
@@ -33,7 +32,6 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
           IGuiWrapper gui, int x, int y, int width, int height) {
         super(type, gui, x, y, width, height);
         this.gasTankSupplier = gasTankSupplier;
-        this.fluidTankSupplier = fluidTankSupplier;
         gasGauge = new GuiGasGauge(gasTankSupplier, gasTanksSupplier, type, gui, x, y, width, height);
         fluidGauge = new GuiFluidGauge(fluidTankSupplier, fluidTanksSupplier, type, gui, x, y, width, height);
     }

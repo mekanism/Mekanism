@@ -15,7 +15,7 @@ public enum RelativeSide implements IHasTranslationKey {
     TOP(APILang.TOP),
     BOTTOM(APILang.BOTTOM);
 
-    private final static RelativeSide[] SIDES = values();
+    private static final RelativeSide[] SIDES = values();
 
     public static RelativeSide byIndex(int index) {
         return MathUtils.getByIndexMod(SIDES, index);

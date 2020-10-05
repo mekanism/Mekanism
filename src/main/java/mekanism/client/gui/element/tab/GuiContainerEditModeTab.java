@@ -11,6 +11,7 @@ import mekanism.common.network.PacketGuiInteract;
 import mekanism.common.network.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
+import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -27,11 +28,11 @@ public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidCon
 
     @Override
     protected ResourceLocation getOverlay() {
-        switch (tile.getContainerEditMode()) {
-            case FILL:
-                return FILL;
-            case EMPTY:
-                return EMPTY;
+        ContainerEditMode containerEditMode = tile.getContainerEditMode();
+        if (containerEditMode == ContainerEditMode.FILL) {
+            return FILL;
+        } else if (containerEditMode == ContainerEditMode.EMPTY) {
+            return EMPTY;
         }
         return super.getOverlay();
     }

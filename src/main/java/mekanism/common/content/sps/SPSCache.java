@@ -36,8 +36,8 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     @Override
     public void load(CompoundNBT nbtTags) {
         super.load(nbtTags);
-        NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.PROGRESS, (val) -> progress = val);
-        NBTUtils.setIntIfPresent(nbtTags, NBTConstants.PROCESSED, (val) -> inputProcessed = val);
+        NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.PROGRESS, val -> progress = val);
+        NBTUtils.setIntIfPresent(nbtTags, NBTConstants.PROCESSED, val -> inputProcessed = val);
     }
 
     @Override

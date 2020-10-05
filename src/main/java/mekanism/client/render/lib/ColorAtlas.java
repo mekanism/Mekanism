@@ -32,7 +32,7 @@ public class ColorAtlas {
     public void parse(ResourceLocation rl) {
         List<Color> parsed = load(rl, colors.size());
         if (parsed.size() < colors.size()) {
-            Mekanism.logger.error("Failed to parse '" + name + "' color atlas.");
+            Mekanism.logger.error("Failed to parse '{}' color atlas.", name);
             return;
         }
         for (int i = 0; i < parsed.size(); i++) {
@@ -45,7 +45,7 @@ public class ColorAtlas {
         try {
             loadColorAtlas(rl, count, ret);
         } catch (Exception e) {
-            Mekanism.logger.error("Failed to load color atlas: " + rl, e);
+            Mekanism.logger.error("Failed to load color atlas: {}", rl, e);
             e.printStackTrace();
         }
         return ret;

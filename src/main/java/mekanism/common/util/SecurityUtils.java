@@ -20,6 +20,9 @@ import net.minecraftforge.api.distmarker.Dist;
 
 public final class SecurityUtils {
 
+    private SecurityUtils() {
+    }
+
     public static boolean canAccess(PlayerEntity player, ItemStack stack) {
         // If protection is disabled, access is always granted
         if (!MekanismConfig.general.allowProtection.get()) {

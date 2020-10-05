@@ -16,6 +16,9 @@ import net.minecraftforge.fluids.IFluidTank;
 @MethodsReturnNonnullByDefault
 public class DataHandlerUtils {
 
+    private DataHandlerUtils() {
+    }
+
     /**
      * Helper to read and load a list of containers from a {@link ListNBT}
      */

@@ -6,6 +6,9 @@ import net.minecraftforge.fml.ModLoadingContext;
 
 public class MekanismAdditionsConfig {
 
+    private MekanismAdditionsConfig() {
+    }
+
     public static final AdditionsConfig additions = new AdditionsConfig();
     public static final AdditionsCommonConfig common = new AdditionsCommonConfig();
 

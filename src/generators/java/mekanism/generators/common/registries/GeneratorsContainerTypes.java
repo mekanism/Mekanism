@@ -21,6 +21,9 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 
 public class GeneratorsContainerTypes {
 
+    private GeneratorsContainerTypes() {
+    }
+
     public static final ContainerTypeDeferredRegister CONTAINER_TYPES = new ContainerTypeDeferredRegister(MekanismGenerators.MODID);
 
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityBioGenerator>> BIO_GENERATOR = CONTAINER_TYPES.register(GeneratorsBlocks.BIO_GENERATOR, TileEntityBioGenerator.class);

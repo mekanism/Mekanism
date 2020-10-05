@@ -35,6 +35,9 @@ import net.minecraftforge.fluids.FluidStack;
 @ParametersAreNonnullByDefault
 public class NBTUtils {
 
+    private NBTUtils() {
+    }
+
     public static void setByteIfPresent(CompoundNBT nbt, String key, ByteConsumer setter) {
         if (nbt.contains(key, NBT.TAG_BYTE)) {
             setter.accept(nbt.getByte(key));

@@ -13,6 +13,9 @@ import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 
 public class MekanismFluids {
 
+    private MekanismFluids() {
+    }
+
     public static final FluidDeferredRegister FLUIDS = new FluidDeferredRegister(Mekanism.MODID);
 
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> HYDROGEN = FLUIDS.registerLiquidChemical(ChemicalConstants.HYDROGEN);

@@ -18,7 +18,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
 import org.jetbrains.annotations.Contract;
 
-public class AttributeStateFacing extends AttributeState {
+public class AttributeStateFacing implements AttributeState {
 
     private final DirectionProperty facingProperty;
     private final FacePlacementType placementType;

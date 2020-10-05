@@ -71,6 +71,9 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 
 public class MekanismRecipeSerializers {
 
+    private MekanismRecipeSerializers() {
+    }
+
     public static final IRecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new IRecipeSerializerDeferredRegister(Mekanism.MODID);
 
     public static final IRecipeSerializerRegistryObject<ItemStackToItemStackRecipe> CRUSHING = RECIPE_SERIALIZERS.register("crushing", () -> new ItemStackToItemStackRecipeSerializer<>(CrushingIRecipe::new));

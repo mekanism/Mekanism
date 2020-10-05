@@ -7,6 +7,9 @@ import net.minecraft.util.SoundEvent;
 
 public class AdditionsSounds {
 
+    private AdditionsSounds() {
+    }
+
     public static final SoundEventDeferredRegister SOUND_EVENTS = new SoundEventDeferredRegister(MekanismAdditions.MODID);
 
     public static final SoundEventRegistryObject<SoundEvent> POP = SOUND_EVENTS.register("entity.balloon.pop");

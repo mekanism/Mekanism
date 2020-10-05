@@ -85,12 +85,9 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
             }
             return EnergyCapabilityResolver.getCachedOrResolve(capability, cachedReadOnlyCapabilities, readOnlyHandler);
         }
-        IStrictEnergyHandler handler = handlers.get(side);
-        if (handler == null) {
-            //Note: Only should enter this if statement if we don't already have a cache
-            // so we just check it before hand as it is a quick check and simplifies the code
-            handlers.put(side, handler = new ProxyStrictEnergyHandler(baseHandler, side, holder));
-        }
+        //Note: Only should enter this if statement if we don't already have a cache
+        // so we just check it before hand as it is a quick check and simplifies the code
+        IStrictEnergyHandler handler = handlers.computeIfAbsent(side, s -> new ProxyStrictEnergyHandler(baseHandler, s, holder));
         return EnergyCapabilityResolver.getCachedOrResolve(capability, cachedCapabilities.computeIfAbsent(side, key -> new HashMap<>()), handler);
     }
 

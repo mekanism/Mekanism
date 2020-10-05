@@ -49,7 +49,7 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     public void load(CompoundNBT nbtTags) {
         super.load(nbtTags);
         reactorDamage = nbtTags.getDouble(NBTConstants.REACTOR_DAMAGE);
-        NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.INJECTION_RATE, (value) -> rateLimit = value);
+        NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.INJECTION_RATE, value -> rateLimit = value);
         burnRemaining = nbtTags.getDouble(NBTConstants.BURN_TIME);
         partialWaste = nbtTags.getDouble(NBTConstants.PARTIAL_WASTE);
         active = nbtTags.getBoolean(NBTConstants.ACTIVE);

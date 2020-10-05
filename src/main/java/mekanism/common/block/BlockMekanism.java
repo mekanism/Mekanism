@@ -34,6 +34,7 @@ import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.PushReaction;
@@ -72,7 +73,7 @@ import net.minecraftforge.common.util.Constants.NBT;
  */
 public abstract class BlockMekanism extends Block {
 
-    protected BlockMekanism(Block.Properties properties) {
+    protected BlockMekanism(AbstractBlock.Properties properties) {
         super(properties);
         setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
     }
@@ -124,7 +125,7 @@ public abstract class BlockMekanism extends Block {
             }
         }
         if (item instanceof ISustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
-            ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
+            ((ISustainedInventory) item).setInventory(tile.getInventory(), itemStack);
         }
         return itemStack;
     }

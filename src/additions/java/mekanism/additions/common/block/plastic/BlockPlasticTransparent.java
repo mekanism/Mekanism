@@ -3,6 +3,7 @@ package mekanism.additions.common.block.plastic;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
@@ -20,7 +21,7 @@ public class BlockPlasticTransparent extends Block implements IColoredBlock {
     private final EnumColor color;
 
     public BlockPlasticTransparent(EnumColor color) {
-        super(Block.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).notSolid().harvestTool(ToolType.PICKAXE));
+        super(AbstractBlock.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).notSolid().harvestTool(ToolType.PICKAXE));
         this.color = color;
     }
 
@@ -54,11 +55,15 @@ public class BlockPlasticTransparent extends Block implements IColoredBlock {
     @Override
     @Deprecated
     public boolean isSideInvisible(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
-        final Block adjacentBlock = adjacentBlockState.getBlock();
+        return isSideInvisible(this, state, adjacentBlockState, side);
+    }
+
+    public static boolean isSideInvisible(@Nonnull IColoredBlock block, @Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
+        Block adjacentBlock = adjacentBlockState.getBlock();
         if (adjacentBlock instanceof BlockPlasticTransparent || adjacentBlock instanceof BlockPlasticTransparentSlab
             || adjacentBlock instanceof BlockPlasticTransparentStairs) {
             IColoredBlock plastic = ((IColoredBlock) adjacentBlock);
-            if (plastic.getColor() == getColor()) {
+            if (plastic.getColor() == block.getColor()) {
                 try {
                     VoxelShape shape = state.getShape(null, null);
                     VoxelShape adjacentShape = adjacentBlockState.getShape(null, null);

@@ -3,9 +3,12 @@ package mekanism.common.block.attribute;
 import java.util.function.ToIntFunction;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 
 public class Attributes {
+
+    private Attributes() {
+    }
 
     /** If a block supports security. */
     public static class AttributeSecurity implements Attribute {}
@@ -63,7 +66,7 @@ public class Attributes {
         }
 
         @Override
-        public void adjustProperties(Block.Properties props) {
+        public void adjustProperties(AbstractBlock.Properties props) {
             props.setLightLevel(state -> light);
         }
     }

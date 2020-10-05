@@ -6,6 +6,7 @@ import mekanism.common.block.basic.BlockStructuralGlass;
 import mekanism.common.block.prefab.BlockBasicMultiblock;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.fusion.TileEntityLaserFocusMatrix;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -23,7 +24,7 @@ import net.minecraft.world.IBlockReader;
 public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserFocusMatrix> {
 
     public BlockLaserFocusMatrix() {
-        super(GeneratorsBlockTypes.LASER_FOCUS_MATRIX, Block.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 8F).notSolid());
+        super(GeneratorsBlockTypes.LASER_FOCUS_MATRIX, AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 8F).notSolid());
     }
 
     @Override

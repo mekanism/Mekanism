@@ -9,6 +9,9 @@ import net.minecraft.item.Item;
 
 public class GeneratorsItems {
 
+    private GeneratorsItems() {
+    }
+
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismGenerators.MODID);
 
     public static final ItemRegistryObject<Item> SOLAR_PANEL = ITEMS.register("solar_panel");

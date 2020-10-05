@@ -30,6 +30,9 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 
 public class GeneratorsTileEntityTypes {
 
+    private GeneratorsTileEntityTypes() {
+    }
+
     public static final TileEntityTypeDeferredRegister TILE_ENTITY_TYPES = new TileEntityTypeDeferredRegister(MekanismGenerators.MODID);
 
     //Generators

@@ -43,18 +43,16 @@ public class BlockSecurityDesk extends BlockTileModel<TileEntitySecurityDesk, Bl
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         TileEntitySecurityDesk tile = MekanismUtils.getTileEntity(TileEntitySecurityDesk.class, world, pos);
-        if (tile != null) {
-            if (!player.isSneaking()) {
-                if (!world.isRemote) {
-                    UUID ownerUUID = tile.ownerUUID;
-                    if (ownerUUID == null || player.getUniqueID().equals(ownerUUID)) {
-                        NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(this, AttributeGui.class).getProvider(tile), pos);
-                    } else {
-                        SecurityUtils.displayNoAccess(player);
-                    }
+        if (tile != null && !player.isSneaking()) {
+            if (!world.isRemote) {
+                UUID ownerUUID = tile.ownerUUID;
+                if (ownerUUID == null || player.getUniqueID().equals(ownerUUID)) {
+                    NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(this, AttributeGui.class).getProvider(tile), pos);
+                } else {
+                    SecurityUtils.displayNoAccess(player);
                 }
-                return ActionResultType.SUCCESS;
             }
+            return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
     }

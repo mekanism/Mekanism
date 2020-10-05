@@ -12,18 +12,19 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import org.jetbrains.annotations.Contract;
 
-public abstract class AttributeState implements Attribute {
+public interface AttributeState extends Attribute {
 
-    public abstract BlockState copyStateData(BlockState oldState, BlockState newState);
+    BlockState copyStateData(BlockState oldState, BlockState newState);
 
-    public abstract void fillBlockStateContainer(Block block, List<Property<?>> properties);
+    void fillBlockStateContainer(Block block, List<Property<?>> properties);
 
-    public BlockState getDefaultState(@Nonnull BlockState state) {
+    default BlockState getDefaultState(@Nonnull BlockState state) {
         return state;
     }
 
     @Contract("_, null, _, _, _, _ -> null")
-    public BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nullable PlayerEntity player, @Nonnull Direction face) {
+    default BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nullable PlayerEntity player,
+          @Nonnull Direction face) {
         return state;
     }
 }

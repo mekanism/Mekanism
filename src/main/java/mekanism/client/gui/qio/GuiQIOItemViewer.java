@@ -25,19 +25,17 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> {
 
-    private GuiTextField searchField;
-    private final Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '\"', '\'', '|', '(', ')', ':');
-
-    {
+    private static final Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '\"', '\'', '|', '(', ')', ':');
+    static {
         // include all search prefix chars
         ALLOWED_SPECIAL_CHARS.addAll(QueryType.getPrefixChars());
     }
+    private GuiTextField searchField;
 
     protected GuiQIOItemViewer(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -154,7 +152,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         CONTAINER c = (CONTAINER) container.recreate();
         GuiQIOItemViewer<CONTAINER> s = recreate(c);
         getMinecraft().currentScreen = null;
-        getMinecraft().player.openContainer = ((IHasContainer<?>) s).getContainer();
+        getMinecraft().player.openContainer = s.getContainer();
         getMinecraft().displayGuiScreen(s);
         s.searchField.setText(searchField.getText());
         c.updateSearch(searchField.getText());

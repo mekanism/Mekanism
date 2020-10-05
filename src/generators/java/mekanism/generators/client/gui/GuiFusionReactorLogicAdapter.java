@@ -41,7 +41,7 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
         addButton(scrollBar = new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
-            addButton(new ReactorLogicButton<>(this, getGuiLeft() + 17, getGuiTop() + 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, (type) -> {
+            addButton(new ReactorLogicButton<>(this, getGuiLeft() + 17, getGuiTop() + 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, type -> {
                 if (type == null) {
                     return;
                 }

@@ -15,6 +15,9 @@ import net.minecraft.world.server.ServerWorld;
 
 public final class MinerUtils {
 
+    private MinerUtils() {
+    }
+
     public static List<ItemStack> getDrops(ServerWorld world, BlockPos pos, boolean silk, BlockPos minerPosition) {
         BlockState state = world.getBlockState(pos);
         if (state.isAir(world, pos)) {

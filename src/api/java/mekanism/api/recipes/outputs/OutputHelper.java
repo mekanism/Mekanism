@@ -20,6 +20,9 @@ import org.apache.commons.lang3.tuple.Pair;
 @ParametersAreNonnullByDefault
 public class OutputHelper {
 
+    private OutputHelper() {
+    }
+
     public static <STACK extends ChemicalStack<?>> IOutputHandler<@NonNull STACK> getOutputHandler(IChemicalTank<?, STACK> tank) {
         return new IOutputHandler<@NonNull STACK>() {
 

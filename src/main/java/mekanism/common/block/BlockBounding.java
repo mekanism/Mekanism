@@ -9,6 +9,7 @@ import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -67,7 +68,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     public BlockBounding(boolean advanced) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the bounding block
         // Torches cannot be placed on the sides due to vanilla checking the incorrect shape
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F).setRequiresTool().variableOpacity());
+        super(AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F).setRequiresTool().variableOpacity());
         this.advanced = advanced;
         setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
     }

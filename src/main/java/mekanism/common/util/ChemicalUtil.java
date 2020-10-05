@@ -52,6 +52,9 @@ import net.minecraftforge.common.capabilities.Capability;
 @MethodsReturnNonnullByDefault
 public class ChemicalUtil {
 
+    private ChemicalUtil() {
+    }
+
     public static <HANDLER extends IChemicalHandler<?, ?>> Capability<HANDLER> getCapabilityForChemical(Chemical<?> chemical) {
         if (chemical instanceof Gas) {
             return (Capability<HANDLER>) Capabilities.GAS_HANDLER_CAPABILITY;

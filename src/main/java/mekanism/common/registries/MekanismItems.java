@@ -61,6 +61,9 @@ import net.minecraft.item.Rarity;
 
 public class MekanismItems {
 
+    private MekanismItems() {
+    }
+
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(Mekanism.MODID);
     public static final Table<ResourceType, PrimaryResource, ItemRegistryObject<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
     public static final Map<ModuleData<?>, ItemRegistryObject<? extends ItemModule>> MODULES = new LinkedHashMap<>();

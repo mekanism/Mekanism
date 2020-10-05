@@ -11,6 +11,9 @@ import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 
 public class GeneratorsFluids {
 
+    private GeneratorsFluids() {
+    }
+
     public static final FluidDeferredRegister FLUIDS = new FluidDeferredRegister(MekanismGenerators.MODID);
 
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> BIOETHANOL = FLUIDS.register("bioethanol",

@@ -18,6 +18,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.interfaces.IActiveState;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -36,10 +37,10 @@ import net.minecraft.world.World;
 public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockBase<TYPE> implements IHasTileEntity<TILE> {
 
     public BlockTile(TYPE type) {
-        this(type, Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).setRequiresTool());
+        this(type, AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F).setRequiresTool());
     }
 
-    public BlockTile(TYPE type, Block.Properties properties) {
+    public BlockTile(TYPE type, AbstractBlock.Properties properties) {
         super(type, properties);
     }
 
@@ -116,6 +117,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
+    @Deprecated
     public boolean canProvidePower(@Nonnull BlockState state) {
         return type.has(AttributeRedstoneEmitter.class);
     }
@@ -126,12 +128,13 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
+    @Deprecated
     public int getWeakPower(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull Direction side) {
         if (type.has(AttributeRedstoneEmitter.class)) {
             TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             return type.get(AttributeRedstoneEmitter.class).getRedstoneLevel(tile);
         }
-        return 0;
+        return super.getWeakPower(state, world, pos, side);
     }
 
     public static class BlockTileModel<TILE extends TileEntityMekanism, BLOCK extends BlockTypeTile<TILE>> extends BlockTile<TILE, BLOCK> implements IStateFluidLoggable {
@@ -140,7 +143,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
             super(type);
         }
 
-        public BlockTileModel(BLOCK type, Block.Properties properties) {
+        public BlockTileModel(BLOCK type, AbstractBlock.Properties properties) {
             super(type, properties);
         }
     }

@@ -44,6 +44,9 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class ClientRegistrationUtil {
 
+    private ClientRegistrationUtil() {
+    }
+
     public static <T extends Entity> void registerEntityRenderingHandler(EntityTypeRegistryObject<T> entityTypeRO, IRenderFactory<? super T> renderFactory) {
         RenderingRegistry.registerEntityRenderingHandler(entityTypeRO.getEntityType(), renderFactory);
     }
