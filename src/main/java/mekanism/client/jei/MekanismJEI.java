@@ -110,7 +110,6 @@ public class MekanismJEI implements IModPlugin {
         @Override
         public String apply(ItemStack stack, UidContext context) {
             //Only use the old method if we are an ingredient, for recipes ignore all the NBT
-            //Note: There are still some "issues" with this due to: https://github.com/mezz/JustEnoughItems/issues/2102
             return context == UidContext.Ingredient ? apply(stack) : ISubtypeInterpreter.NONE;
         }
     };

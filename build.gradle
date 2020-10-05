@@ -586,25 +586,29 @@ task fullBuild(type: Delete) {
 
 //Minimize/optimize all png files, requires optipng on the PATH
 // Credits: BrainStone
+void minimizePNGFile(File file) {
+    long size = file.length()
+    exec {
+        executable "optipng"
+        args "-q", "-o7", "-zm1-9", "-strip", "all", file
+    }
+    long newSize = file.length()
+    if (newSize < size) {
+        System.out.format("Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n",
+                file, size, newSize, ((double) (size - newSize)) / ((double) size) * 100.0)
+    }
+}
+
 task optimizePng {
     def pngPatterns = ["**/*.png"]
-
     doLast {
+        //Ensure the logo is minimized (we add this file to each jar)
+        minimizePNGFile(file("${projectDir}/logo.png"))
+        //Minimize any PNGs in the source sets
         def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.generators, sourceSets.defense, sourceSets.tools]
         for (def sourceSet : sourceSets) {
             for (dir in sourceSet.resources.srcDirs) {
-                fileTree(dir: dir, includes: pngPatterns).each { File file ->
-                    long size = file.length()
-                    exec {
-                        executable "optipng"
-                        args "-q", "-o7", "-zm1-9", "-strip", "all", file
-                    }
-                    long newSize = file.length()
-                    if (newSize < size) {
-                        System.out.format("Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n",
-                                file, size, newSize, ((double) (size - newSize)) / ((double) size) * 100.0)
-                    }
-                }
+                fileTree(dir: dir, includes: pngPatterns).each { minimizePNGFile(it) }
             }
         }
     }
