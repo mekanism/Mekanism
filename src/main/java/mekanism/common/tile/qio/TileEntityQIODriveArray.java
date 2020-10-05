@@ -65,13 +65,14 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
                     setDriveStatus(i, slot.getStack().isEmpty() ? DriveStatus.NONE : DriveStatus.OFFLINE);
                     continue;
                 }
-
-                if (data.getTotalCount() == data.getCountCapacity() && data.getTotalTypes() == data.getTypeCapacity()) {
+                if (data.getTotalCount() == data.getCountCapacity()) {
+                    //If we are at max item capacity: Full
                     setDriveStatus(i, DriveStatus.FULL);
-                } else if (data.getTotalCount() == data.getCountCapacity() && data.getTotalTypes() == data.getTypeCapacity()) {
-                    //TODO: FIXME, this never is matched
+                } else if (data.getTotalTypes() == data.getTypeCapacity() || data.getTotalCount() >= data.getCountCapacity() * 0.75) {
+                    //If we are at max type capacity OR we are at 75% or more capacity: Near full
                     setDriveStatus(i, DriveStatus.NEAR_FULL);
                 } else {
+                    //Otherwise: Ready
                     setDriveStatus(i, DriveStatus.READY);
                 }
             }
