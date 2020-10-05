@@ -1,5 +1,6 @@
 package mekanism.common.network;
 
+import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
@@ -17,25 +18,25 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 public class PacketQIOItemViewerSlotInteract {
 
     private final Type type;
-    private final HashedItem itemType;
+    private final UUID typeUUID;
     private final int count;
 
-    private PacketQIOItemViewerSlotInteract(Type type, HashedItem itemType, int count) {
+    private PacketQIOItemViewerSlotInteract(Type type, UUID typeUUID, int count) {
         this.type = type;
-        this.itemType = itemType;
+        this.typeUUID = typeUUID;
         this.count = count;
     }
 
-    public static PacketQIOItemViewerSlotInteract take(HashedItem itemType, int count) {
-        return new PacketQIOItemViewerSlotInteract(Type.TAKE, itemType, count);
+    public static PacketQIOItemViewerSlotInteract take(UUID typeUUID, int count) {
+        return new PacketQIOItemViewerSlotInteract(Type.TAKE, typeUUID, count);
     }
 
     public static PacketQIOItemViewerSlotInteract put(int count) {
         return new PacketQIOItemViewerSlotInteract(Type.PUT, null, count);
     }
 
-    public static PacketQIOItemViewerSlotInteract shiftTake(HashedItem itemType) {
-        return new PacketQIOItemViewerSlotInteract(Type.SHIFT_TAKE, itemType, 0);
+    public static PacketQIOItemViewerSlotInteract shiftTake(UUID typeUUID) {
+        return new PacketQIOItemViewerSlotInteract(Type.SHIFT_TAKE, typeUUID, 0);
     }
 
     public static void handle(PacketQIOItemViewerSlotInteract message, Supplier<Context> context) {
@@ -50,7 +51,7 @@ public class PacketQIOItemViewerSlotInteract {
                 ItemStack curStack = player.inventory.getItemStack();
                 if (freq != null) {
                     if (message.type == Type.TAKE) {
-                        ItemStack ret = freq.removeByType(message.itemType, message.count);
+                        ItemStack ret = freq.removeByType(freq.getTypeByUUID(message.typeUUID), message.count);
                         if (curStack.isEmpty()) {
                             player.inventory.setItemStack(ret);
                         } else if (InventoryUtils.areItemsStackable(ret, curStack)) {
@@ -58,12 +59,15 @@ public class PacketQIOItemViewerSlotInteract {
                         }
                         ((ServerPlayerEntity) player).connection.sendPacket(new SSetSlotPacket(-1, -1, player.inventory.getItemStack()));
                     } else if (message.type == Type.SHIFT_TAKE) {
-                        ItemStack ret = freq.removeByType(message.itemType, message.itemType.getStack().getMaxStackSize());
-                        ItemStack remainder = container.insertIntoPlayerInventory(ret);
-                        if (!remainder.isEmpty()) {
-                            remainder = freq.addItem(remainder);
+                        HashedItem itemType = freq.getTypeByUUID(message.typeUUID);
+                        if (itemType != null) {
+                            ItemStack ret = freq.removeByType(itemType, itemType.getStack().getMaxStackSize());
+                            ItemStack remainder = container.insertIntoPlayerInventory(ret);
                             if (!remainder.isEmpty()) {
-                                Mekanism.logger.error("QIO shift-click transfer resulted in lost items ({}). This shouldn't happen!", remainder);
+                                remainder = freq.addItem(remainder);
+                                if (!remainder.isEmpty()) {
+                                    Mekanism.logger.error("QIO shift-click transfer resulted in lost items ({}). This shouldn't happen!", remainder);
+                                }
                             }
                         }
                     } else if (message.type == Type.PUT) {
@@ -84,11 +88,11 @@ public class PacketQIOItemViewerSlotInteract {
         buf.writeEnumValue(pkt.type);
         switch (pkt.type) {
             case TAKE:
-                buf.writeItemStack(pkt.itemType.getStack());
+                buf.writeUniqueId(pkt.typeUUID);
                 buf.writeVarInt(pkt.count);
                 break;
             case SHIFT_TAKE:
-                buf.writeItemStack(pkt.itemType.getStack());
+                buf.writeUniqueId(pkt.typeUUID);
                 break;
             case PUT:
                 buf.writeVarInt(pkt.count);
@@ -98,21 +102,21 @@ public class PacketQIOItemViewerSlotInteract {
 
     public static PacketQIOItemViewerSlotInteract decode(PacketBuffer buf) {
         Type type = buf.readEnumValue(Type.class);
-        HashedItem item = null;
+        UUID typeUUID = null;
         int count = 0;
         switch (type) {
             case TAKE:
-                item = new HashedItem(buf.readItemStack());
+                typeUUID = buf.readUniqueId();
                 count = buf.readVarInt();
                 break;
             case SHIFT_TAKE:
-                item = new HashedItem(buf.readItemStack());
+                typeUUID = buf.readUniqueId();
                 break;
             case PUT:
                 count = buf.readVarInt();
                 break;
         }
-        return new PacketQIOItemViewerSlotInteract(type, item, count);
+        return new PacketQIOItemViewerSlotInteract(type, typeUUID, count);
     }
 
     public enum Type {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
@@ -21,6 +22,7 @@ import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.network.PacketGuiItemDataRequest;
 import mekanism.common.network.PacketQIOItemViewerSlotInteract;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -52,7 +54,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private ListSortType sortType = MekanismConfig.client.qioItemViewerSortType.get();
     private SortDirection sortDirection = MekanismConfig.client.qioItemViewerSortDirection.get();
 
-    private Object2LongMap<HashedItem> cachedInventory = new Object2LongOpenHashMap<>();
+    private Object2LongMap<UUIDAwareHashedItem> cachedInventory = new Object2LongOpenHashMap<>();
     private long cachedCountCapacity;
     private int cachedTypeCapacity;
     private long totalItems;
@@ -201,14 +203,14 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return newStack;
     }
 
-    public void handleBatchUpdate(Object2LongMap<HashedItem> itemMap, long countCapacity, int typeCapacity) {
+    public void handleBatchUpdate(Object2LongMap<UUIDAwareHashedItem> itemMap, long countCapacity, int typeCapacity) {
         cachedInventory = itemMap;
         cachedCountCapacity = countCapacity;
         cachedTypeCapacity = typeCapacity;
         syncItemList();
     }
 
-    public void handleUpdate(Object2LongMap<HashedItem> itemMap, long countCapacity, int typeCapacity) {
+    public void handleUpdate(Object2LongMap<UUIDAwareHashedItem> itemMap, long countCapacity, int typeCapacity) {
         itemMap.object2LongEntrySet().forEach(entry -> {
             long value = entry.getLongValue();
             if (value == 0) {
@@ -236,7 +238,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         searchCache.clear();
         totalItems = 0;
         cachedInventory.forEach((key, value) -> {
-            itemList.add(new ItemSlotData(key, value));
+            itemList.add(new ItemSlotData(key, key.getUUID(), value));
             totalItems += value;
         });
         sortItemList();
@@ -330,24 +332,22 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     public void onClick(IScrollableSlot slot, int button, boolean hasShiftDown, ItemStack heldItem) {
         if (hasShiftDown) {
             if (slot != null) {
-                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.shiftTake(slot.getItem()));
+                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.shiftTake(slot.getItemUUID()));
             }
             return;
         }
         if (button == 0) {
             if (heldItem.isEmpty() && slot != null) {
-                HashedItem item = slot.getItem();
-                int toTake = Math.min(item.getStack().getMaxStackSize(), MathUtils.clampToInt(slot.getCount()));
-                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(item, toTake));
+                int toTake = Math.min(slot.getItem().getStack().getMaxStackSize(), MathUtils.clampToInt(slot.getCount()));
+                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
             } else if (!heldItem.isEmpty()) {
                 Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.put(heldItem.getCount()));
             }
         } else if (button == 1) {
             if (heldItem.isEmpty() && slot != null) {
-                HashedItem item = slot.getItem();
                 //Cap it out at the max stack size of the item, but try to take half of what is stored (taking at least one if it is a single item)
-                int toTake = Math.min(item.getStack().getMaxStackSize(), Math.max(1, MathUtils.clampToInt(slot.getCount() / 2)));
-                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(item, toTake));
+                int toTake = Math.min(slot.getItem().getStack().getMaxStackSize(), Math.max(1, MathUtils.clampToInt(slot.getCount() / 2)));
+                Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
             } else if (!heldItem.isEmpty()) {
                 Mekanism.packetHandler.sendToServer(PacketQIOItemViewerSlotInteract.put(1));
             }
@@ -357,16 +357,23 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     public static class ItemSlotData implements IScrollableSlot {
 
         private final HashedItem itemType;
+        private final UUID typeUUID;
         private final long count;
 
-        private ItemSlotData(HashedItem itemType, long count) {
+        private ItemSlotData(HashedItem itemType, UUID typeUUID, long count) {
             this.itemType = itemType;
+            this.typeUUID = typeUUID;
             this.count = count;
         }
 
         @Override
         public HashedItem getItem() {
             return itemType;
+        }
+
+        @Override
+        public UUID getItemUUID() {
+            return typeUUID;
         }
 
         @Override

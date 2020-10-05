@@ -1,5 +1,7 @@
 package mekanism.common.lib.inventory;
 
+import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
@@ -17,6 +19,11 @@ public class HashedItem {
     public HashedItem(ItemStack stack) {
         itemStack = StackUtils.size(stack, 1);
         hashCode = initHashCode();
+    }
+
+    protected HashedItem(HashedItem other) {
+        this.itemStack = other.itemStack;
+        this.hashCode = other.hashCode;
     }
 
     public ItemStack getStack() {
@@ -51,5 +58,50 @@ public class HashedItem {
             code = 31 * code + itemStack.getTag().hashCode();
         }
         return code;
+    }
+
+    public static class UUIDAwareHashedItem extends HashedItem {
+
+        private final UUID uuid;
+        private final boolean overrideHash;
+
+        /**
+         * @apiNote For use on the client side, hash is taken into account for equals and hashCode
+         */
+        public UUIDAwareHashedItem(ItemStack stack, UUID uuid) {
+            super(stack);
+            this.uuid = uuid;
+            this.overrideHash = true;
+        }
+
+        public UUIDAwareHashedItem(HashedItem other, UUID uuid) {
+            super(other);
+            this.uuid = uuid;
+            this.overrideHash = false;
+        }
+
+        @Nullable
+        public UUID getUUID() {
+            return uuid;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (overrideHash && uuid != null) {
+                return obj instanceof UUIDAwareHashedItem && uuid.equals(((UUIDAwareHashedItem) obj).uuid) && super.equals(obj);
+            }
+            return super.equals(obj);
+        }
+
+        @Override
+        public int hashCode() {
+            if (overrideHash && uuid != null) {
+                return 31 * super.hashCode() + uuid.hashCode();
+            }
+            return super.hashCode();
+        }
     }
 }

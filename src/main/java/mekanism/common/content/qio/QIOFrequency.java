@@ -1,5 +1,7 @@
 package mekanism.common.content.qio;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
@@ -25,6 +27,7 @@ import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.network.PacketQIOItemViewerGuiSync;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -43,10 +46,12 @@ public class QIOFrequency extends Frequency {
     private final Set<IQIODriveHolder> driveHolders = new HashSet<>();
     // efficiently keep track of the tags utilized by the items stored
     private final BiMultimap<String, HashedItem> tagLookupMap = new BiMultimap<>();
+    //Keep track of a UUID for each hashed item
+    private final BiMap<HashedItem, UUID> itemTypeLookup = HashBiMap.create();
     // a sensitive cache for wildcard tag lookups (wildcard -> [matching tags])
     private final SetMultimap<String, String> tagWildcardCache = HashMultimap.create();
 
-    private final Set<HashedItem> updatedItems = new HashSet<>();
+    private final Set<UUIDAwareHashedItem> updatedItems = new HashSet<>();
     private final Set<ServerPlayerEntity> playersViewingItems = new HashSet<>();
 
     /** If we need to send a packet to viewing clients with changed item data. */
@@ -78,6 +83,16 @@ public class QIOFrequency extends Frequency {
         return itemDataMap;
     }
 
+    @Nullable
+    public HashedItem getTypeByUUID(@Nullable UUID uuid) {
+        return uuid == null ? null : itemTypeLookup.inverse().get(uuid);
+    }
+
+    @Nullable
+    public UUID getUUIDForType(HashedItem item) {
+        return itemTypeLookup.get(item);
+    }
+
     public ItemStack addItem(ItemStack stack) {
         HashedItem type = new HashedItem(stack);
         // these checks are extremely important; they prevent us from wasting CPU searching for a place to put the new items,
@@ -89,6 +104,7 @@ public class QIOFrequency extends Frequency {
         QIOItemTypeData data = itemDataMap.computeIfAbsent(type, t -> {
             tagLookupMap.putAll(TagCache.getItemTags(stack), t);
             tagWildcardCache.clear();
+            itemTypeLookup.put(t, UUID.randomUUID());
             return new QIOItemTypeData(t);
         });
         return type.createStack((int) data.add(stack.getCount()));
@@ -124,6 +140,7 @@ public class QIOFrequency extends Frequency {
         if (data.count == 0) {
             itemDataMap.remove(data.itemType);
             tagLookupMap.removeValue(data.itemType);
+            itemTypeLookup.remove(data.itemType);
             tagWildcardCache.clear();
         }
         return removed;
@@ -156,8 +173,8 @@ public class QIOFrequency extends Frequency {
 
     public void openItemViewer(ServerPlayerEntity player) {
         playersViewingItems.add(player);
-        Object2LongMap<HashedItem> map = new Object2LongOpenHashMap<>();
-        itemDataMap.values().forEach(d -> map.put(d.itemType, d.count));
+        Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>();
+        itemDataMap.values().forEach(d -> map.put(new UUIDAwareHashedItem(d.itemType, getUUIDForType(d.itemType)), d.count));
         Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.batch(map, totalCountCapacity, totalTypeCapacity), player);
     }
 
@@ -203,7 +220,7 @@ public class QIOFrequency extends Frequency {
     public void tick() {
         super.tick();
         if (!updatedItems.isEmpty() || needsUpdate) {
-            Object2LongMap<HashedItem> map = new Object2LongOpenHashMap<>();
+            Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>();
             updatedItems.forEach(type -> {
                 QIOItemTypeData data = itemDataMap.get(type);
                 map.put(type, data == null ? 0 : data.count);
@@ -322,10 +339,11 @@ public class QIOFrequency extends Frequency {
             data.getItemMap().forEach((storedKey, value) -> {
                 itemDataMap.computeIfAbsent(storedKey, e -> {
                     tagWildcardCache.clear();
-                    tagLookupMap.putAll(TagCache.getItemTags(storedKey.getStack()), storedKey);
-                    return new QIOItemTypeData(storedKey);
+                    tagLookupMap.putAll(TagCache.getItemTags(e.getStack()), e);
+                    itemTypeLookup.put(e, UUID.randomUUID());
+                    return new QIOItemTypeData(e);
                 }).addFromDrive(data, value);
-                updatedItems.add(storedKey);
+                updatedItems.add(new UUIDAwareHashedItem(storedKey, getUUIDForType(storedKey)));
             });
             setNeedsUpdate();
         }
@@ -348,7 +366,7 @@ public class QIOFrequency extends Frequency {
                         itemDataMap.remove(storedKey);
                         tagWildcardCache.clear();
                     }
-                    updatedItems.add(storedKey);
+                    updatedItems.add(new UUIDAwareHashedItem(storedKey, getUUIDForType(storedKey)));
                 }
             });
             setNeedsUpdate();
@@ -380,7 +398,7 @@ public class QIOFrequency extends Frequency {
         needsUpdate = true;
         isDirty = true;
         if (changedItem != null) {
-            updatedItems.add(changedItem);
+            updatedItems.add(new UUIDAwareHashedItem(changedItem, getUUIDForType(changedItem)));
         }
     }
 

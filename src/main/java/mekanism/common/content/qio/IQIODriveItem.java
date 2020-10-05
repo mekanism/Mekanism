@@ -21,8 +21,12 @@ public interface IQIODriveItem {
             for (int i = 0; i < list.size(); i++) {
                 CompoundNBT tag = list.getCompound(i);
                 ItemStack itemType = ItemStack.read(tag.getCompound(NBTConstants.ITEM));
-                long count = tag.getLong(NBTConstants.AMOUNT);
-                data.getItemMap().put(new HashedItem(itemType), count);
+                if (!itemType.isEmpty()) {
+                    //Only add the item if the item could be read. If it can't that means the mod adding the item was probaly removed
+                    //TODO: Eventually we may want to keep the NBT so that if the mod gets added back it exists again
+                    long count = tag.getLong(NBTConstants.AMOUNT);
+                    data.getItemMap().put(new HashedItem(itemType), count);
+                }
             }
         }
     }
