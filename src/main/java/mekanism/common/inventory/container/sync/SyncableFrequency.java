@@ -8,7 +8,7 @@ import mekanism.common.network.container.property.FrequencyPropertyData;
 import mekanism.common.network.container.property.PropertyData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling item stacks
+ * Version of {@link net.minecraft.util.IntReferenceHolder} for handling frequencies
  */
 public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncableData {
 

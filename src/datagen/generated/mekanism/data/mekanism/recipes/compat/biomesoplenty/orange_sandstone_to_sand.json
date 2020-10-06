@@ -1,0 +1,36 @@
+{
+  "type": "mekanism:crushing",
+  "conditions": [
+    {
+      "modid": "biomesoplenty",
+      "minVersion": "1.16.3-12.0.0.404",
+      "type": "mekanism:mod_version_loaded"
+    }
+  ],
+  "input": [
+    {
+      "ingredient": {
+        "item": "biomesoplenty:orange_sandstone"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "biomesoplenty:chiseled_orange_sandstone"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "biomesoplenty:cut_orange_sandstone"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "biomesoplenty:smooth_orange_sandstone"
+      }
+    }
+  ],
+  "output": {
+    "item": "biomesoplenty:orange_sand",
+    "count": 2
+  }
+}

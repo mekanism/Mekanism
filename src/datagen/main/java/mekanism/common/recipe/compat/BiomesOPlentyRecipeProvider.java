@@ -10,6 +10,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
+import mekanism.common.recipe.condition.ModVersionLoadedCondition;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
@@ -46,6 +47,17 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               new ItemStack(BOPBlocks.black_sand, 2)
         ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "black_sandstone_to_sand"));
+        //Orange Sandstone -> Sand
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.createMulti(
+                    ItemStackIngredient.from(BOPBlocks.orange_sandstone),
+                    ItemStackIngredient.from(BOPBlocks.chiseled_orange_sandstone),
+                    ItemStackIngredient.from(BOPBlocks.cut_orange_sandstone),
+                    ItemStackIngredient.from(BOPBlocks.smooth_orange_sandstone)
+              ),
+              new ItemStack(BOPBlocks.orange_sand, 2)
+        ).addCondition(new ModVersionLoadedCondition(modid, "1.16.3-12.0.0.404"))//TODO - 1.17: Change this to just modLoaded
+              .build(consumer, Mekanism.rl(basePath + "orange_sandstone_to_sand"));
         //White Sandstone -> Sand
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.createMulti(

@@ -653,7 +653,7 @@ publishing {
                 }
                 withXml {
                     NodeList dependencies = asNode().dependencies
-                    NodeList allDeps = dependencies.'*';
+                    NodeList allDeps = dependencies.'*'
 
                     // Remove forge deps
                     allDeps.findAll() { Node el ->
