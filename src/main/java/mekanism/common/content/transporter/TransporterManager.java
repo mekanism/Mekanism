@@ -118,8 +118,9 @@ public class TransporterManager {
                     continue;
                 } else if (accepted < count) {
                     //If we accepted less than our count, the slot actually has a lower limit
-                    // so we mark the amount we accepted as the slot's actual limit
-                    max = accepted;
+                    // so we mark the amount we accepted plus the amount already in the slot
+                    // as the slot's actual limit
+                    max = destCount + accepted;
                 }
                 if (destCount == 0) {
                     //If we actually are going to insert it, because there are currently no items
