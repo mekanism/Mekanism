@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.additions.client.model.AdditionsModelCache;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.EntityBalloon;
+import mekanism.api.text.EnumColor;
 import mekanism.client.model.BaseModelCache.JSONModelData;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -57,10 +58,10 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
         for (BakedQuad quad : quads) {
             float[] color = new float[]{1, 1, 1, 1};
             if (quad.getTintIndex() == 0) {
-                int[] rgbCode = balloon.getColor().getRgbCode();
-                color[0] = rgbCode[0] / 255F;
-                color[1] = rgbCode[1] / 255F;
-                color[2] = rgbCode[2] / 255F;
+                EnumColor balloonColor = balloon.getColor();
+                color[0] = balloonColor.getColor(0);
+                color[1] = balloonColor.getColor(1);
+                color[2] = balloonColor.getColor(2);
             }
             builder.addVertexData(last, quad, color[0], color[1], color[2], color[3], light, OverlayTexture.NO_OVERLAY);
         }

@@ -124,7 +124,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      * @return the color value
      */
     public float getColor(int index) {
-        return getRgbCode()[index] / 255F;
+        return rgbCode[index] / 255F;
     }
 
     public Color getColor() {
@@ -154,10 +154,9 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     /**
      * Gets the red, green and blue color value, as an integer(range: 0 - 255).
      *
-     * WARNING: modifying the returned array will result in this color object changing
-     * the color it represents, and should not be done.
-     *
      * @return the color values.
+     *
+     * @apiNote Modifying the returned array will result in this color object changing the color it represents, and should not be done.
      */
     public int[] getRgbCode() {
         return rgbCode;
@@ -169,6 +168,6 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      * @return the color values.
      */
     public float[] getRgbCodeFloat() {
-        return new float[] {getColor(0), getColor(1), getColor(2)};
+        return new float[]{getColor(0), getColor(1), getColor(2)};
     }
 }

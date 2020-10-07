@@ -59,6 +59,11 @@ public class BlockPlasticTransparent extends Block implements IColoredBlock {
         return isSideInvisible(this, state, adjacentBlockState, side);
     }
 
+    @Override
+    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader world, BlockPos pos, BlockPos beaconPos) {
+        return getColor().getRgbCodeFloat();
+    }
+
     public static boolean isSideInvisible(@Nonnull IColoredBlock block, @Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
         Block adjacentBlock = adjacentBlockState.getBlock();
         if (adjacentBlock instanceof BlockPlasticTransparent || adjacentBlock instanceof BlockPlasticTransparentSlab
@@ -78,10 +83,5 @@ public class BlockPlasticTransparent extends Block implements IColoredBlock {
             }
         }
         return false;
-    }
-
-    @Override
-    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader world, BlockPos pos, BlockPos beaconPos) {
-        return getColor().getRgbCodeFloat();
     }
 }
