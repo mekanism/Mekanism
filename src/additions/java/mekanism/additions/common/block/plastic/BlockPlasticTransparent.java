@@ -14,6 +14,7 @@ import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraftforge.common.ToolType;
 
 public class BlockPlasticTransparent extends Block implements IColoredBlock {
@@ -77,5 +78,10 @@ public class BlockPlasticTransparent extends Block implements IColoredBlock {
             }
         }
         return false;
+    }
+
+    @Override
+    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader world, BlockPos pos, BlockPos beaconPos) {
+        return getColor().getRgbCodeFloat();
     }
 }
