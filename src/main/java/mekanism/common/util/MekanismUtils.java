@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
@@ -39,10 +40,12 @@ import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.UpgradeDisplay;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ILiquidContainer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -61,6 +64,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -81,9 +85,11 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -118,6 +124,64 @@ public final class MekanismUtils {
         if (!actual.isZero()) {
             Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual, new Exception());
         }
+    }
+
+    @Nullable
+    public static Entity teleportEntity(Entity entity, @Nullable ServerWorld newWorld, BlockPos target, double xOffset, double yOffset, double zOffset) {
+        if (newWorld == null) {
+            return null;
+        }
+        return entity.changeDimension(newWorld, new ITeleporter() {
+            @Override
+            public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                //TODO: Switch back to this once https://github.com/MinecraftForge/MinecraftForge/pull/7317 is merged.
+                // Don't forget to remove the AT for enteredNetherPosition when doing so
+                /*Entity repositionedEntity = repositionEntity.apply(false);
+                if (repositionedEntity != null) {
+                    repositionedEntity.setPositionAndUpdate(target.getX() + xOffset, target.getY() + yOffset, target.getZ() + xOffset);
+                }
+                return repositionedEntity;*/
+                //Temporary handling to avoid null pointers
+                if (entity instanceof ServerPlayerEntity) {
+                    //Copy of the base vanilla server player entity repositionEntity code, modified to use our position instead of null pointer
+                    ServerPlayerEntity player = (ServerPlayerEntity) entity;
+                    //Vanilla copy
+                    currentWorld.getProfiler().startSection("moving");
+                    if (currentWorld.getDimensionKey() == World.OVERWORLD && destWorld.getDimensionKey() == World.THE_NETHER) {
+                        player.enteredNetherPosition = entity.getPositionVec();
+                    }
+                    currentWorld.getProfiler().endStartSection("placing");
+                    player.setWorld(destWorld);
+                    destWorld.addDuringPortalTeleport(player);
+                    player.moveForced(target.getX() + xOffset, target.getY() + yOffset, target.getZ() + zOffset);
+                    currentWorld.getProfiler().endSection();
+                    //Copy of player.func_213846_b(currentWorld);
+                    RegistryKey<World> registrykey = currentWorld.getDimensionKey();
+                    RegistryKey<World> registrykey1 = player.world.getDimensionKey();
+                    CriteriaTriggers.CHANGED_DIMENSION.testForAll(player, registrykey, registrykey1);
+                    if (registrykey == World.THE_NETHER && registrykey1 == World.OVERWORLD && player.enteredNetherPosition != null) {
+                        CriteriaTriggers.NETHER_TRAVEL.trigger(player, player.enteredNetherPosition);
+                    }
+                    if (registrykey1 != World.THE_NETHER) {
+                        player.enteredNetherPosition = null;
+                    }
+                    return player;
+                }
+                //Copy of the base vanilla entity repositionEntity code, modified to use our position instead of null pointer
+                entity.world.getProfiler().endStartSection("reloading");
+                Entity repositionedEntity = entity.getType().create(destWorld);
+                if (repositionedEntity != null) {
+                    repositionedEntity.copyDataFromOld(entity);
+                    repositionedEntity.setLocationAndAngles(target.getX() + xOffset, target.getY() + yOffset, target.getZ() + zOffset, yaw, entity.rotationPitch);
+                    repositionedEntity.setMotion(entity.getMotion());
+                    destWorld.addFromAnotherDimension(repositionedEntity);
+                    if (destWorld.getDimensionKey() == World.THE_END) {
+                        ServerWorld.func_241121_a_(destWorld);
+                    }
+                }
+                return entity;
+            }
+        });
     }
 
     /**

@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -48,7 +47,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
@@ -248,30 +246,18 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     public static void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter) {
-        BlockPos target;
+        BlockPos target = coord.getPos();
         if (teleporter.frameDirection == null) {
-            target = coord.getPos().up();
+            target = target.up();
         } else if (teleporter.frameDirection == Direction.DOWN) {
-            target = coord.getPos().add(0.5, -2, 0.5);
+            target = target.down(2);
         } else {
-            target = coord.getPos().offset(teleporter.frameDirection);
+            target = target.offset(teleporter.frameDirection);
         }
         if (entity.world.getDimensionKey() == coord.dimension) {
             entity.setPositionAndUpdate(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
         } else {
-            ServerWorld newWorld = ((ServerWorld) teleporter.getWorld()).getServer().getWorld(coord.dimension);
-            if (newWorld != null) {
-                entity.changeDimension(newWorld, new ITeleporter() {
-                    @Override
-                    public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-                        Entity repositionedEntity = repositionEntity.apply(false);
-                        if (repositionedEntity != null) {
-                            repositionedEntity.setPositionAndUpdate(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
-                        }
-                        return repositionedEntity;
-                    }
-                });
-            }
+            MekanismUtils.teleportEntity(entity, ((ServerWorld) teleporter.getWorld()).getServer().getWorld(coord.dimension), target, 0.5, 0, 0.5);
         }
     }
 

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -90,7 +89,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -282,22 +280,13 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         setFollowing(false);
         if (world.getDimensionKey() == homeLocation.dimension) {
             setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
+            setMotion(0, 0, 0);
         } else {
-            ServerWorld newWorld = ((ServerWorld) world).getServer().getWorld(homeLocation.dimension);
-            if (newWorld != null) {
-                changeDimension(newWorld, new ITeleporter() {
-                    @Override
-                    public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-                        Entity repositionedEntity = repositionEntity.apply(false);
-                        if (repositionedEntity != null) {
-                            repositionedEntity.setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
-                        }
-                        return repositionedEntity;
-                    }
-                });
+            Entity entity = MekanismUtils.teleportEntity(this, ((ServerWorld) world).getServer().getWorld(homeLocation.dimension), homeLocation.getPos(), 0.5, 0.3, 0.5);
+            if (entity != null) {
+                entity.setMotion(0, 0, 0);
             }
         }
-        setMotion(0, 0, 0);
     }
 
     private boolean isOnChargepad() {
