@@ -1,11 +1,9 @@
 package mekanism.additions.common;
 
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.SpawnHelper;
-import mekanism.additions.common.item.AdditionsSpawnEggItem;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
@@ -15,20 +13,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
-import mekanism.common.registration.impl.ItemRegistryObject;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.passive.ParrotEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -75,7 +62,8 @@ public class MekanismAdditions implements IModule {
         AdditionsEntityTypes.ENTITY_TYPES.register(modEventBus);
         AdditionsSounds.SOUND_EVENTS.register(modEventBus);
 
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, SpawnHelper::onBiomeLoad);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, SpawnHelper::onBiomeLoad);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, SpawnHelper::onStructureSpawnListGather);
 
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
@@ -106,37 +94,8 @@ public class MekanismAdditions implements IModule {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            SpawnHelper.addSpawns();
-            registerSpawnEggDelayed(AdditionsItems.BABY_CREEPER_SPAWN_EGG, AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, AdditionsItems.BABY_SKELETON_SPAWN_EGG,
-                  AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
-            //Add parrot sound imitations for baby mobs
-            //Note: There is no imitation sound for endermen
-            ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_CREEPER.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_CREEPER);
-            ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_SKELETON.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_SKELETON);
-            ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_STRAY.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_STRAY);
-            ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_WITHER_SKELETON.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_WITHER_SKELETON);
-        });
+        event.enqueueWork(SpawnHelper::setupEntities);
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
-    }
-
-    @SafeVarargs
-    private static void registerSpawnEggDelayed(ItemRegistryObject<AdditionsSpawnEggItem>... spawnEggs) {
-        DefaultDispenseItemBehavior dispenseBehavior = new DefaultDispenseItemBehavior() {
-            @Nonnull
-            @Override
-            public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
-                Direction direction = source.getBlockState().get(DispenserBlock.FACING);
-                EntityType<?> entityType = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
-                entityType.spawn(source.getWorld(), stack, null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
-                stack.shrink(1);
-                return stack;
-            }
-        };
-        //TODO: Remove this when we can, for now just lazy add the dispense behavior
-        for (ItemRegistryObject<AdditionsSpawnEggItem> spawnEgg : spawnEggs) {
-            DispenserBlock.registerDispenseBehavior(spawnEgg, dispenseBehavior);
-        }
     }
 
     private void serverStarting(FMLServerStartingEvent event) {
