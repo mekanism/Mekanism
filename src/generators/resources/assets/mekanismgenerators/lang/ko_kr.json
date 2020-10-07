@@ -48,7 +48,7 @@
   "description.mekanismgenerators.fission_fuel_assembly": "핵분열 반응기 내부에서 연료를 저장하기 위한 연료 축 모음입니다. 이것들은 서로의 위에 설치될 수 있습니다.",
   "description.mekanismgenerators.fission_reactor_casing": "납으로 합금된 강철 케이싱으로, 핵융합 반응로를 구성할 때 사용됩니다. 거의 100% 열, 방사능에 저항이 있으며 안전합니다!",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "핵융합 반응로를 레드스톤으로 모니터링 혹은 제어하기 위해 사용될 수 있는 블록입니다.",
-  "description.mekanismgenerators.fission_reactor_port": "A port which can be placed on a Fission Reactor multiblock to transfer coolant, fuel, and waste.",
+  "description.mekanismgenerators.fission_reactor_port": "원자로에서 냉각제, 연료와 쓰레기를 입출력하기 위해 설치가능한 포트입니다.",
   "description.mekanismgenerators.fusion_reactor_controller": "융합로 전체를 제어할 수 있는 블록입니다.",
   "description.mekanismgenerators.fusion_reactor_frame": "융합로 멀티블록을 구성하는 강화된 케이싱입니다.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "융합로의 상태를 바탕으로 레드스톤 신호를 출력하는 블록입니다.",

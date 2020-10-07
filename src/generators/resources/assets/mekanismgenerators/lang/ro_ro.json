@@ -48,7 +48,7 @@
   "description.mekanismgenerators.fission_fuel_assembly": "Un mănunchi de tije folosite pentru a stoca combustibil de fisiune în interiorul reactorului. Pot fii stivuite unul peste altul.",
   "description.mekanismgenerators.fission_reactor_casing": "Carcasă de oțel infuzat cu plumb folosită pentru a crea un Reactor de Fisiune. În mare parte rezistent la căldura li radiații, în mare parte sigur!",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "Un bloc ce poate fii folosit pentru monitorizarea și controlul cu redstone a unui reactor de fisiune.",
-  "description.mekanismgenerators.fission_reactor_port": "A port which can be placed on a Fission Reactor multiblock to transfer coolant, fuel, and waste.",
+  "description.mekanismgenerators.fission_reactor_port": "Un port care poate fi plasat pe un reactor de fisiune multibloc pentru a transfera răcirea, combustibilul și deșeurile.",
   "description.mekanismgenerators.fusion_reactor_controller": "Blocul de control pentru întreaga structură a Reactorului de Fuziune.",
   "description.mekanismgenerators.fusion_reactor_frame": "Cadru întărit care poate fi folosit în Reactorul de Fuziune multibloc.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Un bloc care poate fi folosit pentru a permite monitorizarea de bază a unui reactor folosind piatra roşie.",

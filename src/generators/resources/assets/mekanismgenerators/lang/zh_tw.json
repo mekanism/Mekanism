@@ -59,7 +59,7 @@
   "description.mekanismgenerators.reactor.logic.activation": "有信號時啟動反應爐, 無信號時停用.",
   "description.mekanismgenerators.reactor.logic.capacity": "當反應爐溫度趨近穩定時輸出紅石信號",
   "description.mekanismgenerators.reactor.logic.damaged": "當反應爐達到嚴重損壞程度 (100%+) 時輸出紅石信號.",
-  "description.mekanismgenerators.reactor.logic.depleted": "當反應爐沒有足夠的燃料維持時輸出紅石信號",
+  "description.mekanismgenerators.reactor.logic.depleted": "當反應爐沒有足夠的燃料維持反應時輸出紅石信號",
   "description.mekanismgenerators.reactor.logic.disabled": "不會輸出紅石信號",
   "description.mekanismgenerators.reactor.logic.excess_waste": "當反應爐有過量的廢料時輸出紅石信號",
   "description.mekanismgenerators.reactor.logic.ready": "當反應爐達到需求溫度時輸出紅石信號",

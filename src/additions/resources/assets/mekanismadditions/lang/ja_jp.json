@@ -272,8 +272,8 @@
   "item.mekanismadditions.white_balloon": "白色の風船",
   "item.mekanismadditions.yellow_balloon": "黄色の風船",
   "key.mekanismadditions.voice": "音声",
-  "sound_event.mekanismadditions.entity.balloon.pop": "Balloon pops",
+  "sound_event.mekanismadditions.entity.balloon.pop": "風船が弾ける",
   "walkie.mekanismadditions.channel": "チャンネル: %s",
-  "walkie.mekanismadditions.channel.change": "チャンネルを変更: %s",
+  "walkie.mekanismadditions.channel.change": "チャンネルを%sに変更しました",
   "walkie.mekanismadditions.disabled": "ボイスサーバーが無効です"
 }
