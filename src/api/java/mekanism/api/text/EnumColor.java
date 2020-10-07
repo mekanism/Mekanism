@@ -151,7 +151,24 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
         this.color = Color.fromInt(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
     }
 
+    /**
+     * Gets the red, green and blue color value, as an integer(range: 0 - 255).
+     *
+     * WARNING: modifying the returned array will result in this color object changing
+     * the color it represents, and should not be done.
+     *
+     * @return the color values.
+     */
     public int[] getRgbCode() {
         return rgbCode;
+    }
+
+    /**
+     * Gets the red, green and blue color value, as a float(range: 0 - 1).
+     *
+     * @return the color values.
+     */
+    public float[] getRgbCodeFloat() {
+        return new float[] {getColor(0), getColor(1), getColor(2)};
     }
 }

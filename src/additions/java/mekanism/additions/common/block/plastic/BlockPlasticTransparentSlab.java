@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraftforge.common.ToolType;
 
 public class BlockPlasticTransparentSlab extends SlabBlock implements IColoredBlock {
@@ -53,5 +54,10 @@ public class BlockPlasticTransparentSlab extends SlabBlock implements IColoredBl
     @Deprecated
     public boolean isSideInvisible(@Nonnull BlockState state, @Nonnull BlockState adjacentBlockState, @Nonnull Direction side) {
         return BlockPlasticTransparent.isSideInvisible(this, state, adjacentBlockState, side);
+    }
+
+    @Override
+    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader world, BlockPos pos, BlockPos beaconPos) {
+        return getColor().getRgbCodeFloat();
     }
 }
