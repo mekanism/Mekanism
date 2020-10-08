@@ -9,6 +9,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostBlockItemConsumer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
@@ -45,8 +46,10 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
     @Nonnull
     @Override
     protected List<ItemStack> getRenderStacks() {
-        ItemStack stack = filter.getMaterialItem();
-        return stack.isEmpty() ? Collections.emptyList() : Collections.singletonList(stack);
+        if (filter.hasFilter()) {
+            return TagCache.getMaterialStacks(filter.getMaterialItem());
+        }
+        return Collections.emptyList();
     }
 
     @Nullable

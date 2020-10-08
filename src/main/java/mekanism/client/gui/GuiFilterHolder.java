@@ -68,7 +68,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
                     } else if (filter instanceof ITagFilter) {
                         list.addAll(getTagStacks(((ITagFilter<?>) filter).getTagName()));
                     } else if (filter instanceof IMaterialFilter) {
-                        list.add(((IMaterialFilter<?>) filter).getMaterialItem());
+                        list.addAll(TagCache.getMaterialStacks(((IMaterialFilter<?>) filter).getMaterialItem()));
                     } else if (filter instanceof IModIDFilter) {
                         list.addAll(TagCache.getModIDStacks(((IModIDFilter<?>) filter).getModID(), false));
                     }

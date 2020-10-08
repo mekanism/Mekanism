@@ -12,6 +12,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.lib.WildcardMatcher;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,6 +32,7 @@ public final class TagCache {
     private static final Map<String, List<ItemStack>> blockTagStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<String, List<ItemStack>> itemTagStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<String, List<ItemStack>> modIDStacks = new Object2ObjectOpenHashMap<>();
+    private static final Map<Material, List<ItemStack>> materialStacks = new Object2ObjectOpenHashMap<>();
 
     public static void resetTagCaches() {
         blockTagStacks.clear();
@@ -117,6 +119,31 @@ public final class TagCache {
             }
         }
         modIDStacks.put(modName, stacks);
+        return stacks;
+    }
+
+    public static List<ItemStack> getMaterialStacks(ItemStack stack) {
+        return getMaterialStacks(Block.getBlockFromItem(stack.getItem()).getDefaultState().getMaterial());
+    }
+
+    public static List<ItemStack> getMaterialStacks(Material material) {
+        if (materialStacks.get(material) != null) {
+            return materialStacks.get(material);
+        }
+        List<ItemStack> stacks = new ArrayList<>();
+        for (Item item : ForgeRegistries.ITEMS.getValues()) {
+            if (item instanceof BlockItem) {
+                Block block = ((BlockItem) item).getBlock();
+                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderType() with a dummy BlockState
+                if (block instanceof BlockBounding) {
+                    continue;
+                }
+                if (block.getDefaultState().getMaterial() == material) {
+                    stacks.add(new ItemStack(item));
+                }
+            }
+        }
+        materialStacks.put(material, stacks);
         return stacks;
     }
 }
