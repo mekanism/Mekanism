@@ -2,6 +2,7 @@ package mekanism.client.model;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
+import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.model.BlockModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
@@ -91,6 +92,10 @@ public class BaseModelCache {
         protected void reload(ModelBakeEvent evt) {
             super.reload(evt);
             bakedModel = evt.getModelRegistry().get(rl);
+            if (bakedModel == null) {
+                Mekanism.logger.error("Baked model doesn't exist: {}", rl.toString());
+                bakedModel = evt.getModelManager().getMissingModel();
+            }
             IUnbakedModel unbaked = evt.getModelLoader().getUnbakedModel(rl);
             if (unbaked instanceof BlockModel) {
                 model = ((BlockModel) unbaked).customData.getCustomGeometry();

@@ -27,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -78,6 +79,10 @@ public class AdditionsClientRegistration {
             return item.getOn(stack) ? item.getChannel(stack) : 0;
         });
 
+    }
+
+    @SubscribeEvent
+    public static void modelRegEvent(ModelRegistryEvent event) {
         AdditionsModelCache.INSTANCE.setup();
     }
 

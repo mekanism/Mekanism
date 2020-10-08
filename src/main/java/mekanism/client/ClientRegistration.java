@@ -259,8 +259,6 @@ public class ClientRegistration {
             return 0;
         });
 
-        MekanismModelCache.INSTANCE.setup();
-
         addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
         addCustomModel(MekanismBlocks.QIO_REDSTONE_ADAPTER, (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
         addCustomModel(MekanismBlocks.DIGITAL_MINER, (orig, evt) -> new DigitalMinerBakedModel(orig));
@@ -351,6 +349,7 @@ public class ClientRegistration {
     public static void registerModelLoaders(ModelRegistryEvent event) {
         ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(Mekanism.rl("mekanism"), MekanismModel.Loader.INSTANCE);
+        MekanismModelCache.INSTANCE.setup();
     }
 
     @SubscribeEvent
