@@ -249,7 +249,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                                 continue;
                             }
 
-                            List<ItemStack> drops = MinerUtils.getDrops((ServerWorld) world, pos, getSilkTouch(), this.pos);
+                            List<ItemStack> drops = MinerUtils.getDrops((ServerWorld) world, pos, getSilkTouch(), this.pos, getSecurity().getOwnerUUID());
                             if (canInsert(drops) && setReplace(pos, index)) {
                                 did = true;
                                 add(drops);
@@ -443,6 +443,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         BlockState state = world.getBlockState(pos);
         return MekFakePlayer.withFakePlayer((ServerWorld) world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), dummy -> {
+            dummy.setEmulatingUUID(getSecurity().getOwnerUUID());//pretend to be the owner
             BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, dummy);
             MinecraftForge.EVENT_BUS.post(event);
             return !event.isCanceled();

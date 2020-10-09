@@ -1,9 +1,12 @@
 package mekanism.common.base;
 
+import com.mojang.authlib.GameProfile;
 import java.lang.ref.WeakReference;
+import java.util.UUID;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
@@ -22,10 +25,20 @@ import net.minecraftforge.common.util.FakePlayer;
  *
  * Use of the fake player is via a consumer type lambda, where usage is only valid inside the lambda.
  * Afterwards it may be garbage collected at any point.
+ *
+ * Supports emulating a specific UUID, for use with TileComponentSecurity
  */
 public class MekFakePlayer extends FakePlayer {
 
     private static WeakReference<MekFakePlayer> INSTANCE;
+
+    /**
+     * UUID of a player we are pretending to be, null to use the default Mek one
+     */
+    private UUID emulatingUUID = null;
+
+    /** Game Profile supporting us emulating an actual player. Can't supply to super as it's a child class */
+    private final FakeGameProfile gameProfile = new FakeGameProfile();
 
     public MekFakePlayer(ServerWorld world) {
         super(world, Mekanism.gameProfile);
@@ -36,9 +49,26 @@ public class MekFakePlayer extends FakePlayer {
         return false;
     }
 
+    public void setEmulatingUUID(UUID uuid) {
+        this.emulatingUUID = uuid;
+    }
+
+    @Nonnull
+    @Override
+    public UUID getUniqueID() {
+        return this.emulatingUUID != null ? this.emulatingUUID : super.getUniqueID();
+    }
+
+    @Nonnull
+    @Override
+    public GameProfile getGameProfile() {
+        return gameProfile;
+    }
+
     /**
      * Acquire a Fake Player and call a function which makes use of the player.
      * Afterwards, the Fake Player's world is nulled out to prevent GC issues.
+     * Emulated UUID is also reset.
      *
      * Do NOT store a reference to the Fake Player, so that it may be Garbage Collected.
      * A fake player _should_ only need to be short-lived
@@ -57,6 +87,7 @@ public class MekFakePlayer extends FakePlayer {
         MekFakePlayer player = actual;
         player.world = world;
         R result = fakePlayerConsumer.apply(player);
+        player.emulatingUUID = null;
         player.world = null;//don't keep reference to the World
         return result;
     }
@@ -86,6 +117,47 @@ public class MekFakePlayer extends FakePlayer {
         MekFakePlayer actual = INSTANCE != null ? INSTANCE.get() : null;
         if (actual != null && actual.world == world) {
             actual.world = null;
+        }
+    }
+
+    private class FakeGameProfile extends GameProfile {
+        public FakeGameProfile() {
+            super(Mekanism.gameProfile.getId(), Mekanism.gameProfile.getName());
+        }
+
+        @Override
+        public UUID getId() {
+            return MekFakePlayer.this.emulatingUUID != null ? MekFakePlayer.this.emulatingUUID : super.getId();
+        }
+
+        @Override
+        public String getName() {
+            return MekFakePlayer.this.emulatingUUID != null ? MekanismUtils.getLastKnownUsername(MekFakePlayer.this.emulatingUUID) : super.getName();
+        }
+
+        //NB: super check they're the same class, we only check that name & id match
+        @Override
+        public boolean equals(final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof GameProfile)) {
+                return false;
+            }
+
+            final GameProfile that = (GameProfile) o;
+
+            if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) {
+                return false;
+            }
+            return getName() != null ? getName().equals(that.getName()) : that.getName() == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = getId() != null ? getId().hashCode() : 0;
+            result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+            return result;
         }
     }
 }

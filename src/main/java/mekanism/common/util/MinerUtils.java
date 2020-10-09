@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.block.BlockState;
@@ -18,7 +19,7 @@ public final class MinerUtils {
     private MinerUtils() {
     }
 
-    public static List<ItemStack> getDrops(ServerWorld world, BlockPos pos, boolean silk, BlockPos minerPosition) {
+    public static List<ItemStack> getDrops(ServerWorld world, BlockPos pos, boolean silk, BlockPos minerPosition, UUID minerOwner) {
         BlockState state = world.getBlockState(pos);
         if (state.isAir(world, pos)) {
             return Collections.emptyList();
@@ -28,6 +29,7 @@ public final class MinerUtils {
             stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
         }
         return MekFakePlayer.withFakePlayer(world, minerPosition.getX(), minerPosition.getY(), minerPosition.getZ(), fakePlayer -> {
+            fakePlayer.setEmulatingUUID(minerOwner);
             LootContext.Builder lootContextBuilder = new LootContext.Builder(world)
                   .withRandom(world.rand)
                   .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
