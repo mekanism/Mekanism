@@ -103,5 +103,26 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               materials.purifiedFluixCrystal().stack(1)
         ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "fluix_seed_to_purified_crystal"));
+
+        //Sky Stone -> Sky Stone Dust
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(blocks.skyStoneBlock()),
+              materials.skyDust().stack(1)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "sky_stone_to_dust"));
+
+        //Smooth Sky Stone -> Sky Stone
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(blocks.smoothSkyStoneBlock()),
+              blocks.skyStoneBlock().stack(1)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "smooth_sky_stone_to_sky_stone"));
+
+        //Sky Stone Dust -> Sky Stone
+        ItemStackToItemStackRecipeBuilder.enriching(
+                ItemStackIngredient.from(materials.skyDust()),
+                blocks.skyStoneBlock().stack(1)
+          ).addCondition(modLoaded)
+                .build(consumer, Mekanism.rl(basePath + "sky_stone_dust_to_sky_stone"));
     }
 }
