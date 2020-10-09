@@ -202,13 +202,16 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         diggingProgress = diggingProgress.plusEqual(remainingEnergy);
                         if (diggingProgress.compareTo(MekanismConfig.general.laserEnergyNeededPerHardness.get().multiply(hardness)) >= 0) {
                             if (MekanismConfig.general.aestheticWorldDamage.get()) {
-                                BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, hitPos, hitState, dummy);
-                                if (!MinecraftForge.EVENT_BUS.post(event)) {
-                                    handleBreakBlock(hitState, hitPos);
-                                    hitState.onReplaced(world, hitPos, Blocks.AIR.getDefaultState(), false);
-                                    world.removeBlock(hitPos, false);
-                                    world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, hitPos, Block.getStateId(hitState));
-                                }
+                                MekFakePlayer.withFakePlayer((ServerWorld)world, to.getX(), to.getY(), to.getZ(), dummy-> {
+                                    BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, hitPos, hitState, dummy);
+                                    if (!MinecraftForge.EVENT_BUS.post(event)) {
+                                        handleBreakBlock(hitState, hitPos);
+                                        hitState.onReplaced(world, hitPos, Blocks.AIR.getDefaultState(), false);
+                                        world.removeBlock(hitPos, false);
+                                        world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, hitPos, Block.getStateId(hitState));
+                                    }
+                                    return null;
+                                });
                             }
                             diggingProgress = FloatingLong.ZERO;
                         } else {

@@ -27,12 +27,14 @@ public final class MinerUtils {
         if (silk) {
             stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
         }
-        LootContext.Builder lootContextBuilder = new LootContext.Builder(world)
-              .withRandom(world.rand)
-              .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
-              .withParameter(LootParameters.TOOL, stack)
-              .withNullableParameter(LootParameters.THIS_ENTITY, MekFakePlayer.getInstance(world, minerPosition.getX(), minerPosition.getY(), minerPosition.getZ()).get())
-              .withNullableParameter(LootParameters.BLOCK_ENTITY, MekanismUtils.getTileEntity(world, pos));
-        return state.getDrops(lootContextBuilder);
+        return MekFakePlayer.withFakePlayer(world, minerPosition.getX(), minerPosition.getY(), minerPosition.getZ(), fakePlayer -> {
+            LootContext.Builder lootContextBuilder = new LootContext.Builder(world)
+                  .withRandom(world.rand)
+                  .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
+                  .withParameter(LootParameters.TOOL, stack)
+                  .withNullableParameter(LootParameters.THIS_ENTITY, fakePlayer)
+                  .withNullableParameter(LootParameters.BLOCK_ENTITY, MekanismUtils.getTileEntity(world, pos));
+            return state.getDrops(lootContextBuilder);
+        });
     }
 }

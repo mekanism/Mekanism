@@ -426,8 +426,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             missingStack = filter.replaceStack;
             return false;
         }
-        PlayerEntity fakePlayer = Objects.requireNonNull(MekFakePlayer.getInstance((ServerWorld) world, this.pos.getX(), this.pos.getY(), this.pos.getZ()).get());
-        BlockState newState = StackUtils.getStateForPlacement(stack, pos, fakePlayer);
+        BlockState newState = MekFakePlayer.withFakePlayer((ServerWorld)world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), fakePlayer ->
+              StackUtils.getStateForPlacement(stack, pos, fakePlayer)
+        );
         if (newState == null || !newState.isValidPosition(world, pos)) {
             //If the spot is not a valid position for the block, then we return that we were unsuccessful
             return false;
@@ -441,10 +442,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             return false;
         }
         BlockState state = world.getBlockState(pos);
-        PlayerEntity dummy = Objects.requireNonNull(MekFakePlayer.getInstance((ServerWorld) world, this.pos.getX(), this.pos.getY(), this.pos.getZ()).get());
-        BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, dummy);
-        MinecraftForge.EVENT_BUS.post(event);
-        return !event.isCanceled();
+        return MekFakePlayer.withFakePlayer((ServerWorld) world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), dummy -> {
+            BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, dummy);
+            MinecraftForge.EVENT_BUS.post(event);
+            return !event.isCanceled();
+        });
     }
 
     private ItemStack getReplace(MinerFilter<?> filter) {
