@@ -7,6 +7,8 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
@@ -15,6 +17,7 @@ import mekanism.common.registration.impl.ParticleTypeRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
@@ -32,7 +35,9 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.IItemPropertyGetter;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -116,6 +121,25 @@ public class ClientRegistrationUtil {
             blockColors.register(blockColor, blockProvider.getBlock());
             itemColors.register(itemColor, blockProvider.getItem());
         }
+    }
+
+    public static void registerIColoredBlockHandler(BlockColors blockColors, ItemColors itemColors, IBlockProvider... blocks) {
+        ClientRegistrationUtil.registerBlockColorHandler(blockColors, itemColors, (state, world, pos, tintIndex) -> {
+            Block block = state.getBlock();
+            if (block instanceof IColoredBlock) {
+                return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
+            }
+            return -1;
+        }, (stack, tintIndex) -> {
+            Item item = stack.getItem();
+            if (item instanceof BlockItem) {
+                Block block = ((BlockItem) item).getBlock();
+                if (block instanceof IColoredBlock) {
+                    return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
+                }
+            }
+            return -1;
+        }, blocks);
     }
 
     public static void setRenderLayer(RenderType type, IBlockProvider... blockProviders) {

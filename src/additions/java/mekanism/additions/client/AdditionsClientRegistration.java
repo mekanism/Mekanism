@@ -88,22 +88,7 @@ public class AdditionsClientRegistration {
 
     @SubscribeEvent
     public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
-        ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, world, pos, tintIndex) -> {
-                  Block block = state.getBlock();
-                  if (block instanceof IColoredBlock) {
-                      return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
-                  }
-                  return -1;
-              }, (stack, tintIndex) -> {
-                  Item item = stack.getItem();
-                  if (item instanceof BlockItem) {
-                      Block block = ((BlockItem) item).getBlock();
-                      if (block instanceof IColoredBlock) {
-                          return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
-                      }
-                  }
-                  return -1;
-              },
+        ClientRegistrationUtil.registerIColoredBlockHandler(event.getBlockColors(), event.getItemColors(),
               //Plastic Blocks
               AdditionsBlocks.BLACK_PLASTIC_BLOCK, AdditionsBlocks.RED_PLASTIC_BLOCK, AdditionsBlocks.GREEN_PLASTIC_BLOCK, AdditionsBlocks.BROWN_PLASTIC_BLOCK,
               AdditionsBlocks.BLUE_PLASTIC_BLOCK, AdditionsBlocks.PURPLE_PLASTIC_BLOCK, AdditionsBlocks.CYAN_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_GRAY_PLASTIC_BLOCK,

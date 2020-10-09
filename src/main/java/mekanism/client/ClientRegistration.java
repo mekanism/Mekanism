@@ -385,22 +385,7 @@ public class ClientRegistration {
                   return -1;
               }, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
               MekanismBlocks.QIO_REDSTONE_ADAPTER);
-        ClientRegistrationUtil.registerBlockColorHandler(blockColors, itemColors, (state, world, pos, tintIndex) -> {
-                  Block block = state.getBlock();
-                  if (block instanceof IColoredBlock) {
-                      return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
-                  }
-                  return -1;
-              }, (stack, tintIndex) -> {
-                  Item item = stack.getItem();
-                  if (item instanceof BlockItem) {
-                      Block block = ((BlockItem) item).getBlock();
-                      if (block instanceof IColoredBlock) {
-                          return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
-                      }
-                  }
-                  return -1;
-              },
+        ClientRegistrationUtil.registerIColoredBlockHandler(blockColors, itemColors,
               //Fluid Tank
               MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK);
