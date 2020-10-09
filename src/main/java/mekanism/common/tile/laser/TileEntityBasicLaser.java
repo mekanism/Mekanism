@@ -89,8 +89,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             Direction direction = getDirection();
             Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
             Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
-            PlayerEntity dummy = MekFakePlayer.getInstance((ServerWorld) world, to.getX(), to.getY(), to.getZ()).get();
-            BlockRayTraceResult result = getWorldNN().rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, dummy));
+            BlockRayTraceResult result = getWorldNN().rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, null));
             if (result.getType() != Type.MISS) {
                 to = new Pos3D(result.getHitVec());
             }
