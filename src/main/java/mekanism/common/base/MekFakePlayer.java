@@ -9,27 +9,31 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 
-// Global, shared FakePlayer for Mekanism-specific uses
-//
-// This was introduced to fix https://github.com/dizzyd/Mekanism/issues/2. In that issue,
-// another mod was trying to apply a potion to the fake player and causing the whole system
-// to crash due to essential potion related structures not being initialized for a fake player.
-//
-// The broader problem is that the FakePlayer in Forge 14.23.5.2768 isn't really complete and
-// short of patching Forge and requiring everyone in the world to upgrade, there's no easy fix --
-// so we introduce our own FakePlayer that will let us override other methods as necessary.
-//
-// It's worth noting that there is only a single instance of this player in an entire server; this
-// is in keeping with the original semantics, where a single instance of FakePlayer was shared globally
-// and the world/position coordinates adjusted every time it was accessed. It's possible there are race
-// conditions here if the player is used in two threads at once, but given the nature of the calls and
-// the history, I believe this singleton approach is not unreasonable.
+/**
+ * Global, shared FakePlayer for Mekanism-specific uses
+ *
+ * This was introduced to fix https://github.com/dizzyd/Mekanism/issues/2. In that issue,
+ * another mod was trying to apply a potion to the fake player and causing the whole system
+ * to crash due to essential potion related structures not being initialized for a fake player.
+ *
+ * The broader problem is that the FakePlayer in Forge 14.23.5.2768 isn't really complete and
+ * short of patching Forge and requiring everyone in the world to upgrade, there's no easy fix --
+ * so we introduce our own FakePlayer that will let us override other methods as necessary.
+ *
+ * Use of the fake player is via a consumer type lambda, where usage is only valid inside the lambda.
+ * Afterwards it may be garbage collected at any point.
+ */
 public class MekFakePlayer extends FakePlayer {
 
     private static WeakReference<MekFakePlayer> INSTANCE;
 
     public MekFakePlayer(ServerWorld world) {
         super(world, Mekanism.gameProfile);
+    }
+
+    @Override
+    public boolean isPotionApplicable(@Nonnull EffectInstance effect) {
+        return false;
     }
 
     /**
@@ -83,10 +87,5 @@ public class MekFakePlayer extends FakePlayer {
         if (actual != null && actual.world == world) {
             actual.world = null;
         }
-    }
-
-    @Override
-    public boolean isPotionApplicable(@Nonnull EffectInstance effect) {
-        return false;
     }
 }
