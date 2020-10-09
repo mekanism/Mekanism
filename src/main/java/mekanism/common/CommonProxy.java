@@ -53,18 +53,6 @@ public class CommonProxy {
         return 0;
     }
 
-    public final WeakReference<PlayerEntity> getDummyPlayer(ServerWorld world) {
-        return MekFakePlayer.getInstance(world);
-    }
-
-    public final WeakReference<PlayerEntity> getDummyPlayer(ServerWorld world, double x, double y, double z) {
-        return MekFakePlayer.getInstance(world, x, y, z);
-    }
-
-    public final WeakReference<PlayerEntity> getDummyPlayer(ServerWorld world, BlockPos pos) {
-        return getDummyPlayer(world, pos.getX(), pos.getY(), pos.getZ());
-    }
-
     public PlayerEntity getPlayer(Supplier<Context> context) {
         return context.get().getSender();
     }

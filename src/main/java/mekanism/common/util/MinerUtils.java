@@ -2,7 +2,7 @@ package mekanism.common.util;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.common.Mekanism;
+import mekanism.common.base.MekFakePlayer;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantments;
@@ -31,7 +31,7 @@ public final class MinerUtils {
               .withRandom(world.rand)
               .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
               .withParameter(LootParameters.TOOL, stack)
-              .withNullableParameter(LootParameters.THIS_ENTITY, Mekanism.proxy.getDummyPlayer(world, minerPosition).get())
+              .withNullableParameter(LootParameters.THIS_ENTITY, MekFakePlayer.getInstance(world, minerPosition.getX(), minerPosition.getY(), minerPosition.getZ()).get())
               .withNullableParameter(LootParameters.BLOCK_ENTITY, MekanismUtils.getTileEntity(world, pos));
         return state.getDrops(lootContextBuilder);
     }

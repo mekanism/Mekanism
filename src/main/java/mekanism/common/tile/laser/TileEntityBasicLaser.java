@@ -11,6 +11,7 @@ import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -88,8 +89,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             Direction direction = getDirection();
             Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
             Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
-            PlayerEntity dummy = Mekanism.proxy.getDummyPlayer((ServerWorld) world, new BlockPos(from)).get();
-            BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, dummy));
+            PlayerEntity dummy = MekFakePlayer.getInstance((ServerWorld) world, to.getX(), to.getY(), to.getZ()).get();
+            BlockRayTraceResult result = getWorldNN().rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, dummy));
             if (result.getType() != Type.MISS) {
                 to = new Pos3D(result.getHitVec());
             }
@@ -98,7 +99,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             FloatingLong remainingEnergy = firing.copy();
             //TODO: Make the dimensions scale with laser size
             // (so that the tractor beam can actually pickup items that are on the ground underneath it)
-            List<Entity> hitEntities = world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to));
+            List<Entity> hitEntities = getWorldNN().getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to));
             if (hitEntities.isEmpty()) {
                 setEmittingRedstone(false);
             } else {
