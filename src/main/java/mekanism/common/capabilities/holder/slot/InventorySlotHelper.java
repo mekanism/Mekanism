@@ -3,6 +3,7 @@ package mekanism.common.capabilities.holder.slot;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -18,10 +19,11 @@ public class InventorySlotHelper {
     }
 
     public static InventorySlotHelper forSide(Supplier<Direction> facingSupplier) {
-        return forSide(facingSupplier, side -> true, side -> true);
+        return forSide(facingSupplier, null, null);
     }
 
-    public static InventorySlotHelper forSide(Supplier<Direction> facingSupplier, Predicate<RelativeSide> insertPredicate, Predicate<RelativeSide> extractPredicate) {
+    public static InventorySlotHelper forSide(Supplier<Direction> facingSupplier, @Nullable Predicate<RelativeSide> insertPredicate,
+          @Nullable Predicate<RelativeSide> extractPredicate) {
         return new InventorySlotHelper(new InventorySlotHolder(facingSupplier, insertPredicate, extractPredicate));
     }
 

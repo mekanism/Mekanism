@@ -18,11 +18,13 @@ public class InventorySlotHolder implements IInventorySlotHolder {
     private final Map<RelativeSide, List<IInventorySlot>> directionalSlots = new EnumMap<>(RelativeSide.class);
     private final List<IInventorySlot> inventorySlots = new ArrayList<>();
     private final Supplier<Direction> facingSupplier;
+    @Nullable
     private final Predicate<RelativeSide> insertPredicate;
+    @Nullable
     private final Predicate<RelativeSide> extractPredicate;
     //TODO: Allow declaring that some sides will be the same, so can just be the same list in memory??
 
-    InventorySlotHolder(Supplier<Direction> facingSupplier, Predicate<RelativeSide> insertPredicate, Predicate<RelativeSide> extractPredicate) {
+    InventorySlotHolder(Supplier<Direction> facingSupplier, @Nullable Predicate<RelativeSide> insertPredicate, @Nullable Predicate<RelativeSide> extractPredicate) {
         this.facingSupplier = facingSupplier;
         this.insertPredicate = insertPredicate;
         this.extractPredicate = extractPredicate;
@@ -52,11 +54,13 @@ public class InventorySlotHolder implements IInventorySlotHolder {
 
     @Override
     public boolean canInsert(@Nullable Direction direction) {
-        return direction != null && insertPredicate.test(RelativeSide.fromDirections(facingSupplier.get(), direction));
+        //If the insert predicate is null then we can insert from any side, don't bother looking up our facing
+        return direction != null && (insertPredicate == null || insertPredicate.test(RelativeSide.fromDirections(facingSupplier.get(), direction)));
     }
 
     @Override
     public boolean canExtract(@Nullable Direction direction) {
-        return direction != null && extractPredicate.test(RelativeSide.fromDirections(facingSupplier.get(), direction));
+        //If the extract predicate is null then we can extract from any side, don't bother looking up our facing
+        return direction != null && (extractPredicate == null || extractPredicate.test(RelativeSide.fromDirections(facingSupplier.get(), direction)));
     }
 }

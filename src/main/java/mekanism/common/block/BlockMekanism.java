@@ -322,7 +322,7 @@ public abstract class BlockMekanism extends Block {
     @Override
     @Deprecated
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-        if (state.hasTileEntity() && state.getBlock() != newState.getBlock()) {
+        if (state.hasTileEntity() && (!state.isIn(newState.getBlock()) || !newState.hasTileEntity())) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof IBoundingBlock) {
                 ((IBoundingBlock) tile).onBreak(state);

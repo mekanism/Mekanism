@@ -32,7 +32,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
     @Override
     @Deprecated
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-        if (!world.isRemote && state.hasTileEntity() && state.getBlock() != newState.getBlock()) {
+        if (!world.isRemote && state.hasTileEntity() && (!state.isIn(newState.getBlock()) || !newState.hasTileEntity())) {
             TileEntityTurbineRotor tile = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
             if (tile != null) {
                 int amount = tile.getHousedBlades();
