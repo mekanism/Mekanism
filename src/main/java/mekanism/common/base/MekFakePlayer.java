@@ -27,35 +27,30 @@ import net.minecraftforge.common.util.FakePlayer;
 // the history, I believe this singleton approach is not unreasonable.
 public class MekFakePlayer extends FakePlayer {
 
-    private static MekFakePlayer INSTANCE;
+    private static WeakReference<MekFakePlayer> INSTANCE;
 
     public MekFakePlayer(ServerWorld world, GameProfile name) {
         super(world, name);
     }
 
-    public static WeakReference<PlayerEntity> getInstance(ServerWorld world) {
-        if (INSTANCE == null) {
-            INSTANCE = new MekFakePlayer(world, Mekanism.gameProfile);
-        }
-        INSTANCE.world = world;
-        return new WeakReference<>(INSTANCE);
-    }
-
-    public static WeakReference<PlayerEntity> getInstance(ServerWorld world, double x, double y, double z) {
-        if (INSTANCE == null) {
-            INSTANCE = new MekFakePlayer(world, Mekanism.gameProfile);
+    public static WeakReference<? extends PlayerEntity> getInstance(ServerWorld world, double x, double y, double z) {
+        MekFakePlayer actual = INSTANCE != null ? INSTANCE.get() : null;
+        if (actual == null) {
+            actual = new MekFakePlayer(world, Mekanism.gameProfile);
+            INSTANCE = new WeakReference<>(actual);
         }
 
-        INSTANCE.world = world;
-        INSTANCE.setRawPosition(x, y, z);
-        return new WeakReference<>(INSTANCE);
+        actual.world = world;
+        actual.setRawPosition(x, y, z);
+        return INSTANCE;
     }
 
     public static void releaseInstance(IWorld world) {
         // If the fake player has a reference to the world getting unloaded,
         // null out the fake player so that the world can unload
-        if (INSTANCE != null && INSTANCE.world == world) {
-            INSTANCE = null;
+        MekFakePlayer actual = INSTANCE != null ? INSTANCE.get() : null;
+        if (actual != null && actual.world == world) {
+            actual.world = null;
         }
     }
 
