@@ -281,26 +281,51 @@ repositories {
     maven {
         name 'ForgeFS'
         url 'https://files.minecraftforge.net/maven'
+        content {
+            includeGroupByRegex 'net\\.minecraftforge.*'
+            includeGroup 'de.oceanlabs.mcp'
+            includeGroup 'cpw.mods'
+        }
     }
     maven {
         name 'prog'
         url 'https://dvs1.progwml6.com/files/maven'
+        content {
+            includeGroup 'mezz.jei'
+        }
     }
     maven {
         name 'tterrag'
         url 'https://maven.tterrag.com/'
+        content {
+            includeGroupByRegex 'com\\.enderio.*'
+            includeGroupByRegex 'com\\.enderzoo.*'
+            includeGroupByRegex 'com\\.tterrag.*'
+            includeGroupByRegex 'tterrag.*'
+            includeGroup 'mcjty.theoneprobe'
+            includeGroup 'team.chisel.ctm'
+        }
     }
     maven {
         name 'CurseMaven'
         url 'https://www.cursemaven.com'
+        content {
+            includeGroup 'curse.maven'
+        }
     }
     maven {
         name 'Modmaven'
         url 'https://modmaven.k-4u.nl'
+        content {
+            includeGroup 'appeng'
+        }
     }
     maven {
         name 'HWYLA'
         url "https://maven.tehnut.info"
+        content {
+            includeGroup 'mcp.mobius.waila'
+        }
     }
 }
 
