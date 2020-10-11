@@ -452,8 +452,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return MekFakePlayer.withFakePlayer((ServerWorld) world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), dummy -> {
             dummy.setEmulatingUUID(getSecurity().getOwnerUUID());//pretend to be the owner
             BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, dummy);
-            MinecraftForge.EVENT_BUS.post(event);
-            return !event.isCanceled();
+            return !MinecraftForge.EVENT_BUS.post(event);
         });
     }
 
