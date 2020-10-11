@@ -722,50 +722,60 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
     curseforge {
         apiKey = System.getenv("CURSEFORGE_KEY") ?: project.findProperty("curseforgeKey")
 
-        def generatedChangelog = "Unable to generate changelog :("
-        def currentCommit = System.getenv("GIT_COMMIT")
-        def prevCommit = System.getenv("GIT_PREVIOUS_SUCCESSFUL_COMMIT") ?: System.getenv("GIT_PREVIOUS_COMMIT")
+        def resolvedChangelog = null
 
-        if (currentCommit != null && prevCommit != null) {
-            generatedChangelog = ""
-            grgit.log {
-                range(prevCommit, currentCommit)
-            }.reverse().each { commit ->
-                String message = commit.shortMessage
-                if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {
-//Ignore PRs and Merges
-                    message = message.replaceAll("#(\\d+)", { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
-                        return "<a href=\"https://github.com/mekanism/Mekanism/issues/${match[1]}\">${match[0]}</a>"
-                    })
-                    if (generatedChangelog != "") {
-                        generatedChangelog += "<br>"
-                    }
-                    generatedChangelog += "<a href=\"https://github.com/mekanism/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
-                }
+        //closure to generate the changelog once, and only when needed by CurseGradle
+        def changeLogResolver = { ->
+            if (resolvedChangelog != null) {
+                return resolvedChangelog
             }
-            println "Changelog generated"
-        }
+            def generatedChangelog = "Unable to generate changelog :("
+            def currentCommit = System.getenv("GIT_COMMIT")
+            def prevCommit = System.getenv("GIT_PREVIOUS_SUCCESSFUL_COMMIT") ?: System.getenv("GIT_PREVIOUS_COMMIT")
 
-        def releaseNotesFile = project.file("docs/release_${mod_version}.html")
-        if (releaseNotesFile.exists()) {
-            //Add any version specific changelog stuff
-            def releaseNotes = releaseNotesFile.getText()
-            generatedChangelog = "$releaseNotes<br> $generatedChangelog"
-        }
+            if (currentCommit != null && prevCommit != null) {
+                generatedChangelog = ""
+                grgit.log {
+                    range(prevCommit, currentCommit)
+                }.reverse().each { commit ->
+                    String message = commit.shortMessage
+                    if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {
+//Ignore PRs and Merges
+                        message = message.replaceAll("#(\\d+)", { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
+                            return "<a href=\"https://github.com/mekanism/Mekanism/issues/${match[1]}\">${match[0]}</a>"
+                        })
+                        if (generatedChangelog != "") {
+                            generatedChangelog += "<br>"
+                        }
+                        generatedChangelog += "<a href=\"https://github.com/mekanism/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
+                    }
+                }
+                println "Changelog generated"
+            }
 
-        if (curse_release_type == "alpha") {
-            //Add a warning at the top about what an alpha build means
-            generatedChangelog = "Warning: Mekanism is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, " +
-                    "and updating from one alpha to the next may cause various mekanism blocks to disappear/void their contents. While we will try to not have this happen/keep " +
-                    "it to a minimum make sure to make backups. You can read more about the alpha state of this project <a href=\"https://github.com/mekanism/Mekanism#alpha-status\">here</a>." +
-                    "<br> $generatedChangelog"
+            def releaseNotesFile = project.file("docs/release_${mod_version}.html")
+            if (releaseNotesFile.exists()) {
+                //Add any version specific changelog stuff
+                def releaseNotes = releaseNotesFile.getText()
+                generatedChangelog = "$releaseNotes<br> $generatedChangelog"
+            }
+
+            if (curse_release_type == "alpha") {
+                //Add a warning at the top about what an alpha build means
+                generatedChangelog = "Warning: Mekanism is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, " +
+                        "and updating from one alpha to the next may cause various mekanism blocks to disappear/void their contents. While we will try to not have this happen/keep " +
+                        "it to a minimum make sure to make backups. You can read more about the alpha state of this project <a href=\"https://github.com/mekanism/Mekanism#alpha-status\">here</a>." +
+                        "<br> $generatedChangelog"
+            }
+            resolvedChangelog = generatedChangelog
+            return generatedChangelog
         }
 
         //Main
         project {
             id = '268560'
             changelogType = "html"
-            changelog = generatedChangelog
+            changelog = changeLogResolver
             // A file can also be set using: changelog = file('changelog.txt')
             releaseType = "${curse_release_type}"
             mainArtifact(jar) {
@@ -788,7 +798,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
         project {
             id = '345425'
             changelogType = "html"
-            changelog = generatedChangelog
+            changelog = changeLogResolver
             releaseType = "${curse_release_type}"
             mainArtifact(additionsJar) {
                 relations {
@@ -802,7 +812,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
         /*project {
             id = '376939'
             changelogType = "html"
-            changelog = generatedChangelog
+            changelog = changeLogResolver
             releaseType = "${curse_release_type}"
             mainArtifact(defenseJar) {
                 relations {
@@ -816,7 +826,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
         project {
             id = '268566'
             changelogType = "html"
-            changelog = generatedChangelog
+            changelog = changeLogResolver
             releaseType = "${curse_release_type}"
             mainArtifact(generatorsJar) {
                 relations {
@@ -830,7 +840,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
         project {
             id = '268567'
             changelogType = "html"
-            changelog = generatedChangelog
+            changelog = changeLogResolver
             releaseType = "${curse_release_type}"
             mainArtifact(toolsJar) {
                 relations {
