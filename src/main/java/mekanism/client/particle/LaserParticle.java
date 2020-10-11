@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
@@ -66,6 +67,7 @@ public class LaserParticle extends SpriteTexturedParticle {
         particleScale = energyScale;
         halfLength = (float) (end.distance(start) / 2);
         direction = dir;
+        updateBoundingBox();
     }
 
     @Override
@@ -111,6 +113,45 @@ public class LaserParticle extends SpriteTexturedParticle {
     @Override
     public IParticleRenderType getRenderType() {
         return LASER_TYPE;
+    }
+
+    @Override
+    protected void setSize(float particleWidth, float particleHeight) {
+        if (particleWidth != this.width || particleHeight != this.height) {
+            //Note: We don't actually have width or height affect our bounding box
+            //TODO: Eventually we maybe should have it affect it at least to an extent?
+            this.width = particleWidth;
+            this.height = particleHeight;
+        }
+    }
+
+    @Override
+    public void setPosition(double x, double y, double z) {
+        this.posX = x;
+        this.posY = y;
+        this.posZ = z;
+        if (direction != null) {
+            //Direction can be null when the super constructor is calling this method
+            updateBoundingBox();
+        }
+    }
+
+    private void updateBoundingBox() {
+        float halfDiameter = particleScale / 2;
+        switch (direction) {
+            case DOWN:
+            case UP:
+                setBoundingBox(new AxisAlignedBB(posX - halfDiameter, posY - halfLength, posZ - halfDiameter, posX + halfDiameter, posY + halfLength, posZ + halfDiameter));
+                break;
+            case NORTH:
+            case SOUTH:
+                setBoundingBox(new AxisAlignedBB(posX - halfDiameter, posY - halfDiameter, posZ - halfLength, posX + halfDiameter, posY + halfDiameter, posZ + halfLength));
+                break;
+            case WEST:
+            case EAST:
+                setBoundingBox(new AxisAlignedBB(posX - halfLength, posY - halfDiameter, posZ - halfDiameter, posX + halfLength, posY + halfDiameter, posZ + halfDiameter));
+                break;
+        }
     }
 
     public static class Factory implements IParticleFactory<LaserParticleData> {
