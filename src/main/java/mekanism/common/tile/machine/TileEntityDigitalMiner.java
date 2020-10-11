@@ -6,11 +6,13 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
@@ -21,7 +23,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.Mekanism;
+import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MinerEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -52,6 +54,7 @@ import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IAdvancedBoundingBlock;
@@ -61,13 +64,15 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MinerUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -75,6 +80,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.Region;
 import net.minecraft.world.server.ServerWorld;
@@ -86,6 +92,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.apache.logging.log4j.core.jmx.Server;
 
 public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IAdvancedBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
       IHasSortableFilters {
@@ -249,7 +256,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                                 continue;
                             }
 
-                            List<ItemStack> drops = MinerUtils.getDrops((ServerWorld) world, pos, getSilkTouch(), this.pos);
+                            List<ItemStack> drops = getDrops(pos);
                             if (canInsert(drops) && setReplace(pos, index)) {
                                 did = true;
                                 add(drops);
@@ -426,8 +433,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             missingStack = filter.replaceStack;
             return false;
         }
-        PlayerEntity fakePlayer = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((ServerWorld) world, this.pos).get());
-        BlockState newState = StackUtils.getStateForPlacement(stack, pos, fakePlayer);
+        BlockState newState = MekFakePlayer.withFakePlayer((ServerWorld)world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), fakePlayer ->
+              StackUtils.getStateForPlacement(stack, pos, fakePlayer)
+        );
         if (newState == null || !newState.isValidPosition(world, pos)) {
             //If the spot is not a valid position for the block, then we return that we were unsuccessful
             return false;
@@ -441,10 +449,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             return false;
         }
         BlockState state = world.getBlockState(pos);
-        PlayerEntity dummy = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((ServerWorld) world, getPos()).get());
-        BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, dummy);
-        MinecraftForge.EVENT_BUS.post(event);
-        return !event.isCanceled();
+        return MekFakePlayer.withFakePlayer((ServerWorld) world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), dummy -> {
+            dummy.setEmulatingUUID(getSecurity().getOwnerUUID());//pretend to be the owner
+            BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, dummy);
+            return !MinecraftForge.EVENT_BUS.post(event);
+        });
     }
 
     private ItemStack getReplace(MinerFilter<?> filter) {
@@ -961,6 +970,27 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         NBTUtils.setIntIfPresent(tag, NBTConstants.RADIUS, this::setRadius);//client allowed to use whatever server sends
         NBTUtils.setIntIfPresent(tag, NBTConstants.MIN, this::setMinY);
         NBTUtils.setIntIfPresent(tag, NBTConstants.MAX, this::setMaxY);
+    }
+
+    private List<ItemStack> getDrops(BlockPos pos) {
+        BlockState state = this.getWorldNN().getBlockState(pos);
+        if (state.isAir(this.getWorldNN(), pos)) {
+            return Collections.emptyList();
+        }
+        ItemStack stack = MekanismItems.ATOMIC_DISASSEMBLER.getItemStack();
+        if (getSilkTouch()) {
+            stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
+        }
+        return MekFakePlayer.withFakePlayer((ServerWorld)this.getWorldNN(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), fakePlayer -> {
+            fakePlayer.setEmulatingUUID(getSecurity().getOwnerUUID());
+            LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerWorld)this.getWorldNN())
+                  .withRandom(this.getWorldNN().rand)
+                  .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
+                  .withParameter(LootParameters.TOOL, stack)
+                  .withNullableParameter(LootParameters.THIS_ENTITY, fakePlayer)
+                  .withNullableParameter(LootParameters.BLOCK_ENTITY, MekanismUtils.getTileEntity(this.getWorldNN(), pos));
+            return state.getDrops(lootContextBuilder);
+        });
     }
 
     private static class ItemCount {

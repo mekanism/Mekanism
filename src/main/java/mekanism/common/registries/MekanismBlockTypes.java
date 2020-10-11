@@ -330,7 +330,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityLaser> LASER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.LASER, MekanismLang.DESCRIPTION_LASER)
           .withEnergyConfig(MekanismConfig.usage.laser, MekanismConfig.storage.laser)
-          .withSound(MekanismSounds.LASER).with(new AttributeStateActive(), new AttributeStateFacing(BlockStateProperties.FACING))
+          .withSound(MekanismSounds.LASER).with(new AttributeStateActive(), new AttributeStateFacing(BlockStateProperties.FACING), new AttributeSecurity())
           .withCustomShape(BlockShapes.LASER)
           .build();
     // Laser Amplifier

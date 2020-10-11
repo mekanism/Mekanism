@@ -11,6 +11,7 @@ import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -88,8 +89,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             Direction direction = getDirection();
             Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
             Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
-            PlayerEntity dummy = Mekanism.proxy.getDummyPlayer((ServerWorld) world, new BlockPos(from)).get();
-            BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, dummy));
+            BlockRayTraceResult result = getWorldNN().rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, null));
             if (result.getType() != Type.MISS) {
                 to = new Pos3D(result.getHitVec());
             }
@@ -98,7 +98,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             FloatingLong remainingEnergy = firing.copy();
             //TODO: Make the dimensions scale with laser size
             // (so that the tractor beam can actually pickup items that are on the ground underneath it)
-            List<Entity> hitEntities = world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to));
+            List<Entity> hitEntities = getWorldNN().getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to));
             if (hitEntities.isEmpty()) {
                 setEmittingRedstone(false);
             } else {
@@ -202,13 +202,17 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         diggingProgress = diggingProgress.plusEqual(remainingEnergy);
                         if (diggingProgress.compareTo(MekanismConfig.general.laserEnergyNeededPerHardness.get().multiply(hardness)) >= 0) {
                             if (MekanismConfig.general.aestheticWorldDamage.get()) {
-                                BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, hitPos, hitState, dummy);
-                                if (!MinecraftForge.EVENT_BUS.post(event)) {
-                                    handleBreakBlock(hitState, hitPos);
-                                    hitState.onReplaced(world, hitPos, Blocks.AIR.getDefaultState(), false);
-                                    world.removeBlock(hitPos, false);
-                                    world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, hitPos, Block.getStateId(hitState));
-                                }
+                                MekFakePlayer.withFakePlayer((ServerWorld)world, to.getX(), to.getY(), to.getZ(), dummy-> {
+                                    dummy.setEmulatingUUID(getSecurity().getOwnerUUID());//pretend to be the owner
+                                    BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, hitPos, hitState, dummy);
+                                    if (!MinecraftForge.EVENT_BUS.post(event)) {
+                                        handleBreakBlock(hitState, hitPos);
+                                        hitState.onReplaced(world, hitPos, Blocks.AIR.getDefaultState(), false);
+                                        world.removeBlock(hitPos, false);
+                                        world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, hitPos, Block.getStateId(hitState));
+                                    }
+                                    return null;
+                                });
                             }
                             diggingProgress = FloatingLong.ZERO;
                         } else {
