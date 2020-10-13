@@ -4,6 +4,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.KeySync;
+import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketOpenGui;
@@ -100,7 +101,9 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         } else if (kb == moduleTweakerKey) {
-            Mekanism.packetHandler.sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
+            if (ModuleTweakerContainer.hasTweakableItem(player)) {
+                Mekanism.packetHandler.sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
+            }
         } else if (kb == boostKey) {
             MekanismClient.updateKey(kb, KeySync.BOOST);
         } else if (kb == hudKey) {

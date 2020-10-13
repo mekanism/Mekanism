@@ -13,7 +13,6 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -121,13 +120,14 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     private void select(int index) {
         if (isValidItem(index)) {
             selected = index;
-            scrollList.updateList(getStack(index), true);
-            optionsButton.active = getStack(index).getItem() == MekanismItems.MEKASUIT_HELMET.get();
+            ItemStack stack = getStack(index);
+            scrollList.updateList(stack, true);
+            optionsButton.active = stack.getItem() == MekanismItems.MEKASUIT_HELMET.get();
         }
     }
 
     private boolean isValidItem(int index) {
-        return getStack(index).getItem() instanceof IModuleContainerItem;
+        return ModuleTweakerContainer.isTweakableItem(getStack(index));
     }
 
     private ItemStack getStack(int index) {
