@@ -2,8 +2,8 @@ package mekanism.common.command.builders;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.HashSet;
+import java.util.Queue;
 import java.util.Set;
 import mekanism.common.Mekanism;
 import mekanism.common.util.EnumUtils;
@@ -60,19 +60,18 @@ public class BuildCommand {
 
     private static void destroy(World world, BlockPos pos) {
         Set<BlockPos> traversed = new HashSet<>();
-        Deque<BlockPos> openSet = new ArrayDeque<>();
+        Queue<BlockPos> openSet = new ArrayDeque<>();
         openSet.add(pos);
         traversed.add(pos);
         while (!openSet.isEmpty()) {
-            BlockPos ptr = openSet.pop();
+            BlockPos ptr = openSet.poll();
             BlockState state = world.getBlockState(ptr);
             if (state.getBlock().getRegistryName().getNamespace().contains(Mekanism.MODID)) {
                 world.removeBlock(ptr, false);
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     BlockPos offset = ptr.offset(side);
-                    if (!traversed.contains(offset)) {
+                    if (traversed.add(offset)) {
                         openSet.add(offset);
-                        traversed.add(offset);
                     }
                 }
             }
