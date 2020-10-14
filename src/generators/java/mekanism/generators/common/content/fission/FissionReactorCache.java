@@ -10,10 +10,19 @@ import net.minecraft.nbt.CompoundNBT;
 public class FissionReactorCache extends MultiblockCache<FissionReactorMultiblockData> {
 
     private double reactorDamage;
-    private double rateLimit = 0.1;
+    private double rateLimit = -1;
     private double burnRemaining;
     private double partialWaste;
     public boolean active;
+
+    private double getRateLimit() {
+        if (rateLimit == -1) {
+            //If it never got set default to 0.1
+            return 0.1;
+        }
+        //Otherwise return the actual so that it can be manually set down to zero
+        return rateLimit;
+    }
 
     @Override
     public void merge(MultiblockCache<FissionReactorMultiblockData> mergeCache, List<ItemStack> rejectedItems) {
@@ -29,7 +38,7 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     public void apply(FissionReactorMultiblockData data) {
         super.apply(data);
         data.reactorDamage = reactorDamage;
-        data.rateLimit = rateLimit;
+        data.rateLimit = getRateLimit();
         data.burnRemaining = burnRemaining;
         data.partialWaste = partialWaste;
         data.setActive(active);
@@ -59,7 +68,7 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     public void save(CompoundNBT nbtTags) {
         super.save(nbtTags);
         nbtTags.putDouble(NBTConstants.REACTOR_DAMAGE, reactorDamage);
-        nbtTags.putDouble(NBTConstants.INJECTION_RATE, rateLimit);
+        nbtTags.putDouble(NBTConstants.INJECTION_RATE, getRateLimit());
         nbtTags.putDouble(NBTConstants.BURN_TIME, burnRemaining);
         nbtTags.putDouble(NBTConstants.PARTIAL_WASTE, partialWaste);
         nbtTags.putBoolean(NBTConstants.ACTIVE, active);
