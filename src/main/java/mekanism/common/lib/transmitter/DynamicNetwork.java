@@ -1,7 +1,9 @@
 package mekanism.common.lib.transmitter;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -48,6 +50,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     public void commit() {
         if (!transmittersToAdd.isEmpty()) {
             boolean addedValidTransmitters = false;
+            List<TRANSMITTER> transmittersToUpdate = new ArrayList<>();
             for (TRANSMITTER transmitter : transmittersToAdd) {
                 //Note: Transmitter should not be able to be null here, but I ran into a null pointer
                 // pointing to it being null that I could not reproduce, so just added this as a safety check
@@ -59,13 +62,16 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                     for (Direction side : EnumUtils.DIRECTIONS) {
                         acceptorCache.updateTransmitterOnSide(transmitter, side);
                     }
-                    transmitter.setTransmitterNetwork(getNetwork());
+                    if (transmitter.setTransmitterNetwork(getNetwork(), false)) {
+                        transmittersToUpdate.add(transmitter);
+                    }
                     addTransmitterFromCommit(transmitter);
                 }
             }
             transmittersToAdd.clear();
             if (addedValidTransmitters) {
                 validTransmittersAdded();
+                transmittersToUpdate.forEach(Transmitter::requestsUpdate);
             }
         }
         acceptorCache.commit();
@@ -114,13 +120,29 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         acceptorCache.acceptorChanged(transmitter, side);
     }
 
-    public void adoptTransmittersAndAcceptorsFrom(NETWORK net) {
+    public List<TRANSMITTER> adoptTransmittersAndAcceptorsFrom(NETWORK net) {
+        List<TRANSMITTER> transmittersToUpdate = new ArrayList<>();
         for (TRANSMITTER transmitter : net.transmitters) {
-            transmitter.setTransmitterNetwork(getNetwork());
             transmitters.add(transmitter);
+            if (transmitter.setTransmitterNetwork(getNetwork(), false)) {
+                transmittersToUpdate.add(transmitter);
+            }
         }
         transmittersToAdd.addAll(net.transmittersToAdd);
         acceptorCache.adoptAcceptors(net.acceptorCache);
+        return transmittersToUpdate;
+    }
+
+    protected void adoptAllAndRegister(Collection<NETWORK> networks) {
+        List<TRANSMITTER> transmittersToUpdate = new ArrayList<>();
+        for (NETWORK net : networks) {
+            if (net != null) {
+                transmittersToUpdate.addAll(adoptTransmittersAndAcceptorsFrom(net));
+                net.deregister();
+            }
+        }
+        register();
+        transmittersToUpdate.forEach(Transmitter::requestsUpdate);
     }
 
     public void register() {

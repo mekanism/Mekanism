@@ -230,8 +230,7 @@ public class TransmitterNetworkRegistry {
         }
 
         public void iterate(BlockPos from) {
-            if (!iterated.contains(from)) {
-                iterated.add(from);
+            if (iterated.add(from)) {
                 Coord4D fromCoord = new Coord4D(from, world);
                 if (orphanTransmitters.containsKey(fromCoord)) {
                     Transmitter<?, ?, ?> transmitter = orphanTransmitters.get(fromCoord);
@@ -285,7 +284,9 @@ public class TransmitterNetworkRegistry {
             NETWORK net = startPoint.getExternalNetwork(from);
             //Make sure that there is an external network and that it is compatible with this buffer
             if (net != null && net.compatibleWithBuffer(startPoint.getShare())) {
-                if (networksFound.isEmpty() || networksFound.iterator().next().isCompatibleWith(net)) {
+                //Note: We need to check against all the networks we have found as if the first network we found is empty
+                // then we will be "compatible" with any network
+                if (networksFound.isEmpty() || networksFound.stream().allMatch(network -> network.isCompatibleWith(net))) {
                     networksFound.add(net);
                 }
             }

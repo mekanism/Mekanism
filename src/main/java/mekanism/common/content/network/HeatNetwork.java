@@ -26,13 +26,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
     }
 
     public HeatNetwork(Collection<HeatNetwork> networks) {
-        for (HeatNetwork net : networks) {
-            if (net != null) {
-                adoptTransmittersAndAcceptorsFrom(net);
-                net.deregister();
-            }
-        }
-        register();
+        adoptAllAndRegister(networks);
     }
 
     @Override

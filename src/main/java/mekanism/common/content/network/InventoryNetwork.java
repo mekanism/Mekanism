@@ -41,13 +41,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     }
 
     public InventoryNetwork(Collection<InventoryNetwork> networks) {
-        for (InventoryNetwork net : networks) {
-            if (net != null) {
-                adoptTransmittersAndAcceptorsFrom(net);
-                net.deregister();
-            }
-        }
-        register();
+        adoptAllAndRegister(networks);
     }
 
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {

@@ -2,6 +2,7 @@ package mekanism.common.lib.transmitter;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -77,10 +78,11 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     }
 
     @Override
-    public void adoptTransmittersAndAcceptorsFrom(NETWORK net) {
-        super.adoptTransmittersAndAcceptorsFrom(net);
+    public List<TRANSMITTER> adoptTransmittersAndAcceptorsFrom(NETWORK net) {
+        List<TRANSMITTER> transmittersToUpdate = super.adoptTransmittersAndAcceptorsFrom(net);
         //Update the capacity
         updateCapacity();
+        return transmittersToUpdate;
     }
 
     @Override

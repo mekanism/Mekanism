@@ -84,13 +84,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
 
     public BoxedChemicalNetwork(Collection<BoxedChemicalNetwork> networks) {
         this();
-        for (BoxedChemicalNetwork net : networks) {
-            if (net != null) {
-                adoptTransmittersAndAcceptorsFrom(net);
-                net.deregister();
-            }
-        }
-        register();
+        adoptAllAndRegister(networks);
     }
 
     public boolean isTankEmpty() {
@@ -131,10 +125,10 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     @Override
-    public void adoptTransmittersAndAcceptorsFrom(BoxedChemicalNetwork net) {
+    public List<BoxedPressurizedTube> adoptTransmittersAndAcceptorsFrom(BoxedChemicalNetwork net) {
         float oldScale = currentScale;
         long oldCapacity = getCapacity();
-        super.adoptTransmittersAndAcceptorsFrom(net);
+        List<BoxedPressurizedTube> transmittersToUpdate = super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the chemical scales
         long capacity = getCapacity();
         currentScale = Math.min(1, capacity == 0 ? 0 : (currentScale * oldCapacity + net.currentScale * net.capacity) / capacity);
@@ -168,6 +162,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
                 needsUpdate = true;
             }
         }
+        return transmittersToUpdate;
     }
 
     private void adoptBuffer(BoxedChemicalNetwork net) {

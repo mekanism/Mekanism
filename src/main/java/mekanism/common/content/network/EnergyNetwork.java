@@ -51,13 +51,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     public EnergyNetwork(Collection<EnergyNetwork> networks) {
         this();
-        for (EnergyNetwork net : networks) {
-            if (net != null) {
-                adoptTransmittersAndAcceptorsFrom(net);
-                net.deregister();
-            }
-        }
-        register();
+        adoptAllAndRegister(networks);
     }
 
     @Override
@@ -70,9 +64,9 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     }
 
     @Override
-    public void adoptTransmittersAndAcceptorsFrom(EnergyNetwork net) {
+    public List<UniversalCable> adoptTransmittersAndAcceptorsFrom(EnergyNetwork net) {
         FloatingLong oldCapacity = getCapacityAsFloatingLong();
-        super.adoptTransmittersAndAcceptorsFrom(net);
+        List<UniversalCable> transmittersToUpdate = super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the energy scales
         FloatingLong ourScale = currentScale == 0 ? FloatingLong.ZERO : oldCapacity.multiply(currentScale);
         FloatingLong theirScale = net.currentScale == 0 ? FloatingLong.ZERO : net.getCapacityAsFloatingLong().multiply(net.currentScale);
@@ -82,6 +76,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
             energyContainer.setEnergy(energyContainer.getEnergy().add(net.getBuffer()));
             net.energyContainer.setEmpty();
         }
+        return transmittersToUpdate;
     }
 
     @Nonnull

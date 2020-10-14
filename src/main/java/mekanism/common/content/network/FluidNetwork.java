@@ -14,6 +14,7 @@ import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.math.MathUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -56,13 +57,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
 
     public FluidNetwork(Collection<FluidNetwork> networks) {
         this();
-        for (FluidNetwork net : networks) {
-            if (net != null) {
-                adoptTransmittersAndAcceptorsFrom(net);
-                net.deregister();
-            }
-        }
-        register();
+        adoptAllAndRegister(networks);
     }
 
     @Override
@@ -75,10 +70,10 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     @Override
-    public void adoptTransmittersAndAcceptorsFrom(FluidNetwork net) {
+    public List<MechanicalPipe> adoptTransmittersAndAcceptorsFrom(FluidNetwork net) {
         float oldScale = currentScale;
         long oldCapacity = getCapacity();
-        super.adoptTransmittersAndAcceptorsFrom(net);
+        List<MechanicalPipe> transmittersToUpdate = super.adoptTransmittersAndAcceptorsFrom(net);
         //Merge the fluid scales
         long capacity = getCapacity();
         currentScale = Math.min(1, capacity == 0 ? 0 : (currentScale * oldCapacity + net.currentScale * net.capacity) / capacity);
@@ -94,6 +89,8 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
                 } else if (fluidTank.isFluidEqual(net.fluidTank.getFluid())) {
                     int amount = net.fluidTank.getFluidAmount();
                     MekanismUtils.logMismatchedStackSize(fluidTank.growStack(amount, Action.EXECUTE), amount);
+                } else {
+                    Mekanism.logger.error("Incompatible fluid networks merged.");
                 }
                 net.fluidTank.setEmpty();
             }
@@ -102,6 +99,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
                 needsUpdate = true;
             }
         }
+        return transmittersToUpdate;
     }
 
     @Nonnull

@@ -119,8 +119,18 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      * @param network - network to set to
      */
     public void setTransmitterNetwork(NETWORK network) {
+        setTransmitterNetwork(network, true);
+    }
+
+    /**
+     * Sets this transmitter segment's network to a new value.
+     *
+     * @param network    - network to set to
+     * @param requestNow - Force a request now if not the return value will be if a request is needed
+     */
+    public boolean setTransmitterNetwork(NETWORK network, boolean requestNow) {
         if (theNetwork == network) {
-            return;
+            return false;
         }
         if (isRemote() && theNetwork != null) {
             theNetwork.removeTransmitter(getTransmitter());
@@ -131,9 +141,14 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             if (theNetwork != null) {
                 theNetwork.addTransmitter(getTransmitter());
             }
-        } else {
+        } else if (requestNow) {
+            //If we are requesting now request the update
             requestsUpdate();
+        } else {
+            //Otherwise return that we need to update it
+            return true;
         }
+        return false;
     }
 
     public boolean hasTransmitterNetwork() {

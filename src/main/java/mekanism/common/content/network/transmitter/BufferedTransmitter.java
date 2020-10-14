@@ -1,6 +1,5 @@
 package mekanism.common.content.network.transmitter;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
@@ -51,7 +50,7 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
         if (canHaveIncompatibleNetworks() && transmitter instanceof BufferedTransmitter) {
             BufferedTransmitter<?, ?, ?, ?> other = (BufferedTransmitter<?, ?, ?, ?>) transmitter;
             if (other.canHaveIncompatibleNetworks()) {
-                //If it is a transmitter, only allow declare it as valid, if we don't have a combination
+                //If it is a transmitter, only declare it as valid, if we don't have a combination
                 // of a transmitter with a network and an orphaned transmitter, but only bother if
                 // we can have incompatible networks
                 if (hasTransmitterNetwork() && other.isOrphan() || other.hasTransmitterNetwork() && isOrphan()) {
@@ -149,8 +148,7 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
                     // point where we can make some assumptions about the networks and if it is actually
                     // valid to merge them when otherwise people may try to merge things when they shouldn't
                     // be merged causing unexpected bugs.
-                    network.adoptTransmittersAndAcceptorsFrom(otherNetwork);
-                    List<TRANSMITTER> otherTransmitters = new ArrayList<>(otherNetwork.getTransmitters());
+                    List<TRANSMITTER> otherTransmitters = network.adoptTransmittersAndAcceptorsFrom(otherNetwork);
 
                     //Unregister the other network
                     otherNetwork.deregister();
@@ -164,6 +162,8 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
                     other.refreshConnections(side.getOpposite());
                     //Force all the newly merged transmitters to send a sync update to the client
                     // to ensure that they now have the proper network id on the client
+                    // Note: adoptTransmittersAndAcceptorsFrom will return all the new transmitters except for
+                    // those that already have our network as their network (which should be none of them)
                     for (TRANSMITTER otherTransmitter : otherTransmitters) {
                         otherTransmitter.requestsUpdate();
                     }
