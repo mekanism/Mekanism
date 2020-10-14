@@ -47,6 +47,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
@@ -471,7 +472,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
         super.handleUpdateTag(state, tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> shouldRender = value);
-        if (tag.contains(NBTConstants.COLOR)) {
+        if (tag.contains(NBTConstants.COLOR, NBT.TAG_INT)) {
             color = EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR));
         } else {
             color = null;

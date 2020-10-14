@@ -36,8 +36,11 @@ public class CommonWorldTickHandler {
             LinkedList<ChunkPos> list = new LinkedList<>();
             list.add(chunkCoord);
             chunkRegenMap.put(dimensionName, list);
-        } else if (!chunkRegenMap.get(dimensionName).contains(chunkCoord)) {
-            chunkRegenMap.get(dimensionName).add(chunkCoord);
+        } else {
+            Queue<ChunkPos> regenPositions = chunkRegenMap.get(dimensionName);
+            if (!regenPositions.contains(chunkCoord)) {
+                regenPositions.add(chunkCoord);
+            }
         }
     }
 

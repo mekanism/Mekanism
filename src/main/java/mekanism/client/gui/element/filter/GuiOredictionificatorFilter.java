@@ -88,8 +88,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             filterSaveFailed(MekanismLang.TAG_FILTER_SAME_TAG);
         } else {
             List<String> possibleFilters = TileEntityOredictionificator.possibleFilters.getOrDefault(modid, Collections.emptyList());
-            if (possibleFilters.stream().anyMatch(newFilter::startsWith) &&
-                ItemTags.getCollection().getRegisteredTags().contains(filterLocation)) {
+            if (possibleFilters.stream().anyMatch(newFilter::startsWith) && ItemTags.getCollection().getRegisteredTags().contains(filterLocation)) {
                 filter.setFilter(filterLocation);
                 slotDisplay.updateStackList();
                 text.setText("");

@@ -179,7 +179,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
         readValves(tag);
         assemblies.clear();
-        if (tag.contains(NBTConstants.ASSEMBLIES)) {
+        if (tag.contains(NBTConstants.ASSEMBLIES, NBT.TAG_LIST)) {
             ListNBT list = tag.getList(NBTConstants.ASSEMBLIES, NBT.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++) {
                 assemblies.add(FormedAssembly.read(list.getCompound(i)));

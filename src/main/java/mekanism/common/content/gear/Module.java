@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class Module {
 
@@ -103,7 +104,7 @@ public abstract class Module {
     }
 
     public final void read(CompoundNBT nbt) {
-        if (nbt.contains(NBTConstants.AMOUNT)) {
+        if (nbt.contains(NBTConstants.AMOUNT, NBT.TAG_INT)) {
             installed = nbt.getInt(NBTConstants.AMOUNT);
         }
         init();

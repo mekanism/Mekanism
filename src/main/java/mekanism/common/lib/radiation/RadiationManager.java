@@ -410,7 +410,7 @@ public class RadiationManager {
 
         @Override
         public void read(@Nonnull CompoundNBT nbtTags) {
-            if (nbtTags.contains(NBTConstants.RADIATION_LIST)) {
+            if (nbtTags.contains(NBTConstants.RADIATION_LIST, NBT.TAG_LIST)) {
                 ListNBT list = nbtTags.getList(NBTConstants.RADIATION_LIST, NBT.TAG_COMPOUND);
                 loadedSources = new HashList<>();
                 for (int i = 0; i < list.size(); i++) {

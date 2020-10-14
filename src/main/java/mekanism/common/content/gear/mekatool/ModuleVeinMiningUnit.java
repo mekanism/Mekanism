@@ -61,8 +61,7 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
                 if (!found.contains(pos) && (maxRange == -1 || MekanismUtils.distanceBetween(location, pos) <= maxRange)) {
                     if (world.isBlockPresent(pos) && startBlock == world.getBlockState(pos).getBlock()) {
                         //Make sure to add it as immutable
-                        if (!openSet.contains(pos)) {
-                            openSet.add(pos.toImmutable());
+                        if (openSet.add(pos.toImmutable())) {
                             //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
                             // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
                             Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),

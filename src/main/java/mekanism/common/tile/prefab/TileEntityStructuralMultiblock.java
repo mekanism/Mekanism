@@ -27,6 +27,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism implements IStructuralMultiblock, IConfigurable {
 
@@ -173,7 +174,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
         super.handleUpdateTag(state, tag);
-        clientActiveMultiblock = tag.contains(NBTConstants.ACTIVE_STATE) ? tag.getString(NBTConstants.ACTIVE_STATE) : null;
+        clientActiveMultiblock = tag.contains(NBTConstants.ACTIVE_STATE, NBT.TAG_STRING) ? tag.getString(NBTConstants.ACTIVE_STATE) : null;
     }
 
     @Override

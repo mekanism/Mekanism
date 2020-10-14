@@ -36,6 +36,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class TileEntityMultiblock<T extends MultiblockData> extends TileEntityMekanism implements IMultiblock<T>, IConfigurable {
 
@@ -274,7 +275,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (!getMultiblock().isFormed()) {
             NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.INVENTORY_ID, id -> {
                 cachedID = id;
-                if (nbtTags.contains(NBTConstants.CACHE)) {
+                if (nbtTags.contains(NBTConstants.CACHE, NBT.TAG_COMPOUND)) {
                     cachedData = getManager().createCache();
                     cachedData.load(nbtTags.getCompound(NBTConstants.CACHE));
                 }
