@@ -1,10 +1,12 @@
 package mekanism.common.item;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.ILangEntry;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
@@ -21,11 +23,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Rarity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -58,7 +62,18 @@ public class ItemDictionary extends Item {
         if (player != null && !player.isSneaking()) {
             World world = context.getWorld();
             if (!world.isRemote) {
-                sendTagsToPlayer(player, world.getBlockState(context.getPos()).getBlock().getTags());
+                BlockPos pos = context.getPos();
+                Set<ResourceLocation> blockTags = world.getBlockState(pos).getBlock().getTags();
+                TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : tile.getType().getTags();
+                if (blockTags.isEmpty() && tileTags.isEmpty()) {
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.DICTIONARY_NO_KEY),
+                          Util.DUMMY_UUID);
+                } else {
+                    //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
+                    sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockTags);
+                    sendTagsToPlayer(player, MekanismLang.DICTIONARY_TILE_ENTITY_TYPE_TAGS_FOUND, tileTags);
+                }
             }
             return ActionResultType.SUCCESS;
         }
@@ -70,7 +85,7 @@ public class ItemDictionary extends Item {
     public ActionResultType itemInteractionForEntity(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
         if (!player.isSneaking()) {
             if (!player.world.isRemote) {
-                sendTagsToPlayer(player, entity.getType().getTags());
+                sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_ENTITY_TYPE_TAGS_FOUND, entity.getType().getTags());
             }
             return ActionResultType.SUCCESS;
         }
@@ -96,7 +111,7 @@ public class ItemDictionary extends Item {
                 Block block = world.getBlockState(result.getPos()).getBlock();
                 if (block instanceof FlowingFluidBlock) {
                     if (!world.isRemote()) {
-                        sendTagsToPlayer(player, ((FlowingFluidBlock) block).getFluid().getTags());
+                        sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, ((FlowingFluidBlock) block).getFluid().getTags());
                     }
                     return new ActionResult<>(ActionResultType.SUCCESS, stack);
                 }
@@ -105,11 +120,18 @@ public class ItemDictionary extends Item {
         return new ActionResult<>(ActionResultType.PASS, stack);
     }
 
-    private void sendTagsToPlayer(PlayerEntity player, Set<ResourceLocation> tags) {
+    private void sendTagsOrEmptyToPlayer(PlayerEntity player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
         if (tags.isEmpty()) {
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.DICTIONARY_NO_KEY), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.DICTIONARY_NO_KEY),
+                  Util.DUMMY_UUID);
         } else {
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.DICTIONARY_KEYS_FOUND), Util.DUMMY_UUID);
+            sendTagsToPlayer(player, tagsFoundEntry, tags);
+        }
+    }
+
+    private void sendTagsToPlayer(PlayerEntity player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
+        if (!tags.isEmpty()) {
+            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, tagsFoundEntry), Util.DUMMY_UUID);
             for (ResourceLocation tag : tags) {
                 player.sendMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag), Util.DUMMY_UUID);
             }

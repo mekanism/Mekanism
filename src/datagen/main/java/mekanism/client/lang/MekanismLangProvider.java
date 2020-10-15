@@ -716,7 +716,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Dictionary
         add(MekanismLang.DICTIONARY_KEY, " - %s");
         add(MekanismLang.DICTIONARY_NO_KEY, "No key.");
-        add(MekanismLang.DICTIONARY_KEYS_FOUND, "Key(s) found:");
+        add(MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, "Block Tag(s) found:");
+        add(MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, "Fluid Tag(s) found:");
+        add(MekanismLang.DICTIONARY_ENTITY_TYPE_TAGS_FOUND, "Entity Type Tag(s) found:");
+        add(MekanismLang.DICTIONARY_TILE_ENTITY_TYPE_TAGS_FOUND, "Tile Entity Type Tag(s) found:");
         add(MekanismLang.DICTIONARY_TAG_TYPE, "Tag Type:");
         add(MekanismLang.DICTIONARY_ITEM, "Item");
         add(MekanismLang.DICTIONARY_ITEM_DESC, "Display Item Tags");
@@ -726,6 +729,12 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DICTIONARY_FLUID_DESC, "Display Fluid Tags");
         add(MekanismLang.DICTIONARY_ENTITY_TYPE, "Entity Type");
         add(MekanismLang.DICTIONARY_ENTITY_TYPE_DESC, "Display Entity Type Tags");
+        add(MekanismLang.DICTIONARY_POTION, "Potion");
+        add(MekanismLang.DICTIONARY_POTION_DESC, "Display Potion Tags");
+        add(MekanismLang.DICTIONARY_ENCHANTMENT, "Enchantment");
+        add(MekanismLang.DICTIONARY_ENCHANTMENT_DESC, "Display Enchantment Tags");
+        add(MekanismLang.DICTIONARY_TILE_ENTITY_TYPE, "Tile Entity Type");
+        add(MekanismLang.DICTIONARY_TILE_ENTITY_TYPE_DESC, "Display Tile Entity Type Tags");
         add(MekanismLang.DICTIONARY_GAS, "Gas");
         add(MekanismLang.DICTIONARY_GAS_DESC, "Display Gas Tags");
         add(MekanismLang.DICTIONARY_INFUSE_TYPE, "Infuse Type");

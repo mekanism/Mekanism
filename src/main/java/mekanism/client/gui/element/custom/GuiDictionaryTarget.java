@@ -3,6 +3,7 @@ package mekanism.client.gui.element.custom;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +15,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiRelativeElement;
@@ -24,11 +26,20 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.util.StackUtils;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PotionItem;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.Potions;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -67,6 +78,16 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
     }
 
     @Override
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
+        if (target instanceof ItemStack) {
+            guiObj.renderItemTooltip(matrix, (ItemStack) target, mouseX, mouseY);
+        } else if (target != null) {
+            displayTooltip(matrix, TextComponentUtil.build(target), mouseX, mouseY);
+        }
+    }
+
+    @Override
     public void onClick(double mouseX, double mouseY) {
         if (Screen.hasShiftDown()) {
             setTargetSlot(null, false);
@@ -97,7 +118,29 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
                 Item item = stack.getItem();
                 tags.put(DictionaryTagType.ITEM, TagCache.getItemTags(stack));
                 if (item instanceof BlockItem) {
-                    tags.put(DictionaryTagType.BLOCK, TagCache.getBlockTags(stack));
+                    Block block = ((BlockItem) item).getBlock();
+                    tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(block.getTags()));
+                    if (block instanceof IHasTileEntity) {
+                        //TODO: Try to come up with a better way of doing this, we could check block.hasTileEntity(block.getDefaultState())
+                        // but that doesn't help much as we wouldn't be able to create a tile entity to check the type
+                        // for now we just use our own IHasTileEntity so that we can query the type
+                        tags.put(DictionaryTagType.TILE_ENTITY_TYPE, TagCache.getTagsAsStrings(((IHasTileEntity<?>) block).getTileType().getTags()));
+                    }
+                }
+                Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
+                if (!enchantments.isEmpty()) {
+                    Set<ResourceLocation> enchantmentTags = new HashSet<>();
+                    for (Enchantment enchantment : enchantments.keySet()) {
+                        enchantmentTags.addAll(enchantment.getTags());
+                    }
+                    tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantmentTags));
+                }
+                if (item instanceof PotionItem) {
+                    //TODO: Are there other cases where it may be a potion that we can easily recognize other than just potion items
+                    Potion potion = PotionUtils.getPotionFromItem(itemStack);
+                    if (potion != Potions.EMPTY) {
+                        tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potion.getTags()));
+                    }
                 }
                 //TODO: Support other types of things?
             }
@@ -107,7 +150,7 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
                 target = null;
             } else {
                 target = fluidStack.copy();
-                tags.put(DictionaryTagType.FLUID, TagCache.getFluidTags((FluidStack) target));
+                tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(((FluidStack) target).getFluid().getTags()));
             }
         } else if (newTarget instanceof ChemicalStack) {
             ChemicalStack<?> chemicalStack = (ChemicalStack<?>) newTarget;
@@ -115,14 +158,15 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
                 target = null;
             } else {
                 target = chemicalStack.copy();
+                List<String> chemicalTags = TagCache.getTagsAsStrings(((ChemicalStack<?>) target).getType().getTags());
                 if (target instanceof GasStack) {
-                    tags.put(DictionaryTagType.GAS, TagCache.getChemicalTags((GasStack) target));
+                    tags.put(DictionaryTagType.GAS, chemicalTags);
                 } else if (target instanceof InfusionStack) {
-                    tags.put(DictionaryTagType.INFUSE_TYPE, TagCache.getChemicalTags((InfusionStack) target));
+                    tags.put(DictionaryTagType.INFUSE_TYPE, chemicalTags);
                 } else if (target instanceof PigmentStack) {
-                    tags.put(DictionaryTagType.PIGMENT, TagCache.getChemicalTags((PigmentStack) target));
+                    tags.put(DictionaryTagType.PIGMENT, chemicalTags);
                 } else if (target instanceof SlurryStack) {
-                    tags.put(DictionaryTagType.SLURRY, TagCache.getChemicalTags((SlurryStack) target));
+                    tags.put(DictionaryTagType.SLURRY, chemicalTags);
                 }
             }
         } else {

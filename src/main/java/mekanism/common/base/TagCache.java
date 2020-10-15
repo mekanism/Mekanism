@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.lib.WildcardMatcher;
 import net.minecraft.block.Block;
@@ -21,7 +20,6 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public final class TagCache {
@@ -41,25 +39,6 @@ public final class TagCache {
 
     public static List<String> getItemTags(ItemStack check) {
         return check == null || check.isEmpty() ? Collections.emptyList() : getTagsAsStrings(check.getItem().getTags());
-    }
-
-    public static List<String> getBlockTags(ItemStack check) {
-        if (check == null || check.isEmpty()) {
-            return Collections.emptyList();
-        }
-        Item item = check.getItem();
-        if (item instanceof BlockItem) {
-            return getTagsAsStrings(((BlockItem) item).getBlock().getTags());
-        }
-        return Collections.emptyList();
-    }
-
-    public static List<String> getFluidTags(FluidStack check) {
-        return check == null || check.isEmpty() ? Collections.emptyList() : getTagsAsStrings(check.getFluid().getTags());
-    }
-
-    public static List<String> getChemicalTags(ChemicalStack<?> check) {
-        return check == null || check.isEmpty() ? Collections.emptyList() : getTagsAsStrings(check.getType().getTags());
     }
 
     public static List<String> getTagsAsStrings(Set<ResourceLocation> tags) {
