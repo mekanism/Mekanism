@@ -59,23 +59,27 @@ public class ItemDictionary extends Item {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        if (player != null && !player.isSneaking()) {
+        if (player != null) {
             World world = context.getWorld();
-            if (!world.isRemote) {
-                BlockPos pos = context.getPos();
-                Set<ResourceLocation> blockTags = world.getBlockState(pos).getBlock().getTags();
-                TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-                Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : tile.getType().getTags();
-                if (blockTags.isEmpty() && tileTags.isEmpty()) {
-                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.DICTIONARY_NO_KEY),
-                          Util.DUMMY_UUID);
-                } else {
-                    //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
-                    sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockTags);
-                    sendTagsToPlayer(player, MekanismLang.DICTIONARY_TILE_ENTITY_TYPE_TAGS_FOUND, tileTags);
+            BlockPos pos = context.getPos();
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            if (tile != null || !player.isSneaking()) {
+                //If there is a tile at the position or the player is not sneaking
+                // grab the tags of the block and the tile
+                if (!world.isRemote) {
+                    Set<ResourceLocation> blockTags = world.getBlockState(pos).getBlock().getTags();
+                    Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : tile.getType().getTags();
+                    if (blockTags.isEmpty() && tileTags.isEmpty()) {
+                        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.DICTIONARY_NO_KEY),
+                              Util.DUMMY_UUID);
+                    } else {
+                        //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
+                        sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockTags);
+                        sendTagsToPlayer(player, MekanismLang.DICTIONARY_TILE_ENTITY_TYPE_TAGS_FOUND, tileTags);
+                    }
                 }
+                return ActionResultType.SUCCESS;
             }
-            return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
     }
