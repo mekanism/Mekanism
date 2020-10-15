@@ -86,14 +86,6 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               new ItemStack(planks, 7)
         ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "barrel/" + name));
-        //Bookshelf
-        SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectType.BOOKSHELF, woodType)),
-              new ItemStack(planks, 6),
-              new ItemStack(Items.BOOK, 3),
-              1
-        ).addCondition(condition)
-              .build(consumer, Mekanism.rl(basePath + "bookshelf/" + name));
         //Chest
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectType.CHEST, woodType)),

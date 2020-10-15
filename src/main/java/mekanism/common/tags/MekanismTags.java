@@ -56,7 +56,10 @@ public class MekanismTags {
             }
         }
 
+        public static final INamedTag<Item> CONFIGURATORS = tag("configurators");
         public static final INamedTag<Item> WRENCHES = forgeTag("wrenches");
+        public static final INamedTag<Item> TOOLS = forgeTag("tools");
+        public static final INamedTag<Item> TOOLS_WRENCHES = forgeTag("tools/wrenches");
 
         public static final INamedTag<Item> BATTERIES = forgeTag("batteries");
 

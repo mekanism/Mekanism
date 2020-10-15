@@ -887,7 +887,7 @@ public final class MekanismUtils {
         Item item = it.getItem();
         if (item instanceof IMekWrench) {
             return (IMekWrench) item;
-        } else if (item.isIn(MekanismTags.Items.WRENCHES)) {
+        } else if (item.isIn(MekanismTags.Items.CONFIGURATORS)) {
             return GenericWrench.INSTANCE;
         }
         return null;

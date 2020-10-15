@@ -1383,7 +1383,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
               ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ULTIMATE)
               .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
-              .key(Pattern.CONSTANT, Items.NETHER_STAR)
+              .key(Pattern.CONSTANT, Tags.Items.NETHER_STARS)
               .key(Pattern.ENERGY, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER)
               .key(Pattern.PREVIOUS, MekanismItems.ANTIMATTER_PELLET)
               .build(consumer);

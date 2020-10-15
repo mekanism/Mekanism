@@ -12,6 +12,16 @@
               "source": "block_entity",
               "ops": [
                 {
+                  "source": "componentSecurity.owner",
+                  "target": "mekData.owner",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentSecurity.securityMode",
+                  "target": "mekData.securityMode",
+                  "op": "replace"
+                },
+                {
                   "source": "EnergyContainers",
                   "target": "mekData.EnergyContainers",
                   "op": "replace"

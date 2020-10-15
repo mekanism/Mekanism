@@ -43,7 +43,7 @@ class SawingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "barrel"));
         //Bookshelf
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(Blocks.BOOKSHELF),
+              ItemStackIngredient.from(Tags.Items.BOOKSHELVES),
               new ItemStack(Blocks.OAK_PLANKS, 6),
               new ItemStack(Items.BOOK, 3),
               1

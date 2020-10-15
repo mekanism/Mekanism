@@ -16,7 +16,7 @@
       "item": "mekanism:module_base"
     },
     "#": {
-      "item": "minecraft:nether_star"
+      "tag": "forge:nether_stars"
     },
     "E": {
       "item": "mekanism:ultimate_induction_provider"

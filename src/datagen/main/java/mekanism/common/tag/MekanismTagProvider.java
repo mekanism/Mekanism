@@ -41,7 +41,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addProcessedResources();
         addBeaconTags();
         addBoxBlacklist();
-        addToTag(MekanismTags.Items.WRENCHES, MekanismItems.CONFIGURATOR);
+        addWrenches();
         addToTag(MekanismTags.Items.BATTERIES, MekanismItems.ENERGY_TABLET);
         addToTag(MekanismTags.Items.YELLOW_CAKE_URANIUM, MekanismItems.YELLOW_CAKE_URANIUM);
         addRods();
@@ -179,6 +179,13 @@ public class MekanismTagProvider extends BaseTagProvider {
                     Blocks.WARPED_DOOR,
                     Blocks.IRON_DOOR
               );
+    }
+
+    private void addWrenches() {
+        addToTag(MekanismTags.Items.WRENCHES, MekanismItems.CONFIGURATOR);
+        getItemBuilder(MekanismTags.Items.TOOLS).add(MekanismTags.Items.TOOLS_WRENCHES);
+        addToTag(MekanismTags.Items.TOOLS_WRENCHES, MekanismItems.CONFIGURATOR);
+        getItemBuilder(MekanismTags.Items.CONFIGURATORS).add(MekanismTags.Items.WRENCHES, MekanismTags.Items.TOOLS_WRENCHES);
     }
 
     private void addRods() {
