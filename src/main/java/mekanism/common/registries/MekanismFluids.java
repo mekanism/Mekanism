@@ -29,8 +29,7 @@ public class MekanismFluids {
     //Internal gases
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> ETHENE = FLUIDS.registerLiquidChemical(ChemicalConstants.ETHENE);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SODIUM = FLUIDS.registerLiquidChemical(ChemicalConstants.SODIUM);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> BRINE = FLUIDS.register("brine",
-          fluidAttributes -> fluidAttributes.gaseous().color(0xFFFEEF9C));
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> BRINE = FLUIDS.register("brine", fluidAttributes -> fluidAttributes.color(0xFFFEEF9C));
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> LITHIUM = FLUIDS.registerLiquidChemical(ChemicalConstants.LITHIUM);
 
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> STEAM = FLUIDS.register("steam",

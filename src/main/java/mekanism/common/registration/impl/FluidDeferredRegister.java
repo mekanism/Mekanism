@@ -49,8 +49,7 @@ public class FluidDeferredRegister {
               .temperature(Math.round(constants.getTemperature()))
               .density(density)
               .viscosity(density)
-              .luminosity(constants.getLuminosity())
-              .gaseous());
+              .luminosity(constants.getLuminosity()));
     }
 
     public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> register(String name, UnaryOperator<Builder> fluidAttributes) {
