@@ -2,27 +2,15 @@ package mekanism.additions.common.block.plastic;
 
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.common.block.interfaces.IColoredBlock;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ToolType;
 
-public class BlockPlasticRoad extends Block implements IColoredBlock {
-
-    private final EnumColor color;
+public class BlockPlasticRoad extends BlockPlastic {
 
     public BlockPlasticRoad(EnumColor color) {
-        super(AbstractBlock.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).harvestTool(ToolType.PICKAXE));
-        this.color = color;
-    }
-
-    @Override
-    public EnumColor getColor() {
-        return color;
+        super(color, properties -> properties.hardnessAndResistance(5F, 10F));
     }
 
     @Override

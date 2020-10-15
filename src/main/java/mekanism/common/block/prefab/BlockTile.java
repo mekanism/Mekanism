@@ -69,13 +69,17 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
 
     @Override
     public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
+        return Math.max(super.getLightValue(state, world, pos), getTileLight(world, pos));
+    }
+
+    protected int getTileLight(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         if (MekanismConfig.client.enableAmbientLighting.get() && type.has(AttributeStateActive.class)) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).getActive()) {
                 return ((IActiveState) tile).getActiveLightValue();
             }
         }
-        return super.getLightValue(state, world, pos);
+        return 0;
     }
 
     @Override

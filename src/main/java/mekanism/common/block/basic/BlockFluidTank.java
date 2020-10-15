@@ -34,7 +34,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
     }
 
     @Override
-    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
+    protected int getTileLight(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         int ambientLight = 0;
         TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, world, pos);
         if (tile != null) {

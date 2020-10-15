@@ -74,7 +74,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 public abstract class BlockMekanism extends Block {
 
     protected BlockMekanism(AbstractBlock.Properties properties) {
-        super(properties);
+        super(BlockStateHelper.applyLightLevelAdjustments(properties));
         setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
     }
 

@@ -1,5 +1,6 @@
 package mekanism.common.block.states;
 
+import java.util.Arrays;
 import javax.annotation.Nonnull;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
@@ -8,33 +9,47 @@ import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 
-//TODO: The below TODOs go off an assumption of there being some form of forge patch first to support position information for fluid states
 public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContainer {
 
+    Fluid[] VANILLA_FLUIDS = new Fluid[]{Fluids.WATER, Fluids.LAVA};
+
     default boolean isValidFluid(@Nonnull Fluid fluid) {
-        //TODO: If we support a tile entity then return true, otherwise only allow water
-        return fluid == getSupportedFluid();
+        return Arrays.stream(getSupportedFluids()).anyMatch(supportedFluid -> supportedFluid == fluid);
     }
 
     /**
-     * Gets the fluid this fluid loggable block supports. Overriding this is an easy way to change the block from supporting water logging to supporting a specific
-     * different type of fluid, but dynamic fluid stuff cannot be done without a sizeable patch to forge/a change in vanilla so that {@link BlockState#getFluidState()}
-     * has position information.
+     * Gets the fluids this fluid loggable block supports. Overriding this is an easy way to change the block from supporting water and lava logging to supporting
+     * specific different types of fluid, but dynamic fluid stuff cannot be done without a sizeable patch to forge/a change in vanilla so that {@link
+     * BlockState#getFluidState()} has position information.
+     *
+     * @apiNote If overriding to a different amount of fluids make sure to also override {@link #getFluidLoggedProperty()}
      */
-    default Fluid getSupportedFluid() {
-        return Fluids.WATER;
+    @Nonnull
+    default Fluid[] getSupportedFluids() {
+        return VANILLA_FLUIDS;
+    }
+
+    /**
+     * @return BlockState property for representing fluid loggable blocks
+     *
+     * @apiNote Ovveride this if changing the number of fluids {@link #getSupportedFluids()} returns.
+     */
+    @Nonnull
+    default IntegerProperty getFluidLoggedProperty() {
+        return BlockStateHelper.FLUID_LOGGED;
     }
 
     @Nonnull
     default FluidState getFluid(@Nonnull BlockState state) {
-        if (state.get(BlockStateHelper.FLUID_LOGGED)) {
-            //TODO: Proxy this via the TileEntity if there is one, rather than using a hard coded getSupportedFluid
-            Fluid fluid = getSupportedFluid();
+        int fluidLogged = state.get(getFluidLoggedProperty());
+        if (fluidLogged > 0) {
+            Fluid fluid = getSupportedFluids()[fluidLogged - 1];
             if (fluid instanceof FlowingFluid) {
                 return ((FlowingFluid) fluid).getStillFluidState(false);
             }
@@ -44,16 +59,28 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
     }
 
     default void updateFluids(@Nonnull BlockState state, @Nonnull IWorld world, @Nonnull BlockPos currentPos) {
-        if (state.get(BlockStateHelper.FLUID_LOGGED)) {
-            //TODO: Get proper fluid from the TileEntity
-            Fluid fluid = getSupportedFluid();
+        int fluidLogged = state.get(getFluidLoggedProperty());
+        if (fluidLogged > 0) {
+            Fluid fluid = getSupportedFluids()[fluidLogged - 1];
             world.getPendingFluidTicks().scheduleTick(currentPos, fluid, fluid.getTickRate(world));
         }
     }
 
     @Override
     default boolean canContainFluid(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
-        return !state.get(BlockStateHelper.FLUID_LOGGED) && isValidFluid(fluid);
+        return state.get(getFluidLoggedProperty()) == 0 && isValidFluid(fluid);
+    }
+
+    default int getSupportedFluidPropertyIndex(@Nonnull Fluid fluid) {
+        int fluidLogged = 0;
+        Fluid[] supportedFluids = getSupportedFluids();
+        for (int i = 0; i < supportedFluids.length; i++) {
+            if (supportedFluids[i] == fluid) {
+                fluidLogged = i + 1;
+                break;
+            }
+        }
+        return fluidLogged;
     }
 
     /**
@@ -64,9 +91,8 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
         Fluid fluid = fluidState.getFluid();
         if (canContainFluid(world, pos, state, fluid)) {
             if (!world.isRemote()) {
-                world.setBlockState(pos, state.with(BlockStateHelper.FLUID_LOGGED, true), BlockFlags.DEFAULT);
+                world.setBlockState(pos, state.with(getFluidLoggedProperty(), getSupportedFluidPropertyIndex(fluid)), BlockFlags.DEFAULT);
                 world.getPendingFluidTicks().scheduleTick(pos, fluid, fluid.getTickRate(world));
-                //TODO: Update the TileEntity if there is one with the proper fluid type
             }
             return true;
         }
@@ -76,10 +102,11 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
     @Nonnull
     @Override
     default Fluid pickupFluid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
-        if (state.get(BlockStateHelper.FLUID_LOGGED)) {
-            world.setBlockState(pos, state.with(BlockStateHelper.FLUID_LOGGED, false), BlockFlags.DEFAULT);
-            //TODO: Get proper fluid from block
-            return getSupportedFluid();
+        IntegerProperty fluidLoggedProperty = getFluidLoggedProperty();
+        int fluidLogged = state.get(fluidLoggedProperty);
+        if (fluidLogged > 0) {
+            world.setBlockState(pos, state.with(fluidLoggedProperty, 0), BlockFlags.DEFAULT);
+            return getSupportedFluids()[fluidLogged - 1];
         }
         return Fluids.EMPTY;
     }

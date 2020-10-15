@@ -2,30 +2,18 @@ package mekanism.additions.common.block.plastic;
 
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.common.block.interfaces.IColoredBlock;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SlabBlock;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
-import net.minecraftforge.common.ToolType;
 
-public class BlockPlasticTransparentSlab extends SlabBlock implements IColoredBlock {
-
-    private final EnumColor color;
+public class BlockPlasticTransparentSlab extends BlockPlasticSlab {
 
     public BlockPlasticTransparentSlab(EnumColor color) {
-        super(AbstractBlock.Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).notSolid().harvestTool(ToolType.PICKAXE));
-        this.color = color;
-    }
-
-    @Override
-    public EnumColor getColor() {
-        return color;
+        super(color, Properties::notSolid);
     }
 
     @Override

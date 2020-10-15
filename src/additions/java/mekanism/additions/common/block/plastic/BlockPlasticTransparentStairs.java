@@ -3,30 +3,18 @@ package mekanism.additions.common.block.plastic;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.StairsBlock;
 import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
-import net.minecraftforge.common.ToolType;
 
-public class BlockPlasticTransparentStairs extends StairsBlock implements IColoredBlock {
-
-    private final EnumColor color;
+public class BlockPlasticTransparentStairs extends BlockPlasticStairs {
 
     public BlockPlasticTransparentStairs(IBlockProvider blockProvider, EnumColor color) {
-        super(() -> blockProvider.getBlock().getDefaultState(), Properties.create(BlockPlastic.PLASTIC, color.getMapColor())
-              .hardnessAndResistance(5F, 10F).notSolid().harvestTool(ToolType.PICKAXE));
-        this.color = color;
-    }
-
-    @Override
-    public EnumColor getColor() {
-        return color;
+        super(blockProvider, color, Properties::notSolid);
     }
 
     @Override

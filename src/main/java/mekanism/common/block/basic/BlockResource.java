@@ -18,8 +18,8 @@ public class BlockResource extends BlockMekanism {
 
     //TODO: Isn't as "generic"? So make it be from one BlockType thing?
     public BlockResource(@Nonnull BlockResourceInfo resource) {
-        super(AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(resource.getHardness(), resource.getResistance()).setLightLevel(state -> resource.getLightValue())
-              .setRequiresTool().harvestTool(ToolType.PICKAXE).harvestLevel(resource.getHarvestLevel()));
+        super(AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(resource.getHardness(), resource.getResistance())
+              .setLightLevel(state -> resource.getLightValue()).setRequiresTool().harvestTool(ToolType.PICKAXE).harvestLevel(resource.getHarvestLevel()));
         this.resource = resource;
     }
 

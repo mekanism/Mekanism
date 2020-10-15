@@ -1,13 +1,17 @@
 package mekanism.additions.client;
 
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.block.plastic.BlockPlasticStairs;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.state.BaseBlockStateProvider;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.state.properties.Half;
 import net.minecraft.state.properties.SlabType;
+import net.minecraft.state.properties.StairsShape;
+import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -105,8 +109,8 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
         ModelFile stairsModel = models().getExistingFile(modLoc("block/plastic/stairs"));
         ModelFile stairsInner = models().getExistingFile(modLoc("block/plastic/stairs_inner"));
         ModelFile stairsOuter = models().getExistingFile(modLoc("block/plastic/stairs_outer"));
-        for (IBlockProvider slab : stairs) {
-            stairsBlock((StairsBlock) slab.getBlock(), stairsModel, stairsInner, stairsOuter);
+        for (IBlockProvider stair : stairs) {
+            stairsBlock((BlockPlasticStairs) stair.getBlock(), stairsModel, stairsInner, stairsOuter);
         }
     }
 
@@ -126,8 +130,8 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
         ModelFile stairsModel = models().getExistingFile(modLoc("block/plastic/glow_stairs"));
         ModelFile stairsInner = models().getExistingFile(modLoc("block/plastic/glow_stairs_inner"));
         ModelFile stairsOuter = models().getExistingFile(modLoc("block/plastic/glow_stairs_outer"));
-        for (IBlockProvider slab : stairs) {
-            stairsBlock((StairsBlock) slab.getBlock(), stairsModel, stairsInner, stairsOuter);
+        for (IBlockProvider stair : stairs) {
+            stairsBlock((BlockPlasticStairs) stair.getBlock(), stairsModel, stairsInner, stairsOuter);
         }
     }
 
@@ -147,8 +151,32 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
         ModelFile stairsModel = models().getExistingFile(modLoc("block/plastic/transparent_stairs"));
         ModelFile stairsInner = models().getExistingFile(modLoc("block/plastic/transparent_stairs_inner"));
         ModelFile stairsOuter = models().getExistingFile(modLoc("block/plastic/transparent_stairs_outer"));
-        for (IBlockProvider slab : stairs) {
-            stairsBlock((StairsBlock) slab.getBlock(), stairsModel, stairsInner, stairsOuter);
+        for (IBlockProvider stair : stairs) {
+            stairsBlock((BlockPlasticStairs) stair.getBlock(), stairsModel, stairsInner, stairsOuter);
         }
+    }
+
+    private void stairsBlock(BlockPlasticStairs block, ModelFile stairsModel, ModelFile stairsInner, ModelFile stairsOuter) {
+        //Copy of BlockStateProvider#stairsBlock, except also ignores our fluid logging extension
+        getVariantBuilder(block).forAllStatesExcept(state -> {
+            Direction facing = state.get(StairsBlock.FACING);
+            Half half = state.get(StairsBlock.HALF);
+            StairsShape shape = state.get(StairsBlock.SHAPE);
+            int yRot = (int) facing.rotateY().getHorizontalAngle(); // Stairs model is rotated 90 degrees clockwise for some reason
+            if (shape == StairsShape.INNER_LEFT || shape == StairsShape.OUTER_LEFT) {
+                yRot += 270; // Left facing stairs are rotated 90 degrees clockwise
+            }
+            if (shape != StairsShape.STRAIGHT && half == Half.TOP) {
+                yRot += 90; // Top stairs are rotated 90 degrees clockwise
+            }
+            yRot %= 360;
+            boolean uvlock = yRot != 0 || half == Half.TOP; // Don't set uvlock for states that have no rotation
+            return ConfiguredModel.builder()
+                  .modelFile(shape == StairsShape.STRAIGHT ? stairsModel : shape == StairsShape.INNER_LEFT || shape == StairsShape.INNER_RIGHT ? stairsInner : stairsOuter)
+                  .rotationX(half == Half.BOTTOM ? 0 : 180)
+                  .rotationY(yRot)
+                  .uvLock(uvlock)
+                  .build();
+        }, StairsBlock.WATERLOGGED, block.getFluidLoggedProperty());
     }
 }

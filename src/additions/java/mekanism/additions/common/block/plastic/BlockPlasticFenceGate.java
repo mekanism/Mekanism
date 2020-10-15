@@ -5,6 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceGateBlock;
@@ -21,9 +22,10 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
     private final EnumColor color;
 
     public BlockPlasticFenceGate(EnumColor color) {
-        super(Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).harvestTool(ToolType.PICKAXE));
+        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(BlockPlastic.PLASTIC, color.getMapColor())
+              .hardnessAndResistance(5F, 10F).harvestTool(ToolType.PICKAXE)));
         this.color = color;
-        this.setDefaultState(getDefaultState().with(BlockStateHelper.FLUID_LOGGED, false));
+        this.setDefaultState(getDefaultState().with(getFluidLoggedProperty(), 0));
     }
 
     @Override

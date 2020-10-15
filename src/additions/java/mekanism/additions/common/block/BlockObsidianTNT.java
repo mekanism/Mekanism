@@ -53,7 +53,7 @@ public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
     );
 
     public BlockObsidianTNT() {
-        super(AbstractBlock.Properties.create(Material.TNT));
+        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(Material.TNT)));
         //Uses getDefaultState as starting state to take into account the stuff from super
         setDefaultState(BlockStateHelper.getDefaultState(getDefaultState()));
     }

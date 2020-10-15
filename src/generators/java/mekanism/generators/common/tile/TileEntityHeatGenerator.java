@@ -113,8 +113,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
             return FloatingLong.ZERO;
         }
         //Lava boost
-        FloatingLong boost = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(Arrays.stream(EnumUtils.DIRECTIONS)
-              .filter(side -> world.getFluidState(pos.offset(side)).isTagged(FluidTags.LAVA)).count());
+        long lavaSides = Arrays.stream(EnumUtils.DIRECTIONS).filter(side -> world.getFluidState(pos.offset(side)).isTagged(FluidTags.LAVA)).count();
+        if (getBlockState().getFluidState().isTagged(FluidTags.LAVA)) {
+            //If the heat generator is lava-logged then add it as another side that is adjacent to lava for the heat calculations
+            lavaSides++;
+        }
+        FloatingLong boost = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(lavaSides);
         if (world.getDimensionType().isUltrawarm()) {
             boost = boost.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
         }

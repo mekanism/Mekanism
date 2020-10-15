@@ -1,7 +1,9 @@
 package mekanism.additions.common.block.plastic;
 
+import java.util.function.UnaryOperator;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
+import mekanism.common.block.states.BlockStateHelper;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -14,8 +16,9 @@ public class BlockPlastic extends Block implements IColoredBlock {
 
     private final EnumColor color;
 
-    public BlockPlastic(EnumColor color) {
-        super(AbstractBlock.Properties.create(PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).harvestTool(ToolType.PICKAXE));
+    public BlockPlastic(EnumColor color, UnaryOperator<Properties> propertyModifier) {
+        super(BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(AbstractBlock.Properties.create(PLASTIC, color.getMapColor())
+              .harvestTool(ToolType.PICKAXE))));
         this.color = color;
     }
 

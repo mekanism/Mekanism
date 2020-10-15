@@ -68,7 +68,8 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     public BlockBounding(boolean advanced) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the bounding block
         // Torches cannot be placed on the sides due to vanilla checking the incorrect shape
-        super(AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F).setRequiresTool().variableOpacity());
+        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F)
+              .setRequiresTool().variableOpacity()));
         this.advanced = advanced;
         setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
     }
