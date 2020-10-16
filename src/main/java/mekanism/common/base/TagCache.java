@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import mekanism.common.block.BlockBounding;
+import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.lib.WildcardMatcher;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -19,6 +22,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -31,22 +35,60 @@ public final class TagCache {
     private static final Map<String, List<ItemStack>> itemTagStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<String, List<ItemStack>> modIDStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<Material, List<ItemStack>> materialStacks = new Object2ObjectOpenHashMap<>();
+    private static final Map<Block, List<String>> tileEntityTypeTagCache = new Object2ObjectOpenHashMap<>();
 
-    public static void resetTagCaches() {
+    public static void resetVanillaTagCaches() {
         blockTagStacks.clear();
         itemTagStacks.clear();
     }
 
-    public static List<String> getItemTags(ItemStack check) {
-        return check == null || check.isEmpty() ? Collections.emptyList() : getTagsAsStrings(check.getItem().getTags());
+    public static void resetCustomTagCaches() {
+        tileEntityTypeTagCache.clear();
     }
 
-    public static List<String> getTagsAsStrings(Set<ResourceLocation> tags) {
-        return tags.stream().map(ResourceLocation::toString).collect(Collectors.toList());
+    public static List<String> getItemTags(@Nonnull ItemStack check) {
+        return getTagsAsStrings(check.getItem().getTags());
     }
 
-    public static List<ItemStack> getItemTagStacks(String oreName) {
-        if (itemTagStacks.get(oreName) != null) {
+    public static List<String> getTileEntityTypeTags(@Nonnull Block block) {
+        if (tileEntityTypeTagCache.containsKey(block)) {
+            return tileEntityTypeTagCache.get(block);
+        }
+        List<String> tagsAsString;
+        if (block instanceof IHasTileEntity) {
+            //If it is one of our blocks, short circuit and just lookup the tile's type directly
+            tagsAsString = getTagsAsStrings(((IHasTileEntity<?>) block).getTileType().getTags());
+        } else if (block.hasTileEntity(block.getDefaultState())) {
+            //Otherwise check if the block has a tile entity and if it does, gather all the tile types the block
+            // is valid for as we don't want to risk initializing a tile for another mod as it may have side effects
+            // that we don't know about and don't handle properly
+            Set<ResourceLocation> tileEntityTags = new HashSet<>();
+            for (TileEntityType<?> tileEntityType : ForgeRegistries.TILE_ENTITIES) {
+                if (tileEntityType.isValidBlock(block)) {
+                    tileEntityTags.addAll(tileEntityType.getTags());
+                }
+            }
+            tagsAsString = getTagsAsStrings(tileEntityTags);
+        } else {
+            tagsAsString = Collections.emptyList();
+        }
+        tileEntityTypeTagCache.put(block, tagsAsString);
+        return tagsAsString;
+    }
+
+    public static List<String> getTagsAsStrings(@Nonnull Set<ResourceLocation> tags) {
+        if (tags.isEmpty()) {
+            return Collections.emptyList();
+        }
+        ImmutableList.Builder<String> asStrings = ImmutableList.builder();
+        for (ResourceLocation tag : tags) {
+            asStrings.add(tag.toString());
+        }
+        return asStrings.build();
+    }
+
+    public static List<ItemStack> getItemTagStacks(@Nonnull String oreName) {
+        if (itemTagStacks.containsKey(oreName)) {
             return itemTagStacks.get(oreName);
         }
         ITagCollection<Item> tagCollection = ItemTags.getCollection();
@@ -63,8 +105,8 @@ public final class TagCache {
         return stacks;
     }
 
-    public static List<ItemStack> getBlockTagStacks(String oreName) {
-        if (blockTagStacks.get(oreName) != null) {
+    public static List<ItemStack> getBlockTagStacks(@Nonnull String oreName) {
+        if (blockTagStacks.containsKey(oreName)) {
             return blockTagStacks.get(oreName);
         }
         ITagCollection<Block> tagCollection = BlockTags.getCollection();
@@ -81,8 +123,8 @@ public final class TagCache {
         return stacks;
     }
 
-    public static List<ItemStack> getModIDStacks(String modName, boolean forceBlock) {
-        if (modIDStacks.get(modName) != null) {
+    public static List<ItemStack> getModIDStacks(@Nonnull String modName, boolean forceBlock) {
+        if (modIDStacks.containsKey(modName)) {
             return modIDStacks.get(modName);
         }
         List<ItemStack> stacks = new ArrayList<>();
@@ -101,12 +143,12 @@ public final class TagCache {
         return stacks;
     }
 
-    public static List<ItemStack> getMaterialStacks(ItemStack stack) {
+    public static List<ItemStack> getMaterialStacks(@Nonnull ItemStack stack) {
         return getMaterialStacks(Block.getBlockFromItem(stack.getItem()).getDefaultState().getMaterial());
     }
 
-    public static List<ItemStack> getMaterialStacks(Material material) {
-        if (materialStacks.get(material) != null) {
+    public static List<ItemStack> getMaterialStacks(@Nonnull Material material) {
+        if (materialStacks.containsKey(material)) {
             return materialStacks.get(material);
         }
         List<ItemStack> stacks = new ArrayList<>();

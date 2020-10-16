@@ -12,7 +12,6 @@ import java.util.function.Supplier;
  * whose functional method is {@link #getAsShort()}.
  *
  * @see Supplier
- * @since 1.8
  */
 @FunctionalInterface
 public interface ShortSupplier {

@@ -186,7 +186,8 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
-        MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
+        MinecraftForge.EVENT_BUS.addListener(this::onVanillaTagsReload);
+        MinecraftForge.EVENT_BUS.addListener(this::onCustomTagsReload);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, GenHandler::onBiomeLoad);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
@@ -254,8 +255,12 @@ public class Mekanism {
         return recipeCacheManager;
     }
 
-    private void onTagsReload(TagsUpdatedEvent event) {
-        TagCache.resetTagCaches();
+    private void onVanillaTagsReload(TagsUpdatedEvent.VanillaTagTypes event) {
+        TagCache.resetVanillaTagCaches();
+    }
+
+    private void onCustomTagsReload(TagsUpdatedEvent.CustomTagTypes event) {
+        TagCache.resetCustomTagCaches();
     }
 
     private void addReloadListenersLowest(AddReloadListenerEvent event) {

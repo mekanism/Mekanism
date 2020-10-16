@@ -15,7 +15,6 @@ import java.util.function.Consumer;
  * @param <V> the type of the third argument to the operation
  *
  * @see Consumer
- * @since 1.8
  */
 @FunctionalInterface
 public interface TriConsumer<T, U, V> {

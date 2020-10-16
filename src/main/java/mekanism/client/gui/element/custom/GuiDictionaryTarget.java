@@ -35,7 +35,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.PotionItem;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
@@ -120,11 +119,8 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
                 if (item instanceof BlockItem) {
                     Block block = ((BlockItem) item).getBlock();
                     tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(block.getTags()));
-                    if (block instanceof IHasTileEntity) {
-                        //TODO: Try to come up with a better way of doing this, we could check block.hasTileEntity(block.getDefaultState())
-                        // but that doesn't help much as we wouldn't be able to create a tile entity to check the type
-                        // for now we just use our own IHasTileEntity so that we can query the type
-                        tags.put(DictionaryTagType.TILE_ENTITY_TYPE, TagCache.getTagsAsStrings(((IHasTileEntity<?>) block).getTileType().getTags()));
+                    if (block instanceof IHasTileEntity || block.hasTileEntity(block.getDefaultState())) {
+                        tags.put(DictionaryTagType.TILE_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
                     }
                 }
                 Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
@@ -135,12 +131,9 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
                     }
                     tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantmentTags));
                 }
-                if (item instanceof PotionItem) {
-                    //TODO: Are there other cases where it may be a potion that we can easily recognize other than just potion items
-                    Potion potion = PotionUtils.getPotionFromItem(itemStack);
-                    if (potion != Potions.EMPTY) {
-                        tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potion.getTags()));
-                    }
+                Potion potion = PotionUtils.getPotionFromItem(itemStack);
+                if (potion != Potions.EMPTY) {
+                    tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potion.getTags()));
                 }
                 //TODO: Support other types of things?
             }
