@@ -56,6 +56,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPlayEntityEffectPacket;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.tags.FluidTags;
@@ -64,7 +65,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -134,52 +134,11 @@ public final class MekanismUtils {
         return entity.changeDimension(newWorld, new ITeleporter() {
             @Override
             public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-                //TODO: Switch back to this once https://github.com/MinecraftForge/MinecraftForge/pull/7317 is merged.
-                // Don't forget to remove the AT for enteredNetherPosition when doing so
-                /*Entity repositionedEntity = repositionEntity.apply(false);
+                Entity repositionedEntity = repositionEntity.apply(false);
                 if (repositionedEntity != null) {
                     repositionedEntity.setPositionAndUpdate(target.getX() + xOffset, target.getY() + yOffset, target.getZ() + xOffset);
                 }
-                return repositionedEntity;*/
-                //Temporary handling to avoid null pointers
-                if (entity instanceof ServerPlayerEntity) {
-                    //Copy of the base vanilla server player entity repositionEntity code, modified to use our position instead of null pointer
-                    ServerPlayerEntity player = (ServerPlayerEntity) entity;
-                    //Vanilla copy
-                    currentWorld.getProfiler().startSection("moving");
-                    if (currentWorld.getDimensionKey() == World.OVERWORLD && destWorld.getDimensionKey() == World.THE_NETHER) {
-                        player.enteredNetherPosition = entity.getPositionVec();
-                    }
-                    currentWorld.getProfiler().endStartSection("placing");
-                    player.setWorld(destWorld);
-                    destWorld.addDuringPortalTeleport(player);
-                    player.moveForced(target.getX() + xOffset, target.getY() + yOffset, target.getZ() + zOffset);
-                    currentWorld.getProfiler().endSection();
-                    //Copy of player.func_213846_b(currentWorld);
-                    RegistryKey<World> registrykey = currentWorld.getDimensionKey();
-                    RegistryKey<World> registrykey1 = player.world.getDimensionKey();
-                    CriteriaTriggers.CHANGED_DIMENSION.testForAll(player, registrykey, registrykey1);
-                    if (registrykey == World.THE_NETHER && registrykey1 == World.OVERWORLD && player.enteredNetherPosition != null) {
-                        CriteriaTriggers.NETHER_TRAVEL.trigger(player, player.enteredNetherPosition);
-                    }
-                    if (registrykey1 != World.THE_NETHER) {
-                        player.enteredNetherPosition = null;
-                    }
-                    return player;
-                }
-                //Copy of the base vanilla entity repositionEntity code, modified to use our position instead of null pointer
-                entity.world.getProfiler().endStartSection("reloading");
-                Entity repositionedEntity = entity.getType().create(destWorld);
-                if (repositionedEntity != null) {
-                    repositionedEntity.copyDataFromOld(entity);
-                    repositionedEntity.setLocationAndAngles(target.getX() + xOffset, target.getY() + yOffset, target.getZ() + zOffset, yaw, entity.rotationPitch);
-                    repositionedEntity.setMotion(entity.getMotion());
-                    destWorld.addFromAnotherDimension(repositionedEntity);
-                    if (destWorld.getDimensionKey() == World.THE_END) {
-                        ServerWorld.func_241121_a_(destWorld);
-                    }
-                }
-                return entity;
+                return repositionedEntity;
             }
         });
     }
@@ -1068,7 +1027,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Copy of LivingEntity#onChangedPotionEffect(EffectInstance, boolean) due to not being able to AT the field.
+     * Copy of LivingEntity#onChangedPotionEffect(EffectInstance, boolean) due to not being able to AT the method as it is protected.
      */
     public static void onChangedPotionEffect(LivingEntity entity, EffectInstance id, boolean reapply) {
         entity.potionsNeedUpdate = true;
@@ -1076,6 +1035,10 @@ public final class MekanismUtils {
             Effect effect = id.getPotion();
             effect.removeAttributesModifiersFromEntity(entity, entity.getAttributeManager(), id.getAmplifier());
             effect.applyAttributesModifiersToEntity(entity, entity.getAttributeManager(), id.getAmplifier());
+        }
+        if (entity instanceof ServerPlayerEntity) {
+            ((ServerPlayerEntity) entity).connection.sendPacket(new SPlayEntityEffectPacket(entity.getEntityId(), id));
+            CriteriaTriggers.EFFECTS_CHANGED.trigger(((ServerPlayerEntity) entity));
         }
     }
 
