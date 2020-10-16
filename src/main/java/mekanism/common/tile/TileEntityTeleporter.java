@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -36,18 +37,23 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.play.server.SSetPassengersPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
@@ -255,16 +261,65 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         } else {
             target = target.offset(teleporter.frameDirection);
         }
-        if (entity.world.getDimensionKey() == coord.dimension) {
+        if (entity.getEntityWorld().getDimensionKey() == coord.dimension) {
             entity.setPositionAndUpdate(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
+            if (!entity.getPassengers().isEmpty()) {
+                //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
+                ((ServerChunkProvider) entity.getEntityWorld().getChunkProvider()).sendToAllTracking(entity, new SSetPassengersPacket(entity));
+            }
         } else {
-            MekanismUtils.teleportEntity(entity, ((ServerWorld) teleporter.getWorld()).getServer().getWorld(coord.dimension), target, 0.5, 0, 0.5);
+            ServerWorld newWorld = ((ServerWorld) teleporter.getWorld()).getServer().getWorld(coord.dimension);
+            if (newWorld != null) {
+                Vector3d destination = new Vector3d(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
+                //Note: We grab the passengers here instead of in placeEntity as changeDimension starts by removing any passengers
+                List<Entity> passengers = entity.getPassengers();
+                entity.changeDimension(newWorld, new ITeleporter() {
+                    @Override
+                    public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                        Entity repositionedEntity = repositionEntity.apply(false);
+                        if (repositionedEntity != null) {
+                            //Teleport all passengers to the other dimension and then make them start riding the entity again
+                            for (Entity passenger : passengers) {
+                                teleportPassenger(destWorld, repositionedEntity, passenger);
+                            }
+                        }
+                        return repositionedEntity;
+                    }
+
+                    @Override
+                    public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
+                        return new PortalInfo(destination, entity.getMotion(), entity.rotationYaw, entity.rotationPitch);
+                    }
+                });
+            }
         }
     }
 
+    private static void teleportPassenger(ServerWorld destWorld, Entity repositionedEntity, Entity passenger) {
+        //Note: We grab the passengers here instead of in placeEntity as changeDimension starts by removing any passengers
+        List<Entity> passengers = passenger.getPassengers();
+        passenger.changeDimension(destWorld, new ITeleporter() {
+            @Override
+            public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                Entity repositionedPassenger = repositionEntity.apply(false);
+                if (repositionedPassenger != null) {
+                    //Force our passenger to start riding the new entity again
+                    repositionedPassenger.startRiding(repositionedEntity, true);
+                    //Teleport "nested" passengers
+                    for (Entity passenger : passengers) {
+                        teleportPassenger(destWorld, repositionedPassenger, passenger);
+                    }
+                }
+                return repositionedPassenger;
+            }
+        });
+    }
+
     private List<Entity> getToTeleport() {
+        //Don't get entities that are currently spectator, are a passenger, or recently teleported
+        //Note: Passengers get handled separately
         return world == null || teleportBounds == null ? Collections.emptyList() : world.getEntitiesWithinAABB(Entity.class, teleportBounds,
-              entity -> !entity.isSpectator() && !didTeleport.contains(entity.getUniqueID()));
+              entity -> !entity.isSpectator() && !entity.isPassenger() && !didTeleport.contains(entity.getUniqueID()));
     }
 
     @Nonnull
@@ -275,7 +330,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         } else {
             energyCost = energyCost.add(MekanismConfig.usage.teleporterDimensionPenalty.get());
         }
-        return energyCost;
+        //Factor the number of passengers of this entity into the teleportation energy cost
+        int passengerCount = entity.getRecursivePassengers().size();
+        return passengerCount > 0 ? energyCost.multiply(passengerCount) : energyCost;
     }
 
     /**

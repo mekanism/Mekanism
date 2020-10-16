@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
@@ -45,7 +44,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ILiquidContainer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -85,11 +83,9 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -124,23 +120,6 @@ public final class MekanismUtils {
         if (!actual.isZero()) {
             Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual, new Exception());
         }
-    }
-
-    @Nullable
-    public static Entity teleportEntity(Entity entity, @Nullable ServerWorld newWorld, BlockPos target, double xOffset, double yOffset, double zOffset) {
-        if (newWorld == null) {
-            return null;
-        }
-        return entity.changeDimension(newWorld, new ITeleporter() {
-            @Override
-            public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-                Entity repositionedEntity = repositionEntity.apply(false);
-                if (repositionedEntity != null) {
-                    repositionedEntity.setPositionAndUpdate(target.getX() + xOffset, target.getY() + yOffset, target.getZ() + xOffset);
-                }
-                return repositionedEntity;
-            }
-        });
     }
 
     /**

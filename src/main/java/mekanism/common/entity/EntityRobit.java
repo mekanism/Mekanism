@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,6 +59,7 @@ import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -92,6 +94,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -297,12 +300,23 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         }
         setFollowing(false);
         if (world.getDimensionKey() == homeLocation.dimension) {
-            setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
             setMotion(0, 0, 0);
+            setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
         } else {
-            Entity entity = MekanismUtils.teleportEntity(this, ((ServerWorld) world).getServer().getWorld(homeLocation.dimension), homeLocation.getPos(), 0.5, 0.3, 0.5);
-            if (entity != null) {
-                entity.setMotion(0, 0, 0);
+            ServerWorld newWorld = ((ServerWorld) this.world).getServer().getWorld(homeLocation.dimension);
+            if (newWorld != null) {
+                Vector3d destination = new Vector3d(homeLocation.getX() +  0.5, homeLocation.getY() +  0.3, homeLocation.getZ() +  0.5);
+                changeDimension(newWorld, new ITeleporter() {
+                    @Override
+                    public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                        return repositionEntity.apply(false);
+                    }
+
+                    @Override
+                    public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
+                        return new PortalInfo(destination, Vector3d.ZERO, entity.rotationYaw, entity.rotationPitch);
+                    }
+                });
             }
         }
     }
