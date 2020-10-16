@@ -71,9 +71,12 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     return ActionResultType.FAIL;
                 }
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-                if (tile != null && !SecurityUtils.canAccess(player, tile)) {
-                    //If the player cannot access the tile don't allow them to pick it up with a cardboard box
-                    return ActionResultType.FAIL;
+                if (tile != null) {
+                    if (tile.getType().isIn(MekanismTags.TileEntityTypes.CARDBOARD_BLACKLIST) || !SecurityUtils.canAccess(player, tile)) {
+                        //If the tile is in the tile entity type blacklist or the player cannot access the tile
+                        // don't allow them to pick it up with a cardboard box
+                        return ActionResultType.FAIL;
+                    }
                 }
                 if (!world.isRemote) {
                     BlockData data = new BlockData(state);

@@ -21,6 +21,10 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeTagHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class MekanismTags {
 
@@ -270,6 +274,24 @@ public class MekanismTags {
 
         private static INamedTag<Slurry> tag(String name) {
             return ChemicalTags.SLURRY.tag(Mekanism.rl(name));
+        }
+    }
+
+    public static class TileEntityTypes {
+
+        private TileEntityTypes() {
+        }
+
+        public static final INamedTag<TileEntityType<?>> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
+        public static final INamedTag<TileEntityType<?>> RELOCATION_NOT_SUPPORTED = forgeTag("relocation_not_supported");
+        public static final INamedTag<TileEntityType<?>> IMMOVABLE = forgeTag("immovable");
+
+        private static INamedTag<TileEntityType<?>> tag(String name) {
+            return ForgeTagHandler.makeWrapperTag(ForgeRegistries.TILE_ENTITIES, Mekanism.rl(name));
+        }
+
+        private static INamedTag<TileEntityType<?>> forgeTag(String name) {
+            return ForgeTagHandler.makeWrapperTag(ForgeRegistries.TILE_ENTITIES, new ResourceLocation("forge", name));
         }
     }
 }

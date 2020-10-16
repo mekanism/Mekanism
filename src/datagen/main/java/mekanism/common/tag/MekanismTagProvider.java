@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
+import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
@@ -16,6 +17,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismSlurries;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -179,6 +181,30 @@ public class MekanismTagProvider extends BaseTagProvider {
                     Blocks.WARPED_DOOR,
                     Blocks.IRON_DOOR
               );
+        TileEntityTypeRegistryObject<?>[] tilesToBlacklist = {
+              MekanismTileEntityTypes.CARDBOARD_BOX,
+              MekanismTileEntityTypes.BOUNDING_BLOCK,
+              MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK,
+              MekanismTileEntityTypes.SECURITY_DESK,
+              MekanismTileEntityTypes.DIGITAL_MINER,
+              MekanismTileEntityTypes.SEISMIC_VIBRATOR,
+              MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR,
+              MekanismTileEntityTypes.MODIFICATION_STATION,
+              MekanismTileEntityTypes.ISOTOPIC_CENTRIFUGE,
+              //Don't allow blocks that may have a radioactive substance in them to be picked up as it
+              // will effectively dupe the radiation and also leak out into the atmosphere which is not
+              // what people want, and means that it is likely someone miss clicked.
+              MekanismTileEntityTypes.RADIOACTIVE_WASTE_BARREL,
+              MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER,
+              MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE,
+              MekanismTileEntityTypes.ADVANCED_PRESSURIZED_TUBE,
+              MekanismTileEntityTypes.ELITE_PRESSURIZED_TUBE,
+              MekanismTileEntityTypes.ULTIMATE_PRESSURIZED_TUBE
+        };
+        addToTag(MekanismTags.TileEntityTypes.IMMOVABLE, tilesToBlacklist);
+        addToTag(MekanismTags.TileEntityTypes.RELOCATION_NOT_SUPPORTED, tilesToBlacklist);
+        getTileEntityTypeBuilder(MekanismTags.TileEntityTypes.CARDBOARD_BLACKLIST)
+              .add(MekanismTags.TileEntityTypes.IMMOVABLE, MekanismTags.TileEntityTypes.RELOCATION_NOT_SUPPORTED);
     }
 
     private void addWrenches() {

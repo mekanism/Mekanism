@@ -23,15 +23,19 @@ import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.providers.ISlurryProvider;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.registration.impl.FluidRegistryObject;
+import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.potion.Potion;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
@@ -52,6 +56,9 @@ public abstract class BaseTagProvider implements IDataProvider {
         addTagType(TagType.BLOCK);
         addTagType(TagType.ENTITY_TYPE);
         addTagType(TagType.FLUID);
+        addTagType(TagType.ENCHANTMENT);
+        addTagType(TagType.POTION);
+        addTagType(TagType.TILE_ENTITY_TYPE);
         addTagType(TagType.GAS);
         addTagType(TagType.INFUSE_TYPE);
         addTagType(TagType.PIGMENT);
@@ -144,6 +151,18 @@ public abstract class BaseTagProvider implements IDataProvider {
         return getBuilder(TagType.FLUID, tag);
     }
 
+    protected ForgeRegistryTagBuilder<Enchantment> getEnchantmentBuilder(INamedTag<Enchantment> tag) {
+        return getBuilder(TagType.ENCHANTMENT, tag);
+    }
+
+    protected ForgeRegistryTagBuilder<Potion> getPotionBuilder(INamedTag<Potion> tag) {
+        return getBuilder(TagType.POTION, tag);
+    }
+
+    protected ForgeRegistryTagBuilder<TileEntityType<?>> getTileEntityTypeBuilder(INamedTag<TileEntityType<?>> tag) {
+        return getBuilder(TagType.TILE_ENTITY_TYPE, tag);
+    }
+
     protected ForgeRegistryTagBuilder<Gas> getGasBuilder(INamedTag<Gas> tag) {
         return getBuilder(TagType.GAS, tag);
     }
@@ -194,6 +213,13 @@ public abstract class BaseTagProvider implements IDataProvider {
         ForgeRegistryTagBuilder<Fluid> tagBuilder = getFluidBuilder(tag);
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidRegistryObjects) {
             tagBuilder.add(fluidRO.getStillFluid(), fluidRO.getFlowingFluid());
+        }
+    }
+
+    protected void addToTag(INamedTag<TileEntityType<?>> tag, TileEntityTypeRegistryObject<?>... tileEntityTypeRegistryObjects) {
+        ForgeRegistryTagBuilder<TileEntityType<?>> tagBuilder = getTileEntityTypeBuilder(tag);
+        for (TileEntityTypeRegistryObject<?> tileEntityTypeRO : tileEntityTypeRegistryObjects) {
+            tagBuilder.add(tileEntityTypeRO.get());
         }
     }
 
