@@ -556,7 +556,7 @@
   "dictionary.mekanism.slurry.desc": "Wyświetl tagi zawiesin",
   "dictionary.mekanism.tag_type": "Rodzaj tagu:",
   "dictionary.mekanism.tags_found.block": "Znaleziono tag(i) bloków:",
-  "dictionary.mekanism.tags_found.entity_type": "Entity Type Tag(s) found:",
+  "dictionary.mekanism.tags_found.entity_type": "Znaleziono tag(i) typu jednostki:",
   "dictionary.mekanism.tags_found.fluid": "Znaleziono tag(i) płynów:",
   "dictionary.mekanism.tags_found.tile_entity_type": "Tile Entity Type Tag(s) found:",
   "dictionary.mekanism.tile_entity_type": "Tile Entity Type",
