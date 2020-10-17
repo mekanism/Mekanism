@@ -31,7 +31,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.FluidUtil;
 
 @ParametersAreNonnullByDefault
 public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
@@ -69,7 +69,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             //If we are for a block that handles energy or we have an energy handler capability
             supportedTypes.add(RecipeUpgradeType.ENERGY);
         }
-        if (stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.FLUID)) {
+        if (FluidUtil.getFluidHandler(stack).isPresent() || tile != null && tile.handles(SubstanceType.FLUID)) {
             //If we are for a block that handles fluid or we have an fluid handler capability
             supportedTypes.add(RecipeUpgradeType.FLUID);
         }

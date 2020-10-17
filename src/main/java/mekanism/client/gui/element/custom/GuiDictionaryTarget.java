@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -27,6 +28,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.screen.Screen;
@@ -35,12 +37,15 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhostTarget {
 
@@ -123,6 +128,11 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
                         tags.put(DictionaryTagType.TILE_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
                     }
                 }
+                //Entity type tags
+                if (item instanceof SpawnEggItem) {
+                    tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(((SpawnEggItem) item).getType(stack.getTag()).getTags()));
+                }
+                //Enchantment tags
                 Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
                 if (!enchantments.isEmpty()) {
                     Set<ResourceLocation> enchantmentTags = new HashSet<>();
@@ -131,10 +141,27 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
                     }
                     tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantmentTags));
                 }
+                //Get any potion tags
                 Potion potion = PotionUtils.getPotionFromItem(itemStack);
                 if (potion != Potions.EMPTY) {
                     tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potion.getTags()));
                 }
+                //Get tags of any contained fluids
+                FluidUtil.getFluidHandler(stack).ifPresent(fluidHandler -> {
+                    Set<ResourceLocation> fluidTags = new HashSet<>();
+                    for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
+                        FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);
+                        if (!fluidInTank.isEmpty()) {
+                            fluidTags.addAll(fluidInTank.getFluid().getTags());
+                        }
+                    }
+                    tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidTags));
+                });
+                //Get tags of any contained chemicals
+                addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.GAS_HANDLER_CAPABILITY);
+                addChemicalTags(DictionaryTagType.INFUSE_TYPE, stack, Capabilities.INFUSION_HANDLER_CAPABILITY);
+                addChemicalTags(DictionaryTagType.PIGMENT, stack, Capabilities.PIGMENT_HANDLER_CAPABILITY);
+                addChemicalTags(DictionaryTagType.SLURRY, stack, Capabilities.SLURRY_HANDLER_CAPABILITY);
                 //TODO: Support other types of things?
             }
         } else if (newTarget instanceof FluidStack) {
@@ -171,6 +198,19 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
         if (playSound) {
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
+    }
+
+    private <HANDLER extends IChemicalHandler<?, ?>> void addChemicalTags(DictionaryTagType tagType, ItemStack stack, Capability<HANDLER> capability) {
+        stack.getCapability(capability).ifPresent(handler -> {
+            Set<ResourceLocation> chemicalTags = new HashSet<>();
+            for (int tank = 0; tank < handler.getTanks(); tank++) {
+                ChemicalStack<?> chemicalInTank = handler.getChemicalInTank(tank);
+                if (!chemicalInTank.isEmpty()) {
+                    chemicalTags.addAll(chemicalInTank.getType().getTags());
+                }
+            }
+            tags.put(tagType, TagCache.getTagsAsStrings(chemicalTags));
+        });
     }
 
     @Override
