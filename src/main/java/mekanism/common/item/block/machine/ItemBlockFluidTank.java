@@ -207,7 +207,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                 fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
                                 if (!validFluid(fluidTank, fluidStack)) {
                                     Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                                          fluidState.getFluid(), pos, world, fluid);
+                                          fluidState.getFluid().getRegistryName(), pos, world.getDimensionKey().getLocation(), fluid.getRegistryName());
                                     return new ActionResult<>(ActionResultType.FAIL, stack);
                                 }
                             }

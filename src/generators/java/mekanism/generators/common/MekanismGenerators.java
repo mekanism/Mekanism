@@ -31,7 +31,6 @@ import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.registries.GeneratorsSounds;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -81,13 +80,14 @@ public class MekanismGenerators implements IModule {
         return new ResourceLocation(MekanismGenerators.MODID, path);
     }
 
-    public void commonSetup(FMLCommonSetupEvent event) {
+    private void commonSetup(FMLCommonSetupEvent event) {
         //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
         MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismConfig.general.ETHENE_BURN_TIME,
               () -> MekanismConfig.general.FROM_H2.get().add(MekanismGeneratorsConfig.generators.bioGeneration.get()
                     .multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get()))));
 
-        MinecraftForge.EVENT_BUS.register(this);
+        //Register dispenser behaviors
+        event.enqueueWork(GeneratorsFluids.FLUIDS::registerBucketDispenserBehavior);
 
         BuildCommand.register("turbine", new TurbineBuilder());
         BuildCommand.register("fission", new FissionReactorBuilder());

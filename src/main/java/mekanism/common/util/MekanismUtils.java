@@ -47,7 +47,6 @@ import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
@@ -534,9 +533,11 @@ public final class MekanismUtils {
             if (world.getDimensionType().isUltrawarm() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
                 fluid.getAttributes().vaporize(player, world, pos, fluidStack);
             } else if (canContainFluid) {
-                if (((ILiquidContainer) state.getBlock()).receiveFluid(world, pos, state, ((FlowingFluid) fluid).getStillFluidState(false))) {
-                    playEmptySound(player, world, pos, fluidStack);
+                if (!((ILiquidContainer) state.getBlock()).receiveFluid(world, pos, state, fluid.getAttributes().getStateForPlacement(world, pos, fluidStack))) {
+                    //If something went wrong return that we couldn't actually place it
+                    return false;
                 }
+                playEmptySound(player, world, pos, fluidStack);
             } else {
                 if (!world.isRemote() && isReplaceable && !state.getMaterial().isLiquid()) {
                     world.destroyBlock(pos, true);

@@ -3,17 +3,25 @@ package mekanism.common.registration.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidAttributes.Builder;
@@ -26,6 +34,22 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class FluidDeferredRegister {
 
     private static final ResourceLocation OVERLAY = new ResourceLocation("minecraft", "block/water_overlay");
+    //Based off of vanilla's lava/water bucket dispense behavior
+    @Deprecated
+    private static final IDispenseItemBehavior bucketDispenseBehavior = new DefaultDispenseItemBehavior() {
+        @Nonnull
+        @Override
+        public ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+            World world = source.getWorld();
+            BucketItem bucket = (BucketItem) stack.getItem();
+            BlockPos pos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
+            if (bucket.tryPlaceContainedLiquid(null, world, pos, null)) {
+                bucket.onLiquidPlaced(world, stack, pos);
+                return new ItemStack(Items.BUCKET);
+            }
+            return super.dispenseStack(source, stack);
+        }
+    };
 
     private final List<FluidRegistryObject<?, ?, ?, ?>> allFluids = new ArrayList<>();
 
@@ -87,5 +111,12 @@ public class FluidDeferredRegister {
 
     public List<FluidRegistryObject<?, ?, ?, ?>> getAllFluids() {
         return allFluids;
+    }
+
+    public void registerBucketDispenserBehavior() {
+        for (FluidRegistryObject<?, ?, ?, ?> fluidRO : getAllFluids()) {
+            //TODO: Use DispenseFluidContainer.getInstance() once https://github.com/MinecraftForge/MinecraftForge/pull/7422 gets merged
+            DispenserBlock.registerDispenseBehavior(fluidRO.getBucket(), bucketDispenseBehavior);
+        }
     }
 }
