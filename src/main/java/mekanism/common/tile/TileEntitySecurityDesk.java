@@ -59,35 +59,39 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     public void toggleOverride() {
-        if (getFreq() != null) {
-            getFreq().setOverridden(!getFreq().isOverridden());
+        SecurityFrequency frequency = getFreq();
+        if (frequency != null) {
+            frequency.setOverridden(!frequency.isOverridden());
             markDirty(false);
             // send the security update to other players; this change will be visible on machine security tabs
-            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(getFreq().getOwner(), new SecurityData(getFreq())));
+            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(frequency.getOwner(), new SecurityData(frequency)));
         }
     }
 
     public void removeTrusted(int index) {
-        if (getFreq() != null) {
-            getFreq().removeTrusted(index);
+        SecurityFrequency frequency = getFreq();
+        if (frequency != null) {
+            frequency.removeTrusted(index);
             markDirty(false);
         }
     }
 
     public void setSecurityMode(SecurityMode mode) {
-        if (getFreq() != null) {
-            getFreq().setSecurityMode(mode);
+        SecurityFrequency frequency = getFreq();
+        if (frequency != null) {
+            frequency.setSecurityMode(mode);
             markDirty(false);
             // send the security update to other players; this change will be visible on machine security tabs
-            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(getFreq().getOwner(), new SecurityData(getFreq())));
+            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(frequency.getOwner(), new SecurityData(frequency)));
         }
     }
 
     public void addTrusted(String name) {
-        if (getFreq() != null) {
+        SecurityFrequency frequency = getFreq();
+        if (frequency != null) {
             GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(name);
             if (profile != null) {
-                getFreq().addTrusted(profile.getId(), profile.getName());
+                frequency.addTrusted(profile.getId(), profile.getName());
                 markDirty(false);
             }
         }

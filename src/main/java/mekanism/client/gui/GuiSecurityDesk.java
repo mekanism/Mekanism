@@ -65,8 +65,10 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         super.init();
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 17));
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
-        addButton(new GuiSecurityLight(this, 144, 77, () -> tile.getFreq() == null || tile.ownerUUID == null ||
-                                                            !tile.ownerUUID.equals(getMinecraft().player.getUniqueID()) ? 2 : tile.getFreq().isOverridden() ? 0 : 1));
+        addButton(new GuiSecurityLight(this, 144, 77, () -> {
+            SecurityFrequency frequency = tile.getFreq();
+            return frequency == null || tile.ownerUUID == null || !tile.ownerUUID.equals(getMinecraft().player.getUniqueID()) ? 2 : frequency.isOverridden() ? 0 : 1;
+        }));
         addButton(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
         addButton(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
         addButton(scrollList = new GuiTextScrollList(this, 13, 13, 122, 42));
@@ -104,8 +106,9 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, tile));
                   updateButtons();
               }, (onHover, matrix, xAxis, yAxis) -> {
-            if (tile.getFreq() != null) {
-                displayTooltip(matrix, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(tile.getFreq().isOverridden())), xAxis, yAxis);
+            SecurityFrequency frequency = tile.getFreq();
+            if (frequency != null) {
+                displayTooltip(matrix, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(frequency.isOverridden())), xAxis, yAxis);
             }
         }));
         updateButtons();
@@ -129,7 +132,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     private void updateButtons() {
         SecurityFrequency freq = tile.getFreq();
         if (tile.ownerUUID != null) {
-            scrollList.setText(tile.getFreq() == null ? Collections.emptyList() : tile.getFreq().getTrustedUsernameCache());
+            scrollList.setText(freq == null ? Collections.emptyList() : freq.getTrustedUsernameCache());
             removeButton.active = scrollList.hasSelection();
         }
 
@@ -165,8 +168,9 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         drawString(matrix, ownerComponent, getXSize() - 7 - getStringWidth(ownerComponent), (getYSize() - 96) + 2, titleTextColor());
         drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
         drawCenteredText(matrix, MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, subheadingTextColor());
-        if (tile.getFreq() != null) {
-            drawString(matrix, MekanismLang.SECURITY.translate(tile.getFreq().getSecurityMode()), 13, 103, titleTextColor());
+        SecurityFrequency frequency = tile.getFreq();
+        if (frequency != null) {
+            drawString(matrix, MekanismLang.SECURITY.translate(frequency.getSecurityMode()), 13, 103, titleTextColor());
         } else {
             drawString(matrix, MekanismLang.SECURITY_OFFLINE.translateColored(EnumColor.RED), 13, 103, titleTextColor());
         }

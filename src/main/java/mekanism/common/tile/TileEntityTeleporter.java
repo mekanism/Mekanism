@@ -164,7 +164,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     @Nullable
     private Coord4D getClosest() {
-        return getFrequency(FrequencyType.TELEPORTER) == null ? null : getFrequency(FrequencyType.TELEPORTER).getClosestCoords(Coord4D.get(this));
+        TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
+        return frequency == null ? null : frequency.getClosestCoords(Coord4D.get(this));
     }
 
     private void cleanTeleportCache() {
@@ -229,25 +230,29 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         BlockPos closestPos = closestCoords.getPos();
         TileEntityTeleporter teleporter = MekanismUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestPos);
         if (teleporter != null) {
-            for (Entity entity : getToTeleport()) {
-                entity.getSelfAndPassengers().forEach(e -> teleporter.didTeleport.add(e.getUniqueID()));
-                teleporter.teleDelay = 5;
-                teleportEntityTo(entity, closestCoords, teleporter);
-                if (entity instanceof ServerPlayerEntity) {
-                    alignPlayer((ServerPlayerEntity) entity, closestPos);
-                }
-                for (Coord4D coords : getFrequency(FrequencyType.TELEPORTER).getActiveCoords()) {
-                    BlockPos coordsPos = coords.getPos();
-                    TileEntityTeleporter tile = MekanismUtils.getTileEntity(TileEntityTeleporter.class, world, coordsPos);
-                    if (tile != null) {
-                        if (tile.frameDirection != null) {
-                            coordsPos = coordsPos.down().offset(tile.frameDirection);
-                        }
-                        Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), currentServer.getWorld(coords.dimension), coordsPos);
+            List<Entity> entitiesToTeleport = getToTeleport();
+            if (!entitiesToTeleport.isEmpty()) {
+                Set<Coord4D> activeCoords = getFrequency(FrequencyType.TELEPORTER).getActiveCoords();
+                for (Entity entity : entitiesToTeleport) {
+                    entity.getSelfAndPassengers().forEach(e -> teleporter.didTeleport.add(e.getUniqueID()));
+                    teleporter.teleDelay = 5;
+                    teleportEntityTo(entity, closestCoords, teleporter);
+                    if (entity instanceof ServerPlayerEntity) {
+                        alignPlayer((ServerPlayerEntity) entity, closestPos);
                     }
+                    for (Coord4D coords : activeCoords) {
+                        BlockPos coordsPos = coords.getPos();
+                        TileEntityTeleporter tile = MekanismUtils.getTileEntity(TileEntityTeleporter.class, world, coordsPos);
+                        if (tile != null) {
+                            if (tile.frameDirection != null) {
+                                coordsPos = coordsPos.down().offset(tile.frameDirection);
+                            }
+                            Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), currentServer.getWorld(coords.dimension), coordsPos);
+                        }
+                    }
+                    energyContainer.extract(calculateEnergyCost(entity, closestCoords), Action.EXECUTE, AutomationType.INTERNAL);
+                    world.playSound(entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
                 }
-                energyContainer.extract(calculateEnergyCost(entity, closestCoords), Action.EXECUTE, AutomationType.INTERNAL);
-                world.playSound(entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
             }
         }
     }

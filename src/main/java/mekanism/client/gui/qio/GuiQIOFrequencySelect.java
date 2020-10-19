@@ -77,10 +77,10 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
                   updateButtons();
               }, DialogType.DANGER)));
         addButton(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
-        addButton(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
-              () -> getFrequency() == null ? null : getFrequency().getColor(),
-              () -> sendColorUpdate(0),
-              () -> sendColorUpdate(1)));
+        addButton(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16, () -> {
+            QIOFrequency frequency = getFrequency();
+            return frequency == null ? null : frequency.getColor();
+        }, () -> sendColorUpdate(0), () -> sendColorUpdate(1)));
         addButton(frequencyField = new GuiTextField(this, 50, 106, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
@@ -128,7 +128,8 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
         if (scrollList.hasSelection()) {
             Frequency freq = privateMode ? getPrivateFrequencies().get(scrollList.getSelection()) :
                              getPublicFrequencies().get(scrollList.getSelection());
-            setButton.active = getFrequency() == null || !getFrequency().equals(freq);
+            QIOFrequency frequency = getFrequency();
+            setButton.active = frequency == null || !frequency.equals(freq);
             deleteButton.active = getOwnerUUID().equals(freq.getOwner());
         } else {
             setButton.active = false;
@@ -139,9 +140,12 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     @Override
     public void tick() {
         super.tick();
-        if (!init && getFrequency() != null) {
-            init = true;
-            privateMode = getFrequency().isPrivate();
+        if (!init) {
+            QIOFrequency frequency = getFrequency();
+            if (frequency != null) {
+                init = true;
+                privateMode = frequency.isPrivate();
+            }
         }
         updateButtons();
     }

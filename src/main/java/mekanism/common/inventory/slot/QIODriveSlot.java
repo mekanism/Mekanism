@@ -9,6 +9,7 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
+import mekanism.common.content.qio.QIOFrequency;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -70,14 +71,16 @@ public class QIODriveSlot extends BasicInventorySlot {
     }
 
     private void addDrive(ItemStack stack) {
-        if (driveHolder.getQIOFrequency() != null) {
-            driveHolder.getQIOFrequency().addDrive(key);
+        QIOFrequency frequency = driveHolder.getQIOFrequency();
+        if (frequency != null) {
+            frequency.addDrive(key);
         }
     }
 
     private void removeDrive() {
-        if (driveHolder.getQIOFrequency() != null) {
-            driveHolder.getQIOFrequency().removeDrive(key, true);
+        QIOFrequency frequency = driveHolder.getQIOFrequency();
+        if (frequency != null) {
+            frequency.removeDrive(key, true);
         }
     }
 }

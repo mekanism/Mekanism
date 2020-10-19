@@ -18,6 +18,7 @@ import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -45,8 +46,9 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
 
     public GuiQuantumEntangloporter(MekanismTileContainer<TileEntityQuantumEntangloporter> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        if (tile.getFreq() != null) {
-            privateMode = tile.getFreq().isPrivate();
+        InventoryFrequency frequency = tile.getFreq();
+        if (frequency != null) {
+            privateMode = frequency.isPrivate();
         }
         ySize += 64;
         dynamicSlots = true;
@@ -91,7 +93,8 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
         frequencyField.setInputValidator(InputValidator.or(InputValidator.DIGIT, InputValidator.LETTER, InputValidator.FREQUENCY_CHARS));
         frequencyField.addCheckmarkButton(this::setFrequency);
         addButton(new GuiEnergyTab(() -> {
-            EnergyDisplay storing = tile.getFreq() == null ? EnergyDisplay.ZERO : EnergyDisplay.of(tile.getFreq().storedEnergy.getEnergy(), tile.getFreq().storedEnergy.getMaxEnergy());
+            InventoryFrequency frequency = tile.getFreq();
+            EnergyDisplay storing = frequency == null ? EnergyDisplay.ZERO : EnergyDisplay.of(frequency.storedEnergy.getEnergy(), frequency.storedEnergy.getMaxEnergy());
             EnergyDisplay rate = EnergyDisplay.of(tile.getInputRate());
             return Arrays.asList(MekanismLang.STORING.translate(storing), MekanismLang.MATRIX_INPUT_RATE.translate(rate));
         }, this));
@@ -141,7 +144,8 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
         if (scrollList.hasSelection()) {
             Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(scrollList.getSelection()) :
                              tile.getPublicCache(FrequencyType.INVENTORY).get(scrollList.getSelection());
-            setButton.active = tile.getFrequency(null) == null || !tile.getFrequency(null).equals(freq);
+            Frequency frequency = tile.getFrequency(null);
+            setButton.active = frequency == null || !frequency.equals(freq);
             deleteButton.active = tile.getSecurity().getOwnerUUID().equals(freq.getOwner());
         } else {
             setButton.active = false;

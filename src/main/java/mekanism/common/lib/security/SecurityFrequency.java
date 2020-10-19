@@ -12,6 +12,7 @@ import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.PacketBuffer;
@@ -62,9 +63,9 @@ public class SecurityFrequency extends Frequency {
         override = nbtTags.getBoolean(NBTConstants.OVERRIDE);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
         if (nbtTags.contains(NBTConstants.TRUSTED, NBT.TAG_LIST)) {
-            ListNBT trustedList = nbtTags.getList(NBTConstants.TRUSTED, NBT.TAG_COMPOUND);
-            for (int i = 0; i < trustedList.size(); i++) {
-                UUID uuid = NBTUtil.readUniqueId(trustedList.getCompound(i));
+            ListNBT trustedList = nbtTags.getList(NBTConstants.TRUSTED, NBT.TAG_INT_ARRAY);
+            for (INBT trusted : trustedList) {
+                UUID uuid = NBTUtil.readUniqueId(trusted);
                 addTrusted(uuid, MekanismUtils.getLastKnownUsername(uuid));
             }
         }

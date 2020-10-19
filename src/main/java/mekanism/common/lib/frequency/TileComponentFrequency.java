@@ -21,8 +21,8 @@ public class TileComponentFrequency implements ITileComponent {
     private final Map<FrequencyType<?>, Frequency> heldFrequencies = new LinkedHashMap<>();
     private final Map<FrequencyType<?>, FrequencyTrackingData> supportedFrequencies = new LinkedHashMap<>();
 
-    private final Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> publicCache = new LinkedHashMap<>();
-    private final Map<FrequencyType<? extends Frequency>, List<? extends Frequency>> privateCache = new LinkedHashMap<>();
+    private final Map<FrequencyType<?>, List<? extends Frequency>> publicCache = new LinkedHashMap<>();
+    private final Map<FrequencyType<?>, List<? extends Frequency>> privateCache = new LinkedHashMap<>();
 
     private boolean needsNotify;
 
@@ -85,6 +85,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     private <FREQ extends Frequency> void updateFrequency(FrequencyType<FREQ> type) {
+        //TODO: Instead of doing all of this every tick try and see if we can make a system to mark frequencies as being in need of an update?
         FREQ frequency = getFrequency(type);
         Frequency lastFreq = frequency;
         FrequencyManager<FREQ> manager = getManager(type, frequency);
@@ -105,7 +106,10 @@ public class TileComponentFrequency implements ITileComponent {
                 setNeedsNotify(type);
             }
         }
-        setFrequency(type, frequency);
+        if (frequency != lastFreq) {
+            //If the object changed update the frequency in our table
+            setFrequency(type, frequency);
+        }
     }
 
     private void setNeedsNotify(FrequencyType<?> type) {
@@ -187,11 +191,9 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     private <FREQ extends Frequency> void track(MekanismContainer container, FrequencyType<FREQ> type) {
-        container.track(SyncableFrequencyList.create(() ->
-                    type.getManagerWrapper().getPublicFrequencies(tile, getPublicCache(type)),
+        container.track(SyncableFrequencyList.create(() -> type.getManagerWrapper().getPublicFrequencies(tile, getPublicCache(type)),
               value -> publicCache.put(type, value)));
-        container.track(SyncableFrequencyList.create(() ->
-                    type.getManagerWrapper().getPrivateFrequencies(tile, getPrivateCache(type)),
+        container.track(SyncableFrequencyList.create(() -> type.getManagerWrapper().getPrivateFrequencies(tile, getPrivateCache(type)),
               value -> privateCache.put(type, value)));
     }
 

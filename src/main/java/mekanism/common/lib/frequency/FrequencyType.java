@@ -40,6 +40,9 @@ public class FrequencyType<FREQ extends Frequency> {
           FrequencyManagerWrapper.Type.PUBLIC_PRIVATE,
           IdentitySerializer.NAME);
 
+    public static void init() {
+    }
+
     private final String name;
     private final BiFunction<Object, UUID, FREQ> creationFunction;
     private final Supplier<FREQ> baseCreationFunction;

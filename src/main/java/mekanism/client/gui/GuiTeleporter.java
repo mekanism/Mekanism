@@ -50,8 +50,9 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
 
     public GuiTeleporter(MekanismTileContainer<TileEntityTeleporter> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        if (tile.getFrequency(FrequencyType.TELEPORTER) != null) {
-            privateMode = tile.getFrequency(FrequencyType.TELEPORTER).isPrivate();
+        TeleporterFrequency teleporterFrequency = tile.getFrequency(FrequencyType.TELEPORTER);
+        if (teleporterFrequency != null) {
+            privateMode = teleporterFrequency.isPrivate();
         }
         ySize += 64;
         dynamicSlots = true;
@@ -93,10 +94,10 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             updateButtons();
         }));
         addButton(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
-        addButton(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16,
-              () -> getFrequency() == null ? null : getFrequency().getColor(),
-              () -> sendColorUpdate(0),
-              () -> sendColorUpdate(1)));
+        addButton(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16, () -> {
+            TeleporterFrequency frequency = getFrequency();
+            return frequency == null ? null : frequency.getColor();
+        }, () -> sendColorUpdate(0), () -> sendColorUpdate(1)));
         addButton(frequencyField = new GuiTextField(this, 50, 103, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
@@ -138,7 +139,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         if (scrollList.hasSelection()) {
             Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.TELEPORTER).get(scrollList.getSelection()) :
                              tile.getPublicCache(FrequencyType.TELEPORTER).get(scrollList.getSelection());
-            setButton.active = tile.getFrequency(FrequencyType.TELEPORTER) == null || !tile.getFrequency(FrequencyType.TELEPORTER).equals(freq);
+            TeleporterFrequency teleporterFrequency = tile.getFrequency(FrequencyType.TELEPORTER);
+            setButton.active = teleporterFrequency == null || !teleporterFrequency.equals(freq);
             deleteButton.active = getOwner().equals(freq.getOwner());
         } else {
             setButton.active = false;
@@ -149,9 +151,12 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     @Override
     public void tick() {
         super.tick();
-        if (!init && getFrequency() != null) {
-            init = true;
-            privateMode = getFrequency().isPrivate();
+        if (!init) {
+            TeleporterFrequency frequency = getFrequency();
+            if (frequency != null) {
+                init = true;
+                privateMode = frequency.isPrivate();
+            }
         }
         //TODO: Why do we call updateButtons every tick?
         updateButtons();

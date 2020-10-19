@@ -5,6 +5,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.qio.IQIOFrequencyHolder;
+import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
@@ -29,7 +30,8 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     protected void onUpdateServer() {
         super.onUpdateServer();
         EnumColor prev = lastColor;
-        lastColor = getQIOFrequency() != null ? getQIOFrequency().getColor() : null;
+        QIOFrequency frequency = getQIOFrequency();
+        lastColor = frequency != null ? frequency.getColor() : null;
         if (prev != lastColor) {
             sendUpdatePacket();
         }

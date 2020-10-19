@@ -172,22 +172,25 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         ItemStack slotStack = currentSlot.getStack().copy();
         // special handling for shift-clicking into GUI
         if (!(currentSlot instanceof InventoryContainerSlot)) {
-            if (!player.world.isRemote() && getFrequency() != null) {
-                if (!slotStack.isEmpty()) {
-                    ItemStack ret = getFrequency().addItem(slotStack);
-                    if (slotStack.getCount() != ret.getCount()) {
-                        setTransferTracker(slotStack, slotID);
+            if (!player.world.isRemote()) {
+                QIOFrequency frequency = getFrequency();
+                if (frequency != null) {
+                    if (!slotStack.isEmpty()) {
+                        ItemStack ret = frequency.addItem(slotStack);
+                        if (slotStack.getCount() != ret.getCount()) {
+                            setTransferTracker(slotStack, slotID);
+                        } else {
+                            return ItemStack.EMPTY;
+                        }
+
+                        return updateSlot(player, currentSlot, ret);
                     } else {
+                        if (slotID == lastSlot && !lastStack.isEmpty()) {
+                            doDoubleClickTransfer(player);
+                        }
+                        resetTransferTracker();
                         return ItemStack.EMPTY;
                     }
-
-                    return updateSlot(player, currentSlot, ret);
-                } else {
-                    if (slotID == lastSlot && !lastStack.isEmpty()) {
-                        doDoubleClickTransfer(player);
-                    }
-                    resetTransferTracker();
-                    return ItemStack.EMPTY;
                 }
             }
             return ItemStack.EMPTY;

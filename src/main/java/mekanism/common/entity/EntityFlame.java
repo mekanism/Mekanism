@@ -226,7 +226,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
                     return;
                 }
                 ItemStack result = recipe.get().getRecipeOutput();
-                if (!(result.getItem() instanceof BlockItem) || !tryPlace(shooter, blockPos, hitSide, Block.getBlockFromItem(result.getItem().getItem()).getDefaultState())) {
+                if (!(result.getItem() instanceof BlockItem) || !tryPlace(shooter, blockPos, hitSide, Block.getBlockFromItem(result.getItem()).getDefaultState())) {
                     world.removeBlock(blockPos, false);
                     ItemEntity item = new ItemEntity(world, blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());
                     item.setMotion(0, 0, 0);
