@@ -102,7 +102,6 @@ import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -128,11 +127,6 @@ public class Mekanism {
      * Mekanism logger instance
      */
     public static final Logger logger = LogManager.getLogger(MOD_NAME);
-    /**
-     * Mekanism proxy instance
-     */
-    //TODO: Remove need for having a proxy as it is the legacy way of doing things
-    public static CommonProxy proxy = DistExecutor.safeRunForDist(() -> CommonProxy::createClientProxy, () -> CommonProxy::new);
 
     /**
      * Mekanism mod instance

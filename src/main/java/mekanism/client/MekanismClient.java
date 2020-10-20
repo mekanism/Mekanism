@@ -3,6 +3,7 @@ package mekanism.client;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.sound.SoundHandler;
@@ -13,6 +14,7 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.world.World;
 
 public class MekanismClient {
 
@@ -61,5 +63,10 @@ public class MekanismClient {
         for (IModule module : Mekanism.modulesLoaded) {
             module.launchClient();
         }
+    }
+
+    @Nullable
+    public static World tryGetClientWorld() {
+        return Minecraft.getInstance().world;
     }
 }

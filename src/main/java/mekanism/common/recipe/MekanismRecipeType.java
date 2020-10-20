@@ -30,6 +30,7 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.impl.SmeltingIRecipe;
 import net.minecraft.inventory.IInventory;
@@ -43,6 +44,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements IRecipeType<RECIPE_TYPE> {
@@ -123,7 +126,8 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
     public List<RECIPE_TYPE> getRecipes(@Nullable World world) {
         if (world == null) {
             //Try to get a fallback world if we are in a context that may not have one
-            world = Mekanism.proxy.tryGetMainWorld();
+            //If we are on the client get the client's world, if we are on the server get the current server's world
+            world = DistExecutor.safeRunForDist(() -> MekanismClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().func_241755_D_());
             if (world == null) {
                 //If we failed, then return no recipes
                 return Collections.emptyList();
