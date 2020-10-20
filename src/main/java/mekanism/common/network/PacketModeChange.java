@@ -29,17 +29,17 @@ public class PacketModeChange {
     }
 
     public static void handle(PacketModeChange message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            ItemStack stack = player.getItemStackFromSlot(message.slot);
-            if (!stack.isEmpty() && stack.getItem() instanceof IModeItem) {
-                ((IModeItem) stack.getItem()).changeMode(player, stack, message.shift, message.displayChangeMessage);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player != null) {
+                ItemStack stack = player.getItemStackFromSlot(message.slot);
+                if (!stack.isEmpty() && stack.getItem() instanceof IModeItem) {
+                    ((IModeItem) stack.getItem()).changeMode(player, stack, message.shift, message.displayChangeMessage);
+                }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketModeChange pkt, PacketBuffer buf) {

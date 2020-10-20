@@ -17,18 +17,19 @@ public class PacketKey {
     }
 
     public static void handle(PacketKey message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player == null) {
+                return;
+            }
             if (message.add) {
                 Mekanism.keyMap.add(player.getUniqueID(), message.key);
             } else {
                 Mekanism.keyMap.remove(player.getUniqueID(), message.key);
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketKey pkt, PacketBuffer buf) {

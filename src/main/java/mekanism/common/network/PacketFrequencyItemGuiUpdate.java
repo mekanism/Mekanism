@@ -7,7 +7,8 @@ import java.util.function.Supplier;
 import mekanism.common.inventory.container.item.FrequencyItemContainer;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -36,17 +37,15 @@ public class PacketFrequencyItemGuiUpdate<FREQ extends Frequency> {
     }
 
     public static <FREQ extends Frequency> void handle(PacketFrequencyItemGuiUpdate<FREQ> message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            if (player.openContainer instanceof FrequencyItemContainer) {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ClientPlayerEntity player = Minecraft.getInstance().player;
+            if (player != null && player.openContainer instanceof FrequencyItemContainer) {
                 FrequencyItemContainer<FREQ> container = (FrequencyItemContainer<FREQ>) player.openContainer;
                 container.handleCacheUpdate(message.publicCache, message.privateCache, message.frequency);
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static <FREQ extends Frequency> void encode(PacketFrequencyItemGuiUpdate<FREQ> pkt, PacketBuffer buf) {

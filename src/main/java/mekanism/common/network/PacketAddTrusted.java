@@ -26,17 +26,17 @@ public class PacketAddTrusted {
     }
 
     public static void handle(PacketAddTrusted message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            TileEntitySecurityDesk tile = MekanismUtils.getTileEntity(TileEntitySecurityDesk.class, player.world, message.tilePosition);
-            if (tile != null) {
-                tile.addTrusted(message.name);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player != null) {
+                TileEntitySecurityDesk tile = MekanismUtils.getTileEntity(TileEntitySecurityDesk.class, player.world, message.tilePosition);
+                if (tile != null) {
+                    tile.addTrusted(message.name);
+                }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketAddTrusted pkt, PacketBuffer buf) {

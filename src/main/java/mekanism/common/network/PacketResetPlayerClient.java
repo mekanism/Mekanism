@@ -15,8 +15,9 @@ public class PacketResetPlayerClient {
     }
 
     public static void handle(PacketResetPlayerClient message, Supplier<Context> context) {
-        context.get().enqueueWork(() -> Mekanism.playerState.clearPlayer(message.uuid));
-        context.get().setPacketHandled(true);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> Mekanism.playerState.clearPlayer(message.uuid));
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketResetPlayerClient pkt, PacketBuffer buf) {

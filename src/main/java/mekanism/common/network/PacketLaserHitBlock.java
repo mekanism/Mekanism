@@ -15,12 +15,13 @@ public class PacketLaserHitBlock {
     }
 
     public static void handle(PacketLaserHitBlock message, Supplier<Context> context) {
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
             if (Minecraft.getInstance().world != null) {
                 Minecraft.getInstance().particles.addBlockHitEffects(message.result.getPos(), message.result);
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketLaserHitBlock pkt, PacketBuffer buf) {

@@ -60,11 +60,12 @@ public class PacketConfigurationUpdate {
     }
 
     public static void handle(PacketConfigurationUpdate message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player == null) {
+                return;
+            }
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.pos);
             if (tile instanceof ISideConfiguration) {
                 ISideConfiguration config = (ISideConfiguration) tile;
@@ -117,7 +118,7 @@ public class PacketConfigurationUpdate {
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketConfigurationUpdate pkt, PacketBuffer buf) {

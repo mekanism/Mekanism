@@ -9,7 +9,6 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -43,11 +42,12 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> {
     }
 
     public static <FREQ extends Frequency> void handle(PacketGuiSetFrequency<FREQ> message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.getSender();
+            if (player == null) {
+                return;
+            }
             if (message.updateType.isTile()) {
                 TileEntity tile = MekanismUtils.getTileEntity(player.world, message.tilePosition);
                 if (tile instanceof IFrequencyHandler) {
@@ -84,11 +84,11 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> {
                             }
                         }
                     }
-                    Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(message.currentHand, message.type, player.getUniqueID(), toUse), (ServerPlayerEntity) player);
+                    Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(message.currentHand, message.type, player.getUniqueID(), toUse), player);
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static <FREQ extends Frequency> void encode(PacketGuiSetFrequency<FREQ> pkt, PacketBuffer buf) {

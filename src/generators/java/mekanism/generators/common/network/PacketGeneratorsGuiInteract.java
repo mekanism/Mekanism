@@ -2,7 +2,6 @@ package mekanism.generators.common.network;
 
 import java.util.function.Supplier;
 import mekanism.api.functions.TriConsumer;
-import mekanism.common.network.BasePacketHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
@@ -46,17 +45,17 @@ public class PacketGeneratorsGuiInteract {
     }
 
     public static void handle(PacketGeneratorsGuiInteract message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
-            if (tile != null) {
-                message.interaction.consume(tile, player, message.extra);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player != null) {
+                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
+                if (tile != null) {
+                    message.interaction.consume(tile, player, message.extra);
+                }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketGeneratorsGuiInteract pkt, PacketBuffer buf) {

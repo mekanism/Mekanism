@@ -16,7 +16,8 @@ public class PacketPortableTeleporter {
     }
 
     public static void handle(PacketPortableTeleporter message, Supplier<Context> context) {
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
             Screen screen = Minecraft.getInstance().currentScreen;
             if (screen instanceof GuiPortableTeleporter) {
                 GuiPortableTeleporter teleporter = (GuiPortableTeleporter) screen;
@@ -24,7 +25,7 @@ public class PacketPortableTeleporter {
                 teleporter.updateButtons();
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketPortableTeleporter pkt, PacketBuffer buf) {

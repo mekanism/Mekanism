@@ -12,7 +12,7 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -63,12 +63,9 @@ public class PacketTransporterUpdate {
     }
 
     public static void handle(PacketTransporterUpdate message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, player.world, message.pos);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, Minecraft.getInstance().world, message.pos);
             if (tile != null) {
                 LogisticalTransporterBase transporter = tile.getTransmitter();
                 if (message.isSync) {
@@ -87,7 +84,7 @@ public class PacketTransporterUpdate {
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketTransporterUpdate pkt, PacketBuffer buf) {

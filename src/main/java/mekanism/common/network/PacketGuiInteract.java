@@ -79,21 +79,21 @@ public class PacketGuiInteract {
     }
 
     public static void handle(PacketGuiInteract message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
-            if (tile != null) {
-                if (message.interactionType == Type.INT) {
-                    message.interaction.consume(tile, player, message.extra);
-                } else if (message.interactionType == Type.ITEM) {
-                    message.itemInteraction.consume(tile, player, message.extraItem);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player != null) {
+                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
+                if (tile != null) {
+                    if (message.interactionType == Type.INT) {
+                        message.interaction.consume(tile, player, message.extra);
+                    } else if (message.interactionType == Type.ITEM) {
+                        message.itemInteraction.consume(tile, player, message.extraItem);
+                    }
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketGuiInteract pkt, PacketBuffer buf) {

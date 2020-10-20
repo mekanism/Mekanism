@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.container.property.PropertyData;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -24,9 +24,9 @@ public class PacketUpdateContainerBatch {
     public static void handle(PacketUpdateContainerBatch message, Supplier<Context> context) {
         Context ctx = context.get();
         ctx.enqueueWork(() -> {
-            PlayerEntity player = BasePacketHandler.getPlayer(context);
+            ClientPlayerEntity player = Minecraft.getInstance().player;
             //Ensure that the container is one of ours and that the window id is the same as we expect it to be
-            if (player.openContainer instanceof MekanismContainer && player.openContainer.windowId == message.windowId) {
+            if (player != null && player.openContainer instanceof MekanismContainer && player.openContainer.windowId == message.windowId) {
                 //If so then handle the packet
                 message.data.forEach(data -> data.handleWindowProperty((MekanismContainer) player.openContainer));
             }

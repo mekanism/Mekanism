@@ -17,15 +17,15 @@ public class PacketUpdateInventorySlot {
     }
 
     public static void handle(PacketUpdateInventorySlot message, Supplier<Context> context) {
-        PlayerEntity player = context.get().getSender();
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            player.inventory.setInventorySlotContents(message.slotId, message.containerStack);
-            player.inventory.markDirty();
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player != null) {
+                player.inventory.setInventorySlotContents(message.slotId, message.containerStack);
+                player.inventory.markDirty();
+            }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketUpdateInventorySlot pkt, PacketBuffer buf) {

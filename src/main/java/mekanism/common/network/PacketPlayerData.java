@@ -31,13 +31,14 @@ public class PacketPlayerData {
     }
 
     public static void handle(PacketPlayerData message, Supplier<Context> context) {
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
             Mekanism.playerState.setFlamethrowerState(message.uuid, message.activeFlamethrower, false);
             Mekanism.playerState.setJetpackState(message.uuid, message.activeJetpack, false);
             Mekanism.playerState.setScubaMaskState(message.uuid, message.activeScubaMask, false);
             Mekanism.playerState.setGravitationalModulationState(message.uuid, message.activeModulator, false);
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketPlayerData pkt, PacketBuffer buf) {

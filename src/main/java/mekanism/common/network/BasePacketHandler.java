@@ -9,7 +9,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
@@ -66,10 +65,6 @@ public abstract class BasePacketHandler {
         if (MekanismConfig.general.logPackets.get()) {
             Mekanism.logger.info(log);
         }
-    }
-
-    public static PlayerEntity getPlayer(Supplier<Context> context) {
-        return Mekanism.proxy.getPlayer(context);
     }
 
     private int index = 0;

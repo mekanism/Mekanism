@@ -5,7 +5,8 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.function.Supplier;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -36,12 +37,10 @@ public class PacketQIOItemViewerGuiSync {
     }
 
     public static void handle(PacketQIOItemViewerGuiSync message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            if (player.openContainer instanceof QIOItemViewerContainer) {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ClientPlayerEntity player = Minecraft.getInstance().player;
+            if (player != null && player.openContainer instanceof QIOItemViewerContainer) {
                 QIOItemViewerContainer container = (QIOItemViewerContainer) player.openContainer;
                 switch (message.type) {
                     case BATCH:
@@ -56,7 +55,7 @@ public class PacketQIOItemViewerGuiSync {
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketQIOItemViewerGuiSync pkt, PacketBuffer buf) {

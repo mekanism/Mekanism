@@ -29,26 +29,26 @@ public class PacketNewFilter {
     }
 
     public static void handle(PacketNewFilter message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.pos);
-            if (tile != null) {
-                if (message.filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
-                    ((TileEntityLogisticalSorter) tile).getFilters().add((SorterFilter<?>) message.filter);
-                } else if (message.filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner) {
-                    ((TileEntityDigitalMiner) tile).getFilters().add((MinerFilter<?>) message.filter);
-                } else if (message.filter instanceof OredictionificatorFilter && tile instanceof TileEntityOredictionificator) {
-                    ((TileEntityOredictionificator) tile).getFilters().add((OredictionificatorFilter) message.filter);
-                } else if (message.filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {
-                    ((TileEntityQIOFilterHandler) tile).getFilters().add((QIOFilter<?>) message.filter);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player != null) {
+                TileEntity tile = MekanismUtils.getTileEntity(player.world, message.pos);
+                if (tile != null) {
+                    if (message.filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
+                        ((TileEntityLogisticalSorter) tile).getFilters().add((SorterFilter<?>) message.filter);
+                    } else if (message.filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner) {
+                        ((TileEntityDigitalMiner) tile).getFilters().add((MinerFilter<?>) message.filter);
+                    } else if (message.filter instanceof OredictionificatorFilter && tile instanceof TileEntityOredictionificator) {
+                        ((TileEntityOredictionificator) tile).getFilters().add((OredictionificatorFilter) message.filter);
+                    } else if (message.filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {
+                        ((TileEntityQIOFilterHandler) tile).getFilters().add((QIOFilter<?>) message.filter);
+                    }
+                    tile.markDirty();
                 }
-                tile.markDirty();
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketNewFilter pkt, PacketBuffer buf) {

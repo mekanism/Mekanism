@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.BasePacketHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
@@ -15,7 +14,6 @@ import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.network.PacketBuffer;
@@ -43,19 +41,16 @@ public class PacketGeneratorsGuiButtonPress {
     }
 
     public static void handle(PacketGeneratorsGuiButtonPress message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            if (!player.world.isRemote) {
-                //If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.getSender();
+            if (player != null) {//If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
                 TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
                 if (tile != null) {
                     INamedContainerProvider provider = message.tileButton.getProvider(tile, message.extra);
                     if (provider != null) {
                         //Ensure valid data
-                        NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> {
+                        NetworkHooks.openGui(player, provider, buf -> {
                             buf.writeBlockPos(message.tilePosition);
                             buf.writeVarInt(message.extra);
                         });
@@ -63,7 +58,7 @@ public class PacketGeneratorsGuiButtonPress {
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketGeneratorsGuiButtonPress pkt, PacketBuffer buf) {

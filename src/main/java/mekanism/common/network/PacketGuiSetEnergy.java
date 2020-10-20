@@ -25,17 +25,17 @@ public class PacketGuiSetEnergy {
     }
 
     public static void handle(PacketGuiSetEnergy message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
-            if (tile != null) {
-                message.interaction.consume(tile, message.value);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player != null) {
+                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
+                if (tile != null) {
+                    message.interaction.consume(tile, message.value);
+                }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketGuiSetEnergy pkt, PacketBuffer buf) {

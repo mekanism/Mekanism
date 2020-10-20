@@ -34,11 +34,12 @@ public class PacketEditFilter {
     }
 
     public static void handle(PacketEditFilter message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player == null) {
+                return;
+            }
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.pos);
             if (tile != null) {
                 if (message.filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
@@ -81,7 +82,7 @@ public class PacketEditFilter {
                 tile.markDirty();
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketEditFilter pkt, PacketBuffer buf) {

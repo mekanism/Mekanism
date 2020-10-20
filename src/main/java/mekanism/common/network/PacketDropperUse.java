@@ -53,11 +53,12 @@ public class PacketDropperUse {
     }
 
     public static void handle(PacketDropperUse message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null || message.tankId < 0) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player == null || message.tankId < 0) {
+                return;
+            }
             ItemStack stack = player.inventory.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.pos);
@@ -74,7 +75,7 @@ public class PacketDropperUse {
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     private static <HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> void handleTankType(HANDLER handler,

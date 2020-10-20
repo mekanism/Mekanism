@@ -5,7 +5,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
@@ -37,21 +36,20 @@ public class PacketTeleporterSetColor {
     }
 
     public static void handle(PacketTeleporterSetColor message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            TeleporterFrequency freq = FrequencyType.TELEPORTER.getFrequency(message.identity, player.getUniqueID());
-            if (freq == null || !freq.getOwner().equals(player.getUniqueID())) {
-                return;
-            }
-            freq.setColor(message.extra == 0 ? freq.getColor().getNext() : freq.getColor().getPrevious());
-            if (message.type == Type.ITEM) {
-                Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(message.currentHand, FrequencyType.TELEPORTER, player.getUniqueID(), freq), (ServerPlayerEntity) player);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.getSender();
+            if (player != null) {
+                TeleporterFrequency freq = FrequencyType.TELEPORTER.getFrequency(message.identity, player.getUniqueID());
+                if (freq != null && freq.getOwner().equals(player.getUniqueID())) {
+                    freq.setColor(message.extra == 0 ? freq.getColor().getNext() : freq.getColor().getPrevious());
+                    if (message.type == Type.ITEM) {
+                        Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(message.currentHand, FrequencyType.TELEPORTER, player.getUniqueID(), freq), player);
+                    }
+                }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketTeleporterSetColor pkt, PacketBuffer buf) {

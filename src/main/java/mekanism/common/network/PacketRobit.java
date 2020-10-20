@@ -26,30 +26,25 @@ public class PacketRobit {
     }
 
     public static void handle(PacketRobit message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            EntityRobit robit = (EntityRobit) player.world.getEntityByID(message.entityId);
-            if (robit != null) {
-                switch (message.activeType) {
-                    case FOLLOW:
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player != null) {
+                EntityRobit robit = (EntityRobit) player.world.getEntityByID(message.entityId);
+                if (robit != null) {
+                    if (message.activeType == RobitPacketType.FOLLOW) {
                         robit.setFollowing(!robit.getFollowing());
-                        break;
-                    case NAME:
+                    } else if (message.activeType == RobitPacketType.NAME) {
                         robit.setCustomName(message.name);
-                        break;
-                    case GO_HOME:
+                    } else if (message.activeType == RobitPacketType.GO_HOME) {
                         robit.goHome();
-                        break;
-                    case DROP_PICKUP:
+                    } else if (message.activeType == RobitPacketType.DROP_PICKUP) {
                         robit.setDropPickup(!robit.getDropPickup());
-                        break;
+                    }
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketRobit pkt, PacketBuffer buf) {

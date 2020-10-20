@@ -4,7 +4,8 @@ import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -25,20 +26,20 @@ public class PacketUpdateTile {
     }
 
     public static void handle(PacketUpdateTile message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            TileEntityUpdateable tile = MekanismUtils.getTileEntity(TileEntityUpdateable.class, player.world, message.pos, true);
-            if (tile == null) {
-                Mekanism.logger.info("Update tile packet received for position: {} in world: {}, but no valid tile was found.", message.pos,
-                      player.world.getDimensionKey().getLocation());
-            } else {
-                tile.handleUpdatePacket(message.updateTag);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ClientWorld world = Minecraft.getInstance().world;
+            if (world != null) {
+                TileEntityUpdateable tile = MekanismUtils.getTileEntity(TileEntityUpdateable.class, world, message.pos, true);
+                if (tile == null) {
+                    Mekanism.logger.info("Update tile packet received for position: {} in world: {}, but no valid tile was found.", message.pos,
+                          world.getDimensionKey().getLocation());
+                } else {
+                    tile.handleUpdatePacket(message.updateTag);
+                }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketUpdateTile pkt, PacketBuffer buf) {

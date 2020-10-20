@@ -35,26 +35,26 @@ public class PacketGuiItemDataRequest {
     }
 
     public static void handle(PacketGuiItemDataRequest message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            if (message.type == Type.FREQUENCY_LIST_GUI) {
-                if (player.openContainer instanceof FrequencyItemContainer) {
-                    handleFrequencyList(message, player);
-                }
-            } else if (message.type == Type.QIO_ITEM_VIEWER) {
-                if (player.openContainer instanceof QIOItemViewerContainer) {
-                    QIOItemViewerContainer container = (QIOItemViewerContainer) player.openContainer;
-                    QIOFrequency freq = container.getFrequency();
-                    if (!player.world.isRemote() && freq != null) {
-                        freq.openItemViewer((ServerPlayerEntity) player);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.getSender();
+            if (player != null) {
+                if (message.type == Type.FREQUENCY_LIST_GUI) {
+                    if (player.openContainer instanceof FrequencyItemContainer) {
+                        handleFrequencyList(message, player);
+                    }
+                } else if (message.type == Type.QIO_ITEM_VIEWER) {
+                    if (player.openContainer instanceof QIOItemViewerContainer) {
+                        QIOItemViewerContainer container = (QIOItemViewerContainer) player.openContainer;
+                        QIOFrequency freq = container.getFrequency();
+                        if (!player.world.isRemote() && freq != null) {
+                            freq.openItemViewer(player);
+                        }
                     }
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     private static <FREQ extends Frequency> void handleFrequencyList(PacketGuiItemDataRequest message, PlayerEntity player) {

@@ -21,11 +21,8 @@ public class PacketGearStateUpdate {
     }
 
     public static void handle(PacketGearStateUpdate message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
             if (message.gearType == GearType.FLAMETHROWER) {
                 Mekanism.playerState.setFlamethrowerState(message.uuid, message.state, false);
             } else if (message.gearType == GearType.JETPACK) {
@@ -36,13 +33,14 @@ public class PacketGearStateUpdate {
                 Mekanism.playerState.setGravitationalModulationState(message.uuid, message.state, false);
             }
             //If we got this packet on the server, inform all clients tracking the changed player
-            if (!player.world.isRemote) {
+            PlayerEntity player = ctx.getSender();
+            if (player != null) {
                 //Note: We just resend all the data for the updated player as the packet size is about the same
                 // and this allows us to separate the packet into a server to client and client to server packet
                 Mekanism.packetHandler.sendToAllTracking(new PacketPlayerData(message.uuid), player);
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketGearStateUpdate pkt, PacketBuffer buf) {

@@ -20,17 +20,17 @@ public class PacketRadialModeChange {
     }
 
     public static void handle(PacketRadialModeChange message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            ItemStack stack = player.getItemStackFromSlot(message.slot);
-            if (!stack.isEmpty() && stack.getItem() instanceof IRadialModeItem) {
-                setMode(stack, (IRadialModeItem<?>) stack.getItem(), player, message.change);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player != null) {
+                ItemStack stack = player.getItemStackFromSlot(message.slot);
+                if (!stack.isEmpty() && stack.getItem() instanceof IRadialModeItem) {
+                    setMode(stack, (IRadialModeItem<?>) stack.getItem(), player, message.change);
+                }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static <TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> void setMode(ItemStack stack, IRadialModeItem<TYPE> item, PlayerEntity player, int index) {

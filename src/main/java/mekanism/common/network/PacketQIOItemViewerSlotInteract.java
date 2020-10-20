@@ -8,7 +8,6 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -40,12 +39,10 @@ public class PacketQIOItemViewerSlotInteract {
     }
 
     public static void handle(PacketQIOItemViewerSlotInteract message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            if (player.openContainer instanceof QIOItemViewerContainer) {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.getSender();
+            if (player != null && player.openContainer instanceof QIOItemViewerContainer) {
                 QIOItemViewerContainer container = (QIOItemViewerContainer) player.openContainer;
                 QIOFrequency freq = container.getFrequency();
                 ItemStack curStack = player.inventory.getItemStack();
@@ -57,7 +54,7 @@ public class PacketQIOItemViewerSlotInteract {
                         } else if (InventoryUtils.areItemsStackable(ret, curStack)) {
                             curStack.grow(ret.getCount());
                         }
-                        ((ServerPlayerEntity) player).connection.sendPacket(new SSetSlotPacket(-1, -1, player.inventory.getItemStack()));
+                        player.connection.sendPacket(new SSetSlotPacket(-1, -1, player.inventory.getItemStack()));
                     } else if (message.type == Type.SHIFT_TAKE) {
                         HashedItem itemType = freq.getTypeByUUID(message.typeUUID);
                         if (itemType != null) {
@@ -76,12 +73,12 @@ public class PacketQIOItemViewerSlotInteract {
                             ItemStack newStack = StackUtils.size(curStack, curStack.getCount() - (message.count - rejects.getCount()));
                             player.inventory.setItemStack(newStack);
                         }
-                        ((ServerPlayerEntity) player).connection.sendPacket(new SSetSlotPacket(-1, -1, player.inventory.getItemStack()));
+                        player.connection.sendPacket(new SSetSlotPacket(-1, -1, player.inventory.getItemStack()));
                     }
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketQIOItemViewerSlotInteract pkt, PacketBuffer buf) {

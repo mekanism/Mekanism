@@ -11,7 +11,6 @@ import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -51,11 +50,8 @@ public class PacketTransmitterUpdate {
     }
 
     public static void handle(PacketTransmitterUpdate message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
             DynamicNetwork<?, ?, ?> clientNetwork = TransmitterNetworkRegistry.getInstance().getClientNetwork(message.networkID);
             if (clientNetwork != null && message.packetType.networkTypeMatches(clientNetwork)) {
                 //Note: We set the information even if opaque transmitters is true in case the client turns the config setting off
@@ -68,7 +64,7 @@ public class PacketTransmitterUpdate {
                 ((DynamicBufferedNetwork<?, ?, ?, ?>) clientNetwork).currentScale = message.scale;
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketTransmitterUpdate pkt, PacketBuffer buf) {

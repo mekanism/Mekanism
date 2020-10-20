@@ -21,17 +21,17 @@ public class PacketRemoveModule {
     }
 
     public static void handle(PacketRemoveModule message, Supplier<Context> context) {
-        PlayerEntity player = context.get().getSender();
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            TileEntityModificationStation tile = MekanismUtils.getTileEntity(TileEntityModificationStation.class, player.world, message.pos);
-            if (tile != null) {
-                tile.removeModule(player, message.moduleType);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = ctx.getSender();
+            if (player != null) {
+                TileEntityModificationStation tile = MekanismUtils.getTileEntity(TileEntityModificationStation.class, player.world, message.pos);
+                if (tile != null) {
+                    tile.removeModule(player, message.moduleType);
+                }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketRemoveModule pkt, PacketBuffer buf) {

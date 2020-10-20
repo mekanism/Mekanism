@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -39,11 +40,12 @@ public class PacketPortableTeleporterGui {
     }
 
     public static void handle(PacketPortableTeleporterGui message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.getSender();
+            if (player == null) {
+                return;
+            }
             ItemStack stack = player.getHeldItem(message.currentHand);
             if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableTeleporter) {
                 if (message.packetType == PortableTeleporterPacketType.DATA_REQUEST) {
@@ -70,19 +72,16 @@ public class PacketPortableTeleporterGui {
                                 }
                                 teleporter.didTeleport.add(player.getUniqueID());
                                 teleporter.teleDelay = 5;
-                                if (player instanceof ServerPlayerEntity) {
-                                    ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
-                                }
+                                player.connection.floatingTickCount = 0;
                                 player.closeScreen();
                                 Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.getPosition()), player.world, coords.getPos());
                                 TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
                                 BlockPos coordsPos = coords.getPos();
-                                if (teleporter.frameDirection() != null) {
-                                    coordsPos = coordsPos.down().offset(teleporter.frameDirection());
+                                Direction frameDirection = teleporter.frameDirection();
+                                if (frameDirection != null) {
+                                    coordsPos = coordsPos.down().offset(frameDirection);
                                 }
-                                if (player instanceof ServerPlayerEntity) {
-                                    TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coordsPos);
-                                }
+                                TileEntityTeleporter.alignPlayer(player, coordsPos);
                                 player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), teleWorld, coordsPos);
                             } catch (Exception ignored) {
@@ -92,7 +91,7 @@ public class PacketPortableTeleporterGui {
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketPortableTeleporterGui pkt, PacketBuffer buf) {

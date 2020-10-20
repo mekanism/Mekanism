@@ -21,16 +21,14 @@ public class PacketOpenGui {
     }
 
     public static void handle(PacketOpenGui message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            if (message.type.shouldOpenForPlayer.test(player)) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, message.type.containerSupplier.get());
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.getSender();
+            if (player != null && message.type.shouldOpenForPlayer.test(player)) {
+                NetworkHooks.openGui(player, message.type.containerSupplier.get());
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketOpenGui pkt, PacketBuffer buf) {

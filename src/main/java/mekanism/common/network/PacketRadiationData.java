@@ -4,7 +4,8 @@ import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -35,18 +36,18 @@ public class PacketRadiationData {
 
     public static void handle(PacketRadiationData message, Supplier<Context> context) {
         // Queue up the processing on the central thread
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
             if (message.type == RadiationPacketType.SCALE) {
                 Mekanism.radiationManager.setClientScale(message.scale);
             } else if (message.type == RadiationPacketType.PLAYER) {
-                player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(message.radiation));
+                ClientPlayerEntity player = Minecraft.getInstance().player;
+                if (player != null) {
+                    player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(message.radiation));
+                }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketRadiationData pkt, PacketBuffer buf) {

@@ -41,7 +41,8 @@ public class PacketSecurityUpdate {
     }
 
     public static void handle(PacketSecurityUpdate message, Supplier<Context> context) {
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
             if (message.isUpdate) {
                 MekanismClient.clientUUIDMap.put(message.playerUUID, message.playerUsername);
                 if (message.securityData != null) {
@@ -53,7 +54,7 @@ public class PacketSecurityUpdate {
                 message.uuidMap.forEach(MekanismClient.clientUUIDMap::put);
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketSecurityUpdate pkt, PacketBuffer buf) {

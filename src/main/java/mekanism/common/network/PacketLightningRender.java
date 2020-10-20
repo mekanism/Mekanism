@@ -26,8 +26,9 @@ public class PacketLightningRender {
     }
 
     public static void handle(PacketLightningRender message, Supplier<Context> context) {
-        context.get().enqueueWork(() -> RenderTickHandler.renderBolt(message.renderer, message.preset.boltCreator.create(message.start, message.end, message.segments)));
-        context.get().setPacketHandled(true);
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> RenderTickHandler.renderBolt(message.renderer, message.preset.boltCreator.create(message.start, message.end, message.segments)));
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketLightningRender pkt, PacketBuffer buf) {

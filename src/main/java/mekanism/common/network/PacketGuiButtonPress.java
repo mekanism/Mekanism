@@ -29,7 +29,6 @@ import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -86,18 +85,19 @@ public class PacketGuiButtonPress {
     }
 
     public static void handle(PacketGuiButtonPress message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.getSender();
+            if (player == null) {
+                return;
+            }
             if (message.type == Type.ENTITY) {
                 Entity entity = player.world.getEntityByID(message.entityID);
                 if (entity != null) {
                     INamedContainerProvider provider = message.entityButton.getProvider(entity);
                     if (provider != null) {
                         //Ensure valid data
-                        NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> buf.writeVarInt(message.entityID));
+                        NetworkHooks.openGui(player, provider, buf -> buf.writeVarInt(message.entityID));
                     }
                 }
             } else if (message.type == Type.TILE) {
@@ -106,7 +106,7 @@ public class PacketGuiButtonPress {
                     INamedContainerProvider provider = message.tileButton.getProvider(tile, message.extra);
                     if (provider != null) {
                         //Ensure valid data
-                        NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> {
+                        NetworkHooks.openGui(player, provider, buf -> {
                             buf.writeBlockPos(message.tilePosition);
                             buf.writeVarInt(message.extra);
                         });
@@ -117,7 +117,7 @@ public class PacketGuiButtonPress {
                 if (stack.getItem() instanceof IGuiItem) {
                     INamedContainerProvider provider = message.itemButton.getProvider(stack, message.hand);
                     if (provider != null) {
-                        NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> {
+                        NetworkHooks.openGui(player, provider, buf -> {
                             buf.writeEnumValue(message.hand);
                             buf.writeItemStack(stack);
                         });
@@ -125,7 +125,7 @@ public class PacketGuiButtonPress {
                 }
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketGuiButtonPress pkt, PacketBuffer buf) {

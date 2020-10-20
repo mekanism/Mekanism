@@ -6,7 +6,6 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -40,25 +39,24 @@ public class PacketQIOSetColor {
     }
 
     public static void handle(PacketQIOSetColor message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            QIOFrequency freq = FrequencyType.QIO.getFrequency(message.identity, player.getUniqueID());
-            if (freq == null || !freq.getOwner().equals(player.getUniqueID())) {
-                return;
-            }
-            freq.setColor(message.extra == 0 ? freq.getColor().getNext() : freq.getColor().getPrevious());
-            if (message.type == Type.ITEM) {
-                ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
-                if (stack.getItem() instanceof ItemPortableQIODashboard) {
-                    ((ItemPortableQIODashboard) stack.getItem()).setColor(stack, freq.getColor());
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.getSender();
+            if (player != null) {
+                QIOFrequency freq = FrequencyType.QIO.getFrequency(message.identity, player.getUniqueID());
+                if (freq != null && freq.getOwner().equals(player.getUniqueID())) {
+                    freq.setColor(message.extra == 0 ? freq.getColor().getNext() : freq.getColor().getPrevious());
+                    if (message.type == Type.ITEM) {
+                        ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+                        if (stack.getItem() instanceof ItemPortableQIODashboard) {
+                            ((ItemPortableQIODashboard) stack.getItem()).setColor(stack, freq.getColor());
+                        }
+                        Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(message.currentHand, FrequencyType.QIO, player.getUniqueID(), freq), player);
+                    }
                 }
-                Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(message.currentHand, FrequencyType.QIO, player.getUniqueID(), freq), (ServerPlayerEntity) player);
             }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketQIOSetColor pkt, PacketBuffer buf) {

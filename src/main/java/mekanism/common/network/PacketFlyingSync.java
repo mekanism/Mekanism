@@ -1,7 +1,8 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -16,15 +17,15 @@ public class PacketFlyingSync {
     }
 
     public static void handle(PacketFlyingSync message, Supplier<Context> context) {
-        PlayerEntity player = BasePacketHandler.getPlayer(context);
-        if (player == null) {
-            return;
-        }
-        context.get().enqueueWork(() -> {
-            player.abilities.allowFlying = message.allowFlying;
-            player.abilities.isFlying = message.isFlying;
+        Context ctx = context.get();
+        ctx.enqueueWork(() -> {
+            ClientPlayerEntity player = Minecraft.getInstance().player;
+            if (player != null) {
+                player.abilities.allowFlying = message.allowFlying;
+                player.abilities.isFlying = message.isFlying;
+            }
         });
-        context.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     public static void encode(PacketFlyingSync pkt, PacketBuffer buf) {
