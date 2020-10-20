@@ -1,14 +1,14 @@
 package mekanism.common.lib.distribution.target;
 
 import mekanism.common.lib.distribution.SplitInfo;
-import mekanism.common.lib.distribution.Target;
 
-public class PartialIntegerTarget extends Target<Integer, Integer, Integer> {
+public class PartialIntegerTarget extends IntegerTarget {
 
     @Override
     protected void acceptAmount(Integer handler, SplitInfo<Integer> splitInfo, Integer amount) {
         //Mark that we accepted half of it
         splitInfo.send(amount / 2);
+        accept(amount / 2);
     }
 
     @Override

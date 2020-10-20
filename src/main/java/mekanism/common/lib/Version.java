@@ -1,5 +1,6 @@
 package mekanism.common.lib;
 
+import net.minecraftforge.fml.ModContainer;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 
 /**
@@ -44,6 +45,14 @@ public class Version {
      */
     public Version(ArtifactVersion artifactVersion) {
         this(artifactVersion.getMajorVersion(), artifactVersion.getMinorVersion(), artifactVersion.getIncrementalVersion());
+    }
+
+    /**
+     * Helper to make it so this is the only class with weird errors in IntelliJ (that don't actually exist), instead of having our main class
+     * also have "errors"
+     */
+    public Version(ModContainer container) {
+        this(container.getModInfo().getVersion());
     }
 
     /**

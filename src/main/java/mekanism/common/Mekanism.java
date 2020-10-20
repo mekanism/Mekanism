@@ -222,7 +222,7 @@ public class Mekanism {
         modEventBus.addGenericListener(Slurry.class, this::registerSlurries);
         modEventBus.addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
+        versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
     }
 
     //Register the empty chemicals
@@ -340,6 +340,7 @@ public class Mekanism {
         //Register player tracker
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTracker());
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTickHandler());
+        MinecraftForge.EVENT_BUS.register(Mekanism.worldTickHandler);
 
         MinecraftForge.EVENT_BUS.register(radiationManager);
 
@@ -354,9 +355,6 @@ public class Mekanism {
 
         //Packet registrations
         packetHandler.initialize();
-
-        //Load proxy
-        proxy.init();
 
         //Fake player info
         logger.info("Fake player readout: UUID = {}, name = {}", gameProfile.getId(), gameProfile.getName());

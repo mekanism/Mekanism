@@ -73,7 +73,7 @@ public class MekanismGenerators implements IModule {
         GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         GeneratorsGases.GASES.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
+        versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
     }
 
     public static ResourceLocation rl(String path) {

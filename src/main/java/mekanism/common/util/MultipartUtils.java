@@ -2,13 +2,14 @@ package mekanism.common.util;
 
 import java.util.Collection;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.common.ForgeMod;
 import org.apache.commons.lang3.tuple.Pair;
 
 public final class MultipartUtils {
@@ -28,8 +29,8 @@ public final class MultipartUtils {
         float f5 = f2 * f3;
         float f6 = f1 * f3;
         double d3 = 5.0D;
-        if (entity instanceof ServerPlayerEntity) {
-            d3 = ((ServerPlayerEntity) entity).getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getValue();
+        if (entity instanceof PlayerEntity) {
+            d3 = ((PlayerEntity) entity).getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
         }
         Vector3d end = start.add(f5 * d3, f4 * d3, f6 * d3);
         return Pair.of(start, end);

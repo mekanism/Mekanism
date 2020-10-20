@@ -82,6 +82,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -631,7 +632,7 @@ public final class MekanismUtils {
     }
 
     public static BlockRayTraceResult rayTrace(PlayerEntity player, FluidMode fluidMode) {
-        return rayTrace(player, Mekanism.proxy.getReach(player), fluidMode);
+        return rayTrace(player, player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue(), fluidMode);
     }
 
     public static BlockRayTraceResult rayTrace(PlayerEntity player, double reach) {

@@ -1,9 +1,8 @@
 package mekanism.common.lib.distribution.target;
 
 import mekanism.common.lib.distribution.SplitInfo;
-import mekanism.common.lib.distribution.Target;
 
-public class SpecificAmountIntegerTarget extends Target<Integer, Integer, Integer> {
+public class SpecificAmountIntegerTarget extends IntegerTarget {
 
     private int toAccept;
 
@@ -16,6 +15,7 @@ public class SpecificAmountIntegerTarget extends Target<Integer, Integer, Intege
         int accepting = Math.min(toAccept, amount);
         if (accepting > 0) {
             splitInfo.send(accepting);
+            accept(accepting);
             toAccept -= accepting;
         }
     }

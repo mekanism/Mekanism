@@ -66,7 +66,7 @@ public class MekanismAdditions implements IModule {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, SpawnHelper::onStructureSpawnListGather);
 
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
+        versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
     }
 
     public static ResourceLocation rl(String path) {

@@ -7,10 +7,13 @@ import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.Mekanism;
+import mekanism.api.text.EnumColor;
+import mekanism.client.SparkleAnimation;
+import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
@@ -25,6 +28,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -258,15 +263,32 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (isMaster) {
             if (multiblock.isFormed()) {
                 multiblock.readUpdateTag(tag);
-                if (multiblock.renderLocation != null && !prevStructure && unformedTicks >= 5) {
-                    Mekanism.proxy.doMultiblockSparkle(this, multiblock.renderLocation, multiblock.length() - 1, multiblock.width() - 1, multiblock.height() - 1);
-                }
+                doMultiblockSparkle(multiblock);
             } else {
                 // this will consecutively be set on the server
                 isMaster = false;
             }
         }
         prevStructure = multiblock.isFormed();
+    }
+
+    /**
+     * Only call on the client
+     */
+    private void doMultiblockSparkle(T multiblock) {
+        if (isRemote() && multiblock.renderLocation != null && !prevStructure && unformedTicks >= 5) {
+            //If player is within 40 blocks (1,600 = 40^2), show the status message/sparkles
+            //Note: Do not change this from ClientPlayerEntity to PlayerEntity or it will cause class loading issues on the server
+            // due to trying to validate if the value is actually a PlayerEntity
+            ClientPlayerEntity player = Minecraft.getInstance().player;
+            if (pos.distanceSq(player.getPosition()) <= 1_600) {
+                if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
+                    new SparkleAnimation(this, multiblock.renderLocation, multiblock.length() - 1, multiblock.width() - 1, multiblock.height() - 1).run();
+                } else {
+                    player.sendStatusMessage(MekanismLang.MULTIBLOCK_FORMED_CHAT.translateColored(EnumColor.INDIGO), true);
+                }
+            }
+        }
     }
 
     @Override

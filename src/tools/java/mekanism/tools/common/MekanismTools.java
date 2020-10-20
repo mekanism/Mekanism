@@ -50,7 +50,7 @@ public class MekanismTools implements IModule {
         ToolsItems.ITEMS.register(modEventBus);
         ToolsRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
+        versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
     }
 
     public static ResourceLocation rl(String path) {
