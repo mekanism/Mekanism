@@ -13,6 +13,7 @@ import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.MekanismLang;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
@@ -104,7 +105,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
         if (filter.hasFilter()) {
             ItemStack renderStack = slotDisplay.getRenderStack();
             if (!renderStack.isEmpty()) {
-                list.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(renderStack, renderStack.getItem().getRegistryName().getNamespace()));
+                list.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(renderStack, MekanismUtils.getModId(renderStack)));
             }
             list.add(TextComponentUtil.getString(filter.getFilterText()));
         }

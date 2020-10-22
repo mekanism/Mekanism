@@ -123,6 +123,26 @@ public final class MekanismUtils {
     }
 
     /**
+     * Gets the creator's modid if it exists, or falls back to the registry name.
+     *
+     * @implNote While the default implementation of getCreatorModId falls back to the registry name, it is possible someone is overriding this and not falling back.
+     */
+    @Nonnull
+    public static String getModId(@Nonnull ItemStack stack) {
+        Item item = stack.getItem();
+        String modid = item.getCreatorModId(stack);
+        if (modid == null) {
+            ResourceLocation registryName = item.getRegistryName();
+            if (registryName == null) {
+                Mekanism.logger.error("Unexpected null registry name for item of class type: {}", item.getClass().getSimpleName());
+                return "";
+            }
+            return registryName.getNamespace();
+        }
+        return modid;
+    }
+
+    /**
      * Checks if a machine is in it's active state.
      *
      * @param world World of the machine to check

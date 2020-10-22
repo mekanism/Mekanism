@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.lib.WildcardMatcher;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
@@ -134,8 +135,11 @@ public final class TagCache {
                 if (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof BlockBounding) {
                     continue;
                 }
-                if (WildcardMatcher.matches(modName, item.getRegistryName().getNamespace())) {
-                    stacks.add(new ItemStack(item));
+                //Note: We get the modid based on the stack so that if there is a mod that has a different modid for an item
+                // that isn't based on NBT it can properly change the modid (this is unlikely to happen, but you never know)
+                ItemStack stack = new ItemStack(item);
+                if (WildcardMatcher.matches(modName, MekanismUtils.getModId(stack))) {
+                    stacks.add(stack);
                 }
             }
         }

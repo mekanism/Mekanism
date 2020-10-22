@@ -14,6 +14,7 @@ import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
@@ -72,7 +73,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             @Override
             public void accept(Object ingredient) {
                 if (ingredient instanceof ItemStack) {
-                    setFilterName(((ItemStack) ingredient).getItem());
+                    setFilterName((ItemStack) ingredient);
                 } else if (ingredient instanceof FluidStack) {
                     setFilterName(((FluidStack) ingredient).getFluid());
                 } else if (ingredient instanceof ChemicalStack) {
@@ -86,8 +87,12 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return mouseClickSlot(getGuiObj(), button, mouseX, mouseY, relativeX + 8, relativeY + getSlotOffset() + 1, NOT_EMPTY,
-              stack -> setFilterName(stack.getItem())) || super.mouseClicked(mouseX, mouseY, button);
+        return mouseClickSlot(getGuiObj(), button, mouseX, mouseY, relativeX + 8, relativeY + getSlotOffset() + 1, NOT_EMPTY, this::setFilterName) ||
+               super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private void setFilterName(ItemStack stack) {
+        setFilterName(MekanismUtils.getModId(stack), true);
     }
 
     private void setFilterName(IForgeRegistryEntry<?> registryEntry) {

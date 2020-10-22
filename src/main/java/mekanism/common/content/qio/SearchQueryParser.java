@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import mekanism.common.base.TagCache;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
@@ -164,7 +165,7 @@ public class SearchQueryParser {
     public enum QueryType {
         // ~ is a dummy char, not actually used by parser
         NAME('~', (key, stack) -> stack.getDisplayName().getString().toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
-        MOD_ID('@', (key, stack) -> stack.getItem().getRegistryName().getNamespace().toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
+        MOD_ID('@', (key, stack) -> MekanismUtils.getModId(stack).toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
         TOOLTIP('$', (key, stack) -> stack.getTooltip(null, ITooltipFlag.TooltipFlags.NORMAL).stream().map(t -> t.getString().toLowerCase(Locale.ROOT))
               .anyMatch(tooltip -> tooltip.contains(key.toLowerCase(Locale.ROOT)))),
         TAG('#', (key, stack) -> TagCache.getItemTags(stack).stream().anyMatch(itemTag -> itemTag.toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))));

@@ -1,6 +1,7 @@
 package mekanism.common.lib.inventory;
 
 import mekanism.common.lib.WildcardMatcher;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
@@ -20,21 +21,11 @@ public interface Finder {
     }
 
     static Finder tag(String tagName) {
-        return stack -> {
-            if (stack.isEmpty()) {
-                return false;
-            }
-            return stack.getItem().getTags().stream().anyMatch(tag -> WildcardMatcher.matches(tagName, tag.toString()));
-        };
+        return stack -> !stack.isEmpty() && stack.getItem().getTags().stream().anyMatch(tag -> WildcardMatcher.matches(tagName, tag.toString()));
     }
 
     static Finder modID(String modID) {
-        return stack -> {
-            if (stack.isEmpty()) {
-                return false;
-            }
-            return WildcardMatcher.matches(modID, stack.getItem().getRegistryName().getNamespace());
-        };
+        return stack -> !stack.isEmpty() && WildcardMatcher.matches(modID, MekanismUtils.getModId(stack));
     }
 
     static Finder material(Material materialType) {
