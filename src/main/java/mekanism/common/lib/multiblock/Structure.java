@@ -49,7 +49,7 @@ public class Structure {
         for (Axis axis : Axis.AXES) {
             getMinorAxisMap(axis).put(axis.getCoord(node.getTilePos()), new VoxelPlane(axis, node.getTilePos(), node instanceof IMultiblock));
         }
-        if (node instanceof IMultiblock && (controller == null || ((IMultiblock<?>) node).canBeMaster())) {
+        if (controller == null && node instanceof IMultiblock && ((IMultiblock<?>) node).canBeMaster()) {
             controller = (IMultiblock<?>) node;
         }
     }
