@@ -3,7 +3,6 @@ package mekanism.common.lib.security;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.security.ISecurityTile.SecurityMode;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
 

@@ -25,7 +25,7 @@ public class GuiQIODriveArray extends GuiMekanismTile<TileEntityQIODriveArray, M
     public void init() {
         super.init();
         addButton(new GuiQIOFrequencyTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiQIOFrequencyDataScreen(this, 15, 19, xSize - 32, 46, () -> tile.getFrequency(FrequencyType.QIO)));
     }
 

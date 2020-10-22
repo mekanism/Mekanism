@@ -3,21 +3,20 @@ package mekanism.client.gui.element;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiSideHolder {
+public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
 
     protected final int border;
     protected final int innerWidth;
     protected final int innerHeight;
-    protected final TILE tile;
+    protected final DATA_SOURCE dataSource;
     protected final ResourceLocation overlay;
 
-    public GuiInsetElement(ResourceLocation overlay, IGuiWrapper gui, TILE tile, int x, int y, int height, int innerSize, boolean left) {
+    public GuiInsetElement(ResourceLocation overlay, IGuiWrapper gui, DATA_SOURCE dataSource, int x, int y, int height, int innerSize, boolean left) {
         super(gui, x, y, height, left);
         this.overlay = overlay;
-        this.tile = tile;
+        this.dataSource = dataSource;
         this.innerWidth = innerSize;
         this.innerHeight = innerSize;
         //TODO: decide what to do if this doesn't divide nicely

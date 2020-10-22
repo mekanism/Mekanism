@@ -64,7 +64,7 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
         if (tile.getWorld().isRemote()) {
             return cache;
         }
-        UUID ownerUUID = tile.getSecurity().getOwnerUUID();
+        UUID ownerUUID = tile.getOwnerUUID();
         if (ownerUUID == null) {
             return Collections.emptyList();
         }

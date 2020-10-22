@@ -5,6 +5,7 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.inventory.container.slot.ArmorSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.OffhandSlot;
+import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -79,5 +80,10 @@ public class ModuleTweakerContainer extends MekanismContainer {
         }
         return player.inventory.armorInventory.stream().anyMatch(ModuleTweakerContainer::isTweakableItem) ||
                player.inventory.offHandInventory.stream().anyMatch(ModuleTweakerContainer::isTweakableItem);
+    }
+
+    @Override
+    public ISecurityObject getSecurityObject() {
+        return ISecurityObject.NO_SECURITY;
     }
 }

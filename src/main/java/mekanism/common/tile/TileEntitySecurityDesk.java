@@ -7,18 +7,23 @@ import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.inventory.container.ISecurityContainer;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityFrequency;
+import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -58,6 +63,9 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         }
     }
 
+    /**
+     * Only call on the server side
+     */
     public void toggleOverride() {
         SecurityFrequency frequency = getFreq();
         if (frequency != null) {
@@ -65,6 +73,26 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             markDirty(false);
             // send the security update to other players; this change will be visible on machine security tabs
             Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(frequency.getOwner(), new SecurityData(frequency)));
+            validateAccess();
+        }
+    }
+
+    /**
+     * Validates access for anyone who might be accessing a GUI that changed security modes
+     */
+    private void validateAccess() {
+        if (hasWorld()) {
+            MinecraftServer server = getWorldNN().getServer();
+            if (server != null) {
+                for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
+                    if (player.openContainer instanceof ISecurityContainer) {
+                        if (!SecurityUtils.canAccess(player, ((ISecurityContainer) player.openContainer).getSecurityObject())) {
+                            //Boot any players out of the container if they no longer have access to viewing it
+                            player.closeScreen();
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -76,13 +104,19 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         }
     }
 
-    public void setSecurityMode(SecurityMode mode) {
+    public void setSecurityDeskMode(SecurityMode mode) {
         SecurityFrequency frequency = getFreq();
         if (frequency != null) {
-            frequency.setSecurityMode(mode);
-            markDirty(false);
-            // send the security update to other players; this change will be visible on machine security tabs
-            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(frequency.getOwner(), new SecurityData(frequency)));
+            SecurityMode old = frequency.getSecurityMode();
+            if (old != mode) {
+                frequency.setSecurityMode(mode);
+                markDirty(false);
+                // send the security update to other players; this change will be visible on machine security tabs
+                Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(frequency.getOwner(), new SecurityData(frequency)));
+                if (old == SecurityMode.PUBLIC || (old == SecurityMode.TRUSTED && mode == SecurityMode.PRIVATE)) {
+                    validateAccess();
+                }
+            }
         }
     }
 

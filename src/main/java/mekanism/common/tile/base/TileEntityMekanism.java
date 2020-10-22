@@ -81,6 +81,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
 import mekanism.common.lib.security.ISecurityTile;
+import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentSecurity;

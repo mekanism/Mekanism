@@ -20,7 +20,7 @@ import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.lib.security.ISecurityTile.SecurityMode;
+import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.network.PacketAddTrusted;
 import mekanism.common.network.PacketGuiInteract;

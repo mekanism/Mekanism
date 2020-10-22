@@ -50,7 +50,7 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
             return ret;
         }));
         addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumping, tile.getPos(), 0));
     }
 

@@ -24,6 +24,8 @@ import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.security.ISecurityItem;
+import mekanism.common.lib.security.ISecurityObject;
+import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
@@ -104,8 +106,9 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
     @OnlyIn(Dist.CLIENT)
     public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
-        tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(stack, Dist.CLIENT)));
-        if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {
+        ISecurityObject securityObject = SecurityUtils.wrapSecurityItem(stack);
+        tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(securityObject, Dist.CLIENT)));
+        if (SecurityUtils.isOverridden(securityObject, Dist.CLIENT)) {
             tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
         }
         tooltip.add(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getBucketMode(stack))));
@@ -153,7 +156,12 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
     public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (getBucketMode(stack)) {
-            if (SecurityUtils.canAccess(player, stack)) {
+            if (getOwnerUUID(stack) == null) {
+                setOwnerUUID(stack, player.getUniqueID());
+                Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.NOW_OWN),
+                      Util.DUMMY_UUID);
+            } else if (SecurityUtils.canAccess(player, stack)) {
                 BlockRayTraceResult result = rayTrace(world, player, !player.isSneaking() ? FluidMode.SOURCE_ONLY : FluidMode.NONE);
                 //It can be null if there is nothing in range
                 if (result.getType() == Type.BLOCK) {

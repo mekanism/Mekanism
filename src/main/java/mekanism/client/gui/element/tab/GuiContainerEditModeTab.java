@@ -28,7 +28,7 @@ public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidCon
 
     @Override
     protected ResourceLocation getOverlay() {
-        ContainerEditMode containerEditMode = tile.getContainerEditMode();
+        ContainerEditMode containerEditMode = dataSource.getContainerEditMode();
         if (containerEditMode == ContainerEditMode.FILL) {
             return FILL;
         } else if (containerEditMode == ContainerEditMode.EMPTY) {
@@ -39,12 +39,12 @@ public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidCon
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        displayTooltip(matrix, tile.getContainerEditMode().getTextComponent(), mouseX, mouseY);
+        displayTooltip(matrix, dataSource.getContainerEditMode().getTextComponent(), mouseX, mouseY);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile));
+        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, dataSource));
     }
 
     @Override

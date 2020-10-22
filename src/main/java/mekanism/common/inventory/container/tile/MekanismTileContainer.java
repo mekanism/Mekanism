@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
@@ -41,6 +42,11 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
 
     public TILE getTileEntity() {
         return tile;
+    }
+
+    @Override
+    public ISecurityObject getSecurityObject() {
+        return getTileEntity();
     }
 
     @Override

@@ -32,7 +32,7 @@ public class GuiPrecisionSawmill extends GuiConfigurableTile<TileEntityPrecision
         addButton(new GuiUpArrow(this, 60, 38));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         //Note: We just draw the wide slot on top of the normal slots so that it looks a bit better

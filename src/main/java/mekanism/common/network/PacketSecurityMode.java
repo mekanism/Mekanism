@@ -2,7 +2,7 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import mekanism.common.lib.security.ISecurityItem;
-import mekanism.common.lib.security.ISecurityTile.SecurityMode;
+import mekanism.common.lib.security.SecurityMode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;

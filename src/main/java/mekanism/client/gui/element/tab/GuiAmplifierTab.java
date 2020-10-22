@@ -28,9 +28,9 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     @Override
     protected ResourceLocation getOverlay() {
-        if (tile.outputMode == RedstoneOutput.ENTITY_DETECTION) {
+        if (dataSource.outputMode == RedstoneOutput.ENTITY_DETECTION) {
             return ENTITY;
-        } else if (tile.outputMode == RedstoneOutput.ENERGY_CONTENTS) {
+        } else if (dataSource.outputMode == RedstoneOutput.ENERGY_CONTENTS) {
             return CONTENTS;
         }
         return super.getOverlay();
@@ -38,12 +38,12 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        displayTooltip(matrix, MekanismLang.REDSTONE_OUTPUT.translate(tile.outputMode), mouseX, mouseY);
+        displayTooltip(matrix, MekanismLang.REDSTONE_OUTPUT.translate(dataSource.outputMode), mouseX, mouseY);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile));
+        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, dataSource));
     }
 
     @Override

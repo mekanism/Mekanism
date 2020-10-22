@@ -30,7 +30,7 @@ public class GuiChemicalInfuser extends GuiConfigurableTile<TileEntityChemicalIn
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));

@@ -20,7 +20,7 @@ public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChes
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
     }
 
     @Override

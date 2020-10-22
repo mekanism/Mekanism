@@ -130,7 +130,8 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
                              getPublicFrequencies().get(scrollList.getSelection());
             QIOFrequency frequency = getFrequency();
             setButton.active = frequency == null || !frequency.equals(freq);
-            deleteButton.active = getOwnerUUID().equals(freq.getOwner());
+            UUID ownerUUID = getOwnerUUID();
+            deleteButton.active = ownerUUID != null && ownerUUID.equals(freq.getOwner());
         } else {
             setButton.active = false;
             deleteButton.active = false;

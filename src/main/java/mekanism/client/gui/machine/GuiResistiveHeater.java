@@ -43,7 +43,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
               MekanismLang.RESISTIVE_HEATER_USAGE.translate(EnergyDisplay.of(tile.getEnergyContainer().getEnergyPerTick()))
         )).clearFormat());
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         addButton(new GuiHeatTab(() -> {

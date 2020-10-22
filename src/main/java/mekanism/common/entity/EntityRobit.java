@@ -1,10 +1,12 @@
 package mekanism.common.entity;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -41,6 +43,7 @@ import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
+import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.BasicInventorySlot;
@@ -49,6 +52,8 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
+import mekanism.common.lib.security.ISecurityObject;
+import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDamageSource;
@@ -59,6 +64,7 @@ import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
@@ -100,7 +106,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, ICachedRecipeHolder<ItemStackToItemStackRecipe>,
+public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, ISecurityObject, ICachedRecipeHolder<ItemStackToItemStackRecipe>,
       IMekanismStrictEnergyHandler {
 
     private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, 20);
@@ -113,9 +119,15 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
     //TODO: Allow for upgrades in the robit?
     private static final int ticksRequired = 100;
+    private SecurityMode securityMode = SecurityMode.PUBLIC;
     public Coord4D homeLocation;
     public boolean texTick;
     private int progress;
+
+    /**
+     * The players currently using this robit.
+     */
+    private final Set<PlayerEntity> playersUsing = new ObjectOpenHashSet<>();
 
     private CachedRecipe<ItemStackToItemStackRecipe> cachedRecipe = null;
 
@@ -339,6 +351,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 return ActionResultType.SUCCESS;
             }
         } else {
+            if (!SecurityUtils.canAccess(player, this)) {
+                if (!world.isRemote) {
+                    SecurityUtils.displayNoAccess(player);
+                }
+                return ActionResultType.FAIL;
+            }
             if (!world.isRemote) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(MekanismLang.ROBIT, (i, inv, p) -> new MainRobitContainer(i, inv, this)),
                       buf -> buf.writeVarInt(getEntityId()));
@@ -360,6 +378,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         ItemRobit item = (ItemRobit) stack.getItem();
         item.setInventory(getInventory(), stack);
         item.setName(stack, getName());
+        item.setOwnerUUID(stack, getOwnerUUID());
+        item.setSecurity(stack, getSecurityMode());
         return stack;
     }
 
@@ -386,9 +406,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     public void writeAdditional(@Nonnull CompoundNBT nbtTags) {
         super.writeAdditional(nbtTags);
-        if (getOwnerUUID() != null) {
-            nbtTags.putUniqueId(NBTConstants.OWNER_UUID, getOwnerUUID());
-        }
+        nbtTags.putUniqueId(NBTConstants.OWNER_UUID, getOwnerUUID());
+        nbtTags.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
         nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
         nbtTags.putBoolean(NBTConstants.PICKUP_DROPS, getDropPickup());
         if (homeLocation != null) {
@@ -403,6 +422,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     public void readAdditional(@Nonnull CompoundNBT nbtTags) {
         super.readAdditional(nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
         setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
         setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
         homeLocation = Coord4D.read(nbtTags);
@@ -447,12 +467,55 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         return world.getPlayerByUuid(getOwnerUUID());
     }
 
+    @Nonnull
+    @Override
     public String getOwnerName() {
         return dataManager.get(OWNER_NAME);
     }
 
+    @Nonnull
+    @Override
     public UUID getOwnerUUID() {
         return UUID.fromString(dataManager.get(OWNER_UUID));
+    }
+
+    @Override
+    public SecurityMode getSecurityMode() {
+        return securityMode;
+    }
+
+    @Override
+    public void setSecurityMode(SecurityMode mode) {
+        if (securityMode != mode) {
+            SecurityMode old = securityMode;
+            securityMode = mode;
+            onSecurityChanged(old, securityMode);
+        }
+    }
+
+    @Override
+    public void onSecurityChanged(SecurityMode old, SecurityMode mode) {
+        //If the mode changed and the new security mode is more restrictive than the old one
+        if (old != mode && (old == SecurityMode.PUBLIC || (old == SecurityMode.TRUSTED && mode == SecurityMode.PRIVATE))) {
+            //and there are players using this tile
+            if (!playersUsing.isEmpty()) {
+                //then double check that all the players are actually supposed to be able to access the GUI
+                for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
+                    if (!SecurityUtils.canAccess(player, this)) {
+                        //and if they can't then boot them out
+                        player.closeScreen();
+                    }
+                }
+            }
+        }
+    }
+
+    public void open(PlayerEntity player) {
+        playersUsing.add(player);
+    }
+
+    public void close(PlayerEntity player) {
+        playersUsing.remove(player);
     }
 
     public void setOwnerUUID(UUID uuid) {
@@ -572,6 +635,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public void addContainerTrackers(@Nonnull ContainerType<?> containerType, MekanismContainer container) {
+        container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, this::getSecurityMode, this::setSecurityMode));
         if (containerType == MekanismContainerTypes.MAIN_ROBIT.getContainerType()) {
             container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
         } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.getContainerType()) {

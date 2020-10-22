@@ -102,8 +102,8 @@ public abstract class BlockMekanism extends Block {
         Item item = itemStack.getItem();
         if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
-            securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
-            securityItem.setSecurity(itemStack, tile.getSecurity().getMode());
+            securityItem.setOwnerUUID(itemStack, tile.getOwnerUUID());
+            securityItem.setSecurity(itemStack, tile.getSecurityMode());
         }
         if (tile.supportsUpgrades()) {
             tile.getComponent().write(ItemDataUtils.getDataMap(itemStack));
@@ -247,15 +247,16 @@ public abstract class BlockMekanism extends Block {
         }
         if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
-            tile.getSecurity().setMode(securityItem.getSecurity(stack));
+            tile.setSecurityMode(securityItem.getSecurity(stack));
             UUID ownerUUID = securityItem.getOwnerUUID(stack);
             if (ownerUUID != null) {
                 tile.getSecurity().setOwnerUUID(ownerUUID);
             } else if (placer != null) {
                 tile.getSecurity().setOwnerUUID(placer.getUniqueID());
-            }
-            if (!world.isRemote && placer != null) {
-                Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(placer.getUniqueID(), null));
+                if (!world.isRemote) {
+                    //If the machine doesn't already have an owner, make sure we portray this
+                    Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(placer.getUniqueID(), null));
+                }
             }
         }
         if (tile.supportsUpgrades()) {

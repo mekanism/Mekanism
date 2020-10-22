@@ -11,10 +11,9 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
+public class GuiConfigTypeTab extends GuiInsetElement<Void> {
 
     private final TransmissionType transmission;
     private final GuiSideConfiguration config;

@@ -7,7 +7,6 @@ import mekanism.api.NBTConstants;
 import mekanism.common.lib.HashList;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.lib.security.ISecurityTile.SecurityMode;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;

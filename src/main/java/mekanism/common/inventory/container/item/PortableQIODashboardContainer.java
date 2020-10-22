@@ -9,7 +9,9 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -87,5 +89,10 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
             };
         }
         return super.createHotBarSlot(inv, index, x, y);
+    }
+
+    @Override
+    public ISecurityObject getSecurityObject() {
+        return SecurityUtils.wrapSecurityItem(stack);
     }
 }

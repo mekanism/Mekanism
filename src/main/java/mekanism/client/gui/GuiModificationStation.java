@@ -33,7 +33,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 154, 40));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));

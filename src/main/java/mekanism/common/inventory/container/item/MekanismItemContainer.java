@@ -3,7 +3,9 @@ package mekanism.common.inventory.container.item;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,6 +24,11 @@ public abstract class MekanismItemContainer extends MekanismContainer {
         this.hand = hand;
         this.stack = stack;
         addSlotsAndOpen();
+    }
+
+    @Override
+    public ISecurityObject getSecurityObject() {
+        return SecurityUtils.wrapSecurityItem(stack);
     }
 
     @Nonnull

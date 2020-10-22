@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import net.minecraft.entity.player.PlayerEntity;
@@ -83,6 +84,11 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
     }
 
     public TileEntityQIODashboard getTileEntity() {
+        return tile;
+    }
+
+    @Override
+    public ISecurityObject getSecurityObject() {
         return tile;
     }
 }

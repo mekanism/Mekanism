@@ -60,12 +60,12 @@ public class GuiQIOTileFrequencySelect extends GuiQIOFrequencySelect<QIOFrequenc
 
     @Override
     public String getOwnerUsername() {
-        return tile.getSecurity().getClientOwner();
+        return tile.getOwnerName();
     }
 
     @Override
     public UUID getOwnerUUID() {
-        return tile.getSecurity().getOwnerUUID();
+        return tile.getOwnerUUID();
     }
 
     @Override

@@ -7,7 +7,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.lib.security.ISecurityTile.SecurityMode;
+import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
@@ -23,7 +23,7 @@ public class TileComponentSecurity implements ITileComponent {
     public final TileEntityMekanism tile;
 
     private UUID ownerUUID;
-    private String clientOwner;
+    private String ownerName;
 
     private SecurityMode securityMode = SecurityMode.PUBLIC;
 
@@ -33,7 +33,7 @@ public class TileComponentSecurity implements ITileComponent {
         tile.getFrequencyComponent().track(FrequencyType.SECURITY, true, false, true);
     }
 
-    public SecurityFrequency getFreq() {
+    public SecurityFrequency getFrequency() {
         return tile.getFrequency(FrequencyType.SECURITY);
     }
 
@@ -46,8 +46,8 @@ public class TileComponentSecurity implements ITileComponent {
         ownerUUID = uuid;
     }
 
-    public String getClientOwner() {
-        return clientOwner;
+    public String getOwnerName() {
+        return ownerName;
     }
 
     public SecurityMode getMode() {
@@ -69,7 +69,7 @@ public class TileComponentSecurity implements ITileComponent {
     @Override
     public void tick() {
         if (!tile.isRemote()) {
-            if (getFreq() == null && ownerUUID != null) {
+            if (getFrequency() == null && ownerUUID != null) {
                 tile.getFrequencyComponent().setFrequencyFromData(FrequencyType.SECURITY, new FrequencyIdentity(ownerUUID, true));
             }
         }
@@ -110,6 +110,6 @@ public class TileComponentSecurity implements ITileComponent {
     @Override
     public void readFromUpdateTag(CompoundNBT updateTag) {
         NBTUtils.setUUIDIfPresent(updateTag, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
-        NBTUtils.setStringIfPresent(updateTag, NBTConstants.OWNER_NAME, uuid -> clientOwner = uuid);
+        NBTUtils.setStringIfPresent(updateTag, NBTConstants.OWNER_NAME, uuid -> ownerName = uuid);
     }
 }

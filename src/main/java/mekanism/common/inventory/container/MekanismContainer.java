@@ -57,7 +57,7 @@ import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
-public abstract class MekanismContainer extends Container {
+public abstract class MekanismContainer extends Container implements ISecurityContainer {
 
     public static final int BASE_Y_OFFSET = 84;
 

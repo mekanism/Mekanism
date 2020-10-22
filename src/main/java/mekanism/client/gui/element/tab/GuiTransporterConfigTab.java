@@ -31,6 +31,6 @@ public class GuiTransporterConfigTab extends GuiWindowCreatorTab<GuiTransporterC
 
     @Override
     public GuiWindow createWindow() {
-        return new GuiTransporterConfig(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, tile);
+        return new GuiTransporterConfig(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, dataSource);
     }
 }

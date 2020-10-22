@@ -1,6 +1,5 @@
 package mekanism.common.lib.security;
 
-import mekanism.common.lib.security.ISecurityTile.SecurityMode;
 import net.minecraft.network.PacketBuffer;
 
 public class SecurityData {

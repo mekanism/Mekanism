@@ -70,7 +70,7 @@ public class TileComponentFrequency implements ITileComponent {
     public <FREQ extends Frequency> void setFrequencyFromData(FrequencyType<FREQ> type, FrequencyIdentity data) {
         FrequencyManager<FREQ> manager = getManager(type, data);
         manager.deactivate(getFrequency(type), tile);
-        FREQ freq = manager.getOrCreateFrequency(data, tile.getSecurity().getOwnerUUID());
+        FREQ freq = manager.getOrCreateFrequency(data, tile.getOwnerUUID());
         freq.update(tile);
         setFrequency(type, freq);
         setNeedsNotify(type);
@@ -79,7 +79,7 @@ public class TileComponentFrequency implements ITileComponent {
     public void removeFrequencyFromData(FrequencyType<?> type, FrequencyIdentity data) {
         FrequencyManager<?> manager = getManager(type, data);
         if (manager != null) {
-            manager.remove(data.getKey(), tile.getSecurity().getOwnerUUID());
+            manager.remove(data.getKey(), tile.getOwnerUUID());
             setNeedsNotify(type);
         }
     }
@@ -135,7 +135,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     private <FREQ extends Frequency> FrequencyManager<FREQ> getManager(FrequencyType<FREQ> type, FREQ freq) {
-        if (tile.getSecurity().getOwnerUUID() == null || freq == null) {
+        if (tile.getOwnerUUID() == null || freq == null) {
             return null;
         }
         return type.getFrequencyManager(freq);
@@ -143,7 +143,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     private <FREQ extends Frequency> FrequencyManager<FREQ> getManager(FrequencyType<FREQ> type, FrequencyIdentity data) {
         FrequencyManagerWrapper<FREQ> wrapper = type.getManagerWrapper();
-        return data.isPublic() ? wrapper.getPublicManager() : wrapper.getPrivateManager(tile.getSecurity().getOwnerUUID());
+        return data.isPublic() ? wrapper.getPublicManager() : wrapper.getPrivateManager(tile.getOwnerUUID());
     }
 
     @Override

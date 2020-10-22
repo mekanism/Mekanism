@@ -51,7 +51,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
                 return cachedRecipe == null ? null : cachedRecipe.getRecipe();
             }
         }));
-        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 23));

@@ -52,7 +52,7 @@ public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
             if (isItem) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedItemButton.QIO_FREQUENCY_SELECT, currentHand));
             } else {
-                Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.QIO_FREQUENCY_SELECT, tile));
+                Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.QIO_FREQUENCY_SELECT, dataSource));
             }
         }
     }

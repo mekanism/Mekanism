@@ -1,16 +1,17 @@
 package mekanism.common.network;
 
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.TriConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.lib.security.ISecurityTile.SecurityMode;
+import mekanism.common.lib.security.ISecurityObject;
+import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
@@ -28,6 +29,7 @@ import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.UpgradeUtils;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -44,9 +46,17 @@ public class PacketGuiInteract {
 
     private GuiInteraction interaction;
     private GuiInteractionItem itemInteraction;
-    private final BlockPos tilePosition;
-    private int extra;
+    private GuiInteractionEntity entityInteraction;
+    private BlockPos tilePosition;
     private ItemStack extraItem;
+    private int entityID;
+    private int extra;
+
+    public PacketGuiInteract(GuiInteractionEntity interaction, int entityID) {
+        this.interactionType = Type.ENTITY;
+        this.entityInteraction = interaction;
+        this.entityID = entityID;
+    }
 
     public PacketGuiInteract(GuiInteraction interaction, TileEntity tile) {
         this(interaction, tile.getPos());
@@ -83,12 +93,19 @@ public class PacketGuiInteract {
         ctx.enqueueWork(() -> {
             PlayerEntity player = ctx.getSender();
             if (player != null) {
-                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
-                if (tile != null) {
-                    if (message.interactionType == Type.INT) {
-                        message.interaction.consume(tile, player, message.extra);
-                    } else if (message.interactionType == Type.ITEM) {
-                        message.itemInteraction.consume(tile, player, message.extraItem);
+                if (message.interactionType == Type.ENTITY) {
+                    Entity entity = player.world.getEntityByID(message.entityID);
+                    if (entity != null) {
+                        message.entityInteraction.consume(entity, player);
+                    }
+                } else {
+                    TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
+                    if (tile != null) {
+                        if (message.interactionType == Type.INT) {
+                            message.interaction.consume(tile, player, message.extra);
+                        } else if (message.interactionType == Type.ITEM) {
+                            message.itemInteraction.consume(tile, player, message.extraItem);
+                        }
                     }
                 }
             }
@@ -98,7 +115,10 @@ public class PacketGuiInteract {
 
     public static void encode(PacketGuiInteract pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.interactionType);
-        if (pkt.interactionType == Type.INT) {
+        if (pkt.interactionType == Type.ENTITY) {
+            buf.writeEnumValue(pkt.entityInteraction);
+            buf.writeVarInt(pkt.entityID);
+        } else if (pkt.interactionType == Type.INT) {
             buf.writeEnumValue(pkt.interaction);
             buf.writeBlockPos(pkt.tilePosition);
             buf.writeVarInt(pkt.extra);
@@ -111,7 +131,9 @@ public class PacketGuiInteract {
 
     public static PacketGuiInteract decode(PacketBuffer buf) {
         Type type = buf.readEnumValue(Type.class);
-        if (type == Type.INT) {
+        if (type == Type.ENTITY) {
+            return new PacketGuiInteract(buf.readEnumValue(GuiInteractionEntity.class), buf.readVarInt());
+        } else if (type == Type.INT) {
             return new PacketGuiInteract(buf.readEnumValue(GuiInteraction.class), buf.readBlockPos(), buf.readVarInt());
         } else if (type == Type.ITEM) {
             return new PacketGuiInteract(buf.readEnumValue(GuiInteractionItem.class), buf.readBlockPos(), buf.readItemStack());
@@ -261,17 +283,16 @@ public class PacketGuiInteract {
 
         NEXT_SECURITY_MODE((tile, player, extra) -> {
             if (tile.hasSecurity()) {
-                TileComponentSecurity securityComponent = tile.getSecurity();
-                UUID owner = securityComponent.getOwnerUUID();
+                UUID owner = tile.getOwnerUUID();
                 if (owner != null && player.getUniqueID().equals(owner)) {
-                    securityComponent.setMode(securityComponent.getMode().getNext());
+                    tile.setSecurityMode(tile.getSecurityMode().getNext());
                 }
             }
         }),
 
         SECURITY_DESK_MODE((tile, player, extra) -> {
             if (tile instanceof TileEntitySecurityDesk) {
-                ((TileEntitySecurityDesk) tile).setSecurityMode(SecurityMode.byIndexStatic(extra));
+                ((TileEntitySecurityDesk) tile).setSecurityDeskMode(SecurityMode.byIndexStatic(extra));
             }
         }),
 
@@ -353,7 +374,33 @@ public class PacketGuiInteract {
         }
     }
 
+    public enum GuiInteractionEntity {
+        NEXT_SECURITY_MODE((entity, player) -> {
+            if (entity instanceof ISecurityObject) {
+                ISecurityObject security = (ISecurityObject) entity;
+                if (security.hasSecurity()) {
+                    UUID owner = security.getOwnerUUID();
+                    if (owner != null && player.getUniqueID().equals(owner)) {
+                        security.setSecurityMode(security.getSecurityMode().getNext());
+                    }
+                }
+            }
+        }),
+        ;
+
+        private final BiConsumer<Entity, PlayerEntity> consumerForEntity;
+
+        GuiInteractionEntity(BiConsumer<Entity, PlayerEntity> consumerForTile) {
+            this.consumerForEntity = consumerForTile;
+        }
+
+        public void consume(Entity entity, PlayerEntity player) {
+            consumerForEntity.accept(entity, player);
+        }
+    }
+
     private enum Type {
+        ENTITY,
         ITEM,
         INT;
     }

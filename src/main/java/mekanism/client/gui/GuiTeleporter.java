@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -64,7 +63,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         addButton(new GuiTeleporterStatus(this, () -> tile.getFrequency(FrequencyType.TELEPORTER) != null, () -> tile.status));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 158, 26));
         addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
 
@@ -115,7 +114,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     }
 
     private void updateButtons() {
-        if (getOwner() == null) {
+        if (tile.getOwnerUUID() == null) {
             return;
         }
         List<String> text = new ArrayList<>();
@@ -141,7 +140,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
                              tile.getPublicCache(FrequencyType.TELEPORTER).get(scrollList.getSelection());
             TeleporterFrequency teleporterFrequency = tile.getFrequency(FrequencyType.TELEPORTER);
             setButton.active = teleporterFrequency == null || !teleporterFrequency.equals(freq);
-            deleteButton.active = getOwner().equals(freq.getOwner());
+            deleteButton.active = tile.getOwnerUUID().equals(freq.getOwner());
         } else {
             setButton.active = false;
             deleteButton.active = false;
@@ -177,7 +176,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix, 4);
-        drawString(matrix, OwnerDisplay.of(getOwner(), tile.getSecurity().getClientOwner()).getTextComponent(), 8, getYSize() - 92, titleTextColor());
+        drawString(matrix, OwnerDisplay.of(tile.getOwnerUUID(), tile.getOwnerName()).getTextComponent(), 8, getYSize() - 92, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
         drawString(matrix, frequencyComponent, 32, 81, titleTextColor());
         ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
@@ -193,10 +192,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         }
         drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
         super.drawForegroundText(matrix, mouseX, mouseY);
-    }
-
-    private UUID getOwner() {
-        return tile.getSecurity().getOwnerUUID();
     }
 
     public void setFrequency(String freq) {

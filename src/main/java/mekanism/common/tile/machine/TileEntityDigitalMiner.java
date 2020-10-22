@@ -10,9 +10,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
@@ -92,7 +90,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import org.apache.logging.log4j.core.jmx.Server;
 
 public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IAdvancedBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
       IHasSortableFilters {
@@ -450,7 +447,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         BlockState state = world.getBlockState(pos);
         return MekFakePlayer.withFakePlayer((ServerWorld) world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), dummy -> {
-            dummy.setEmulatingUUID(getSecurity().getOwnerUUID());//pretend to be the owner
+            dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
             BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, dummy);
             return !MinecraftForge.EVENT_BUS.post(event);
         });
@@ -982,7 +979,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
         }
         return MekFakePlayer.withFakePlayer((ServerWorld)this.getWorldNN(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), fakePlayer -> {
-            fakePlayer.setEmulatingUUID(getSecurity().getOwnerUUID());
+            fakePlayer.setEmulatingUUID(getOwnerUUID());
             LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerWorld)this.getWorldNN())
                   .withRandom(this.getWorldNN().rand)
                   .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))

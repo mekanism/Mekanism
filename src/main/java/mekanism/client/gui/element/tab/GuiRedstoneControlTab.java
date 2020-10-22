@@ -30,17 +30,17 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        displayTooltip(matrix, tile.getControlType().getTextComponent(), mouseX, mouseY);
+        displayTooltip(matrix, dataSource.getControlType().getTextComponent(), mouseX, mouseY);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_REDSTONE_CONTROL, tile));
+        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_REDSTONE_CONTROL, dataSource));
     }
 
     @Override
     protected ResourceLocation getOverlay() {
-        switch (tile.getControlType()) {
+        switch (dataSource.getControlType()) {
             case HIGH:
                 return HIGH;
             case LOW:
@@ -59,7 +59,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        if (tile.getControlType() == RedstoneControl.PULSE) {
+        if (dataSource.getControlType() == RedstoneControl.PULSE) {
             //Draw the button background
             drawButton(matrix, mouseX, mouseY);
             //Draw the overlay onto the button

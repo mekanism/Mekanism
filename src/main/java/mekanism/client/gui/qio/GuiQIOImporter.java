@@ -24,7 +24,7 @@ public class GuiQIOImporter extends GuiQIOFilterHandler<TileEntityQIOImporter> {
     public void init() {
         super.init();
         addButton(new GuiQIOFrequencyTab(this, tile));
-        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiScreenSwitch(this, 9, 122, xSize - 18, MekanismLang.QIO_IMPORT_WITHOUT_FILTER.translate(), tile::getImportWithoutFilter,
