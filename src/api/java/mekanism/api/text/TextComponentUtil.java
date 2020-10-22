@@ -13,6 +13,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TextComponentUtil {
@@ -20,6 +22,7 @@ public class TextComponentUtil {
     private TextComponentUtil() {
     }
 
+    @Deprecated//TODO - 1.16.4: Remove this
     public static IFormattableTextComponent getFormattableComponent(ITextComponent component) {
         return component instanceof IFormattableTextComponent ? (IFormattableTextComponent) component : component.deepCopy();
     }
@@ -37,22 +40,26 @@ public class TextComponentUtil {
             }
             IFormattableTextComponent current = null;
             if (component instanceof IHasTextComponent) {
-                current = getFormattableComponent(((IHasTextComponent) component).getTextComponent());
+                current = ((IHasTextComponent) component).getTextComponent().deepCopy();
             } else if (component instanceof IHasTranslationKey) {
                 current = translate(((IHasTranslationKey) component).getTranslationKey());
             } else if (component instanceof EnumColor) {
                 cachedStyle = cachedStyle.setColor(((EnumColor) component).getColor());
             } else if (component instanceof ITextComponent) {
                 //Just append if a text component is being passed
-                current = getFormattableComponent((ITextComponent) component);
+                current = ((ITextComponent) component).deepCopy();
             } else if (component instanceof TextFormatting) {
                 cachedStyle = cachedStyle.applyFormatting((TextFormatting) component);
+            } else if (component instanceof ClickEvent) {
+                cachedStyle = cachedStyle.setClickEvent((ClickEvent) component);
+            } else if (component instanceof HoverEvent) {
+                cachedStyle = cachedStyle.setHoverEvent((HoverEvent) component);
             } else if (component instanceof Block) {
                 current = translate(((Block) component).getTranslationKey());
             } else if (component instanceof Item) {
                 current = translate(((Item) component).getTranslationKey());
             } else if (component instanceof ItemStack) {
-                current = getFormattableComponent(((ItemStack) component).getDisplayName());
+                current = ((ItemStack) component).getDisplayName().deepCopy();
             } else if (component instanceof FluidStack) {
                 current = translate(((FluidStack) component).getTranslationKey());
             } else if (component instanceof Fluid) {
@@ -70,7 +77,7 @@ public class TextComponentUtil {
                 //If we don't have a component to add, don't
                 continue;
             }
-            if (!cachedStyle.equals(Style.EMPTY)) {
+            if (!cachedStyle.isEmpty()) {
                 //Apply the style and reset
                 current.setStyle(cachedStyle);
                 cachedStyle = Style.EMPTY;
@@ -81,7 +88,8 @@ public class TextComponentUtil {
                 result.append(current);
             }
         }
-        //TODO: Make this more like smartTranslate? Including back to back color codes treat the second as name?
+        //TODO: Make this more like smartTranslate? Including back to back formatting where we already have that type of formatting set
+        // then convert that
         //Ignores any trailing formatting
         return result;
     }
@@ -133,7 +141,7 @@ public class TextComponentUtil {
             }
             IFormattableTextComponent current = null;
             if (component instanceof IHasTextComponent) {
-                current = getFormattableComponent(((IHasTextComponent) component).getTextComponent());
+                current = ((IHasTextComponent) component).getTextComponent().deepCopy();
             } else if (component instanceof IHasTranslationKey) {
                 current = translate(((IHasTranslationKey) component).getTranslationKey());
             } else if (component instanceof Block) {
@@ -141,24 +149,42 @@ public class TextComponentUtil {
             } else if (component instanceof Item) {
                 current = translate(((Item) component).getTranslationKey());
             } else if (component instanceof ItemStack) {
-                current = getFormattableComponent(((ItemStack) component).getDisplayName());
+                current = ((ItemStack) component).getDisplayName().deepCopy();
             } else if (component instanceof FluidStack) {
                 current = translate(((FluidStack) component).getTranslationKey());
             } else if (component instanceof Fluid) {
                 current = translate(((Fluid) component).getAttributes().getTranslationKey());
             } else if (component instanceof Direction) {
                 current = getTranslatedDirection((Direction) component);
-            } else if (!cachedStyle.equals(Style.EMPTY)) {
+            }
+            //Formatting
+            else if (component instanceof EnumColor && cachedStyle.getColor() == null) {
+                //No color set yet in the cached style, apply the color
+                cachedStyle = cachedStyle.setColor(((EnumColor) component).getColor());
+                continue;
+            } else if (component instanceof TextFormatting && !hasStyleType(cachedStyle, (TextFormatting) component)) {
+                //Specific formatting not in the cached style yet, apply it
+                cachedStyle = cachedStyle.applyFormatting((TextFormatting) component);
+                continue;
+            } else if (component instanceof ClickEvent && cachedStyle.getClickEvent() == null) {
+                //No click event set yet in the cached style, add the event
+                cachedStyle = cachedStyle.setClickEvent((ClickEvent) component);
+                continue;
+            } else if (component instanceof HoverEvent && cachedStyle.getHoverEvent() == null) {
+                //No hover event set yet in the cached style, add the event
+                cachedStyle = cachedStyle.setHoverEvent((HoverEvent) component);
+                continue;
+            } else if (!cachedStyle.isEmpty()) {
                 //Only bother attempting these checks if we have a cached format, because
                 // otherwise we are just going to want to use the raw text
                 if (component instanceof ITextComponent) {
                     //Just append if a text component is being passed
-                    current = getFormattableComponent((ITextComponent) component);
+                    current = ((ITextComponent) component).deepCopy();
                 } else if (component instanceof String || component instanceof Boolean || component instanceof Number) {
                     //Put actual boolean or integer/double, etc value
                     current = getString(component.toString());
                 } else if (component instanceof EnumColor) {
-                    //If we already have a format allow using the EnumColor's name
+                    //If we already have a color in our format allow using the EnumColor's name
                     current = ((EnumColor) component).getName();
                 } else {
                     //Fallback to a direct replacement just so that we can properly color it
@@ -168,15 +194,7 @@ public class TextComponentUtil {
                 //If we didn't format it and it is a string make sure we clean it up
                 component = cleanString((String) component);
             }
-            //Formatting
-            else if (component instanceof EnumColor) {
-                cachedStyle = cachedStyle.setColor(((EnumColor) component).getColor());
-                continue;
-            } else if (component instanceof TextFormatting) {
-                cachedStyle = cachedStyle.applyFormatting((TextFormatting) component);
-                continue;
-            }
-            if (!cachedStyle.equals(Style.EMPTY)) {
+            if (!cachedStyle.isEmpty()) {
                 //If we don't have a text component, then we have to just ignore the formatting and
                 // add it directly as an argument. (Note: This should never happen because of the fallback)
                 if (current == null) {
@@ -194,7 +212,7 @@ public class TextComponentUtil {
                 args.add(current);
             }
         }
-        if (!cachedStyle.equals(Style.EMPTY)) {
+        if (!cachedStyle.isEmpty()) {
             //Add trailing formatting as a color name or just directly
             //Note: We know that we have at least one element in the array, so we don't need to safety check here
             Object lastComponent = components[components.length - 1];
@@ -203,7 +221,28 @@ public class TextComponentUtil {
             } else {
                 args.add(lastComponent);
             }
+            //TODO: If we have multiple trailing formatting types such as a color and italics, we may want to eventually
+            // handle how we add them to the arguments better?
         }
         return translate(key, args.toArray());
+    }
+
+    private static boolean hasStyleType(Style current, TextFormatting formatting) {
+        switch (formatting) {
+            case OBFUSCATED:
+                return current.getObfuscated();
+            case BOLD:
+                return current.getBold();
+            case STRIKETHROUGH:
+                return current.getStrikethrough();
+            case UNDERLINE:
+                return current.getUnderlined();
+            case ITALIC:
+                return current.getItalic();
+            case RESET:
+                return current.isEmpty();
+            default:
+                return current.getColor() != null;
+        }
     }
 }

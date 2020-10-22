@@ -26,15 +26,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommonPlayerTracker {
 
-    //private static final ITextComponent ALPHA_WARNING;
+    /*private static final ITextComponent ALPHA_WARNING = MekanismLang.LOG_FORMAT.translateColored(EnumColor.RED, MekanismLang.MEKANISM, EnumColor.GRAY,
+          MekanismLang.ALPHA_WARNING.translate(EnumColor.INDIGO, TextFormatting.UNDERLINE, new ClickEvent(Action.OPEN_URL,
+                "https://github.com/mekanism/Mekanism#alpha-status"), MekanismLang.ALPHA_WARNING_HERE));*/
     public static boolean monitoringCardboardBox;
-
-    /*static {
-        TranslationTextComponent hereComponent = MekanismLang.ALPHA_WARNING_HERE.translate();
-        hereComponent.getStyle().setUnderlined(true).setColor(EnumColor.INDIGO.getColor())
-              .setClickEvent(new ClickEvent(Action.OPEN_URL, "https://github.com/mekanism/Mekanism#alpha-status"));
-        ALPHA_WARNING = MekanismLang.LOG_FORMAT.translateColored(EnumColor.RED, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.ALPHA_WARNING.translate(hereComponent));
-    }*/
 
     public CommonPlayerTracker() {
         MinecraftForge.EVENT_BUS.register(this);
