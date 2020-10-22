@@ -55,22 +55,20 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
         if (player != null && player.isSneaking()) {
             World world = context.getWorld();
             TileEntity tile = MekanismUtils.getTileEntity(world, context.getPos());
-            ItemStack stack = player.getHeldItem(context.getHand());
-            Upgrade type = getUpgradeType(stack);
             if (tile instanceof IUpgradeTile) {
                 IUpgradeTile upgradeTile = (IUpgradeTile) tile;
-                if (!upgradeTile.supportsUpgrades()) {
-                    //Can't support upgrades so continue on
-                    return ActionResultType.PASS;
-                }
-                TileComponentUpgrade component = upgradeTile.getComponent();
-                if (component.supports(type)) {
-                    if (!world.isRemote && component.getUpgrades(type) < type.getMax()) {
-                        component.addUpgrade(type);
-                        stack.shrink(1);
+                if (upgradeTile.supportsUpgrades()) {
+                    TileComponentUpgrade component = upgradeTile.getComponent();
+                    ItemStack stack = player.getHeldItem(context.getHand());
+                    Upgrade type = getUpgradeType(stack);
+                    if (component.supports(type)) {
+                        if (!world.isRemote && component.getUpgrades(type) < type.getMax()) {
+                            component.addUpgrade(type);
+                            stack.shrink(1);
+                        }
                     }
+                    return ActionResultType.SUCCESS;
                 }
-                return ActionResultType.SUCCESS;
             }
         }
         return ActionResultType.PASS;

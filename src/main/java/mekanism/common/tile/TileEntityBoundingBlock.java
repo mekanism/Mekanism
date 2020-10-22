@@ -3,9 +3,14 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
+import mekanism.api.Upgrade;
+import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
+import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.interfaces.IBoundingBlock;
+import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
@@ -18,7 +23,7 @@ import net.minecraft.util.math.BlockPos;
 /**
  * Multi-block used by wind turbines, solar panels, and other machines
  */
-public class TileEntityBoundingBlock extends TileEntityUpdateable {
+public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUpgradeTile {
 
     private BlockPos mainPos = BlockPos.ZERO;
 
@@ -54,6 +59,20 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable {
         return receivedCoords ? MekanismUtils.getTileEntity(world, getMainPos()) : null;
     }
 
+    protected IBoundingBlock getInv() {
+        // Return the inventory/main tile; note that it's possible, esp. when chunks are
+        // loading that the inventory/main tile has not yet loaded and thus is null.
+        TileEntity tile = getMainTile();
+        if (tile != null && !(tile instanceof IBoundingBlock)) {
+            // On the off chance that another block got placed there (which seems only likely with corruption,
+            // go ahead and log what we found.
+            Mekanism.logger.error("Found tile {} instead of an IBoundingBlock, at {}. Multiblock cannot function", tile, getMainPos());
+            //world.removeBlock(mainPos, false);
+            return null;
+        }
+        return (IBoundingBlock) tile;
+    }
+
     public void onNeighborChange(BlockState state) {
         final TileEntity tile = getMainTile();
         if (tile instanceof TileEntityMekanism) {
@@ -74,6 +93,35 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable {
     }
 
     public void onNoPower() {
+    }
+
+    @Override
+    public boolean supportsUpgrades() {
+        IBoundingBlock inv = getInv();
+        return inv instanceof IUpgradeTile && ((IUpgradeTile) inv).supportsUpgrades();
+    }
+
+    @Override
+    public TileComponentUpgrade getComponent() {
+        IBoundingBlock inv = getInv();
+        if (inv instanceof IUpgradeTile) {
+            IUpgradeTile upgradeTile = (IUpgradeTile) inv;
+            if (upgradeTile.supportsUpgrades()) {
+                return upgradeTile.getComponent();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgradeType) {
+        IBoundingBlock inv = getInv();
+        if (inv instanceof IUpgradeTile) {
+            IUpgradeTile upgradeTile = (IUpgradeTile) inv;
+            if (upgradeTile.supportsUpgrades()) {
+                upgradeTile.recalculateUpgrades(upgradeType);
+            }
+        }
     }
 
     @Override
