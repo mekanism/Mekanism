@@ -218,7 +218,8 @@ public class GuiTextField extends GuiRelativeElement {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 //Manually handle hitting escape to make the whole interface go away
                 return false;
-            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            } else if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+                //Handle processing both the enter key and the numpad enter key
                 if (enterHandler != null) {
                     enterHandler.run();
                 }
