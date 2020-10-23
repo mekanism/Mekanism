@@ -5,15 +5,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.security.IOwnerItem;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.lib.security.ISecurityTile;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityMode;
+import mekanism.common.network.PacketSecurityUpdate;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
@@ -27,7 +30,17 @@ public final class SecurityUtils {
     public static boolean canAccess(PlayerEntity player, Object object) {
         ISecurityObject security;
         if (object instanceof ItemStack) {
-            security = wrapSecurityItem((ItemStack) object);
+            ItemStack stack = (ItemStack) object;
+            if (!(stack.getItem() instanceof ISecurityItem) && stack.getItem() instanceof IOwnerItem) {
+                //If it is an owner item but not a security item make sure the owner matches
+                if (!MekanismConfig.general.allowProtection.get() || MekanismUtils.isOp(player)) {
+                    //If protection is disabled or the player is an op and bypass restrictions are enabled, access is always granted
+                    return true;
+                }
+                UUID owner = ((IOwnerItem) stack.getItem()).getOwnerUUID(stack);
+                return owner == null || owner.equals(player.getUniqueID());
+            }
+            security = wrapSecurityItem(stack);
         } else if (object instanceof ISecurityObject) {
             security = (ISecurityObject) object;
         } else {
@@ -101,6 +114,15 @@ public final class SecurityUtils {
         }
         SecurityData data = MekanismClient.clientSecurityMap.get(security.getOwnerUUID());
         return data != null && data.override;
+    }
+
+    public static void claimItem(PlayerEntity player, ItemStack stack) {
+        if (stack.getItem() instanceof IOwnerItem) {
+            ((IOwnerItem) stack.getItem()).setOwnerUUID(stack, player.getUniqueID());
+            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
+            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.NOW_OWN),
+                  Util.DUMMY_UUID);
+        }
     }
 
     public static ISecurityObject wrapSecurityItem(@Nonnull ItemStack stack) {

@@ -25,7 +25,6 @@ import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.lib.security.ISecurityObject;
-import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
@@ -157,10 +156,10 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
         ItemStack stack = player.getHeldItem(hand);
         if (getBucketMode(stack)) {
             if (getOwnerUUID(stack) == null) {
-                setOwnerUUID(stack, player.getUniqueID());
-                Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.NOW_OWN),
-                      Util.DUMMY_UUID);
+                if (!world.isRemote) {
+                    SecurityUtils.claimItem(player, stack);
+                }
+                return new ActionResult<>(ActionResultType.SUCCESS, stack);
             } else if (SecurityUtils.canAccess(player, stack)) {
                 BlockRayTraceResult result = rayTrace(world, player, !player.isSneaking() ? FluidMode.SOURCE_ONLY : FluidMode.NONE);
                 //It can be null if there is nothing in range
@@ -251,7 +250,10 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                     }
                 }
             } else {
-                SecurityUtils.displayNoAccess(player);
+                if (!world.isRemote) {
+                    SecurityUtils.displayNoAccess(player);
+                }
+                return new ActionResult<>(ActionResultType.FAIL, stack);
             }
         }
         return new ActionResult<>(ActionResultType.PASS, stack);
