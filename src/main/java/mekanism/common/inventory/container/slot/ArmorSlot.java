@@ -9,8 +9,6 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ArmorSlot extends InsertableSlot {
 
@@ -46,7 +44,6 @@ public class ArmorSlot extends InsertableSlot {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public Pair<ResourceLocation, ResourceLocation> getBackground() {
         return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[slotType.getIndex()]);
     }

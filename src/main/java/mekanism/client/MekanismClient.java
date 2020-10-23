@@ -14,6 +14,7 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
 public class MekanismClient {
@@ -68,5 +69,10 @@ public class MekanismClient {
     @Nullable
     public static World tryGetClientWorld() {
         return Minecraft.getInstance().world;
+    }
+
+    @Nullable
+    public static PlayerEntity tryGetClientPlayer() {
+        return Minecraft.getInstance().player;
     }
 }

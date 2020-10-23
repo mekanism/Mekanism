@@ -24,7 +24,6 @@ import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.security.ISecurityItem;
-import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
@@ -33,11 +32,9 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -60,8 +57,6 @@ import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -102,14 +97,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
-        tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
-        ISecurityObject securityObject = SecurityUtils.wrapSecurityItem(stack);
-        tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(securityObject, Dist.CLIENT)));
-        if (SecurityUtils.isOverridden(securityObject, Dist.CLIENT)) {
-            tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
-        }
+        SecurityUtils.addSecurityTooltip(stack, tooltip);
         tooltip.add(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getBucketMode(stack))));
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
     }

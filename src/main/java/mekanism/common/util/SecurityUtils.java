@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,9 +18,11 @@ import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 
 public final class SecurityUtils {
@@ -122,6 +125,20 @@ public final class SecurityUtils {
             Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.NOW_OWN),
                   Util.DUMMY_UUID);
+        }
+    }
+
+    /**
+     * Only call this on the client
+     */
+    public static void addSecurityTooltip(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip) {
+        if (stack.getItem() instanceof IOwnerItem) {
+            tooltip.add(OwnerDisplay.of(MekanismClient.tryGetClientPlayer(), ((IOwnerItem) stack.getItem()).getOwnerUUID(stack)).getTextComponent());
+        }
+        ISecurityObject securityObject = SecurityUtils.wrapSecurityItem(stack);
+        tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(securityObject, Dist.CLIENT)));
+        if (SecurityUtils.isOverridden(securityObject, Dist.CLIENT)) {
+            tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
         }
     }
 

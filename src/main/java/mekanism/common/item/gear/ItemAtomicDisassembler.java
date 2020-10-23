@@ -84,8 +84,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return true;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
         DisassemblerMode mode = getMode(stack);
