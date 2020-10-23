@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class JetpackSound extends PlayerSound {
 
     public JetpackSound(@Nonnull PlayerEntity player) {
-        super(player, MekanismSounds.JETPACK.getSoundEvent());
+        super(player, MekanismSounds.JETPACK);
     }
 
     @Override

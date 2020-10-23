@@ -10,7 +10,7 @@ public class FlamethrowerSound extends PlayerSound {
     private final boolean active;
 
     private FlamethrowerSound(@Nonnull PlayerEntity player, boolean active) {
-        super(player, (active ? MekanismSounds.FLAMETHROWER_ACTIVE : MekanismSounds.FLAMETHROWER_IDLE).getSoundEvent());
+        super(player, active ? MekanismSounds.FLAMETHROWER_ACTIVE : MekanismSounds.FLAMETHROWER_IDLE);
         this.active = active;
     }
 

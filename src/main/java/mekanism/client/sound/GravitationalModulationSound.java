@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class GravitationalModulationSound extends PlayerSound {
 
     public GravitationalModulationSound(@Nonnull PlayerEntity player) {
-        super(player, MekanismSounds.GRAVITATIONAL_MODULATION_UNIT.getSoundEvent());
+        super(player, MekanismSounds.GRAVITATIONAL_MODULATION_UNIT);
     }
 
     @Override

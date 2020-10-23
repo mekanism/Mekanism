@@ -5,7 +5,6 @@ import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
-import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
@@ -140,11 +139,6 @@ public class EnumUtils {
      * Cached value of {@link Upgrade#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final Upgrade[] UPGRADES = Upgrade.values();
-
-    /**
-     * Cached value of {@link RadiationScale#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final RadiationScale[] RADIATION_SCALES = RadiationScale.values();
 
     /**
      * Cached value of {@link SubstanceType#values()}. DO NOT MODIFY THIS LIST.

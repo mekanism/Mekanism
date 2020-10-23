@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class ScubaMaskSound extends PlayerSound {
 
     public ScubaMaskSound(@Nonnull PlayerEntity player) {
-        super(player, MekanismSounds.SCUBA_MASK.getSoundEvent());
+        super(player, MekanismSounds.SCUBA_MASK);
     }
 
     @Override

@@ -4,26 +4,38 @@ import java.lang.ref.WeakReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registration.impl.SoundEventRegistryObject;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISoundEventListener;
+import net.minecraft.client.audio.SoundEventAccessor;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 
-//TODO: Decide if this should this extend EntityTickableSound, given then our reference isn't weak which I am not sure if it matters
 public abstract class PlayerSound extends TickableSound {
 
     @Nonnull
     private final WeakReference<PlayerEntity> playerReference;
+    private final int subtitleFrequency;
     private float lastX;
     private float lastY;
     private float lastZ;
 
     private float fadeUpStep = 0.1f;
     private float fadeDownStep = 0.1f;
+    private int consecutiveTicks;
 
-    public PlayerSound(@Nonnull PlayerEntity player, @Nonnull SoundEvent sound) {
+    public PlayerSound(@Nonnull PlayerEntity player, @Nonnull SoundEventRegistryObject<?> sound) {
+        this(player, sound.get(), 60);
+        //Set it to repeat the subtitle every 3 seconds the sound is constantly playing
+    }
+
+    public PlayerSound(@Nonnull PlayerEntity player, @Nonnull SoundEvent sound, int subtitleFrequency) {
         super(sound, SoundCategory.PLAYERS);
         this.playerReference = new WeakReference<>(player);
+        this.subtitleFrequency = subtitleFrequency;
         this.lastX = (float) player.getPosX();
         this.lastY = (float) player.getPosY();
         this.lastZ = (float) player.getPosZ();
@@ -79,10 +91,9 @@ public abstract class PlayerSound extends TickableSound {
     public void tick() {
         PlayerEntity player = getPlayer();
         if (player == null || !player.isAlive()) {
-            //TODO: Re-evaluate sounds because I feel like we may not be properly reinitializing the sounds after we mark it as being done playing
-            // though from testing they do seem to somehow work properly
             finishPlaying();
-            this.volume = 0.0F;
+            volume = 0.0F;
+            consecutiveTicks = 0;
             return;
         }
 
@@ -91,7 +102,20 @@ public abstract class PlayerSound extends TickableSound {
                 // If we weren't max volume, start fading up
                 volume = Math.min(1.0F, volume + fadeUpStep);
             }
+            if (consecutiveTicks % subtitleFrequency == 0) {
+                SoundHandler soundHandler = Minecraft.getInstance().getSoundHandler();
+                for(ISoundEventListener soundEventListener : soundHandler.sndManager.listeners) {
+                    SoundEventAccessor soundEventAccessor = createAccessor(soundHandler);
+                    if (soundEventAccessor != null) {
+                        soundEventListener.onPlaySound(this, soundEventAccessor);
+                    }
+                }
+                consecutiveTicks = 1;
+            } else {
+                consecutiveTicks++;
+            }
         } else if (volume > 0.0F) {
+            consecutiveTicks = 0;
             // Not yet fully muted, fade down
             volume = Math.max(0.0F, volume - fadeDownStep);
         }

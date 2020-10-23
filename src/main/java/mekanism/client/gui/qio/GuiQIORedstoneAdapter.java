@@ -112,7 +112,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
                 } else if (stack.isEmpty() && hasShiftDown()) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, ItemStack.EMPTY));
                 }
-                SoundHandler.playSound(MekanismSounds.BEEP.get());
+                SoundHandler.playSound(MekanismSounds.BEEP);
             }
         }
         return true;

@@ -36,7 +36,6 @@ import mekanism.common.network.PacketPortableTeleporterGui.PortableTeleporterPac
 import mekanism.common.network.PacketRadialModeChange;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.ArmorStandModel;
@@ -276,13 +275,12 @@ public class ClientTickHandler {
                 }
             }
 
-            if (MekanismConfig.client.enablePlayerSounds.get() && SoundHandler.radiationSoundMap.isEmpty()) {
-                for (RadiationScale scale : EnumUtils.RADIATION_SCALES) {
-                    if (scale != RadiationScale.NONE) {
-                        GeigerSound sound = GeigerSound.create(minecraft.player, scale);
-                        SoundHandler.radiationSoundMap.put(scale, sound);
-                        SoundHandler.playSound(sound);
-                    }
+            if (MekanismConfig.client.enablePlayerSounds.get()) {
+                RadiationScale scale = Mekanism.radiationManager.getClientScale();
+                if (scale != RadiationScale.NONE && !SoundHandler.radiationSoundMap.containsKey(scale)) {
+                    GeigerSound sound = GeigerSound.create(minecraft.player, scale);
+                    SoundHandler.radiationSoundMap.put(scale, sound);
+                    SoundHandler.playSound(sound);
                 }
             }
         }

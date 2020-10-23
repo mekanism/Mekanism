@@ -88,17 +88,17 @@ public class MekanismKeyHandler extends MekKeyHandler {
         } else if (kb == headModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.HEAD)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.HEAD, player.isSneaking()));
-                SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
+                SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             }
         } else if (kb == chestModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.CHEST)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.CHEST, player.isSneaking()));
-                SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
+                SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             }
         } else if (kb == feetModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.FEET)) {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.FEET, player.isSneaking()));
-                SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
+                SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             }
         } else if (kb == moduleTweakerKey) {
             if (ModuleTweakerContainer.hasTweakableItem(player)) {

@@ -14,6 +14,7 @@ import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.MekanismUtils;
@@ -35,25 +36,22 @@ import net.minecraftforge.client.event.sound.SoundSetupEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-// SoundHandler is the central point for sounds on Mek client side. There are roughly three classes of sounds to deal
-// with:
-// 1. One-shot sounds like GUI interactions; play the sound and done
-//
-// 2. Long-lived player item sounds (such as jetpacks): long-running sounds that may flip on/off quickly based
-//    on user action. We follow the minecart model for these sounds; starting a sound and then muting when not in use.
-//
-// 3. Tile entity sounds: long-running, repeating sounds that run while a fixed tile is active. These are sounds that
-//    users want to be able to mute effectively.
-//
-// All sounds, when initially started can be intercepted on the Forge event bus and wrapped by various muting/manipulation
-// mods. For item sounds, we don't want to them to be manipulated, since the flipping on/off is too prone to weird timing
-// issues. For long-running sounds, we need a way to honor these attempted manipulations, without allowing them to become
-// the permanent state of the sound (which is what happens by default). To accomplish this, we have our own wrapper that
-// intercepts new repeating sounds from Mek and ensures that they periodically poll for any muting/manipulation so that
-// it the object can dynamically adjust to conditions.
-
 /**
- * Only used by client
+ * SoundHandler is the central point for sounds on Mek client side. There are roughly three classes of sounds to deal with:
+ *
+ * <ol>
+ *  <li>One-shot sounds like GUI interactions; play the sound and done</li>
+ *  <li>Long-lived player item sounds (such as jetpacks): long-running sounds that may flip on/off quickly based on user action. We follow the minecart model for
+ *      these sounds; starting a sound and then muting when not in use.</li>
+ *  <li>Tile entity sounds: long-running, repeating sounds that run while a fixed tile is active. These are sounds that users want to be able to mute effectively.</li>
+ * </ol>
+ *
+ * All sounds, when initially started can be intercepted on the Forge event bus and wrapped by various muting/manipulation mods. For item sounds, we don't want to them to
+ * be manipulated, since the flipping on/off is too prone to weird timing issues. For long-running sounds, we need a way to honor these attempted manipulations, without
+ * allowing them to become the permanent state of the sound (which is what happens by default). To accomplish this, we have our own wrapper that intercepts new repeating
+ * sounds from Mek and ensures that they periodically poll for any muting/manipulation so that it the object can dynamically adjust to conditions.
+ *
+ * @apiNote Only used by client
  */
 public class SoundHandler {
 
@@ -126,6 +124,10 @@ public class SoundHandler {
                 }
                 break;
         }
+    }
+
+    public static void playSound(SoundEventRegistryObject<?> soundEventRO) {
+        playSound(soundEventRO.get());
     }
 
     public static void playSound(SoundEvent sound) {
