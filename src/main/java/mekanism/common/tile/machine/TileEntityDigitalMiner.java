@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
@@ -226,7 +227,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                                 it.remove();
                                 break;
                             }
-                            if (!world.isBlockPresent(pos) || world.isAirBlock(pos)) {
+                            Optional<BlockState> blockState = WorldUtils.getBlockState(world, pos);
+                            if (!blockState.isPresent() || blockState.get().isAir(world, pos)) {
                                 set.clear(index);
                                 if (set.cardinality() == 0) {
                                     it.remove();
@@ -236,7 +238,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                                 continue;
                             }
                             boolean hasFilter = false;
-                            BlockState state = world.getBlockState(pos);
+                            BlockState state = blockState.get();
                             for (MinerFilter<?> filter : filters) {
                                 if (filter.canFilter(state)) {
                                     hasFilter = true;

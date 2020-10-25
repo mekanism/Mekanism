@@ -270,7 +270,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             BlockPos offset = getTilePos().offset(side);
             TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), offset);
             if (canConnectMutual(side, tile)) {
-                if (!isRemote() && !getTileWorld().isBlockPresent(offset)) {
+                if (!isRemote() && !WorldUtils.isBlockLoaded(getTileWorld(), offset)) {
                     getTransmitterTile().setForceUpdate();
                     continue;
                 }

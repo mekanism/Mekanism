@@ -14,6 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -239,7 +240,7 @@ public class TransmitterNetworkRegistry {
                             connectedTransmitters.add((TRANSMITTER) transmitter);
                             transmitter.setOrphan(false);
                             for (Direction direction : EnumUtils.DIRECTIONS) {
-                                if (!direction.getAxis().isHorizontal() || world.isBlockPresent(from.offset(direction))) {
+                                if (!direction.getAxis().isHorizontal() || WorldUtils.isBlockLoaded(world, from.offset(direction))) {
                                     BlockPos directionPos = transmitter.getAdjacentConnectableTransmitterPos(direction);
                                     if (directionPos != null && !iterated.contains(directionPos)) {
                                         queue.addLast(directionPos);

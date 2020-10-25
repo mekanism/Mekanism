@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
@@ -211,7 +212,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                 //We can check contains as mutable
                 if (!checked.contains(pos)) {
                     if (maxRange == -1 || WorldUtils.distanceBetween(location, pos) <= maxRange) {
-                        if (world.isBlockPresent(pos) && startBlock == world.getBlockState(pos).getBlock()) {
+                        Optional<BlockState> blockState = WorldUtils.getBlockState(world, pos);
+                        if (blockState.isPresent() && startBlock == blockState.get().getBlock()) {
                             //Make sure to add it as immutable
                             found.add(pos.toImmutable());
                             //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler

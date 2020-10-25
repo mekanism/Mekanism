@@ -1,5 +1,6 @@
 package mekanism.additions.common.entity;
 
+import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
@@ -9,6 +10,8 @@ import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -166,9 +169,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         }
 
         if (!world.isRemote) {
-            if (latched != null && world.isBlockPresent(latched) && world.isAirBlock(latched)) {
-                latched = null;
-                dataManager.set(IS_LATCHED, (byte) 0);
+            if (latched != null) {
+                Optional<BlockState> blockState = WorldUtils.getBlockState(world, latched);
+                if (blockState.isPresent() && blockState.get().isAir(world, latched)) {
+                    latched = null;
+                    dataManager.set(IS_LATCHED, (byte) 0);
+                }
             }
             if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || !latchedEntity.isAlive() || !world.getChunkProvider().isChunkLoaded(latchedEntity))) {
                 latchedEntity = null;

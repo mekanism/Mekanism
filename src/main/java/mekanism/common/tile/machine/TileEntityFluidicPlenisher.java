@@ -185,10 +185,10 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         if (checkNodes && usedNodes.contains(pos)) {
             return false;
         }
-        if (world.isAirBlock(pos)) {
+        BlockState state = world.getBlockState(pos);
+        if (state.isAir(world, pos)) {
             return true;
         }
-        BlockState state = world.getBlockState(pos);
         FluidState currentFluidState = state.getFluidState();
         if (!currentFluidState.isEmpty()) {
             //There is currently a fluid in the spot

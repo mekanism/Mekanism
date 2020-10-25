@@ -16,7 +16,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
@@ -68,15 +67,8 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         if (tile == null) {
             return true;
         }
-        if (tile.hasGui() && !tile.isRemoved()) {
-            //prevent Containers from remaining valid after the chunk has unloaded;
-            World world = tile.getWorld();
-            if (world == null) {
-                return false;
-            }
-            return world.isBlockPresent(tile.getPos());
-        }
-        return false;
+        //prevent Containers from remaining valid after the chunk has unloaded;
+        return tile.hasGui() && !tile.isRemoved() && WorldUtils.isBlockLoaded(tile.getWorld(), tile.getPos());
     }
 
     @Override

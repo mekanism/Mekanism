@@ -1,5 +1,6 @@
 package mekanism.common.lib.radiation;
 
+import mekanism.common.util.WorldUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -33,7 +34,7 @@ public class Meltdown {
                   8, true, Explosion.Mode.DESTROY);
         }
 
-        if (!world.isBlockPresent(minPos) || !world.isBlockPresent(maxPos)) {
+        if (!WorldUtils.isBlockLoaded(world, minPos) || !WorldUtils.isBlockLoaded(world, maxPos)) {
             return true;
         }
 
