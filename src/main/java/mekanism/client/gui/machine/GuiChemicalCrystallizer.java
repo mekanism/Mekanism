@@ -31,6 +31,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     public GuiChemicalCrystallizer(MekanismTileContainer<TileEntityChemicalCrystallizer> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
+        titleY = 4;
     }
 
     @Override
@@ -62,7 +63,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix, 4);
+        renderTitleText(matrix);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

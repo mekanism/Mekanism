@@ -25,6 +25,8 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     public GuiThermalEvaporationController(MekanismTileContainer<TileEntityThermalEvaporationController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        playerInventoryTitleY += 2;
+        titleY = 4;
         dynamicSlots = true;
     }
 
@@ -60,8 +62,8 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.EVAPORATION_PLANT.translate(), 4);
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
+        drawTitleText(matrix, MekanismLang.EVAPORATION_PLANT.translate(), titleY);
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

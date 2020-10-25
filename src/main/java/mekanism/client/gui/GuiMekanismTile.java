@@ -44,7 +44,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
                     if (isMouseOverSlot(slot, mouseX, mouseY)) {
                         DataType data = getFromSlot(slot);
                         if (data != null) {
-                            displayTooltip(matrix, MekanismLang.GENERIC_PARENTHESIS.translateColored(data.getColor(), data.getColor().getName()), mouseX - getGuiLeft(), mouseY - getGuiTop());
+                            displayTooltip(matrix, MekanismLang.GENERIC_PARENTHESIS.translateColored(data.getColor(), data.getColor().getName()), mouseX - guiLeft, mouseY - guiTop);
                         }
                         break;
                     }
@@ -53,12 +53,8 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
         }
     }
 
-    public void renderTitleText(MatrixStack matrix, int y) {
-        drawTitleText(matrix, tile.getName(), y);
-    }
-
     public void renderTitleText(MatrixStack matrix) {
-        renderTitleText(matrix, 6);
+        drawTitleText(matrix, tile.getName(), titleY);
     }
 
     private DataType getFromSlot(Slot slot) {

@@ -37,6 +37,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         super(container, inv, title);
         dynamicSlots = true;
         ySize += 16;
+        playerInventoryTitleY = ySize - 94;
     }
 
     @Override
@@ -92,7 +93,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         if (tile.getItemType() != null) {
             renderItem(matrix, tile.getItemType(), 8, 31);
         }
@@ -103,8 +104,8 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            double xAxis = mouseX - getGuiLeft();
-            double yAxis = mouseY - getGuiTop();
+            double xAxis = mouseX - guiLeft;
+            double yAxis = mouseY - guiTop;
             if (xAxis >= 8 && xAxis < 24 && yAxis >= 31 && yAxis < 47) {
                 ItemStack stack = getMinecraft().player.inventory.getItemStack();
                 if (!stack.isEmpty() && !hasShiftDown()) {

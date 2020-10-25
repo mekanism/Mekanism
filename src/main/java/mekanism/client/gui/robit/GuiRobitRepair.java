@@ -1,7 +1,6 @@
 package mekanism.client.gui.robit;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -28,13 +27,15 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
 
     public GuiRobitRepair(RepairRobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        playerInventoryTitleY += 1;
+        titleX = 60;
     }
 
     @Override
     public void init() {
         super.init();
         getMinecraft().keyboardListener.enableRepeatEvents(true);
-        addButton(itemNameField = new TextFieldWidget(font, getGuiLeft() + 62, getGuiTop() + 24, 103, 12, new StringTextComponent("")));
+        addButton(itemNameField = new TextFieldWidget(font, guiLeft + 62, guiTop + 24, 103, 12, new StringTextComponent("")));
         itemNameField.setCanLoseFocus(false);
         itemNameField.changeFocus(true);
         itemNameField.setTextColor(-1);
@@ -73,8 +74,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        RenderSystem.disableBlend();
-        drawString(matrix, MekanismLang.ROBIT_REPAIR.translate(), 60, 6, titleTextColor());
+        drawString(matrix, MekanismLang.ROBIT_REPAIR.translate(), titleX, titleY, titleTextColor());
         int maximumCost = container.getMaximumCost();
         if (maximumCost > 0) {
             int k = 0x80FF20;
@@ -93,12 +93,13 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
             }
 
             if (flag) {
-                int width = getXSize() - 8 - getStringWidth(component) - 2;
-                fill(matrix, width - 2, 67, getXSize() - 8, 79, 0x4F000000);
+                int width = xSize - 8 - getStringWidth(component) - 2;
+                fill(matrix, width - 2, 67, xSize - 8, 79, 0x4F000000);
                 getFont().func_243246_a(matrix, component, width, 69.0F, k);
                 MekanismRenderer.resetColor();
             }
         }
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
@@ -126,10 +127,10 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
         getMinecraft().textureManager.bindTexture(ANVIL_RESOURCE);
-        blit(matrix, getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
-        blit(matrix, getGuiLeft() + 59, getGuiTop() + 20, 0, getYSize() + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
+        blit(matrix, guiLeft, guiTop, 0, 0, xSize, ySize);
+        blit(matrix, guiLeft + 59, guiTop + 20, 0, ySize + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
         if ((container.getSlot(0).getHasStack() || container.getSlot(1).getHasStack()) && !container.getSlot(2).getHasStack()) {
-            blit(matrix, getGuiLeft() + 99, getGuiTop() + 45, getXSize(), 0, 28, 21);
+            blit(matrix, guiLeft + 99, guiTop + 45, xSize, 0, 28, 21);
         }
     }
 

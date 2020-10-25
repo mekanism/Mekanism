@@ -13,7 +13,6 @@ import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSortingTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registries.MekanismBlocks;
@@ -31,12 +30,18 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
         super(container, inv, title);
         if (tile.hasSecondaryResourceBar()) {
             ySize += 11;
+            playerInventoryTitleY = 85;
         } else if (tile instanceof TileEntitySawingFactory) {
             ySize += 21;
+            playerInventoryTitleY = 95;
+        } else {
+            playerInventoryTitleY = 75;
         }
         if (tile.tier == FactoryTier.ULTIMATE) {
             xSize += 34;
+            playerInventoryTitleX = 26;
         }
+        titleY = 4;
         dynamicSlots = true;
     }
 
@@ -47,7 +52,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
         addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSortingTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), getXSize() - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), xSize - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         if (tile.hasSecondaryResourceBar()) {
             if (tile instanceof TileEntityMetallurgicInfuserFactory) {
@@ -95,9 +100,8 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix, 4);
-        drawString(matrix, MekanismLang.INVENTORY.translate(), tile.tier == FactoryTier.ULTIMATE ? 26 : 8,
-              tile.hasSecondaryResourceBar() ? 85 : tile instanceof TileEntitySawingFactory ? 95 : 75, titleTextColor());
+        renderTitleText(matrix);
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

@@ -43,6 +43,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         super(container, inv, title);
         xSize = 16 + MekanismConfig.client.qioItemViewerSlotsX.get() * 18 + 18;
         ySize = QIOItemViewerContainer.SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 96;
+        playerInventoryTitleY = ySize - 94;
+        titleY = 5;
     }
 
     @Override
@@ -84,16 +86,16 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
               41, ListSortType.class, container::getSortType, container::setSortType));
         addButton(new GuiDigitalIconToggle<>(this, xSize - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, container::getSortDirection, container::setSortDirection));
-        addButton(new GuiResizeControls(this, (getMinecraft().getMainWindow().getScaledHeight() / 2) - 20 - getGuiTop(), this::resize));
+        addButton(new GuiResizeControls(this, (getMinecraft().getMainWindow().getScaledHeight() / 2) - 20 - guiTop, this::resize));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         drawString(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor());
         ITextComponent text = MekanismLang.LIST_SORT.translate();
         int width = getStringWidth(text);
-        drawString(matrix, text, xSize - 66 - width, (getYSize() - 96) + 4, titleTextColor());
+        drawString(matrix, text, xSize - 66 - width, ySize - 92, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

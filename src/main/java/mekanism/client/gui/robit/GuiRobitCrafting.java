@@ -12,6 +12,7 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
 
     public GuiRobitCrafting(CraftingRobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        playerInventoryTitleY += 1;
         dynamicSlots = true;
     }
 
@@ -23,8 +24,8 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, MekanismLang.ROBIT_CRAFTING.translate(), 8, 6, titleTextColor());
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, getYSize() - 93, titleTextColor());
+        drawString(matrix, MekanismLang.ROBIT_CRAFTING.translate(), titleX, titleY, titleTextColor());
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

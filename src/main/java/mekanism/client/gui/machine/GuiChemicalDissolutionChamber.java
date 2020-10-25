@@ -24,6 +24,7 @@ public class GuiChemicalDissolutionChamber extends GuiConfigurableTile<TileEntit
     public GuiChemicalDissolutionChamber(MekanismTileContainer<TileEntityChemicalDissolutionChamber> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
+        titleY = 4;
     }
 
     @Override
@@ -41,7 +42,7 @@ public class GuiChemicalDissolutionChamber extends GuiConfigurableTile<TileEntit
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.CHEMICAL_DISSOLUTION_CHAMBER_SHORT.translate(), 4);
+        drawTitleText(matrix, MekanismLang.CHEMICAL_DISSOLUTION_CHAMBER_SHORT.translate(), titleY);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

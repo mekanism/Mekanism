@@ -26,6 +26,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
 
     public GuiInductionMatrix(MekanismTileContainer<TileEntityInductionCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        playerInventoryTitleY += 2;
         dynamicSlots = true;
     }
 
@@ -68,9 +69,8 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        ITextComponent name = MekanismLang.MATRIX.translate();
-        drawTitleText(matrix, name, 6);
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
+        drawTitleText(matrix, MekanismLang.MATRIX.translate(), titleY);
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

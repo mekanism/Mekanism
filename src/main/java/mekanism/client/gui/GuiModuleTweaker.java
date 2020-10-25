@@ -49,7 +49,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         }));
         addButton(scrollList = new GuiModuleScrollList(this, 30, 20, 108, 116, () -> getStack(selected), this::onModuleSelected));
         addButton(new GuiElementHolder(this, 30, 136, 108, 18));
-        addButton(optionsButton = new TranslationButton(this, getGuiLeft() + 31, getGuiTop() + 137, 106, 16, MekanismLang.BUTTON_OPTIONS, this::openOptions));
+        addButton(optionsButton = new TranslationButton(this, guiLeft + 31, guiTop + 137, 106, 16, MekanismLang.BUTTON_OPTIONS, this::openOptions));
         optionsButton.active = false;
         int size = container.inventorySlots.size();
         for (int i = 0; i < size; i++) {
@@ -113,7 +113,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.MODULE_TWEAKER.translate(), 6);
+        drawTitleText(matrix, MekanismLang.MODULE_TWEAKER.translate(), titleY);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

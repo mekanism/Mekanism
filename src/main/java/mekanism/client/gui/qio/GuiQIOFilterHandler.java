@@ -41,6 +41,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         super(container, inv, title);
         dynamicSlots = true;
         ySize += 74;
+        playerInventoryTitleY = ySize - 94;
     }
 
     @Override
@@ -96,9 +97,9 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                 return list;
             }));
         }
-        addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
+        addButton(new TranslationButton(this, guiLeft + 10, guiTop + 99, 71, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
               () -> addWindow(GuiQIOItemStackFilter.create(this, tile))));
-        addButton(new TranslationButton(this, getGuiLeft() + 81, getGuiTop() + 99, 71, 20, MekanismLang.BUTTON_TAG_FILTER,
+        addButton(new TranslationButton(this, guiLeft + 81, guiTop + 99, 71, 20, MekanismLang.BUTTON_TAG_FILTER,
               () -> addWindow(GuiQIOTagFilter.create(this, tile))));
     }
 
@@ -113,7 +114,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

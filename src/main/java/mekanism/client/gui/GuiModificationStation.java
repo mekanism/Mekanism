@@ -28,6 +28,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         super(container, inv, title);
         dynamicSlots = true;
         ySize += 64;
+        playerInventoryTitleY = ySize - 92;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 154, 40));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
-        addButton(removeButton = new TranslationButton(this, getGuiLeft() + 34, getGuiTop() + 96, 108, 17, MekanismLang.BUTTON_REMOVE,
+        addButton(removeButton = new TranslationButton(this, guiLeft + 34, guiTop + 96, 108, 17, MekanismLang.BUTTON_REMOVE,
               () -> Mekanism.packetHandler.sendToServer(new PacketRemoveModule(tile.getPos(), selectedModule.getData()))));
         removeButton.active = false;
 
@@ -53,7 +54,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, titleTextColor());
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

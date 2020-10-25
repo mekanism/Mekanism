@@ -134,11 +134,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
         // flush the focus listeners list unless it's an overlay
         focusListeners.removeIf(element -> !element.isOverlay);
-        int prevLeft = getGuiLeft(), prevTop = getGuiTop();
+        int prevLeft = guiLeft, prevTop = guiTop;
         super.resize(minecraft, sizeX, sizeY);
 
         windows.forEach(window -> {
-            window.resize(prevLeft, prevTop, getGuiLeft(), getGuiTop());
+            window.resize(prevLeft, prevTop, guiLeft, guiTop);
             children.add(window);
         });
 
@@ -163,8 +163,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         children().stream().filter(c -> c instanceof GuiElement).forEach(c -> ((GuiElement) c).onDrawBackground(matrix, mouseX, mouseY, MekanismRenderer.getPartialTick()));
         RenderSystem.translatef(guiLeft, guiTop, 0);
         drawForegroundText(matrix, mouseX, mouseY);
-        int xAxis = mouseX - getGuiLeft();
-        int yAxis = mouseY - getGuiTop();
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
         // first render general foregrounds
         maxZOffset = 200;
         int zOffset = 200;
@@ -364,7 +364,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;
         }
-        GuiUtils.renderBackgroundTexture(matrix, BASE_BACKGROUND, 4, 4, getGuiLeft(), getGuiTop(), getXSize(), getYSize(), 256, 256);
+        GuiUtils.renderBackgroundTexture(matrix, BASE_BACKGROUND, 4, 4, guiLeft, guiTop, xSize, ySize, 256, 256);
     }
 
     @Override

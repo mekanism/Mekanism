@@ -53,6 +53,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
         dynamicSlots = true;
         ySize += 27;
         xSize += 20;
+        playerInventoryTitleY = ySize - 93;
     }
 
     @Override
@@ -82,8 +83,8 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, titleTextColor());
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 3, titleTextColor());
+        drawString(matrix, tile.getName(), (xSize - getStringWidth(tile.getName())) / 2, titleY, titleTextColor());
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
         super.drawForegroundText(matrix, mouseX, mouseY);
         matrix.push();

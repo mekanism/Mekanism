@@ -43,6 +43,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
         super(container, inv, title);
         xSize = 195;
         ySize += 6;
+        titleY = 5;
     }
 
     @Override
@@ -72,10 +73,10 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));
-        addButton(activateButton = new TranslationButton(this, getGuiLeft() + 6, getGuiTop() + 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
+        addButton(activateButton = new TranslationButton(this, guiLeft + 6, guiTop + 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
               () -> MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 1)), null,
               () -> EnumColor.DARK_GREEN));
-        addButton(scramButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 75, 81, 16, GeneratorsLang.FISSION_SCRAM,
+        addButton(scramButton = new TranslationButton(this, guiLeft + 89, guiTop + 75, 81, 16, GeneratorsLang.FISSION_SCRAM,
               () -> MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 0)), null,
               () -> EnumColor.DARK_RED));
         addButton(new GuiBigLight(this, 173, 76, tile.getMultiblock()::isActive));
@@ -105,7 +106,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         updateButtons();
 
-        drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR.translate(), 5);
+        drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR.translate(), titleY);
         drawString(matrix, MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, titleTextColor());
         drawString(matrix, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);

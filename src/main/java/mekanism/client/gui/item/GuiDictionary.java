@@ -29,6 +29,8 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     public GuiDictionary(DictionaryContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize += 5;
+        playerInventoryTitleY = ySize - 96;
+        titleY = 5;
         dynamicSlots = true;
     }
 
@@ -57,9 +59,9 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismItems.DICTIONARY.getTextComponent(), 5);
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, getYSize() - 96, titleTextColor());
-        drawTextScaledBound(matrix, MekanismLang.DICTIONARY_TAG_TYPE.translate(), 77, getYSize() - 96, titleTextColor(), 45);
+        drawTitleText(matrix, MekanismItems.DICTIONARY.getTextComponent(), titleY);
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawTextScaledBound(matrix, MekanismLang.DICTIONARY_TAG_TYPE.translate(), 77, playerInventoryTitleY, titleTextColor(), 45);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

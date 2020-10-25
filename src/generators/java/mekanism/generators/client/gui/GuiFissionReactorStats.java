@@ -66,7 +66,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR_STATS.translate(), 6);
+        drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR_STATS.translate(), titleY);
         FissionReactorMultiblockData multiblock = tile.getMultiblock();
         // heat stats
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_HEAT_STATISTICS.translate(), 6, 20, headingTextColor(), xSize - 12);

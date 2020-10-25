@@ -43,6 +43,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     public GuiQIOFrequencySelect(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize -= 6;
+        titleY = 5;
     }
 
     @Override
@@ -50,15 +51,15 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
         super.init();
         addButton(scrollList = new GuiTextScrollList(this, 27, 39, 122, 42));
 
-        addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 17, 60, 20, MekanismLang.PUBLIC, () -> {
+        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 17, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 17, 60, 20, MekanismLang.PRIVATE, () -> {
+        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 17, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
+        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
@@ -66,7 +67,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 79, getGuiTop() + 120, 50, 18, MekanismLang.BUTTON_DELETE,
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 79, guiTop + 120, 50, 18, MekanismLang.BUTTON_DELETE,
               () -> GuiConfirmationDialog.show(this, MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
                   int selection = scrollList.getSelection();
                   if (selection != -1) {
@@ -77,7 +78,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
                   updateButtons();
               }, DialogType.DANGER)));
         addButton(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
-        addButton(new ColorButton(this, getGuiLeft() + 132, getGuiTop() + 121, 16, 16, () -> {
+        addButton(new ColorButton(this, guiLeft + 132, guiTop + 121, 16, 16, () -> {
             QIOFrequency frequency = getFrequency();
             return frequency == null ? null : frequency.getColor();
         }, () -> sendColorUpdate(0), () -> sendColorUpdate(1)));
@@ -165,7 +166,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.QIO_FREQUENCY_SELECT.translate(), 5);
+        drawTitleText(matrix, MekanismLang.QIO_FREQUENCY_SELECT.translate(), titleY);
         drawString(matrix, OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, 143, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
         drawString(matrix, frequencyComponent, 32, 84, titleTextColor());

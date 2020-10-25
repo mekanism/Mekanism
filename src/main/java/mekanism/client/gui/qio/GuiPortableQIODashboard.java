@@ -29,7 +29,7 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, getName(), 5);
+        drawTitleText(matrix, getName(), titleY);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

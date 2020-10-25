@@ -24,6 +24,8 @@ public class GuiIsotopicCentrifuge extends GuiConfigurableTile<TileEntityIsotopi
 
     public GuiIsotopicCentrifuge(MekanismTileContainer<TileEntityIsotopicCentrifuge> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        playerInventoryTitleY += 2;
+        titleY = 4;
         dynamicSlots = true;
     }
 
@@ -43,8 +45,8 @@ public class GuiIsotopicCentrifuge extends GuiConfigurableTile<TileEntityIsotopi
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix, 4);
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, titleTextColor());
+        renderTitleText(matrix);
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

@@ -36,12 +36,12 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
     public void init() {
         super.init();
         addButton(new GuiElementHolder(this, 16, 31, 130, 90));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 16, getGuiTop() + 19, 11, 18, getButtonLocation("toggle"),
+        addButton(new MekanismImageButton(this, guiLeft + 16, guiTop + 19, 11, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING)));
         addButton(scrollBar = new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
-            addButton(new ReactorLogicButton<>(this, getGuiLeft() + 17, getGuiTop() + 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, type -> {
+            addButton(new ReactorLogicButton<>(this, guiLeft + 17, guiTop + 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, type -> {
                 if (type == null) {
                     return;
                 }
@@ -52,11 +52,11 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix, 6);
+        renderTitleText(matrix);
         drawTextScaledBound(matrix, GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING.translate(EnumColor.RED, OnOff.of(tile.activeCooled)), 29, 20, titleTextColor(), 117);
         drawTextScaledBound(matrix, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(EnumColor.RED, tile.logicType), 16, 123, titleTextColor(), 144);
         drawCenteredText(matrix, MekanismLang.STATUS.translate(EnumColor.RED, tile.checkMode() ? GeneratorsLang.REACTOR_LOGIC_OUTPUTTING : MekanismLang.IDLE),
-              0, getXSize(), 136, titleTextColor());
+              0, xSize, 136, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

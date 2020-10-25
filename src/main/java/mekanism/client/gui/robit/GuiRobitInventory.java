@@ -11,13 +11,14 @@ public class GuiRobitInventory extends GuiRobit<InventoryRobitContainer> {
 
     public GuiRobitInventory(InventoryRobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        playerInventoryTitleY = ySize - 93;
         dynamicSlots = true;
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, MekanismLang.ROBIT_INVENTORY.translate(), 8, 6, titleTextColor());
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, getYSize() - 93, titleTextColor());
+        drawString(matrix, MekanismLang.ROBIT_INVENTORY.translate(), titleX, titleY, titleTextColor());
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

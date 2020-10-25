@@ -6,7 +6,6 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.custom.GuiQIOFrequencyDataScreen;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
@@ -19,6 +18,7 @@ public class GuiQIODriveArray extends GuiMekanismTile<TileEntityQIODriveArray, M
         super(container, inv, title);
         dynamicSlots = true;
         ySize += 40;
+        playerInventoryTitleY = ySize - 94;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class GuiQIODriveArray extends GuiMekanismTile<TileEntityQIODriveArray, M
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, titleTextColor());
+        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

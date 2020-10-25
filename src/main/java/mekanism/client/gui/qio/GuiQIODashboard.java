@@ -34,7 +34,7 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, tile.getName(), 5);
+        drawTitleText(matrix, tile.getName(), titleY);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
