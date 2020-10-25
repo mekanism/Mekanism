@@ -86,14 +86,4 @@ public class SlurryStack extends ChemicalStack<Slurry> {
     public SlurryStack copy() {
         return new SlurryStack(this, getAmount());
     }
-
-    /**
-     * Default equality comparison for a SlurryStack. Same functionality as isTypeEqual().
-     *
-     * This is included for use in data structures.
-     */
-    @Override
-    public final boolean equals(Object o) {
-        return o instanceof SlurryStack && isTypeEqual((SlurryStack) o);
-    }
 }

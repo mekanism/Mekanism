@@ -15,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.IRegistryDelegate;
 
+//TODO - 10.1: Make the subclasses of this final
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey {
@@ -175,8 +176,16 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return code;
     }
 
+    /**
+     * Default equality comparison for a SlurryStack. Same functionality as isTypeEqual().
+     *
+     * This is included for use in data structures.
+     */
     @Override
-    public abstract boolean equals(Object o);
+    public boolean equals(Object o) {
+        //TODO - 10.1: Evaluate if this should be comparing amounts as well, if not we should remove it from the hashcode
+        return o == this || o != null && getClass() == o.getClass() && isTypeEqual((ChemicalStack) o);
+    }
 
     @Override
     public String toString() {

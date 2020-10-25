@@ -86,14 +86,4 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
     public InfusionStack copy() {
         return new InfusionStack(this, getAmount());
     }
-
-    /**
-     * Default equality comparison for a InfusionStack. Same functionality as isTypeEqual().
-     *
-     * This is included for use in data structures.
-     */
-    @Override
-    public final boolean equals(Object o) {
-        return o instanceof InfusionStack && isTypeEqual((InfusionStack) o);
-    }
 }
