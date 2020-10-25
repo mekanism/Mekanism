@@ -32,6 +32,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedIntValue radiationParticleRadius;
     public final CachedIntValue radiationParticleCount;
     public final CachedIntValue energyColor;
+    public final CachedIntValue terRange;
 
     public final CachedFloatValue hudOpacity;
     public final CachedIntValue hudColor;
@@ -79,6 +80,8 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("radiationParticleCount", 100));
         energyColor = CachedIntValue.wrap(this, builder.comment("Color of energy in item durability display.")
               .define("energyColor", 0x3CFE9A));
+        terRange = CachedIntValue.wrap(this, builder.comment("Range at which Tile Entity Renderer's added by Mekanism can render at, for example the contents of multiblocks. Vanilla defaults the rendering range for TERs to 64 for most blocks, but uses a range of 256 for beacons and end gateways.")
+              .defineInRange("terRange", 256, 1, 1_024));
 
         builder.comment("GUI Config").push(GUI_CATEGORY);
         hudOpacity = CachedFloatValue.wrap(this, builder.comment("Opacity of HUD used by MekaSuit.")

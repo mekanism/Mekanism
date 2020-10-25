@@ -4,6 +4,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketUpdateTile;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.util.WorldUtils;
@@ -135,9 +136,7 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
 
     @Override
     public double getMaxRenderDistanceSquared() {
-        //Override and change the default range for TERs for mekanism tiles to 256 like beacons use instead of 64
-        // This makes it so contents of things don't just "disappear" randomly when 65 blocks away, which is very
-        // easy to see for the larger multiblocks
-        return 256;
+        //Override and change the default range for TERs for mekanism tiles to the value defined in the config
+        return MekanismConfig.client.terRange.get();
     }
 }
