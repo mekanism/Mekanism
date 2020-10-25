@@ -168,8 +168,14 @@ public abstract class BlockMekanism extends Block {
             ISecurityItem securityItem = (ISecurityItem) item;
             tile.getSecurity().setMode(securityItem.getSecurity(stack));
             UUID ownerUUID = securityItem.getOwnerUUID(stack);
-            tile.getSecurity().setOwnerUUID(ownerUUID == null ? placer.getUniqueID() : ownerUUID);
-            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(placer.getUniqueID(), null));
+            if (ownerUUID != null) {
+                tile.getSecurity().setOwnerUUID(ownerUUID);
+            } else if (placer != null) {
+                tile.getSecurity().setOwnerUUID(placer.getUniqueID());
+            }
+            if (!world.isRemote && placer != null) {
+                Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(placer.getUniqueID(), null));
+            }
         }
         if (tile.supportsUpgrades()) {
             //The read method validates that data is stored
