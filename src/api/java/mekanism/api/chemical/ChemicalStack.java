@@ -177,7 +177,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     /**
-     * Default equality comparison for a SlurryStack. Same functionality as isTypeEqual().
+     * Default equality comparison for a ChemicalStack. Same functionality as isTypeEqual().
      *
      * This is included for use in data structures.
      */

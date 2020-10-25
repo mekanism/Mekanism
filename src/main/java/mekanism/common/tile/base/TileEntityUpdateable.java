@@ -132,4 +132,12 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
     public BlockPos getTilePos() {
         return getPos();
     }
+
+    @Override
+    public double getMaxRenderDistanceSquared() {
+        //Override and change the default range for TERs for mekanism tiles to 256 like beacons use instead of 64
+        // This makes it so contents of things don't just "disappear" randomly when 65 blocks away, which is very
+        // easy to see for the larger multiblocks
+        return 256;
+    }
 }
