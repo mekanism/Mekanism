@@ -17,8 +17,8 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -167,7 +167,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
     @Override
     @Deprecated
     public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
-        TileEntityEnergyCube energyCube = MekanismUtils.getTileEntity(TileEntityEnergyCube.class, world, pos, true);
+        TileEntityEnergyCube energyCube = WorldUtils.getTileEntity(TileEntityEnergyCube.class, world, pos, true);
         int index;
         if (energyCube == null) {
             //Default to facing north all enabled

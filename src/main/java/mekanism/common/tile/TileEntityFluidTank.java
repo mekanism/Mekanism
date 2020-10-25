@@ -29,6 +29,7 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -93,7 +94,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     protected void onUpdateClient() {
         super.onUpdateClient();
         if (updateClientLight) {
-            MekanismUtils.recheckLighting(world, pos);
+            WorldUtils.recheckLighting(world, pos);
             updateClientLight = false;
         }
     }
@@ -116,7 +117,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 // as the fluid may have changed and have a light value
                 //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
                 //TODO: Do we even need this on the sever side of things
-                MekanismUtils.recheckLighting(world, pos);
+                WorldUtils.recheckLighting(world, pos);
             }
             prevScale = scale;
             needsPacket = true;

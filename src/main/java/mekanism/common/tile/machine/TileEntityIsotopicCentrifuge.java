@@ -39,6 +39,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -165,7 +166,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
 
     @Override
     public void onPlace() {
-        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+        WorldUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
     }
 
     @Override

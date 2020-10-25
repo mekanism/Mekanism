@@ -28,9 +28,9 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -100,7 +100,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         super.handleUpdatePacket(tag);
         //Delay requesting the model data update and actually updating the packet until we have finished parsing the update tag
         requestModelDataUpdate();
-        MekanismUtils.updateBlock(getWorld(), getPos());
+        WorldUtils.updateBlock(getWorld(), getPos());
     }
 
     @Override
@@ -304,7 +304,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                               transmitter.getTilePos(), transmitter.getTileWorld());
                     } else {
                         transmitter.getTileWorld().setBlockState(transmitter.getTilePos(), upgradeState);
-                        TileEntityTransmitter upgradedTile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, transmitter.getTileWorld(), transmitter.getTilePos());
+                        TileEntityTransmitter upgradedTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, transmitter.getTileWorld(), transmitter.getTilePos());
                         if (upgradedTile == null) {
                             Mekanism.logger.warn("Error upgrading transmitter at position: {} in {}.", transmitter.getTilePos(), transmitter.getTileWorld());
                         } else {

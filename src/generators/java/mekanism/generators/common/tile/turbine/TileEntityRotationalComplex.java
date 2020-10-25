@@ -2,7 +2,7 @@ package mekanism.generators.common.tile.turbine;
 
 import java.util.UUID;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 
@@ -19,7 +19,7 @@ public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
         }
         super.setMultiblock(id);
         if (!isRemote()) {
-            TileEntityTurbineRotor tile = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, getWorld(), getPos().down());
+            TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, getWorld(), getPos().down());
             if (tile != null) {
                 tile.updateRotors();
             }

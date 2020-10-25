@@ -33,6 +33,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -123,7 +124,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                     if (finishedCalc) {
                         BlockPos below = getPos().down();
                         if (canReplace(below, false, false) && canExtractBucket() &&
-                            MekanismUtils.tryPlaceContainedLiquid(null, world, below, fluidTank.getFluid(), null)) {
+                            WorldUtils.tryPlaceContainedLiquid(null, world, below, fluidTank.getFluid(), null)) {
                             energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                             fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                         }
@@ -159,14 +160,14 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         }
         Set<BlockPos> toRemove = new ObjectOpenHashSet<>();
         for (BlockPos nodePos : activeNodes) {
-            if (MekanismUtils.isBlockLoaded(world, nodePos)) {
+            if (WorldUtils.isBlockLoaded(world, nodePos)) {
                 if (canReplace(nodePos, true, false) && canExtractBucket() &&
-                    MekanismUtils.tryPlaceContainedLiquid(null, world, nodePos, fluidTank.getFluid(), null)) {
+                    WorldUtils.tryPlaceContainedLiquid(null, world, nodePos, fluidTank.getFluid(), null)) {
                     fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                 }
                 for (Direction dir : dirs) {
                     BlockPos sidePos = nodePos.offset(dir);
-                    if (MekanismUtils.isBlockLoaded(world, sidePos) && canReplace(sidePos, true, true)) {
+                    if (WorldUtils.isBlockLoaded(world, sidePos) && canReplace(sidePos, true, true)) {
                         activeNodes.add(sidePos);
                     }
                 }
@@ -201,7 +202,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         FluidStack stack = fluidTank.getFluid();
         if (stack.isEmpty()) {
             //If we are empty, base it off of if it is replaceable in general or if it is a liquid container
-            return MekanismUtils.isValidReplaceableBlock(world, pos) || state.getBlock() instanceof ILiquidContainer;
+            return WorldUtils.isValidReplaceableBlock(world, pos) || state.getBlock() instanceof ILiquidContainer;
         }
         Fluid fluid = stack.getFluid();
         if (state.isReplaceable(fluid)) {

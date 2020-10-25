@@ -8,7 +8,7 @@ import mekanism.common.content.qio.IQIOFrequencyHolder;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -55,6 +55,6 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         } else {
             lastColor = null;
         }
-        MekanismUtils.updateBlock(getWorld(), getPos());
+        WorldUtils.updateBlock(getWorld(), getPos());
     }
 }

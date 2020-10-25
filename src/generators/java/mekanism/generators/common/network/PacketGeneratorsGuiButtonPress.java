@@ -6,7 +6,7 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.container.FusionReactorFuelTabContainer;
 import mekanism.generators.common.container.FusionReactorHeatTabContainer;
@@ -45,7 +45,7 @@ public class PacketGeneratorsGuiButtonPress {
         ctx.enqueueWork(() -> {
             ServerPlayerEntity player = ctx.getSender();
             if (player != null) {//If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
-                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
+                TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
                 if (tile != null) {
                     INamedContainerProvider provider = message.tileButton.getProvider(tile, message.extra);
                     if (provider != null) {

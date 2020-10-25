@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.tile.machine.TileEntityIsotopicCentrifuge;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 
@@ -16,7 +16,7 @@ public class ItemBlockIsotopicCentrifuge extends ItemBlockMachine {
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        if (!MekanismUtils.isValidReplaceableBlock(context.getWorld(), context.getPos().up())) {
+        if (!WorldUtils.isValidReplaceableBlock(context.getWorld(), context.getPos().up())) {
             //If there isn't room then fail
             return false;
         }

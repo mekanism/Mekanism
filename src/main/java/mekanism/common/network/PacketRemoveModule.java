@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.tile.TileEntityModificationStation;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -25,7 +25,7 @@ public class PacketRemoveModule {
         ctx.enqueueWork(() -> {
             PlayerEntity player = ctx.getSender();
             if (player != null) {
-                TileEntityModificationStation tile = MekanismUtils.getTileEntity(TileEntityModificationStation.class, player.world, message.pos);
+                TileEntityModificationStation tile = WorldUtils.getTileEntity(TileEntityModificationStation.class, player.world, message.pos);
                 if (tile != null) {
                     tile.removeModule(player, message.moduleType);
                 }

@@ -12,6 +12,7 @@ import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.tile.machine.TileEntitySolarNeutronActivator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
@@ -34,7 +35,7 @@ public class ItemBlockSolarNeutronActivator extends ItemBlockMachine implements 
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        if (!MekanismUtils.isValidReplaceableBlock(context.getWorld(), context.getPos().up())) {
+        if (!WorldUtils.isValidReplaceableBlock(context.getWorld(), context.getPos().up())) {
             //If there isn't room then fail
             return false;
         }

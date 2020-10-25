@@ -33,6 +33,7 @@ import mekanism.common.network.PacketPortalFX;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
@@ -225,7 +226,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         //Otherwise break the block
         Block block = state.getBlock();
         //Get the tile now so that we have it for when we try to harvest the block
-        TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
+        TileEntity tileEntity = WorldUtils.getTileEntity(world, pos);
         //Remove the block
         boolean removed = state.removedByPlayer(world, pos, player, true, world.getFluidState(pos));
         if (removed) {

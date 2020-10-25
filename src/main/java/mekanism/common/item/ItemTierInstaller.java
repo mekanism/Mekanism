@@ -11,7 +11,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -72,7 +72,7 @@ public class ItemTierInstaller extends Item {
                 if (state == upgradeState) {
                     return ActionResultType.PASS;
                 }
-                TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                TileEntity tile = WorldUtils.getTileEntity(world, pos);
                 if (tile instanceof ITierUpgradable) {
                     if (tile instanceof TileEntityMekanism && !((TileEntityMekanism) tile).playersUsing.isEmpty()) {
                         return ActionResultType.FAIL;
@@ -86,7 +86,7 @@ public class ItemTierInstaller extends Item {
                     } else {
                         world.setBlockState(pos, upgradeState);
                         //TODO: Make it so it doesn't have to be a TileEntityMekanism?
-                        TileEntityMekanism upgradedTile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+                        TileEntityMekanism upgradedTile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
                         if (upgradedTile == null) {
                             Mekanism.logger.warn("Error upgrading block at position: {} in {}.", pos, world);
                             return ActionResultType.FAIL;

@@ -15,7 +15,7 @@ import java.util.function.ToIntFunction;
 import mekanism.common.lib.math.voxel.BlockPosBuilder;
 import mekanism.common.lib.math.voxel.VoxelPlane;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -199,7 +199,7 @@ public class Structure {
             if (pos.equals(node.getTilePos())) {
                 return true;
             }
-            TileEntity tile = MekanismUtils.getTileEntity(node.getTileWorld(), chunkMap, pos);
+            TileEntity tile = WorldUtils.getTileEntity(node.getTileWorld(), chunkMap, pos);
             if (tile instanceof IMultiblockBase) {
                 IMultiblockBase adj = (IMultiblockBase) tile;
                 if (isCompatible(node, adj)) {

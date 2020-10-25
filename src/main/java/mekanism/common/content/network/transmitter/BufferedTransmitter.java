@@ -6,7 +6,7 @@ import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 
@@ -83,7 +83,7 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
                 // This happens because we are no longer an orphan and want to tell the neighboring tiles about it
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     if (connectionMapContainsSide(changedTransmitters, side)) {
-                        TileEntityTransmitter tile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().offset(side));
+                        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().offset(side));
                         if (tile != null) {
                             tile.getTransmitter().refreshConnections(side.getOpposite());
                         }
@@ -121,7 +121,7 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
     }
 
     private void recheckConnectionPrechecked(Direction side) {
-        TileEntityTransmitter otherTile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().offset(side));
+        TileEntityTransmitter otherTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().offset(side));
         if (otherTile != null) {
             NETWORK network = getTransmitterNetwork();
             //The other one should always have the same incompatible networks state as us

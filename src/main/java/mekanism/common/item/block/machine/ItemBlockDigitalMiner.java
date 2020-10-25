@@ -6,7 +6,7 @@ import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +26,7 @@ public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemSust
             for (int yPos = 0; yPos <= 1; yPos++) {
                 for (int zPos = -1; zPos <= 1; zPos++) {
                     BlockPos pos = placePos.add(xPos, yPos, zPos);
-                    if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
+                    if (!WorldUtils.isValidReplaceableBlock(world, pos)) {
                         // If it won't fit then fail
                         return false;
                     }

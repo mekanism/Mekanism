@@ -68,7 +68,7 @@ import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -210,7 +210,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
-                TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+                TileEntity adj = WorldUtils.getTileEntity(getWorld(), getPos().offset(side));
                 return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
             }
         }

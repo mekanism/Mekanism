@@ -13,7 +13,7 @@ import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.multiblock.TileEntitySuperheatingElement;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -46,7 +46,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         Set<BlockPos> dispersers = new ObjectOpenHashSet<>();
         Set<BlockPos> elements = new ObjectOpenHashSet<>();
         for (BlockPos pos : innerNodes) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, pos);
+            TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             if (tile instanceof TileEntityPressureDisperser) {
                 dispersers.add(pos);
             } else if (tile instanceof TileEntitySuperheatingElement) {
@@ -71,7 +71,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         for (int x = 1; x < structure.length() - 1; x++) {
             for (int z = 1; z < structure.width() - 1; z++) {
                 BlockPos shifted = pos.add(x, 0, z);
-                TileEntityPressureDisperser tile = MekanismUtils.getTileEntity(TileEntityPressureDisperser.class, world, chunkMap, shifted);
+                TileEntityPressureDisperser tile = WorldUtils.getTileEntity(TileEntityPressureDisperser.class, world, chunkMap, shifted);
                 if (tile == null) {
                     return FormationResult.fail(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, shifted);
                 }
@@ -85,7 +85,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         }
 
         structure.superheatingElements = FormationProtocol.explore(elements.iterator().next(), coord ->
-              coord.getY() < initDisperser.getY() && MekanismUtils.getTileEntity(TileEntitySuperheatingElement.class, world, chunkMap, coord) != null);
+              coord.getY() < initDisperser.getY() && WorldUtils.getTileEntity(TileEntitySuperheatingElement.class, world, chunkMap, coord) != null);
 
         if (elements.size() > structure.superheatingElements) {
             return FormationResult.fail(MekanismLang.BOILER_INVALID_SUPERHEATING);
@@ -129,8 +129,8 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
     }
 
     private boolean isAirOrFrame(Long2ObjectMap<IChunk> chunkMap, BlockPos airPos) {
-        Optional<BlockState> stateOptional = MekanismUtils.getBlockState(world, chunkMap, airPos);
+        Optional<BlockState> stateOptional = WorldUtils.getBlockState(world, chunkMap, airPos);
         return (stateOptional.isPresent() && stateOptional.get().isAir(world, airPos)) ||
-               isFrameCompatible(MekanismUtils.getTileEntity(world, chunkMap, airPos));
+               isFrameCompatible(WorldUtils.getTileEntity(world, chunkMap, airPos));
     }
 }

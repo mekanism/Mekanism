@@ -32,6 +32,7 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -161,7 +162,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         }
         //Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
-        float brightness = MekanismUtils.getSunBrightness(world, 1.0F);
+        float brightness = WorldUtils.getSunBrightness(world, 1.0F);
         //Production is a function of the peak possible output in this biome and sun's current brightness
         float production = peakProductionRate * brightness;
         //If the solar neutron activator is in a biome where it can rain and it's raining penalize production by 80%
@@ -191,7 +192,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Override
     public void onPlace() {
-        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+        WorldUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
     }
 
     @Override

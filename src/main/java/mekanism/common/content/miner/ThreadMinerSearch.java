@@ -12,7 +12,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
@@ -63,7 +63,7 @@ public class ThreadMinerSearch extends Thread {
                 return;
             }
             BlockPos testPos = pos.add(i % diameter, i / diameter / diameter, (i / diameter) % diameter);
-            if (minerPos.equals(testPos) || MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
+            if (minerPos.equals(testPos) || WorldUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
                 //Skip the miner itself, and also skip any bounding blocks
                 continue;
             }

@@ -10,8 +10,8 @@ import mekanism.common.content.blocktype.Machine;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.FluidUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -36,7 +36,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
     @Override
     protected int getTileLight(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         int ambientLight = 0;
-        TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, world, pos);
+        TileEntityFluidTank tile = WorldUtils.getTileEntity(TileEntityFluidTank.class, world, pos);
         if (tile != null) {
             if (MekanismConfig.client.enableAmbientLighting.get() && tile.lightUpdate() && tile.getActive()) {
                 ambientLight = MekanismConfig.client.ambientLightingLevel.get();
@@ -57,7 +57,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
     @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, world, pos, true);
+        TileEntityFluidTank tile = WorldUtils.getTileEntity(TileEntityFluidTank.class, world, pos, true);
         if (tile == null) {
             return ActionResultType.PASS;
         }

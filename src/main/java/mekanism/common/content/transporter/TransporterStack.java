@@ -13,9 +13,9 @@ import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -232,12 +232,12 @@ public class TransporterStack {
         if (progress < 50) {
             BlockPos prev = getPrev(transporter);
             if (prev != null) {
-                side = MekanismUtils.sideDifference(transporter.getTilePos(), prev);
+                side = WorldUtils.sideDifference(transporter.getTilePos(), prev);
             }
         } else {
             BlockPos next = getNext(transporter);
             if (next != null) {
-                side = MekanismUtils.sideDifference(next, transporter.getTilePos());
+                side = WorldUtils.sideDifference(next, transporter.getTilePos());
             }
         }
         //sideDifference can return null

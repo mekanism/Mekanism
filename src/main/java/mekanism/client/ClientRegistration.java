@@ -126,7 +126,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.color.BlockColors;
@@ -383,7 +383,7 @@ public class ClientRegistration {
         ItemColors itemColors = event.getItemColors();
         ClientRegistrationUtil.registerBlockColorHandler(blockColors, (state, world, pos, tintIndex) -> {
                   if (pos != null) {
-                      TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                      TileEntity tile = WorldUtils.getTileEntity(world, pos);
                       if (tile instanceof TileEntityQIOComponent) {
                           EnumColor color = ((TileEntityQIOComponent) tile).getColor();
                           return color != null ? MekanismRenderer.getColorARGB(color, 1) : -1;
@@ -398,7 +398,7 @@ public class ClientRegistration {
               MekanismBlocks.CREATIVE_FLUID_TANK);
         ClientRegistrationUtil.registerBlockColorHandler(blockColors, (state, world, pos, tintIndex) -> {
                   if (tintIndex == 1 && pos != null) {
-                      TileEntityLogisticalTransporter transporter = MekanismUtils.getTileEntity(TileEntityLogisticalTransporter.class, world, pos);
+                      TileEntityLogisticalTransporter transporter = WorldUtils.getTileEntity(TileEntityLogisticalTransporter.class, world, pos);
                       if (transporter != null) {
                           EnumColor renderColor = transporter.getTransmitter().getColor();
                           if (renderColor != null) {

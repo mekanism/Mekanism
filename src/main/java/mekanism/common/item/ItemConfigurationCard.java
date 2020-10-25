@@ -15,8 +15,8 @@ import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -54,7 +54,7 @@ public class ItemConfigurationCard extends Item {
         if (!world.isRemote && player != null) {
             BlockPos pos = context.getPos();
             Direction side = context.getFace();
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            TileEntity tile = WorldUtils.getTileEntity(world, pos);
             if (CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
                 if (SecurityUtils.canAccess(player, tile)) {
                     ItemStack stack = player.getHeldItem(context.getHand());
@@ -80,7 +80,7 @@ public class ItemConfigurationCard extends Item {
                                 TileEntityMekanism mekanismTile = (TileEntityMekanism) tile;
                                 mekanismTile.invalidateCachedCapabilities();
                                 mekanismTile.sendUpdatePacket();
-                                MekanismUtils.notifyLoadedNeighborsOfTileChange(world, pos);
+                                WorldUtils.notifyLoadedNeighborsOfTileChange(world, pos);
                             }
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIG_CARD_SET.translateColored(EnumColor.DARK_GREEN, EnumColor.INDIGO,

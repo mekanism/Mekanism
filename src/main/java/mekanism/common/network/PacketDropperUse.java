@@ -28,6 +28,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -61,7 +62,7 @@ public class PacketDropperUse {
             }
             ItemStack stack = player.inventory.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
-                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.pos);
+                TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, message.pos);
                 if (tile != null) {
                     if (tile instanceof TileEntityMultiblock) {
                         MultiblockData structure = ((TileEntityMultiblock<?>) tile).getMultiblock();

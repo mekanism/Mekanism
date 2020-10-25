@@ -20,6 +20,7 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -149,7 +150,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @Override
     public void onPlace() {
-        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+        WorldUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
     }
 
     @Override

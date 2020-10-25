@@ -7,7 +7,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.tile.interfaces.IBoundingBlock;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.BlockState;
@@ -36,10 +36,10 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     public void onPlace() {
         if (world != null) {
             BlockPos pos = getPos();
-            MekanismUtils.makeBoundingBlock(world, pos.add(0, 1, 0), pos);
+            WorldUtils.makeBoundingBlock(world, pos.add(0, 1, 0), pos);
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
-                    MekanismUtils.makeBoundingBlock(world, pos.add(x, 2, z), pos);
+                    WorldUtils.makeBoundingBlock(world, pos.add(x, 2, z), pos);
                 }
             }
         }

@@ -26,7 +26,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -101,7 +101,7 @@ public class PacketGuiButtonPress {
                     }
                 }
             } else if (message.type == Type.TILE) {
-                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
+                TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
                 if (tile != null) {
                     INamedContainerProvider provider = message.tileButton.getProvider(tile, message.extra);
                     if (provider != null) {

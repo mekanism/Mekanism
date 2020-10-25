@@ -39,6 +39,7 @@ import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
@@ -178,7 +179,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             //Add all the blocks surrounding this recurring node to the recurring node list
             for (Direction orientation : EnumUtils.DIRECTIONS) {
                 BlockPos side = tempPumpPos.offset(orientation);
-                if (MekanismUtils.distanceBetween(pos, side) <= MekanismConfig.general.maxPumpRange.get()) {
+                if (WorldUtils.distanceBetween(pos, side) <= MekanismConfig.general.maxPumpRange.get()) {
                     if (suck(side, hasFilter, true)) {
                         return true;
                     }

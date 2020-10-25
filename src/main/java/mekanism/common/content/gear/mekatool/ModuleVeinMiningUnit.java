@@ -14,7 +14,7 @@ import mekanism.common.content.gear.ModuleConfigItem.DisableableModuleConfigItem
 import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.network.PacketLightningRender;
 import mekanism.common.network.PacketLightningRender.LightningPreset;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -58,7 +58,7 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
             }
             for (BlockPos pos : BlockPos.getAllInBoxMutable(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
                 //We can check contains as mutable
-                if (!found.contains(pos) && (maxRange == -1 || MekanismUtils.distanceBetween(location, pos) <= maxRange)) {
+                if (!found.contains(pos) && (maxRange == -1 || WorldUtils.distanceBetween(location, pos) <= maxRange)) {
                     if (world.isBlockPresent(pos) && startBlock == world.getBlockState(pos).getBlock()) {
                         //Make sure to add it as immutable
                         if (openSet.add(pos.toImmutable())) {

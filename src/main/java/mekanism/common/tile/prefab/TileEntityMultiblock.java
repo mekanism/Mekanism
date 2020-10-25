@@ -24,8 +24,8 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -162,9 +162,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos pos = getPos().offset(side);
             if (!multiblock.isFormed() || (!multiblock.locations.contains(pos) && !multiblock.internalLocations.contains(pos))) {
-                TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                TileEntity tile = WorldUtils.getTileEntity(world, pos);
                 if (!world.isAirBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
-                    MekanismUtils.notifyNeighborOfChange(world, pos, getPos());
+                    WorldUtils.notifyNeighborOfChange(world, pos, getPos());
                 }
             }
         }

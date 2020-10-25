@@ -2,7 +2,7 @@ package mekanism.common.item.block;
 
 import javax.annotation.Nonnull;
 import mekanism.common.registration.impl.ItemDeferredRegister;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -41,7 +41,7 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
         }
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
+        if (!WorldUtils.isValidReplaceableBlock(world, pos)) {
             pos = pos.offset(context.getFace());
         }
         if (player.canPlayerEdit(pos, context.getFace(), stack)) {
@@ -63,7 +63,7 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        if (MekanismUtils.isValidReplaceableBlock(context.getWorld(), context.getPos())) {
+        if (WorldUtils.isValidReplaceableBlock(context.getWorld(), context.getPos())) {
             return super.placeBlock(context, state);
         }
         return false;

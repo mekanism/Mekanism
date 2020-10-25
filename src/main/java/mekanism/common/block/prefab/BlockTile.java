@@ -18,6 +18,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.interfaces.IActiveState;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -54,7 +55,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
         }
@@ -74,7 +75,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
 
     protected int getTileLight(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         if (MekanismConfig.client.enableAmbientLighting.get() && type.has(AttributeStateActive.class)) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            TileEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).getActive()) {
                 return ((IActiveState) tile).getActiveLightValue();
             }
@@ -85,12 +86,12 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Override
     @Deprecated
     public float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return SecurityUtils.canAccess(player, MekanismUtils.getTileEntity(world, pos)) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
+        return SecurityUtils.canAccess(player, WorldUtils.getTileEntity(world, pos)) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
     }
 
     @Override
     public void animateTick(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Random random) {
-        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile != null && MekanismUtils.isActive(world, pos) && Attribute.has(state.getBlock(), AttributeParticleFX.class)) {
             for (Function<Random, Particle> particleFunction : type.get(AttributeParticleFX.class).getParticleFunctions()) {
                 Particle particle = particleFunction.apply(random);
@@ -113,7 +114,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
           boolean isMoving) {
         if (!world.isRemote) {
-            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
                 tile.onNeighborChange(neighborBlock, neighborPos);
             }
@@ -135,7 +136,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Deprecated
     public int getWeakPower(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull Direction side) {
         if (type.has(AttributeRedstoneEmitter.class)) {
-            TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             return type.get(AttributeRedstoneEmitter.class).getRedstoneLevel(tile);
         }
         return super.getWeakPower(state, world, pos, side);

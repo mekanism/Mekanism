@@ -12,6 +12,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,7 +39,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
             if (!transporter.hasConnectedInventory()) {
                 BlockPos tilePos = tile.getPos();
                 for (Direction dir : EnumUtils.DIRECTIONS) {
-                    TileEntity tileEntity = MekanismUtils.getTileEntity(world, tilePos.offset(dir));
+                    TileEntity tileEntity = WorldUtils.getTileEntity(world, tilePos.offset(dir));
                     if (InventoryUtils.isItemHandler(tileEntity, dir)) {
                         transporter.setFacing(dir.getOpposite());
                         break;
@@ -53,7 +54,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
     @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        TileEntityLogisticalSorter tile = MekanismUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
+        TileEntityLogisticalSorter tile = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
         }
@@ -68,13 +69,13 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
                 if (wrenchHandler.canUseWrench(stack, player, hit.getPos())) {
                     if (SecurityUtils.canAccess(player, tile)) {
                         if (player.isSneaking()) {
-                            MekanismUtils.dismantleBlock(state, world, pos);
+                            WorldUtils.dismantleBlock(state, world, pos);
                             return ActionResultType.SUCCESS;
                         }
                         Direction change = tile.getDirection().rotateY();
                         if (!tile.hasConnectedInventory()) {
                             for (Direction dir : EnumUtils.DIRECTIONS) {
-                                TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos.offset(dir));
+                                TileEntity tileEntity = WorldUtils.getTileEntity(world, pos.offset(dir));
                                 if (InventoryUtils.isItemHandler(tileEntity, dir)) {
                                     change = dir.getOpposite();
                                     break;
@@ -99,9 +100,9 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
     public BlockState updatePostPlacement(BlockState state, @Nonnull Direction dir, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos pos,
           @Nonnull BlockPos neighborPos) {
         if (!world.isRemote()) {
-            TileEntityLogisticalSorter sorter = MekanismUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
+            TileEntityLogisticalSorter sorter = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
             if (sorter != null && !sorter.hasConnectedInventory()) {
-                TileEntity tileEntity = MekanismUtils.getTileEntity(world, neighborPos);
+                TileEntity tileEntity = WorldUtils.getTileEntity(world, neighborPos);
                 if (InventoryUtils.isItemHandler(tileEntity, dir)) {
                     sorter.setFacing(dir.getOpposite());
                     state = sorter.getBlockState();

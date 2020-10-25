@@ -2,7 +2,7 @@ package mekanism.common.network;
 
 import java.util.function.Supplier;
 import mekanism.common.tile.TileEntitySecurityDesk;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +30,7 @@ public class PacketAddTrusted {
         ctx.enqueueWork(() -> {
             PlayerEntity player = ctx.getSender();
             if (player != null) {
-                TileEntitySecurityDesk tile = MekanismUtils.getTileEntity(TileEntitySecurityDesk.class, player.world, message.tilePosition);
+                TileEntitySecurityDesk tile = WorldUtils.getTileEntity(TileEntitySecurityDesk.class, player.world, message.tilePosition);
                 if (tile != null) {
                     tile.addTrusted(message.name);
                 }

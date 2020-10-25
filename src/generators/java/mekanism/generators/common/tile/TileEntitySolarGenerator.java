@@ -13,6 +13,7 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.world.World;
@@ -108,7 +109,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         }
         //Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
-        float brightness = MekanismUtils.getSunBrightness(world, 1.0F);
+        float brightness = WorldUtils.getSunBrightness(world, 1.0F);
         //TODO: Galacticraft solar energy multiplier (see TileEntitySolarGenerator 1.12 branch). Also do that for the Solar Neutron Activator
 
         //Production is a function of the peak possible output in this biome and sun's current brightness

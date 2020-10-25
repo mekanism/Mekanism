@@ -16,7 +16,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -40,7 +40,7 @@ public class HwylaDataProvider implements IServerDataProvider<TileEntity> {
                 //If the coords haven't been received, exit
                 return;
             }
-            tile = MekanismUtils.getTileEntity(world, boundingBlock.getMainPos());
+            tile = WorldUtils.getTileEntity(world, boundingBlock.getMainPos());
             if (tile == null) {
                 //If there is no tile where the bounding block thinks the main tile is, exit
                 return;

@@ -26,6 +26,7 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
@@ -146,7 +147,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     public IHeatHandler getAdjacent(Direction side) {
         if (side == Direction.DOWN) {
-            TileEntity adj = MekanismUtils.getTileEntity(getWorld(), pos.down());
+            TileEntity adj = WorldUtils.getTileEntity(getWorld(), pos.down());
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
         }
         return null;

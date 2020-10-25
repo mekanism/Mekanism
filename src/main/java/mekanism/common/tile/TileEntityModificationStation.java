@@ -25,6 +25,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -152,10 +153,10 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     @Override
     public void onPlace() {
-        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+        WorldUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
         Direction side = getRightSide();
-        MekanismUtils.makeBoundingBlock(getWorld(), getPos().offset(side), getPos());
-        MekanismUtils.makeBoundingBlock(getWorld(), getPos().offset(side).up(), getPos());
+        WorldUtils.makeBoundingBlock(getWorld(), getPos().offset(side), getPos());
+        WorldUtils.makeBoundingBlock(getWorld(), getPos().offset(side).up(), getPos());
     }
 
     @Override

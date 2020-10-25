@@ -12,8 +12,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
@@ -112,7 +112,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     private boolean isGettingPowered() {
-        return MekanismUtils.isGettingPowered(getTileWorld(), getTilePos());
+        return WorldUtils.isGettingPowered(getTileWorld(), getTilePos());
     }
 
     public enum DiversionControl implements IIncrementalEnum<DiversionControl>, IHasTextComponent {

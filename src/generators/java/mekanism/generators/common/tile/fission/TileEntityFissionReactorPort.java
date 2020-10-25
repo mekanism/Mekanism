@@ -15,7 +15,7 @@ import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
@@ -50,7 +50,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     public IHeatHandler getAdjacent(Direction side) {
         IHeatHandler handler = super.getAdjacent(side);
         if (handler != null) {
-            if (MekanismUtils.getTileEntity(getWorld(), getPos().offset(side)) instanceof TileEntityFissionReactorPort) {
+            if (WorldUtils.getTileEntity(getWorld(), getPos().offset(side)) instanceof TileEntityFissionReactorPort) {
                 return null;
             }
         }

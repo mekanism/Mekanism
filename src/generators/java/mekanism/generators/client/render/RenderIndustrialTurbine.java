@@ -8,7 +8,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.data.GasRenderData;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
@@ -38,7 +38,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                 profiler.startSection(GeneratorsProfilerConstants.TURBINE_ROTOR);
                 while (true) {
                     complexPos = complexPos.down();
-                    TileEntityTurbineRotor rotor = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, tile.getWorld(), complexPos);
+                    TileEntityTurbineRotor rotor = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, tile.getWorld(), complexPos);
                     if (rotor == null) {
                         break;
                     }

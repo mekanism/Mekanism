@@ -20,6 +20,7 @@ import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
@@ -30,13 +31,28 @@ public final class SecurityUtils {
     private SecurityUtils() {
     }
 
+    /**
+     * Whether or not a given PlayerEntity is considered an Op.
+     *
+     * @param p - player to check
+     *
+     * @return if the player has operator privileges
+     */
+    public static boolean isOp(PlayerEntity p) {
+        if (p instanceof ServerPlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity) p;
+            return MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().canSendCommands(player.getGameProfile());
+        }
+        return false;
+    }
+
     public static boolean canAccess(PlayerEntity player, Object object) {
         ISecurityObject security;
         if (object instanceof ItemStack) {
             ItemStack stack = (ItemStack) object;
             if (!(stack.getItem() instanceof ISecurityItem) && stack.getItem() instanceof IOwnerItem) {
                 //If it is an owner item but not a security item make sure the owner matches
-                if (!MekanismConfig.general.allowProtection.get() || MekanismUtils.isOp(player)) {
+                if (!MekanismConfig.general.allowProtection.get() || isOp(player)) {
                     //If protection is disabled or the player is an op and bypass restrictions are enabled, access is always granted
                     return true;
                 }
@@ -54,7 +70,7 @@ public final class SecurityUtils {
     }
 
     private static boolean canAccess(SecurityMode mode, PlayerEntity player, UUID owner) {
-        if (!MekanismConfig.general.allowProtection.get() || MekanismUtils.isOp(player)) {
+        if (!MekanismConfig.general.allowProtection.get() || isOp(player)) {
             //If protection is disabled or the player is an op and bypass restrictions are enabled, access is always granted
             return true;
         }

@@ -11,7 +11,7 @@ import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
 import mekanism.common.tile.multiblock.TileEntityInductionProvider;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -43,7 +43,7 @@ public class MatrixValidator extends CuboidStructureValidator<MatrixMultiblockDa
               MekanismBlockTypes.ELITE_INDUCTION_CELL, MekanismBlockTypes.ULTIMATE_INDUCTION_CELL, MekanismBlockTypes.BASIC_INDUCTION_PROVIDER,
               MekanismBlockTypes.ADVANCED_INDUCTION_PROVIDER, MekanismBlockTypes.ELITE_INDUCTION_PROVIDER, MekanismBlockTypes.ULTIMATE_INDUCTION_PROVIDER)) {
             //Compare blocks against the type before bothering to lookup the tile
-            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, pos);
+            TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             if (tile instanceof TileEntityInductionCell) {
                 cells.add((TileEntityInductionCell) tile);
                 return true;

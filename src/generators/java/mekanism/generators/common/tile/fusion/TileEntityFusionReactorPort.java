@@ -20,7 +20,7 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
@@ -95,7 +95,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     @Nullable
     @Override
     public IHeatHandler getAdjacent(Direction side) {
-        TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+        TileEntity adj = WorldUtils.getTileEntity(getWorld(), getPos().offset(side));
         if (adj instanceof TileEntityFusionReactorBlock) {
             return null;
         }

@@ -12,7 +12,7 @@ import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.lib.multiblock.FormationProtocol.StructureRequirement;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -66,7 +66,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
 
     protected FormationResult validateNode(FormationProtocol<T> ctx, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
         StructureRequirement requirement = getStructureRequirement(pos);
-        Optional<BlockState> optionalState = MekanismUtils.getBlockState(world, chunkMap, pos);
+        Optional<BlockState> optionalState = WorldUtils.getBlockState(world, chunkMap, pos);
         if (!optionalState.isPresent()) {
             //If the position is not in a loaded chunk or out of bounds of the world, fail
             return FormationResult.FAIL;

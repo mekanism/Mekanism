@@ -11,7 +11,7 @@ import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -65,7 +65,7 @@ public class PacketTransporterUpdate {
     public static void handle(PacketTransporterUpdate message, Supplier<Context> context) {
         Context ctx = context.get();
         ctx.enqueueWork(() -> {
-            TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, Minecraft.getInstance().world, message.pos);
+            TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, Minecraft.getInstance().world, message.pos);
             if (tile != null) {
                 LogisticalTransporterBase transporter = tile.getTransmitter();
                 if (message.isSync) {

@@ -33,9 +33,9 @@ import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -120,7 +120,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 TransitRequest ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo, outputs.iterator().next());
                 if (!ejectMap.isEmpty()) {
                     for (Direction side : outputs) {
-                        TileEntity tile = MekanismUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
+                        TileEntity tile = WorldUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
                         if (tile == null) {
                             //If the spot is not loaded just skip trying to eject to it
                             continue;
@@ -169,7 +169,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     public void setStrictInput(boolean strict) {
         strictInput = strict;
-        MekanismUtils.saveChunk(tile);
+        WorldUtils.saveChunk(tile);
     }
 
     public EnumColor getOutputColor() {
@@ -178,12 +178,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     public void setOutputColor(EnumColor color) {
         outputColor = color;
-        MekanismUtils.saveChunk(tile);
+        WorldUtils.saveChunk(tile);
     }
 
     public void setInputColor(RelativeSide side, EnumColor color) {
         inputColors[side.ordinal()] = color;
-        MekanismUtils.saveChunk(tile);
+        WorldUtils.saveChunk(tile);
     }
 
     public EnumColor getInputColor(RelativeSide side) {

@@ -8,8 +8,8 @@ import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -91,7 +91,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         super.handleUpdateTag(state, tag);
         prevPowering = tag.getBoolean(NBTConstants.ACTIVE);
         requestModelDataUpdate();
-        MekanismUtils.updateBlock(getWorld(), getPos());
+        WorldUtils.updateBlock(getWorld(), getPos());
     }
 
     @Override

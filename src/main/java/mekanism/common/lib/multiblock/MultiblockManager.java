@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -86,7 +86,7 @@ public class MultiblockManager<T extends MultiblockData> {
     public MultiblockCache<T> pullInventory(World world, UUID id) {
         CacheWrapper toReturn = inventories.get(id);
         for (Coord4D obj : toReturn.locations) {
-            TileEntity tile = MekanismUtils.getTileEntity(TileEntity.class, world, obj.getPos());
+            TileEntity tile = WorldUtils.getTileEntity(TileEntity.class, world, obj.getPos());
             if (tile instanceof IMultiblock) {
                 ((IMultiblock<?>) tile).resetCache();
             }

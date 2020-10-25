@@ -11,8 +11,8 @@ import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.IUpgradeTile;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -56,7 +56,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
 
     @Nullable
     public TileEntity getMainTile() {
-        return receivedCoords ? MekanismUtils.getTileEntity(world, getMainPos()) : null;
+        return receivedCoords ? WorldUtils.getTileEntity(world, getMainPos()) : null;
     }
 
     protected IBoundingBlock getInv() {

@@ -17,7 +17,7 @@ import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.IUpgradeTile;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
@@ -263,7 +263,7 @@ public class SoundHandler {
         private float getTileVolumeFactor() {
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
-            TileEntity tile = MekanismUtils.getTileEntity(Minecraft.getInstance().world, new BlockPos(getX(), getY(), getZ()));
+            TileEntity tile = WorldUtils.getTileEntity(Minecraft.getInstance().world, new BlockPos(getX(), getY(), getZ()));
             float retVolume = 1.0F;
 
             if (tile instanceof IUpgradeTile) {

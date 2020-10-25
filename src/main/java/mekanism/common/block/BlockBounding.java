@@ -8,7 +8,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -54,7 +54,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Nullable
     public static BlockPos getMainBlockPos(IBlockReader world, BlockPos thisPos) {
-        TileEntityBoundingBlock te = MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, world, thisPos);
+        TileEntityBoundingBlock te = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, thisPos);
         if (te != null && te.receivedCoords && !thisPos.equals(te.getMainPos())) {
             return te.getMainPos();
         }
@@ -168,7 +168,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
                       .withRandom(world.rand)
                       .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(mainPos))
                       .withParameter(LootParameters.TOOL, ItemStack.EMPTY)
-                      .withNullableParameter(LootParameters.BLOCK_ENTITY, mainState.hasTileEntity() ? MekanismUtils.getTileEntity(world, mainPos) : null)
+                      .withNullableParameter(LootParameters.BLOCK_ENTITY, mainState.hasTileEntity() ? WorldUtils.getTileEntity(world, mainPos) : null)
                       .withNullableParameter(LootParameters.THIS_ENTITY, explosion.getExploder());
                 if (explosion.mode == Explosion.Mode.DESTROY) {
                     lootContextBuilder.withParameter(LootParameters.EXPLOSION_RADIUS, explosion.size);
@@ -186,7 +186,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
             BlockState mainState = world.getBlockState(mainPos);
-            mainState.getBlock().harvestBlock(world, player, mainPos, mainState, MekanismUtils.getTileEntity(world, mainPos), stack);
+            mainState.getBlock().harvestBlock(world, player, mainPos, mainState, WorldUtils.getTileEntity(world, mainPos), stack);
         } else {
             super.harvestBlock(world, player, pos, state, te, stack);
         }
@@ -197,7 +197,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Deprecated
     public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
           boolean isMoving) {
-        TileEntityBoundingBlock tile = MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
+        TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
         if (tile != null) {
             tile.onNeighborChange(state);
         }

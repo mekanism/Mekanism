@@ -26,6 +26,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -67,7 +68,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
 
     private void tryEject() {
         QIOFrequency freq = getQIOFrequency();
-        TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+        TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
         if (freq == null || !InventoryUtils.isItemHandler(back, getDirection())) {
             return;
         }

@@ -36,6 +36,7 @@ import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
@@ -153,7 +154,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         color = freq != null ? freq.getColor() : null;
         if (shouldRender != prevShouldRender) {
             //This also means the comparator output changed so notify the neighbors we have a change
-            MekanismUtils.notifyLoadedNeighborsOfTileChange(world, getPos());
+            WorldUtils.notifyLoadedNeighborsOfTileChange(world, getPos());
             sendUpdatePacket();
         } else if (color != prevColor) {
             sendUpdatePacket();
@@ -228,7 +229,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
         World teleWorld = currentServer.getWorld(closestCoords.dimension);
         BlockPos closestPos = closestCoords.getPos();
-        TileEntityTeleporter teleporter = MekanismUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestPos);
+        TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestPos);
         if (teleporter != null) {
             List<Entity> entitiesToTeleport = getToTeleport();
             if (!entitiesToTeleport.isEmpty()) {
@@ -242,7 +243,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     }
                     for (Coord4D coords : activeCoords) {
                         BlockPos coordsPos = coords.getPos();
-                        TileEntityTeleporter tile = MekanismUtils.getTileEntity(TileEntityTeleporter.class, world, coordsPos);
+                        TileEntityTeleporter tile = WorldUtils.getTileEntity(TileEntityTeleporter.class, world, coordsPos);
                         if (tile != null) {
                             if (tile.frameDirection != null) {
                                 coordsPos = coordsPos.down().offset(tile.frameDirection);

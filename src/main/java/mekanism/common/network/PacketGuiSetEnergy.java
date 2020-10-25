@@ -6,7 +6,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -29,7 +29,7 @@ public class PacketGuiSetEnergy {
         ctx.enqueueWork(() -> {
             PlayerEntity player = ctx.getSender();
             if (player != null) {
-                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
+                TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
                 if (tile != null) {
                     message.interaction.consume(tile, message.value);
                 }

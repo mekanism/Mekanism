@@ -20,6 +20,7 @@ import mekanism.common.upgrade.BinUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -77,7 +78,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         delayTicks = Math.max(0, delayTicks - 1);
         if (delayTicks == 0) {
             if (getActive()) {
-                TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().down());
+                TileEntity tile = WorldUtils.getTileEntity(getWorld(), getPos().down());
                 TileTransitRequest request = new TileTransitRequest(this, Direction.DOWN);
                 request.addItem(binSlot.getBottomStack(), 0);
                 TransitResponse response;

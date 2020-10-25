@@ -10,6 +10,7 @@ import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
@@ -37,7 +38,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
     @Deprecated
     public void onBlockClicked(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
         if (!world.isRemote) {
-            TileEntityBin bin = MekanismUtils.getTileEntity(TileEntityBin.class, world, pos);
+            TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
             if (bin == null) {
                 return;
             }
@@ -75,7 +76,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
     @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        TileEntityBin bin = MekanismUtils.getTileEntity(TileEntityBin.class, world, pos);
+        TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
             return ActionResultType.PASS;
         }

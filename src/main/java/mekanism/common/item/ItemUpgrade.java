@@ -10,7 +10,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IUpgradeItem;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IUpgradeTile;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -54,7 +54,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
         PlayerEntity player = context.getPlayer();
         if (player != null && player.isSneaking()) {
             World world = context.getWorld();
-            TileEntity tile = MekanismUtils.getTileEntity(world, context.getPos());
+            TileEntity tile = WorldUtils.getTileEntity(world, context.getPos());
             if (tile instanceof IUpgradeTile) {
                 IUpgradeTile upgradeTile = (IUpgradeTile) tile;
                 if (upgradeTile.supportsUpgrades()) {

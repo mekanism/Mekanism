@@ -15,7 +15,7 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -120,7 +120,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         super.handleUpdateTag(state, tag);
         driveStatus = tag.getByteArray(NBTConstants.DRIVES);
         requestModelDataUpdate();
-        MekanismUtils.updateBlock(getWorld(), getPos());
+        WorldUtils.updateBlock(getWorld(), getPos());
     }
 
     @Override

@@ -53,6 +53,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -309,7 +310,7 @@ public class RenderTickHandler {
                 BlockPos actualPos = pos;
                 BlockState actualState = blockState;
                 if (blockState.getBlock() instanceof BlockBounding) {
-                    TileEntityBoundingBlock tile = MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
+                    TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
                     if (tile != null) {
                         actualPos = tile.getMainPos();
                         actualState = world.getBlockState(actualPos);
@@ -319,7 +320,7 @@ public class RenderTickHandler {
                     WireFrameRenderer renderWireFrame = null;
                     if (Attribute.get(actualState.getBlock(), AttributeCustomSelectionBox.class).isJavaModel()) {
                         //If we use a TER to render the wire frame, grab the tile
-                        TileEntity tile = MekanismUtils.getTileEntity(world, actualPos);
+                        TileEntity tile = WorldUtils.getTileEntity(world, actualPos);
                         if (tile != null) {
                             TileEntityRenderer<TileEntity> tileRenderer = TileEntityRendererDispatcher.instance.getRenderer(tile);
                             if (tileRenderer instanceof IWireFrameRenderer) {
@@ -360,7 +361,7 @@ public class RenderTickHandler {
             ConfiguratorMode state = ((ItemConfigurator) stack.getItem()).getMode(stack);
             if (state.isConfigurating()) {
                 TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
-                TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                TileEntity tile = WorldUtils.getTileEntity(world, pos);
                 if (tile instanceof ISideConfiguration) {
                     ISideConfiguration configurable = (ISideConfiguration) tile;
                     TileComponentConfig config = configurable.getConfig();

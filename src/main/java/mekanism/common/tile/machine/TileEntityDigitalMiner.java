@@ -64,6 +64,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantments;
@@ -552,11 +553,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private TileEntity getPullInv() {
-        return MekanismUtils.getTileEntity(getWorld(), getPos().up(2));
+        return WorldUtils.getTileEntity(getWorld(), getPos().up(2));
     }
 
     private TileEntity getEjectInv() {
-        return MekanismUtils.getTileEntity(world, getPos().up().offset(getOppositeDirection(), 2));
+        return WorldUtils.getTileEntity(world, getPos().up().offset(getOppositeDirection(), 2));
     }
 
     private void add(List<ItemStack> stacks) {
@@ -688,7 +689,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     for (int z = -1; z <= +1; z++) {
                         if (x != 0 || y != 0 || z != 0) {
                             BlockPos boundingPos = pos.add(x, y, z);
-                            MekanismUtils.makeAdvancedBoundingBlock(world, boundingPos, pos);
+                            WorldUtils.makeAdvancedBoundingBlock(world, boundingPos, pos);
                             world.notifyNeighborsOfStateChange(boundingPos, getBlockType());
                         }
                     }
@@ -711,7 +712,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private TileEntity getEjectTile() {
-        return MekanismUtils.getTileEntity(getWorld(), getPos().up().offset(getOppositeDirection()));
+        return WorldUtils.getTileEntity(getWorld(), getPos().up().offset(getOppositeDirection()));
     }
 
     @Override
@@ -985,7 +986,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                   .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
                   .withParameter(LootParameters.TOOL, stack)
                   .withNullableParameter(LootParameters.THIS_ENTITY, fakePlayer)
-                  .withNullableParameter(LootParameters.BLOCK_ENTITY, MekanismUtils.getTileEntity(this.getWorldNN(), pos));
+                  .withNullableParameter(LootParameters.BLOCK_ENTITY, WorldUtils.getTileEntity(this.getWorldNN(), pos));
             return state.getDrops(lootContextBuilder);
         });
     }

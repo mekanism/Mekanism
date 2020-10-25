@@ -28,6 +28,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
@@ -120,7 +121,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public void onCreated(World world) {
         super.onCreated(world);
         for (ValveData data : valves) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, data.location);
+            TileEntity tile = WorldUtils.getTileEntity(world, data.location);
             if (tile instanceof TileEntityFusionReactorPort) {
                 heatHandlers.add((ITileHeatHandler) tile);
             }

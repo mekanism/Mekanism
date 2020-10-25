@@ -12,6 +12,7 @@ import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.BlockState;
@@ -102,10 +103,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     public void onPlace() {
         if (world != null) {
             BlockPos pos = getPos();
-            MekanismUtils.makeBoundingBlock(world, pos.up(), pos);
-            MekanismUtils.makeBoundingBlock(world, pos.up(2), pos);
-            MekanismUtils.makeBoundingBlock(world, pos.up(3), pos);
-            MekanismUtils.makeBoundingBlock(world, pos.up(4), pos);
+            WorldUtils.makeBoundingBlock(world, pos.up(), pos);
+            WorldUtils.makeBoundingBlock(world, pos.up(2), pos);
+            WorldUtils.makeBoundingBlock(world, pos.up(3), pos);
+            WorldUtils.makeBoundingBlock(world, pos.up(4), pos);
             // Check to see if the placement is happening in a blacklisted dimension
             isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimensionKey().getLocation());
         }

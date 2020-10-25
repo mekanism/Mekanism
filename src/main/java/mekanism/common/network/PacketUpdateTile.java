@@ -3,7 +3,7 @@ package mekanism.common.network;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,7 +30,7 @@ public class PacketUpdateTile {
         ctx.enqueueWork(() -> {
             ClientWorld world = Minecraft.getInstance().world;
             if (world != null) {
-                TileEntityUpdateable tile = MekanismUtils.getTileEntity(TileEntityUpdateable.class, world, message.pos, true);
+                TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, message.pos, true);
                 if (tile == null) {
                     Mekanism.logger.info("Update tile packet received for position: {} in world: {}, but no valid tile was found.", message.pos,
                           world.getDimensionKey().getLocation());

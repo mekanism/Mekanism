@@ -12,7 +12,7 @@ import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -40,7 +40,7 @@ public class PacketEditFilter {
             if (player == null) {
                 return;
             }
-            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.pos);
+            TileEntity tile = WorldUtils.getTileEntity(player.world, message.pos);
             if (tile != null) {
                 if (message.filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
                     HashList<SorterFilter<?>> filters = ((TileEntityLogisticalSorter) tile).getFilters();

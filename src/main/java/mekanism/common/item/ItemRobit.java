@@ -16,9 +16,9 @@ import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -57,7 +57,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
         }
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        TileEntityMekanism chargepad = MekanismUtils.getTileEntity(TileEntityChargepad.class, world, pos);
+        TileEntityMekanism chargepad = WorldUtils.getTileEntity(TileEntityChargepad.class, world, pos);
         if (chargepad != null) {
             if (!chargepad.getActive()) {
                 Hand hand = context.getHand();

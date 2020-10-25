@@ -10,8 +10,8 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,7 +42,7 @@ public class BlockSecurityDesk extends BlockTileModel<TileEntitySecurityDesk, Bl
     @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        TileEntitySecurityDesk tile = MekanismUtils.getTileEntity(TileEntitySecurityDesk.class, world, pos);
+        TileEntitySecurityDesk tile = WorldUtils.getTileEntity(TileEntitySecurityDesk.class, world, pos);
         if (tile != null && !player.isSneaking()) {
             if (!world.isRemote) {
                 UUID ownerUUID = tile.ownerUUID;

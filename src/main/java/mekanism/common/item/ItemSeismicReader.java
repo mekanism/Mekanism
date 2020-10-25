@@ -13,8 +13,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -54,7 +54,7 @@ public class ItemSeismicReader extends ItemEnergized {
         if (world.isRemote) {
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
-        if (!MekanismUtils.isChunkVibrated(new ChunkPos(player.getPosition()), player.world)) {
+        if (!WorldUtils.isChunkVibrated(new ChunkPos(player.getPosition()), player.world)) {
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.RED, MekanismLang.NO_VIBRATIONS), Util.DUMMY_UUID);
         } else {
             if (!player.isCreative()) {

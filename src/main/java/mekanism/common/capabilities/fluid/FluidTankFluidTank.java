@@ -9,7 +9,7 @@ import mekanism.api.Action;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraftforge.fluids.FluidStack;
 
 @ParametersAreNonnullByDefault
@@ -54,7 +54,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
         }
         if (!remainder.isEmpty()) {
             //If we have any left over check if we can send it to the tank that is above
-            TileEntityFluidTank tileAbove = MekanismUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getWorld(), this.tile.getPos().up());
+            TileEntityFluidTank tileAbove = WorldUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getWorld(), this.tile.getPos().up());
             if (tileAbove != null) {
                 //Note: We do external so that it is not limited by the internal rate limits
                 remainder = tileAbove.fluidTank.insert(remainder, action, AutomationType.EXTERNAL);
@@ -70,7 +70,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
             //If we grew our stack less than we tried to and we were actually growing and not shrinking it
             // try inserting into above tiles
             if (!tile.getActive()) {
-                TileEntityFluidTank tileAbove = MekanismUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getWorld(), this.tile.getPos().up());
+                TileEntityFluidTank tileAbove = WorldUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getWorld(), this.tile.getPos().up());
                 if (tileAbove != null) {
                     int leftOverToInsert = amount - grownAmount;
                     //Note: We do external so that it is not limited by the internal rate limits

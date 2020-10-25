@@ -14,7 +14,7 @@ import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.fission.TileEntityControlRodAssembly;
@@ -58,7 +58,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
         int assemblyCount = 0, surfaceArea = 0;
 
         for (BlockPos coord : innerNodes) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, coord);
+            TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, coord);
             AssemblyPos pos = new AssemblyPos(coord.getX(), coord.getZ());
             FuelAssembly assembly = map.get(pos);
 

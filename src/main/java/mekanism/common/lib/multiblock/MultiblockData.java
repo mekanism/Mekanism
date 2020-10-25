@@ -40,8 +40,8 @@ import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
@@ -131,7 +131,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public void onCreated(World world) {
         for (BlockPos pos : internalLocations) {
-            TileEntityInternalMultiblock tile = MekanismUtils.getTileEntity(TileEntityInternalMultiblock.class, world, pos);
+            TileEntityInternalMultiblock tile = WorldUtils.getTileEntity(TileEntityInternalMultiblock.class, world, pos);
             if (tile != null) {
                 tile.setMultiblock(inventoryID);
             }
@@ -185,7 +185,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public void remove(World world) {
         for (BlockPos pos : internalLocations) {
-            TileEntityInternalMultiblock tile = MekanismUtils.getTileEntity(TileEntityInternalMultiblock.class, world, pos);
+            TileEntityInternalMultiblock tile = WorldUtils.getTileEntity(TileEntityInternalMultiblock.class, world, pos);
             if (tile != null) {
                 tile.setMultiblock(null);
             }
@@ -381,7 +381,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public void notifyAllUpdateComparator(World world) {
         for (ValveData valve : valves) {
-            TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, valve.location);
+            TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, valve.location);
             if (tile != null) {
                 tile.markDirtyComparator();
             }

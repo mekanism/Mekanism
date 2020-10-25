@@ -9,7 +9,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -102,6 +102,6 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         if (buf == null) {
             return null;
         }
-        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> MekanismUtils.getTileEntity(type, Minecraft.getInstance().world, buf.readBlockPos()));
+        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> WorldUtils.getTileEntity(type, Minecraft.getInstance().world, buf.readBlockPos()));
     }
 }

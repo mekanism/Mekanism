@@ -11,7 +11,7 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,7 +35,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
 
     @Override
     public void animateTick(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Random random) {
-        TileEntityRadioactiveWasteBarrel tile = MekanismUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
+        TileEntityRadioactiveWasteBarrel tile = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
         if (tile != null) {
             int count = (int) (10 * tile.getGasScale());
             if (count > 0) {
@@ -53,7 +53,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
     @Deprecated
     public float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         float speed = super.getPlayerRelativeBlockHardness(state, player, world, pos);
-        TileEntityRadioactiveWasteBarrel tile = MekanismUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
+        TileEntityRadioactiveWasteBarrel tile = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
         return tile != null && tile.getGasScale() > 0 ? speed / 5F : speed;
     }
 
@@ -65,7 +65,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
         if (!player.isSneaking()) {
             return ActionResultType.PASS;
         }
-        TileEntityRadioactiveWasteBarrel tile = MekanismUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
+        TileEntityRadioactiveWasteBarrel tile = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
         }

@@ -7,7 +7,7 @@ import mcjty.theoneprobe.api.IProbeHitEntityData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,7 +24,7 @@ public class ProbeConfigProvider implements IProbeConfigProvider {
 
     @Override
     public void getProbeConfig(IProbeConfig config, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
-        TileEntity tile = MekanismUtils.getTileEntity(world, data.getPos());
+        TileEntity tile = WorldUtils.getTileEntity(world, data.getPos());
         if (CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null).isPresent()) {
             config.setRFMode(0);
         }

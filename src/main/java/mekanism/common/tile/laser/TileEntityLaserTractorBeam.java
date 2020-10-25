@@ -13,7 +13,7 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.ItemEntity;
@@ -48,7 +48,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
 
     @Override
     protected void handleBreakBlock(BlockState state, BlockPos hitPos) {
-        List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, hitPos, MekanismUtils.getTileEntity(world, hitPos));
+        List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, hitPos, WorldUtils.getTileEntity(world, hitPos));
         if (!drops.isEmpty()) {
             List<IInventorySlot> inventorySlots = getInventorySlots(null);
             for (ItemStack drop : drops) {

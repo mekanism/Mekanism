@@ -38,6 +38,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -175,7 +176,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                         //Otherwise break the block
                         Block block = foundState.getBlock();
                         //Get the tile now so that we have it for when we try to harvest the block
-                        TileEntity tileEntity = MekanismUtils.getTileEntity(world, foundPos);
+                        TileEntity tileEntity = WorldUtils.getTileEntity(world, foundPos);
                         //Remove the block
                         boolean removed = foundState.removedByPlayer(world, foundPos, player, true, world.getFluidState(foundPos));
                         if (removed) {
@@ -209,7 +210,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             for (BlockPos pos : BlockPos.getAllInBoxMutable(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
                 //We can check contains as mutable
                 if (!checked.contains(pos)) {
-                    if (maxRange == -1 || MekanismUtils.distanceBetween(location, pos) <= maxRange) {
+                    if (maxRange == -1 || WorldUtils.distanceBetween(location, pos) <= maxRange) {
                         if (world.isBlockPresent(pos) && startBlock == world.getBlockState(pos).getBlock()) {
                             //Make sure to add it as immutable
                             found.add(pos.toImmutable());

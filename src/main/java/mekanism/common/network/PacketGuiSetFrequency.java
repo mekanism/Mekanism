@@ -8,7 +8,7 @@ import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -49,7 +49,7 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> {
                 return;
             }
             if (message.updateType.isTile()) {
-                TileEntity tile = MekanismUtils.getTileEntity(player.world, message.tilePosition);
+                TileEntity tile = WorldUtils.getTileEntity(player.world, message.tilePosition);
                 if (tile instanceof IFrequencyHandler) {
                     if (message.updateType == FrequencyUpdate.SET_TILE) {
                         ((IFrequencyHandler) tile).setFrequency(message.type, message.data);

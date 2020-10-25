@@ -22,7 +22,7 @@ import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -49,7 +49,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
         for (Entry<BlockPos, Map<Direction, LazyOptional<IItemHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
             BlockPos pos = entry.getKey();
             if (!pos.equals(stack.homeLocation)) {
-                TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), chunkMap, pos);
+                TileEntity acceptor = WorldUtils.getTileEntity(getWorld(), chunkMap, pos);
                 if (acceptor == null) {
                     continue;
                 }

@@ -37,6 +37,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -81,8 +82,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         }
 
         if (MekanismUtils.canFunction(this) && delayTicks == 0) {
-            TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
-            TileEntity front = MekanismUtils.getTileEntity(getWorld(), pos.offset(getDirection()));
+            TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+            TileEntity front = WorldUtils.getTileEntity(getWorld(), pos.offset(getDirection()));
             //If there is no tile to pull from or the push to, skip doing any checks
             if (InventoryUtils.isItemHandler(back, getDirection()) && front != null) {
                 boolean sentItems = false;
@@ -102,7 +103,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                     TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
                     if (!response.isEmpty()) {
                         response.useAll();
-                        MekanismUtils.saveChunk(back);
+                        WorldUtils.saveChunk(back);
                         setActive(true);
                         sentItems = true;
                         break;
@@ -114,7 +115,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
                     if (!response.isEmpty()) {
                         response.useAll();
-                        MekanismUtils.saveChunk(back);
+                        WorldUtils.saveChunk(back);
                         setActive(true);
                     }
                 }
@@ -181,18 +182,18 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     public boolean canSendHome(ItemStack stack) {
-        TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+        TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
         return TransporterUtils.canInsert(back, null, stack, getOppositeDirection(), true);
     }
 
     public boolean hasConnectedInventory() {
-        TileEntity tile = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+        TileEntity tile = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
         return TransporterUtils.isValidAcceptorOnSide(tile, getOppositeDirection());
     }
 
     @Nonnull
     public TransitResponse sendHome(TransitRequest request) {
-        TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+        TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
         return request.addToInventory(back, getOppositeDirection(), true);
     }
 

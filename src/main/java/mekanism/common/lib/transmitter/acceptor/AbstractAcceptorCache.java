@@ -14,7 +14,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EmitUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -100,7 +100,7 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAccep
             TileEntityTransmitter transmitterTile = tile.get();
             //Check to make sure the transmitter is still valid and that the position we are going to check is actually still loaded
             if (transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasWorld() && transmitterTile.isLoaded() &&
-                MekanismUtils.isBlockLoaded(transmitterTile.getWorld(), transmitterTile.getPos().offset(side))) {
+                WorldUtils.isBlockLoaded(transmitterTile.getWorld(), transmitterTile.getPos().offset(side))) {
                 //If it is, then refresh the connection
                 transmitterTile.getTransmitter().refreshConnections(side);
             }

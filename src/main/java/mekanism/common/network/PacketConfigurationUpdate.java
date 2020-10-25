@@ -9,8 +9,8 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -66,7 +66,7 @@ public class PacketConfigurationUpdate {
             if (player == null) {
                 return;
             }
-            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.pos);
+            TileEntity tile = WorldUtils.getTileEntity(player.world, message.pos);
             if (tile instanceof ISideConfiguration) {
                 ISideConfiguration config = (ISideConfiguration) tile;
                 if (message.packetType == ConfigurationPacket.EJECT) {

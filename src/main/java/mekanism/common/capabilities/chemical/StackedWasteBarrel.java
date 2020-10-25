@@ -16,7 +16,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -41,7 +41,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasSta
         GasStack remainder = super.insert(stack, action, automationType);
         if (!remainder.isEmpty()) {
             //If we have any left over check if we can send it to the tank that is above
-            TileEntityRadioactiveWasteBarrel tileAbove = MekanismUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, tile.getWorld(), tile.getPos().up());
+            TileEntityRadioactiveWasteBarrel tileAbove = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, tile.getWorld(), tile.getPos().up());
             if (tileAbove != null) {
                 //Note: We do external so that it is not limited by the internal rate limits
                 remainder = tileAbove.getGasTank().insert(remainder, action, AutomationType.EXTERNAL);
@@ -57,7 +57,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasSta
             //If we grew our stack less than we tried to and we were actually growing and not shrinking it
             // try inserting into above tiles
             if (!tile.getActive()) {
-                TileEntityRadioactiveWasteBarrel tileAbove = MekanismUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, tile.getWorld(), tile.getPos().up());
+                TileEntityRadioactiveWasteBarrel tileAbove = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, tile.getWorld(), tile.getPos().up());
                 if (tileAbove != null) {
                     long leftOverToInsert = amount - grownAmount;
                     //Note: We do external so that it is not limited by the internal rate limits

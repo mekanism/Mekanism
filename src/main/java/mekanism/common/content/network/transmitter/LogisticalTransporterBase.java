@@ -26,8 +26,8 @@ import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -110,7 +110,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 delay = 3;
                 //Attempt to pull
                 for (Direction side : getConnections(ConnectionType.PULL)) {
-                    TileEntity tile = MekanismUtils.getTileEntity(getTileWorld(), getTilePos().offset(side));
+                    TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().offset(side));
                     if (tile != null) {
                         TransitRequest request = TransitRequest.anyItem(tile, side.getOpposite(), tier.getPullAmount());
                         //There's a stack available to insert into the network...
@@ -157,7 +157,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                         BlockPos next = stack.getPath().get(currentIndex - 1);
                         if (next != null) {
                             if (!stack.isFinal(this)) {
-                                TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, getTileWorld(), next);
+                                TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, getTileWorld(), next);
                                 if (stack.canInsertToTransporter(tile, stack.getSide(this), getTransmitterTile())) {
                                     tile.getTransmitter().entityEntering(stack, stack.progress % 100);
                                     deletes.add(stackId);
@@ -165,7 +165,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 }
                                 prevSet = next;
                             } else if (stack.getPathType() != Path.NONE) {
-                                TileEntity tile = MekanismUtils.getTileEntity(getTileWorld(), next);
+                                TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), next);
                                 if (tile != null) {
                                     TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this),
                                           stack.getPathType() == Path.HOME);
@@ -203,13 +203,13 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                             Direction side = stack.getSide(this);
                             ConnectionType connectionType = getConnectionType(side);
                             tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH ||
-                                             !TransporterUtils.canInsert(MekanismUtils.getTileEntity(getTileWorld(), stack.getDest()), stack.color, stack.itemStack,
+                                             !TransporterUtils.canInsert(WorldUtils.getTileEntity(getTileWorld(), stack.getDest()), stack.color, stack.itemStack,
                                                    side, pathType == Path.HOME);
                         } else {
                             tryRecalculate = pathType == Path.NONE;
                         }
                     } else {
-                        tryRecalculate = !stack.canInsertToTransporter(MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, getTileWorld(),
+                        tryRecalculate = !stack.canInsertToTransporter(WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, getTileWorld(),
                               stack.getNext(this)), stack.getSide(this), getTransmitterTile());
                     }
                     if (tryRecalculate && !recalculate(stackId, stack, null)) {
@@ -228,7 +228,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 needsSync.clear();
 
                 // Finally, mark chunk for save
-                MekanismUtils.saveChunk(getTransmitterTile());
+                WorldUtils.saveChunk(getTransmitterTile());
             }
         }
     }
@@ -373,7 +373,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
         BlockPos outputterPos = outputter.getPos();
-        Direction from = MekanismUtils.sideDifference(getTilePos(), outputterPos);
+        Direction from = WorldUtils.sideDifference(getTilePos(), outputterPos);
         TransporterStack stack = insertStack(outputterPos, color);
         if (!stack.canInsertToTransporterNN(this, from, outputter)) {
             return request.getEmptyResponse();
@@ -383,7 +383,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
         BlockPos outputterPos = outputter.getPos();
-        Direction from = MekanismUtils.sideDifference(getTilePos(), outputterPos);
+        Direction from = WorldUtils.sideDifference(getTilePos(), outputterPos);
         TransporterStack stack = insertStack(outputterPos, color);
         if (!canReceiveFrom(from.getOpposite()) || !stack.canInsertToTransporterNN(this, from, outputter)) {
             return request.getEmptyResponse();
@@ -407,7 +407,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 int stackId = nextId++;
                 addStack(stackId, stack);
                 Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(this, stackId, stack), getTransmitterTile());
-                MekanismUtils.saveChunk(getTransmitterTile());
+                WorldUtils.saveChunk(getTransmitterTile());
             }
         }
         return response;

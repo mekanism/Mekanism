@@ -65,6 +65,7 @@ import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
@@ -253,7 +254,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 World serverWorld = ServerLifecycleHooks.getCurrentServer().getWorld(homeLocation.dimension);
                 BlockPos homePos = homeLocation.getPos();
                 if (serverWorld.isBlockPresent(homePos)) {
-                    if (MekanismUtils.getTileEntity(TileEntityChargepad.class, serverWorld, homePos) == null) {
+                    if (WorldUtils.getTileEntity(TileEntityChargepad.class, serverWorld, homePos) == null) {
                         drop();
                         remove();
                     }
@@ -334,7 +335,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     private boolean isOnChargepad() {
-        return MekanismUtils.getTileEntity(TileEntityChargepad.class, world, getPosition()) != null;
+        return WorldUtils.getTileEntity(TileEntityChargepad.class, world, getPosition()) != null;
     }
 
     @Nonnull

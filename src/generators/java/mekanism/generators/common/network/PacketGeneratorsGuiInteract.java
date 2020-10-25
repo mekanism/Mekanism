@@ -3,7 +3,7 @@ package mekanism.generators.common.network;
 import java.util.function.Supplier;
 import mekanism.api.functions.TriConsumer;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
@@ -49,7 +49,7 @@ public class PacketGeneratorsGuiInteract {
         ctx.enqueueWork(() -> {
             PlayerEntity player = ctx.getSender();
             if (player != null) {
-                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
+                TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
                 if (tile != null) {
                     message.interaction.consume(tile, player, message.extra);
                 }

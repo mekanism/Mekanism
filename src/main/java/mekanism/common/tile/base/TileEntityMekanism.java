@@ -104,6 +104,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -423,7 +424,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                         return WrenchResult.NO_SECURITY;
                     }
                     if (player.isSneaking()) {
-                        MekanismUtils.dismantleBlock(state, getWorld(), pos, this);
+                        WorldUtils.dismantleBlock(state, getWorld(), pos, this);
                         return WrenchResult.DISMANTLED;
                     }
                     //Special ITileDirectional handling
@@ -476,7 +477,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
             if (isActivatable()) {
                 if (ticker == 0) {
-                    MekanismUtils.updateBlock(getWorld(), getPos());
+                    WorldUtils.updateBlock(getWorld(), getPos());
                 }
             }
             onUpdateClient();
@@ -968,7 +969,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public IHeatHandler getAdjacent(Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+            TileEntity adj = WorldUtils.getTileEntity(getWorld(), getPos().offset(side));
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
         }
         return null;

@@ -26,8 +26,8 @@ import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -60,7 +60,7 @@ public final class TransporterPathfinder {
 
     private static boolean checkPath(World world, List<BlockPos> path, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
         for (int i = path.size() - 1; i > 0; i--) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, path.get(i));
+            TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, path.get(i));
             if (tile instanceof TileEntityLogisticalTransporterBase) {
                 EnumColor color = ((TileEntityLogisticalTransporterBase) tile).getTransmitter().getColor();
                 if (color != null && color != stack.color) {
@@ -175,7 +175,7 @@ public final class TransporterPathfinder {
         public Destination find(Long2ObjectMap<IChunk> chunkMap) {
             ArrayList<BlockPos> ret = new ArrayList<>();
             ret.add(start);
-            TileEntity startTile = MekanismUtils.getTileEntity(world, chunkMap, start);
+            TileEntity startTile = WorldUtils.getTileEntity(world, chunkMap, start);
             if (transportStack.idleDir == null) {
                 Direction newSide = findSide(chunkMap);
                 if (newSide == null) {
@@ -185,7 +185,7 @@ public final class TransporterPathfinder {
                 loopSide(chunkMap, ret, newSide, startTile);
                 return new Destination(ret, true, null, 0).setPathType(Path.NONE);
             }
-            TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap,
+            TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap,
                   start.offset(transportStack.idleDir));
             if (transportStack.canInsertToTransporter(tile, transportStack.idleDir, startTile)) {
                 loopSide(chunkMap, ret, transportStack.idleDir, startTile);
@@ -212,20 +212,20 @@ public final class TransporterPathfinder {
         private void loopSide(Long2ObjectMap<IChunk> chunkMap, List<BlockPos> list, Direction side, TileEntity startTile) {
             TileEntity lastTile = startTile;
             BlockPos pos = start.offset(side);
-            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, pos);
+            TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             while (transportStack.canInsertToTransporter(tile, side, lastTile)) {
                 lastTile = tile;
                 list.add(pos);
                 pos = pos.offset(side);
-                tile = MekanismUtils.getTileEntity(world, chunkMap, pos);
+                tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             }
         }
 
         private Direction findSide(Long2ObjectMap<IChunk> chunkMap) {
-            TileEntity startTile = MekanismUtils.getTileEntity(world, chunkMap, start);
+            TileEntity startTile = WorldUtils.getTileEntity(world, chunkMap, start);
             if (transportStack.idleDir == null) {
                 for (Direction side : EnumUtils.DIRECTIONS) {
-                    TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(side));
+                    TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(side));
                     if (transportStack.canInsertToTransporter(tile, side, startTile)) {
                         return side;
                     }
@@ -233,12 +233,12 @@ public final class TransporterPathfinder {
             } else {
                 Direction opposite = transportStack.idleDir.getOpposite();
                 for (Direction side : EnumSet.complementOf(EnumSet.of(opposite))) {
-                    TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(side));
+                    TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(side));
                     if (transportStack.canInsertToTransporter(tile, side, startTile)) {
                         return side;
                     }
                 }
-                TileEntityLogisticalTransporterBase tile = MekanismUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(opposite));
+                TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(opposite));
                 if (transportStack.canInsertToTransporter(tile, opposite, startTile)) {
                     return opposite;
                 }
@@ -343,12 +343,12 @@ public final class TransporterPathfinder {
             openSet.add(start);
             gScore.put(start, 0D);
             //Note: This is gScore + estimate, but given our gScore starts at zero we just skip getting it back out
-            fScore.put(start, MekanismUtils.distanceBetween(start, finalNode));
+            fScore.put(start, WorldUtils.distanceBetween(start, finalNode));
             boolean hasValidDirection = false;
-            TileEntity startTile = MekanismUtils.getTileEntity(world, chunkMap, start);
+            TileEntity startTile = WorldUtils.getTileEntity(world, chunkMap, start);
             for (Direction direction : EnumUtils.DIRECTIONS) {
                 BlockPos neighbor = start.offset(direction);
-                TileEntity neighborTile = MekanismUtils.getTileEntity(world, chunkMap, neighbor);
+                TileEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
                 if (transportStack.canInsertToTransporter(neighborTile, direction, startTile)) {
                     //If we can insert into the transporter, mark that we have a valid path we can take
                     hasValidDirection = true;
@@ -363,7 +363,7 @@ public final class TransporterPathfinder {
                 //If there is no valid direction that the stack can go just exit
                 return false;
             }
-            double maxSearchDistance = 2 * MekanismUtils.distanceBetween(start, finalNode);
+            double maxSearchDistance = 2 * WorldUtils.distanceBetween(start, finalNode);
             while (!openSet.isEmpty()) {
                 BlockPos currentNode = null;
                 double lowestFScore = 0;
@@ -380,7 +380,7 @@ public final class TransporterPathfinder {
                 //Remove the current node from unchecked and add it to checked
                 openSet.remove(currentNode);
                 closedSet.add(currentNode);
-                if (MekanismUtils.distanceBetween(start, currentNode) > maxSearchDistance) {
+                if (WorldUtils.distanceBetween(start, currentNode) > maxSearchDistance) {
                     //If it is too far away for us to keep considering then continue on and see if we have another path that may be valid
                     // Even if it currently has a bit higher of a score
                     continue;
@@ -388,11 +388,11 @@ public final class TransporterPathfinder {
                 //TODO: Look into getting all the "tile" information from the network's transmitter and acceptor caches
                 // This should also make it easier to eventually add some sort of "wrapped" support for inventory blocks
                 // that do not have TEs. https://github.com/mekanism/Mekanism/issues/6157
-                TileEntity currentNodeTile = MekanismUtils.getTileEntity(world, chunkMap, currentNode);
+                TileEntity currentNodeTile = WorldUtils.getTileEntity(world, chunkMap, currentNode);
                 double currentScore = gScore.getDouble(currentNode);
                 for (Direction direction : EnumUtils.DIRECTIONS) {
                     BlockPos neighbor = currentNode.offset(direction);
-                    TileEntity neighborEntity = MekanismUtils.getTileEntity(world, chunkMap, neighbor);
+                    TileEntity neighborEntity = WorldUtils.getTileEntity(world, chunkMap, neighbor);
                     if (transportStack.canInsertToTransporter(neighborEntity, direction, currentNodeTile)) {
                         //If the neighbor is a transporter and the stack is valid for it
                         double tentativeG = currentScore + ((TileEntityLogisticalTransporterBase) neighborEntity).getTransmitter().getCost();
@@ -403,7 +403,7 @@ public final class TransporterPathfinder {
                             navMap.put(neighbor, currentNode);
                             gScore.put(neighbor, tentativeG);
                             //Put the gScore plus estimate in the final score
-                            fScore.put(neighbor, tentativeG + MekanismUtils.distanceBetween(neighbor, finalNode));
+                            fScore.put(neighbor, tentativeG + WorldUtils.distanceBetween(neighbor, finalNode));
                             openSet.add(neighbor);
                         }
                     } else if (isValidDestination(currentNode, currentNodeTile, direction, neighbor, neighborEntity)) {
@@ -443,7 +443,7 @@ public final class TransporterPathfinder {
             if (navMap.containsKey(currentNode)) {
                 path.addAll(reconstructPath(navMap, navMap.get(currentNode)));
             }
-            finalScore = gScore.getDouble(currentNode) + MekanismUtils.distanceBetween(currentNode, finalNode);
+            finalScore = gScore.getDouble(currentNode) + WorldUtils.distanceBetween(currentNode, finalNode);
             return path;
         }
 

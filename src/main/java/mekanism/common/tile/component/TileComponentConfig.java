@@ -40,8 +40,8 @@ import mekanism.common.tile.component.config.slot.HeatSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -96,7 +96,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         tile.sendUpdatePacket();
         tile.markDirty(false);
         //Notify the neighbor on that side our state changed
-        MekanismUtils.notifyNeighborOfChange(tile.getWorld(), direction, tile.getPos());
+        WorldUtils.notifyNeighborOfChange(tile.getWorld(), direction, tile.getPos());
     }
 
     private RelativeSide getSide(Direction direction) {

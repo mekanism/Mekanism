@@ -13,6 +13,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.util.ITooltipFlag;
@@ -62,7 +63,7 @@ public class ItemDictionary extends Item {
         if (player != null) {
             World world = context.getWorld();
             BlockPos pos = context.getPos();
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            TileEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile != null || !player.isSneaking()) {
                 //If there is a tile at the position or the player is not sneaking
                 // grab the tags of the block and the tile

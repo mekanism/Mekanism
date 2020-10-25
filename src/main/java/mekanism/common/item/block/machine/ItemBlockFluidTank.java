@@ -30,6 +30,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.block.Block;
@@ -230,7 +231,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                             || !player.canPlayerEdit(pos.offset(result.getFace()), result.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
-                        if (MekanismUtils.tryPlaceContainedLiquid(player, world, pos, fluidHandlerItem.getFluidInTank(0), result.getFace())) {
+                        if (WorldUtils.tryPlaceContainedLiquid(player, world, pos, fluidHandlerItem.getFluidInTank(0), result.getFace())) {
                             if (!player.isCreative()) {
                                 MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE), FluidAttributes.BUCKET_VOLUME);
                             }

@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.base.WrenchResult;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.item.ItemTurbineBlade;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.registries.GeneratorsItems;
@@ -33,7 +33,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
     @Deprecated
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         if (!world.isRemote && state.hasTileEntity() && (!state.isIn(newState.getBlock()) || !newState.hasTileEntity())) {
-            TileEntityTurbineRotor tile = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
+            TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
             if (tile != null) {
                 int amount = tile.getHousedBlades();
                 if (amount > 0) {
@@ -49,7 +49,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
     @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        TileEntityTurbineRotor tile = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
+        TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
         }

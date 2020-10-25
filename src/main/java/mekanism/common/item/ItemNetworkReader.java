@@ -25,6 +25,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Rarity;
@@ -58,7 +59,7 @@ public class ItemNetworkReader extends ItemEnergized {
         World world = context.getWorld();
         if (!world.isRemote && player != null) {
             BlockPos pos = context.getPos();
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            TileEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile != null) {
                 if (!player.isCreative()) {
                     FloatingLong energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
@@ -114,7 +115,7 @@ public class ItemNetworkReader extends ItemEnergized {
     private void displayConnectedNetworks(PlayerEntity player, World world, BlockPos pos) {
         Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new ObjectOpenHashSet<>();
         for (Direction side : EnumUtils.DIRECTIONS) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos.offset(side));
+            TileEntity tile = WorldUtils.getTileEntity(world, pos.offset(side));
             if (tile instanceof TileEntityTransmitter) {
                 Transmitter<?, ?, ?> transmitter = ((TileEntityTransmitter) tile).getTransmitter();
                 DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();

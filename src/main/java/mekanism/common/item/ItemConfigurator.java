@@ -43,6 +43,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -92,7 +93,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
             Direction side = context.getFace();
             Hand hand = context.getHand();
             ItemStack stack = player.getHeldItem(hand);
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            TileEntity tile = WorldUtils.getTileEntity(world, pos);
             ConfiguratorMode mode = getMode(stack);
             if (mode.isConfigurating()) { //Configurate
                 TransmissionType transmissionType = Objects.requireNonNull(mode.getTransmission(), "Configurating state requires transmission type");

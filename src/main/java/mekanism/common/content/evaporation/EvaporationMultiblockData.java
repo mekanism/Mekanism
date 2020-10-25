@@ -32,6 +32,7 @@ import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -242,10 +243,10 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
 
     public void updateSolars(World world) {
         solars = new IEvaporationSolar[4];
-        addSolarPanel(MekanismUtils.getTileEntity(world, getMaxPos()), 0);
-        addSolarPanel(MekanismUtils.getTileEntity(world, getMaxPos().add(-3, 0, 0)), 1);
-        addSolarPanel(MekanismUtils.getTileEntity(world, getMaxPos().add(0, 0, -3)), 2);
-        addSolarPanel(MekanismUtils.getTileEntity(world, getMaxPos().add(-3, 0, -3)), 3);
+        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos()), 0);
+        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().add(-3, 0, 0)), 1);
+        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().add(0, 0, -3)), 2);
+        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().add(-3, 0, -3)), 3);
     }
 
     @Override

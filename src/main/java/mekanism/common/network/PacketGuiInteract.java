@@ -26,9 +26,9 @@ import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.UpgradeUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -99,7 +99,7 @@ public class PacketGuiInteract {
                         message.entityInteraction.consume(entity, player);
                     }
                 } else {
-                    TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
+                    TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, message.tilePosition);
                     if (tile != null) {
                         if (message.interactionType == Type.INT) {
                             message.interaction.consume(tile, player, message.extra);

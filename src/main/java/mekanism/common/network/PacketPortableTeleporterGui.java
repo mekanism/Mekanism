@@ -12,8 +12,8 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -59,7 +59,7 @@ public class PacketPortableTeleporterGui {
                     Coord4D coords = found.getClosestCoords(new Coord4D(player));
                     if (coords != null) {
                         World teleWorld = ServerLifecycleHooks.getCurrentServer().getWorld(coords.dimension);
-                        TileEntityTeleporter teleporter = MekanismUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.getPos());
+                        TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.getPos());
                         if (teleporter != null) {
                             try {
                                 if (!player.isCreative()) {

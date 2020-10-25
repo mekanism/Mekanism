@@ -9,6 +9,7 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.Direction;
@@ -25,6 +26,6 @@ public class ItemBlockModificationStation extends ItemBlockMachine {
         Direction side = MekanismUtils.getRight(Attribute.getFacing(state));
         BlockPos pos = context.getPos();
         List<BlockPos> checkList = Arrays.asList(pos.up(), pos.offset(side), pos.up().offset(side));
-        return MekanismUtils.areBlocksValidAndReplaceable(context.getWorld(), checkList) && super.placeBlock(context, state);
+        return WorldUtils.areBlocksValidAndReplaceable(context.getWorld(), checkList) && super.placeBlock(context, state);
     }
 }

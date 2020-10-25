@@ -16,9 +16,9 @@ import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.registration.impl.ItemDeferredRegister;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
@@ -43,7 +43,7 @@ public class ItemBlockSeismicVibrator extends ItemBlockTooltip<BlockTile<?, ?>> 
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        if (!MekanismUtils.isValidReplaceableBlock(context.getWorld(), context.getPos().up())) {
+        if (!WorldUtils.isValidReplaceableBlock(context.getWorld(), context.getPos().up())) {
             //If there isn't room then fail
             return false;
         }

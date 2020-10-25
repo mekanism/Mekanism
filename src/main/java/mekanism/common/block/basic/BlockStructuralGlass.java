@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.prefab.BlockTileGlass;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -27,7 +27,7 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
     @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        TileEntityStructuralMultiblock tile = MekanismUtils.getTileEntity(TileEntityStructuralMultiblock.class, world, pos);
+        TileEntityStructuralMultiblock tile = WorldUtils.getTileEntity(TileEntityStructuralMultiblock.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
         }

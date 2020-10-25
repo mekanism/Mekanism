@@ -6,7 +6,7 @@ import mekanism.api.tier.AlloyTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUseContext;
@@ -33,7 +33,7 @@ public class ItemAlloy extends Item {
         if (player != null && MekanismConfig.general.transmitterAlloyUpgrade.get()) {
             World world = context.getWorld();
             BlockPos pos = context.getPos();
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            TileEntity tile = WorldUtils.getTileEntity(world, pos);
             LazyOptional<IAlloyInteraction> capability = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, context.getFace());
             if (capability.isPresent()) {
                 if (!world.isRemote) {

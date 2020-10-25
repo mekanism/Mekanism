@@ -5,8 +5,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -135,7 +135,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
     @Nullable
     private TileEntityTurbineRotor getRotor(BlockPos pos) {
-        return MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, getWorld(), pos);
+        return WorldUtils.getTileEntity(TileEntityTurbineRotor.class, getWorld(), pos);
     }
 
     @Override

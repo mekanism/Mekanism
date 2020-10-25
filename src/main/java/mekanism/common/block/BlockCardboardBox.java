@@ -9,8 +9,8 @@ import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityCardboardBox;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -40,7 +40,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         if (!world.isRemote && player.isSneaking()) {
-            TileEntityCardboardBox box = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
+            TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
             if (box != null && box.storedData != null) {
                 BlockData data = box.storedData;
                 //TODO: Note - this will not allow for rotation of the block based on how it is placed direction wise via the removal of
@@ -48,7 +48,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                 world.setBlockState(pos, data.blockState);
                 if (data.tileTag != null) {
                     data.updateLocation(pos);
-                    TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                    TileEntity tile = WorldUtils.getTileEntity(world, pos);
                     if (tile != null) {
                         tile.read(state, data.tileTag);
                     }
@@ -65,7 +65,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
     @Override
     public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlayerEntity player) {
         ItemStack itemStack = new ItemStack(this);
-        TileEntityCardboardBox tile = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
+        TileEntityCardboardBox tile = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
         if (tile == null) {
             return itemStack;
         }

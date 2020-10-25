@@ -6,7 +6,7 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -35,7 +35,7 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
 
     @Override
     public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType type, @Nullable EntityType<?> entityType) {
-        TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
+        TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile != null && tile.getMultiblock().isFormed()) {
             return false;
         }
@@ -47,7 +47,7 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
     @Deprecated
     public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
+        TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
         }

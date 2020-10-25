@@ -10,7 +10,7 @@ import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -40,7 +40,7 @@ public class TileComponentFrequency implements ITileComponent {
 
             if (needsNotify) {
                 tile.invalidateCachedCapabilities();
-                MekanismUtils.notifyLoadedNeighborsOfTileChange(tile.getWorld(), tile.getPos());
+                WorldUtils.notifyLoadedNeighborsOfTileChange(tile.getWorld(), tile.getPos());
                 tile.markDirty(false);
                 needsNotify = false;
             }
