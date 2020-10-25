@@ -17,7 +17,7 @@ public final class MekanismHooks {
     public static final String TOP_MOD_ID = "theoneprobe";
     public static final String CRAFTTWEAKER_MOD_ID = "crafttweaker";
     public static final String PROJECTE_MOD_ID = "projecte";
-    public static final String FLUX_NETWORKS_MOD_ID = "flux-networks";
+    public static final String FLUX_NETWORKS_MOD_ID = "fluxnetworks";
 
     public boolean JEILoaded = false;
     public boolean CraftTweakerLoaded = false;

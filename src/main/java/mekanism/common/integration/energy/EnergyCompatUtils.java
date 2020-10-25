@@ -11,6 +11,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -28,7 +29,7 @@ public class EnergyCompatUtils {
           //We always have our own energy capability as the first one we check
           new StrictEnergyCompat(),
           //Note: We check the Flux Networks capability above Forge's so that we allow it to use the higher throughput amount supported by Flux Networks
-          //new FNEnergyCompat(),//TODO - FluxNetworks
+          new FNEnergyCompat(),
           new ForgeEnergyCompat()
     ));
 

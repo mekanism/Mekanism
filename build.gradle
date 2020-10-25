@@ -356,7 +356,7 @@ dependencies {
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //compileOnly fg.deobf("curse.maven:projecte:${projecte_api_id}")
-    //compileOnly fg.deobf("curse.maven:flux-networks:${flux_networks_id}")
+    compileOnly fg.deobf("curse.maven:flux-networks:${flux_networks_id}")
 
     //Dependencies for data generators for mod compat reference
     datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
@@ -783,7 +783,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "jei"
                     optionalDependency "ctm"
                     optionalDependency "biomes-o-plenty"
-                    //optionalDependency "flux-networks"
+                    optionalDependency "flux-networks"
                     optionalDependency "hwyla"
                     optionalDependency "i-like-wood"
                     //optionalDependency "projecte"
