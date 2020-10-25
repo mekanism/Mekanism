@@ -18,7 +18,7 @@ public class BlockPlasticRoad extends BlockPlastic {
         double boost = 1.6;
         Vector3d motion = entity.getMotion();
         double a = Math.atan2(motion.getX(), motion.getZ());
-        float slipperiness = getSlipperiness(world.getBlockState(pos), world, pos, entity);
+        float slipperiness = world.getBlockState(pos).getSlipperiness(world, pos, entity);
         motion = motion.add(Math.sin(a) * boost * slipperiness, 0, Math.cos(a) * boost * slipperiness);
         entity.setMotion(motion);
     }

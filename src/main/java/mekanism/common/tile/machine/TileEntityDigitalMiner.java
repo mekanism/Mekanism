@@ -256,7 +256,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                                 continue;
                             }
 
-                            List<ItemStack> drops = getDrops(pos);
+                            List<ItemStack> drops = getDrops(state, pos);
                             if (canInsert(drops) && setReplace(pos, index)) {
                                 did = true;
                                 add(drops);
@@ -433,7 +433,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             missingStack = filter.replaceStack;
             return false;
         }
-        BlockState newState = MekFakePlayer.withFakePlayer((ServerWorld)world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), fakePlayer ->
+        BlockState newState = MekFakePlayer.withFakePlayer((ServerWorld) world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), fakePlayer ->
               StackUtils.getStateForPlacement(stack, pos, fakePlayer)
         );
         if (newState == null || !newState.isValidPosition(world, pos)) {
@@ -972,23 +972,22 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         NBTUtils.setIntIfPresent(tag, NBTConstants.MAX, this::setMaxY);
     }
 
-    private List<ItemStack> getDrops(BlockPos pos) {
-        BlockState state = this.getWorldNN().getBlockState(pos);
-        if (state.isAir(this.getWorldNN(), pos)) {
+    private List<ItemStack> getDrops(BlockState state, BlockPos pos) {
+        if (state.isAir(getWorldNN(), pos)) {
             return Collections.emptyList();
         }
         ItemStack stack = MekanismItems.ATOMIC_DISASSEMBLER.getItemStack();
         if (getSilkTouch()) {
             stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
         }
-        return MekFakePlayer.withFakePlayer((ServerWorld)this.getWorldNN(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), fakePlayer -> {
+        return MekFakePlayer.withFakePlayer((ServerWorld) getWorldNN(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), fakePlayer -> {
             fakePlayer.setEmulatingUUID(getOwnerUUID());
-            LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerWorld)this.getWorldNN())
-                  .withRandom(this.getWorldNN().rand)
+            LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerWorld) getWorldNN())
+                  .withRandom(getWorldNN().rand)
                   .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
                   .withParameter(LootParameters.TOOL, stack)
                   .withNullableParameter(LootParameters.THIS_ENTITY, fakePlayer)
-                  .withNullableParameter(LootParameters.BLOCK_ENTITY, WorldUtils.getTileEntity(this.getWorldNN(), pos));
+                  .withNullableParameter(LootParameters.BLOCK_ENTITY, WorldUtils.getTileEntity(getWorldNN(), pos));
             return state.getDrops(lootContextBuilder);
         });
     }

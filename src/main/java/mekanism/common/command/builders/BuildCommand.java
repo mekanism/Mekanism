@@ -1,13 +1,17 @@
 package mekanism.common.command.builders;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import java.util.ArrayDeque;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import mekanism.common.Mekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -18,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunk;
 
 public class BuildCommand {
 
@@ -59,14 +64,15 @@ public class BuildCommand {
     }
 
     private static void destroy(World world, BlockPos pos) {
+        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
         Set<BlockPos> traversed = new HashSet<>();
         Queue<BlockPos> openSet = new ArrayDeque<>();
         openSet.add(pos);
         traversed.add(pos);
         while (!openSet.isEmpty()) {
             BlockPos ptr = openSet.poll();
-            BlockState state = world.getBlockState(ptr);
-            if (state.getBlock().getRegistryName().getNamespace().contains(Mekanism.MODID)) {
+            Optional<BlockState> state = WorldUtils.getBlockState(world, chunkMap, ptr);
+            if (state.isPresent() && state.get().getBlock().getRegistryName().getNamespace().startsWith(Mekanism.MODID)) {
                 world.removeBlock(ptr, false);
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     BlockPos offset = ptr.offset(side);

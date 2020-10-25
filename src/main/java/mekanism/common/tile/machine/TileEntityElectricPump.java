@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
@@ -192,48 +193,51 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     private boolean suck(BlockPos pos, boolean hasFilter, boolean addRecurring) {
         //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
-        BlockState blockState = world.getBlockState(pos);
-        FluidState fluidState = blockState.getFluidState();
-        if (!fluidState.isEmpty() && fluidState.isSource()) {
-            //Just in case someone does weird things and has a fluid state that is empty and a source
-            // only allow collecting from non empty sources
-            Fluid sourceFluid = fluidState.getFluid();
-            FluidStack fluidStack = new FluidStack(sourceFluid, FluidAttributes.BUCKET_VOLUME);
-            if (hasFilter && sourceFluid == Fluids.WATER) {
-                fluidStack = MekanismFluids.HEAVY_WATER.getFluidStack(10);
-            }
-            Block block = blockState.getBlock();
-            if (block instanceof IFluidBlock) {
-                fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.SIMULATE);
-                if (validFluid(fluidStack, true)) {
-                    //Actually drain it
-                    fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
+        Optional<BlockState> state = WorldUtils.getBlockState(world, pos);
+        if (state.isPresent()) {
+            BlockState blockState = state.get();
+            FluidState fluidState = blockState.getFluidState();
+            if (!fluidState.isEmpty() && fluidState.isSource()) {
+                //Just in case someone does weird things and has a fluid state that is empty and a source
+                // only allow collecting from non empty sources
+                Fluid sourceFluid = fluidState.getFluid();
+                FluidStack fluidStack = new FluidStack(sourceFluid, FluidAttributes.BUCKET_VOLUME);
+                if (hasFilter && sourceFluid == Fluids.WATER) {
+                    fluidStack = MekanismFluids.HEAVY_WATER.getFluidStack(10);
+                }
+                Block block = blockState.getBlock();
+                if (block instanceof IFluidBlock) {
+                    fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.SIMULATE);
+                    if (validFluid(fluidStack, true)) {
+                        //Actually drain it
+                        fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
+                        suck(fluidStack, pos, addRecurring);
+                        return true;
+                    }
+                } else if (block instanceof IBucketPickupHandler && validFluid(fluidStack, false)) {
+                    //If it can be picked up by a bucket and we actually want to pick it up, do so to update the fluid type we are doing
+                    if (sourceFluid != Fluids.WATER || MekanismConfig.general.pumpWaterSources.get()) {
+                        //Note we only attempt taking if it is not water, or we want to pump water sources
+                        // otherwise we assume the type from the fluid state is correct
+                        sourceFluid = ((IBucketPickupHandler) block).pickupFluid(world, pos, blockState);
+                        //Update the fluid stack in case something somehow changed about the type
+                        // making sure that we replace to heavy water if we got heavy water
+                        if (hasFilter && sourceFluid == Fluids.WATER) {
+                            fluidStack = MekanismFluids.HEAVY_WATER.getFluidStack(10);
+                        } else {
+                            fluidStack = new FluidStack(sourceFluid, FluidAttributes.BUCKET_VOLUME);
+                        }
+                        if (!validFluid(fluidStack, false)) {
+                            Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
+                                  fluidState.getFluid(), pos, world, sourceFluid);
+                            return false;
+                        }
+                    }
                     suck(fluidStack, pos, addRecurring);
                     return true;
                 }
-            } else if (block instanceof IBucketPickupHandler && validFluid(fluidStack, false)) {
-                //If it can be picked up by a bucket and we actually want to pick it up, do so to update the fluid type we are doing
-                if (sourceFluid != Fluids.WATER || MekanismConfig.general.pumpWaterSources.get()) {
-                    //Note we only attempt taking if it is not water, or we want to pump water sources
-                    // otherwise we assume the type from the fluid state is correct
-                    sourceFluid = ((IBucketPickupHandler) block).pickupFluid(world, pos, blockState);
-                    //Update the fluid stack in case something somehow changed about the type
-                    // making sure that we replace to heavy water if we got heavy water
-                    if (hasFilter && sourceFluid == Fluids.WATER) {
-                        fluidStack = MekanismFluids.HEAVY_WATER.getFluidStack(10);
-                    } else {
-                        fluidStack = new FluidStack(sourceFluid, FluidAttributes.BUCKET_VOLUME);
-                    }
-                    if (!validFluid(fluidStack, false)) {
-                        Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                              fluidState.getFluid(), pos, world, sourceFluid);
-                        return false;
-                    }
-                }
-                suck(fluidStack, pos, addRecurring);
-                return true;
+                //Otherwise, we do not know how to drain from the block or it is not valid and we shouldn't take it so don't handle it
             }
-            //Otherwise, we do not know how to drain from the block or it is not valid and we shouldn't take it so don't handle it
         }
         return false;
     }

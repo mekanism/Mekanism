@@ -17,10 +17,7 @@ public interface ITileNeighborCache extends ITileWrapper {
     }
 
     default void updateNeighborCache(BlockPos neighborPos) {
-        BlockState state = Blocks.AIR.getDefaultState();
-        if (WorldUtils.isBlockLoaded(getTileWorld(), neighborPos)) {
-            state = getTileWorld().getBlockState(neighborPos);
-        }
+        BlockState state = WorldUtils.getBlockState(getTileWorld(), neighborPos).orElseGet(Blocks.AIR::getDefaultState);
         getNeighborCache().put(neighborPos, state);
     }
 

@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
@@ -11,6 +12,8 @@ import mekanism.common.base.ProfilerConstants;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
+import mekanism.common.util.WorldUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -21,6 +24,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 
 @ParametersAreNonnullByDefault
 public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
@@ -31,43 +35,47 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
 
     @Override
     protected void render(TileEntityBin tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        Direction facing = tile.getDirection();
-        //position of the block covering the front side
-        BlockPos coverPos = tile.getPos().offset(facing);
-        //if the bin has an item stack and the face isn't covered by a solid side
+        World world = tile.getWorld();
         BinInventorySlot binSlot = tile.getBinSlot();
-        if (!binSlot.isEmpty() && !tile.getWorld().getBlockState(coverPos).isSolidSide(tile.getWorld(), coverPos, facing.getOpposite())) {
-            ITextComponent amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.getCount());
-            matrix.push();
-            switch (facing) {
-                case NORTH:
-                    matrix.translate(0.73, 0.83, -0.0001);
-                    break;
-                case SOUTH:
-                    matrix.translate(0.27, 0.83, 1.0001);
-                    matrix.rotate(Vector3f.YP.rotationDegrees(180));
-                    break;
-                case WEST:
-                    matrix.translate(-0.0001, 0.83, 0.27);
-                    matrix.rotate(Vector3f.YP.rotationDegrees(90));
-                    break;
-                case EAST:
-                    matrix.translate(1.0001, 0.83, 0.73);
-                    matrix.rotate(Vector3f.YP.rotationDegrees(-90));
-                    break;
-                default:
-                    break;
-            }
+        if (world != null && !binSlot.isEmpty()) {
+            Direction facing = tile.getDirection();
+            //position of the block covering the front side
+            BlockPos coverPos = tile.getPos().offset(facing);
+            //if the bin has an item stack and the face isn't covered by a solid side
+            Optional<BlockState> blockState = WorldUtils.getBlockState(world, coverPos);
+            if (!blockState.isPresent() || blockState.get().isSolidSide(world, coverPos, facing.getOpposite())) {
+                ITextComponent amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.getCount());
+                matrix.push();
+                switch (facing) {
+                    case NORTH:
+                        matrix.translate(0.73, 0.83, -0.0001);
+                        break;
+                    case SOUTH:
+                        matrix.translate(0.27, 0.83, 1.0001);
+                        matrix.rotate(Vector3f.YP.rotationDegrees(180));
+                        break;
+                    case WEST:
+                        matrix.translate(-0.0001, 0.83, 0.27);
+                        matrix.rotate(Vector3f.YP.rotationDegrees(90));
+                        break;
+                    case EAST:
+                        matrix.translate(1.0001, 0.83, 0.73);
+                        matrix.rotate(Vector3f.YP.rotationDegrees(-90));
+                        break;
+                    default:
+                        break;
+                }
 
-            float scale = 0.03125F;
-            float scaler = 0.9F;
-            matrix.scale(scale * scaler, scale * scaler, -0.0001F);
-            matrix.rotate(Vector3f.ZP.rotationDegrees(180));
-            matrix.translate(8, 8, 3);
-            matrix.scale(16, -16, 16);
-            Minecraft.getInstance().getItemRenderer().renderItem(binSlot.getStack(), TransformType.GUI, MekanismRenderer.FULL_LIGHT, overlayLight, matrix, renderer);
-            matrix.pop();
-            renderText(matrix, renderer, overlayLight, amount, facing, 0.02F);
+                float scale = 0.03125F;
+                float scaler = 0.9F;
+                matrix.scale(scale * scaler, scale * scaler, -0.0001F);
+                matrix.rotate(Vector3f.ZP.rotationDegrees(180));
+                matrix.translate(8, 8, 3);
+                matrix.scale(16, -16, 16);
+                Minecraft.getInstance().getItemRenderer().renderItem(binSlot.getStack(), TransformType.GUI, MekanismRenderer.FULL_LIGHT, overlayLight, matrix, renderer);
+                matrix.pop();
+                renderText(matrix, renderer, overlayLight, amount, facing, 0.02F);
+            }
         }
     }
 

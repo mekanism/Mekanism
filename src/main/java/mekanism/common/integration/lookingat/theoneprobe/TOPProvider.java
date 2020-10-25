@@ -85,7 +85,9 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
             BlockPos mainPos = BlockBounding.getMainBlockPos(world, pos);
             if (mainPos != null) {
                 pos = mainPos;
-                blockState = world.getBlockState(mainPos);
+                //If we end up needing the blockstate at some point lower down, then uncomment this line
+                // until we do though there is no point in bothering to query the world to get it
+                //blockState = world.getBlockState(mainPos);
             }
         }
         TileEntity tile = WorldUtils.getTileEntity(world, pos);
