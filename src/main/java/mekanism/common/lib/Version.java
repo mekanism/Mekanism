@@ -48,8 +48,7 @@ public class Version {
     }
 
     /**
-     * Helper to make it so this is the only class with weird errors in IntelliJ (that don't actually exist), instead of having our main class
-     * also have "errors"
+     * Helper to make it so this is the only class with weird errors in IntelliJ (that don't actually exist), instead of having our main class also have "errors"
      */
     public Version(ModContainer container) {
         this(container.getModInfo().getVersion());

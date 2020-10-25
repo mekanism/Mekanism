@@ -104,7 +104,7 @@ public abstract class PlayerSound extends TickableSound {
             }
             if (consecutiveTicks % subtitleFrequency == 0) {
                 SoundHandler soundHandler = Minecraft.getInstance().getSoundHandler();
-                for(ISoundEventListener soundEventListener : soundHandler.sndManager.listeners) {
+                for (ISoundEventListener soundEventListener : soundHandler.sndManager.listeners) {
                     SoundEventAccessor soundEventAccessor = createAccessor(soundHandler);
                     if (soundEventAccessor != null) {
                         soundEventListener.onPlaySound(this, soundEventAccessor);

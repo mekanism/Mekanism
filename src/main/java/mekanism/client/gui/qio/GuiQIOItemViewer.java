@@ -31,10 +31,12 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> {
 
     private static final Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '\"', '\'', '|', '(', ')', ':');
+
     static {
         // include all search prefix chars
         ALLOWED_SPECIAL_CHARS.addAll(QueryType.getPrefixChars());
     }
+
     private GuiTextField searchField;
 
     protected GuiQIOItemViewer(CONTAINER container, PlayerInventory inv, ITextComponent title) {

@@ -13,9 +13,9 @@ import net.minecraft.util.ResourceLocation;
 public class ArmorSlot extends InsertableSlot {
 
     protected static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[]{PlayerContainer.EMPTY_ARMOR_SLOT_BOOTS,
-                                                                                        PlayerContainer.EMPTY_ARMOR_SLOT_LEGGINGS,
-                                                                                        PlayerContainer.EMPTY_ARMOR_SLOT_CHESTPLATE,
-                                                                                        PlayerContainer.EMPTY_ARMOR_SLOT_HELMET};
+                                                                                           PlayerContainer.EMPTY_ARMOR_SLOT_LEGGINGS,
+                                                                                           PlayerContainer.EMPTY_ARMOR_SLOT_CHESTPLATE,
+                                                                                           PlayerContainer.EMPTY_ARMOR_SLOT_HELMET};
 
     private final EquipmentSlotType slotType;
 

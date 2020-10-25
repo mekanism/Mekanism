@@ -316,7 +316,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         } else {
             ServerWorld newWorld = ((ServerWorld) this.world).getServer().getWorld(homeLocation.dimension);
             if (newWorld != null) {
-                Vector3d destination = new Vector3d(homeLocation.getX() +  0.5, homeLocation.getY() +  0.3, homeLocation.getZ() +  0.5);
+                Vector3d destination = new Vector3d(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
                 changeDimension(newWorld, new ITeleporter() {
                     @Override
                     public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {

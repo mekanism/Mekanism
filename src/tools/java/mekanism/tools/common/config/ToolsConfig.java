@@ -82,7 +82,7 @@ public class ToolsConfig extends BaseMekanismConfig {
         private ArmorSpawnChanceConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, String armorKey, String armor, double swordChance, double helmetChance,
               double chestplateChance, double leggingsChance, double bootsChance) {
             builder.comment("Spawn chances for pieces of " + armor + " gear. Note: These values are after the general mobArmorSpawnRate has been checked, and " +
-                  "after an even split between armor types has been done.").push(armorKey);
+                            "after an even split between armor types has been done.").push(armorKey);
             this.swordChance = CachedDoubleValue.wrap(config, builder.comment("The chance that mobs can spawn with " + armor + " Swords.")
                   .defineInRange("swordChance", swordChance, 0, 1));
             this.helmetChance = CachedDoubleValue.wrap(config, builder.comment("The chance that mobs can spawn with " + armor + " Helmets.")

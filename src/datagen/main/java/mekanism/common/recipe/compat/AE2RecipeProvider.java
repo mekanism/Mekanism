@@ -120,9 +120,9 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
 
         //Sky Stone Dust -> Sky Stone
         ItemStackToItemStackRecipeBuilder.enriching(
-                ItemStackIngredient.from(materials.skyDust()),
-                blocks.skyStoneBlock().stack(1)
-          ).addCondition(modLoaded)
-                .build(consumer, Mekanism.rl(basePath + "sky_stone_dust_to_sky_stone"));
+              ItemStackIngredient.from(materials.skyDust()),
+              blocks.skyStoneBlock().stack(1)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "sky_stone_dust_to_sky_stone"));
     }
 }
