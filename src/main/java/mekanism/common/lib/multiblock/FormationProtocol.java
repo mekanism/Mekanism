@@ -1,5 +1,7 @@
 package mekanism.common.lib.multiblock;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -17,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.chunk.IChunk;
 
 public class FormationProtocol<T extends MultiblockData> {
 
@@ -46,7 +49,8 @@ public class FormationProtocol<T extends MultiblockData> {
             return fail(FormationResult.FAIL);
         }
 
-        FormationResult result = validator.validate(this);
+        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+        FormationResult result = validator.validate(this, chunkMap);
         if (!result.isFormed()) {
             return fail(result);
         }
@@ -54,7 +58,7 @@ public class FormationProtocol<T extends MultiblockData> {
         structure.locations = locations;
         structure.innerNodes = innerNodes;
         structure.valves = valves;
-        result = validator.postcheck(structure, innerNodes);
+        result = validator.postcheck(structure, innerNodes, chunkMap);
         return result.isFormed() ? form(structure, idsFound) : fail(result);
     }
 

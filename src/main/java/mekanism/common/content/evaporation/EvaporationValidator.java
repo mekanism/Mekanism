@@ -1,5 +1,6 @@
 package mekanism.common.content.evaporation;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.EnumSet;
 import java.util.Set;
 import mekanism.common.MekanismLang;
@@ -18,6 +19,7 @@ import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.IChunk;
 
 public class EvaporationValidator extends CuboidStructureValidator<EvaporationMultiblockData> {
 
@@ -71,7 +73,7 @@ public class EvaporationValidator extends CuboidStructureValidator<EvaporationMu
     }
 
     @Override
-    public FormationResult postcheck(EvaporationMultiblockData structure, Set<BlockPos> innerNodes) {
+    public FormationResult postcheck(EvaporationMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<IChunk> chunkMap) {
         if (!foundController) {
             return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_NO_CONTROLLER);
         }

@@ -1,5 +1,7 @@
 package mekanism.common.lib.multiblock;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.common.MekanismLang;
@@ -10,11 +12,13 @@ import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.lib.multiblock.FormationProtocol.StructureRequirement;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunk;
 
 public abstract class CuboidStructureValidator<T extends MultiblockData> implements IStructureValidator<T> {
 
@@ -44,13 +48,13 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     }
 
     @Override
-    public FormationResult validate(FormationProtocol<T> ctx) {
+    public FormationResult validate(FormationProtocol<T> ctx, Long2ObjectMap<IChunk> chunkMap) {
         BlockPos min = cuboid.getMinPos(), max = cuboid.getMaxPos();
         for (int x = min.getX(); x <= max.getX(); x++) {
             for (int y = min.getY(); y <= max.getY(); y++) {
                 for (int z = min.getZ(); z <= max.getZ(); z++) {
                     BlockPos pos = new BlockPos(x, y, z);
-                    FormationResult ret = validateNode(ctx, pos);
+                    FormationResult ret = validateNode(ctx, chunkMap, pos);
                     if (!ret.isFormed()) {
                         return ret;
                     }
@@ -60,27 +64,30 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         return FormationResult.SUCCESS;
     }
 
-    protected FormationResult validateNode(FormationProtocol<T> ctx, BlockPos pos) {
+    protected FormationResult validateNode(FormationProtocol<T> ctx, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
         StructureRequirement requirement = getStructureRequirement(pos);
+        Optional<BlockState> optionalState = MekanismUtils.getBlockState(world, chunkMap, pos);
+        if (!optionalState.isPresent()) {
+            //If the position is not in a loaded chunk or out of bounds of the world, fail
+            return FormationResult.FAIL;
+        }
+        BlockState state = optionalState.get();
         if (requirement.isCasing()) {
-            BlockState state = world.getBlockState(pos);
             CasingType type = getCasingType(pos, state);
             FormationResult ret = validateFrame(ctx, pos, state, type, requirement.needsFrame());
             if (requirement != StructureRequirement.IGNORED && !ret.isFormed()) {
                 return ret;
             }
-        } else {
-            if (!validateInner(pos)) {
-                return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos);
-            } else if (!world.isAirBlock(pos)) {
-                ctx.innerNodes.add(pos);
-            }
+        } else if (!validateInner(state, chunkMap, pos)) {
+            return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_INNER, pos);
+        } else if (!state.isAir(world, pos)) {
+            ctx.innerNodes.add(pos);
         }
         return FormationResult.SUCCESS;
     }
 
-    protected boolean validateInner(BlockPos pos) {
-        return world.isAirBlock(pos);
+    protected boolean validateInner(BlockState state, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
+        return state.isAir(world, pos);
     }
 
     protected abstract CasingType getCasingType(BlockPos pos, BlockState state);
@@ -121,7 +128,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     }
 
     @Override
-    public FormationResult postcheck(T structure, Set<BlockPos> innerNodes) {
+    public FormationResult postcheck(T structure, Set<BlockPos> innerNodes, Long2ObjectMap<IChunk> chunkMap) {
         return FormationResult.SUCCESS;
     }
 

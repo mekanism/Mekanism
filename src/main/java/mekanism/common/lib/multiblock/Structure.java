@@ -1,9 +1,12 @@
 package mekanism.common.lib.multiblock;
 
 import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.SortedMap;
@@ -18,6 +21,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunk;
 
 public class Structure {
 
@@ -49,7 +53,7 @@ public class Structure {
         for (Axis axis : Axis.AXES) {
             getMinorAxisMap(axis).put(axis.getCoord(node.getTilePos()), new VoxelPlane(axis, node.getTilePos(), node instanceof IMultiblock));
         }
-        if (controller == null && node instanceof IMultiblock && ((IMultiblock<?>) node).canBeMaster()) {
+        if (node instanceof IMultiblock && (controller == null || ((IMultiblock<?>) node).canBeMaster())) {
             controller = (IMultiblock<?>) node;
         }
     }
@@ -98,7 +102,7 @@ public class Structure {
             runUpdate(tile);
         }
         if (!isValid()) {
-            validate(tile);
+            validate(tile, new Long2ObjectOpenHashMap<>());
         }
     }
 
@@ -112,17 +116,20 @@ public class Structure {
 
     public void add(Structure s) {
         if (s != this) {
-            if (s.controller != null) {
+            if (s.controller != null && s.controller.canBeMaster()) {
+                //If the controller of the other structure isn't null and it can be a master block
+                // override our structure's controller
                 controller = s.controller;
             }
             s.nodes.forEach((key, value) -> {
                 nodes.put(key, value);
                 value.setStructure(getManager(), this);
             });
-            for (Axis axis : s.minorPlaneMap.keySet()) {
+            for (Entry<Axis, SortedMap<Integer, VoxelPlane>> entry : s.minorPlaneMap.entrySet()) {
+                Axis axis = entry.getKey();
                 Map<Integer, VoxelPlane> minorMap = getMinorAxisMap(axis);
                 Map<Integer, VoxelPlane> majorMap = getMajorAxisMap(axis);
-                s.minorPlaneMap.get(axis).forEach((key, value) -> {
+                entry.getValue().forEach((key, value) -> {
                     if (majorMap.containsKey(key)) {
                         majorMap.get(key).merge(value);
                         return;
@@ -139,9 +146,9 @@ public class Structure {
                     }
                 });
             }
-            for (Axis axis : s.planeMap.keySet()) {
-                Map<Integer, VoxelPlane> map = getMajorAxisMap(axis);
-                s.planeMap.get(axis).forEach((key, value) -> {
+            for (Entry<Axis, NavigableMap<Integer, VoxelPlane>> entry : s.planeMap.entrySet()) {
+                Map<Integer, VoxelPlane> map = getMajorAxisMap(entry.getKey());
+                entry.getValue().forEach((key, value) -> {
                     VoxelPlane p = map.get(key);
                     if (p == null) {
                         map.put(key, p = value);
@@ -177,7 +184,7 @@ public class Structure {
         return nodes.size();
     }
 
-    private static void validate(IMultiblockBase node) {
+    private static void validate(IMultiblockBase node, Long2ObjectMap<IChunk> chunkMap) {
         if (node instanceof IMultiblock) {
             IMultiblock<?> multiblock = (IMultiblock<?>) node;
             if (!multiblock.getStructure().isValid()) {
@@ -192,7 +199,7 @@ public class Structure {
             if (pos.equals(node.getTilePos())) {
                 return true;
             }
-            TileEntity tile = MekanismUtils.getTileEntity(node.getTileWorld(), pos);
+            TileEntity tile = MekanismUtils.getTileEntity(node.getTileWorld(), chunkMap, pos);
             if (tile instanceof IMultiblockBase) {
                 IMultiblockBase adj = (IMultiblockBase) tile;
                 if (isCompatible(node, adj)) {
@@ -208,7 +215,7 @@ public class Structure {
                     } else if (node instanceof IStructuralMultiblock) {
                         // validate from the perspective of the IMultiblock
                         if (!hasStructure(node, (IMultiblock<?>) adj)) {
-                            validate(adj);
+                            validate(adj, chunkMap);
                         }
                         return false;
                     } else if (adj instanceof IStructuralMultiblock) {
@@ -217,7 +224,6 @@ public class Structure {
                         // we know the structures are compatible so managers must be the same for both
                         didMerge = mergeIfNecessary(node, adj, getManager(node));
                     }
-
                     return didMerge;
                 }
             }

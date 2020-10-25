@@ -1,5 +1,6 @@
 package mekanism.generators.common.content.fission;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.chunk.IChunk;
 
 public class FissionReactorValidator extends CuboidStructureValidator<FissionReactorMultiblockData> {
 
@@ -42,21 +44,21 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
     }
 
     @Override
-    protected boolean validateInner(BlockPos pos) {
-        if (super.validateInner(pos)) {
+    protected boolean validateInner(BlockState state, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
+        if (super.validateInner(state, chunkMap, pos)) {
             return true;
         }
-        return BlockType.is(world.getBlockState(pos).getBlock(), GeneratorsBlockTypes.FISSION_FUEL_ASSEMBLY, GeneratorsBlockTypes.CONTROL_ROD_ASSEMBLY);
+        return BlockType.is(state.getBlock(), GeneratorsBlockTypes.FISSION_FUEL_ASSEMBLY, GeneratorsBlockTypes.CONTROL_ROD_ASSEMBLY);
     }
 
     @Override
-    public FormationResult postcheck(FissionReactorMultiblockData structure, Set<BlockPos> innerNodes) {
+    public FormationResult postcheck(FissionReactorMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<IChunk> chunkMap) {
         Map<AssemblyPos, FuelAssembly> map = new HashMap<>();
         Set<BlockPos> fuelAssemblyCoords = new HashSet<>();
         int assemblyCount = 0, surfaceArea = 0;
 
         for (BlockPos coord : innerNodes) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, coord);
+            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, coord);
             AssemblyPos pos = new AssemblyPos(coord.getX(), coord.getZ());
             FuelAssembly assembly = map.get(pos);
 

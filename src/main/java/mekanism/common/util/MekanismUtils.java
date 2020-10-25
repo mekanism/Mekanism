@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -894,6 +895,39 @@ public final class MekanismUtils {
     }
 
     /**
+     * Gets a blockstate if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
+     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example multiblock structure validation)
+     *
+     * @param world    - world
+     * @param chunkMap - cached chunk map
+     * @param pos      - position
+     *
+     * @return optional containing the blockstate if found, empty optional if not loaded
+     */
+    @Nonnull
+    public static Optional<BlockState> getBlockState(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
+        //Get the blockstate using the chunk we found/had cached
+        return getBlockState(getChunkForPos(world, chunkMap, pos), pos);
+    }
+
+    /**
+     * Gets a blockstate if the location is loaded
+     *
+     * @param world - world
+     * @param pos   - position
+     *
+     * @return optional containing the blockstate if found, empty optional if not loaded
+     */
+    @Nonnull
+    public static Optional<BlockState> getBlockState(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
+        if (!isBlockLoaded(world, pos)) {
+            //If the world is null or its a world reader and the block is not loaded, return null
+            return Optional.empty();
+        }
+        return Optional.of(world.getBlockState(pos));
+    }
+
+    /**
      * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
      * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
      *
@@ -907,7 +941,7 @@ public final class MekanismUtils {
     @Contract("null, _, _ -> null")
     public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
         //Get the tile entity using the chunk we found/had cached
-        return getTileEntity(getChunkForTile(world, chunkMap, pos), pos);
+        return getTileEntity(getChunkForPos(world, chunkMap, pos), pos);
     }
 
     @Nullable
@@ -921,14 +955,15 @@ public final class MekanismUtils {
     public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos,
           boolean logWrongType) {
         //Get the tile entity using the chunk we found/had cached
-        return getTileEntity(clazz, getChunkForTile(world, chunkMap, pos), pos, logWrongType);
+        return getTileEntity(clazz, getChunkForPos(world, chunkMap, pos), pos, logWrongType);
     }
 
     @Nullable
     @Contract("null, _, _ -> null")
-    private static IChunk getChunkForTile(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
-        if (world == null) {
+    private static IChunk getChunkForPos(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
+        if (world == null || !World.isValid(pos)) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
+            // Also short circuit to check if the position is out of bounds before bothering to lookup the chunk
             return null;
         }
         int chunkX = pos.getX() >> 4;
@@ -996,7 +1031,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Checks if a position is loaded
+     * Checks if a position is in bounds of the world, and is loaded
      *
      * @param world world
      * @param pos   position
@@ -1005,11 +1040,12 @@ public final class MekanismUtils {
      */
     @Contract("null, _ -> false")
     public static boolean isBlockLoaded(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
-        if (world == null) {
+        if (world == null || !World.isValid(pos)) {
             return false;
-        } else if (world instanceof World) {
-            return ((World) world).isBlockPresent(pos);
         } else if (world instanceof IWorldReader) {
+            //Note: We don't bother checking if it is a world and then isBlockPresent because
+            // all that does is also validate the y value is in bounds, and we already check to make
+            // sure the position is valid both in the y and xz directions
             return ((IWorldReader) world).isBlockLoaded(pos);
         }
         return true;
