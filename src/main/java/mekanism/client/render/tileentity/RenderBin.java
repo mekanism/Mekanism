@@ -43,7 +43,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
             BlockPos coverPos = tile.getPos().offset(facing);
             //if the bin has an item stack and the face isn't covered by a solid side
             Optional<BlockState> blockState = WorldUtils.getBlockState(world, coverPos);
-            if (!blockState.isPresent() || blockState.get().isSolidSide(world, coverPos, facing.getOpposite())) {
+            if (!blockState.isPresent() || !blockState.get().isSolidSide(world, coverPos, facing.getOpposite())) {
                 ITextComponent amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.getCount());
                 matrix.push();
                 switch (facing) {
