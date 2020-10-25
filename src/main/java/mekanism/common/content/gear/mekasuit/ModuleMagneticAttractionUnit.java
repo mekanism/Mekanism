@@ -2,6 +2,7 @@ package mekanism.common.content.gear.mekasuit;
 
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.Mekanism;
@@ -13,6 +14,7 @@ import mekanism.common.network.PacketLightningRender;
 import mekanism.common.network.PacketLightningRender.LightningPreset;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -49,6 +51,11 @@ public class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
                 }
             }
         }
+    }
+
+    @Override
+    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+        toggleEnabled(player, MekanismLang.MODULE_MAGNETIC_ATTRACTION_UNIT.translate());
     }
 
     public enum Range implements IHasTextComponent {

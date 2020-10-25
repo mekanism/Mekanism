@@ -121,7 +121,7 @@ public class Modules {
           .rarity(Rarity.RARE);
     public static final ModuleData<ModuleMagneticAttractionUnit> MAGNETIC_ATTRACTION_UNIT = register("magnetic_attraction_unit",
           MekanismLang.MODULE_MAGNETIC_ATTRACTION_UNIT, MekanismLang.DESCRIPTION_MAGNETIC_ATTRACTION_UNIT, ModuleMagneticAttractionUnit::new, 4)
-          .rarity(Rarity.RARE);
+          .rarity(Rarity.RARE).setHandlesModeChange();
 
     public static void setSupported(Item containerItem, ModuleData<?>... types) {
         for (ModuleData<?> module : types) {
