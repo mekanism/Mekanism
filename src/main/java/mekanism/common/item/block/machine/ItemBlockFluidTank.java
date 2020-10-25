@@ -177,15 +177,14 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         if (!player.canPlayerEdit(pos, result.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
-                        FluidState fluidState = world.getFluidState(pos);
+                        //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
+                        BlockState blockState = world.getBlockState(pos);
+                        FluidState fluidState = blockState.getFluidState();
                         if (!fluidState.isEmpty() && fluidState.isSource()) {
                             //Just in case someone does weird things and has a fluid state that is empty and a source
                             // only allow collecting from non empty sources
                             Fluid fluid = fluidState.getFluid();
                             FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
-                            //Note: we get the block state from the world and not the fluid state
-                            // so that we can get the proper block in case it is fluid logged
-                            BlockState blockState = world.getBlockState(pos);
                             Block block = blockState.getBlock();
                             if (block instanceof IFluidBlock) {
                                 fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.SIMULATE);

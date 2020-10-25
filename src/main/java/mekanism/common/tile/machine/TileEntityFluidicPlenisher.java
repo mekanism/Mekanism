@@ -188,7 +188,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         if (world.isAirBlock(pos)) {
             return true;
         }
-        FluidState currentFluidState = world.getFluidState(pos);
+        BlockState state = world.getBlockState(pos);
+        FluidState currentFluidState = state.getFluidState();
         if (!currentFluidState.isEmpty()) {
             //There is currently a fluid in the spot
             if (currentFluidState.isSource()) {
@@ -198,7 +199,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             //Always return true if it is not a source block
             return true;
         }
-        BlockState state = world.getBlockState(pos);
         FluidStack stack = fluidTank.getFluid();
         if (stack.isEmpty()) {
             //If we are empty, base it off of if it is replaceable in general or if it is a liquid container

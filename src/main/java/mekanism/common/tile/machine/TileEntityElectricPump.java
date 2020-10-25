@@ -191,7 +191,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     private boolean suck(BlockPos pos, boolean hasFilter, boolean addRecurring) {
-        FluidState fluidState = world.getFluidState(pos);
+        //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
+        BlockState blockState = world.getBlockState(pos);
+        FluidState fluidState = blockState.getFluidState();
         if (!fluidState.isEmpty() && fluidState.isSource()) {
             //Just in case someone does weird things and has a fluid state that is empty and a source
             // only allow collecting from non empty sources
@@ -200,9 +202,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             if (hasFilter && sourceFluid == Fluids.WATER) {
                 fluidStack = MekanismFluids.HEAVY_WATER.getFluidStack(10);
             }
-            //Note: we get the block state from the world and not the fluid state
-            // so that we can get the proper block in case it is fluid logged
-            BlockState blockState = world.getBlockState(pos);
             Block block = blockState.getBlock();
             if (block instanceof IFluidBlock) {
                 fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.SIMULATE);

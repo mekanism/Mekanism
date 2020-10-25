@@ -151,7 +151,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             BlockState mainState = world.getBlockState(mainPos);
             if (!mainState.isAir(world, mainPos)) {
                 //Set the main block to air, which will invalidate the rest of the bounding blocks
-                mainState.removedByPlayer(world, mainPos, player, false, world.getFluidState(mainPos));
+                mainState.removedByPlayer(world, mainPos, player, false, mainState.getFluidState());
             }
         }
         return super.removedByPlayer(state, world, pos, player, false, fluidState);

@@ -228,7 +228,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         //Get the tile now so that we have it for when we try to harvest the block
         TileEntity tileEntity = WorldUtils.getTileEntity(world, pos);
         //Remove the block
-        boolean removed = state.removedByPlayer(world, pos, player, true, world.getFluidState(pos));
+        boolean removed = state.removedByPlayer(world, pos, player, true, state.getFluidState());
         if (removed) {
             block.onPlayerDestroy(world, pos, state);
             //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion

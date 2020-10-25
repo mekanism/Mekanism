@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile;
 
 import java.util.Arrays;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -30,6 +31,7 @@ import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
@@ -114,7 +116,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
             return FloatingLong.ZERO;
         }
         //Lava boost
-        long lavaSides = Arrays.stream(EnumUtils.DIRECTIONS).filter(side -> world.getFluidState(pos.offset(side)).isTagged(FluidTags.LAVA)).count();
+        long lavaSides = Arrays.stream(EnumUtils.DIRECTIONS).filter(side -> {
+            //Only check and add loaded neighbors to the which sides have lava on them
+            Optional<FluidState> fluidState = WorldUtils.getFluidState(world, pos.offset(side));
+            return fluidState.isPresent() && fluidState.get().isTagged(FluidTags.LAVA);
+        }).count();
         if (getBlockState().getFluidState().isTagged(FluidTags.LAVA)) {
             //If the heat generator is lava-logged then add it as another side that is adjacent to lava for the heat calculations
             lavaSides++;

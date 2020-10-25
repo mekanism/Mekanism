@@ -178,7 +178,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                         //Get the tile now so that we have it for when we try to harvest the block
                         TileEntity tileEntity = WorldUtils.getTileEntity(world, foundPos);
                         //Remove the block
-                        boolean removed = foundState.removedByPlayer(world, foundPos, player, true, world.getFluidState(foundPos));
+                        boolean removed = foundState.removedByPlayer(world, foundPos, player, true, foundState.getFluidState());
                         if (removed) {
                             block.onPlayerDestroy(world, foundPos, foundState);
                             //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
