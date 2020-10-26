@@ -151,17 +151,15 @@ ext {
 replaceResourcesInfo.each { output, sourceSet ->
     return tasks.create("${output}ReplaceResources", Copy) {
         outputs.upToDateWhen { false }
-        def modsToml = {
+        def modsToml = copySpec {
             from(sourceSet.resources) {
                 include "META-INF/mods.toml"
                 expand version_properties
             }
         }
         //Copy it into the build dir
-        copy {
-            with modsToml
-            into "$buildDir/resources/${output}/"
-        }
+        with modsToml
+        into "$buildDir/resources/${output}/"
         //If IntelliJ's output dir exists, copy it there as well
         if (new File("$rootDir/out/production/Mekanism.${output}/").exists()) {
             //Note: This copies it into the correct place, but it still doesn't have the IntelliJ
@@ -631,63 +629,66 @@ task optimizePng {
 def MAVEN_PASSWORD_PROPERTY_NAME = 'mekanismMavenPassword'
 def MAVEN_URL_PROPERTY_NAME = 'mekanismMavenUrl'
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
+def mavenPublicationsClosure = {
+    maven(MavenPublication) {
+        from components.java
+        groupId = project.group
+        version = project.version
+        artifactId = project.archivesBaseName
+        artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar]
+        pom {
             groupId = project.group
             version = project.version
-            artifactId = project.archivesBaseName
-            artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar]
-            pom {
-                groupId = project.group
-                version = project.version
-                if (System.getenv("MAVEN_ARTIFACT") != null) {
-                    artifactId = System.getenv("MAVEN_ARTIFACT")
-                } else {
-                    artifactId = project.archivesBaseName
+            if (System.getenv("MAVEN_ARTIFACT") != null) {
+                artifactId = System.getenv("MAVEN_ARTIFACT")
+            } else {
+                artifactId = project.archivesBaseName
+            }
+            name = "Mekanism"
+            packaging 'jar'
+            description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
+            url = 'http://aidancbrady.com/mekanism/'
+            scm {
+                url = 'https://github.com/mekanism/Mekanism.git'
+            }
+            issueManagement {
+                system = 'github'
+                url = 'https://github.com/mekanism/Mekanism/issues'
+            }
+            licenses {
+                license {
+                    name = 'MIT'
+                    distribution = 'repo'
                 }
-                name = "Mekanism"
-                packaging 'jar'
-                description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
-                url = 'http://aidancbrady.com/mekanism/'
-                scm {
-                    url = 'https://github.com/mekanism/Mekanism.git'
-                }
-                issueManagement {
-                    system = 'github'
-                    url = 'https://github.com/mekanism/Mekanism/issues'
-                }
-                licenses {
-                    license {
-                        name = 'MIT'
-                        distribution = 'repo'
-                    }
-                }
-                withXml {
-                    NodeList dependencies = asNode().dependencies
-                    NodeList allDeps = dependencies.'*'
+            }
+            withXml {
+                NodeList dependencies = asNode().dependencies
+                NodeList allDeps = dependencies.'*'
 
-                    // Remove forge deps
-                    allDeps.findAll() { Node el ->
-                        el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge'
-                    }.forEach() { Node el ->
-                        el.parent().remove(el)
+                // Remove forge deps
+                allDeps.findAll() { Node el ->
+                    el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge'
+                }.forEach() { Node el ->
+                    el.parent().remove(el)
+                }
+                //remove ForgeGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
+                allDeps.findAll() { Node el ->
+                    el.version.text().contains('_mapped_')
+                }.each { Node el ->
+                    NodeList version = el.version
+                    version.each {
+                        it.setValue(it.text().substring(0, it.text().indexOf('_mapped_')))
                     }
-                    //remove ForgeGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
-                    allDeps.findAll() { Node el ->
-                        el.version.text().contains('_mapped_')
-                    }.each { Node el ->
-                        NodeList version = el.version
-                        version.each {
-                            it.setValue(it.text().substring(0, it.text().indexOf('_mapped_')))
-                        }
-                        el.appendNode('optional', true)
-                    }
+                    el.appendNode('optional', true)
                 }
             }
         }
     }
+}
+mavenPublicationsClosure.setDelegate(project)
+
+publishing {
+    publications(mavenPublicationsClosure)
     repositories {
         maven {
             if (project.findProperty(MAVEN_URL_PROPERTY_NAME) != null) {
