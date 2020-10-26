@@ -151,17 +151,26 @@ ext {
 replaceResourcesInfo.each { output, sourceSet ->
     return tasks.create("${output}ReplaceResources", Copy) {
         outputs.upToDateWhen { false }
-        from(sourceSet.resources) {
-            include "META-INF/mods.toml"
-            expand version_properties
+        def modsToml = {
+            from(sourceSet.resources) {
+                include "META-INF/mods.toml"
+                expand version_properties
+            }
         }
         //Copy it into the build dir
-        into "$buildDir/resources/${output}/"
+        copy {
+            with modsToml
+            into "$buildDir/resources/${output}/"
+        }
         //If IntelliJ's output dir exists, copy it there as well
         if (new File("$rootDir/out/production/Mekanism.${output}/").exists()) {
-            into "$rootDir/out/production/Mekanism.${output}/"
-            //TODO: Figure this out, copying it does seem to properly put it in the correct
-            // directory, but it seems that MOD_CLASSES is being built wrong so it doesn't matter
+            //Note: This copies it into the correct place, but it still doesn't have the IntelliJ
+            // run work by default because of incorrect MOD_CLASSES getting generated.
+            // probably related to us setting inheritOutputDirs
+            copy {
+                with modsToml
+                into "$rootDir/out/production/Mekanism.${output}/"
+            }
         }
         //Note: If eclipse has its own non gradle based runClient as well and has issues due to
         // the missing mods.toml file, add a check for its path and copy into the correct spot here
