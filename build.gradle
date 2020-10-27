@@ -1,5 +1,6 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import mekanism.tasks.MergeJars
 
 buildscript {
     repositories {
@@ -455,9 +456,7 @@ task additionsJar(type: Jar) {
     archiveClassifier.set("additions")
     from sourceSets.additions.output
     manifest.attributes(getManifestAttributes("MekanismAdditions"))
-    afterEvaluate {
-        finalizedBy reobfAdditionsJar
-    }
+    afterEvaluate { finalizedBy reobfAdditionsJar }
 }
 
 task defenseJar(type: Jar) {
@@ -467,9 +466,7 @@ task defenseJar(type: Jar) {
     archiveClassifier.set("defense")
     from sourceSets.defense.output
     manifest.attributes(getManifestAttributes("MekanismDefense"))
-    afterEvaluate {
-        finalizedBy reobfDefenseJar
-    }
+    afterEvaluate { finalizedBy reobfDefenseJar }
 }
 
 task generatorsJar(type: Jar) {
@@ -479,9 +476,7 @@ task generatorsJar(type: Jar) {
     archiveClassifier.set("generators")
     from sourceSets.generators.output
     manifest.attributes(getManifestAttributes("MekanismGenerators"))
-    afterEvaluate {
-        finalizedBy reobfGeneratorsJar
-    }
+    afterEvaluate { finalizedBy reobfGeneratorsJar }
 }
 
 task toolsJar(type: Jar) {
@@ -491,83 +486,29 @@ task toolsJar(type: Jar) {
     archiveClassifier.set("tools")
     from sourceSets.tools.output
     manifest.attributes(getManifestAttributes("MekanismTools"))
-    afterEvaluate {
-        finalizedBy reobfToolsJar
-    }
+    afterEvaluate { finalizedBy reobfToolsJar }
 }
 
-//TODO: Fix the fact that the all jar does not properly merge overlapping tags (cardboard_blacklist, and piglin_loved)
 task allJar(type: Jar) {
     //Make sure the other tasks run first
     shouldRunAfter(apiJar, jar, additionsJar, defenseJar, generatorsJar, toolsJar,
             processResources, processAdditionsResources, processDefenseResources,
             processGeneratorsResources, processToolsResources)
-    afterEvaluate {
-        finalizedBy reobfAllJar
-    }
+    afterEvaluate { finalizedBy reobfAllJar }
     archiveClassifier.set("all")
     manifest.attributes(getManifestAttributes("MekanismAll"))
-    doFirst {
-        //Generate folders, merge the access transformers and mods.toml files
-        mkdir("$buildDir/generated/META-INF")
-        (new File("$buildDir/generated/META-INF/accesstransformer.cfg")).text = mergeATs(sourceSets.main,
-                sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
-        (new File("$buildDir/generated/META-INF/mods.toml")).text = mergeModsTOML(sourceSets.main,
-                sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
-    }
+    //Start by generating the merged data
+    doFirst(MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools))
+    //Then copy all the files except for ones we are going to include from the merged
     from(sourceSets.api.output)
-    from(sourceSets.main.output) {
-        exclude 'META-INF/mods.toml', 'META-INF/accesstransformer.cfg'
-    }
-    Closure excluded = {
-        exclude 'META-INF/mods.toml', 'META-INF/accesstransformer.cfg', 'logo.png', 'pack.mcmeta'
-    }
+    from(sourceSets.main.output, MergeJars.excludedMain())
+    Closure excluded = MergeJars.excludedGeneral()
     from(sourceSets.additions.output, excluded)
     from(sourceSets.defense.output, excluded)
     from(sourceSets.generators.output, excluded)
     from(sourceSets.tools.output, excluded)
-    //Copy over the generated files
-    from("$buildDir/generated") {
-        include 'META-INF/mods.toml'
-        expand version_properties
-    }
-    from("$buildDir/generated") {
-        include 'META-INF/accesstransformer.cfg'
-    }
-}
-
-static String mergeATs(SourceSet... sourceSets) {
-    String text = ""
-    for (SourceSet sourceSet : sourceSets) {
-        sourceSet.resources.matching {
-            include 'META-INF/accesstransformer.cfg'
-        }.each {
-            File file -> text = text.isEmpty() ? file.getText() : text + "\n" + file.getText()
-        }
-    }
-    return text
-}
-
-static String mergeModsTOML(SourceSet... sourceSets) {
-    String text = ""
-    for (SourceSet sourceSet : sourceSets) {
-        sourceSet.resources.matching {
-            include 'META-INF/mods.toml'
-        }.each {
-            File file ->
-                if (text.isEmpty()) {
-                    //Nothing added yet, take it all
-                    text = file.getText()
-                } else {
-                    //Otherwise add all but the first four lines (which are duplicated between the files)
-                    String[] lines = file.getText().split("\n")
-                    for (int i = 4; i < lines.length; i++) {
-                        text = text + "\n" + lines[i]
-                    }
-                }
-        }
-    }
-    return text
+    //And finally copy over the generated files
+    MergeJars.getGeneratedClosures(version_properties).each { closure -> from("$buildDir/generated", closure) }
 }
 
 artifacts {
