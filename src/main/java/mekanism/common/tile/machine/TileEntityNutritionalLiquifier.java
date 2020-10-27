@@ -37,6 +37,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Food;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<ItemStackToGasRecipe> {
@@ -86,7 +87,15 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> item.getItem().isFood(), this, 26, 36));
+        builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
+            Item item = stack.getItem();
+            if (item.isFood()) {//Double check the stack is food
+                Food food = item.getFood();
+                //And only allow inserting foods that actually would provide paste
+                return food != null && food.getHealing() > 0;
+            }
+            return false;
+        }, this, 26, 36));
         builder.addSlot(outputSlot = GasInventorySlot.drain(gasTank, this, 155, 25));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
@@ -125,6 +134,11 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
             return null;
         }
         Food food = stack.getItem().getFood();
+        if (food == null || food.getHealing() == 0) {
+            //If the food provides no healing don't allow consuming it as it won't provide any paste
+            return null;
+        }
+        //TODO: If food eventually becomes stack sensitive make this use stack instead of stack.getItem as the ingredient
         return new NutritionalLiquifierIRecipe(stack.getItem(), ItemStackIngredient.from(stack.getItem()),
               MekanismGases.NUTRITIONAL_PASTE.getStack(food.getHealing() * 50L));
     }

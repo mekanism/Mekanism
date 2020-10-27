@@ -3,7 +3,6 @@ package mekanism.client.jei;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.GasToGasRecipe;
@@ -19,6 +18,7 @@ import mekanism.common.registries.MekanismGases;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -57,9 +57,17 @@ public class RecipeRegistryHelper {
     }
 
     public static void registerNutritionalLiquifier(IRecipeRegistration registry) {
-        registry.addRecipes(ForgeRegistries.ITEMS.getValues().stream().filter(Item::isFood)
-              .map(item -> new NutritionalLiquifierIRecipe(item, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(item.getFood().getHealing() * 50L)))
-              .collect(Collectors.toList()), MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
+        List<NutritionalLiquifierIRecipe> list = new ArrayList<>();
+        for (Item item : ForgeRegistries.ITEMS.getValues()) {
+            if (item.isFood()) {
+                Food food = item.getFood();
+                //Only display consuming foods that provide healing as otherwise no paste will be made
+                if (food != null && food.getHealing() > 0) {
+                    list.add(new NutritionalLiquifierIRecipe(item, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(food.getHealing() * 50L)));
+                }
+            }
+        }
+        registry.addRecipes(list, MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
     }
 
     public static void registerSPS(IRecipeRegistration registry) {
