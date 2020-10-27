@@ -94,6 +94,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         net.minecraft.util.IItemProvider block = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource);
         ITag<Item> blockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource);
         net.minecraft.util.IItemProvider ore = MekanismBlocks.ORES.get(OreType.get(resource));
+        float dustExperience = 0.3F;
 
         if (resource == PrimaryResource.IRON) {
             ingot = Items.IRON_INGOT;
@@ -103,6 +104,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
             block = Blocks.IRON_BLOCK;
             blockTag = Tags.Items.STORAGE_BLOCKS_IRON;
             ore = Blocks.IRON_ORE;
+            dustExperience = 0.35F;
         } else if (resource == PrimaryResource.GOLD) {
             ingot = Items.GOLD_INGOT;
             ingotTag = Tags.Items.INGOTS_GOLD;
@@ -111,6 +113,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
             block = Blocks.GOLD_BLOCK;
             blockTag = Tags.Items.STORAGE_BLOCKS_GOLD;
             ore = Blocks.GOLD_ORE;
+            dustExperience = 0.5F;
         }
 
         IItemProvider dust = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DUST, resource);
@@ -153,7 +156,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "dust/from_ore"));
         // Ingot
         // from dust
-        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(dustTag), ingot, 0.5F, 200,
+        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(dustTag), ingot, dustExperience, 200,
               Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
         if (!resource.isVanilla()) {
             // from block
@@ -173,7 +176,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
                   .addIngredient(ingotTag)
                   .build(consumer, Mekanism.rl(basePath + "nugget/from_ingot"));
             // from ore
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(resource.getOreTag()), ingot, 1, 200,
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(resource.getOreTag()), ingot, dustExperience * 2, 200,
                   Mekanism.rl(basePath + "ingot/from_ore_blasting"), Mekanism.rl(basePath + "ingot/from_ore_smelting"));
         }
         // Ore
@@ -283,7 +286,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               MekanismItems.NETHERITE_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "scrap_to_dust"));
         //Netherite Dust to Netherite Ingot
-        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(MekanismTags.Items.DUSTS_NETHERITE), Items.NETHERITE_INGOT, 2, 200,
+        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(MekanismTags.Items.DUSTS_NETHERITE), Items.NETHERITE_INGOT, 1, 200,
               Mekanism.rl(basePath + "ingot_from_dust_blasting"), Mekanism.rl(basePath + "ingot_from_dust_smelting"));
         //Netherite Ingot to Netherite Dust
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -318,7 +321,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_BRONZE)
               .build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
         //from dust
-        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(MekanismTags.Items.DUSTS_BRONZE), MekanismItems.BRONZE_INGOT, 0.5F, 200,
+        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(MekanismTags.Items.DUSTS_BRONZE), MekanismItems.BRONZE_INGOT, 0.35F, 200,
               Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
         //from infusing
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
@@ -409,7 +412,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_STEEL)
               .build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
         //from dust
-        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(MekanismTags.Items.DUSTS_STEEL), MekanismItems.STEEL_INGOT, 0.5F, 200,
+        RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(MekanismTags.Items.DUSTS_STEEL), MekanismItems.STEEL_INGOT, 0.4F, 200,
               Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
         //from nuggets
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.STEEL_INGOT)
