@@ -89,7 +89,7 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
     }
 
     @Override
-    public float func_234657_f_() {
+    public float getToughness() {
         return getArmorMaterial().getToughness();
     }
 
@@ -117,7 +117,7 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
         UUID modifier = ARMOR_MODIFIERS[getEquipmentSlot().getIndex()];
         builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDamageReduceAmount(), Operation.ADDITION));
-        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", func_234657_f_(), Operation.ADDITION));
+        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
         builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifier, "Armor knockback resistance", getKnockbackResistance(), Operation.ADDITION));
     }
 }

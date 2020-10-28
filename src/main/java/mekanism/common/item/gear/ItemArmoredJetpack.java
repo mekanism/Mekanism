@@ -39,7 +39,7 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
     }
 
     @Override
-    public float func_234657_f_() {
+    public float getToughness() {
         return getArmorMaterial().getToughness();
     }
 
@@ -53,7 +53,7 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
         UUID modifier = ARMOR_MODIFIERS[getEquipmentSlot().getIndex()];
         builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDamageReduceAmount(), Operation.ADDITION));
-        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", func_234657_f_(), Operation.ADDITION));
+        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
     }
 
     @Nonnull

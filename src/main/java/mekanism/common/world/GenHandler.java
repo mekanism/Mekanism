@@ -103,9 +103,9 @@ public class GenHandler {
     @Nullable
     private static ConfiguredFeature<?, ?> getOreFeature(IBlockProvider blockProvider, OreConfig oreConfig, Feature<OreFeatureConfig> feature) {
         if (oreConfig.shouldGenerate.get()) {
-            return feature.withConfiguration(new OreFeatureConfig(FillerBlockType.field_241882_a, blockProvider.getBlock().getDefaultState(), oreConfig.maxVeinSize.get()))
-                  .func_242733_d(oreConfig.maxHeight.get())
-                  .func_242728_a()
+            return feature.withConfiguration(new OreFeatureConfig(FillerBlockType.BASE_STONE_OVERWORLD, blockProvider.getBlock().getDefaultState(), oreConfig.maxVeinSize.get()))
+                  .range(oreConfig.maxHeight.get())
+                  .square()
                   .func_242731_b(oreConfig.perChunk.get());
         }
         return null;
@@ -117,7 +117,7 @@ public class GenHandler {
             BlockState state = blockProvider.getBlock().getDefaultState();
             return Feature.DISK.withConfiguration(new SphereReplaceConfig(state, FeatureSpread.func_242253_a(saltConfig.baseRadius.get(), saltConfig.spread.get()),
                   saltConfig.ySize.get(), ImmutableList.of(Blocks.DIRT.getDefaultState(), Blocks.CLAY.getDefaultState(), state)))
-                  .withPlacement(placement.func_242728_a()).func_242731_b(saltConfig.perChunk.get());
+                  .withPlacement(placement.square()).func_242731_b(saltConfig.perChunk.get());
         }
         return null;
     }
@@ -139,6 +139,6 @@ public class GenHandler {
     }
 
     private static boolean placeFeature(@Nullable ConfiguredFeature<?, ?> feature, ServerWorld world, Random random, BlockPos blockPos) {
-        return feature != null && feature.func_242765_a(world, world.getChunkProvider().getChunkGenerator(), random, blockPos);
+        return feature != null && feature.generate(world, world.getChunkProvider().getChunkGenerator(), random, blockPos);
     }
 }

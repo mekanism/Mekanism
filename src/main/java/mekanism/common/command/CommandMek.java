@@ -74,7 +74,7 @@ public class CommandMek {
                       rules.get(GameRules.DO_DAYLIGHT_CYCLE).set(false, server);
                       rules.get(GameRules.DO_WEATHER_CYCLE).set(false, server);
                       rules.get(GameRules.MOB_GRIEFING).set(false, server);
-                      ((ServerWorld) source.asPlayer().getEntityWorld()).func_241114_a_(2_000);
+                      ((ServerWorld) source.asPlayer().getEntityWorld()).setDayTime(2_000);
                       source.sendFeedback(MekanismLang.COMMAND_TEST_RULES.translate(), true);
                       return 0;
                   });
