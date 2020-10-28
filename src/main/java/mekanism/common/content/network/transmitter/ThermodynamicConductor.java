@@ -22,13 +22,16 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
+import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwork, ThermodynamicConductor> implements ITileHeatHandler {
+public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwork, ThermodynamicConductor> implements ITileHeatHandler,
+      IUpgradeableTransmitter<ThermodynamicConductorUpgradeData> {
 
     public final ConductorTier tier;
     private double clientTemperature = HeatAPI.AMBIENT_TEMP;
@@ -48,6 +51,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
         return (AcceptorCache<IHeatHandler>) super.getAcceptorCache();
     }
 
+    @Override
     public ConductorTier getTier() {
         return tier;
     }
@@ -74,6 +78,24 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
         return getAcceptorCache().isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER_CAPABILITY);
+    }
+
+    @Nullable
+    @Override
+    public ThermodynamicConductorUpgradeData getUpgradeData() {
+        return new ThermodynamicConductorUpgradeData(redstoneReactive, connectionTypes, buffer.getHeat());
+    }
+
+    @Override
+    public boolean dataTypeMatches(@Nonnull TransmitterUpgradeData data) {
+        return data instanceof ThermodynamicConductorUpgradeData;
+    }
+
+    @Override
+    public void parseUpgradeData(@Nonnull ThermodynamicConductorUpgradeData data) {
+        redstoneReactive = data.redstoneReactive;
+        connectionTypes = data.connectionTypes;
+        buffer.setHeat(data.heat);
     }
 
     @Nonnull

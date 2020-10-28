@@ -178,6 +178,15 @@ public class TransporterManager {
         if (transporterStacks != null) {
             for (TransporterStack stack : transporterStacks) {
                 if (stack != null && stack.getPathType() != Path.NONE) {
+                    //TODO: FIXME, This does not properly handle simulating if we are sending to two different item handlers in the same block
+                    // for example the extra slot in infusion factories and the normal slots (on different sides)
+                    // this could be fixed by only trying to insert into the side we are trying to send to
+                    // though it may cause weird issues if the slots are the same (such as for a vanilla chest)
+                    // and then we think we are done sending to one side, so try sending to another side and because of not
+                    // taking our inflight stacks into account it will think there is room
+                    //TODO: We potentially can get around this by simulate inserting all our in transit stacks iff
+                    // the stack we are simulating is of a different type than in our request so then we try to insert
+                    // all the stuff filling any slots and then can still try sending new stacks??
                     if (simulateInsert(handler, inventoryInfo, stack.itemStack, stack.itemStack.getCount(), true) > 0) {
                         // Failed to successfully insert this in-flight item; there's no room for anyone else
                         return request.getEmptyResponse();

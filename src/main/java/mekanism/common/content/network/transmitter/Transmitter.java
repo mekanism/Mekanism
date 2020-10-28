@@ -60,7 +60,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     private final TileEntityTransmitter transmitterTile;
     private final Set<TransmissionType> supportedTransmissionTypes;
-    public boolean redstoneReactive;
+    protected boolean redstoneReactive;
     private boolean redstonePowered;
     private boolean redstoneSet;
     private NETWORK theNetwork = null;

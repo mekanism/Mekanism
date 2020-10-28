@@ -1,10 +1,8 @@
 package mekanism.common.tile.transmitter;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -12,8 +10,6 @@ import mekanism.common.capabilities.resolver.advanced.AdvancedEnergyCapabilityRe
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.transmitter.UniversalCable;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
-import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -47,11 +43,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter {
         return TransmitterType.UNIVERSAL_CABLE;
     }
 
-    @Override
-    protected boolean canUpgrade(AlloyTier alloyTier) {
-        return alloyTier.getBaseTier().ordinal() == getTransmitter().getTier().getBaseTier().ordinal() + 1;
-    }
-
     @Nonnull
     @Override
     protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
@@ -66,26 +57,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter {
                 return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE.getBlock().getDefaultState());
         }
         return current;
-    }
-
-    @Nullable
-    @Override
-    protected UniversalCableUpgradeData getUpgradeData() {
-        UniversalCable transmitter = getTransmitter();
-        return new UniversalCableUpgradeData(transmitter.redstoneReactive, transmitter.connectionTypes, transmitter.buffer);
-    }
-
-    @Override
-    protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
-        if (upgradeData instanceof UniversalCableUpgradeData) {
-            UniversalCableUpgradeData data = (UniversalCableUpgradeData) upgradeData;
-            UniversalCable transmitter = getTransmitter();
-            transmitter.redstoneReactive = data.redstoneReactive;
-            transmitter.connectionTypes = data.connectionTypes;
-            transmitter.buffer.setEnergy(data.buffer.getEnergy());
-        } else {
-            super.parseUpgradeData(upgradeData);
-        }
     }
 
     @Nonnull

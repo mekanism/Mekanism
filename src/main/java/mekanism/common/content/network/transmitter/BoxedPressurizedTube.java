@@ -37,6 +37,8 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.BoxedChemicalAcceptorCache;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
+import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -47,7 +49,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandler, BoxedChemicalNetwork, BoxedChemicalStack, BoxedPressurizedTube>
-      implements IGasTracker, IInfusionTracker, IPigmentTracker, ISlurryTracker {
+      implements IGasTracker, IInfusionTracker, IPigmentTracker, ISlurryTracker, IUpgradeableTransmitter<PressurizedTubeUpgradeData> {
 
     public final TubeTier tier;
     public final MergedChemicalTank chemicalTank;
@@ -83,6 +85,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         return (BoxedChemicalAcceptorCache) super.getAcceptorCache();
     }
 
+    @Override
     public TubeTier getTier() {
         return tier;
     }
@@ -153,6 +156,24 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
             return Math.min(tier.getTubePullAmount(), getTransmitterNetwork().chemicalTank.getTankForType(chemicalType).getNeeded());
         }
         return Math.min(tier.getTubePullAmount(), chemicalTank.getTankForType(chemicalType).getNeeded());
+    }
+
+    @Nullable
+    @Override
+    public PressurizedTubeUpgradeData getUpgradeData() {
+        return new PressurizedTubeUpgradeData(redstoneReactive, connectionTypes, getShare());
+    }
+
+    @Override
+    public boolean dataTypeMatches(@Nonnull TransmitterUpgradeData data) {
+        return data instanceof PressurizedTubeUpgradeData;
+    }
+
+    @Override
+    public void parseUpgradeData(@Nonnull PressurizedTubeUpgradeData data) {
+        redstoneReactive = data.redstoneReactive;
+        connectionTypes = data.connectionTypes;
+        takeChemical(data.contents, Action.EXECUTE);
     }
 
     @Override

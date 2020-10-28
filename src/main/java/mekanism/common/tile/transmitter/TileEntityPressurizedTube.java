@@ -1,15 +1,12 @@
 package mekanism.common.tile.transmitter;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler.IMekanismInfusionHandler;
 import mekanism.api.chemical.pigment.IPigmentHandler.IMekanismPigmentHandler;
 import mekanism.api.chemical.slurry.ISlurryHandler.IMekanismSlurryHandler;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -26,8 +23,6 @@ import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver
 import mekanism.common.content.network.BoxedChemicalNetwork;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
-import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -73,11 +68,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter {
         return TransmitterType.PRESSURIZED_TUBE;
     }
 
-    @Override
-    protected boolean canUpgrade(AlloyTier alloyTier) {
-        return alloyTier.getBaseTier().ordinal() == getTransmitter().getTier().getBaseTier().ordinal() + 1;
-    }
-
     @Nonnull
     @Override
     protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
@@ -92,26 +82,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter {
                 return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE.getBlock().getDefaultState());
         }
         return current;
-    }
-
-    @Nullable
-    @Override
-    protected PressurizedTubeUpgradeData getUpgradeData() {
-        BoxedPressurizedTube transmitter = getTransmitter();
-        return new PressurizedTubeUpgradeData(transmitter.redstoneReactive, transmitter.connectionTypes, transmitter.getShare());
-    }
-
-    @Override
-    protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
-        if (upgradeData instanceof PressurizedTubeUpgradeData) {
-            PressurizedTubeUpgradeData data = (PressurizedTubeUpgradeData) upgradeData;
-            BoxedPressurizedTube transmitter = getTransmitter();
-            transmitter.redstoneReactive = data.redstoneReactive;
-            transmitter.connectionTypes = data.connectionTypes;
-            transmitter.takeChemical(data.contents, Action.EXECUTE);
-        } else {
-            super.parseUpgradeData(upgradeData);
-        }
     }
 
     @Nonnull

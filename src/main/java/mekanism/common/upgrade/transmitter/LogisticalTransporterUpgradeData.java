@@ -1,20 +1,30 @@
 package mekanism.common.upgrade.transmitter;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
+import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.transmitter.ConnectionType;
-import net.minecraft.nbt.ListNBT;
 
 public class LogisticalTransporterUpgradeData extends TransmitterUpgradeData {
 
     @Nullable
     public final EnumColor color;
-    public final ListNBT stacks;
+    public final Int2ObjectMap<TransporterStack> transit;
+    public final Int2ObjectMap<TransporterStack> needsSync;
+    public final int nextId;
+    public final int delay;
+    public final int delayCount;
 
     //Note: Currently redstone reactive is always false here
-    public LogisticalTransporterUpgradeData(boolean redstoneReactive, ConnectionType[] connectionTypes, @Nullable EnumColor color, ListNBT stacks) {
+    public LogisticalTransporterUpgradeData(boolean redstoneReactive, ConnectionType[] connectionTypes, @Nullable EnumColor color, Int2ObjectMap<TransporterStack> transit,
+          Int2ObjectMap<TransporterStack> needsSync, int nextId, int delay, int delayCount) {
         super(redstoneReactive, connectionTypes);
         this.color = color;
-        this.stacks = stacks;
+        this.transit = transit;
+        this.needsSync = needsSync;
+        this.nextId = nextId;
+        this.delay = delay;
+        this.delayCount = delayCount;
     }
 }

@@ -1,12 +1,9 @@
 package mekanism.common.tile.transmitter;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -15,8 +12,6 @@ import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
-import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -53,11 +48,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter {
         return TransmitterType.MECHANICAL_PIPE;
     }
 
-    @Override
-    protected boolean canUpgrade(AlloyTier alloyTier) {
-        return alloyTier.getBaseTier().ordinal() == getTransmitter().getTier().getBaseTier().ordinal() + 1;
-    }
-
     @Nonnull
     @Override
     protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
@@ -72,26 +62,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter {
                 return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_MECHANICAL_PIPE.getBlock().getDefaultState());
         }
         return current;
-    }
-
-    @Nullable
-    @Override
-    protected MechanicalPipeUpgradeData getUpgradeData() {
-        MechanicalPipe transmitter = getTransmitter();
-        return new MechanicalPipeUpgradeData(transmitter.redstoneReactive, transmitter.connectionTypes, transmitter.getShare());
-    }
-
-    @Override
-    protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
-        if (upgradeData instanceof MechanicalPipeUpgradeData) {
-            MechanicalPipeUpgradeData data = (MechanicalPipeUpgradeData) upgradeData;
-            MechanicalPipe transmitter = getTransmitter();
-            transmitter.redstoneReactive = data.redstoneReactive;
-            transmitter.connectionTypes = data.connectionTypes;
-            transmitter.takeFluid(data.contents, Action.EXECUTE);
-        } else {
-            super.parseUpgradeData(upgradeData);
-        }
     }
 
     @Nonnull

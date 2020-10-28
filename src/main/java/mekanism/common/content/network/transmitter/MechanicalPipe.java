@@ -22,6 +22,8 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
+import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,7 +34,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler {
+public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler,
+      IUpgradeableTransmitter<MechanicalPipeUpgradeData> {
 
     public final PipeTier tier;
     @Nonnull
@@ -54,6 +57,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         return (AcceptorCache<IFluidHandler>) super.getAcceptorCache();
     }
 
+    @Override
     public PipeTier getTier() {
         return tier;
     }
@@ -106,6 +110,24 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
             return fluidTank.insert(stack, action, AutomationType.EXTERNAL);
         }
         return stack;
+    }
+
+    @Nullable
+    @Override
+    public MechanicalPipeUpgradeData getUpgradeData() {
+        return new MechanicalPipeUpgradeData(redstoneReactive, connectionTypes, getShare());
+    }
+
+    @Override
+    public boolean dataTypeMatches(@Nonnull TransmitterUpgradeData data) {
+        return data instanceof MechanicalPipeUpgradeData;
+    }
+
+    @Override
+    public void parseUpgradeData(@Nonnull MechanicalPipeUpgradeData data) {
+        redstoneReactive = data.redstoneReactive;
+        connectionTypes = data.connectionTypes;
+        takeFluid(data.contents, Action.EXECUTE);
     }
 
     @Override

@@ -73,7 +73,8 @@ public class NetworkAcceptorCache<ACCEPTOR> {
     }
 
     public int getAcceptorCount() {
-        return cachedAcceptors.size();
+        //Count multiple connections to the same position as multiple acceptors
+        return cachedAcceptors.values().stream().mapToInt(Map::size).sum();
     }
 
     public boolean hasAcceptor(BlockPos acceptorPos) {

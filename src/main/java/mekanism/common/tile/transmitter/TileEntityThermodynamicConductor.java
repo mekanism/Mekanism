@@ -1,10 +1,8 @@
 package mekanism.common.tile.transmitter;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -13,8 +11,6 @@ import mekanism.common.capabilities.proxy.ProxyHeatHandler;
 import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
 import mekanism.common.content.network.transmitter.ThermodynamicConductor;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
-import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import net.minecraft.block.BlockState;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
@@ -41,11 +37,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
         return TransmitterType.THERMODYNAMIC_CONDUCTOR;
     }
 
-    @Override
-    protected boolean canUpgrade(AlloyTier alloyTier) {
-        return alloyTier.getBaseTier().ordinal() == getTransmitter().getTier().getBaseTier().ordinal() + 1;
-    }
-
     @Nonnull
     @Override
     protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
@@ -60,25 +51,5 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
                 return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR.getBlock().getDefaultState());
         }
         return current;
-    }
-
-    @Nullable
-    @Override
-    protected ThermodynamicConductorUpgradeData getUpgradeData() {
-        ThermodynamicConductor transmitter = getTransmitter();
-        return new ThermodynamicConductorUpgradeData(transmitter.redstoneReactive, transmitter.connectionTypes, transmitter.buffer.getHeat());
-    }
-
-    @Override
-    protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
-        if (upgradeData instanceof ThermodynamicConductorUpgradeData) {
-            ThermodynamicConductorUpgradeData data = (ThermodynamicConductorUpgradeData) upgradeData;
-            ThermodynamicConductor transmitter = getTransmitter();
-            transmitter.redstoneReactive = data.redstoneReactive;
-            transmitter.connectionTypes = data.connectionTypes;
-            transmitter.buffer.setHeat(data.heat);
-        } else {
-            super.parseUpgradeData(upgradeData);
-        }
     }
 }

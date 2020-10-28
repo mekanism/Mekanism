@@ -23,13 +23,16 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.EnergyAcceptorCache;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
+import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong, UniversalCable> implements IMekanismStrictEnergyHandler {
+public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong, UniversalCable> implements IMekanismStrictEnergyHandler,
+      IUpgradeableTransmitter<UniversalCableUpgradeData> {
 
     public final CableTier tier;
 
@@ -54,6 +57,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         return (EnergyAcceptorCache) super.getAcceptorCache();
     }
 
+    @Override
     public CableTier getTier() {
         return tier;
     }
@@ -109,6 +113,24 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
             return energyContainer.insert(amount, action, AutomationType.EXTERNAL);
         }
         return amount;
+    }
+
+    @Nullable
+    @Override
+    public UniversalCableUpgradeData getUpgradeData() {
+        return new UniversalCableUpgradeData(redstoneReactive, connectionTypes, buffer);
+    }
+
+    @Override
+    public boolean dataTypeMatches(@Nonnull TransmitterUpgradeData data) {
+        return data instanceof UniversalCableUpgradeData;
+    }
+
+    @Override
+    public void parseUpgradeData(@Nonnull UniversalCableUpgradeData data) {
+        redstoneReactive = data.redstoneReactive;
+        connectionTypes = data.connectionTypes;
+        buffer.setEnergy(data.buffer.getEnergy());
     }
 
     @Override

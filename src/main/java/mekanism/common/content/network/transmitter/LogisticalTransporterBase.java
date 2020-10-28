@@ -40,12 +40,12 @@ import net.minecraftforge.items.IItemHandler;
 
 public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler, InventoryNetwork, LogisticalTransporterBase> {
 
-    private final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
-    private final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
+    protected final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
+    protected final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
     public final TransporterTier tier;
-    private int nextId = 0;
-    private int delay = 0;
-    private int delayCount = 0;
+    protected int nextId = 0;
+    protected int delay = 0;
+    protected int delayCount = 0;
 
     protected LogisticalTransporterBase(TileEntityTransmitter tile, TransporterTier tier) {
         super(tile, TransmissionType.ITEM);
@@ -303,8 +303,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     public void readStacksFromNBT(ListNBT tagList) {
         for (int i = 0; i < tagList.size(); i++) {
-            TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompound(i));
-            addStack(nextId++, stack);
+            addStack(nextId++, TransporterStack.readFromNBT(tagList.getCompound(i)));
         }
     }
 

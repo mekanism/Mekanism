@@ -3,7 +3,6 @@ package mekanism.common.tile.transmitter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
@@ -20,6 +19,7 @@ import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
+import mekanism.common.content.network.transmitter.IUpgradeableTransmitter;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
@@ -41,8 +41,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -264,10 +266,6 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         return new TransmitterModelData();
     }
 
-    protected boolean canUpgrade(AlloyTier tier) {
-        return false;
-    }
-
     @Override
     public void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, @Nonnull AlloyTier tier) {
         if (getWorld() != null && getTransmitter().hasTransmitterNetwork()) {
@@ -282,36 +280,46 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             boolean sharesSet = false;
             int upgraded = 0;
             for (Transmitter<?, ?, ?> transmitter : list) {
-                TileEntityTransmitter transmitterTile = transmitter.getTransmitterTile();
-                if (transmitterTile.canUpgrade(tier)) {
-                    BlockState state = transmitterTile.getBlockState();
-                    BlockState upgradeState = transmitterTile.upgradeResult(state, tier.getBaseTier());
-                    if (state == upgradeState) {
-                        //Skip if it would not actually upgrade anything
-                        continue;
-                    }
-                    if (!sharesSet) {
-                        if (transmitterNetwork instanceof DynamicBufferedNetwork) {
-                            //Ensure we save the shares to the tiles so that they can properly take them and they don't get voided
-                            ((DynamicBufferedNetwork) transmitterNetwork).validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter);
+                if (transmitter instanceof IUpgradeableTransmitter) {
+                    IUpgradeableTransmitter<?> upgradeableTransmitter = (IUpgradeableTransmitter<?>) transmitter;
+                    if (upgradeableTransmitter.canUpgrade(tier)) {
+                        TileEntityTransmitter transmitterTile = transmitter.getTransmitterTile();
+                        BlockState state = transmitterTile.getBlockState();
+                        BlockState upgradeState = transmitterTile.upgradeResult(state, tier.getBaseTier());
+                        if (state == upgradeState) {
+                            //Skip if it would not actually upgrade anything
+                            continue;
                         }
-                        sharesSet = true;
-                    }
-                    transmitter.startUpgrading();
-                    TransmitterUpgradeData upgradeData = transmitterTile.getUpgradeData();
-                    if (upgradeData == null) {
-                        Mekanism.logger.warn("Got no upgrade data for transmitter at position: {} in {} but it said it would be able to provide some.",
-                              transmitter.getTilePos(), transmitter.getTileWorld());
-                    } else {
-                        transmitter.getTileWorld().setBlockState(transmitter.getTilePos(), upgradeState);
-                        TileEntityTransmitter upgradedTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, transmitter.getTileWorld(), transmitter.getTilePos());
-                        if (upgradedTile == null) {
-                            Mekanism.logger.warn("Error upgrading transmitter at position: {} in {}.", transmitter.getTilePos(), transmitter.getTileWorld());
+                        if (!sharesSet) {
+                            if (transmitterNetwork instanceof DynamicBufferedNetwork) {
+                                //Ensure we save the shares to the tiles so that they can properly take them and they don't get voided
+                                ((DynamicBufferedNetwork) transmitterNetwork).validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter);
+                            }
+                            sharesSet = true;
+                        }
+                        transmitter.startUpgrading();
+                        TransmitterUpgradeData upgradeData = upgradeableTransmitter.getUpgradeData();
+                        BlockPos transmitterPos = transmitter.getTilePos();
+                        World transmitterWorld = transmitter.getTileWorld();
+                        if (upgradeData == null) {
+                            Mekanism.logger.warn("Got no upgrade data for transmitter at position: {} in {} but it said it would be able to provide some.",
+                                  transmitterPos, transmitterWorld);
                         } else {
-                            upgradedTile.parseUpgradeData(upgradeData);
-                            upgraded++;
-                            if (upgraded == 8) {
-                                break;
+                            transmitterWorld.setBlockState(transmitterPos, upgradeState);
+                            TileEntityTransmitter upgradedTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, transmitterWorld, transmitterPos);
+                            if (upgradedTile == null) {
+                                Mekanism.logger.warn("Error upgrading transmitter at position: {} in {}.", transmitterPos, transmitterWorld);
+                            } else {
+                                Transmitter<?, ?, ?> upgradedTransmitter = upgradedTile.getTransmitter();
+                                if (upgradedTransmitter instanceof IUpgradeableTransmitter) {
+                                    transferUpgradeData((IUpgradeableTransmitter<?>) upgradedTransmitter, upgradeData);
+                                } else {
+                                    Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
+                                }
+                                upgraded++;
+                                if (upgraded == 8) {
+                                    break;
+                                }
                             }
                         }
                     }
@@ -330,17 +338,16 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         }
     }
 
+    private <DATA extends TransmitterUpgradeData> void transferUpgradeData(IUpgradeableTransmitter<DATA> upgradeableTransmitter, TransmitterUpgradeData data) {
+        if (upgradeableTransmitter.dataTypeMatches(data)) {
+            upgradeableTransmitter.parseUpgradeData((DATA) data);
+        } else {
+            Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
+        }
+    }
+
     @Nonnull
     protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
         return current;
-    }
-
-    @Nullable
-    protected TransmitterUpgradeData getUpgradeData() {
-        return null;
-    }
-
-    protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
-        Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
     }
 }
