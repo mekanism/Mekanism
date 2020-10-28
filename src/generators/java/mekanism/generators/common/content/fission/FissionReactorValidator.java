@@ -5,10 +5,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import mekanism.api.NBTConstants;
+import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
 import mekanism.common.lib.multiblock.FormationProtocol.CasingType;
@@ -95,8 +98,9 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
             return FormationResult.fail(GeneratorsLang.FISSION_INVALID_MISSING_FUEL_ASSEMBLY);
         }
 
-        for (FuelAssembly assembly : map.values()) {
-            FormationResult result = assembly.validate();
+        for (Entry<AssemblyPos, FuelAssembly> entry : map.entrySet()) {
+            FuelAssembly assembly = entry.getValue();
+            FormationResult result = assembly.validate(entry.getKey());
             if (!result.isFormed()) {
                 return result;
             }
@@ -122,9 +126,12 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
             }
         }
 
-        public FormationResult validate() {
-            if (fuelAssemblies.isEmpty() || controlRodAssembly == null) {
-                return FormationResult.fail(GeneratorsLang.FISSION_INVALID_BAD_FUEL_ASSEMBLY);
+        public FormationResult validate(AssemblyPos assemblyPos) {
+            if (controlRodAssembly == null) {
+                return FormationResult.fail(GeneratorsLang.FISSION_INVALID_MISSING_CONTROL_ROD.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                      MekanismLang.GENERIC_PARENTHESIS.translate(MekanismLang.GENERIC_WITH_COMMA.translate(assemblyPos.x, assemblyPos.z))));
+            } else if (fuelAssemblies.isEmpty()) {
+                return FormationResult.fail(GeneratorsLang.FISSION_INVALID_BAD_FUEL_ASSEMBLY, controlRodAssembly);
             }
             int prevY = -1;
             for (BlockPos coord : fuelAssemblies) {

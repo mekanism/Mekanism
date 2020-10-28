@@ -77,6 +77,7 @@ public enum GeneratorsLang implements ILangEntry {
     TURBINE_PRODUCTION("turbine", "stats.production"),
 
     FISSION_INVALID_BAD_CONTROL_ROD("fission", "invalid_bad_control_rod"),
+    FISSION_INVALID_MISSING_CONTROL_ROD("fission", "missing_control_rod"),
     FISSION_INVALID_BAD_FUEL_ASSEMBLY("fission", "invalid_bad_fuel_assembly"),
     FISSION_INVALID_EXTRA_CONTROL_ROD("fission", "invalid_extra_control_rod"),
     FISSION_INVALID_MALFORMED_FUEL_ASSEMBLY("fission", "invalid_malformed_fuel_assembly"),

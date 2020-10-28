@@ -156,7 +156,8 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_VENTS, "Vents: %s %s");
         //Fission Reactor
         add(GeneratorsLang.FISSION_INVALID_BAD_CONTROL_ROD, "Couldn't form, improper placement for Control Rod Assembly at %s.");
-        add(GeneratorsLang.FISSION_INVALID_BAD_FUEL_ASSEMBLY, "Couldn't form, invalid fuel assembly structure present.");
+        add(GeneratorsLang.FISSION_INVALID_MISSING_CONTROL_ROD, "Couldn't form, missing control rod for fuel assembly at %s.");
+        add(GeneratorsLang.FISSION_INVALID_BAD_FUEL_ASSEMBLY, "Couldn't form, missing fuel assembly for control rod at %s.");
         add(GeneratorsLang.FISSION_INVALID_EXTRA_CONTROL_ROD, "Couldn't form, found extra Control Rod Assembly at %s.");
         add(GeneratorsLang.FISSION_INVALID_MALFORMED_FUEL_ASSEMBLY, "Couldn't form, invalid Fission Fuel Assembly placement at %s.");
         add(GeneratorsLang.FISSION_INVALID_MISSING_FUEL_ASSEMBLY, "Couldn't form, no fuel assembly structures present.");

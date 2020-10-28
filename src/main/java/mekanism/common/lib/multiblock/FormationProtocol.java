@@ -151,11 +151,15 @@ public class FormationProtocol<T extends MultiblockData> {
         }
 
         public static FormationResult fail(ILangEntry text, BlockPos pos) {
-            return new FormationResult(false, text.translateColored(EnumColor.GRAY, EnumColor.INDIGO, text(pos)));
+            return fail(text.translateColored(EnumColor.GRAY, EnumColor.INDIGO, text(pos)));
         }
 
         public static FormationResult fail(ILangEntry text) {
-            return new FormationResult(false, text.translateColored(EnumColor.GRAY));
+            return fail(text.translateColored(EnumColor.GRAY));
+        }
+
+        public static FormationResult fail(ITextComponent text) {
+            return new FormationResult(false, text);
         }
 
         public boolean isFormed() {
