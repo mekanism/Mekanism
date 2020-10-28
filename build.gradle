@@ -570,66 +570,63 @@ task optimizePng {
 def MAVEN_PASSWORD_PROPERTY_NAME = 'mekanismMavenPassword'
 def MAVEN_URL_PROPERTY_NAME = 'mekanismMavenUrl'
 
-def mavenPublicationsClosure = {
-    maven(MavenPublication) {
-        from components.java
-        groupId = project.group
-        version = project.version
-        artifactId = project.archivesBaseName
-        artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar]
-        pom {
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
             groupId = project.group
             version = project.version
-            if (System.getenv("MAVEN_ARTIFACT") != null) {
-                artifactId = System.getenv("MAVEN_ARTIFACT")
-            } else {
-                artifactId = project.archivesBaseName
-            }
-            name = "Mekanism"
-            packaging 'jar'
-            description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
-            url = 'http://aidancbrady.com/mekanism/'
-            scm {
-                url = 'https://github.com/mekanism/Mekanism.git'
-            }
-            issueManagement {
-                system = 'github'
-                url = 'https://github.com/mekanism/Mekanism/issues'
-            }
-            licenses {
-                license {
-                    name = 'MIT'
-                    distribution = 'repo'
+            artifactId = project.archivesBaseName
+            artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar]
+            pom {
+                groupId = project.group
+                version = project.version
+                if (System.getenv("MAVEN_ARTIFACT") != null) {
+                    artifactId = System.getenv("MAVEN_ARTIFACT")
+                } else {
+                    artifactId = project.archivesBaseName
                 }
-            }
-            withXml {
-                NodeList dependencies = asNode().dependencies
-                NodeList allDeps = dependencies.'*'
-
-                // Remove forge deps
-                allDeps.findAll() { Node el ->
-                    el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge'
-                }.forEach() { Node el ->
-                    el.parent().remove(el)
+                name = "Mekanism"
+                packaging 'jar'
+                description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
+                url = 'http://aidancbrady.com/mekanism/'
+                scm {
+                    url = 'https://github.com/mekanism/Mekanism.git'
                 }
-                //remove ForgeGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
-                allDeps.findAll() { Node el ->
-                    el.version.text().contains('_mapped_')
-                }.each { Node el ->
-                    NodeList version = el.version
-                    version.each {
-                        it.setValue(it.text().substring(0, it.text().indexOf('_mapped_')))
+                issueManagement {
+                    system = 'github'
+                    url = 'https://github.com/mekanism/Mekanism/issues'
+                }
+                licenses {
+                    license {
+                        name = 'MIT'
+                        distribution = 'repo'
                     }
-                    el.appendNode('optional', true)
+                }
+                withXml {
+                    NodeList dependencies = asNode().dependencies
+                    NodeList allDeps = dependencies.'*'
+
+                    // Remove forge deps
+                    allDeps.findAll() { Node el ->
+                        el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge'
+                    }.forEach() { Node el ->
+                        el.parent().remove(el)
+                    }
+                    //remove ForgeGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
+                    allDeps.findAll() { Node el ->
+                        el.version.text().contains('_mapped_')
+                    }.each { Node el ->
+                        NodeList version = el.version
+                        version.each {
+                            it.setValue(it.text().substring(0, it.text().indexOf('_mapped_')))
+                        }
+                        el.appendNode('optional', true)
+                    }
                 }
             }
         }
     }
-}
-mavenPublicationsClosure.setDelegate(project)
-
-publishing {
-    publications(mavenPublicationsClosure)
     repositories {
         maven {
             if (project.findProperty(MAVEN_URL_PROPERTY_NAME) != null) {
