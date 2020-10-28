@@ -31,7 +31,7 @@ public class GuiPRC extends GuiConfigurableTile<TileEntityPressurizedReactionCha
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getActive, this));
         addButton(new GuiFluidGauge(() -> tile.inputFluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 5, 10));
         addButton(new GuiGasGauge(() -> tile.inputGasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 28, 10));
         addButton(new GuiGasGauge(() -> tile.outputGasTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 140, 40));

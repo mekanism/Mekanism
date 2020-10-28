@@ -53,7 +53,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSortingTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), xSize - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        addButton(new GuiEnergyTab(tile.getEnergyContainer(), () -> tile.lastUsage, this));
         if (tile.hasSecondaryResourceBar()) {
             if (tile instanceof TileEntityMetallurgicInfuserFactory) {
                 TileEntityMetallurgicInfuserFactory factory = (TileEntityMetallurgicInfuserFactory) this.tile;

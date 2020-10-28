@@ -33,8 +33,7 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, M
         super.init();
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiEnergyTab(() -> Arrays.asList(
-              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProducingEnergy())),
+        addButton(new GuiEnergyTab(() -> Arrays.asList(GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProducingEnergy())),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
         addButton(new GuiFluidGauge(() -> tile.lavaTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 55, 18));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));

@@ -162,7 +162,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         handleSecondaryFuel();
         sortInventory();
 
-        FloatingLong prev = energyContainer.getEnergy();
+        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
         for (int i = 0; i < cachedRecipes.length; i++) {
             CachedRecipe<RECIPE> cachedRecipe = cachedRecipes[i] = getUpdatedCache(i);
             if (cachedRecipe != null) {
