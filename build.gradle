@@ -59,23 +59,23 @@ sourceSets {
             //But exclude the cache of the generated data from what gets built
             exclude '.cache'
         }
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
+        compileClasspath += api.output
+        runtimeClasspath += api.output
     }
-    additions { setupSourceSet((SourceSet) sourceSets.additions, 'additions') }
-    generators { setupSourceSet((SourceSet) sourceSets.generators, 'generators') }
-    defense { setupSourceSet((SourceSet) sourceSets.defense, 'defense') }
-    tools { setupSourceSet((SourceSet) sourceSets.tools, 'tools') }
+    additions { setupSourceSet(additions, 'additions') }
+    generators { setupSourceSet(generators, 'generators') }
+    defense { setupSourceSet(defense, 'defense') }
+    tools { setupSourceSet(tools, 'tools') }
     test {
-        compileClasspath += sourceSets.api.output + sourceSets.main.output + sourceSets.additions.output + sourceSets.generators.output + sourceSets.defense.output + sourceSets.tools.output
-        runtimeClasspath += sourceSets.api.output + sourceSets.main.output + sourceSets.additions.output + sourceSets.generators.output + sourceSets.defense.output + sourceSets.tools.output
+        compileClasspath += api.output + main.output + additions.output + generators.output + defense.output + tools.output
+        runtimeClasspath += api.output + main.output + additions.output + generators.output + defense.output + tools.output
     }
     //Data gen modules for the different modules
-    datagenmain { setupDataGenSourceSet((SourceSet) sourceSets.datagenmain, null, 'main') }
-    datagenadditions { setupDataGenSourceSet((SourceSet) sourceSets.datagenadditions, (SourceSet) sourceSets.additions, 'additions') }
-    datagengenerators { setupDataGenSourceSet((SourceSet) sourceSets.datagengenerators, (SourceSet) sourceSets.generators, 'generators') }
-    datagendefense { setupDataGenSourceSet((SourceSet) sourceSets.datagendefense, (SourceSet) sourceSets.defense, 'defense') }
-    datagentools { setupDataGenSourceSet((SourceSet) sourceSets.datagentools, (SourceSet) sourceSets.tools, 'tools') }
+    datagenmain { setupDataGenSourceSet(datagenmain, null, 'main') }
+    datagenadditions { setupDataGenSourceSet(datagenadditions, additions, 'additions') }
+    datagengenerators { setupDataGenSourceSet(datagengenerators, generators, 'generators') }
+    datagendefense { setupDataGenSourceSet(datagendefense, defense, 'defense') }
+    datagentools { setupDataGenSourceSet(datagentools, tools, 'tools') }
 }
 
 //This method sets up an additional sourceSet in src/$name and adds a reference to the corresponding
