@@ -11,6 +11,7 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -18,6 +19,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityBabyCreeper extends CreeperEntity {
 
@@ -90,5 +92,11 @@ public class EntityBabyCreeper extends CreeperEntity {
     @Override
     public ItemStack getPickedResult(RayTraceResult target) {
         return AdditionsItems.BABY_CREEPER_SPAWN_EGG.getItemStack();
+    }
+
+    @Nonnull
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

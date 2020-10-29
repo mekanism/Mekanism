@@ -11,11 +11,13 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityBabyEnderman extends EndermanEntity {
 
@@ -78,5 +80,11 @@ public class EntityBabyEnderman extends EndermanEntity {
     @Override
     public ItemStack getPickedResult(RayTraceResult target) {
         return AdditionsItems.BABY_ENDERMAN_SPAWN_EGG.getItemStack();
+    }
+
+    @Nonnull
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }
