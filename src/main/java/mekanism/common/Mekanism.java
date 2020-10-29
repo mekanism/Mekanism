@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -51,7 +50,7 @@ import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
-import mekanism.common.item.block.machine.ItemBlockFluidTank;
+import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -81,11 +80,8 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -314,21 +310,8 @@ public class Mekanism {
             GlobalEntityTypeAttributes.put(MekanismEntityTypes.ROBIT.get(), EntityRobit.getDefaultAttributes().create());
             //Register dispenser behaviors
             MekanismFluids.FLUIDS.registerBucketDispenserBehavior();
-            registerDispenseBehavior(new DefaultDispenseItemBehavior() {
-                                         @Nonnull
-                                         @Override
-                                         public ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
-                                             if (stack.getItem() instanceof ItemBlockFluidTank && ((ItemBlockFluidTank) stack.getItem()).getBucketMode(stack)) {
-                                                 //If the fluid tank is in bucket mode allow for it to act as a bucket
-                                                 //TODO: Once https://github.com/MinecraftForge/MinecraftForge/pull/7422 gets merged uncomment the line below
-                                                 //return DispenseFluidContainer.getInstance().dispenseStack(source, stack);
-                                             }
-                                             //Otherwise eject it as a normal item
-                                             return super.dispenseStack(source, stack);
-                                         }
-                                     },
-                  MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
-                  MekanismBlocks.CREATIVE_FLUID_TANK);
+            registerDispenseBehavior(FluidTankItemDispenseBehavior.INSTANCE, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK,
+                  MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK);
         });
 
         //Register player tracker

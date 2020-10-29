@@ -34,9 +34,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class FluidDeferredRegister {
 
     private static final ResourceLocation OVERLAY = new ResourceLocation("minecraft", "block/water_overlay");
-    //Based off of vanilla's lava/water bucket dispense behavior
-    @Deprecated
-    private static final IDispenseItemBehavior bucketDispenseBehavior = new DefaultDispenseItemBehavior() {
+    //Copy of/based off of vanilla's lava/water bucket dispense behavior
+    private static final IDispenseItemBehavior BUCKET_DISPENSE_BEHAVIOR = new DefaultDispenseItemBehavior() {
         @Nonnull
         @Override
         public ItemStack dispenseStack(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
@@ -115,8 +114,7 @@ public class FluidDeferredRegister {
 
     public void registerBucketDispenserBehavior() {
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : getAllFluids()) {
-            //TODO: Use DispenseFluidContainer.getInstance() once https://github.com/MinecraftForge/MinecraftForge/pull/7422 gets merged
-            DispenserBlock.registerDispenseBehavior(fluidRO.getBucket(), bucketDispenseBehavior);
+            DispenserBlock.registerDispenseBehavior(fluidRO.getBucket(), BUCKET_DISPENSE_BEHAVIOR);
         }
     }
 }

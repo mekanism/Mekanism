@@ -15,6 +15,7 @@ import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
@@ -75,7 +76,7 @@ public class SpawnHelper {
 
     @SafeVarargs
     private static void registerDelayedDispenserBehavior(ItemRegistryObject<AdditionsSpawnEggItem>... spawnEggs) {
-        DefaultDispenseItemBehavior dispenseBehavior = new DefaultDispenseItemBehavior() {
+        IDispenseItemBehavior dispenseBehavior = new DefaultDispenseItemBehavior() {
             @Nonnull
             @Override
             public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {

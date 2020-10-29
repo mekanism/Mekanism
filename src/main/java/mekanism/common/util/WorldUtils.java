@@ -389,6 +389,14 @@ public class WorldUtils {
         world.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
 
+    public static void playFillSound(@Nullable PlayerEntity player, IWorld world, BlockPos pos, @Nonnull FluidStack fluidStack) {
+        SoundEvent soundevent = fluidStack.getFluid().getAttributes().getFillSound(world, pos);
+        if (soundevent == null) {
+            soundevent = fluidStack.getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL;
+        }
+        world.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
+    }
+
     /**
      * Better version of the World.getRedstonePowerFromNeighbors() method that doesn't load chunks.
      *
