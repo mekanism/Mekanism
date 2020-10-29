@@ -110,7 +110,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         Vector3d localVec = new Vector3d(getPosX(), getPosY(), getPosZ());
         Vector3d motion = getMotion();
         Vector3d motionVec = new Vector3d(getPosX() + motion.getX() * 2, getPosY() + motion.getY() * 2, getPosZ() + motion.getZ() * 2);
-        BlockRayTraceResult blockRayTrace = world.rayTraceBlocks(new RayTraceContext(localVec, motionVec, BlockMode.COLLIDER, FluidMode.ANY, this));
+        BlockRayTraceResult blockRayTrace = world.rayTraceBlocks(new RayTraceContext(localVec, motionVec, BlockMode.OUTLINE, FluidMode.ANY, this));
         localVec = new Vector3d(getPosX(), getPosY(), getPosZ());
         motionVec = new Vector3d(getPosX() + motion.getX(), getPosY() + motion.getY(), getPosZ() + motion.getZ());
         if (blockRayTrace.getType() != Type.MISS) {
