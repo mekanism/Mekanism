@@ -43,13 +43,13 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Maven
-Mekansim v10+ is also available via [ModMaven](https://modmaven.k-4u.nl/) for developers wishing to make use of our API. Big thanks to K4Unl for hosting.
+Mekansim v10+ is also available via [ModMaven](https://modmaven.dev/) for developers wishing to make use of our API. Big thanks to K4Unl for hosting.
 
 Update your `build.gradle` file to include the following. 
 
 ```groovy
 repositories {
-    maven { url 'https://modmaven.k-4u.nl/' }
+    maven { url 'https://modmaven.dev/' }
 }
 
 dependencies {
@@ -63,10 +63,10 @@ dependencies {
 }
 ```
 
-Add to `gradle.properties` (see [Maven](https://modmaven.k-4u.nl/mekanism/Mekanism/) for the list of available versions)
+Add to `gradle.properties` (see [Maven](https://modmaven.dev/mekanism/Mekanism/) for the list of available versions)
 
 ```properties
-mekanism_version=1.16.1-10.0.0.423
+mekanism_version=1.16.3-10.0.15.441
 ```
 
 # Credits #
