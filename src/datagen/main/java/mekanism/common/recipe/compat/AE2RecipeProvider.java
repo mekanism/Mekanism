@@ -11,6 +11,7 @@ import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.Items;
 
 @ParametersAreNonnullByDefault
 public class AE2RecipeProvider extends CompatRecipeProvider {
@@ -124,5 +125,11 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               blocks.skyStoneBlock().stack(1)
         ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "sky_stone_dust_to_sky_stone"));
+        //Ender pearl -> Ender dust
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Items.ENDER_PEARL),
+              materials.enderDust().stack(1)
+        ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "ender_pearl_to_dust"));
     }
 }
