@@ -270,6 +270,15 @@ public class TransporterStack {
         return pathToTarget.get(0);
     }
 
+    @Nullable
+    public Direction getSideOfDest() {
+        if (hasPath()) {
+            BlockPos lastTransporter = pathToTarget.get(1);
+            return WorldUtils.sideDifference(lastTransporter, getDest());
+        }
+        return null;
+    }
+
     public enum Path {
         DEST,
         HOME,

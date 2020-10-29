@@ -71,7 +71,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
                                 }
                             }
                         }
-                        TransitResponse response = TransporterManager.getPredictedInsert(position, handler.get(), request);
+                        TransitResponse response = TransporterManager.getPredictedInsert(position, side, handler.get(), request);
                         if (!response.isEmpty()) {
                             Direction opposite = side.getOpposite();
                             if (data == null) {
