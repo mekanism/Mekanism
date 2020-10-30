@@ -565,6 +565,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         acceptorCache.clear();
     }
 
+    public void onChunkUnload() {
+        //Clear our cached listeners
+        acceptorCache.clear();
+    }
+
     public ConnectionType getConnectionType(Direction side) {
         return getConnectionType(side, getAllCurrentConnections(), currentTransmitterConnections, connectionTypes);
     }

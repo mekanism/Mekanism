@@ -244,6 +244,16 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
+    public void onChunkUnload() {
+        super.onChunkUnload();
+        if (!isRemote()) {
+            for (TransporterStack stack : getTransit()) {
+                TransporterManager.remove(getTileWorld(), stack);
+            }
+        }
+    }
+
+    @Override
     public InventoryNetwork createEmptyNetwork() {
         return new InventoryNetwork();
     }

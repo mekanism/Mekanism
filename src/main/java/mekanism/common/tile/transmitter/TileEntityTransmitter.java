@@ -137,6 +137,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             getTransmitter().takeShare();
         }
         onWorldSeparate();
+        getTransmitter().onChunkUnload();
         super.onChunkUnloaded();
     }
 
