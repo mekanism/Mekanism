@@ -7,7 +7,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
 
 public final class BlockShapes {
 
@@ -71,7 +70,7 @@ public final class BlockShapes {
               makeCuboidShape(3, 3, 3, 13, 15, 13)
         ), WIND_GENERATOR);
 
-        setShape(VoxelShapeUtils.translate(VoxelShapeUtils.combine(
+        setShape(VoxelShapeUtils.combine(
               makeCuboidShape(6, -4, 6, 10, 25, 10), // pole
               makeCuboidShape(4, 22, 2, 6, 24, 14), // tube1
               makeCuboidShape(10, 22, 2, 12, 24, 14), // tube2
@@ -93,7 +92,7 @@ public final class BlockShapes {
               makeCuboidShape(-16, 30, -16, 2, 31, 32), // solar_panel_west
               makeCuboidShape(-15, 29, -15, 1, 30, 31), // solar_panel_west_base
               makeCuboidShape(-12, 27, 7, 4, 29, 9) // solar_panel_west_arm
-        ), new Vector3d(0, 1, 0)), ADVANCED_SOLAR_GENERATOR);
+        ).withOffset(0, 1, 0), ADVANCED_SOLAR_GENERATOR);
 
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
               makeCuboidShape(0, 0, 0, 16, 7, 16), // base
