@@ -73,7 +73,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
 
             @Override
             public double getLevel() {
-                return tile.getScaledProgress();
+                return Math.min(1, tile.getScaledProgress());
             }
         }, 5, 88, xSize - 12, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }

@@ -185,8 +185,8 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         return Math.round((lastProcessed / MekanismConfig.general.spsInputPerAntimatter.get()) * 1_000) / 1_000D;
     }
 
-    public float getScaledProgress() {
-        return (float) ((inputProcessed + progress) / MekanismConfig.general.spsInputPerAntimatter.get());
+    public double getScaledProgress() {
+        return (inputProcessed + progress) / MekanismConfig.general.spsInputPerAntimatter.get();
     }
 
     public boolean handlesSound(TileEntitySPSCasing tile) {

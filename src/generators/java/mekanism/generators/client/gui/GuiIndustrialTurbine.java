@@ -92,7 +92,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 if (rate == 0) {
                     return 0;
                 }
-                return multiblock.lastSteamInput / rate;
+                return Math.min(1, multiblock.lastSteamInput / rate);
             }
         }, 40, 13));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().gasTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.MEDIUM, this, 6, 13));

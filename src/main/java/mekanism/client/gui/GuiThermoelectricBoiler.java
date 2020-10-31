@@ -53,7 +53,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
             @Override
             public double getLevel() {
                 BoilerMultiblockData multiblock = tile.getMultiblock();
-                return multiblock.lastBoilRate / (double) multiblock.lastMaxBoil;
+                return Math.min(1, multiblock.lastBoilRate / (double) multiblock.lastMaxBoil);
             }
         }, 44, 13));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
@@ -65,7 +65,8 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
             @Override
             public double getLevel() {
                 BoilerMultiblockData multiblock = tile.getMultiblock();
-                return multiblock.lastMaxBoil * HeatUtils.getWaterThermalEnthalpy() / (multiblock.superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get());
+                return Math.min(1, multiblock.lastMaxBoil * HeatUtils.getWaterThermalEnthalpy() /
+                                   (multiblock.superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get()));
             }
         }, 164, 13));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().superheatedCoolantTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 6, 13)
