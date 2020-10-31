@@ -19,6 +19,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
@@ -28,10 +29,12 @@ import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
+import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
@@ -43,7 +46,7 @@ public class LookingAtUtils {
     }
 
     @Nullable
-    public static MultiblockData getMultiblock(@Nonnull TileEntity tile) {
+    private static MultiblockData getMultiblock(@Nonnull TileEntity tile) {
         if (tile instanceof IMultiblock) {
             return ((IMultiblock<?>) tile).getMultiblock();
         } else if (tile instanceof IStructuralMultiblock) {
@@ -61,7 +64,35 @@ public class LookingAtUtils {
         return null;
     }
 
-    public static void displayFluid(LookingAtHelper info, IFluidHandler fluidHandler) {
+    public static void addInfo(LookingAtHelper info, @Nonnull TileEntity tile, boolean displayTanks, boolean displayFluidTanks) {
+        MultiblockData structure = getMultiblock(tile);
+        Optional<IStrictEnergyHandler> energyCapability = CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null).resolve();
+        if (energyCapability.isPresent()) {
+            displayEnergy(info, energyCapability.get());
+        } else if (structure != null && structure.isFormed()) {
+            //Special handling to allow viewing the energy of multiblock's when looking at things other than the ports
+            displayEnergy(info, structure);
+        }
+        if (displayTanks) {
+            //Fluid - only add it to our own tiles in which we disable the default display for
+            if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
+                Optional<IFluidHandler> fluidCapability = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).resolve();
+                if (fluidCapability.isPresent()) {
+                    displayFluid(info, fluidCapability.get());
+                } else if (structure != null && structure.isFormed()) {
+                    //Special handling to allow viewing the fluid in a multiblock when looking at things other than the ports
+                    displayFluid(info, structure);
+                }
+            }
+            //Chemicals
+            addInfo(tile, structure, Capabilities.GAS_HANDLER_CAPABILITY, multiblock -> multiblock.getGasTanks(null), info, MekanismLang.GAS, Current.GAS, CurrentType.GAS);
+            addInfo(tile, structure, Capabilities.INFUSION_HANDLER_CAPABILITY, multiblock -> multiblock.getInfusionTanks(null), info, MekanismLang.INFUSE_TYPE, Current.INFUSION, CurrentType.INFUSION);
+            addInfo(tile, structure, Capabilities.PIGMENT_HANDLER_CAPABILITY, multiblock -> multiblock.getPigmentTanks(null), info, MekanismLang.PIGMENT, Current.PIGMENT, CurrentType.PIGMENT);
+            addInfo(tile, structure, Capabilities.SLURRY_HANDLER_CAPABILITY, multiblock -> multiblock.getSlurryTanks(null), info, MekanismLang.SLURRY, Current.SLURRY, CurrentType.SLURRY);
+        }
+    }
+
+    private static void displayFluid(LookingAtHelper info, IFluidHandler fluidHandler) {
         if (fluidHandler instanceof IMekanismFluidHandler) {
             IMekanismFluidHandler mekFluidHandler = (IMekanismFluidHandler) fluidHandler;
             for (IExtendedFluidTank fluidTank : mekFluidHandler.getFluidTanks(null)) {
@@ -90,14 +121,14 @@ public class LookingAtUtils {
         info.addFluidElement(fluidInTank, capacity);
     }
 
-    public static void displayEnergy(LookingAtHelper info, IStrictEnergyHandler energyHandler) {
+    private static void displayEnergy(LookingAtHelper info, IStrictEnergyHandler energyHandler) {
         int containers = energyHandler.getEnergyContainerCount();
         for (int container = 0; container < containers; container++) {
             info.addEnergyElement(energyHandler.getEnergy(container), energyHandler.getMaxEnergy(container));
         }
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
           HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(TileEntity tile, @Nullable MultiblockData structure, Capability<HANDLER> capability,
           Function<MultiblockData, List<TANK>> multiBlockToTanks, LookingAtHelper info, ILangEntry langEntry, Current matchingCurrent, CurrentType matchingCurrentType) {
         Optional<HANDLER> cap = CapabilityUtils.getCapability(tile, capability, null).resolve();

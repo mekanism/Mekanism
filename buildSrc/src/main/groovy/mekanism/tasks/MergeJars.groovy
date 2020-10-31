@@ -102,7 +102,7 @@ class MergeJars {
     }
 
     private static void mergeTag(Project project, String tag, List<String> tagPaths) {
-        println(tag + " appeared " + tagPaths.size() + " times")
+        //println(tag + " appeared " + tagPaths.size() + " times")
         Object outputTagAsJson = null
         tagPaths.each {path ->
             Object tagAsJson = new JsonSlurper().parse(project.file(path))

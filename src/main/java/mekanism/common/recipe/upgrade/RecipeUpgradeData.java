@@ -154,4 +154,15 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         }
         return data;
     }
+
+    @Nullable
+    default TileEntityMekanism getTileFromBlock(Block block) {
+        if (block instanceof IHasTileEntity) {
+            TileEntity tileEntity = ((IHasTileEntity<?>) block).getTileType().create();
+            if (tileEntity instanceof TileEntityMekanism) {
+                return (TileEntityMekanism) tileEntity;
+            }
+        }
+        return null;
+    }
 }

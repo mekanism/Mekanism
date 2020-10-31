@@ -182,14 +182,14 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         drawString(matrix, frequencyComponent, 32, 81, titleTextColor());
         ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
         drawString(matrix, securityComponent, 32, 91, titleTextColor());
-        int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         Frequency freq = tile.getFrequency(FrequencyType.TELEPORTER);
-        if (freq != null) {
-            drawTextScaledBound(matrix, freq.getName(), 32 + frequencyOffset, 81, subheadingTextColor(), xSize - 32 - frequencyOffset - 4);
-            drawString(matrix, getSecurity(freq), 32 + getStringWidth(securityComponent), 91, subheadingTextColor());
-        } else {
+        int frequencyOffset = getStringWidth(frequencyComponent) + 1;
+        if (freq == null) {
             drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, subheadingTextColor());
             drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, subheadingTextColor());
+        } else {
+            drawTextScaledBound(matrix, freq.getName(), 32 + frequencyOffset, 81, subheadingTextColor(), xSize - 32 - frequencyOffset - 4);
+            drawString(matrix, getSecurity(freq), 32 + getStringWidth(securityComponent), 91, subheadingTextColor());
         }
         drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
         super.drawForegroundText(matrix, mouseX, mouseY);

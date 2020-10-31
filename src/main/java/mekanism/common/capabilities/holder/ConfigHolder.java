@@ -1,6 +1,10 @@
 package mekanism.common.capabilities.holder;
 
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -23,41 +27,50 @@ public abstract class ConfigHolder implements IHolder {
 
     @Override
     public boolean canInsert(@Nullable Direction direction) {
-        if (direction == null) {
-            return false;
-        }
-        TileComponentConfig config = configSupplier.get();
-        if (config == null) {
-            //If we don't have a config: allow inserting
-            return true;
-        }
-        ConfigInfo configInfo = config.getConfig(getTransmissionType());
-        if (configInfo == null) {
-            //We don't have a gas config: allow inserting
-            return true;
-        }
-        RelativeSide side = RelativeSide.fromDirections(facingSupplier.get(), direction);
-        ISlotInfo slotInfo = configInfo.getSlotInfo(side);
-        return slotInfo != null && slotInfo.canInput();
+        return canInteract(direction, ISlotInfo::canInput);
     }
 
     @Override
     public boolean canExtract(@Nullable Direction direction) {
+        return canInteract(direction, ISlotInfo::canOutput);
+    }
+
+    private boolean canInteract(@Nullable Direction direction, @Nonnull Predicate<ISlotInfo> interactPredicate) {
         if (direction == null) {
             return false;
         }
         TileComponentConfig config = configSupplier.get();
         if (config == null) {
-            //If we don't have a config: allow extracting
+            //If we don't have a config: allow interacting
             return true;
         }
         ConfigInfo configInfo = config.getConfig(getTransmissionType());
         if (configInfo == null) {
-            //We don't have a gas config: allow extracting
+            //We don't have a config: allow interacting
             return true;
         }
         RelativeSide side = RelativeSide.fromDirections(facingSupplier.get(), direction);
         ISlotInfo slotInfo = configInfo.getSlotInfo(side);
-        return slotInfo != null && slotInfo.canOutput();
+        return slotInfo != null && interactPredicate.test(slotInfo);
+    }
+
+    @Nonnull
+    protected <TYPE> List<TYPE> getSlots(@Nullable Direction direction, @Nonnull List<TYPE> allSlots, @Nonnull Function<ISlotInfo, List<TYPE>> slotInfoParser) {
+        if (direction == null) {
+            //If we want the internal, give all of our slots
+            return allSlots;
+        }
+        TileComponentConfig config = configSupplier.get();
+        if (config == null) {
+            //If we don't have a config (most likely case is it hasn't been setup yet), just return all slots
+            return allSlots;
+        }
+        ConfigInfo configInfo = config.getConfig(getTransmissionType());
+        if (configInfo == null) {
+            //We don't support items in our configuration at all so just return all
+            return allSlots;
+        }
+        RelativeSide side = RelativeSide.fromDirections(facingSupplier.get(), direction);
+        return slotInfoParser.apply(configInfo.getSlotInfo(side));
     }
 }

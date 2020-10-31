@@ -17,7 +17,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleVisionEnhancementUnit;
@@ -34,7 +33,6 @@ import mekanism.common.network.PacketModeChange;
 import mekanism.common.network.PacketPortableTeleporterGui;
 import mekanism.common.network.PacketPortableTeleporterGui.PortableTeleporterPacketType;
 import mekanism.common.network.PacketRadialModeChange;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
@@ -86,7 +84,7 @@ public class ClientTickHandler {
         if (MekanismUtils.isPlayingMode(player)) {
             ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             if (!chest.isEmpty()) {
-                JetpackMode mode = getJetpackMode(chest);
+                JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chest);
                 if (mode == JetpackMode.NORMAL) {
                     return minecraft.currentScreen == null && minecraft.gameSettings.keyBindJump.isKeyDown();
                 } else if (mode == JetpackMode.HOVER) {
@@ -100,19 +98,6 @@ public class ClientTickHandler {
             }
         }
         return false;
-    }
-
-    /** Will return null if jetpack module is not active */
-    private static JetpackMode getJetpackMode(ItemStack stack) {
-        if (stack.getItem() instanceof ItemJetpack && ChemicalUtil.hasGas(stack)) {
-            return ((ItemJetpack) stack.getItem()).getMode(stack);
-        } else if (stack.getItem() instanceof IModuleContainerItem && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get())) {
-            ModuleJetpackUnit module = Modules.load(stack, Modules.JETPACK_UNIT);
-            if (module != null && module.isEnabled()) {
-                return module.getMode();
-            }
-        }
-        return null;
     }
 
     public static boolean isScubaMaskOn(PlayerEntity player) {
@@ -222,7 +207,7 @@ public class ClientTickHandler {
             }
 
             if (isJetpackActive(minecraft.player)) {
-                JetpackMode mode = getJetpackMode(chestStack);
+                JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chestStack);
                 Vector3d motion = minecraft.player.getMotion();
                 if (mode == JetpackMode.NORMAL) {
                     minecraft.player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.5D), motion.getZ());

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
@@ -25,7 +24,6 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.holder.ConfigHolder;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentConfig;
-import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.InfusionSlotInfo;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.PigmentSlotInfo;
@@ -52,23 +50,12 @@ public abstract class ConfigChemicalTankHolder<CHEMICAL extends Chemical<CHEMICA
     @Nonnull
     @Override
     public List<TANK> getTanks(@Nullable Direction direction) {
-        if (direction == null) {
-            //If we want the internal, give all of our slots
-            return tanks;
-        }
-        TileComponentConfig config = configSupplier.get();
-        if (config == null) {
-            //If we don't have a config (most likely case is it hasn't been setup yet), just return all slots
-            return tanks;
-        }
-        ConfigInfo configInfo = config.getConfig(getTransmissionType());
-        if (configInfo == null) {
-            //We don't support the given chemical type in our configuration at all so just return all
-            return tanks;
-        }
-        RelativeSide side = RelativeSide.fromDirections(facingSupplier.get(), direction);
-        ISlotInfo slotInfo = configInfo.getSlotInfo(side);
-        return slotInfo != null && slotInfo.isEnabled() ? getTanksFromSlot(slotInfo) : Collections.emptyList();
+        return getSlots(direction, tanks, slotInfo -> {
+            if (slotInfo != null && slotInfo.isEnabled()) {
+                return getTanksFromSlot(slotInfo);
+            }
+            return Collections.emptyList();
+        });
     }
 
     public static class ConfigGasTankHolder extends ConfigChemicalTankHolder<Gas, GasStack, IGasTank> {

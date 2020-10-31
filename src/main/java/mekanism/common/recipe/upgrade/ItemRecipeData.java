@@ -14,7 +14,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.item.ItemRobit;
@@ -22,12 +21,10 @@ import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedInventory;
-import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -77,22 +74,14 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
                 slots.add(new DummyInventorySlot(itemHandler.getSlotLimit(slot), itemStack -> itemHandler.isItemValid(slot, itemStack), isBin));
             }
         } else if (item instanceof BlockItem) {
-            TileEntityMekanism tile = null;
-            Block block = ((BlockItem) item).getBlock();
-            if (block instanceof IHasTileEntity) {
-                TileEntity tileEntity = ((IHasTileEntity<?>) block).getTileType().create();
-                if (tileEntity instanceof TileEntityMekanism) {
-                    tile = (TileEntityMekanism) tileEntity;
-                }
-            }
+            TileEntityMekanism tile = getTileFromBlock(((BlockItem) item).getBlock());
             if (tile == null || !tile.persistInventory()) {
                 //Something went wrong
                 return false;
             }
-            TileEntityMekanism mekTile = tile;
             for (int i = 0; i < tile.getSlots(); i++) {
                 int slot = i;
-                slots.add(new DummyInventorySlot(tile.getSlotLimit(slot), itemStack -> mekTile.isItemValid(slot, itemStack), isBin));
+                slots.add(new DummyInventorySlot(tile.getSlotLimit(slot), itemStack -> tile.isItemValid(slot, itemStack), isBin));
             }
         } else if (item instanceof ItemRobit) {
             //Special casing for the robit so that we don't void items from a personal chest when upgrading to a robit

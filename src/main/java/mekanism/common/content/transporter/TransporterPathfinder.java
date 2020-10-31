@@ -177,13 +177,7 @@ public final class TransporterPathfinder {
             ret.add(start);
             TileEntity startTile = WorldUtils.getTileEntity(world, chunkMap, start);
             if (transportStack.idleDir == null) {
-                Direction newSide = findSide(chunkMap);
-                if (newSide == null) {
-                    return null;
-                }
-                transportStack.idleDir = newSide;
-                loopSide(chunkMap, ret, newSide, startTile);
-                return new Destination(ret, true, null, 0).setPathType(Path.NONE);
+                return getDestination(chunkMap, ret, startTile);
             }
             TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap,
                   start.offset(transportStack.idleDir));
@@ -200,6 +194,11 @@ public final class TransporterPathfinder {
                     return newPath;
                 }
             }
+            return getDestination(chunkMap, ret, startTile);
+        }
+
+        @Nullable
+        private Destination getDestination(Long2ObjectMap<IChunk> chunkMap, ArrayList<BlockPos> ret, TileEntity startTile) {
             Direction newSide = findSide(chunkMap);
             if (newSide == null) {
                 return null;

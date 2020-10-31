@@ -207,7 +207,7 @@ public class CommonPlayerTickHandler {
     }
 
     /** Will return null if jetpack mode is not active */
-    private static JetpackMode getJetpackMode(ItemStack stack) {
+    public static JetpackMode getJetpackMode(ItemStack stack) {
         if (stack.getItem() instanceof ItemJetpack && ChemicalUtil.hasGas(stack)) {
             return ((ItemJetpack) stack.getItem()).getMode(stack);
         } else if (stack.getItem() instanceof IModuleContainerItem && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get())) {

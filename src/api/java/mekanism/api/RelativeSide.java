@@ -88,21 +88,11 @@ public enum RelativeSide implements IHasTranslationKey {
             return FRONT;
         } else if (side == facing.getOpposite()) {
             return BACK;
-        } else if (facing == Direction.DOWN) {
+        } else if (facing == Direction.DOWN || facing == Direction.UP) {
             if (side == Direction.NORTH) {
-                return TOP;
+                return facing == Direction.DOWN ? TOP : BOTTOM;
             } else if (side == Direction.SOUTH) {
-                return BOTTOM;
-            } else if (side == Direction.WEST) {
-                return RIGHT;
-            } else if (side == Direction.EAST) {
-                return LEFT;
-            }
-        } else if (facing == Direction.UP) {
-            if (side == Direction.NORTH) {
-                return BOTTOM;
-            } else if (side == Direction.SOUTH) {
-                return TOP;
+                return facing == Direction.DOWN ? BOTTOM : TOP;
             } else if (side == Direction.WEST) {
                 return RIGHT;
             } else if (side == Direction.EAST) {
