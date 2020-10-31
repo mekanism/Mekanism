@@ -1,6 +1,5 @@
 package mekanism.additions.common;
 
-import java.util.UUID;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.SpawnHelper;
@@ -13,8 +12,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -31,10 +28,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class MekanismAdditions implements IModule {
 
     public static final String MODID = "mekanismadditions";
-
-    //COPY of ZombieEntity BABY_SPEED_BOOST_ID and BABY_SPEED_BOOST
-    public static final UUID babySpeedBoostUUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
-    public static final AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID, "Baby speed boost", 0.5D, Operation.MULTIPLY_BASE);
 
     public static MekanismAdditions instance;
 

@@ -1,13 +1,10 @@
 package mekanism.additions.common.entity.baby;
 
 import javax.annotation.Nonnull;
-import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsItems;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -21,7 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class EntityBabyCreeper extends CreeperEntity {
+public class EntityBabyCreeper extends CreeperEntity implements IBabyEntity {
 
     private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.createKey(EntityBabyCreeper.class, DataSerializers.BOOLEAN);
 
@@ -33,7 +30,7 @@ public class EntityBabyCreeper extends CreeperEntity {
     @Override
     protected void registerData() {
         super.registerData();
-        this.getDataManager().register(IS_CHILD, false);
+        getDataManager().register(IS_CHILD, false);
     }
 
     @Override
@@ -43,14 +40,7 @@ public class EntityBabyCreeper extends CreeperEntity {
 
     @Override
     public void setChild(boolean child) {
-        getDataManager().set(IS_CHILD, child);
-        if (world != null && !world.isRemote) {
-            ModifiableAttributeInstance attributeInstance = getAttribute(Attributes.MOVEMENT_SPEED);
-            attributeInstance.removeModifier(MekanismAdditions.babySpeedBoostModifier);
-            if (child) {
-                attributeInstance.applyNonPersistentModifier(MekanismAdditions.babySpeedBoostModifier);
-            }
-        }
+        setChild(IS_CHILD, child);
     }
 
     @Override
@@ -70,8 +60,13 @@ public class EntityBabyCreeper extends CreeperEntity {
     }
 
     @Override
+    public double getYOffset() {
+        return isChild() ? 0 : super.getYOffset();
+    }
+
+    @Override
     protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntitySize size) {
-        return isChild() ? 0.77F : super.getStandingEyeHeight(pose, size);
+        return isChild() ? 0.88F : super.getStandingEyeHeight(pose, size);
     }
 
     /**
