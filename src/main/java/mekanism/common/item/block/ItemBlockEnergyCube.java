@@ -88,4 +88,16 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(Attribute.getTier(getBlock(), EnergyCubeTier.class)));
     }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        //Ignore NBT for energized items causing re-equip animations
+        return oldStack.getItem() != newStack.getItem();
+    }
+
+    @Override
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        //Ignore NBT for energized items causing block break reset
+        return oldStack.getItem() != newStack.getItem();
+    }
 }

@@ -2,7 +2,6 @@ package mekanism.common.item.block.machine;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
@@ -52,7 +51,20 @@ public class ItemBlockSeismicVibrator extends ItemBlockTooltip<BlockTile<?, ?>> 
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        FloatingLong maxEnergy = Attribute.get(getBlock(), AttributeEnergy.class).getStorage();
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
+        AttributeEnergy attributeEnergy = Attribute.get(getBlock(), AttributeEnergy.class);
+        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(attributeEnergy::getStorage, BasicEnergyContainer.manualOnly,
+              BasicEnergyContainer.alwaysTrue));
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        //Ignore NBT for energized items causing re-equip animations
+        return oldStack.getItem() != newStack.getItem();
+    }
+
+    @Override
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        //Ignore NBT for energized items causing block break reset
+        return oldStack.getItem() != newStack.getItem();
     }
 }

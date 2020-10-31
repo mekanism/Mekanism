@@ -80,29 +80,49 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         if (Attribute.has(getBlock(), AttributeEnergy.class)) {
-            FloatingLong baseStorage = Attribute.get(getBlock(), AttributeEnergy.class).getStorage();
+            AttributeEnergy attributeEnergy = Attribute.get(getBlock(), AttributeEnergy.class);
             FloatingLongSupplier maxEnergy;
             if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
                 //If our block supports upgrades, make a more dynamically updating cache for our item's max energy
-                maxEnergy = new UpgradeBasedFloatingLongCache(stack, baseStorage);
+                maxEnergy = new UpgradeBasedFloatingLongCache(stack, attributeEnergy::getStorage);
             } else {
                 //Otherwise just return that the max is what the base max is
-                maxEnergy = () -> baseStorage;
+                maxEnergy = attributeEnergy::getStorage;
             }
             return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
         }
         return super.initCapabilities(stack, nbt);
     }
 
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+            //Ignore NBT for energized items causing re-equip animations
+            return oldStack.getItem() != newStack.getItem();
+        }
+        return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
+    }
+
+    @Override
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+            //Ignore NBT for energized items causing block break reset
+            return oldStack.getItem() != newStack.getItem();
+        }
+        return super.shouldCauseBlockBreakReset(oldStack, newStack);
+    }
+
     private static class UpgradeBasedFloatingLongCache implements FloatingLongSupplier {
 
         private final ItemStack stack;
-        private final FloatingLong baseStorage;
+        //TODO: Eventually fix this, ideally we want this to update the overall cached value if this changes because of the config
+        // for how much energy a machine can store changes
+        private final FloatingLongSupplier baseStorage;
         @Nullable
         private CompoundNBT lastNBT;
         private FloatingLong value;
 
-        private UpgradeBasedFloatingLongCache(ItemStack stack, FloatingLong baseStorage) {
+        private UpgradeBasedFloatingLongCache(ItemStack stack, FloatingLongSupplier baseStorage) {
             this.stack = stack;
             if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
                 this.lastNBT = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE).copy();
@@ -110,7 +130,7 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
                 this.lastNBT = null;
             }
             this.baseStorage = baseStorage;
-            this.value = MekanismUtils.getMaxEnergy(this.stack, this.baseStorage);
+            this.value = MekanismUtils.getMaxEnergy(this.stack, this.baseStorage.get());
         }
 
         @Nonnull
@@ -120,11 +140,11 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
                 CompoundNBT upgrades = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
                 if (lastNBT == null || !lastNBT.equals(upgrades)) {
                     lastNBT = upgrades.copy();
-                    value = MekanismUtils.getMaxEnergy(stack, baseStorage);
+                    value = MekanismUtils.getMaxEnergy(stack, baseStorage.get());
                 }
             } else if (lastNBT != null) {
                 lastNBT = null;
-                value = MekanismUtils.getMaxEnergy(stack, baseStorage);
+                value = MekanismUtils.getMaxEnergy(stack, baseStorage.get());
             }
             return value;
         }
