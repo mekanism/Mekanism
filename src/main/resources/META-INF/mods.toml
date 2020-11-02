@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[${loader_version},)"
+loaderVersion="${loader_version}"
 issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
 license="MIT"
 
@@ -16,10 +16,10 @@ license="MIT"
 [[dependencies.mekanism]]
     modId="minecraft"
     mandatory=true
-    versionRange="[${mc_version}]"
+    versionRange="${mc_version}"
     side="BOTH"
 [[dependencies.mekanism]]
     modId="forge"
     mandatory=true
-    versionRange="[${forge_version},)"
+    versionRange="${forge_version}"
     side="BOTH"
