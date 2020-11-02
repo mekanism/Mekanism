@@ -42,6 +42,8 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
      */
     @Nonnull
     default IntegerProperty getFluidLoggedProperty() {
+        //TODO - 1.17: When removing CorrectingIntegerProperty, evaluate changing this entire thing to being an EnumProperty
+        // so that F3 can show slightly better debug of what it is fluid logged with
         return BlockStateHelper.FLUID_LOGGED;
     }
 

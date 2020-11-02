@@ -1,11 +1,9 @@
 package mekanism.common.world;
 
-import com.google.common.collect.ImmutableList;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
-import javax.annotation.Nullable;
-import mekanism.api.providers.IBlockProvider;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreConfig;
@@ -15,21 +13,17 @@ import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.registries.MekanismPlacements;
 import mekanism.common.resource.OreType;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.FeatureSpread;
 import net.minecraft.world.gen.feature.Features.Placements;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
 import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
-import net.minecraft.world.gen.feature.SphereReplaceConfig;
 import net.minecraft.world.gen.placement.ConfiguredPlacement;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
@@ -53,31 +47,11 @@ public class GenHandler {
         if (ModLoader.isLoadingStateValid()) {
             //Validate our loading state is valid, and if it is register our configured features to the configured features registry
             for (OreType type : EnumUtils.ORE_TYPES) {
-                ConfiguredFeature<?, ?> oreFeature = getOreFeature(MekanismBlocks.ORES.get(type), MekanismConfig.world.ores.get(type), Feature.ORE);
-                if (oreFeature != null) {
-                    ORES.put(type, oreFeature);
-                    Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, Mekanism.rl("ore_" + type.getResource().getRegistrySuffix()), oreFeature);
-                }
+                ORES.put(type, getOreFeature(type, MekanismFeatures.ORE.getFeature(), false));
+                ORE_RETROGENS.put(type, getOreFeature(type, MekanismFeatures.ORE_RETROGEN.getFeature(), true));
             }
-            SALT_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt, Placements.KELP_PLACEMENT);
-            if (SALT_FEATURE != null) {
-                Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, Mekanism.rl("salt"), SALT_FEATURE);
-            }
-            //Retrogen features
-            if (MekanismConfig.world.enableRegeneration.get()) {
-                for (OreType type : EnumUtils.ORE_TYPES) {
-                    ConfiguredFeature<?, ?> oreFeature = getOreFeature(MekanismBlocks.ORES.get(type), MekanismConfig.world.ores.get(type), MekanismFeatures.ORE_RETROGEN.getFeature());
-                    if (oreFeature != null) {
-                        ORE_RETROGENS.put(type, oreFeature);
-                        Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, Mekanism.rl("ore_" + type.getResource().getRegistrySuffix() + "_retrogen"), oreFeature);
-                    }
-                }
-                SALT_RETROGEN_FEATURE = getSaltFeature(MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt,
-                      MekanismPlacements.TOP_SOLID_RETROGEN.getConfigured(IPlacementConfig.NO_PLACEMENT_CONFIG));
-                if (SALT_RETROGEN_FEATURE != null) {
-                    Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, Mekanism.rl("salt_retrogen"), SALT_RETROGEN_FEATURE);
-                }
-            }
+            SALT_FEATURE = getSaltFeature(MekanismConfig.world.salt, Placements.KELP_PLACEMENT, false);
+            SALT_RETROGEN_FEATURE = getSaltFeature(MekanismConfig.world.salt, MekanismPlacements.TOP_SOLID_RETROGEN.getConfigured(IPlacementConfig.NO_PLACEMENT_CONFIG), true);
         }
     }
 
@@ -89,9 +63,7 @@ public class GenHandler {
                 generation.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, feature);
             }
             //Add salt
-            if (SALT_FEATURE != null) {
-                generation.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, SALT_FEATURE);
-            }
+            generation.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES, SALT_FEATURE);
         }
     }
 
@@ -100,26 +72,32 @@ public class GenHandler {
         return biomeCategory != Category.THEEND && biomeCategory != Category.NETHER;
     }
 
-    @Nullable
-    private static ConfiguredFeature<?, ?> getOreFeature(IBlockProvider blockProvider, OreConfig oreConfig, Feature<OreFeatureConfig> feature) {
-        if (oreConfig.shouldGenerate.get()) {
-            return feature.withConfiguration(new OreFeatureConfig(FillerBlockType.BASE_STONE_OVERWORLD, blockProvider.getBlock().getDefaultState(), oreConfig.maxVeinSize.get()))
-                  .range(oreConfig.maxHeight.get())
-                  .square()
-                  .func_242731_b(oreConfig.perChunk.get());
+    @Nonnull
+    private static ConfiguredFeature<?, ?> getOreFeature(OreType type, Feature<ResizableOreFeatureConfig> feature, boolean retroGen) {
+        OreConfig oreConfig = MekanismConfig.world.ores.get(type);
+        ConfiguredFeature<?, ?> configuredFeature = new DisableableConfiguredFeature<>(feature, new ResizableOreFeatureConfig(FillerBlockType.BASE_STONE_OVERWORLD,
+              type, oreConfig.maxVeinSize), oreConfig.shouldGenerate, retroGen)
+              .withPlacement(MekanismPlacements.RESIZABLE_RANGE.getConfigured(new ResizableTopSolidRangeConfig(type, oreConfig)))
+              .square()
+              .withPlacement(MekanismPlacements.ADJUSTABLE_COUNT.getConfigured(new AdjustableSpreadConfig(type, oreConfig.perChunk)));
+        //Register the configured feature
+        String name = "ore_" + type.getResource().getRegistrySuffix();
+        if (retroGen) {
+            name += "_retrogen";
         }
-        return null;
+        Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, Mekanism.rl(name), configuredFeature);
+        return configuredFeature;
     }
 
-    @Nullable
-    private static ConfiguredFeature<?, ?> getSaltFeature(IBlockProvider blockProvider, SaltConfig saltConfig, ConfiguredPlacement<NoPlacementConfig> placement) {
-        if (saltConfig.shouldGenerate.get()) {
-            BlockState state = blockProvider.getBlock().getDefaultState();
-            return Feature.DISK.withConfiguration(new SphereReplaceConfig(state, FeatureSpread.func_242253_a(saltConfig.baseRadius.get(), saltConfig.spread.get()),
-                  saltConfig.ySize.get(), ImmutableList.of(Blocks.DIRT.getDefaultState(), Blocks.CLAY.getDefaultState(), state)))
-                  .withPlacement(placement.square()).func_242731_b(saltConfig.perChunk.get());
-        }
-        return null;
+    @Nonnull
+    private static ConfiguredFeature<?, ?> getSaltFeature(SaltConfig saltConfig, ConfiguredPlacement<NoPlacementConfig> placement, boolean retroGen) {
+        ConfiguredFeature<?, ?> configuredFeature = new DisableableConfiguredFeature<>(MekanismFeatures.DISK.getFeature(),
+              new ResizableSphereReplaceConfig(MekanismBlocks.SALT_BLOCK.getBlock().getDefaultState(), saltConfig), saltConfig.shouldGenerate, retroGen)
+              .withPlacement(placement.square())
+              .withPlacement(MekanismPlacements.ADJUSTABLE_COUNT.getConfigured(new AdjustableSpreadConfig(null, saltConfig.perChunk)));
+        //Register the configured feature
+        Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, Mekanism.rl(retroGen ? "salt_retrogen" : "salt"), configuredFeature);
+        return configuredFeature;
     }
 
     /**
@@ -130,15 +108,12 @@ public class GenHandler {
         Biome biome = world.getBiome(blockPos);
         boolean generated = false;
         if (isValidBiome(biome.getCategory()) && world.chunkExists(chunkX, chunkZ)) {
+            ChunkGenerator chunkGenerator = world.getChunkProvider().getChunkGenerator();
             for (ConfiguredFeature<?, ?> feature : ORE_RETROGENS.values()) {
-                generated |= placeFeature(feature, world, random, blockPos);
+                generated |= feature.generate(world, chunkGenerator, random, blockPos);
             }
-            generated |= placeFeature(SALT_RETROGEN_FEATURE, world, random, blockPos);
+            generated |= SALT_RETROGEN_FEATURE.generate(world, chunkGenerator, random, blockPos);
         }
         return generated;
-    }
-
-    private static boolean placeFeature(@Nullable ConfiguredFeature<?, ?> feature, ServerWorld world, Random random, BlockPos blockPos) {
-        return feature != null && feature.generate(world, world.getChunkProvider().getChunkGenerator(), random, blockPos);
     }
 }
