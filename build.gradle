@@ -628,7 +628,7 @@ publishing {
     }
     repositories {
         maven {
-            url = 'https://modmaven.dev/'
+            url = 'https://modmaven.dev/artifactory/local-releases/'
             if (project.findProperty(MAVEN_PASSWORD_PROPERTY_NAME) != null) {
                 credentials {
                     username = "mekanism"
