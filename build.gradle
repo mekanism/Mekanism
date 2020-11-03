@@ -568,7 +568,6 @@ task optimizePng {
 
 //properties to put in $HOME/.gradle/gradle.properties
 def MAVEN_PASSWORD_PROPERTY_NAME = 'mekanismMavenPassword'
-def MAVEN_URL_PROPERTY_NAME = 'mekanismMavenUrl'
 
 publishing {
     publications {
@@ -629,9 +628,7 @@ publishing {
     }
     repositories {
         maven {
-            if (project.findProperty(MAVEN_URL_PROPERTY_NAME) != null) {
-                url = project.findProperty(MAVEN_URL_PROPERTY_NAME)
-            }
+            url = 'https://modmaven.dev/'
             if (project.findProperty(MAVEN_PASSWORD_PROPERTY_NAME) != null) {
                 credentials {
                     username = "mekanism"
