@@ -191,6 +191,8 @@ minecraft {
     runs {
         client {
             workingDirectory file("run")
+            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
+            property "mixin.env.disableRefMap", "true"
 
             //The below if statements are to add args to your gradle.properties file in user home
             // (DO NOT add them directly to the gradle.properties file for this project)
@@ -229,6 +231,8 @@ minecraft {
 
         server {
             workingDirectory file("run")
+            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
+            property "mixin.env.disableRefMap", "true"
             if (project.hasProperty('forge_force_ansi')) {
                 //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
                 // or eclipse's plugin that adds support for ansi escape in console
@@ -247,8 +251,7 @@ minecraft {
         data {
             workingDirectory file("run")
             environment 'target', 'fmluserdevdata'
-            //This fixes Mixin application problems from other mods because their refMaps are SRG-based,
-            // but we're in a MCP env
+            //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
             property "mixin.env.disableRefMap", "true"
             if (project.hasProperty('forge_force_ansi')) {
                 //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
@@ -294,6 +297,13 @@ repositories {
         url 'https://dvs1.progwml6.com/files/maven'
         content {
             includeGroup 'mezz.jei'
+        }
+    }
+    maven {
+        name 'CraftTweaker'
+        url "https://maven.blamejared.com"
+        content {
+            includeGroup 'com.blamejared.crafttweaker'
         }
     }
     maven {
@@ -355,6 +365,10 @@ dependencies {
 
     compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
     runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+
+    //TODO: Double check if putting implementation here instead of compileOnly and runtimeOnly
+    // pollutes the dependencies for our artifact on maven
+    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //compileOnly fg.deobf("curse.maven:projecte-226410:${projecte_api_id}")
