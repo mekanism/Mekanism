@@ -147,10 +147,22 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
         return hidden;
     }
 
+    /**
+     * Checks if this chemical is in a given tag.
+     *
+     * @param tag The tag to check.
+     *
+     * @return {@code true} if the chemical is in the tag, {@code false} otherwise.
+     */
     public boolean isIn(ITag<CHEMICAL> tag) {
         return tag.contains(getChemical());
     }
 
+    /**
+     * Gets the tags that this chemical is a part of.
+     *
+     * @return All the tags this chemical is a part of.
+     */
     public Set<ResourceLocation> getTags() {
         return reverseTags.getTagNames();
     }

@@ -83,6 +83,11 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return chemicalDelegate.get();
     }
 
+    /**
+     * Gets whether or not this chemical stack is empty.
+     *
+     * @return {@code true} if this stack is empty, {@code false} otherwise.
+     */
     public boolean isEmpty() {
         return isEmpty;
     }
@@ -91,10 +96,20 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         isEmpty = getRaw().isEmptyType() || amount <= 0;
     }
 
+    /**
+     * Gets the size of this chemical stack.
+     *
+     * @return The size of this chemical stack or zero if it is empty
+     */
     public long getAmount() {
         return isEmpty ? 0 : amount;
     }
 
+    /**
+     * Sets this stack's amount to the given amount.
+     *
+     * @param amount The amount to set this stack's amount to.
+     */
     public void setAmount(long amount) {
         if (getRaw().isEmptyType()) {
             throw new IllegalStateException("Can't modify the empty stack.");

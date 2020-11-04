@@ -18,11 +18,10 @@ public abstract class BaseCrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, 
     }
 
     protected StringBuilder getBracket() {
-        CHEMICAL chemical = stack.getType();
         return new StringBuilder().append('<')
               .append(getBracketName())
               .append(':')
-              .append(chemical.getRegistryName())
+              .append(stack.getTypeRegistryName())
               .append('>');
     }
 
@@ -33,13 +32,6 @@ public abstract class BaseCrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, 
             builder.append(" * ").append(stack.getAmount());
         }
         return builder.toString();
-    }
-
-    @Override
-    public CRT_STACK multiply(long amount) {
-        //TODO: Re-evaluate this, should it be set amount like it is and fluid is
-        // or should it actually multiply the amount
-        return setAmount(amount);
     }
 
     @Override

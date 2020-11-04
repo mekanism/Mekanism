@@ -31,29 +31,80 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
       extends CommandStringDisplayable, IBracketSupport {
 
     /**
-     * Sets the fluid amount in MilliBuckets (MB)
+     * Whether or not this chemical stack is empty.
      *
-     * @param amount The amount to multiply this stack
-     *
-     * @return A new stack, or this stack, depending if this stack is mutable
-     *
-     * @docParam amount 1000
+     * @return {@code true} if this stack is empty, {@code false} otherwise.
      */
     @ZenCodeType.Method
-    CRT_STACK setAmount(long amount);//TODO: Do we want to add other helpers like grow, shrink etc
-
+    @ZenCodeType.Getter("empty")
+    default boolean isEmpty() {
+        return getInternal().isEmpty();
+    }
 
     /**
-     * Sets the fluid amount in MilliBuckets (MB)
+     * Gets the size of this chemical stack.
      *
-     * @param amount The amount to multiply this stack
+     * @return The size of this chemical stack or zero if it is empty
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("amount")
+    default long getAmount() {
+        return getInternal().getAmount();
+    }
+
+    /**
+     * Sets the chemical's amount in MilliBuckets (MB)
+     *
+     * @param amount The amount to set the stack's amount to.
+     *
+     * @return A new stack, or this stack, depending if this stack is mutable
+     */
+    @ZenCodeType.Method
+    CRT_STACK setAmount(long amount);
+
+    /**
+     * Multiplies the stack's amount by the given amount in MilliBuckets (MB)
+     *
+     * @param amount The amount to multiply the stack by.
      *
      * @return A new stack, or this stack, depending if this stack is mutable
      *
-     * @docParam amount 1000
+     * @implNote No checks are made to ensure that the long does not overflow.
      */
     @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
-    CRT_STACK multiply(long amount);
+    default CRT_STACK multiply(long amount) {
+        return setAmount(getAmount() * amount);
+    }
+
+    /**
+     * Grows the stack's amount by the given amount in MilliBuckets (MB)
+     *
+     * @param amount The amount to grow the stack by.
+     *
+     * @return A new stack, or this stack, depending if this stack is mutable
+     *
+     * @apiNote Negative values are valid and will instead shrink the stack.
+     * @implNote No checks are made to ensure that the long does not overflow.
+     */
+    @ZenCodeType.Method
+    default CRT_STACK grow(long amount) {
+        return setAmount(getAmount() + amount);
+    }
+
+    /**
+     * Shrinks the stack's amount by the given amount in MilliBuckets (MB)
+     *
+     * @param amount The amount to shrink the stack by.
+     *
+     * @return A new stack, or this stack, depending if this stack is mutable
+     *
+     * @apiNote Negative values are valid and will instead grow the stack.
+     * @implNote No checks are made to ensure that the long does not underflow.
+     */
+    @ZenCodeType.Method
+    default CRT_STACK shrink(long amount) {
+        return setAmount(getAmount() - amount);
+    }
 
     /**
      * Makes this stack mutable
@@ -76,11 +127,14 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      *
      * @return The fluid.
      */
-    @ZenCodeType.Getter("type")//TODO: Can we have this be .type or .chemical?
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("type")
     CRT_CHEMICAL getType();
 
     /**
-     * Moddevs, use this to get the Vanilla version.
+     * Mod devs should use this to get the actual ChemicalStack
+     *
+     * @return The actual ChemicalStack
      */
     STACK getInternal();
 

@@ -2,6 +2,10 @@ package mekanism.common.integration.crafttweaker.chemical;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
+import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.util.MCResourceLocation;
+import java.util.Set;
+import java.util.stream.Collectors;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -31,10 +35,53 @@ public interface ICrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends
       extends CommandStringDisplayable, IBracketSupport {
 
     /**
-     * Creates a new {@link IFluidStack} with the given amount of fluid.
+     * Wwhether or not this chemical represents the empty type.
      *
-     * @return a new (immutable) {@link IFluidStack}
-     * @docParam amount 1000
+     * @return {@code true} if this chemical represents the empty type, {@code false} otherwise.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("empty")
+    default boolean isEmptyType() {
+        return getInternal().isEmptyType();
+    }
+
+    /**
+     * Whether or not this chemical is hidden from JEI.
+     *
+     * @return {@code true} if this chemical is hidden, {@code false} otherwise.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("hidden")
+    default boolean isHidden() {
+        return getInternal().isHidden();
+    }
+
+    /**
+     * Checks if this chemical is in a given tag.
+     *
+     * @param tag The tag to check.
+     *
+     * @return {@code true} if the chemical is in the tag, {@code false} otherwise.
+     */
+    @ZenCodeType.Method
+    boolean isIn(MCTag tag);
+
+    /**
+     * Gets the tags that this chemical is a part of.
+     *
+     * @return All the tags this chemical is a part of.
+     */
+    @ZenCodeType.Method
+    default Set<MCResourceLocation> getTags() {
+        return getInternal().getTags().stream().map(MCResourceLocation::new).collect(Collectors.toSet());
+    }
+
+    /**
+     * Creates a new {@link ICrTChemical} with the given amount of chemical.
+     *
+     * @param amount The size of the stack to create
+     *
+     * @return a new (immutable) {@link ICrTChemical}
      */
     @ZenCodeType.Operator(ZenCodeType.OperatorType.MUL)
     default CRT_STACK multiply(long amount) {
@@ -42,20 +89,26 @@ public interface ICrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends
     }
 
     /**
-     * Creates a new {@link IFluidStack} with the given amount of fluid.
+     * Creates a new {@link ICrTChemical} with the given amount of chemical.
      *
-     * @return a new (immutable) {@link IFluidStack}
-     * @docParam amount 1000
+     * @param amount The size of the stack to create
+     *
+     * @return a new (immutable) {@link ICrTChemical}
      */
     @ZenCodeType.Method
     CRT_STACK makeStack(long amount);
 
     /**
-     * Moddevs, use this to get the Vanilla Fluid
+     * Mod devs should use this to get the actual Chemical
      *
-     * @return The Vanilla Fluid
+     * @return The actual Chemical
      */
     CHEMICAL getInternal();
+
+    @Override
+    default String getCommandString() {
+        return "<" + getBracketName() + ":" + getInternal().getRegistryName() + ">.type";
+    }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_GAS)

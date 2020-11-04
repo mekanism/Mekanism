@@ -7,7 +7,6 @@ import com.blamejared.crafttweaker.impl.actions.tags.ActionTagCreate;
 import com.blamejared.crafttweaker.impl.actions.tags.ActionTagRemove;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import com.google.common.collect.Sets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -45,20 +44,25 @@ public class CrTTags {
     private static final Map<MCTag, ITag<Pigment>> PIGMENT_TAG_CACHE = new WeakHashMap<>();
     private static final Map<MCTag, ITag<Slurry>> SLURRY_TAG_CACHE = new WeakHashMap<>();
 
-    private static ITag<Gas> getGasTag(MCTag tag) {
+    public static ITag<Gas> getGasTag(MCTag tag) {
         return GAS_TAG_CACHE.computeIfAbsent(tag, t -> ChemicalTags.GAS.getCollection().get(t.getInternalID()));
     }
 
-    private static ITag<InfuseType> getInfuseTypeTag(MCTag tag) {
+    public static ITag<InfuseType> getInfuseTypeTag(MCTag tag) {
         return INFUSE_TYPE_TAG_CACHE.computeIfAbsent(tag, t -> ChemicalTags.INFUSE_TYPE.getCollection().get(t.getInternalID()));
     }
 
-    private static ITag<Pigment> getPigmentTag(MCTag tag) {
+    public static ITag<Pigment> getPigmentTag(MCTag tag) {
         return PIGMENT_TAG_CACHE.computeIfAbsent(tag, t -> ChemicalTags.PIGMENT.getCollection().get(t.getInternalID()));
     }
 
-    private static ITag<Slurry> getSlurryTag(MCTag tag) {
+    public static ITag<Slurry> getSlurryTag(MCTag tag) {
         return SLURRY_TAG_CACHE.computeIfAbsent(tag, t -> ChemicalTags.SLURRY.getCollection().get(t.getInternalID()));
+    }
+
+    @ZenCodeType.Method
+    public static boolean contains(MCTag tag, ICrTChemical<?, ?, ?, ?> chemical) {
+        return chemical.isIn(tag);
     }
 
     @ZenCodeType.Method
@@ -137,7 +141,9 @@ public class CrTTags {
         }
         List<CHEMICAL> elements = chemicalTag.getAllElements();
         CRT_CHEMICAL[] chemicals = arrayCreator.apply(elements.size());
-        Arrays.setAll(chemicals, i -> chemicalConverter.apply(elements.get(i)));
+        for (int i = 0; i < chemicals.length; i++) {
+            chemicals[i] = chemicalConverter.apply(elements.get(i));
+        }
         return chemicals;
     }
 
