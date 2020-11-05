@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.chemical;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -32,8 +33,14 @@ public abstract class CrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
         this.chemical = chemical;
     }
 
+    /**
+     * Mod devs should use this to get the actual Chemical
+     *
+     * @return The actual Chemical
+     */
+    @Nonnull
     @Override
-    public CHEMICAL getInternal() {
+    public CHEMICAL getChemical() {
         return chemical;
     }
 

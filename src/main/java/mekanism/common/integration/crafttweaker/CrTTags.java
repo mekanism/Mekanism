@@ -183,41 +183,41 @@ public class CrTTags {
 
     @ZenCodeType.Method
     public static void addGases(MCTag tag, ICrTGas... gases) {
-        CraftTweakerAPI.apply(new ActionTagAdd<>(getGasTag(tag), CrTUtils.getChemicals(gases), tag.getInternalID()));
+        CraftTweakerAPI.apply(new ActionTagAdd<>(getGasTag(tag), CrTUtils.getChemicals(gases, Gas[]::new), tag.getInternalID()));
     }
 
     @ZenCodeType.Method
     public static void addInfuseTypes(MCTag tag, ICrTInfuseType... infuseTypes) {
-        CraftTweakerAPI.apply(new ActionTagAdd<>(getInfuseTypeTag(tag), CrTUtils.getChemicals(infuseTypes), tag.getInternalID()));
+        CraftTweakerAPI.apply(new ActionTagAdd<>(getInfuseTypeTag(tag), CrTUtils.getChemicals(infuseTypes, InfuseType[]::new), tag.getInternalID()));
     }
 
     @ZenCodeType.Method
     public static void addPigments(MCTag tag, ICrTPigment... pigments) {
-        CraftTweakerAPI.apply(new ActionTagAdd<>(getPigmentTag(tag), CrTUtils.getChemicals(pigments), tag.getInternalID()));
+        CraftTweakerAPI.apply(new ActionTagAdd<>(getPigmentTag(tag), CrTUtils.getChemicals(pigments, Pigment[]::new), tag.getInternalID()));
     }
 
     @ZenCodeType.Method
     public static void addSlurries(MCTag tag, ICrTSlurry... slurries) {
-        CraftTweakerAPI.apply(new ActionTagAdd<>(getSlurryTag(tag), CrTUtils.getChemicals(slurries), tag.getInternalID()));
+        CraftTweakerAPI.apply(new ActionTagAdd<>(getSlurryTag(tag), CrTUtils.getChemicals(slurries, Slurry[]::new), tag.getInternalID()));
     }
 
     @ZenCodeType.Method
     public static void removeGases(MCTag tag, ICrTGas... gases) {
-        CraftTweakerAPI.apply(new ActionTagRemove<>(getGasTag(tag), CrTUtils.getChemicals(gases), tag.getInternalID()));
+        CraftTweakerAPI.apply(new ActionTagRemove<>(getGasTag(tag), CrTUtils.getChemicals(gases, Gas[]::new), tag.getInternalID()));
     }
 
     @ZenCodeType.Method
     public static void removeInfuseTypes(MCTag tag, ICrTInfuseType... infuseTypes) {
-        CraftTweakerAPI.apply(new ActionTagRemove<>(getInfuseTypeTag(tag), CrTUtils.getChemicals(infuseTypes), tag.getInternalID()));
+        CraftTweakerAPI.apply(new ActionTagRemove<>(getInfuseTypeTag(tag), CrTUtils.getChemicals(infuseTypes, InfuseType[]::new), tag.getInternalID()));
     }
 
     @ZenCodeType.Method
     public static void removePigments(MCTag tag, ICrTPigment... pigments) {
-        CraftTweakerAPI.apply(new ActionTagRemove<>(getPigmentTag(tag), CrTUtils.getChemicals(pigments), tag.getInternalID()));
+        CraftTweakerAPI.apply(new ActionTagRemove<>(getPigmentTag(tag), CrTUtils.getChemicals(pigments, Pigment[]::new), tag.getInternalID()));
     }
 
     @ZenCodeType.Method
     public static void removeSlurries(MCTag tag, ICrTSlurry... slurries) {
-        CraftTweakerAPI.apply(new ActionTagRemove<>(getSlurryTag(tag), CrTUtils.getChemicals(slurries), tag.getInternalID()));
+        CraftTweakerAPI.apply(new ActionTagRemove<>(getSlurryTag(tag), CrTUtils.getChemicals(slurries, Slurry[]::new), tag.getInternalID()));
     }
 }

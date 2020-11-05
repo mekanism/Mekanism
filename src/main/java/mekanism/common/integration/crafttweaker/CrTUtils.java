@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker;
 
-import java.util.Arrays;
+import java.util.function.IntFunction;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -38,7 +38,12 @@ public class CrTUtils {
         return new CrTSlurryStack(new SlurryStack(slurry, 1));
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, CRT_CHEMICAL extends ICrTChemical<CHEMICAL, ?, CRT_CHEMICAL, ?>> CHEMICAL[] getChemicals(CRT_CHEMICAL[] chemicals) {
-        return (CHEMICAL[]) Arrays.stream(chemicals).map(ICrTChemical::getInternal).toArray(Chemical[]::new);
+    public static <CHEMICAL extends Chemical<CHEMICAL>, CRT_CHEMICAL extends ICrTChemical<CHEMICAL, ?, CRT_CHEMICAL, ?>> CHEMICAL[]
+    getChemicals(CRT_CHEMICAL[] crtChemicals, IntFunction<CHEMICAL[]> arrayCreator) {
+        CHEMICAL[] chemicals = arrayCreator.apply(crtChemicals.length);
+        for (int i = 0; i < chemicals.length; i++) {
+            chemicals[i] = crtChemicals[i].getChemical();
+        }
+        return chemicals;
     }
 }

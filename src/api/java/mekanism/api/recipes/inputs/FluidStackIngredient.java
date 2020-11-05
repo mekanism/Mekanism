@@ -37,8 +37,8 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         return new Single(instance);
     }
 
-    public static FluidStackIngredient from(@Nonnull ITag<Fluid> fluidTag, int minAmount) {
-        return new Tagged(fluidTag, minAmount);
+    public static FluidStackIngredient from(@Nonnull ITag<Fluid> fluidTag, int amount) {
+        return new Tagged(fluidTag, amount);
     }
 
     public static FluidStackIngredient read(PacketBuffer buffer) {
