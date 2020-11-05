@@ -595,7 +595,7 @@
   "equipment.mekanism.legs": "腿部",
   "equipment.mekanism.mainhand": "主手",
   "equipment.mekanism.offhand": "副手",
-  "evaporation.mekanism.evaporation_plant": "熱力蒸餾廠",
+  "evaporation.mekanism.evaporation_plant": "熱力蒸餾塔",
   "evaporation.mekanism.fluid_production": "產量: %s mB/t",
   "evaporation.mekanism.height": "高度: %s",
   "factory.mekanism.combining": "融合",
