@@ -1,16 +1,16 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.item.crafting.IRecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_GAS)
-public abstract class ItemStackToGasRecipeManager implements IRecipeManager {
+public abstract class ItemStackToGasRecipeManager extends MekanismRecipeManager {
 
     protected ItemStackToGasRecipeManager() {
     }
@@ -42,6 +42,18 @@ public abstract class ItemStackToGasRecipeManager implements IRecipeManager {
         @Override
         public IRecipeType<ItemStackToGasRecipe> getRecipeType() {
             return MekanismRecipeType.OXIDIZING;
+        }
+    }
+
+    private static class ActionAddItemStackToGasRecipe extends ActionAddMekanismRecipe<ItemStackToGasRecipe> {
+
+        protected ActionAddItemStackToGasRecipe(MekanismRecipeManager recipeManager, ItemStackToGasRecipe recipe) {
+            super(recipeManager, recipe);
+        }
+
+        @Override
+        protected String describeOutputs() {
+            return new CrTGasStack(getRecipe().getOutputDefinition()).toString();
         }
     }
 }

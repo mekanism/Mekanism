@@ -1,16 +1,16 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.item.crafting.IRecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_INFUSE_TYPE)
-public abstract class ItemStackToInfuseTypeRecipeManager implements IRecipeManager {
+public abstract class ItemStackToInfuseTypeRecipeManager extends MekanismRecipeManager {
 
     protected ItemStackToInfuseTypeRecipeManager() {
     }
@@ -27,6 +27,18 @@ public abstract class ItemStackToInfuseTypeRecipeManager implements IRecipeManag
         @Override
         public IRecipeType<ItemStackToInfuseTypeRecipe> getRecipeType() {
             return MekanismRecipeType.INFUSION_CONVERSION;
+        }
+    }
+
+    private static class ActionAddItemStackToInfuseTypeRecipe extends ActionAddMekanismRecipe<ItemStackToInfuseTypeRecipe> {
+
+        protected ActionAddItemStackToInfuseTypeRecipe(MekanismRecipeManager recipeManager, ItemStackToInfuseTypeRecipe recipe) {
+            super(recipeManager, recipe);
+        }
+
+        @Override
+        protected String describeOutputs() {
+            return new CrTInfusionStack(getRecipe().getOutputDefinition()).toString();
         }
     }
 }

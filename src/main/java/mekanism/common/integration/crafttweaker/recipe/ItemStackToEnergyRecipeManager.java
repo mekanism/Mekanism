@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -10,7 +9,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_ENERGY)
-public abstract class ItemStackToEnergyRecipeManager implements IRecipeManager {
+public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManager {
 
     protected ItemStackToEnergyRecipeManager() {
     }
@@ -27,6 +26,19 @@ public abstract class ItemStackToEnergyRecipeManager implements IRecipeManager {
         @Override
         public IRecipeType<ItemStackToEnergyRecipe> getRecipeType() {
             return MekanismRecipeType.ENERGY_CONVERSION;
+        }
+    }
+
+    private static class ActionAddItemStackToEnergyRecipe extends ActionAddMekanismRecipe<ItemStackToEnergyRecipe> {
+
+        protected ActionAddItemStackToEnergyRecipe(MekanismRecipeManager recipeManager, ItemStackToEnergyRecipe recipe) {
+            super(recipeManager, recipe);
+        }
+
+        @Override
+        protected String describeOutputs() {
+            //TODO: Figure out how we want to represent floating longs in CrT
+            return getRecipe().getOutputDefinition().toString();
         }
     }
 }

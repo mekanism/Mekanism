@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
+import com.blamejared.crafttweaker.impl.fluid.MCFluidStack;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -10,7 +10,7 @@ import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_FLUID_TO_FLUID)
-public abstract class FluidToFluidRecipeManager implements IRecipeManager {
+public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager {
 
     protected FluidToFluidRecipeManager() {
     }
@@ -27,6 +27,18 @@ public abstract class FluidToFluidRecipeManager implements IRecipeManager {
         @Override
         public IRecipeType<FluidToFluidRecipe> getRecipeType() {
             return MekanismRecipeType.EVAPORATING;
+        }
+    }
+
+    private static class ActionAddFluidToFluidRecipe extends ActionAddMekanismRecipe<FluidToFluidRecipe> {
+
+        protected ActionAddFluidToFluidRecipe(MekanismRecipeManager recipeManager, FluidToFluidRecipe recipe) {
+            super(recipeManager, recipe);
+        }
+
+        @Override
+        protected String describeOutputs() {
+            return new MCFluidStack(getRecipe().getOutputRepresentation()).toString();
         }
     }
 }

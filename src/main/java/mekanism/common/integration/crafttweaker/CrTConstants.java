@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker;
 
-//TODO: We are going to need to define a min CrT version of 7.0.0.50 for if CrT exists
+//TODO - 10.1: We are going to need to define a min CrT version of 7.0.0.53 for if CrT exists
 public class CrTConstants {
 
     public static final String BRACKET_GAS = "gas";
@@ -51,6 +51,7 @@ public class CrTConstants {
     public static final String CLASS_PIGMENT_STACK_INGREDIENT = "mekanism.api.ingredient.PigmentStackIngredient";
     public static final String CLASS_SLURRY_STACK_INGREDIENT = "mekanism.api.ingredient.SlurryStackIngredient";
 
+    public static final String CLASS_RECIPE_MANAGER = "mekanism.recipe.MekanismRecipeManager";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_ITEM_STACK = "mekanism.recipe.ItemStackToItemStack";
     public static final String CLASS_RECIPE_CRUSHING = "mekanism.recipe.ItemStackToItemStack.Crushing";
     public static final String CLASS_RECIPE_ENRICHING = "mekanism.recipe.ItemStackToItemStack.Enriching";
@@ -71,7 +72,7 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_COMPRESSING = "mekanism.recipe.ItemStackGasToItemStack.Compressing";
     public static final String CLASS_RECIPE_PURIFYING = "mekanism.recipe.ItemStackGasToItemStack.Purifying";
     public static final String CLASS_RECIPE_INJECTING = "mekanism.recipe.ItemStackGasToItemStack.Injecting";
-    public static final String CLASS_RECIPE_NUCLEOSYNTHESIZING = "mekanism.recipe.Nucleosynthesizing";
+    public static final String CLASS_RECIPE_NUCLEOSYNTHESIZING = "mekanism.recipe.ItemStackGasToItemStack.Nucleosynthesizing";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_ENERGY = "mekanism.recipe.ItemStackToEnergy";
     public static final String CLASS_RECIPE_ENERGY_CONVERSION = "mekanism.recipe.ItemStackToEnergy.EnergyConversion";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_GAS = "mekanism.recipe.ItemStackToGas";
