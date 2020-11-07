@@ -23,9 +23,7 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Che
 
     @ZenCodeType.Method
     public void addRecipe(String name, CrTChemicalStackIngredient<?, ?, ?> input, IItemStack output) {
-        name = validateRecipeName(name);
-        //TODO: Validate the output isn't empty
-        addRecipe(new ChemicalCrystallizerIRecipe(CrTUtils.rl(name), input.getInternal(), output.getInternal()));
+        addRecipe(new ChemicalCrystallizerIRecipe(getAndValidateName(name), input.getInternal(), getAndValidateNotEmpty(output)));
     }
 
     @Override

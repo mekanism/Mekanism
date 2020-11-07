@@ -17,15 +17,15 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class RotaryIRecipe extends RotaryRecipe {
 
-    private RotaryIRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStack gasOutput) {
+    public RotaryIRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStack gasOutput) {
         super(id, fluidInput, gasOutput);
     }
 
-    private RotaryIRecipe(ResourceLocation id, GasStackIngredient gasInput, FluidStack fluidOutput) {
+    public RotaryIRecipe(ResourceLocation id, GasStackIngredient gasInput, FluidStack fluidOutput) {
         super(id, gasInput, fluidOutput);
     }
 
-    private RotaryIRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
+    public RotaryIRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
         super(id, fluidInput, gasInput, gasOutput, fluidOutput);
     }
 

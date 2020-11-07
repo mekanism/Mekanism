@@ -1,12 +1,23 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.impl.CompressingIRecipe;
+import mekanism.common.recipe.impl.InjectingIRecipe;
+import mekanism.common.recipe.impl.NucleosynthesizingIRecipe;
+import mekanism.common.recipe.impl.PurifyingIRecipe;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -16,6 +27,13 @@ public abstract class ItemStackGasToItemStackRecipeManager<RECIPE extends ItemSt
     protected ItemStackGasToItemStackRecipeManager(MekanismRecipeType<RECIPE> recipeType) {
         super(recipeType);
     }
+
+    @ZenCodeType.Method
+    public void addRecipe(String name, CrTItemStackIngredient itemInput, CrTGasStackIngredient gasInput, IItemStack output) {
+        addRecipe(makeRecipe(getAndValidateName(name), itemInput.getInternal(), gasInput.getInternal(), getAndValidateNotEmpty(output)));
+    }
+
+    protected abstract RECIPE makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output);
 
     @Override
     protected ActionAddMekanismRecipe getAction(RECIPE recipe) {
@@ -36,6 +54,11 @@ public abstract class ItemStackGasToItemStackRecipeManager<RECIPE extends ItemSt
         private OsmiumCompressorRecipeManager() {
             super(MekanismRecipeType.COMPRESSING);
         }
+
+        @Override
+        protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+            return new CompressingIRecipe(id, itemInput, gasInput, output);
+        }
     }
 
     @ZenRegister
@@ -46,6 +69,11 @@ public abstract class ItemStackGasToItemStackRecipeManager<RECIPE extends ItemSt
 
         private PurificationRecipeManager() {
             super(MekanismRecipeType.PURIFYING);
+        }
+
+        @Override
+        protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+            return new PurifyingIRecipe(id, itemInput, gasInput, output);
         }
     }
 
@@ -58,6 +86,11 @@ public abstract class ItemStackGasToItemStackRecipeManager<RECIPE extends ItemSt
         private ChemicalInjectionRecipeManager() {
             super(MekanismRecipeType.INJECTING);
         }
+
+        @Override
+        protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+            return new InjectingIRecipe(id, itemInput, gasInput, output);
+        }
     }
 
     @ZenRegister
@@ -68,7 +101,20 @@ public abstract class ItemStackGasToItemStackRecipeManager<RECIPE extends ItemSt
 
         private NucleosynthesizingRecipeManager() {
             super(MekanismRecipeType.NUCLEOSYNTHESIZING);
-            //TODO: Note this also needs a duration
+        }
+
+        @Override
+        @Deprecated
+        protected NucleosynthesizingRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+            throw new UnsupportedOperationException("Nucleosynthesizing recipes require a duration.");
+        }
+
+        @ZenCodeType.Method
+        public void addRecipe(String name, CrTItemStackIngredient itemInput, CrTGasStackIngredient gasInput, IItemStack output, int duration) {
+            if (duration <= 0) {
+                throw new IllegalArgumentException("Duration must be a number greater than zero! Duration: " + duration);
+            }
+            addRecipe(new NucleosynthesizingIRecipe(getAndValidateName(name), itemInput.getInternal(), gasInput.getInternal(), getAndValidateNotEmpty(output), duration));
         }
     }
 }

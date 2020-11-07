@@ -1,10 +1,14 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
+import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.impl.ElectrolysisIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -15,6 +19,17 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
 
     private ElectrolysisRecipeManager() {
         super(MekanismRecipeType.SEPARATING);
+    }
+
+    @ZenCodeType.Method
+    public void addRecipe(String name, CrTFluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput,
+          @ZenCodeType.OptionalString("1") String energyMultiplier) {
+        FloatingLong multiplier = FloatingLong.parseFloatingLong(energyMultiplier, true);
+        if (multiplier.smallerThan(FloatingLong.ONE)) {
+            throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + multiplier);
+        }
+        addRecipe(new ElectrolysisIRecipe(getAndValidateName(name), input.getInternal(), multiplier, getAndValidateNotEmpty(leftGasOutput),
+              getAndValidateNotEmpty(rightGasOutput)));
     }
 
     @Override

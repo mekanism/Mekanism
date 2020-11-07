@@ -1,11 +1,19 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.impl.CrushingIRecipe;
+import mekanism.common.recipe.impl.EnrichingIRecipe;
+import mekanism.common.recipe.impl.SmeltingIRecipe;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -15,6 +23,13 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
     protected ItemStackToItemStackRecipeManager(MekanismRecipeType<ItemStackToItemStackRecipe> recipeType) {
         super(recipeType);
     }
+
+    @ZenCodeType.Method
+    public void addRecipe(String name, CrTItemStackIngredient input, IItemStack output) {
+        addRecipe(makeRecipe(getAndValidateName(name), input.getInternal(), getAndValidateNotEmpty(output)));
+    }
+
+    protected abstract ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output);
 
     @Override
     protected ActionAddMekanismRecipe getAction(ItemStackToItemStackRecipe recipe) {
@@ -35,6 +50,11 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         private CrusherRecipeManager() {
             super(MekanismRecipeType.CRUSHING);
         }
+
+        @Override
+        protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
+            return new CrushingIRecipe(id, input, output);
+        }
     }
 
     @ZenRegister
@@ -46,6 +66,11 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         private EnrichmentChamberRecipeManager() {
             super(MekanismRecipeType.ENRICHING);
         }
+
+        @Override
+        protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
+            return new EnrichingIRecipe(id, input, output);
+        }
     }
 
     @ZenRegister
@@ -56,6 +81,12 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
 
         private EnergizedSmelterRecipeManager() {
             super(MekanismRecipeType.SMELTING);
+            //TODO: Allow removing regular smelting recipes from the energized smelter just like we allowed in 1.12
+        }
+
+        @Override
+        protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
+            return new SmeltingIRecipe(id, input, output);
         }
     }
 }

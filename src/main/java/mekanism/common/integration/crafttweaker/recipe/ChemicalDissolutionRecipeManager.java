@@ -5,7 +5,10 @@ import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
+import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.impl.ChemicalDissolutionIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -16,6 +19,11 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Chem
 
     private ChemicalDissolutionRecipeManager() {
         super(MekanismRecipeType.DISSOLUTION);
+    }
+
+    @ZenCodeType.Method
+    public void addRecipe(String name, CrTItemStackIngredient itemInput, CrTGasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?, ?> output) {
+        addRecipe(new ChemicalDissolutionIRecipe(getAndValidateName(name), itemInput.getInternal(), gasInput.getInternal(), getAndValidateNotEmpty(output)));
     }
 
     @Override

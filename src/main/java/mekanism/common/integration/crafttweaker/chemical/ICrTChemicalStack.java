@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.chemical;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
+import com.blamejared.crafttweaker.impl.util.MCResourceLocation;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -29,6 +30,17 @@ import org.openzen.zencode.java.ZenCodeType;
 public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       CRT_CHEMICAL extends ICrTChemical<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>>
       extends CommandStringDisplayable, IBracketSupport {
+
+    /**
+     * Gets the registry name for the chemical this stack is representing.
+     *
+     * @return A MCResourceLocation representing the registry name.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("registryName")
+    default MCResourceLocation getRegistryName() {
+        return new MCResourceLocation(getInternal().getTypeRegistryName());
+    }
 
     /**
      * Whether or not this chemical stack is empty.

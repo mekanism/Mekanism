@@ -6,6 +6,7 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import mekanism.api.recipes.inputs.InputIngredient;
 
+//TODO: Look into using expansions to add implicit casts to things to be able to cast to our ingredient wrappers properly
 public class CrTIngredientWrapper<TYPE, INGREDIENT extends InputIngredient<TYPE>> {
 
     protected static void assertValidAmount(String ingredientType, long amount) {

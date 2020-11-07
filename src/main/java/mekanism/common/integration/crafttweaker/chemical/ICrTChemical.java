@@ -40,6 +40,17 @@ public interface ICrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends
       extends CommandStringDisplayable, IBracketSupport, IChemicalProvider<CHEMICAL> {
 
     /**
+     * Gets the registry name for this chemical.
+     *
+     * @return A MCResourceLocation representing the registry name.
+     */
+    @ZenCodeType.Method("getRegistryName")
+    @ZenCodeType.Getter("registryName")
+    default MCResourceLocation getCrTRegistryName() {
+        return new MCResourceLocation(getChemical().getRegistryName());
+    }
+
+    /**
      * Wwhether or not this chemical represents the empty type.
      *
      * @return {@code true} if this chemical represents the empty type, {@code false} otherwise.

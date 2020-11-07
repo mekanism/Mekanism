@@ -1,11 +1,15 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.impl.MetallurgicInfuserIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -16,6 +20,11 @@ public class MetallurgicInfuserRecipeManager extends MekanismRecipeManager<Metal
 
     private MetallurgicInfuserRecipeManager() {
         super(MekanismRecipeType.METALLURGIC_INFUSING);
+    }
+
+    @ZenCodeType.Method
+    public void addRecipe(String name, CrTItemStackIngredient itemInput, CrTInfusionStackIngredient infusionInput, IItemStack output) {
+        addRecipe(new MetallurgicInfuserIRecipe(getAndValidateName(name), itemInput.getInternal(), infusionInput.getInternal(), getAndValidateNotEmpty(output)));
     }
 
     @Override

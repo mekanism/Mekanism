@@ -14,7 +14,7 @@ import org.openzen.zencode.java.ZenCodeType;
 public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, ItemStackIngredient> {
 
     @ZenCodeType.Method
-    public static CrTItemStackIngredient from(IItemStack stack) {
+    public static CrTItemStackIngredient from(IItemStack stack) {//TODO: Look at also supporting MCItemDefinition if/when it becomes a thing
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be created from an empty stack.");
         }
