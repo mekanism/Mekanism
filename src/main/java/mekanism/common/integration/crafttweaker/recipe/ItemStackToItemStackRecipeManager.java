@@ -6,14 +6,24 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.item.crafting.IRecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_ITEM_STACK)
-public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeManager {
+public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeManager<ItemStackToItemStackRecipe> {
 
-    protected ItemStackToItemStackRecipeManager() {
+    protected ItemStackToItemStackRecipeManager(MekanismRecipeType<ItemStackToItemStackRecipe> recipeType) {
+        super(recipeType);
+    }
+
+    @Override
+    protected ActionAddMekanismRecipe getAction(ItemStackToItemStackRecipe recipe) {
+        return new ActionAddMekanismRecipe(recipe) {
+            @Override
+            protected String describeOutputs() {
+                return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), MCItemStackMutable::new);
+            }
+        };
     }
 
     @ZenRegister
@@ -23,11 +33,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         public static final CrusherRecipeManager INSTANCE = new CrusherRecipeManager();
 
         private CrusherRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<ItemStackToItemStackRecipe> getRecipeType() {
-            return MekanismRecipeType.CRUSHING;
+            super(MekanismRecipeType.CRUSHING);
         }
     }
 
@@ -38,11 +44,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         public static final EnrichmentChamberRecipeManager INSTANCE = new EnrichmentChamberRecipeManager();
 
         private EnrichmentChamberRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<ItemStackToItemStackRecipe> getRecipeType() {
-            return MekanismRecipeType.ENRICHING;
+            super(MekanismRecipeType.ENRICHING);
         }
     }
 
@@ -53,23 +55,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         public static final EnergizedSmelterRecipeManager INSTANCE = new EnergizedSmelterRecipeManager();
 
         private EnergizedSmelterRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<ItemStackToItemStackRecipe> getRecipeType() {
-            return MekanismRecipeType.SMELTING;
-        }
-    }
-
-    private static class ActionAddItemStackToItemStackRecipe extends ActionAddMekanismRecipe<ItemStackToItemStackRecipe> {
-
-        protected ActionAddItemStackToItemStackRecipe(MekanismRecipeManager recipeManager, ItemStackToItemStackRecipe recipe) {
-            super(recipeManager, recipe);
-        }
-
-        @Override
-        protected String describeOutputs() {
-            return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), MCItemStackMutable::new);
+            super(MekanismRecipeType.SMELTING);
         }
     }
 }

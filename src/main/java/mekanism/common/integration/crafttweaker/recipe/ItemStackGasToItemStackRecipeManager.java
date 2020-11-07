@@ -7,86 +7,68 @@ import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.item.crafting.IRecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_GAS_TO_ITEM_STACK)
-public abstract class ItemStackGasToItemStackRecipeManager extends MekanismRecipeManager {
+public abstract class ItemStackGasToItemStackRecipeManager<RECIPE extends ItemStackGasToItemStackRecipe> extends MekanismRecipeManager<RECIPE> {
 
-    protected ItemStackGasToItemStackRecipeManager() {
+    protected ItemStackGasToItemStackRecipeManager(MekanismRecipeType<RECIPE> recipeType) {
+        super(recipeType);
+    }
+
+    @Override
+    protected ActionAddMekanismRecipe getAction(RECIPE recipe) {
+        return new ActionAddMekanismRecipe(recipe) {
+            @Override
+            protected String describeOutputs() {
+                return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), MCItemStackMutable::new);
+            }
+        };
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_COMPRESSING)
-    public static class OsmiumCompressorRecipeManager extends ItemStackGasToItemStackRecipeManager {
+    public static class OsmiumCompressorRecipeManager extends ItemStackGasToItemStackRecipeManager<ItemStackGasToItemStackRecipe> {
 
         public static final OsmiumCompressorRecipeManager INSTANCE = new OsmiumCompressorRecipeManager();
 
         private OsmiumCompressorRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<ItemStackGasToItemStackRecipe> getRecipeType() {
-            return MekanismRecipeType.COMPRESSING;
+            super(MekanismRecipeType.COMPRESSING);
         }
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_PURIFYING)
-    public static class PurificationRecipeManager extends ItemStackGasToItemStackRecipeManager {
+    public static class PurificationRecipeManager extends ItemStackGasToItemStackRecipeManager<ItemStackGasToItemStackRecipe> {
 
         public static final PurificationRecipeManager INSTANCE = new PurificationRecipeManager();
 
         private PurificationRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<ItemStackGasToItemStackRecipe> getRecipeType() {
-            return MekanismRecipeType.PURIFYING;
+            super(MekanismRecipeType.PURIFYING);
         }
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_INJECTING)
-    public static class ChemicalInjectionRecipeManager extends ItemStackGasToItemStackRecipeManager {
+    public static class ChemicalInjectionRecipeManager extends ItemStackGasToItemStackRecipeManager<ItemStackGasToItemStackRecipe> {
 
         public static final ChemicalInjectionRecipeManager INSTANCE = new ChemicalInjectionRecipeManager();
 
         private ChemicalInjectionRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<ItemStackGasToItemStackRecipe> getRecipeType() {
-            return MekanismRecipeType.INJECTING;
+            super(MekanismRecipeType.INJECTING);
         }
     }
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_NUCLEOSYNTHESIZING)
-    public static class NucleosynthesizingRecipeManager extends MekanismRecipeManager {
+    public static class NucleosynthesizingRecipeManager extends ItemStackGasToItemStackRecipeManager<NucleosynthesizingRecipe> {
 
         public static final NucleosynthesizingRecipeManager INSTANCE = new NucleosynthesizingRecipeManager();
 
         private NucleosynthesizingRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<NucleosynthesizingRecipe> getRecipeType() {
+            super(MekanismRecipeType.NUCLEOSYNTHESIZING);
             //TODO: Note this also needs a duration
-            return MekanismRecipeType.NUCLEOSYNTHESIZING;
-        }
-    }
-
-    private static class ActionAddItemStackGasToItemStackRecipe extends ActionAddMekanismRecipe<ItemStackGasToItemStackRecipe> {
-
-        protected ActionAddItemStackGasToItemStackRecipe(MekanismRecipeManager recipeManager, ItemStackGasToItemStackRecipe recipe) {
-            super(recipeManager, recipe);
-        }
-
-        @Override
-        protected String describeOutputs() {
-            return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), MCItemStackMutable::new);
         }
     }
 }

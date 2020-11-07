@@ -46,10 +46,12 @@ public class CrTConstants {
 
     public static final String CLASS_ITEM_STACK_INGREDIENT = "mekanism.api.ingredient.ItemStackIngredient";
     public static final String CLASS_FLUID_STACK_INGREDIENT = "mekanism.api.ingredient.FluidStackIngredient";
-    public static final String CLASS_GAS_STACK_INGREDIENT = "mekanism.api.ingredient.GasStackIngredient";
-    public static final String CLASS_INFUSION_STACK_INGREDIENT = "mekanism.api.ingredient.InfusionStackIngredient";
-    public static final String CLASS_PIGMENT_STACK_INGREDIENT = "mekanism.api.ingredient.PigmentStackIngredient";
-    public static final String CLASS_SLURRY_STACK_INGREDIENT = "mekanism.api.ingredient.SlurryStackIngredient";
+    public static final String CLASS_CHEMICAL_STACK_INGREDIENT = "mekanism.api.ingredient.ChemicalStackIngredient";
+    //TODO: Do we want these to be just like .Gas or .GasStack
+    public static final String CLASS_GAS_STACK_INGREDIENT = "mekanism.api.ingredient.ChemicalStackIngredient.GasStackIngredient";
+    public static final String CLASS_INFUSION_STACK_INGREDIENT = "mekanism.api.ingredient.ChemicalStackIngredient.InfusionStackIngredient";
+    public static final String CLASS_PIGMENT_STACK_INGREDIENT = "mekanism.api.ingredient.ChemicalStackIngredient.PigmentStackIngredient";
+    public static final String CLASS_SLURRY_STACK_INGREDIENT = "mekanism.api.ingredient.ChemicalStackIngredient.SlurryStackIngredient";
 
     public static final String CLASS_RECIPE_MANAGER = "mekanism.recipe.MekanismRecipeManager";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_ITEM_STACK = "mekanism.recipe.ItemStackToItemStack";

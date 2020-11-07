@@ -5,14 +5,24 @@ import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.item.crafting.IRecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_GAS_TO_GAS)
-public abstract class GasToGasRecipeManager extends MekanismRecipeManager {
+public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToGasRecipe> {
 
-    protected GasToGasRecipeManager() {
+    protected GasToGasRecipeManager(MekanismRecipeType<GasToGasRecipe> recipeType) {
+        super(recipeType);
+    }
+
+    @Override
+    protected ActionAddMekanismRecipe getAction(GasToGasRecipe recipe) {
+        return new ActionAddMekanismRecipe(recipe) {
+            @Override
+            protected String describeOutputs() {
+                return new CrTGasStack(getRecipe().getOutputRepresentation()).toString();
+            }
+        };
     }
 
     @ZenRegister
@@ -22,11 +32,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager {
         public static final SolarNeutronActivatorRecipeManager INSTANCE = new SolarNeutronActivatorRecipeManager();
 
         private SolarNeutronActivatorRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<GasToGasRecipe> getRecipeType() {
-            return MekanismRecipeType.ACTIVATING;
+            super(MekanismRecipeType.ACTIVATING);
         }
     }
 
@@ -37,23 +43,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager {
         public static final IsotopicCentrifugeRecipeManager INSTANCE = new IsotopicCentrifugeRecipeManager();
 
         private IsotopicCentrifugeRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<GasToGasRecipe> getRecipeType() {
-            return MekanismRecipeType.CENTRIFUGING;
-        }
-    }
-
-    private static class ActionAddGasToGasRecipe extends ActionAddMekanismRecipe<GasToGasRecipe> {
-
-        protected ActionAddGasToGasRecipe(MekanismRecipeManager recipeManager, GasToGasRecipe recipe) {
-            super(recipeManager, recipe);
-        }
-
-        @Override
-        protected String describeOutputs() {
-            return new CrTGasStack(getRecipe().getOutputRepresentation()).toString();
+            super(MekanismRecipeType.CENTRIFUGING);
         }
     }
 }

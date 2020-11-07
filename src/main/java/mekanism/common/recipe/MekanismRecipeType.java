@@ -122,6 +122,10 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
         return registryName.toString();
     }
 
+    public ResourceLocation getRegistryName() {
+        return registryName;
+    }
+
     @Nonnull
     public List<RECIPE_TYPE> getRecipes(@Nullable World world) {
         if (world == null) {

@@ -5,14 +5,24 @@ import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.item.crafting.IRecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_GAS)
-public abstract class ItemStackToGasRecipeManager extends MekanismRecipeManager {
+public abstract class ItemStackToGasRecipeManager extends MekanismRecipeManager<ItemStackToGasRecipe> {
 
-    protected ItemStackToGasRecipeManager() {
+    protected ItemStackToGasRecipeManager(MekanismRecipeType<ItemStackToGasRecipe> recipeType) {
+        super(recipeType);
+    }
+
+    @Override
+    protected ActionAddMekanismRecipe getAction(ItemStackToGasRecipe recipe) {
+        return new ActionAddMekanismRecipe(recipe) {
+            @Override
+            protected String describeOutputs() {
+                return new CrTGasStack(getRecipe().getOutputDefinition()).toString();
+            }
+        };
     }
 
     @ZenRegister
@@ -22,11 +32,7 @@ public abstract class ItemStackToGasRecipeManager extends MekanismRecipeManager 
         public static final GasConversionRecipeManager INSTANCE = new GasConversionRecipeManager();
 
         private GasConversionRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<ItemStackToGasRecipe> getRecipeType() {
-            return MekanismRecipeType.GAS_CONVERSION;
+            super(MekanismRecipeType.GAS_CONVERSION);
         }
     }
 
@@ -37,23 +43,7 @@ public abstract class ItemStackToGasRecipeManager extends MekanismRecipeManager 
         public static final ChemicalOxidizerRecipeManager INSTANCE = new ChemicalOxidizerRecipeManager();
 
         private ChemicalOxidizerRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<ItemStackToGasRecipe> getRecipeType() {
-            return MekanismRecipeType.OXIDIZING;
-        }
-    }
-
-    private static class ActionAddItemStackToGasRecipe extends ActionAddMekanismRecipe<ItemStackToGasRecipe> {
-
-        protected ActionAddItemStackToGasRecipe(MekanismRecipeManager recipeManager, ItemStackToGasRecipe recipe) {
-            super(recipeManager, recipe);
-        }
-
-        @Override
-        protected String describeOutputs() {
-            return new CrTGasStack(getRecipe().getOutputDefinition()).toString();
+            super(MekanismRecipeType.OXIDIZING);
         }
     }
 }

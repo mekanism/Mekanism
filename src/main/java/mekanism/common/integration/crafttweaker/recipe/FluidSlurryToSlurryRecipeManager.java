@@ -5,14 +5,24 @@ import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.item.crafting.IRecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_FLUID_SLURRY_TO_SLURRY)
-public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeManager {
+public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeManager<FluidSlurryToSlurryRecipe> {
 
-    protected FluidSlurryToSlurryRecipeManager() {
+    protected FluidSlurryToSlurryRecipeManager(MekanismRecipeType<FluidSlurryToSlurryRecipe> recipeType) {
+        super(recipeType);
+    }
+
+    @Override
+    protected ActionAddMekanismRecipe getAction(FluidSlurryToSlurryRecipe recipe) {
+        return new ActionAddMekanismRecipe(recipe) {
+            @Override
+            protected String describeOutputs() {
+                return new CrTSlurryStack(getRecipe().getOutputRepresentation()).toString();
+            }
+        };
     }
 
     @ZenRegister
@@ -22,23 +32,7 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
         public static final ChemicalWasherRecipeManager INSTANCE = new ChemicalWasherRecipeManager();
 
         private ChemicalWasherRecipeManager() {
-        }
-
-        @Override
-        public IRecipeType<FluidSlurryToSlurryRecipe> getRecipeType() {
-            return MekanismRecipeType.WASHING;
-        }
-    }
-
-    private static class ActionAddFluidSlurryToSlurryRecipe extends ActionAddMekanismRecipe<FluidSlurryToSlurryRecipe> {
-
-        protected ActionAddFluidSlurryToSlurryRecipe(MekanismRecipeManager recipeManager, FluidSlurryToSlurryRecipe recipe) {
-            super(recipeManager, recipe);
-        }
-
-        @Override
-        protected String describeOutputs() {
-            return new CrTSlurryStack(getRecipe().getOutputRepresentation()).toString();
+            super(MekanismRecipeType.WASHING);
         }
     }
 }
