@@ -2,7 +2,7 @@ package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class ChemicalCrystallizerIRecipe extends ChemicalCrystallizerRecipe {
 
-    public ChemicalCrystallizerIRecipe(ResourceLocation id, ChemicalStackIngredient<?, ?> input, ItemStack output) {
+    public ChemicalCrystallizerIRecipe(ResourceLocation id, IChemicalStackIngredient<?, ?> input, ItemStack output) {
         super(id, input, output);
     }
 
