@@ -35,7 +35,8 @@ public class CrTPigmentStackIngredient extends CrTChemicalStackIngredient<Pigmen
 
     @ZenCodeType.Method
     public static CrTPigmentStackIngredient createMulti(CrTPigmentStackIngredient... crtIngredients) {
-        return createMulti(PigmentStackIngredient[]::new, ingredients -> new CrTPigmentStackIngredient(PigmentStackIngredient.createMulti(ingredients)), crtIngredients);
+        return createMulti("PigmentStackIngredients", PigmentStackIngredient[]::new,
+              ingredients -> new CrTPigmentStackIngredient(PigmentStackIngredient.createMulti(ingredients)), crtIngredients);
     }
 
     private CrTPigmentStackIngredient(PigmentStackIngredient ingredient) {

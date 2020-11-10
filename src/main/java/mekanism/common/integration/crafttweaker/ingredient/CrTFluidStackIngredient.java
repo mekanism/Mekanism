@@ -42,7 +42,8 @@ public class CrTFluidStackIngredient extends CrTIngredientWrapper<FluidStack, Fl
 
     @ZenCodeType.Method
     public static CrTFluidStackIngredient createMulti(CrTFluidStackIngredient... crtIngredients) {
-        return createMulti(FluidStackIngredient[]::new, ingredients -> new CrTFluidStackIngredient(FluidStackIngredient.createMulti(ingredients)), crtIngredients);
+        return createMulti("FluidStackIngredients",  FluidStackIngredient[]::new,
+              ingredients -> new CrTFluidStackIngredient(FluidStackIngredient.createMulti(ingredients)), crtIngredients);
     }
 
     private CrTFluidStackIngredient(FluidStackIngredient ingredient) {

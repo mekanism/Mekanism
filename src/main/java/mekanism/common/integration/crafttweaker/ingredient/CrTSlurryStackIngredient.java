@@ -35,7 +35,8 @@ public class CrTSlurryStackIngredient extends CrTChemicalStackIngredient<Slurry,
 
     @ZenCodeType.Method
     public static CrTSlurryStackIngredient createMulti(CrTSlurryStackIngredient... crtIngredients) {
-        return createMulti(SlurryStackIngredient[]::new, ingredients -> new CrTSlurryStackIngredient(SlurryStackIngredient.createMulti(ingredients)), crtIngredients);
+        return createMulti("SlurryStackIngredients", SlurryStackIngredient[]::new,
+              ingredients -> new CrTSlurryStackIngredient(SlurryStackIngredient.createMulti(ingredients)), crtIngredients);
     }
 
     private CrTSlurryStackIngredient(SlurryStackIngredient ingredient) {

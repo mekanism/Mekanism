@@ -23,6 +23,10 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTGas;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTInfuseType;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTPigment;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTSlurry;
+import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTPigmentStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTSlurryStackIngredient;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -150,6 +154,10 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      */
     STACK getInternal();
 
+    //TODO: Figure out if we need something like this
+    //@ZenCodeType.Caster(implicit = true)
+    //CrTChemicalStackIngredient<CHEMICAL, STACK, ?> asCrTChemicalStackIngredient();
+
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_GAS_STACK)
     interface ICrTGasStack extends ICrTChemicalStack<Gas, GasStack, ICrTGas, ICrTGasStack>, IGasBracketSupport {
@@ -157,6 +165,11 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         @Override
         default ICrTGas getType() {
             return new CrTGas(getInternal().getType());
+        }
+
+        @ZenCodeType.Caster(implicit = true)
+        default CrTGasStackIngredient asCrTGasStackIngredient() {
+            return CrTGasStackIngredient.from(this);
         }
     }
 
@@ -168,6 +181,11 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         default ICrTInfuseType getType() {
             return new CrTInfuseType(getInternal().getType());
         }
+
+        @ZenCodeType.Caster(implicit = true)
+        default CrTInfusionStackIngredient asCrTInfusionStackIngredient() {
+            return CrTInfusionStackIngredient.from(this);
+        }
     }
 
     @ZenRegister
@@ -178,6 +196,11 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         default ICrTPigment getType() {
             return new CrTPigment(getInternal().getType());
         }
+
+        @ZenCodeType.Caster(implicit = true)
+        default CrTPigmentStackIngredient asCrTPigmentStackIngredient() {
+            return CrTPigmentStackIngredient.from(this);
+        }
     }
 
     @ZenRegister
@@ -187,6 +210,11 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         @Override
         default ICrTSlurry getType() {
             return new CrTSlurry(getInternal().getType());
+        }
+
+        @ZenCodeType.Caster(implicit = true)
+        default CrTSlurryStackIngredient asCrTSlurryStackIngredient() {
+            return CrTSlurryStackIngredient.from(this);
         }
     }
 }

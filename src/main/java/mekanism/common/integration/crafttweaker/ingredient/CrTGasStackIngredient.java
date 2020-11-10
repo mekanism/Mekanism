@@ -35,7 +35,8 @@ public class CrTGasStackIngredient extends CrTChemicalStackIngredient<Gas, GasSt
 
     @ZenCodeType.Method
     public static CrTGasStackIngredient createMulti(CrTGasStackIngredient... crtIngredients) {
-        return createMulti(GasStackIngredient[]::new, ingredients -> new CrTGasStackIngredient(GasStackIngredient.createMulti(ingredients)), crtIngredients);
+        return createMulti("GasStackIngredients", GasStackIngredient[]::new,
+              ingredients -> new CrTGasStackIngredient(GasStackIngredient.createMulti(ingredients)), crtIngredients);
     }
 
     private CrTGasStackIngredient(GasStackIngredient ingredient) {

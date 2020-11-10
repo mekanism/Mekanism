@@ -36,8 +36,8 @@ import net.minecraft.tags.Tag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Expansion(CrTConstants.CLASS_CRT_TAG)
-public class CrTTags {
+@ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_MCTAG)
+public class CrTTags {//TODO: Rewrite this into various tag managers once the CrT tag system finishes getting improved
 
     private static final Map<MCTag, ITag<Gas>> GAS_TAG_CACHE = new WeakHashMap<>();
     private static final Map<MCTag, ITag<InfuseType>> INFUSE_TYPE_TAG_CACHE = new WeakHashMap<>();

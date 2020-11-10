@@ -12,7 +12,11 @@ public class CrTConstants {
     public static final String CLASS_BRACKET_HANDLER = "mekanism.api.BracketHandlers";
     public static final String CLASS_BRACKET_VALIDATORS = "mekanism.api.BracketValidators";
 
-    public static final String CLASS_CRT_TAG = "crafttweaker.api.tag.MCTag";
+    public static final String EXPANSION_TARGET_MCTAG = "crafttweaker.api.tag.MCTag";
+    public static final String EXPANSION_TARGET_INGREDIENT = "crafttweaker.api.item.IIngredient";
+    public static final String EXPANSION_TARGET_IITEM_STACK = "crafttweaker.api.item.IItemStack";
+    public static final String EXPANSION_TARGET_INGREDIENT_LIST = "crafttweaker.api.item.IngredientList";
+    public static final String EXPANSION_TARGET_IFLUID_STACK = "crafttweaker.api.fluid.IFluidStack";
 
     //TODO: Figure out properly which things need registration and annotation and which don't in terms of concrete vs interfaces
     // We may be registering more things than needed currently, or at least naming more things than needed

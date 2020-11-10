@@ -35,7 +35,8 @@ public class CrTInfusionStackIngredient extends CrTChemicalStackIngredient<Infus
 
     @ZenCodeType.Method
     public static CrTInfusionStackIngredient createMulti(CrTInfusionStackIngredient... crtIngredients) {
-        return createMulti(InfusionStackIngredient[]::new, ingredients -> new CrTInfusionStackIngredient(InfusionStackIngredient.createMulti(ingredients)), crtIngredients);
+        return createMulti("InfusionStackIngredients", InfusionStackIngredient[]::new,
+              ingredients -> new CrTInfusionStackIngredient(InfusionStackIngredient.createMulti(ingredients)), crtIngredients);
     }
 
     private CrTInfusionStackIngredient(InfusionStackIngredient ingredient) {

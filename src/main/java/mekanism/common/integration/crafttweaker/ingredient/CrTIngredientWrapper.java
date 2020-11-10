@@ -24,7 +24,12 @@ public class CrTIngredientWrapper<TYPE, INGREDIENT extends InputIngredient<TYPE>
 
     @SafeVarargs
     protected static <TYPE, INGREDIENT extends InputIngredient<TYPE>, CRT_INGREDIENT extends CrTIngredientWrapper<TYPE, INGREDIENT>> CRT_INGREDIENT
-    createMulti(IntFunction<INGREDIENT[]> arrayCreator, Function<INGREDIENT[], CRT_INGREDIENT> multiCreator, CRT_INGREDIENT... crtIngredients) {
+    createMulti(String ingredientType, IntFunction<INGREDIENT[]> arrayCreator, Function<INGREDIENT[], CRT_INGREDIENT> multiCreator, CRT_INGREDIENT... crtIngredients) {
+        if (crtIngredients.length == 0) {
+            throw new IllegalArgumentException("Multi " + ingredientType + " ingredients cannot be made out of no ingredients!");
+        } else if (crtIngredients.length == 1) {
+            return crtIngredients[0];
+        }
         INGREDIENT[] ingredients = arrayCreator.apply(crtIngredients.length);
         for (int i = 0; i < ingredients.length; i++) {
             ingredients[i] = crtIngredients[i].getInternal();
