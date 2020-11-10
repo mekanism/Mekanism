@@ -47,27 +47,32 @@ public class CrTContentUtils {
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, BUILDER extends ChemicalBuilder<CHEMICAL, BUILDER>> void queueChemicalForRegistration(String type,
           @Nullable Map<ResourceLocation, BUILDER> queuedChemicals, ResourceLocation registryName, BUILDER builder) {
-        //TODO: Figure out if this really should be in some sort of action instead of just being ran directly
-        if (queuedChemicals == null) {
-            //TODO: Figure out loader what we want to call the loader and actually register it
-            CraftTweakerAPI.logError("Cannot register %s '%s' since it was called too late. Registering must be done during '#loader mekanism'!",
-                  type, registryName);
-        } else if (queuedChemicals.containsKey(registryName)) {
-            CraftTweakerAPI.logWarning("Registration for %s '%s' is already queued, skipping duplicate.", type, registryName);
-        } else {
-            CraftTweakerAPI.logInfo("Queueing %s '%s' for registration.", type, registryName);
-            queuedChemicals.put(registryName, builder);
+        if (CraftTweakerAPI.isFirstRun()) {
+            //Only queue our chemicals for registration on the first run of our loader
+            if (queuedChemicals == null) {
+                //TODO: Figure out loader what we want to call the loader and actually register it
+                CraftTweakerAPI.logError("Cannot register %s '%s' since it was called too late. Registering must be done during '#loader mekanism'!",
+                      type, registryName);
+            } else if (queuedChemicals.containsKey(registryName)) {
+                CraftTweakerAPI.logWarning("Registration for %s '%s' is already queued, skipping duplicate.", type, registryName);
+            } else {
+                CraftTweakerAPI.logInfo("Queueing %s '%s' for registration.", type, registryName);
+                queuedChemicals.put(registryName, builder);
+            }
         }
     }
 
-    //TODO: Register these listeners iff CrT is loaded
     public static void registerCrTGases(RegistryEvent.Register<Gas> event) {
         if (queuedGases != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
             //Copy the reference and then invalidate the other reference so that we properly don't allow more registration to
             // happen once we start registering it
             Map<ResourceLocation, GasBuilder> queued = queuedGases;
             queuedGases = null;
-            queued.forEach((registryName, builder) -> event.getRegistry().register(new Gas(builder).setRegistryName(registryName)));
+            CraftTweakerAPI.logInfo("Registering %d custom gases.", queued.size());
+            queued.forEach((registryName, builder) -> {
+                event.getRegistry().register(new Gas(builder).setRegistryName(registryName));
+                CraftTweakerAPI.logInfo("Registered Gas '%s'.", registryName);
+            });
         }
     }
 
@@ -77,7 +82,11 @@ public class CrTContentUtils {
             // happen once we start registering it
             Map<ResourceLocation, InfuseTypeBuilder> queued = queuedInfuseTypes;
             queuedInfuseTypes = null;
-            queued.forEach((registryName, builder) -> event.getRegistry().register(new InfuseType(builder).setRegistryName(registryName)));
+            CraftTweakerAPI.logInfo("Registering %d custom infuse types.", queued.size());
+            queued.forEach((registryName, builder) -> {
+                event.getRegistry().register(new InfuseType(builder).setRegistryName(registryName));
+                CraftTweakerAPI.logInfo("Registered Infuse Type '%s'.", registryName);
+            });
         }
     }
 
@@ -87,17 +96,25 @@ public class CrTContentUtils {
             // happen once we start registering it
             Map<ResourceLocation, PigmentBuilder> queued = queuedPigments;
             queuedPigments = null;
-            queued.forEach((registryName, builder) -> event.getRegistry().register(new Pigment(builder).setRegistryName(registryName)));
+            CraftTweakerAPI.logInfo("Registering %d custom pigments.", queued.size());
+            queued.forEach((registryName, builder) -> {
+                event.getRegistry().register(new Pigment(builder).setRegistryName(registryName));
+                CraftTweakerAPI.logInfo("Registered Pigment '%s'.", registryName);
+            });
         }
     }
 
-    public static void registerCrTSlurry(RegistryEvent.Register<Slurry> event) {
+    public static void registerCrTSlurries(RegistryEvent.Register<Slurry> event) {
         if (queuedSlurries != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
             //Copy the reference and then invalidate the other reference so that we properly don't allow more registration to
             // happen once we start registering it
             Map<ResourceLocation, SlurryBuilder> queued = queuedSlurries;
             queuedSlurries = null;
-            queued.forEach((registryName, builder) -> event.getRegistry().register(new Slurry(builder).setRegistryName(registryName)));
+            CraftTweakerAPI.logInfo("Registering %d custom slurries.", queued.size());
+            queued.forEach((registryName, builder) -> {
+                event.getRegistry().register(new Slurry(builder).setRegistryName(registryName));
+                CraftTweakerAPI.logInfo("Registered Slurry '%s'.", registryName);
+            });
         }
     }
 }

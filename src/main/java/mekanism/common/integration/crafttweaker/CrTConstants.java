@@ -1,6 +1,5 @@
 package mekanism.common.integration.crafttweaker;
 
-//TODO - 10.1: We are going to need to define a min CrT version of 7.0.0.56 for if CrT exists
 public class CrTConstants {
 
     public static final String BRACKET_GAS = "gas";

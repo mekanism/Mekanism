@@ -136,7 +136,7 @@ configurations {
 }
 
 def version_properties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                          "loader_version": loader_version_range]
+                          "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range]
 def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
 ext {

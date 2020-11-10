@@ -26,9 +26,13 @@ public final class MekanismHooks {
     public boolean ProjectELoaded = false;
     public boolean TOPLoaded = false;
 
-    public void hookCommonSetup() {
+    public void hookConstructor() {
         ModList modList = ModList.get();
         CraftTweakerLoaded = modList.isLoaded(CRAFTTWEAKER_MOD_ID);
+    }
+
+    public void hookCommonSetup() {
+        ModList modList = ModList.get();
         IC2Loaded = modList.isLoaded(IC2_MOD_ID);
         JEILoaded = modList.isLoaded(JEI_MOD_ID);
         ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);

@@ -2,7 +2,11 @@ package mekanism.common.integration.crafttweaker.content.attribute.gas;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.api.providers.IGasProvider;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTGas;
 import mekanism.common.integration.crafttweaker.content.attribute.CrTChemicalAttribute;
@@ -15,16 +19,14 @@ public class CrTCoolantAttribute extends CrTChemicalAttribute implements ICrTGas
 
     @ZenCodeType.Method
     public static CrTCoolantAttribute cooled(Supplier<ICrTGas> heatedGas, double thermalEnthalpy, double conductivity) {
-        //TODO: If suppliers aren't the way to go here, maybe we should do something like registry objects?
         validateEnthalpyAndConductivity(thermalEnthalpy, conductivity);
-        return new CrTCoolantAttribute(new GasAttributes.CooledCoolant(() -> heatedGas.get().getChemical(), thermalEnthalpy, conductivity));
+        return new CrTCoolantAttribute(new GasAttributes.CooledCoolant(new CachingCrTGasProvider(heatedGas), thermalEnthalpy, conductivity));
     }
 
     @ZenCodeType.Method
     public static CrTCoolantAttribute heated(Supplier<ICrTGas> cooledGas, double thermalEnthalpy, double conductivity) {
-        //TODO: If suppliers aren't the way to go here, maybe we should do something like registry objects?
         validateEnthalpyAndConductivity(thermalEnthalpy, conductivity);
-        return new CrTCoolantAttribute(new GasAttributes.HeatedCoolant(() -> cooledGas.get().getChemical(), thermalEnthalpy, conductivity));
+        return new CrTCoolantAttribute(new GasAttributes.HeatedCoolant(new CachingCrTGasProvider(cooledGas), thermalEnthalpy, conductivity));
     }
 
     private static void validateEnthalpyAndConductivity(double thermalEnthalpy, double conductivity) {
@@ -40,5 +42,32 @@ public class CrTCoolantAttribute extends CrTChemicalAttribute implements ICrTGas
 
     protected CrTCoolantAttribute(GasAttributes.Coolant attribute) {
         super(attribute);
+    }
+
+    private static class CachingCrTGasProvider implements IGasProvider {
+
+        private Supplier<ICrTGas> gasSupplier;
+        private Gas gas = MekanismAPI.EMPTY_GAS;
+
+        private CachingCrTGasProvider(Supplier<ICrTGas> gasSupplier) {
+            this.gasSupplier = gasSupplier;
+        }
+
+        @Nonnull
+        @Override
+        public Gas getChemical() {
+            if (gas.isEmptyType()) {
+                //If our gas hasn't actually been set yet, set it from the gas supplier we have
+                gas = gasSupplier.get().getChemical();
+                if (gas.isEmptyType()) {
+                    //If it is still empty (because the supplier was for an empty gas which we couldn't
+                    // evaluate initially, throw an illegal state exception)
+                    throw new IllegalStateException("Empty gas used for coolant attribute via a CraftTweaker Script.");
+                }
+                //Free memory of the supplier
+                gasSupplier = null;
+            }
+            return gas;
+        }
     }
 }

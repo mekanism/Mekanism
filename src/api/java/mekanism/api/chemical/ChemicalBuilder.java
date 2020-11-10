@@ -28,6 +28,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
     }
 
     public Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> getAttributeMap() {
+        //TODO - 10.1: Look into returning unmodifiable view/immutable copy of this and the same for block attributes
         return attributeMap;
     }
 

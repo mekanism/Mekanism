@@ -49,6 +49,7 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
 import mekanism.common.lib.Version;
@@ -213,6 +214,15 @@ public class Mekanism {
         modEventBus.addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
+        //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
+        hooks.hookConstructor();
+        if (hooks.CraftTweakerLoaded) {
+            //Register these at lowest priority to try and ensure they get later ids in the chemical registries
+            modEventBus.addGenericListener(Gas.class, EventPriority.LOWEST, CrTContentUtils::registerCrTGases);
+            modEventBus.addGenericListener(InfuseType.class, EventPriority.LOWEST, CrTContentUtils::registerCrTInfuseTypes);
+            modEventBus.addGenericListener(Pigment.class, EventPriority.LOWEST, CrTContentUtils::registerCrTPigments);
+            modEventBus.addGenericListener(Slurry.class, EventPriority.LOWEST, CrTContentUtils::registerCrTSlurries);
+        }
     }
 
     //Register the empty chemicals
