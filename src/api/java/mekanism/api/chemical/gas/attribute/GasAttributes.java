@@ -2,6 +2,7 @@ package mekanism.api.chemical.gas.attribute;
 
 import java.util.List;
 import java.util.function.IntSupplier;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.math.FloatingLong;
@@ -53,7 +54,7 @@ public class GasAttributes {
     }
 
     /**
-     * Defines the root data of a coolant, for use in Fission Reactors. Coolants have two primary properties: 'thermal enthalpy' and 'conductivity.' Thermal Enthalpy
+     * Defines the root data of a coolant, for use in Fission Reactors. Coolants have two primary properties: 'thermal enthalpy' and 'conductivity'. Thermal Enthalpy
      * defines how much energy one mB the chemical can store; as such, lower values will cause reactors to require more of the chemical to stay cool. 'Conductivity'
      * defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated variant.
      *
@@ -100,7 +101,7 @@ public class GasAttributes {
             this.heatedGas = heatedGas;
         }
 
-        public IGasProvider getHeatedGas() {
+        public Gas getHeatedGas() {
             return heatedGas.getChemical();
         }
     }
@@ -125,8 +126,8 @@ public class GasAttributes {
     }
 
     /**
-     * Defines a fuel which can be processed by a Gas-Burning Generator to produce energy. Fuels have two primary values: 'burn ticks,' defining how many ticks one mB of
-     * fuel can be burned for before being depleted, and 'energyDensity,' defining how much energy is stored in one mB of fuel.
+     * Defines a fuel which can be processed by a Gas-Burning Generator to produce energy. Fuels have two primary values: 'burn ticks', defining how many ticks one mB of
+     * fuel can be burned for before being depleted, and 'energyDensity', defining how much energy is stored in one mB of fuel.
      *
      * @author aidancbrady
      */
@@ -145,7 +146,16 @@ public class GasAttributes {
         }
 
         public FloatingLong getEnergyPerTick() {
-            return getBurnTicks() == 0 ? energyDensity.get() : energyDensity.get().divide(getBurnTicks());
+            int ticks = getBurnTicks();
+            //If we have less than 2 ticks, the density is the
+            if (ticks < 1) {
+                MekanismAPI.logger.warn("Invalid tick count ({}) for Fuel attribute, this number should be at least 1.", ticks);
+                return FloatingLong.ZERO;
+            } else if (ticks == 1) {
+                //Single tick, no division necessary
+                return energyDensity.get();
+            }
+            return energyDensity.get().divide(ticks);
         }
     }
 }

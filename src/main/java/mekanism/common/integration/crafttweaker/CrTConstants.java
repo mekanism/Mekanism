@@ -90,4 +90,18 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_REACTION = "mekanism.recipe.Reaction";
     public static final String CLASS_RECIPE_ROTARY = "mekanism.recipe.Rotary";
     public static final String CLASS_RECIPE_SAWING = "mekanism.recipe.Sawing";
+
+    public static final String CLASS_ATTRIBUTE_CHEMICAL = "mekanism.content.attribute.Chemical";
+    public static final String CLASS_ATTRIBUTE_GAS = "mekanism.content.attribute.Gas";
+    public static final String CLASS_ATTRIBUTE_INFUSE_TYPE = "mekanism.content.attribute.InfuseType";
+    public static final String CLASS_ATTRIBUTE_PIGMENT = "mekanism.content.attribute.Pigment";
+    public static final String CLASS_ATTRIBUTE_SLURRY = "mekanism.content.attribute.Slurry";
+    public static final String CLASS_ATTRIBUTE_COOLANT = "mekanism.content.attribute.gas.Coolant";
+    public static final String CLASS_ATTRIBUTE_FUEL = "mekanism.content.attribute.gas.Fuel";
+    public static final String CLASS_ATTRIBUTE_RADIATION = "mekanism.content.attribute.gas.Radiation";
+    public static final String CLASS_BUILDER_CHEMICAL = "mekanism.content.builder.Chemical";
+    public static final String CLASS_BUILDER_GAS = "mekanism.content.builder.Gas";
+    public static final String CLASS_BUILDER_INFUSE_TYPE = "mekanism.content.builder.InfuseType";
+    public static final String CLASS_BUILDER_PIGMENT = "mekanism.content.builder.Pigment";
+    public static final String CLASS_BUILDER_SLURRY = "mekanism.content.builder.Slurry";
 }

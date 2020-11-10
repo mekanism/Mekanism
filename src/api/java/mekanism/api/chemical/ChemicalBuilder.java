@@ -54,7 +54,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
     }
 
     @SuppressWarnings("unchecked")
-    public BUILDER getThis() {
+    protected BUILDER getThis() {
         return (BUILDER) this;
     }
 }

@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -23,7 +24,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import org.openzen.zencode.java.ZenCodeType.Nullable;
 
 public class CrTUtils {
 

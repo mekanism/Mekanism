@@ -23,6 +23,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTGas;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTInfuseType;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTPigment;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTSlurry;
+import mekanism.common.integration.crafttweaker.ingredient.CrTChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTPigmentStackIngredient;
@@ -154,9 +155,9 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      */
     STACK getInternal();
 
-    //TODO: Figure out if we need something like this
-    //@ZenCodeType.Caster(implicit = true)
-    //CrTChemicalStackIngredient<CHEMICAL, STACK, ?> asCrTChemicalStackIngredient();
+    //TODO: Test that this works for things like crystallizer and it doesn't get confused because of us specifying type of chemical and stack here
+    @ZenCodeType.Caster(implicit = true)
+    CrTChemicalStackIngredient<CHEMICAL, STACK, ?> asCrTChemicalStackIngredient();
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_GAS_STACK)
@@ -165,6 +166,11 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         @Override
         default ICrTGas getType() {
             return new CrTGas(getInternal().getType());
+        }
+
+        @Override
+        default CrTChemicalStackIngredient<Gas, GasStack, ?> asCrTChemicalStackIngredient() {
+            return asCrTGasStackIngredient();
         }
 
         @ZenCodeType.Caster(implicit = true)
@@ -182,6 +188,11 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
             return new CrTInfuseType(getInternal().getType());
         }
 
+        @Override
+        default CrTChemicalStackIngredient<InfuseType, InfusionStack, ?> asCrTChemicalStackIngredient() {
+            return asCrTInfusionStackIngredient();
+        }
+
         @ZenCodeType.Caster(implicit = true)
         default CrTInfusionStackIngredient asCrTInfusionStackIngredient() {
             return CrTInfusionStackIngredient.from(this);
@@ -197,6 +208,11 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
             return new CrTPigment(getInternal().getType());
         }
 
+        @Override
+        default CrTChemicalStackIngredient<Pigment, PigmentStack, ?> asCrTChemicalStackIngredient() {
+            return asCrTPigmentStackIngredient();
+        }
+
         @ZenCodeType.Caster(implicit = true)
         default CrTPigmentStackIngredient asCrTPigmentStackIngredient() {
             return CrTPigmentStackIngredient.from(this);
@@ -210,6 +226,11 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         @Override
         default ICrTSlurry getType() {
             return new CrTSlurry(getInternal().getType());
+        }
+
+        @Override
+        default CrTChemicalStackIngredient<Slurry, SlurryStack, ?> asCrTChemicalStackIngredient() {
+            return asCrTSlurryStackIngredient();
         }
 
         @ZenCodeType.Caster(implicit = true)

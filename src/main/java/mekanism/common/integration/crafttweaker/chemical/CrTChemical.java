@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.chemical;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -21,7 +22,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTP
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import net.minecraft.tags.ITag;
 import org.openzen.zencode.java.ZenCodeType;
-import org.openzen.zencode.java.ZenCodeType.Nullable;
 
 public abstract class CrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       CRT_CHEMICAL extends ICrTChemical<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>>
