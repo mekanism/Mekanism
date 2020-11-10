@@ -86,7 +86,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     public TileEntityQuantumEntangloporter() {
         super(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.INFUSION,
-              /*TransmissionType.PIGMENT, TODO v11 */ TransmissionType.SLURRY, TransmissionType.ENERGY, TransmissionType.HEAT);
+              TransmissionType.PIGMENT, TransmissionType.SLURRY, TransmissionType.ENERGY, TransmissionType.HEAT);
 
         setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getInventorySlots(null) : Collections.emptyList());
         setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> hasFrequency() ? getFreq().getFluidTanks(null) : Collections.emptyList());
@@ -107,7 +107,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.INFUSION,
-              /*TransmissionType.PIGMENT, TODO v11 */ TransmissionType.SLURRY);
+              TransmissionType.PIGMENT, TransmissionType.SLURRY);
 
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.INVENTORY, true, true, true);

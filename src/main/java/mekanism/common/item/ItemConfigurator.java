@@ -260,7 +260,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
         CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_GASES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_INFUSE_TYPES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.INFUSION, EnumColor.BRIGHT_GREEN, true, null),
-        //CONFIGURATE_PIGMENTS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.PIGMENT, EnumColor.BRIGHT_GREEN, true, null), TODO v11 reimplement
+        CONFIGURATE_PIGMENTS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.PIGMENT, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_SLURRIES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.SLURRY, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_ENERGY(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ENERGY, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_HEAT(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.HEAT, EnumColor.BRIGHT_GREEN, true, null),
@@ -316,8 +316,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     return TransmissionType.GAS;
                 case CONFIGURATE_INFUSE_TYPES:
                     return TransmissionType.INFUSION;
-                //case CONFIGURATE_PIGMENTS:
-                //    return TransmissionType.PIGMENT;
+                case CONFIGURATE_PIGMENTS:
+                    return TransmissionType.PIGMENT;
                 case CONFIGURATE_SLURRIES:
                     return TransmissionType.SLURRY;
                 case CONFIGURATE_ENERGY:
