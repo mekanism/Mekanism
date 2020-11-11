@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.bar;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,6 +23,7 @@ import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse;
 import mekanism.common.network.PacketDropperUse.DropperAction;
 import mekanism.common.network.PacketDropperUse.TankType;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -37,6 +39,22 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     public GuiChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<STACK> infoProvider, int x, int y, int width, int height, boolean horizontal) {
         super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, x, y, width, height);
         this.horizontal = horizontal;
+    }
+
+    @Override
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        STACK stored = getHandler().getStack();
+        if (stored.isEmpty()) {
+            super.renderToolTip(matrix, mouseX, mouseY);
+        } else {
+            List<ITextComponent> tooltips = new ArrayList<>();
+            ITextComponent tooltip = getHandler().getTooltip();
+            if (tooltip != null) {
+                tooltips.add(tooltip);
+            }
+            tooltips.addAll(ChemicalUtil.getAttributeTooltips(stored.getType()));
+            displayTooltips(matrix, tooltips, mouseX, mouseY);
+        }
     }
 
     @Override

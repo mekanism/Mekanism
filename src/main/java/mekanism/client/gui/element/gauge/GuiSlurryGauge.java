@@ -8,7 +8,6 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketDropperUse.TankType;
-import net.minecraft.util.text.ITextComponent;
 
 public class GuiSlurryGauge extends GuiChemicalGauge<Slurry, SlurryStack, ISlurryTank> {
 
@@ -33,9 +32,5 @@ public class GuiSlurryGauge extends GuiChemicalGauge<Slurry, SlurryStack, ISlurr
     @Override
     public TransmissionType getTransmission() {
         return TransmissionType.SLURRY;
-    }
-
-    @Override
-    protected void addAttributeTooltips(List<ITextComponent> tooltips, Slurry chemical) {
     }
 }

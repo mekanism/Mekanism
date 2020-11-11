@@ -116,12 +116,8 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
         } else {
             list.add(MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), formatInt(amount)));
         }
-        addAttributeTooltips(list, tank.getType());
+        list.addAll(ChemicalUtil.getAttributeTooltips(tank.getType()));
         return list;
-    }
-
-    protected void addAttributeTooltips(List<ITextComponent> tooltips, CHEMICAL chemical) {
-        tooltips.addAll(ChemicalUtil.getAttributeTooltips(chemical));
     }
 
     @Override

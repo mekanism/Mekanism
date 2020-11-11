@@ -15,6 +15,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.util.ChemicalUtil;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
@@ -155,15 +156,12 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         }
         List<ITextComponent> tooltip = new ArrayList<>();
         tooltip.add(TextComponentUtil.build(chemical));
-        ITextComponent component = null;
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-            component = MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, nf.format(stack.getAmount()), nf.format(capacityMb));
+            tooltip.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, nf.format(stack.getAmount()), nf.format(capacityMb)));
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-            component = MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, nf.format(stack.getAmount()));
+            tooltip.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, nf.format(stack.getAmount())));
         }
-        if (component != null) {
-            tooltip.add(component);
-        }
+        tooltip.addAll(ChemicalUtil.getAttributeTooltips(stack.getType()));
         return tooltip;
     }
 

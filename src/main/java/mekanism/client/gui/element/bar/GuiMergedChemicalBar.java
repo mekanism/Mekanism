@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.bar;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
@@ -75,6 +76,16 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
         infusionBar = new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getInfusionTank(), handler.getInfusionTanks(null)), x, y, width, height, horizontal);
         pigmentBar = new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getPigmentTank(), handler.getPigmentTanks(null)), x, y, width, height, horizontal);
         slurryBar = new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getSlurryTank(), handler.getSlurryTanks(null)), x, y, width, height, horizontal);
+    }
+
+    @Override
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
+        if (currentBar == null) {
+            super.renderToolTip(matrix, mouseX, mouseY);
+        } else {
+            currentBar.renderToolTip(matrix, mouseX, mouseY);
+        }
     }
 
     @Override

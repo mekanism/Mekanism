@@ -50,7 +50,6 @@ public class CrTConstants {
     public static final String CLASS_ITEM_STACK_INGREDIENT = "mekanism.api.ingredient.ItemStackIngredient";
     public static final String CLASS_FLUID_STACK_INGREDIENT = "mekanism.api.ingredient.FluidStackIngredient";
     public static final String CLASS_CHEMICAL_STACK_INGREDIENT = "mekanism.api.ingredient.ChemicalStackIngredient";
-    //TODO: Do we want these to be just like .Gas or .GasStack
     public static final String CLASS_GAS_STACK_INGREDIENT = "mekanism.api.ingredient.ChemicalStackIngredient.GasStackIngredient";
     public static final String CLASS_INFUSION_STACK_INGREDIENT = "mekanism.api.ingredient.ChemicalStackIngredient.InfusionStackIngredient";
     public static final String CLASS_PIGMENT_STACK_INGREDIENT = "mekanism.api.ingredient.ChemicalStackIngredient.PigmentStackIngredient";
@@ -90,17 +89,17 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_ROTARY = "mekanism.recipe.Rotary";
     public static final String CLASS_RECIPE_SAWING = "mekanism.recipe.Sawing";
 
-    public static final String CLASS_ATTRIBUTE_CHEMICAL = "mekanism.content.attribute.Chemical";
-    public static final String CLASS_ATTRIBUTE_GAS = "mekanism.content.attribute.Gas";
-    public static final String CLASS_ATTRIBUTE_INFUSE_TYPE = "mekanism.content.attribute.InfuseType";
-    public static final String CLASS_ATTRIBUTE_PIGMENT = "mekanism.content.attribute.Pigment";
-    public static final String CLASS_ATTRIBUTE_SLURRY = "mekanism.content.attribute.Slurry";
-    public static final String CLASS_ATTRIBUTE_COOLANT = "mekanism.content.attribute.gas.Coolant";
-    public static final String CLASS_ATTRIBUTE_FUEL = "mekanism.content.attribute.gas.Fuel";
-    public static final String CLASS_ATTRIBUTE_RADIATION = "mekanism.content.attribute.gas.Radiation";
-    public static final String CLASS_BUILDER_CHEMICAL = "mekanism.content.builder.Chemical";
-    public static final String CLASS_BUILDER_GAS = "mekanism.content.builder.Gas";
-    public static final String CLASS_BUILDER_INFUSE_TYPE = "mekanism.content.builder.InfuseType";
-    public static final String CLASS_BUILDER_PIGMENT = "mekanism.content.builder.Pigment";
-    public static final String CLASS_BUILDER_SLURRY = "mekanism.content.builder.Slurry";
+    public static final String CLASS_ATTRIBUTE_CHEMICAL = "mekanism.content.attribute.ChemicalAttribute";
+    public static final String CLASS_ATTRIBUTE_GAS = "mekanism.content.attribute.GasAttribute";
+    public static final String CLASS_ATTRIBUTE_INFUSE_TYPE = "mekanism.content.attribute.InfuseTypeAttribute";
+    public static final String CLASS_ATTRIBUTE_PIGMENT = "mekanism.content.attribute.PigmentAttribute";
+    public static final String CLASS_ATTRIBUTE_SLURRY = "mekanism.content.attribute.SlurryAttribute";
+    public static final String CLASS_ATTRIBUTE_COOLANT = "mekanism.content.attribute.gas.CoolantAttribute";
+    public static final String CLASS_ATTRIBUTE_FUEL = "mekanism.content.attribute.gas.FuelAttribute";
+    public static final String CLASS_ATTRIBUTE_RADIATION = "mekanism.content.attribute.gas.RadiationAttribute";
+    public static final String CLASS_BUILDER_CHEMICAL = "mekanism.content.builder.ChemicalBuilder";
+    public static final String CLASS_BUILDER_GAS = "mekanism.content.builder.GasBuilder";
+    public static final String CLASS_BUILDER_INFUSE_TYPE = "mekanism.content.builder.InfuseTypeBuilder";
+    public static final String CLASS_BUILDER_PIGMENT = "mekanism.content.builder.PigmentBuilder";
+    public static final String CLASS_BUILDER_SLURRY = "mekanism.content.builder.SlurryBuilder";
 }
