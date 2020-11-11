@@ -14,6 +14,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
@@ -24,8 +25,13 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
+import net.minecraft.util.ResourceLocation;
 
 public class CrTUtils {
+
+    public static ResourceLocation rl(String path) {
+        return new ResourceLocation(MekanismHooks.CRAFTTWEAKER_MOD_ID, path);
+    }
 
     public static ICrTGasStack stackFromGas(Gas gas) {
         return new CrTGasStack(new GasStack(gas, 1));

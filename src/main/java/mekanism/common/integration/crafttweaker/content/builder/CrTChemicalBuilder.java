@@ -3,8 +3,8 @@ package mekanism.common.integration.crafttweaker.content.builder;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.content.attribute.ICrTChemicalAttribute;
 import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
@@ -42,11 +42,7 @@ public abstract class CrTChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BU
     @ZenCodeType.Method
     public void build(String name) {
         //TODO: Validate the name
-        //TODO: If it doesn't throw warnings about invalid mod (given we are registering this as CrT)
-        // then move our CrT RL creators to CrTUtils instead of being inlined, if we do have issues
-        // then potentially either try to register the listeners as if we were CrT or just register
-        // the chemicals to our domain
-        build(new ResourceLocation(MekanismHooks.CRAFTTWEAKER_MOD_ID, name));
+        build(CrTUtils.rl(name));
     }
 
     protected abstract void build(ResourceLocation registryName);

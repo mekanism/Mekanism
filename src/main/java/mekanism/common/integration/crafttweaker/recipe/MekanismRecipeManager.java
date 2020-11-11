@@ -12,8 +12,8 @@ import java.util.List;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.item.ItemStack;
@@ -62,7 +62,7 @@ public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe> imple
     }
 
     protected ResourceLocation getAndValidateName(String path) {
-        return new ResourceLocation(MekanismHooks.CRAFTTWEAKER_MOD_ID, validateRecipeName(path));
+        return CrTUtils.rl(validateRecipeName(path));
     }
 
     protected ItemStack getAndValidateNotEmpty(IItemStack stack) {

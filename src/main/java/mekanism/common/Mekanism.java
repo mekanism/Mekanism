@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
@@ -99,6 +100,8 @@ import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -106,6 +109,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -217,11 +221,23 @@ public class Mekanism {
         //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
         hooks.hookConstructor();
         if (hooks.CraftTweakerLoaded) {
+            //Attempt to grab the mod event bus for CraftTweaker so that we can register our custom content in their namespace
+            // to make it clearer which chemicals were added by CraftTweaker, and which are added by actual mods.
+            // Gracefully fallback to our event bus if something goes wrong with getting CrT's and just then have the log have
+            // warnings about us registering things in their namespace.
+            IEventBus crtModEventBus = modEventBus;
+            Optional<? extends ModContainer> crtModContainer = ModList.get().getModContainerById(MekanismHooks.CRAFTTWEAKER_MOD_ID);
+            if (crtModContainer.isPresent()) {
+                ModContainer container = crtModContainer.get();
+                if (container instanceof FMLModContainer) {
+                    crtModEventBus = ((FMLModContainer) container).getEventBus();
+                }
+            }
             //Register these at lowest priority to try and ensure they get later ids in the chemical registries
-            modEventBus.addGenericListener(Gas.class, EventPriority.LOWEST, CrTContentUtils::registerCrTGases);
-            modEventBus.addGenericListener(InfuseType.class, EventPriority.LOWEST, CrTContentUtils::registerCrTInfuseTypes);
-            modEventBus.addGenericListener(Pigment.class, EventPriority.LOWEST, CrTContentUtils::registerCrTPigments);
-            modEventBus.addGenericListener(Slurry.class, EventPriority.LOWEST, CrTContentUtils::registerCrTSlurries);
+            crtModEventBus.addGenericListener(Gas.class, EventPriority.LOWEST, CrTContentUtils::registerCrTGases);
+            crtModEventBus.addGenericListener(InfuseType.class, EventPriority.LOWEST, CrTContentUtils::registerCrTInfuseTypes);
+            crtModEventBus.addGenericListener(Pigment.class, EventPriority.LOWEST, CrTContentUtils::registerCrTPigments);
+            crtModEventBus.addGenericListener(Slurry.class, EventPriority.LOWEST, CrTContentUtils::registerCrTSlurries);
         }
     }
 

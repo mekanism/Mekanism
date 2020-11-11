@@ -1,6 +1,7 @@
 package mekanism.common.integration.crafttweaker.content;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.ScriptLoadingOptions;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -14,6 +15,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentBuilder;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryBuilder;
+import mekanism.common.Mekanism;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 
@@ -50,8 +52,7 @@ public class CrTContentUtils {
         if (CraftTweakerAPI.isFirstRun()) {
             //Only queue our chemicals for registration on the first run of our loader
             if (queuedChemicals == null) {
-                //TODO: Figure out loader what we want to call the loader and actually register it
-                CraftTweakerAPI.logError("Cannot register %s '%s' since it was called too late. Registering must be done during '#loader mekanism'!",
+                CraftTweakerAPI.logError("Cannot register %s '%s' since it was called too late. Registering must be done during '#loader mekanismcontent'!",
                       type, registryName);
             } else if (queuedChemicals.containsKey(registryName)) {
                 CraftTweakerAPI.logWarning("Registration for %s '%s' is already queued, skipping duplicate.", type, registryName);
@@ -63,6 +64,10 @@ public class CrTContentUtils {
     }
 
     public static void registerCrTGases(RegistryEvent.Register<Gas> event) {
+        //We register and load our content scripts here in the first registry event of ours for our types of content
+        // to make sure that the new registry events have fired and that the registries exist and the bracket handler
+        // validators won't choke
+        CraftTweakerAPI.loadScripts(new ScriptLoadingOptions().setLoaderName(Mekanism.MODID + "content").execute().firstRun());
         if (queuedGases != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
             //Copy the reference and then invalidate the other reference so that we properly don't allow more registration to
             // happen once we start registering it
