@@ -4,7 +4,7 @@
   "assemblicator.mekanism.craft_single": "Fabricar un Ítem",
   "assemblicator.mekanism.encode_formula": "Codificar Receta",
   "assemblicator.mekanism.fill_empty": "Llenar/Vaciar Tabla",
-  "assemblicator.mekanism.stock_control": "Control de stock: %s",
+  "assemblicator.mekanism.stock_control": "Control de almacenaje: %s",
   "auto.mekanism.eject": "Auto-expulsar",
   "auto.mekanism.pull": "Auto-extraer",
   "auto.mekanism.sort": "Auto-ordenar",
