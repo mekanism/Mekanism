@@ -319,6 +319,13 @@ repositories {
         }
     }
     maven {
+        name 'ComputerCraft'
+        url "https://squiddev.cc/maven/"
+        content {
+            includeGroup 'org.squiddev'
+        }
+    }
+    maven {
         name 'CurseMaven'
         url 'https://www.cursemaven.com'
         content {
@@ -373,6 +380,7 @@ dependencies {
     //Mods we have dependencies on but don't bother loading into the dev environment
     //compileOnly fg.deobf("curse.maven:projecte-226410:${projecte_api_id}")
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
+    compileOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
 
     //Dependencies for data generators for mod compat reference
     datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
