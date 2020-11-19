@@ -14,6 +14,9 @@ import org.openzen.zencode.java.ZenCodeType;
  */
 public class CrTIngredientExpansion {//TODO: Expand tags once they aren't all using the same base class in CrT
 
+    private CrTIngredientExpansion() {
+    }
+
     @ZenRegister
     @ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_INGREDIENT)
     public static class IIngredientExpansion {
@@ -22,8 +25,8 @@ public class CrTIngredientExpansion {//TODO: Expand tags once they aren't all us
          * Allows for casting {@link IIngredient}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTItemStackIngredient asCrTItemStackIngredient(IIngredient ingredient) {
-            return CrTItemStackIngredient.from(ingredient);
+        public static CrTItemStackIngredient asItemStackIngredient(IIngredient _this) {
+            return CrTItemStackIngredient.from(_this);
         }
     }
 
@@ -37,8 +40,8 @@ public class CrTIngredientExpansion {//TODO: Expand tags once they aren't all us
          * @implNote Override our expansion of {@link IIngredient} to use the {@link IItemStack} param based {@link CrTItemStackIngredient}.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTItemStackIngredient asCrTItemStackIngredient(IItemStack stack) {
-            return CrTItemStackIngredient.from(stack);
+        public static CrTItemStackIngredient asItemStackIngredient(IItemStack _this) {
+            return CrTItemStackIngredient.from(_this);
         }
     }
 
@@ -52,8 +55,8 @@ public class CrTIngredientExpansion {//TODO: Expand tags once they aren't all us
          * @implNote Override our expansion of {@link IIngredient} to use the {@link MCIngredientList} param based {@link CrTItemStackIngredient}.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTItemStackIngredient asCrTItemStackIngredient(MCIngredientList ingredientList) {
-            return CrTItemStackIngredient.from(ingredientList);
+        public static CrTItemStackIngredient asItemStackIngredient(MCIngredientList _this) {
+            return CrTItemStackIngredient.from(_this);
         }
     }
 
@@ -65,8 +68,8 @@ public class CrTIngredientExpansion {//TODO: Expand tags once they aren't all us
          * Allows for casting {@link IFluidStack}s to {@link CrTFluidStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTFluidStackIngredient asCrTFluidStackIngredient(IFluidStack fluidStack) {
-            return CrTFluidStackIngredient.from(fluidStack);
+        public static CrTFluidStackIngredient asFluidStackIngredient(IFluidStack _this) {
+            return CrTFluidStackIngredient.from(_this);
         }
     }
 }

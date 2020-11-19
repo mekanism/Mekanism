@@ -44,4 +44,30 @@ public abstract class BaseCrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, 
     public STACK getInternal() {
         return stack;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        STACK otherStack = ((BaseCrTChemicalStack<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>) o).stack;
+        //TODO: If we decide to make equals care about amount (which we probably will do), then we can
+        // remove comparing the stack size here (and in the below isEqual method)
+        return stack.equals(otherStack) && stack.getAmount() == otherStack.getAmount();
+    }
+
+    @Override
+    public boolean isEqual(CRT_STACK other) {
+        //Allow mutable and non mutable CrT stacks, to be equal when comparing them in CrT
+        STACK otherStack = other.getInternal();
+        return stack.equals(otherStack) && stack.getAmount() == otherStack.getAmount();
+    }
+
+    @Override
+    public int hashCode() {
+        return stack.hashCode();
+    }
 }

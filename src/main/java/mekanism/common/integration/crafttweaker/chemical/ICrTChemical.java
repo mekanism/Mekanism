@@ -95,7 +95,7 @@ public interface ICrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends
     /**
      * Creates a new {@link ICrTChemical} with the given amount of chemical.
      *
-     * @param amount The size of the stack to create
+     * @param amount The size of the stack to create.
      *
      * @return a new (immutable) {@link ICrTChemical}
      */
@@ -107,12 +107,25 @@ public interface ICrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends
     /**
      * Creates a new {@link ICrTChemical} with the given amount of chemical.
      *
-     * @param amount The size of the stack to create
+     * @param amount The size of the stack to create.
      *
      * @return a new (immutable) {@link ICrTChemical}
      */
     @ZenCodeType.Method
     CRT_STACK makeStack(long amount);
+
+    /**
+     * Checks if this chemical is equal another chemical.
+     *
+     * @param other Chemical to check against.
+     *
+     * @return {@code true} if the chemicals are equal, {@code false} otherwise.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
+    default boolean isEqual(CRT_CHEMICAL other) {
+        return getChemical() == other.getChemical();
+    }
 
     @Override
     default String getCommandString() {

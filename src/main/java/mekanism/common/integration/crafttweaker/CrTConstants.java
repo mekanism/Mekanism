@@ -47,6 +47,7 @@ public class CrTConstants {
     public static final String CLASS_SLURRY_STACK_IMPL = "mekanism.api.chemical.slurry.SlurryStack";
     public static final String CLASS_SLURRY_STACK_MUTABLE = "mekanism.api.chemical.slurry.MutableSlurryStack";
 
+    public static final String CLASS_FLOATING_LONG = "mekanism.api.FloatingLong";
     public static final String CLASS_ITEM_STACK_INGREDIENT = "mekanism.api.ingredient.ItemStackIngredient";
     public static final String CLASS_FLUID_STACK_INGREDIENT = "mekanism.api.ingredient.FluidStackIngredient";
     public static final String CLASS_CHEMICAL_STACK_INGREDIENT = "mekanism.api.ingredient.ChemicalStackIngredient";

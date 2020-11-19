@@ -6,6 +6,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTFloatingLong;
 import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.EnergyConversionIRecipe;
@@ -21,8 +22,8 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient input, String output) {
-        FloatingLong outputEnergy = FloatingLong.parseFloatingLong(output, true);
+    public void addRecipe(String name, CrTItemStackIngredient input, CrTFloatingLong output) {
+        FloatingLong outputEnergy = output.getInternal();
         if (outputEnergy.isZero()) {
             throw new JsonSyntaxException("Output must be greater than zero.");
         }
@@ -36,8 +37,6 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                //TODO: Figure out how we want to represent floating longs in CrT and how possible it is to make custom numbers in ZS
-                // In theory we could make just add an implicit cast from string to a CrTFloatingLong?? might be a bit messy though
                 return getRecipe().getOutputDefinition().toString();
             }
         };

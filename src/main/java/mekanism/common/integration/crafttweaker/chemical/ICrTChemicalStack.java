@@ -146,14 +146,26 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("type")
+    @ZenCodeType.Caster(implicit = true)
     CRT_CHEMICAL getType();
 
     /**
-     * Mod devs should use this to get the actual ChemicalStack
+     * Mod devs should use this to get the actual ChemicalStack.
      *
-     * @return The actual ChemicalStack
+     * @return The actual ChemicalStack.
      */
     STACK getInternal();
+
+    /**
+     * Checks if this chemical stack is equal another chemical stack.
+     *
+     * @param other Chemical stack to check against.
+     *
+     * @return {@code true} if the chemicals stacks are equal, {@code false} otherwise.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
+    boolean isEqual(CRT_STACK other);
 
     //TODO: Test that this works for things like crystallizer and it doesn't get confused because of us specifying type of chemical and stack here
     @ZenCodeType.Caster(implicit = true)

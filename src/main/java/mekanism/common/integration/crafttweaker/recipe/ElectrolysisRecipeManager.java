@@ -6,6 +6,7 @@ import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
+import mekanism.common.integration.crafttweaker.CrTFloatingLong;
 import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.ElectrolysisIRecipe;
@@ -23,8 +24,8 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
 
     @ZenCodeType.Method
     public void addRecipe(String name, CrTFluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput,
-          @ZenCodeType.OptionalString("1") String energyMultiplier) {
-        FloatingLong multiplier = FloatingLong.parseFloatingLong(energyMultiplier, true);
+          @ZenCodeType.Optional("1 as " + CrTConstants.CLASS_FLOATING_LONG) CrTFloatingLong energyMultiplier) {
+        FloatingLong multiplier = energyMultiplier.getInternal();
         if (multiplier.smallerThan(FloatingLong.ONE)) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + multiplier);
         }

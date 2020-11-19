@@ -61,82 +61,82 @@ public class CrTTags {//TODO: Rewrite this into various tag managers once the Cr
     }
 
     @ZenCodeType.Method
-    public static boolean contains(MCTag tag, ICrTChemical<?, ?, ?, ?> chemical) {
-        return chemical.isIn(tag);
+    public static boolean contains(MCTag _this, ICrTChemical<?, ?, ?, ?> chemical) {
+        return chemical.isIn(_this);
     }
 
     @ZenCodeType.Method
-    public static MCTag createGasTag(MCTag tag) {
-        return createChemicalTag(tag, ChemicalTags.GAS, "Gas");
+    public static MCTag createGasTag(MCTag _this) {
+        return createChemicalTag(_this, ChemicalTags.GAS, "Gas");
     }
 
     @ZenCodeType.Method
-    public static MCTag createInfuseTypeTag(MCTag tag) {
-        return createChemicalTag(tag, ChemicalTags.INFUSE_TYPE, "Infuse Type");
+    public static MCTag createInfuseTypeTag(MCTag _this) {
+        return createChemicalTag(_this, ChemicalTags.INFUSE_TYPE, "Infuse Type");
     }
 
     @ZenCodeType.Method
-    public static MCTag createPigmentTag(MCTag tag) {
-        return createChemicalTag(tag, ChemicalTags.PIGMENT, "Pigment");
+    public static MCTag createPigmentTag(MCTag _this) {
+        return createChemicalTag(_this, ChemicalTags.PIGMENT, "Pigment");
     }
 
     @ZenCodeType.Method
-    public static MCTag createSlurryTag(MCTag tag) {
-        return createChemicalTag(tag, ChemicalTags.SLURRY, "Slurry");
+    public static MCTag createSlurryTag(MCTag _this) {
+        return createChemicalTag(_this, ChemicalTags.SLURRY, "Slurry");
     }
 
-    private static MCTag createChemicalTag(MCTag tag, ChemicalTags<?> tags, String type) {
-        CraftTweakerAPI.apply(new ActionTagCreate<>(tags.getCollection(), type, Tag.getTagFromContents(Sets.newHashSet()), tag.getInternalID()));
-        return tag;
+    private static MCTag createChemicalTag(MCTag _this, ChemicalTags<?> tags, String type) {
+        CraftTweakerAPI.apply(new ActionTagCreate<>(tags.getCollection(), type, Tag.getTagFromContents(Sets.newHashSet()), _this.getInternalID()));
+        return _this;
     }
 
     @ZenCodeType.Getter("isGasTag")
-    public static boolean isGasTag(MCTag tag) {
-        return getGasTag(tag) != null;
+    public static boolean isGasTag(MCTag _this) {
+        return getGasTag(_this) != null;
     }
 
     @ZenCodeType.Getter("isInfuseTypeTag")
-    public static boolean isInfuseTypeTag(MCTag tag) {
-        return getInfuseTypeTag(tag) != null;
+    public static boolean isInfuseTypeTag(MCTag _this) {
+        return getInfuseTypeTag(_this) != null;
     }
 
     @ZenCodeType.Getter("isPigmentTag")
-    public static boolean isPigmentTag(MCTag tag) {
-        return getPigmentTag(tag) != null;
+    public static boolean isPigmentTag(MCTag _this) {
+        return getPigmentTag(_this) != null;
     }
 
     @ZenCodeType.Getter("isSlurryTag")
-    public static boolean isSlurryTag(MCTag tag) {
-        return getSlurryTag(tag) != null;
+    public static boolean isSlurryTag(MCTag _this) {
+        return getSlurryTag(_this) != null;
     }
 
     @ZenCodeType.Getter("gases")
-    public static ICrTGas[] getGases(MCTag tag) {
-        return getChemicals(tag, CrTTags::getGasTag, CrTGas[]::new, CrTGas::new, "GasTag");
+    public static ICrTGas[] getGases(MCTag _this) {
+        return getChemicals(_this, CrTTags::getGasTag, CrTGas[]::new, CrTGas::new, "GasTag");
     }
 
     @ZenCodeType.Getter("infuse_types")
-    public static ICrTInfuseType[] getInfuseTypes(MCTag tag) {
-        return getChemicals(tag, CrTTags::getInfuseTypeTag, CrTInfuseType[]::new, CrTInfuseType::new, "InfuseTypeTag");
+    public static ICrTInfuseType[] getInfuseTypes(MCTag _this) {
+        return getChemicals(_this, CrTTags::getInfuseTypeTag, CrTInfuseType[]::new, CrTInfuseType::new, "InfuseTypeTag");
     }
 
     @ZenCodeType.Getter("pigments")
-    public static ICrTPigment[] getPigments(MCTag tag) {
-        return getChemicals(tag, CrTTags::getPigmentTag, CrTPigment[]::new, CrTPigment::new, "PigmentTag");
+    public static ICrTPigment[] getPigments(MCTag _this) {
+        return getChemicals(_this, CrTTags::getPigmentTag, CrTPigment[]::new, CrTPigment::new, "PigmentTag");
     }
 
     @ZenCodeType.Getter("slurries")
-    public static ICrTSlurry[] getSlurries(MCTag tag) {
-        return getChemicals(tag, CrTTags::getSlurryTag, CrTSlurry[]::new, CrTSlurry::new, "SlurryTag");
+    public static ICrTSlurry[] getSlurries(MCTag _this) {
+        return getChemicals(_this, CrTTags::getSlurryTag, CrTSlurry[]::new, CrTSlurry::new, "SlurryTag");
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
           CRT_CHEMICAL extends ICrTChemical<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>>
-    CRT_CHEMICAL[] getChemicals(MCTag tag, Function<MCTag, ITag<CHEMICAL>> tagGetter, IntFunction<CRT_CHEMICAL[]> arrayCreator,
+    CRT_CHEMICAL[] getChemicals(MCTag _this, Function<MCTag, ITag<CHEMICAL>> tagGetter, IntFunction<CRT_CHEMICAL[]> arrayCreator,
           Function<CHEMICAL, CRT_CHEMICAL> chemicalConverter, String tagTypeName) {
-        ITag<CHEMICAL> chemicalTag = tagGetter.apply(tag);
+        ITag<CHEMICAL> chemicalTag = tagGetter.apply(_this);
         if (chemicalTag == null) {
-            CraftTweakerAPI.logError("\"%s\" is not a %s!", tag.getCommandString(), tagTypeName);
+            CraftTweakerAPI.logError("\"%s\" is not a %s!", _this.getCommandString(), tagTypeName);
             return arrayCreator.apply(0);
         }
         List<CHEMICAL> elements = chemicalTag.getAllElements();
@@ -148,76 +148,76 @@ public class CrTTags {//TODO: Rewrite this into various tag managers once the Cr
     }
 
     @ZenCodeType.Getter("firstGas")
-    public static ICrTGas getFirstGas(MCTag tag) {
-        return getFirstChemical(tag, CrTTags::getGasTag, CrTGas::new, "GasTag");
+    public static ICrTGas getFirstGas(MCTag _this) {
+        return getFirstChemical(_this, CrTTags::getGasTag, CrTGas::new, "GasTag");
     }
 
     @ZenCodeType.Getter("firstInfuseType")
-    public static ICrTInfuseType getFirstInfuseType(MCTag tag) {
-        return getFirstChemical(tag, CrTTags::getInfuseTypeTag, CrTInfuseType::new, "InfuseTypeTag");
+    public static ICrTInfuseType getFirstInfuseType(MCTag _this) {
+        return getFirstChemical(_this, CrTTags::getInfuseTypeTag, CrTInfuseType::new, "InfuseTypeTag");
     }
 
     @ZenCodeType.Getter("firstPigment")
-    public static ICrTPigment getFirstPigment(MCTag tag) {
-        return getFirstChemical(tag, CrTTags::getPigmentTag, CrTPigment::new, "PigmentTag");
+    public static ICrTPigment getFirstPigment(MCTag _this) {
+        return getFirstChemical(_this, CrTTags::getPigmentTag, CrTPigment::new, "PigmentTag");
     }
 
     @ZenCodeType.Getter("firstSlurry")
-    public static ICrTSlurry getFirstSlurry(MCTag tag) {
-        return getFirstChemical(tag, CrTTags::getSlurryTag, CrTSlurry::new, "SlurryTag");
+    public static ICrTSlurry getFirstSlurry(MCTag _this) {
+        return getFirstChemical(_this, CrTTags::getSlurryTag, CrTSlurry::new, "SlurryTag");
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
           CRT_CHEMICAL extends ICrTChemical<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>>
-    CRT_CHEMICAL getFirstChemical(MCTag tag, Function<MCTag, ITag<CHEMICAL>> tagGetter, Function<CHEMICAL, CRT_CHEMICAL> chemicalConverter, String tagTypeName) {
-        ITag<CHEMICAL> chemicalTag = tagGetter.apply(tag);
+    CRT_CHEMICAL getFirstChemical(MCTag _this, Function<MCTag, ITag<CHEMICAL>> tagGetter, Function<CHEMICAL, CRT_CHEMICAL> chemicalConverter, String tagTypeName) {
+        ITag<CHEMICAL> chemicalTag = tagGetter.apply(_this);
         if (chemicalTag == null) {
-            throw new IllegalArgumentException("\"" + tag.getCommandString() + "\" is not a " + tagTypeName + "!");
+            throw new IllegalArgumentException("\"" + _this.getCommandString() + "\" is not a " + tagTypeName + "!");
         }
         Optional<CHEMICAL> first = chemicalTag.getAllElements().stream().findFirst();
         if (first.isPresent()) {
             return chemicalConverter.apply(first.get());
         }
-        throw new NoSuchElementException("Could not get get first element of \"" + tag.getCommandString() + "\" as it is an empty " + tagTypeName + "!");
+        throw new NoSuchElementException("Could not get get first element of \"" + _this.getCommandString() + "\" as it is an empty " + tagTypeName + "!");
     }
 
     @ZenCodeType.Method
-    public static void addGases(MCTag tag, ICrTGas... gases) {
-        CraftTweakerAPI.apply(new ActionTagAdd<>(getGasTag(tag), CrTUtils.getChemicals(gases, Gas[]::new), tag.getInternalID()));
+    public static void addGases(MCTag _this, ICrTGas... gases) {
+        CraftTweakerAPI.apply(new ActionTagAdd<>(getGasTag(_this), CrTUtils.getChemicals(gases, Gas[]::new), _this.getInternalID()));
     }
 
     @ZenCodeType.Method
-    public static void addInfuseTypes(MCTag tag, ICrTInfuseType... infuseTypes) {
-        CraftTweakerAPI.apply(new ActionTagAdd<>(getInfuseTypeTag(tag), CrTUtils.getChemicals(infuseTypes, InfuseType[]::new), tag.getInternalID()));
+    public static void addInfuseTypes(MCTag _this, ICrTInfuseType... infuseTypes) {
+        CraftTweakerAPI.apply(new ActionTagAdd<>(getInfuseTypeTag(_this), CrTUtils.getChemicals(infuseTypes, InfuseType[]::new), _this.getInternalID()));
     }
 
     @ZenCodeType.Method
-    public static void addPigments(MCTag tag, ICrTPigment... pigments) {
-        CraftTweakerAPI.apply(new ActionTagAdd<>(getPigmentTag(tag), CrTUtils.getChemicals(pigments, Pigment[]::new), tag.getInternalID()));
+    public static void addPigments(MCTag _this, ICrTPigment... pigments) {
+        CraftTweakerAPI.apply(new ActionTagAdd<>(getPigmentTag(_this), CrTUtils.getChemicals(pigments, Pigment[]::new), _this.getInternalID()));
     }
 
     @ZenCodeType.Method
-    public static void addSlurries(MCTag tag, ICrTSlurry... slurries) {
-        CraftTweakerAPI.apply(new ActionTagAdd<>(getSlurryTag(tag), CrTUtils.getChemicals(slurries, Slurry[]::new), tag.getInternalID()));
+    public static void addSlurries(MCTag _this, ICrTSlurry... slurries) {
+        CraftTweakerAPI.apply(new ActionTagAdd<>(getSlurryTag(_this), CrTUtils.getChemicals(slurries, Slurry[]::new), _this.getInternalID()));
     }
 
     @ZenCodeType.Method
-    public static void removeGases(MCTag tag, ICrTGas... gases) {
-        CraftTweakerAPI.apply(new ActionTagRemove<>(getGasTag(tag), CrTUtils.getChemicals(gases, Gas[]::new), tag.getInternalID()));
+    public static void removeGases(MCTag _this, ICrTGas... gases) {
+        CraftTweakerAPI.apply(new ActionTagRemove<>(getGasTag(_this), CrTUtils.getChemicals(gases, Gas[]::new), _this.getInternalID()));
     }
 
     @ZenCodeType.Method
-    public static void removeInfuseTypes(MCTag tag, ICrTInfuseType... infuseTypes) {
-        CraftTweakerAPI.apply(new ActionTagRemove<>(getInfuseTypeTag(tag), CrTUtils.getChemicals(infuseTypes, InfuseType[]::new), tag.getInternalID()));
+    public static void removeInfuseTypes(MCTag _this, ICrTInfuseType... infuseTypes) {
+        CraftTweakerAPI.apply(new ActionTagRemove<>(getInfuseTypeTag(_this), CrTUtils.getChemicals(infuseTypes, InfuseType[]::new), _this.getInternalID()));
     }
 
     @ZenCodeType.Method
-    public static void removePigments(MCTag tag, ICrTPigment... pigments) {
-        CraftTweakerAPI.apply(new ActionTagRemove<>(getPigmentTag(tag), CrTUtils.getChemicals(pigments, Pigment[]::new), tag.getInternalID()));
+    public static void removePigments(MCTag _this, ICrTPigment... pigments) {
+        CraftTweakerAPI.apply(new ActionTagRemove<>(getPigmentTag(_this), CrTUtils.getChemicals(pigments, Pigment[]::new), _this.getInternalID()));
     }
 
     @ZenCodeType.Method
-    public static void removeSlurries(MCTag tag, ICrTSlurry... slurries) {
-        CraftTweakerAPI.apply(new ActionTagRemove<>(getSlurryTag(tag), CrTUtils.getChemicals(slurries, Slurry[]::new), tag.getInternalID()));
+    public static void removeSlurries(MCTag _this, ICrTSlurry... slurries) {
+        CraftTweakerAPI.apply(new ActionTagRemove<>(getSlurryTag(_this), CrTUtils.getChemicals(slurries, Slurry[]::new), _this.getInternalID()));
     }
 }

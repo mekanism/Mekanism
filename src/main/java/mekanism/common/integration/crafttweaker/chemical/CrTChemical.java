@@ -53,6 +53,16 @@ public abstract class CrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
     @Nullable
     protected abstract ITag<CHEMICAL> getChemicalTag(MCTag tag);
 
+    @Override
+    public boolean equals(Object o) {
+        return o == this || o != null && getClass() == o.getClass() && chemical == ((CrTChemical<?, ?, ?, ?>) o).chemical;
+    }
+
+    @Override
+    public int hashCode() {
+        return chemical.hashCode();
+    }
+
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_GAS_IMPL)
     public static class CrTGas extends CrTChemical<Gas, GasStack, ICrTGas, ICrTGasStack> implements ICrTGas {
