@@ -2,6 +2,7 @@ package mekanism.common.content.gear.mekasuit;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.GasStack;
@@ -51,6 +52,7 @@ public abstract class ModuleMekaSuit extends Module {
 
         @Override
         public void tickServer(PlayerEntity player) {
+            super.tickServer(player);
             int productionRate = 0;
             //Check if the mask is under water
             //Note: Being in water is checked first to ensure that if it is raining and the player is in water
@@ -122,18 +124,66 @@ public abstract class ModuleMekaSuit extends Module {
         }
 
         @Override
+        public void tickClient(PlayerEntity player) {
+            super.tickClient(player);
+            //Messy rough estimate version of tickServer so that the timer actually properly updates
+            if (!player.isSpectator()) {
+                FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
+                boolean free = usage.isZero() || player.isCreative();
+                FloatingLong energy = free ? FloatingLong.ZERO : getContainerEnergy().copy();
+                if (free || energy.greaterOrEqual(usage)) {
+                    //Gather all the active effects that we can handle, so that we have them in their own list and
+                    // don't run into any issues related to CMEs
+                    List<EffectInstance> effects = player.getActivePotionEffects().stream().filter(effect -> canHandle(effect.getPotion().getEffectType()))
+                          .collect(Collectors.toList());
+                    for (EffectInstance effect : effects) {
+                        if (free) {
+                            speedupEffect(player, effect);
+                        } else {
+                            energy = energy.minusEqual(usage);
+                            speedupEffect(player, effect);
+                            if (energy.smallerThan(usage)) {
+                                //If after using energy, our remaining energy is now smaller than how much we need to use, exit
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
         public void tickServer(PlayerEntity player) {
-            for (EffectInstance effect : player.getActivePotionEffects()) {
-                EffectType effectType = effect.getPotion().getEffectType();
-                if (!canHandle(effectType)) {
-                    continue;
-                } else if (getContainerEnergy().smallerThan(MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get())) {
-                    break;
+            super.tickServer(player);
+            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
+            boolean free = usage.isZero() || player.isCreative();
+            IEnergyContainer energyContainer = free ? null : getEnergyContainer();
+            if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
+                //Gather all the active effects that we can handle, so that we have them in their own list and
+                // don't run into any issues related to CMEs
+                List<EffectInstance> effects = player.getActivePotionEffects().stream()
+                      .filter(effect -> canHandle(effect.getPotion().getEffectType()))
+                      .collect(Collectors.toList());
+                for (EffectInstance effect : effects) {
+                    if (free) {
+                        speedupEffect(player, effect);
+                    } else if (useEnergy(player, energyContainer, usage, true).isZero()) {
+                        //If we can't actually extract energy, exit
+                        break;
+                    } else {
+                        speedupEffect(player, effect);
+                        if (energyContainer.getEnergy().smallerThan(usage)) {
+                            //If after using energy, our remaining energy is now smaller than how much we need to use, exit
+                            break;
+                        }
+                    }
                 }
-                useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get());
-                for (int i = 0; i < 9; i++) {
-                    effect.tick(player, () -> MekanismUtils.onChangedPotionEffect(player, effect, true));
-                }
+            }
+        }
+
+        private void speedupEffect(PlayerEntity player, EffectInstance effect) {
+            for (int i = 0; i < 9; i++) {
+                effect.tick(player, () -> MekanismUtils.onChangedPotionEffect(player, effect, true));
             }
         }
 

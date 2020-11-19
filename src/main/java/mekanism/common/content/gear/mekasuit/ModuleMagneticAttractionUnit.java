@@ -43,33 +43,34 @@ public class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
                 //Note: We check distance afterwards so that we aren't having to calculate a bunch of distances when we may run out
                 // of energy, and calculating distance is a bit more expensive than just checking if it can be picked up
                 List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(size, size, size), item -> !item.cannotPickup());
-                boolean exit = false;
                 for (ItemEntity item : items) {
                     if (item.getDistance(player) > 0.001) {
-                        if (!free) {
-                            if (useEnergy(player, energyContainer, usage, true).isZero()) {
-                                //If we can't actually extract energy, exit immediately
+                        if (free) {
+                            pullItem(player, item);
+                        } else if (useEnergy(player, energyContainer, usage, true).isZero()) {
+                            //If we can't actually extract energy, exit
+                            break;
+                        } else {
+                            pullItem(player, item);
+                            if (energyContainer.getEnergy().smallerThan(usage)) {
+                                //If after using energy, our energy is now smaller than how much we need to use, exit
                                 break;
                             }
-                            if (energyContainer.getEnergy().smallerThan(usage)) {
-                                //If after using energy, our energy is now smaller than how much we need to use
-                                // exit after pulling this item
-                                exit = true;
-                            }
                         }
-                        Vector3d diff = player.getPositionVec().subtract(item.getPositionVec());
-                        Vector3d motionNeeded = new Vector3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
-                        Vector3d motionDiff = motionNeeded.subtract(player.getMotion());
-                        item.setMotion(motionDiff.scale(0.2));
-                        Mekanism.packetHandler.sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player, item),
-                              player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int) (diff.length() * 4)), player);
-                        if (exit) {
-                            break;
-                        }
+
                     }
                 }
             }
         }
+    }
+
+    private void pullItem(PlayerEntity player, ItemEntity item) {
+        Vector3d diff = player.getPositionVec().subtract(item.getPositionVec());
+        Vector3d motionNeeded = new Vector3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
+        Vector3d motionDiff = motionNeeded.subtract(player.getMotion());
+        item.setMotion(motionDiff.scale(0.2));
+        Mekanism.packetHandler.sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player, item),
+              player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int) (diff.length() * 4)), player);
     }
 
     @Override
