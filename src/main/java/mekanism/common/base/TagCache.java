@@ -160,7 +160,8 @@ public final class TagCache {
             if (item instanceof BlockItem) {
                 Block block = ((BlockItem) item).getBlock();
                 //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderType() with a dummy BlockState
-                if (block instanceof BlockBounding) {
+                //noinspection ConstantConditions getBlock is nonnull, but if something "goes wrong" it returns null, just skip it
+                if (block == null || block instanceof BlockBounding) {
                     continue;
                 }
                 if (block.getDefaultState().getMaterial() == material) {
