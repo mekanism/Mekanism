@@ -216,7 +216,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         for (Entity entity : getToTeleport()) {
             sum = sum.plusEqual(calculateEnergyCost(entity, closestCoords));
         }
-        if (energyContainer.getEnergy().smallerThan(sum)) {
+        if (energyContainer.extract(sum, Action.SIMULATE, AutomationType.INTERNAL).smallerThan(sum)) {
             return 4;
         }
         return 1;
@@ -241,6 +241,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 for (Entity entity : entitiesToTeleport) {
                     entity.getSelfAndPassengers().forEach(e -> teleporter.didTeleport.add(e.getUniqueID()));
                     teleporter.teleDelay = 5;
+                    //Calculate energy cost before teleporting the entity, as after teleporting it
+                    // the cost will be negligible due to being on top of the destination
+                    FloatingLong energyCost = calculateEnergyCost(entity, closestCoords);
                     teleportEntityTo(entity, closestCoords, teleporter);
                     if (entity instanceof ServerPlayerEntity) {
                         alignPlayer((ServerPlayerEntity) entity, closestPos);
@@ -255,7 +258,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                             Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), currentServer.getWorld(coords.dimension), coordsPos);
                         }
                     }
-                    energyContainer.extract(calculateEnergyCost(entity, closestCoords), Action.EXECUTE, AutomationType.INTERNAL);
+                    energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.INTERNAL);
                     world.playSound(entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
                 }
             }
