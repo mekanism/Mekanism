@@ -265,8 +265,15 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null && amount > 0) {
             float toAbsorb = amount * absorption;
-            FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageDamage.get().multiply(toAbsorb);
-            return absorption * energyContainer.extract(usage, Action.EXECUTE, AutomationType.MANUAL).divide(usage).floatValue();
+            if (toAbsorb > 0) {
+                FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageDamage.get().multiply(toAbsorb);
+                if (usage.isZero()) {
+                    //No energy is actually needed to absorb the damage, either because of the config
+                    // or how small the amount to absorb is
+                    return absorption;
+                }
+                return absorption * energyContainer.extract(usage, Action.EXECUTE, AutomationType.MANUAL).divide(usage).floatValue();
+            }
         }
         return 0;
     }
