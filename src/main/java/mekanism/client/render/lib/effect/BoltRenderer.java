@@ -31,6 +31,12 @@ public class BoltRenderer {
 
     private final Map<Object, BoltOwnerData> boltOwners = new Object2ObjectOpenHashMap<>();
 
+    public boolean hasBoltsToRender() {
+        synchronized (boltOwners) {
+            return boltOwners.values().stream().anyMatch(data -> !data.bolts.isEmpty());
+        }
+    }
+
     public void render(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn) {
         IVertexBuilder buffer = bufferIn.getBuffer(MekanismRenderType.MEK_LIGHTNING);
         Matrix4f matrix = matrixStack.getLast().getMatrix();

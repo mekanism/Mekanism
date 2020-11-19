@@ -13,6 +13,6 @@ public abstract class CustomArmor extends BipedModel<LivingEntity> {
         super(size);
     }
 
-    public abstract void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity,
-          ItemStack stack);
+    public abstract void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
+          LivingEntity entity, ItemStack stack);
 }

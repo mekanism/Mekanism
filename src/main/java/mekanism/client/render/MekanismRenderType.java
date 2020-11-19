@@ -70,7 +70,7 @@ public class MekanismRenderType extends RenderType {
               .lightmap(LIGHTMAP_ENABLED)
               .overlay(OVERLAY_ENABLED)
               .build(true);
-        return makeType("entity_translucent_cull_no_diffuse", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, true, state);
+        return makeType("mek_entity_translucent_cull_no_diffuse", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, true, state);
     }
 
     public static RenderType getMekaSuit() {

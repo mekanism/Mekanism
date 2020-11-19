@@ -17,8 +17,8 @@ public class FreeRunnerArmor extends CustomArmor {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity,
-          ItemStack stack) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
+          LivingEntity entity, ItemStack stack) {
         if (isChild) {
             matrix.push();
             float f1 = 1.0F / childBodyScale;

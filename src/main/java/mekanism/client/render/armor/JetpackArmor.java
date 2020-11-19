@@ -23,8 +23,8 @@ public class JetpackArmor extends CustomArmor {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity,
-          ItemStack stack) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
+          LivingEntity entity, ItemStack stack) {
         if (!bipedBody.showModel) {
             //If the body model shouldn't show don't bother displaying it
             return;

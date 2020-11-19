@@ -126,15 +126,20 @@ public class RenderTickHandler {
 
     @SubscribeEvent
     public void renderWorld(RenderWorldLastEvent event) {
-        MatrixStack matrix = event.getMatrixStack();
-        matrix.push();
-        // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
-        Vector3d camVec = minecraft.gameRenderer.getActiveRenderInfo().getProjectedView();
-        matrix.translate(-camVec.x, -camVec.y, -camVec.z);
-        IRenderTypeBuffer.Impl renderer = minecraft.getRenderTypeBuffers().getBufferSource();
-        boltRenderer.render(minecraft.getRenderPartialTicks(), matrix, renderer);
-        renderer.finish(MekanismRenderType.MEK_LIGHTNING);
-        matrix.pop();
+        if (boltRenderer.hasBoltsToRender()) {
+            //Only do matrix transforms and mess with buffers if we actually have any bolts to render
+            MatrixStack matrix = event.getMatrixStack();
+            matrix.push();
+            // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
+            Vector3d camVec = minecraft.gameRenderer.getActiveRenderInfo().getProjectedView();
+            matrix.translate(-camVec.x, -camVec.y, -camVec.z);
+            //TODO: FIXME, this doesn't work on fabulous, I think it needs something like
+            // https://github.com/MinecraftForge/MinecraftForge/pull/7225
+            IRenderTypeBuffer.Impl renderer = minecraft.getRenderTypeBuffers().getBufferSource();
+            boltRenderer.render(event.getPartialTicks(), matrix, renderer);
+            renderer.finish(MekanismRenderType.MEK_LIGHTNING);
+            matrix.pop();
+        }
     }
 
     @SubscribeEvent
@@ -142,10 +147,12 @@ public class RenderTickHandler {
         if (event.getType() == ElementType.ARMOR) {
             FloatingLong capacity = FloatingLong.ZERO, stored = FloatingLong.ZERO;
             for (ItemStack stack : minecraft.player.inventory.armorInventory) {
-                IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
-                if (stack.getItem() instanceof ItemMekaSuitArmor && container != null) {
-                    capacity = capacity.plusEqual(container.getMaxEnergy());
-                    stored = stored.plusEqual(container.getEnergy());
+                if (stack.getItem() instanceof ItemMekaSuitArmor) {
+                    IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
+                    if (container != null) {
+                        capacity = capacity.plusEqual(container.getMaxEnergy());
+                        stored = stored.plusEqual(container.getEnergy());
+                    }
                 }
             }
             if (!capacity.isZero()) {

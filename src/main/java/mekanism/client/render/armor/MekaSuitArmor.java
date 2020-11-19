@@ -24,7 +24,6 @@ import javax.annotation.Nullable;
 import mekanism.client.model.BaseModelCache.ModelData;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.effect.BoltRenderer;
@@ -105,21 +104,22 @@ public class MekaSuitArmor extends CustomArmor {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity,
-          ItemStack stack) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
+          LivingEntity entity, ItemStack stack) {
         if (isChild) {
             matrix.push();
             float f1 = 1.0F / childBodyScale;
             matrix.scale(f1, f1, f1);
             matrix.translate(0.0D, childBodyOffsetY / 16.0F, 0.0D);
-            renderMekaSuit(matrix, renderer, light, overlayLight, hasEffect, entity);
+            renderMekaSuit(matrix, renderer, light, overlayLight, partialTicks, hasEffect, entity);
             matrix.pop();
         } else {
-            renderMekaSuit(matrix, renderer, light, overlayLight, hasEffect, entity);
+            renderMekaSuit(matrix, renderer, light, overlayLight, partialTicks, hasEffect, entity);
         }
     }
 
-    private void renderMekaSuit(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity) {
+    private void renderMekaSuit(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
+          LivingEntity entity) {
         ArmorQuads armorQuads = cache.getUnchecked(key(entity));
         armorQuads.getOpaqueMap().forEach((modelPos, quads) -> {
             matrix.push();
@@ -135,13 +135,13 @@ public class MekaSuitArmor extends CustomArmor {
                       .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
                 BoltEffect rightBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3d(0.025, 0.35, 0.37), new Vector3d(0.025, 0.15, 0.37), 10)
                       .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
-                boltRenderer.update(0, leftBolt, MekanismRenderer.getPartialTick());
-                boltRenderer.update(1, rightBolt, MekanismRenderer.getPartialTick());
+                boltRenderer.update(0, leftBolt, partialTicks);
+                boltRenderer.update(1, rightBolt, partialTicks);
             }
             //Adjust the matrix so that we render the lightning in the correct spot if the player is crouching
             matrix.push();
             ModelPos.BODY.translate(this, matrix);
-            boltRenderer.render(MekanismRenderer.getPartialTick(), matrix, renderer);
+            boltRenderer.render(partialTicks, matrix, renderer);
             matrix.pop();
         }
 
