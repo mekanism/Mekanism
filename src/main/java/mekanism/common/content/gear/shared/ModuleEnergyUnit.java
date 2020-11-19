@@ -5,7 +5,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.Module;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
-import mekanism.common.util.StorageUtils;
 
 public class ModuleEnergyUnit extends Module {
 
@@ -22,8 +21,7 @@ public class ModuleEnergyUnit extends Module {
     @Override
     public void onRemoved(boolean last) {
         super.onRemoved(last);
-
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
+        IEnergyContainer energyContainer = getEnergyContainer();
         if (energyContainer != null) {
             energyContainer.setEnergy(energyContainer.getEnergy().min(energyContainer.getMaxEnergy()));
         }

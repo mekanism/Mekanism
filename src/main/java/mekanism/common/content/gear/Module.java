@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
@@ -72,13 +73,18 @@ public abstract class Module {
         }
     }
 
+    @Nullable
+    public IEnergyContainer getEnergyContainer() {
+        return StorageUtils.getEnergyContainer(getContainer(), 0);
+    }
+
     public FloatingLong getContainerEnergy() {
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
+        IEnergyContainer energyContainer = getEnergyContainer();
         return energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
     }
 
     public boolean canUseEnergy(LivingEntity wearer, FloatingLong energy) {
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
+        IEnergyContainer energyContainer = getEnergyContainer();
         if ((!(wearer instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) wearer)) && energyContainer != null) {
             return energyContainer.extract(energy, Action.SIMULATE, AutomationType.MANUAL).equals(energy);
         }
@@ -90,7 +96,10 @@ public abstract class Module {
     }
 
     public FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy, boolean checkCreative) {
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
+        return useEnergy(wearer, getEnergyContainer(), energy, checkCreative);
+    }
+
+    protected FloatingLong useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean checkCreative) {
         if ((!checkCreative || !(wearer instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) wearer)) && energyContainer != null) {
             return energyContainer.extract(energy, Action.EXECUTE, AutomationType.MANUAL);
         }

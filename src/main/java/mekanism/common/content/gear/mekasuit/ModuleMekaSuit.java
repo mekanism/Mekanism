@@ -279,7 +279,7 @@ public abstract class ModuleMekaSuit extends Module {
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(getContainer(), 0);
+            IEnergyContainer energyContainer = getEnergyContainer();
             if (energyContainer != null && !energyContainer.getNeeded().isZero() && player.world.isDaytime() &&
                 player.world.canSeeSky(new BlockPos(player.getPositionVec())) && !player.world.isRaining() && player.world.getDimensionType().hasSkyLight()) {
                 FloatingLong rate = MekanismConfig.gear.mekaSuitSolarRechargingRate.get().multiply(getInstalledCount());

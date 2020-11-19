@@ -3,6 +3,7 @@ package mekanism.common.content.gear.mekasuit;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.Mekanism;
@@ -34,20 +35,38 @@ public class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
         super.tickServer(player);
         if (range.get() != Range.OFF) {
             float size = 4 + range.get().getRange();
-            List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(size, size, size));
             FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get().multiply(range.get().getRange());
-            for (ItemEntity item : items) {
-                if (!getContainerEnergy().greaterOrEqual(usage)) {
-                    break;
-                }
-                if (item.getDistance(player) > 0.001) {
-                    useEnergy(player, usage);
-                    Vector3d diff = player.getPositionVec().subtract(item.getPositionVec());
-                    Vector3d motionNeeded = new Vector3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
-                    Vector3d motionDiff = motionNeeded.subtract(player.getMotion());
-                    item.setMotion(motionDiff.scale(0.2));
-                    Mekanism.packetHandler.sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player, item),
-                          player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int) (diff.length() * 4)), player);
+            boolean free = usage.isZero() || player.isCreative();
+            IEnergyContainer energyContainer = free ? null : getEnergyContainer();
+            if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
+                //If the energy cost is free or we have enough energy for at least one pull grab all the items that can be picked up.
+                //Note: We check distance afterwards so that we aren't having to calculate a bunch of distances when we may run out
+                // of energy, and calculating distance is a bit more expensive than just checking if it can be picked up
+                List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(size, size, size), item -> !item.cannotPickup());
+                boolean exit = false;
+                for (ItemEntity item : items) {
+                    if (item.getDistance(player) > 0.001) {
+                        if (!free) {
+                            if (useEnergy(player, energyContainer, usage, true).isZero()) {
+                                //If we can't actually extract energy, exit immediately
+                                break;
+                            }
+                            if (energyContainer.getEnergy().smallerThan(usage)) {
+                                //If after using energy, our energy is now smaller than how much we need to use
+                                // exit after pulling this item
+                                exit = true;
+                            }
+                        }
+                        Vector3d diff = player.getPositionVec().subtract(item.getPositionVec());
+                        Vector3d motionNeeded = new Vector3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
+                        Vector3d motionDiff = motionNeeded.subtract(player.getMotion());
+                        item.setMotion(motionDiff.scale(0.2));
+                        Mekanism.packetHandler.sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player, item),
+                              player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int) (diff.length() * 4)), player);
+                        if (exit) {
+                            break;
+                        }
+                    }
                 }
             }
         }
