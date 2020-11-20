@@ -43,18 +43,13 @@ public abstract class MekKeyHandler {
         }
         if (keyBinding.getKeyConflictContext().isActive() && keyBinding.getKeyModifier().isActive(keyBinding.getKeyConflictContext())) {
             //Manually check in case keyBinding#pressed just never got a chance to be updated
-            return isKeyPressed(keyBinding);
+            return isKeyDown(keyBinding);
         }
         //If we failed, due to us being a key modifier as our key, check the old way
-        return KeyModifier.isKeyCodeModifier(keyBinding.getKey()) && isKeyPressed(keyBinding);
+        return KeyModifier.isKeyCodeModifier(keyBinding.getKey()) && isKeyDown(keyBinding);
     }
 
     public static boolean isKeyDown(KeyBinding keyBinding) {
-        int keyCode = keyBinding.getKey().getKeyCode();
-        return keyCode != InputMappings.INPUT_INVALID.getKeyCode() && InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), keyCode);
-    }
-
-    private static boolean isKeyPressed(KeyBinding keyBinding) {
         InputMappings.Input key = keyBinding.getKey();
         int keyCode = key.getKeyCode();
         if (keyCode != InputMappings.INPUT_INVALID.getKeyCode()) {
