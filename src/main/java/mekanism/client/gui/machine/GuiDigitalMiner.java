@@ -86,7 +86,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 39, 47));
         addButton(new GuiVisualsTab(this, tile));
-        addButton(new GuiSlot(SlotType.DIGITAL, this, 64, 21).validity(() -> tile.missingStack)
+        addButton(new GuiSlot(SlotType.DIGITAL, this, 64, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
               .hover(getOnHover(() -> tile.missingStack.isEmpty() ? MekanismLang.MINER_WELL.translate() : MekanismLang.MINER_MISSING_BLOCK.translate())));
         addButton(new GuiEnergyTab(() -> {
