@@ -46,6 +46,14 @@ public class MekanismAPI {
     @Nonnull
     public static final Slurry EMPTY_SLURRY = new EmptySlurry();
 
+    /**
+     * Gets the Forge Registry for {@link Gas}.
+     *
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<Gas>} instead of {@link net.minecraftforge.event.RegistryEvent.Register<Gas>}
+     * make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(Class, String)} rather than passing the result of this method to the other create
+     * method, as this method <strong>CAN</strong> return {@code null} if called before the {@link net.minecraftforge.event.RegistryEvent.NewRegistry} events have been
+     * fired. This method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code null}.
+     */
     @Nonnull
     public static IForgeRegistry<Gas> gasRegistry() {
         if (GAS_REGISTRY == null) {
@@ -54,6 +62,15 @@ public class MekanismAPI {
         return GAS_REGISTRY;
     }
 
+    /**
+     * Gets the Forge Registry for {@link InfuseType}.
+     *
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<InfuseType>} instead of {@link
+     * net.minecraftforge.event.RegistryEvent.Register<InfuseType>} make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(Class, String)} rather
+     * than passing the result of this method to the other create method, as this method <strong>CAN</strong> return {@code null} if called before the {@link
+     * net.minecraftforge.event.RegistryEvent.NewRegistry} events have been fired. This method is marked as {@link Nonnull} just because except for when this is being
+     * called super early it is never {@code null}.
+     */
     @Nonnull
     public static IForgeRegistry<InfuseType> infuseTypeRegistry() {
         if (INFUSE_TYPE_REGISTRY == null) {
@@ -62,6 +79,15 @@ public class MekanismAPI {
         return INFUSE_TYPE_REGISTRY;
     }
 
+    /**
+     * Gets the Forge Registry for {@link Pigment}.
+     *
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<Pigment>} instead of {@link
+     * net.minecraftforge.event.RegistryEvent.Register<Pigment>} make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(Class, String)} rather than
+     * passing the result of this method to the other create method, as this method <strong>CAN</strong> return {@code null} if called before the {@link
+     * net.minecraftforge.event.RegistryEvent.NewRegistry} events have been fired. This method is marked as {@link Nonnull} just because except for when this is being
+     * called super early it is never {@code null}.
+     */
     @Nonnull
     public static IForgeRegistry<Pigment> pigmentRegistry() {
         if (PIGMENT_REGISTRY == null) {
@@ -70,6 +96,14 @@ public class MekanismAPI {
         return PIGMENT_REGISTRY;
     }
 
+    /**
+     * Gets the Forge Registry for {@link Slurry}.
+     *
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<Slurry>} instead of {@link net.minecraftforge.event.RegistryEvent.Register<Slurry>}
+     * make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(Class, String)} rather than passing the result of this method to the other create
+     * method, as this method <strong>CAN</strong> return {@code null} if called before the {@link net.minecraftforge.event.RegistryEvent.NewRegistry} events have been
+     * fired. This method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code null}.
+     */
     @Nonnull
     public static IForgeRegistry<Slurry> slurryRegistry() {
         if (SLURRY_REGISTRY == null) {
