@@ -42,7 +42,7 @@ repositories {
     }
     maven {
         name 'prog'
-        url 'http://dvs1.progwml6.com/files/maven'
+        url 'https://dvs1.progwml6.com/files/maven'
     }
     maven {
         name 'tesla'
@@ -54,11 +54,7 @@ repositories {
     }
     maven {
         name 'opencomputers'
-        url 'http://maven.cil.li/'
-    }
-    maven {
-        name 'hwyla'
-        url 'https://tehnut.info/maven'
+        url 'https://maven.cil.li/'
     }
     maven {
         name 'CoFH Maven'
@@ -74,7 +70,7 @@ repositories {
     }
     maven {
         name 'ic2'
-        url 'http://maven.ic2.player.to'
+        url 'https://maven.ic2.player.to'
     }
     maven {
         name 'BlameJared - Crafttweaker'
@@ -83,6 +79,10 @@ repositories {
     maven {
         name 'thiakil'
         url 'https://maven.thiakil.com'
+    }
+    maven {
+        name 'hwyla'
+        url 'https://maven.tehnut.info'
     }
 }
 
