@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.chemical;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
 import com.blamejared.crafttweaker.impl.util.MCResourceLocation;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -71,16 +70,6 @@ public interface ICrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends
     default boolean isHidden() {
         return getChemical().isHidden();
     }
-
-    /**
-     * Checks if this chemical is in a given tag.
-     *
-     * @param tag The tag to check.
-     *
-     * @return {@code true} if the chemical is in the tag, {@code false} otherwise.
-     */
-    @ZenCodeType.Method
-    boolean isIn(MCTag tag);
 
     /**
      * Gets the tags that this chemical is a part of.

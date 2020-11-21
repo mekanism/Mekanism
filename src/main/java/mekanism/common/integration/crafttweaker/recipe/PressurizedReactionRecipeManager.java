@@ -33,19 +33,19 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
 
     @ZenCodeType.Method
     public void addRecipe(String name, CrTItemStackIngredient inputSolid, CrTFluidStackIngredient inputFluid, CrTGasStackIngredient inputGas, int duration,
-          IItemStack outputItem, @ZenCodeType.OptionalString("0 as " + CrTConstants.CLASS_FLOATING_LONG) CrTFloatingLong energyRequired) {
+          IItemStack outputItem, @ZenCodeType.Optional("0 as " + CrTConstants.CLASS_FLOATING_LONG) CrTFloatingLong energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), GasStack.EMPTY, energyRequired);
     }
 
     @ZenCodeType.Method
     public void addRecipe(String name, CrTItemStackIngredient inputSolid, CrTFluidStackIngredient inputFluid, CrTGasStackIngredient inputGas, int duration,
-          ICrTGasStack outputGas, @ZenCodeType.OptionalString("0 as " + CrTConstants.CLASS_FLOATING_LONG) CrTFloatingLong energyRequired) {
+          ICrTGasStack outputGas, @ZenCodeType.Optional("0 as " + CrTConstants.CLASS_FLOATING_LONG) CrTFloatingLong energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, ItemStack.EMPTY, getAndValidateNotEmpty(outputGas), energyRequired);
     }
 
     @ZenCodeType.Method
     public void addRecipe(String name, CrTItemStackIngredient inputSolid, CrTFluidStackIngredient inputFluid, CrTGasStackIngredient inputGas, int duration,
-          IItemStack outputItem, ICrTGasStack outputGas, @ZenCodeType.OptionalString("0 as " + CrTConstants.CLASS_FLOATING_LONG) CrTFloatingLong energyRequired) {
+          IItemStack outputItem, ICrTGasStack outputGas, @ZenCodeType.Optional("0 as " + CrTConstants.CLASS_FLOATING_LONG) CrTFloatingLong energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), getAndValidateNotEmpty(outputGas), energyRequired);
     }
 

@@ -1,9 +1,7 @@
 package mekanism.common.integration.crafttweaker.chemical;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -15,12 +13,10 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.CrTTags;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import net.minecraft.tags.ITag;
 import org.openzen.zencode.java.ZenCodeType;
 
 public abstract class CrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
@@ -45,15 +41,6 @@ public abstract class CrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
     }
 
     @Override
-    public boolean isIn(MCTag tag) {
-        ITag<CHEMICAL> chemicalTag = getChemicalTag(tag);
-        return chemicalTag != null && chemicalTag.contains(chemical);
-    }
-
-    @Nullable
-    protected abstract ITag<CHEMICAL> getChemicalTag(MCTag tag);
-
-    @Override
     public boolean equals(Object o) {
         return o == this || o != null && getClass() == o.getClass() && chemical == ((CrTChemical<?, ?, ?, ?>) o).chemical;
     }
@@ -70,12 +57,6 @@ public abstract class CrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
         public CrTGas(Gas gas) {
             super(gas);
         }
-
-        @Nullable
-        @Override
-        protected ITag<Gas> getChemicalTag(MCTag tag) {
-            return CrTTags.getGasTag(tag);
-        }
     }
 
     @ZenRegister
@@ -84,12 +65,6 @@ public abstract class CrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
 
         public CrTInfuseType(InfuseType infuseType) {
             super(infuseType);
-        }
-
-        @Nullable
-        @Override
-        protected ITag<InfuseType> getChemicalTag(MCTag tag) {
-            return CrTTags.getInfuseTypeTag(tag);
         }
     }
 
@@ -100,12 +75,6 @@ public abstract class CrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
         public CrTPigment(Pigment pigment) {
             super(pigment);
         }
-
-        @Nullable
-        @Override
-        protected ITag<Pigment> getChemicalTag(MCTag tag) {
-            return CrTTags.getPigmentTag(tag);
-        }
     }
 
     @ZenRegister
@@ -114,12 +83,6 @@ public abstract class CrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
 
         public CrTSlurry(Slurry slurry) {
             super(slurry);
-        }
-
-        @Nullable
-        @Override
-        protected ITag<Slurry> getChemicalTag(MCTag tag) {
-            return CrTTags.getSlurryTag(tag);
         }
     }
 }

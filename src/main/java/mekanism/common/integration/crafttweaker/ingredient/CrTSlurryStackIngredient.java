@@ -6,9 +6,10 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.CrTTags;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTSlurry;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
+import mekanism.common.integration.crafttweaker.tag.CrTSlurryTagManager;
+import net.minecraft.tags.ITag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -28,9 +29,9 @@ public class CrTSlurryStackIngredient extends CrTChemicalStackIngredient<Slurry,
     }
 
     @ZenCodeType.Method
-    public static CrTSlurryStackIngredient from(MCTag slurryTag, long amount) {
-        assertValid(slurryTag, amount, CrTTags::isSlurryTag, "SlurryStackIngredients", "SlurryTag");
-        return new CrTSlurryStackIngredient(SlurryStackIngredient.from(CrTTags.getSlurryTag(slurryTag), amount));
+    public static CrTSlurryStackIngredient from(MCTag<ICrTSlurry> slurryTag, long amount) {
+        ITag<Slurry> tag = assertValidAndGet(slurryTag, amount, CrTSlurryTagManager.INSTANCE::getInternal, "SlurryStackIngredients");
+        return new CrTSlurryStackIngredient(SlurryStackIngredient.from(tag, amount));
     }
 
     @ZenCodeType.Method

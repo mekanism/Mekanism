@@ -1,10 +1,11 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
+import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
 import mekanism.api.recipes.inputs.InputIngredient;
+import net.minecraft.tags.ITag;
 
 public class CrTIngredientWrapper<TYPE, INGREDIENT extends InputIngredient<TYPE>> {
 
@@ -14,11 +15,14 @@ public class CrTIngredientWrapper<TYPE, INGREDIENT extends InputIngredient<TYPE>
         }
     }
 
-    protected static void assertValid(MCTag tag, long amount, Predicate<MCTag> isCorrectType, String ingredientType, String tagType) {
+    protected static <TYPE, CRT_TYPE extends CommandStringDisplayable> ITag<TYPE> assertValidAndGet(MCTag<CRT_TYPE> crtTag, long amount,
+          Function<MCTag<CRT_TYPE>, ITag<TYPE>> getter, String ingredientType) {
         assertValidAmount(ingredientType, amount);
-        if (!isCorrectType.test(tag)) {
-            throw new IllegalArgumentException("Tag " + tag.getCommandString() + " is not a " + tagType);
+        ITag<TYPE> tag = getter.apply(crtTag);
+        if (tag == null) {
+            throw new IllegalArgumentException("Tag " + crtTag.getCommandString() + " does not exist.");
         }
+        return tag;
     }
 
     @SafeVarargs

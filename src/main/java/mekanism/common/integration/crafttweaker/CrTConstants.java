@@ -15,6 +15,8 @@ public class CrTConstants {
     public static final String EXPANSION_TARGET_INGREDIENT = "crafttweaker.api.item.IIngredient";
     public static final String EXPANSION_TARGET_IITEM_STACK = "crafttweaker.api.item.IItemStack";
     public static final String EXPANSION_TARGET_INGREDIENT_LIST = "crafttweaker.api.item.IngredientList";
+    public static final String EXPANSION_TARGET_ITEM_TAG = "crafttweaker.api.tag.MCTag<crafttweaker.api.item.MCItemDefinition>";
+    public static final String EXPANSION_TARGET_MC_ITEM_DEFINITION = "crafttweaker.api.item.MCItemDefinition";
     public static final String EXPANSION_TARGET_IFLUID_STACK = "crafttweaker.api.fluid.IFluidStack";
 
     //TODO: Figure out properly which things need registration and annotation and which don't in terms of concrete vs interfaces
@@ -46,6 +48,12 @@ public class CrTConstants {
     public static final String CLASS_SLURRY_STACK = "mekanism.api.chemical.slurry.ISlurryStack";
     public static final String CLASS_SLURRY_STACK_IMPL = "mekanism.api.chemical.slurry.SlurryStack";
     public static final String CLASS_SLURRY_STACK_MUTABLE = "mekanism.api.chemical.slurry.MutableSlurryStack";
+
+    public static final String CLASS_CHEMICAL_TAG_MANAGER = "mekanism.api.tag.ChemicalTagManager";
+    public static final String CLASS_GAS_TAG_MANAGER = "mekanism.api.tag.GasTagManager";
+    public static final String CLASS_INFUSE_TYPE_TAG_MANAGER = "mekanism.api.tag.InfuseTypeTagManager";
+    public static final String CLASS_PIGMENT_TAG_MANAGER = "mekanism.api.tag.PigmentTagManager";
+    public static final String CLASS_SLURRY_TAG_MANAGER = "mekanism.api.tag.SlurryTagManager";
 
     public static final String CLASS_FLOATING_LONG = "mekanism.api.FloatingLong";
     public static final String CLASS_ITEM_STACK_INGREDIENT = "mekanism.api.ingredient.ItemStackIngredient";

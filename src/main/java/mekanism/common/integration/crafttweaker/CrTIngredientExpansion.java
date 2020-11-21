@@ -5,6 +5,9 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCIngredientList;
+import com.blamejared.crafttweaker.impl.item.MCItemDefinition;
+import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.tag.expansions.ExpandItemTag;
 import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import org.openzen.zencode.java.ZenCodeType;
@@ -12,7 +15,7 @@ import org.openzen.zencode.java.ZenCodeType;
 /**
  * Helper class to keep track of multiple tiny expansions to various CraftTweaker classes to allow for implicit casting to our wrapper ingredients.
  */
-public class CrTIngredientExpansion {//TODO: Expand tags once they aren't all using the same base class in CrT
+public class CrTIngredientExpansion {
 
     private CrTIngredientExpansion() {
     }
@@ -56,6 +59,32 @@ public class CrTIngredientExpansion {//TODO: Expand tags once they aren't all us
          */
         @ZenCodeType.Caster(implicit = true)
         public static CrTItemStackIngredient asItemStackIngredient(MCIngredientList _this) {
+            return CrTItemStackIngredient.from(_this);
+        }
+    }
+
+    @ZenRegister
+    @ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_ITEM_TAG)
+    public static class ItemTagExpansion {
+
+        /**
+         * Allows for casting {@link MCTag<MCItemDefinition>}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
+         */
+        @ZenCodeType.Caster(implicit = true)
+        public static CrTItemStackIngredient asItemStackIngredient(MCTag<MCItemDefinition> _this) {
+            return CrTItemStackIngredient.from(ExpandItemTag.asIIngredient(_this));
+        }
+    }
+
+    @ZenRegister
+    @ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_MC_ITEM_DEFINITION)
+    public static class MCItemDefinitionExpansion {
+
+        /**
+         * Allows for casting {@link MCItemDefinition}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
+         */
+        @ZenCodeType.Caster(implicit = true)
+        public static CrTItemStackIngredient asItemStackIngredient(MCItemDefinition _this) {
             return CrTItemStackIngredient.from(_this);
         }
     }

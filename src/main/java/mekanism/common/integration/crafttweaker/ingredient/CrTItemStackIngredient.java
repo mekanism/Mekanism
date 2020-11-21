@@ -4,13 +4,17 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCIngredientList;
+import com.blamejared.crafttweaker.impl.item.MCItemDefinition;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.tag.manager.TagManagerItem;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -18,7 +22,7 @@ import org.openzen.zencode.java.ZenCodeType;
 public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, ItemStackIngredient> {
 
     @ZenCodeType.Method
-    public static CrTItemStackIngredient from(IItemStack stack) {//TODO: Look at also supporting MCItemDefinition if/when it becomes a thing
+    public static CrTItemStackIngredient from(IItemStack stack) {
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be created from an empty stack.");
         }
@@ -26,16 +30,25 @@ public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, Item
     }
 
     @ZenCodeType.Method
-    public static CrTItemStackIngredient from(MCTag itemTag) {
+    public static CrTItemStackIngredient from(MCItemDefinition item) {
+        return from(item, 1);
+    }
+
+    @ZenCodeType.Method
+    public static CrTItemStackIngredient from(MCItemDefinition item, int amount) {
+        assertValidAmount("ItemStackIngredients", amount);
+        return new CrTItemStackIngredient(ItemStackIngredient.from(item.getInternal(), amount));
+    }
+
+    @ZenCodeType.Method
+    public static CrTItemStackIngredient from(MCTag<MCItemDefinition> itemTag) {
         return from(itemTag, 1);
     }
 
     @ZenCodeType.Method
-    public static CrTItemStackIngredient from(MCTag itemTag, int amount) {
-        if (itemTag.isItemTag()) {
-            return from((IIngredient) itemTag, amount);
-        }
-        throw new IllegalArgumentException("Tag " + itemTag.getCommandString() + " is not an ItemTag");
+    public static CrTItemStackIngredient from(MCTag<MCItemDefinition> itemTag, int amount) {
+        ITag<Item> tag = assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
+        return new CrTItemStackIngredient(ItemStackIngredient.from(tag, amount));
     }
 
     @ZenCodeType.Method
@@ -70,9 +83,6 @@ public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, Item
             if (ingredient instanceof IItemStack) {
                 //If the ingredient is an IItemStack make sure to process it as such so
                 crtIngredients.add(from((IItemStack) ingredient));
-            } else if (ingredient instanceof MCTag) {
-                //If the ingredient is an MCTag make sure to process it as such so (just to validate it is actually an item tag)
-                crtIngredients.add(from((MCTag) ingredient));
             } else if (ingredient instanceof MCIngredientList) {
                 //If it is another multi ingredient add the different components
                 addIngredients(crtIngredients, ((MCIngredientList) ingredient).getIngredients());

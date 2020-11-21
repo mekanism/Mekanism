@@ -4,10 +4,12 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.impl.fluid.MCFluid;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.tag.manager.TagManagerFluid;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.tags.ITag;
 import net.minecraftforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -35,9 +37,9 @@ public class CrTFluidStackIngredient extends CrTIngredientWrapper<FluidStack, Fl
     }
 
     @ZenCodeType.Method
-    public static CrTFluidStackIngredient from(MCTag fluidTag, int amount) {
-        assertValid(fluidTag, amount, MCTag::isFluidTag, "FluidStackIngredients", "FluidTag");
-        return new CrTFluidStackIngredient(FluidStackIngredient.from(fluidTag.getFluidTag(), amount));
+    public static CrTFluidStackIngredient from(MCTag<MCFluid> fluidTag, int amount) {
+        ITag<Fluid> tag = assertValidAndGet(fluidTag, amount, TagManagerFluid.INSTANCE::getInternal, "FluidStackIngredients");
+        return new CrTFluidStackIngredient(FluidStackIngredient.from(tag, amount));
     }
 
     @ZenCodeType.Method

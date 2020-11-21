@@ -6,9 +6,10 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.CrTTags;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTPigment;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
+import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
+import net.minecraft.tags.ITag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -28,9 +29,9 @@ public class CrTPigmentStackIngredient extends CrTChemicalStackIngredient<Pigmen
     }
 
     @ZenCodeType.Method
-    public static CrTPigmentStackIngredient from(MCTag pigmentTag, long amount) {
-        assertValid(pigmentTag, amount, CrTTags::isPigmentTag, "PigmentStackIngredients", "PigmentTag");
-        return new CrTPigmentStackIngredient(PigmentStackIngredient.from(CrTTags.getPigmentTag(pigmentTag), amount));
+    public static CrTPigmentStackIngredient from(MCTag<ICrTPigment> pigmentTag, long amount) {
+        ITag<Pigment> tag = assertValidAndGet(pigmentTag, amount, CrTPigmentTagManager.INSTANCE::getInternal, "PigmentStackIngredients");
+        return new CrTPigmentStackIngredient(PigmentStackIngredient.from(tag, amount));
     }
 
     @ZenCodeType.Method
