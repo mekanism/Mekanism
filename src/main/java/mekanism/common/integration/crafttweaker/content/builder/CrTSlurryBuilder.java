@@ -1,8 +1,6 @@
 package mekanism.common.integration.crafttweaker.content.builder;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.impl.item.MCItemDefinition;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
 import com.blamejared.crafttweaker.impl.util.MCResourceLocation;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryBuilder;
@@ -37,13 +35,8 @@ public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, 
 
     @ZenCodeType.Method
     public CrTSlurryBuilder ore(MCResourceLocation oreTagLocation) {
+        //Note: We only expose the resource location based ore setter as tags don't exist yet
         getInternal().ore(oreTagLocation.getInternal());
-        return this;
-    }
-
-    @ZenCodeType.Method
-    public CrTSlurryBuilder ore(MCTag<MCItemDefinition> oreTagLocation) {
-        getInternal().ore(oreTagLocation.getInternalRaw());
         return this;
     }
 
