@@ -2,7 +2,9 @@ package mekanism.common.integration.crafttweaker.content.attribute;
 
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 
-//TODO: Figure out if this class needs to be registered to CrT, my suspicion is not
+/**
+ * Helper class for storing the internal chemical attribute to slightly reduce duplicate code.
+ */
 public class CrTChemicalAttribute implements ICrTChemicalAttribute {
 
     private final ChemicalAttribute attribute;

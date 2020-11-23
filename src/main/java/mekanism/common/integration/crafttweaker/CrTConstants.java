@@ -19,9 +19,9 @@ public class CrTConstants {
     public static final String EXPANSION_TARGET_MC_ITEM_DEFINITION = "crafttweaker.api.item.MCItemDefinition";
     public static final String EXPANSION_TARGET_IFLUID_STACK = "crafttweaker.api.fluid.IFluidStack";
 
-    //TODO: Figure out properly which things need registration and annotation and which don't in terms of concrete vs interfaces
+    //TODO - 10.1: Figure out properly which things need registration and annotation and which don't in terms of concrete vs interfaces
     // We may be registering more things than needed currently, or at least naming more things than needed
-    //TODO: We also should re-evaluate all the paths we use, as the impl stuff potentially shouldn't be in an api package
+    //TODO - 10.1: We also should re-evaluate all the paths we use, as the impl stuff potentially shouldn't be in an api package
     public static final String CLASS_CHEMICAL = "mekanism.api.chemical.IChemical";
     public static final String CLASS_CHEMICAL_STACK = "mekanism.api.chemical.IChemicalStack";
 

@@ -23,7 +23,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
 
     @ZenCodeType.Method
     public void addRecipe(String name, CrTItemStackIngredient input, CrTFloatingLong output) {
-        FloatingLong outputEnergy = output.getInternal();
+        FloatingLong outputEnergy = output.getInternalAsConst();
         if (outputEnergy.isZero()) {
             throw new JsonSyntaxException("Output must be greater than zero.");
         }

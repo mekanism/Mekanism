@@ -20,24 +20,52 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_BRACKET_HANDLER)
 public class CrTBracketHandlers {
 
+    /**
+     * Gets the {@link ICrTGasStack} based on registry name. Throws an error if it can't find the {@link mekanism.api.chemical.gas.Gas}.
+     *
+     * @param tokens The {@link mekanism.api.chemical.gas.Gas}'s resource location.
+     *
+     * @return A stack of the {@link mekanism.api.chemical.gas.Gas} with an amount of one mB.
+     */
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_GAS)
     public static ICrTGasStack getGasStack(String tokens) {
         return getChemicalStack(CrTConstants.BRACKET_GAS, tokens, MekanismAPI.gasRegistry(), CrTUtils::stackFromGas);
     }
 
+    /**
+     * Gets the {@link ICrTInfusionStack} based on registry name. Throws an error if it can't find the {@link mekanism.api.chemical.infuse.InfuseType}.
+     *
+     * @param tokens The {@link mekanism.api.chemical.infuse.InfuseType}'s resource location.
+     *
+     * @return A stack of the {@link mekanism.api.chemical.infuse.InfuseType} with an amount of one mB.
+     */
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_INFUSE_TYPE)
     public static ICrTInfusionStack getInfusionStack(String tokens) {
         return getChemicalStack(CrTConstants.BRACKET_INFUSE_TYPE, tokens, MekanismAPI.infuseTypeRegistry(), CrTUtils::stackFromInfuseType);
     }
 
+    /**
+     * Gets the {@link ICrTPigmentStack} based on registry name. Throws an error if it can't find the {@link mekanism.api.chemical.pigment.Pigment}.
+     *
+     * @param tokens The {@link mekanism.api.chemical.pigment.Pigment}'s resource location.
+     *
+     * @return A stack of the {@link mekanism.api.chemical.pigment.Pigment} with an amount of one mB.
+     */
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_PIGMENT)
     public static ICrTPigmentStack getPigmentStack(String tokens) {
         return getChemicalStack(CrTConstants.BRACKET_PIGMENT, tokens, MekanismAPI.pigmentRegistry(), CrTUtils::stackFromPigment);
     }
 
+    /**
+     * Gets the {@link ICrTSlurryStack} based on registry name. Throws an error if it can't find the {@link mekanism.api.chemical.slurry.Slurry}.
+     *
+     * @param tokens The {@link mekanism.api.chemical.slurry.Slurry}'s resource location.
+     *
+     * @return A stack of the {@link mekanism.api.chemical.slurry.Slurry} with an amount of one mB.
+     */
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_SLURRY)
     public static ICrTSlurryStack getSlurryStack(String tokens) {

@@ -24,41 +24,63 @@ import net.minecraftforge.event.RegistryEvent;
  */
 public class CrTContentUtils {
 
-    //TODO: Do we want to add some sort of auto generation resource wise like CoT has, for if a resource is declared instead of
-    // the default being used?
+    //TODO - 10.1: Do we want to add some sort of auto generation resource wise like CoT has, for if a resource is declared instead of the default being used?
     private static Map<ResourceLocation, GasBuilder> queuedGases = new HashMap<>();
     private static Map<ResourceLocation, InfuseTypeBuilder> queuedInfuseTypes = new HashMap<>();
     private static Map<ResourceLocation, PigmentBuilder> queuedPigments = new HashMap<>();
     private static Map<ResourceLocation, SlurryBuilder> queuedSlurries = new HashMap<>();
 
+    /**
+     * Queues a {@link Gas} to be registered with the given registry name.
+     *
+     * @param registryName Registry name to give the {@link Gas}.
+     * @param builder      Builder containing the necessary information to create the {@link Gas}.
+     */
     public static void queueGasForRegistration(ResourceLocation registryName, GasBuilder builder) {
         queueChemicalForRegistration("Gas", queuedGases, registryName, builder);
     }
 
+    /**
+     * Queues an {@link InfuseType} to be registered with the given registry name.
+     *
+     * @param registryName Registry name to give the {@link InfuseType}.
+     * @param builder      Builder containing the necessary information to create the {@link InfuseType}.
+     */
     public static void queueInfuseTypeForRegistration(ResourceLocation registryName, InfuseTypeBuilder builder) {
         queueChemicalForRegistration("Infuse Type", queuedInfuseTypes, registryName, builder);
     }
 
+    /**
+     * Queues a {@link Pigment} to be registered with the given registry name.
+     *
+     * @param registryName Registry name to give the {@link Pigment}.
+     * @param builder      Builder containing the necessary information to create the {@link Pigment}.
+     */
     public static void queuePigmentForRegistration(ResourceLocation registryName, PigmentBuilder builder) {
         queueChemicalForRegistration("Pigment", queuedPigments, registryName, builder);
     }
 
+    /**
+     * Queues a {@link Slurry} to be registered with the given registry name.
+     *
+     * @param registryName Registry name to give the {@link Slurry}.
+     * @param builder      Builder containing the necessary information to create the {@link Slurry}.
+     */
     public static void queueSlurryForRegistration(ResourceLocation registryName, SlurryBuilder builder) {
         queueChemicalForRegistration("Slurry", queuedSlurries, registryName, builder);
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, BUILDER extends ChemicalBuilder<CHEMICAL, BUILDER>> void queueChemicalForRegistration(String type,
           @Nullable Map<ResourceLocation, BUILDER> queuedChemicals, ResourceLocation registryName, BUILDER builder) {
-        if (CraftTweakerAPI.getCurrentRun().isFirstRun()) {//TODO: Add more validation about the current run?
+        if (CraftTweakerAPI.getCurrentRun().isFirstRun()) {//TODO - 10.1: Add more validation about the current run?
             //Only queue our chemicals for registration on the first run of our loader
             if (queuedChemicals == null) {
                 CraftTweakerAPI.logError("Cannot register %s '%s' since it was called too late. Registering must be done during '#loader mekanismcontent'!",
                       type, registryName);
-            } else if (queuedChemicals.containsKey(registryName)) {
-                CraftTweakerAPI.logWarning("Registration for %s '%s' is already queued, skipping duplicate.", type, registryName);
-            } else {
+            } else if (queuedChemicals.put(registryName, builder) == null) {
                 CraftTweakerAPI.logInfo("Queueing %s '%s' for registration.", type, registryName);
-                queuedChemicals.put(registryName, builder);
+            } else {
+                CraftTweakerAPI.logWarning("Registration for %s '%s' is already queued, skipping duplicate.", type, registryName);
             }
         }
     }
@@ -76,7 +98,7 @@ public class CrTContentUtils {
             CraftTweakerAPI.logInfo("Registering %d custom gases.", queued.size());
             queued.forEach((registryName, builder) -> {
                 event.getRegistry().register(new Gas(builder).setRegistryName(registryName));
-                CraftTweakerAPI.logInfo("Registered Gas '%s'.", registryName);
+                CraftTweakerAPI.logInfo("Registered Gas: '%s'.", registryName);
             });
         }
     }
@@ -90,7 +112,7 @@ public class CrTContentUtils {
             CraftTweakerAPI.logInfo("Registering %d custom infuse types.", queued.size());
             queued.forEach((registryName, builder) -> {
                 event.getRegistry().register(new InfuseType(builder).setRegistryName(registryName));
-                CraftTweakerAPI.logInfo("Registered Infuse Type '%s'.", registryName);
+                CraftTweakerAPI.logInfo("Registered Infuse Type: '%s'.", registryName);
             });
         }
     }
@@ -104,7 +126,7 @@ public class CrTContentUtils {
             CraftTweakerAPI.logInfo("Registering %d custom pigments.", queued.size());
             queued.forEach((registryName, builder) -> {
                 event.getRegistry().register(new Pigment(builder).setRegistryName(registryName));
-                CraftTweakerAPI.logInfo("Registered Pigment '%s'.", registryName);
+                CraftTweakerAPI.logInfo("Registered Pigment: '%s'.", registryName);
             });
         }
     }
@@ -118,7 +140,7 @@ public class CrTContentUtils {
             CraftTweakerAPI.logInfo("Registering %d custom slurries.", queued.size());
             queued.forEach((registryName, builder) -> {
                 event.getRegistry().register(new Slurry(builder).setRegistryName(registryName));
-                CraftTweakerAPI.logInfo("Registered Slurry '%s'.", registryName);
+                CraftTweakerAPI.logInfo("Registered Slurry: '%s'.", registryName);
             });
         }
     }

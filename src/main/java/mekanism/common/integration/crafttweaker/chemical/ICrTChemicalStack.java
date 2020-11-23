@@ -124,6 +124,20 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     }
 
     /**
+     * Checks if this chemical stack, contains the given chemical stack by checking if the chemicals are the same, and if this stack's amount is bigger than the given
+     * stack's amount
+     *
+     * @param stack Chemical stack to compare against
+     *
+     * @return {@code true} if this stack contains the other stack
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.CONTAINS)
+    default boolean containsOther(CRT_STACK stack) {
+        return isTypeEqual(stack) && getInternal().getAmount() >= stack.getInternal().getAmount();
+    }
+
+    /**
      * Makes this stack mutable
      *
      * @return A new Stack, that is mutable.
@@ -157,19 +171,41 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     STACK getInternal();
 
     /**
+     * Whether or not this ChemicalStack's chemical type is equal to the other defined ChemicalStack.
+     *
+     * @param stack - ChemicalStack to check
+     *
+     * @return if the ChemicalStacks contain the same chemical type
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.CONTAINS)
+    default boolean isTypeEqual(CRT_STACK stack) {
+        return getInternal().isTypeEqual(stack.getInternal());
+    }
+
+    /**
      * Checks if this chemical stack is equal another chemical stack.
      *
      * @param other Chemical stack to check against.
      *
      * @return {@code true} if the chemicals stacks are equal, {@code false} otherwise.
+     *
+     * @implNote This mimics how CraftTweaker handles mutable vs immutable stacks in that even if they represent the same internal stack, they will return false for if
+     * they are equal if one is mutable and one is immutable.
      */
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.EQUALS)
-    boolean isEqual(CRT_STACK other);
+    default boolean isEqual(CRT_STACK other) {
+        return equals(other);
+    }
 
-    //TODO: Test that this works for things like crystallizer and it doesn't get confused because of us specifying type of chemical and stack here
+    /**
+     * Casts this chemical stack to a generic {@link CrTChemicalStackIngredient} for use in recipes that support any chemical type as an input.
+     *
+     * @apiNote We declare this as generic so that ZenCode can properly match this to the places where we declare all the sub types as generic.
+     */
     @ZenCodeType.Caster(implicit = true)
-    CrTChemicalStackIngredient<CHEMICAL, STACK, ?> asCrTChemicalStackIngredient();
+    CrTChemicalStackIngredient<?, ?, ?> asChemicalStackIngredient();
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_GAS_STACK)
@@ -181,12 +217,15 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         }
 
         @Override
-        default CrTChemicalStackIngredient<Gas, GasStack, ?> asCrTChemicalStackIngredient() {
-            return asCrTGasStackIngredient();
+        default CrTChemicalStackIngredient<Gas, GasStack, ?> asChemicalStackIngredient() {
+            return asGasStackIngredient();
         }
 
+        /**
+         * Casts this gas stack to a {@link CrTGasStackIngredient}.
+         */
         @ZenCodeType.Caster(implicit = true)
-        default CrTGasStackIngredient asCrTGasStackIngredient() {
+        default CrTGasStackIngredient asGasStackIngredient() {
             return CrTGasStackIngredient.from(this);
         }
     }
@@ -201,12 +240,15 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         }
 
         @Override
-        default CrTChemicalStackIngredient<InfuseType, InfusionStack, ?> asCrTChemicalStackIngredient() {
-            return asCrTInfusionStackIngredient();
+        default CrTChemicalStackIngredient<InfuseType, InfusionStack, ?> asChemicalStackIngredient() {
+            return asInfusionStackIngredient();
         }
 
+        /**
+         * Casts this infusion stack to a {@link CrTInfusionStackIngredient}.
+         */
         @ZenCodeType.Caster(implicit = true)
-        default CrTInfusionStackIngredient asCrTInfusionStackIngredient() {
+        default CrTInfusionStackIngredient asInfusionStackIngredient() {
             return CrTInfusionStackIngredient.from(this);
         }
     }
@@ -221,12 +263,15 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         }
 
         @Override
-        default CrTChemicalStackIngredient<Pigment, PigmentStack, ?> asCrTChemicalStackIngredient() {
-            return asCrTPigmentStackIngredient();
+        default CrTChemicalStackIngredient<Pigment, PigmentStack, ?> asChemicalStackIngredient() {
+            return asPigmentStackIngredient();
         }
 
+        /**
+         * Casts this pigment stack to a {@link CrTPigmentStackIngredient}.
+         */
         @ZenCodeType.Caster(implicit = true)
-        default CrTPigmentStackIngredient asCrTPigmentStackIngredient() {
+        default CrTPigmentStackIngredient asPigmentStackIngredient() {
             return CrTPigmentStackIngredient.from(this);
         }
     }
@@ -241,12 +286,15 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         }
 
         @Override
-        default CrTChemicalStackIngredient<Slurry, SlurryStack, ?> asCrTChemicalStackIngredient() {
-            return asCrTSlurryStackIngredient();
+        default CrTChemicalStackIngredient<Slurry, SlurryStack, ?> asChemicalStackIngredient() {
+            return asSlurryStackIngredient();
         }
 
+        /**
+         * Casts this slurry stack to a {@link CrTSlurryStackIngredient}.
+         */
         @ZenCodeType.Caster(implicit = true)
-        default CrTSlurryStackIngredient asCrTSlurryStackIngredient() {
+        default CrTSlurryStackIngredient asSlurryStackIngredient() {
             return CrTSlurryStackIngredient.from(this);
         }
     }

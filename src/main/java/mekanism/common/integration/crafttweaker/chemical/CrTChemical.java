@@ -30,6 +30,8 @@ public abstract class CrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Mod devs should use this to get the actual Chemical
      *
      * @return The actual Chemical

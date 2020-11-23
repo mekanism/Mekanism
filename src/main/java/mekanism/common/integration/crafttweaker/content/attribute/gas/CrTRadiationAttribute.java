@@ -11,6 +11,14 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_ATTRIBUTE_RADIATION)
 public class CrTRadiationAttribute extends CrTChemicalAttribute implements ICrTGasAttribute {
 
+    /**
+     * Creates an attribute representing the radioactivity of a chemical. This attribute <i>requires validation</i>, meaning chemical containers won't be able to accept
+     * chemicals with this attribute by default.
+     *
+     * @param radioactivity Radioactivity of the chemical measured in Sv/h, must be greater than zero.
+     *
+     * @return Attribute representing the radioactivity of a substance.
+     */
     @ZenCodeType.Method
     public static CrTRadiationAttribute create(double radioactivity) {
         if (radioactivity <= 0) {

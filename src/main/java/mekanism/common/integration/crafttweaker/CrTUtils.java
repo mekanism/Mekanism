@@ -2,9 +2,7 @@ package mekanism.common.integration.crafttweaker;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.IntFunction;
 import javax.annotation.Nullable;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -19,7 +17,6 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGas
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
@@ -29,35 +26,50 @@ import net.minecraft.util.ResourceLocation;
 
 public class CrTUtils {
 
+    /**
+     * Creates a {@link ResourceLocation} in CraftTweaker's domain from the given path.
+     *
+     * @param path Path of the resource location
+     *
+     * @return Resource location in CraftTweaker's domain.
+     */
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(MekanismHooks.CRAFTTWEAKER_MOD_ID, path);
     }
 
+    /**
+     * Helper to create an {@link ICrTGasStack} from a {@link Gas} with a stack size of one mB.
+     */
     public static ICrTGasStack stackFromGas(Gas gas) {
-        return new CrTGasStack(new GasStack(gas, 1));
+        return new CrTGasStack(gas.getStack(1));
     }
 
+    /**
+     * Helper to create an {@link ICrTInfusionStack} from a {@link InfuseType} with a stack size of one mB.
+     */
     public static ICrTInfusionStack stackFromInfuseType(InfuseType infuseType) {
-        return new CrTInfusionStack(new InfusionStack(infuseType, 1));
+        return new CrTInfusionStack(infuseType.getStack(1));
     }
 
+    /**
+     * Helper to create an {@link ICrTPigmentStack} from a {@link Pigment} with a stack size of one mB.
+     */
     public static ICrTPigmentStack stackFromPigment(Pigment pigment) {
-        return new CrTPigmentStack(new PigmentStack(pigment, 1));
+        return new CrTPigmentStack(pigment.getStack(1));
     }
 
+    /**
+     * Helper to create an {@link ICrTSlurryStack} from a {@link Slurry} with a stack size of one mB.
+     */
     public static ICrTSlurryStack stackFromSlurry(Slurry slurry) {
-        return new CrTSlurryStack(new SlurryStack(slurry, 1));
+        return new CrTSlurryStack(slurry.getStack(1));
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, CRT_CHEMICAL extends ICrTChemical<CHEMICAL, ?, CRT_CHEMICAL, ?>> CHEMICAL[]
-    getChemicals(CRT_CHEMICAL[] crtChemicals, IntFunction<CHEMICAL[]> arrayCreator) {
-        CHEMICAL[] chemicals = arrayCreator.apply(crtChemicals.length);
-        for (int i = 0; i < chemicals.length; i++) {
-            chemicals[i] = crtChemicals[i].getChemical();
-        }
-        return chemicals;
-    }
-
+    /**
+     * Helper method to convert a {@link BoxedChemicalStack} to an {@link ICrTChemicalStack}.
+     *
+     * @return {@link ICrTChemicalStack} representation of the given stack or {@code null} if empty.
+     */
     @Nullable
     public static ICrTChemicalStack<?, ?, ?, ?> fromBoxedStack(BoxedChemicalStack stack) {
         if (stack.isEmpty()) {
@@ -77,6 +89,9 @@ public class CrTUtils {
         }
     }
 
+    /**
+     * Helper method for describing the outputs of a recipe that may have multiple outputs.
+     */
     public static <TYPE> String describeOutputs(List<TYPE> outputs, Function<TYPE, Object> converter) {
         //Note: This isn't the best but it is probably as close as we can get
         StringBuilder description = new StringBuilder();

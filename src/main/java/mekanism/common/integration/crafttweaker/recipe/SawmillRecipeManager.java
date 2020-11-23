@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.recipe;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
+import com.blamejared.crafttweaker.impl.item.MCWeightedItemStack;
 import java.util.List;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -30,8 +31,18 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
     }
 
     @ZenCodeType.Method
+    public void addRecipe(String name, CrTItemStackIngredient input, MCWeightedItemStack secondaryOutput) {
+        addRecipe(name, input, secondaryOutput.getItemStack(), secondaryOutput.getWeight());
+    }
+
+    @ZenCodeType.Method
     public void addRecipe(String name, CrTItemStackIngredient input, IItemStack secondaryOutput, double secondaryChance) {
         addRecipe(name, input, ItemStack.EMPTY, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
+    }
+
+    @ZenCodeType.Method
+    public void addRecipe(String name, CrTItemStackIngredient input, IItemStack mainOutput, MCWeightedItemStack secondaryOutput) {
+        addRecipe(name, input, mainOutput, secondaryOutput.getItemStack(), secondaryOutput.getWeight());
     }
 
     @ZenCodeType.Method

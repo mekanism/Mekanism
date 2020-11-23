@@ -14,6 +14,14 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_BUILDER_INFUSE_TYPE)
 public class CrTInfuseTypeBuilder extends CrTChemicalBuilder<InfuseType, InfuseTypeBuilder, ICrTInfuseTypeAttribute, CrTInfuseTypeBuilder> {
 
+    /**
+     * Creates a builder for registering a custom {@link InfuseType}.
+     *
+     * @param textureLocation If present the {@link MCResourceLocation} representing the texture this {@link InfuseType} will use, otherwise defaults to our default
+     *                        {@link InfuseType} texture.
+     *
+     * @return A builder for creating a custom {@link InfuseType}.
+     */
     @ZenCodeType.Method
     public static CrTInfuseTypeBuilder builder(@ZenCodeType.Optional MCResourceLocation textureLocation) {
         return new CrTInfuseTypeBuilder(textureLocation == null ? InfuseTypeBuilder.builder() : InfuseTypeBuilder.builder(textureLocation.getInternal()));

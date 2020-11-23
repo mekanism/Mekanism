@@ -55,7 +55,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
             throw new IllegalArgumentException("Duration must be positive! Duration: " + duration);
         }
         addRecipe(new PressurizedReactionIRecipe(getAndValidateName(name), inputSolid.getInternal(), inputFluid.getInternal(), inputGas.getInternal(),
-              energyRequired.getInternal(), duration, outputItem, outputGas));
+              energyRequired.getInternalAsConst(), duration, outputItem, outputGas));
     }
 
     @Override

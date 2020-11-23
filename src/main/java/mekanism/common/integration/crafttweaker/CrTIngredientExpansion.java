@@ -7,7 +7,6 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCIngredientList;
 import com.blamejared.crafttweaker.impl.item.MCItemDefinition;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.expansions.ExpandItemTag;
 import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import org.openzen.zencode.java.ZenCodeType;
@@ -72,7 +71,7 @@ public class CrTIngredientExpansion {
          */
         @ZenCodeType.Caster(implicit = true)
         public static CrTItemStackIngredient asItemStackIngredient(MCTag<MCItemDefinition> _this) {
-            return CrTItemStackIngredient.from(ExpandItemTag.asIIngredient(_this));
+            return CrTItemStackIngredient.from(_this);
         }
     }
 

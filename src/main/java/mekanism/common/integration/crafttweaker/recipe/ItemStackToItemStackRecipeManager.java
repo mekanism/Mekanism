@@ -81,7 +81,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
 
         private EnergizedSmelterRecipeManager() {
             super(MekanismRecipeType.SMELTING);
-            //TODO: Allow removing regular smelting recipes from the energized smelter just like we allowed in 1.12
+            //TODO - 10.1: Allow removing regular smelting recipes from the energized smelter just like we allowed in 1.12
         }
 
         @Override

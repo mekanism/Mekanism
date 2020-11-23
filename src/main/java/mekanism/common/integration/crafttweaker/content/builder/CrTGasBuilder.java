@@ -14,6 +14,14 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_BUILDER_GAS)
 public class CrTGasBuilder extends CrTChemicalBuilder<Gas, GasBuilder, ICrTGasAttribute, CrTGasBuilder> {
 
+    /**
+     * Creates a builder for registering a custom {@link Gas}.
+     *
+     * @param textureLocation If present the {@link MCResourceLocation} representing the texture this {@link Gas} will use, otherwise defaults to our default {@link Gas}
+     *                        texture.
+     *
+     * @return A builder for creating a custom {@link Gas}.
+     */
     @ZenCodeType.Method
     public static CrTGasBuilder builder(@ZenCodeType.Optional MCResourceLocation textureLocation) {
         return new CrTGasBuilder(textureLocation == null ? GasBuilder.builder() : GasBuilder.builder(textureLocation.getInternal()));

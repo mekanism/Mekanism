@@ -55,7 +55,7 @@ public class GasAttributes {
 
     /**
      * Defines the root data of a coolant, for use in Fission Reactors. Coolants have two primary properties: 'thermal enthalpy' and 'conductivity'. Thermal Enthalpy
-     * defines how much energy one mB the chemical can store; as such, lower values will cause reactors to require more of the chemical to stay cool. 'Conductivity'
+     * defines how much energy one mB of the chemical can store; as such, lower values will cause reactors to require more of the chemical to stay cool. 'Conductivity'
      * defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated variant.
      *
      * @author aidancbrady

@@ -25,7 +25,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
     @ZenCodeType.Method
     public void addRecipe(String name, CrTFluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput,
           @ZenCodeType.Optional("1 as " + CrTConstants.CLASS_FLOATING_LONG) CrTFloatingLong energyMultiplier) {
-        FloatingLong multiplier = energyMultiplier.getInternal();
+        FloatingLong multiplier = energyMultiplier.getInternalAsConst();
         if (multiplier.smallerThan(FloatingLong.ONE)) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + multiplier);
         }

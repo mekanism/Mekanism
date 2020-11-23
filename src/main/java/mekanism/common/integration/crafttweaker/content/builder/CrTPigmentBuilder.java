@@ -14,6 +14,14 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_BUILDER_PIGMENT)
 public class CrTPigmentBuilder extends CrTChemicalBuilder<Pigment, PigmentBuilder, ICrTPigmentAttribute, CrTPigmentBuilder> {
 
+    /**
+     * Creates a builder for registering a custom {@link Pigment}.
+     *
+     * @param textureLocation If present the {@link MCResourceLocation} representing the texture this {@link Pigment} will use, otherwise defaults to our default {@link
+     *                        Pigment} texture.
+     *
+     * @return A builder for creating a custom {@link Pigment}.
+     */
     @ZenCodeType.Method
     public static CrTPigmentBuilder builder(@ZenCodeType.Optional MCResourceLocation textureLocation) {
         return new CrTPigmentBuilder(textureLocation == null ? PigmentBuilder.builder() : PigmentBuilder.builder(textureLocation.getInternal()));
