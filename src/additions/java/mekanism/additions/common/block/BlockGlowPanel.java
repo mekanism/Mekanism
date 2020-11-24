@@ -34,7 +34,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     private final EnumColor color;
 
     public BlockGlowPanel(EnumColor color) {
-        super(AdditionsBlockTypes.GLOW_PANEL, AbstractBlock.Properties.create(Material.PISTON, color.getMapColor()).hardnessAndResistance(1F, 10F)
+        super(AdditionsBlockTypes.GLOW_PANEL, AbstractBlock.Properties.create(Material.PISTON, color.getMapColor()).hardnessAndResistance(1, 6)
               .setLightLevel(state -> 15));
         this.color = color;
     }

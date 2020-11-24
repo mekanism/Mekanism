@@ -53,7 +53,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
     @Deprecated
     public float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         float speed = super.getPlayerRelativeBlockHardness(state, player, world, pos);
-        TileEntityRadioactiveWasteBarrel tile = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
+        TileEntityRadioactiveWasteBarrel tile = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos, true);
         return tile != null && tile.getGasScale() > 0 ? speed / 5F : speed;
     }
 

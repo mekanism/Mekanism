@@ -27,7 +27,7 @@ public class BlockPlasticStairs extends StairsBlock implements IColoredBlock, IS
 
     public BlockPlasticStairs(IBlockProvider blockProvider, EnumColor color, UnaryOperator<Properties> propertyModifier) {
         super(() -> blockProvider.getBlock().getDefaultState(), BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(AbstractBlock.Properties
-              .create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F).harvestTool(ToolType.PICKAXE))));
+              .create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5, 6).harvestTool(ToolType.PICKAXE))));
         this.color = color;
         this.setDefaultState(getDefaultState().with(getFluidLoggedProperty(), 0));
     }

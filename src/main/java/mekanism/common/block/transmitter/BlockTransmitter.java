@@ -47,7 +47,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     private static final Map<ConnectionInfo, VoxelShape> cachedShapes = new HashMap<>();
 
     protected BlockTransmitter() {
-        super(AbstractBlock.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F));
+        super(AbstractBlock.Properties.create(Material.PISTON).hardnessAndResistance(1, 6));
     }
 
     @Nonnull

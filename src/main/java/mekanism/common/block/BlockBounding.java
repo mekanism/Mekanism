@@ -68,7 +68,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     public BlockBounding(boolean advanced) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the bounding block
         // Torches cannot be placed on the sides due to vanilla checking the incorrect shape
-        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F)
+        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 4.8F)
               .setRequiresTool().variableOpacity()));
         this.advanced = advanced;
         setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
@@ -215,6 +215,15 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             return super.getPlayerRelativeBlockHardness(state, player, world, pos);
         }
         return world.getBlockState(mainPos).getPlayerRelativeBlockHardness(player, world, mainPos);
+    }
+
+    @Override
+    public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion) {
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos == null) {
+            return super.getExplosionResistance(state, world, pos, explosion);
+        }
+        return world.getBlockState(mainPos).getExplosionResistance(world, mainPos, explosion);
     }
 
     @Nonnull

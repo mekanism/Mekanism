@@ -308,19 +308,19 @@ public class AdditionsBlocks {
     }
 
     private static BlockRegistryObject<BlockPlastic, ItemBlockColoredName> registerPlastic(EnumColor color) {
-        return registerPlastic(color, "_plastic", properties -> properties.hardnessAndResistance(5F, 10F));
+        return registerPlastic(color, "_plastic", properties -> properties.hardnessAndResistance(5, 6));
     }
 
     private static BlockRegistryObject<BlockPlastic, ItemBlockColoredName> registerSlickPlastic(EnumColor color) {
-        return registerPlastic(color, "_slick_plastic", properties -> properties.hardnessAndResistance(5F, 10F).slipperiness(0.98F));
+        return registerPlastic(color, "_slick_plastic", properties -> properties.hardnessAndResistance(5, 6).slipperiness(0.98F));
     }
 
     private static BlockRegistryObject<BlockPlastic, ItemBlockColoredName> registerGlowPlastic(EnumColor color) {
-        return registerPlastic(color, "_plastic_glow", properties -> properties.hardnessAndResistance(5F, 10F).setLightLevel(state -> 10));
+        return registerPlastic(color, "_plastic_glow", properties -> properties.hardnessAndResistance(5, 6).setLightLevel(state -> 10));
     }
 
     private static BlockRegistryObject<BlockPlastic, ItemBlockColoredName> registerReinforcedPlastic(EnumColor color) {
-        return registerPlastic(color, "_reinforced_plastic", properties -> properties.hardnessAndResistance(50F, 2_000F));
+        return registerPlastic(color, "_reinforced_plastic", properties -> properties.hardnessAndResistance(50, 1_200));
     }
 
     private static BlockRegistryObject<BlockPlasticRoad, ItemBlockColoredName> registerPlasticRoad(EnumColor color) {

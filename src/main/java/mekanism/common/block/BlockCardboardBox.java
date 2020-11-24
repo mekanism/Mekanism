@@ -31,7 +31,7 @@ import net.minecraft.world.World;
 public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
     public BlockCardboardBox() {
-        super(AbstractBlock.Properties.create(Material.WOOL).hardnessAndResistance(0.5F, 1F));
+        super(AbstractBlock.Properties.create(Material.WOOL).hardnessAndResistance(0.5F, 0.6F));
     }
 
     @Nonnull

@@ -24,7 +24,7 @@ import net.minecraft.world.IBlockReader;
 public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserFocusMatrix> {
 
     public BlockLaserFocusMatrix() {
-        super(GeneratorsBlockTypes.LASER_FOCUS_MATRIX, AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 8F).notSolid());
+        super(GeneratorsBlockTypes.LASER_FOCUS_MATRIX, AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 4.8F).notSolid());
     }
 
     @Override

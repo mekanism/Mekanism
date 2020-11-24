@@ -368,7 +368,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityPersonalChest> PERSONAL_CHEST = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.PERSONAL_CHEST, MekanismLang.DESCRIPTION_PERSONAL_CHEST)
           .withGui(() -> MekanismContainerTypes.PERSONAL_CHEST_BLOCK)
-          .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(-1F))
+          .with(new AttributeSecurity(), new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(-1))
           .withCustomShape(BlockShapes.PERSONAL_CHEST)
           .build();
     // Fuelwood Heater
@@ -408,7 +408,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntitySecurityDesk> SECURITY_DESK = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SECURITY_DESK, MekanismLang.DESCRIPTION_SECURITY_DESK)
           .withGui(() -> MekanismContainerTypes.SECURITY_DESK)
-          .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeCustomResistance(-1F), new AttributeSecurity())
+          .with(new AttributeInventory(), new AttributeStateFacing(), new AttributeCustomResistance(-1), new AttributeSecurity())
           .withCustomShape(BlockShapes.SECURITY_DESK)
           .with(new AttributeCustomSelectionBox(false))
           .build();
@@ -543,22 +543,21 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER)
           .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER)
-          .with(new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(9F), new AttributeMultiblock())
+          .with(new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(9), new AttributeMultiblock())
           .build();
     // Thermal Evaporation Valve
     public static final BlockTypeTile<TileEntityThermalEvaporationValve> THERMAL_EVAPORATION_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_VALVE)
-          .with(new AttributeComparator(), new AttributeCustomResistance(9F), new AttributeMultiblock())
+          .with(new AttributeComparator(), new AttributeCustomResistance(9), new AttributeMultiblock())
           .build();
     // Thermal Evaporation Block
     public static final BlockTypeTile<TileEntityThermalEvaporationBlock> THERMAL_EVAPORATION_BLOCK = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_BLOCK)
-          .with(new AttributeCustomResistance(9F), new AttributeMultiblock())
+          .with(new AttributeCustomResistance(9), new AttributeMultiblock())
           .build();
     // Steel Casing
     public static final BlockType STEEL_CASING = BlockTypeBuilder
           .createBlock(MekanismLang.DESCRIPTION_STEEL_CASING)
-          .with(new AttributeCustomResistance(9F))
           .build();
     // Radioactive Waste Barrel
     public static final BlockTypeTile<TileEntityRadioactiveWasteBarrel> RADIOACTIVE_WASTE_BARREL = BlockTileBuilder

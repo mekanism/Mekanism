@@ -19,7 +19,7 @@ public class BlockOre extends Block implements IHasDescription {
     private final OreType ore;
 
     public BlockOre(OreType ore) {
-        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(3F, 5F)
+        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(3, 3)
               .setRequiresTool().harvestTool(ToolType.PICKAXE).harvestLevel(1)));
         this.ore = ore;
     }

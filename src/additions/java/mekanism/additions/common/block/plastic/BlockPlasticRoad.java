@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 public class BlockPlasticRoad extends BlockPlastic {
 
     public BlockPlasticRoad(EnumColor color) {
-        super(color, properties -> properties.hardnessAndResistance(5F, 10F));
+        super(color, properties -> properties.hardnessAndResistance(5, 6));
     }
 
     @Override

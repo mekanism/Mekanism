@@ -27,7 +27,7 @@ public class BlockPlasticSlab extends SlabBlock implements IColoredBlock, IState
 
     public BlockPlasticSlab(EnumColor color, UnaryOperator<Properties> propertyModifier) {
         super(BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(AbstractBlock.Properties.create(BlockPlastic.PLASTIC, color.getMapColor())
-              .hardnessAndResistance(5F, 10F).harvestTool(ToolType.PICKAXE))));
+              .hardnessAndResistance(5, 6).harvestTool(ToolType.PICKAXE))));
         this.color = color;
         this.setDefaultState(getDefaultState().with(getFluidLoggedProperty(), 0));
     }

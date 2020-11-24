@@ -22,7 +22,7 @@ import net.minecraftforge.common.ToolType;
 public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockTile<TILE, TYPE> {
 
     public BlockTileGlass(TYPE type) {
-        super(type, AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 16F).notSolid().setRequiresTool().harvestTool(ToolType.PICKAXE));
+        super(type, AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(3.5F, 9.6F).notSolid().setRequiresTool().harvestTool(ToolType.PICKAXE));
     }
 
     @Override

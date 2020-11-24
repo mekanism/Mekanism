@@ -23,7 +23,7 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
 
     public BlockPlasticFenceGate(EnumColor color) {
         super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(BlockPlastic.PLASTIC, color.getMapColor())
-              .hardnessAndResistance(5F, 10F).harvestTool(ToolType.PICKAXE)));
+              .hardnessAndResistance(5, 6).harvestTool(ToolType.PICKAXE)));
         this.color = color;
         this.setDefaultState(getDefaultState().with(getFluidLoggedProperty(), 0));
     }

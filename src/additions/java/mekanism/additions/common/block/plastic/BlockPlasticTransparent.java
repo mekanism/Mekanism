@@ -18,7 +18,7 @@ import net.minecraft.world.IWorldReader;
 public class BlockPlasticTransparent extends BlockPlastic {
 
     public BlockPlasticTransparent(EnumColor color) {
-        super(color, properties -> properties.hardnessAndResistance(5F, 10F).notSolid());
+        super(color, properties -> properties.hardnessAndResistance(5, 6).notSolid());
     }
 
     @Override

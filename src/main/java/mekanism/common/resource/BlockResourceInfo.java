@@ -3,16 +3,16 @@ package mekanism.common.resource;
 import net.minecraft.block.material.PushReaction;
 
 public enum BlockResourceInfo implements IResource {
-    OSMIUM("osmium", 7.5F, 20, 1),
-    TIN("tin", 5, 10, 1),
-    COPPER("copper", 5, 10, 1),
-    LEAD("lead", 5, 10, 1),
-    URANIUM("uranium", 5, 10, 1),
-    CHARCOAL("charcoal", 5, 10, 0, 16_000),
-    BRONZE("bronze", 5, 15, 1),
-    STEEL("steel", 5, 15, 1),
-    REFINED_OBSIDIAN("refined_obsidian", 50, 4_000, 2, -1, 8, false, true, PushReaction.BLOCK),
-    REFINED_GLOWSTONE("refined_glowstone", 5, 10, 1, -1, 15);
+    OSMIUM("osmium", 7.5F, 12, 1),
+    TIN("tin", 5, 6, 1),
+    COPPER("copper", 5, 6, 1),
+    LEAD("lead", 5, 9, 1),
+    URANIUM("uranium", 5, 9, 1),
+    CHARCOAL("charcoal", 5, 6, 0, 16_000),
+    BRONZE("bronze", 5, 9, 1),
+    STEEL("steel", 5, 9, 1),
+    REFINED_OBSIDIAN("refined_obsidian", 50, 2_400, 2, -1, 8, false, true, PushReaction.BLOCK),
+    REFINED_GLOWSTONE("refined_glowstone", 5, 6, 1, -1, 15);
 
     private final String registrySuffix;
     private final PushReaction pushReaction;

@@ -31,7 +31,7 @@ public class BlockIndustrialAlarm extends BlockTile<TileEntityIndustrialAlarm, B
     }
 
     public BlockIndustrialAlarm() {
-        super(MekanismBlockTypes.INDUSTRIAL_ALARM, AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(2F, 4F));
+        super(MekanismBlockTypes.INDUSTRIAL_ALARM, AbstractBlock.Properties.create(Material.GLASS).hardnessAndResistance(2, 2.4F));
     }
 
     @Nonnull

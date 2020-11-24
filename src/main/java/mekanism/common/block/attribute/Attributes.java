@@ -49,6 +49,7 @@ public class Attributes {
 
         public AttributeCustomResistance(float resistance) {
             this.resistance = resistance;
+            //TODO: Adjust properties instead of having the override?
         }
 
         public float getResistance() {
