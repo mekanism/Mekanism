@@ -17,6 +17,14 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_FLUID_STACK_INGREDIENT)
 public class CrTFluidStackIngredient extends CrTIngredientWrapper<FluidStack, FluidStackIngredient> {
 
+    /**
+     * Creates a {@link CrTFluidStackIngredient} that matches a given fluid and amount.
+     *
+     * @param instance Fluid to match
+     * @param amount   Amount needed
+     *
+     * @return A {@link CrTFluidStackIngredient} that matches a given fluid and amount.
+     */
     @ZenCodeType.Method
     public static CrTFluidStackIngredient from(MCFluid instance, int amount) {
         assertValidAmount("FluidStackIngredients", amount);
@@ -27,6 +35,13 @@ public class CrTFluidStackIngredient extends CrTIngredientWrapper<FluidStack, Fl
         return new CrTFluidStackIngredient(FluidStackIngredient.from(fluid, amount));
     }
 
+    /**
+     * Creates a {@link CrTFluidStackIngredient} that matches a given fluid stack.
+     *
+     * @param instance Fluid stack to match
+     *
+     * @return A {@link CrTFluidStackIngredient} that matches a given fluid stack.
+     */
     @ZenCodeType.Method
     public static CrTFluidStackIngredient from(IFluidStack instance) {
         FluidStack fluidStack = instance.getInternal();
@@ -36,15 +51,30 @@ public class CrTFluidStackIngredient extends CrTIngredientWrapper<FluidStack, Fl
         return new CrTFluidStackIngredient(FluidStackIngredient.from(fluidStack));
     }
 
+    /**
+     * Creates a {@link CrTFluidStackIngredient} that matches a given fluid tag with a given amount.
+     *
+     * @param fluidTag Tag to match
+     * @param amount   Amount needed
+     *
+     * @return A {@link CrTFluidStackIngredient} that matches a given fluid tag with a given amount.
+     */
     @ZenCodeType.Method
     public static CrTFluidStackIngredient from(MCTag<MCFluid> fluidTag, int amount) {
         ITag<Fluid> tag = assertValidAndGet(fluidTag, amount, TagManagerFluid.INSTANCE::getInternal, "FluidStackIngredients");
         return new CrTFluidStackIngredient(FluidStackIngredient.from(tag, amount));
     }
 
+    /**
+     * Combines multiple {@link CrTFluidStackIngredient}s into a single {@link CrTFluidStackIngredient}.
+     *
+     * @param crtIngredients Ingredients to combine
+     *
+     * @return A single {@link CrTFluidStackIngredient} representing all the passed in ingredients.
+     */
     @ZenCodeType.Method
     public static CrTFluidStackIngredient createMulti(CrTFluidStackIngredient... crtIngredients) {
-        return createMulti("FluidStackIngredients",  FluidStackIngredient[]::new,
+        return createMulti("FluidStackIngredients", FluidStackIngredient[]::new,
               ingredients -> new CrTFluidStackIngredient(FluidStackIngredient.createMulti(ingredients)), crtIngredients);
     }
 

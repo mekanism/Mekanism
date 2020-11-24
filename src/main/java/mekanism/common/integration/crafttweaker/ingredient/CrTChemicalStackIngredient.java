@@ -14,6 +14,9 @@ import org.openzen.zencode.java.ZenCodeType;
 public class CrTChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends CrTIngredientWrapper<STACK, INGREDIENT> {
 
+    /**
+     * Validates that the amount is greater than zero and that given chemical is not the empty variant. If one of these is not true, an error is thrown.
+     */
     protected static void assertValid(ICrTChemical<?, ?, ?, ?> instance, long amount, String ingredientType, String chemicalType) {
         assertValidAmount(ingredientType, amount);
         Chemical<?> chemical = instance.getChemical();
@@ -22,6 +25,9 @@ public class CrTChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STA
         }
     }
 
+    /**
+     * Validates that the chemical stack is not empty. If it is, an error is thrown.
+     */
     protected static void assertValid(ICrTChemicalStack<?, ?, ?, ?> instance, String ingredientType) {
         if (instance.getInternal().isEmpty()) {
             throw new IllegalArgumentException(ingredientType + " cannot be created from an empty stack.");

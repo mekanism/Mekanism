@@ -1,20 +1,31 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
+import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import mekanism.api.recipes.inputs.InputIngredient;
+import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.tags.ITag;
+import org.openzen.zencode.java.ZenCodeType;
 
+@ZenRegister
+@ZenCodeType.Name(CrTConstants.CLASS_INGREDIENT_WRAPPER)
 public class CrTIngredientWrapper<TYPE, INGREDIENT extends InputIngredient<TYPE>> {
 
+    /**
+     * Validates that the amount is greater than zero. If it is not it throws an error.
+     */
     protected static void assertValidAmount(String ingredientType, long amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException(ingredientType + " can only be created with a size of at least one. Received size was: " + amount);
         }
     }
 
+    /**
+     * Validates that the amount is greater than zero and that the tag exists. If it does it gets and returns the tag, otherwise it throws an error.
+     */
     protected static <TYPE, CRT_TYPE extends CommandStringDisplayable> ITag<TYPE> assertValidAndGet(MCTag<CRT_TYPE> crtTag, long amount,
           Function<MCTag<CRT_TYPE>, ITag<TYPE>> getter, String ingredientType) {
         assertValidAmount(ingredientType, amount);

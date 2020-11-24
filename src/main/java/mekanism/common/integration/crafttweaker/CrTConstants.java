@@ -56,6 +56,7 @@ public class CrTConstants {
     public static final String CLASS_SLURRY_TAG_MANAGER = "mekanism.api.tag.SlurryTagManager";
 
     public static final String CLASS_FLOATING_LONG = "mekanism.api.FloatingLong";
+    public static final String CLASS_INGREDIENT_WRAPPER = "mekanism.api.ingredient.IngredientWrapper";
     public static final String CLASS_ITEM_STACK_INGREDIENT = "mekanism.api.ingredient.ItemStackIngredient";
     public static final String CLASS_FLUID_STACK_INGREDIENT = "mekanism.api.ingredient.FluidStackIngredient";
     public static final String CLASS_CHEMICAL_STACK_INGREDIENT = "mekanism.api.ingredient.ChemicalStackIngredient";

@@ -21,6 +21,13 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_ITEM_STACK_INGREDIENT)
 public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, ItemStackIngredient> {
 
+    /**
+     * Creates a {@link CrTItemStackIngredient} that matches a given item stack.
+     *
+     * @param stack Item stack to match
+     *
+     * @return A {@link CrTItemStackIngredient} that matches a given item stack.
+     */
     @ZenCodeType.Method
     public static CrTItemStackIngredient from(IItemStack stack) {
         if (stack.isEmpty()) {
@@ -29,33 +36,78 @@ public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, Item
         return from(stack, stack.getAmount());
     }
 
+    /**
+     * Creates a {@link CrTItemStackIngredient} that matches a given item with an amount of one.
+     *
+     * @param item Item to match
+     *
+     * @return A {@link CrTItemStackIngredient} that matches a given item with an amount of one.
+     */
     @ZenCodeType.Method
     public static CrTItemStackIngredient from(MCItemDefinition item) {
         return from(item, 1);
     }
 
+    /**
+     * Creates a {@link CrTItemStackIngredient} that matches a given item and amount.
+     *
+     * @param item   Item to match
+     * @param amount Amount needed
+     *
+     * @return A {@link CrTItemStackIngredient} that matches a given item and amount.
+     */
     @ZenCodeType.Method
     public static CrTItemStackIngredient from(MCItemDefinition item, int amount) {
         assertValidAmount("ItemStackIngredients", amount);
         return new CrTItemStackIngredient(ItemStackIngredient.from(item.getInternal(), amount));
     }
 
+    /**
+     * Creates a {@link CrTItemStackIngredient} that matches a given item tag with an amount of one.
+     *
+     * @param itemTag Tag to match
+     *
+     * @return A {@link CrTItemStackIngredient} that matches a given item tag with an amount of one.
+     */
     @ZenCodeType.Method
     public static CrTItemStackIngredient from(MCTag<MCItemDefinition> itemTag) {
         return from(itemTag, 1);
     }
 
+    /**
+     * Creates a {@link CrTItemStackIngredient} that matches a given item tag with a given amount.
+     *
+     * @param itemTag Tag to match
+     * @param amount  Amount needed
+     *
+     * @return A {@link CrTItemStackIngredient} that matches a given item tag with a given amount.
+     */
     @ZenCodeType.Method
     public static CrTItemStackIngredient from(MCTag<MCItemDefinition> itemTag, int amount) {
         ITag<Item> tag = assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
         return new CrTItemStackIngredient(ItemStackIngredient.from(tag, amount));
     }
 
+    /**
+     * Creates a {@link CrTItemStackIngredient} that matches a given ingredient with an amount of one.
+     *
+     * @param ingredient Ingredient to match
+     *
+     * @return A {@link CrTItemStackIngredient} that matches a given ingredient with an amount of one.
+     */
     @ZenCodeType.Method
     public static CrTItemStackIngredient from(IIngredient ingredient) {
         return from(ingredient, 1);
     }
 
+    /**
+     * Creates a {@link CrTItemStackIngredient} that matches a given ingredient and amount.
+     *
+     * @param ingredient Ingredient to match
+     * @param amount     Amount needed
+     *
+     * @return A {@link CrTItemStackIngredient} that matches a given ingredient and amount.
+     */
     @ZenCodeType.Method
     public static CrTItemStackIngredient from(IIngredient ingredient, int amount) {
         assertValidAmount("ItemStackIngredients", amount);
@@ -67,6 +119,13 @@ public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, Item
         return new CrTItemStackIngredient(ItemStackIngredient.from(vanillaIngredient, amount));
     }
 
+    /**
+     * Creates a {@link CrTItemStackIngredient} out of all the ingredients in the given {@link MCIngredientList}.
+     *
+     * @param ingredientList Ingredients to match
+     *
+     * @return A {@link CrTItemStackIngredient} made up of all the ingredients in the given {@link MCIngredientList}.
+     */
     @ZenCodeType.Method
     public static CrTItemStackIngredient from(MCIngredientList ingredientList) {
         IIngredient[] ingredients = ingredientList.getIngredients();
@@ -92,6 +151,13 @@ public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, Item
         }
     }
 
+    /**
+     * Combines multiple {@link CrTItemStackIngredient}s into a single {@link CrTItemStackIngredient}.
+     *
+     * @param crtIngredients Ingredients to combine
+     *
+     * @return A single {@link CrTItemStackIngredient} representing all the passed in ingredients.
+     */
     @ZenCodeType.Method
     public static CrTItemStackIngredient createMulti(CrTItemStackIngredient... crtIngredients) {
         return createMulti("ItemStackIngredients", ItemStackIngredient[]::new,

@@ -16,24 +16,54 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT)
 public class CrTPigmentStackIngredient extends CrTChemicalStackIngredient<Pigment, PigmentStack, PigmentStackIngredient> {
 
+    /**
+     * Creates a {@link CrTPigmentStackIngredient} that matches a given pigment and amount.
+     *
+     * @param instance Pigmnt to match
+     * @param amount   Amount needed
+     *
+     * @return A {@link CrTPigmentStackIngredient} that matches a given pigment and amount.
+     */
     @ZenCodeType.Method
     public static CrTPigmentStackIngredient from(ICrTPigment instance, long amount) {
         assertValid(instance, amount, "PigmentStackIngredients", "pigment");
         return new CrTPigmentStackIngredient(PigmentStackIngredient.from(instance, amount));
     }
 
+    /**
+     * Creates a {@link CrTPigmentStackIngredient} that matches a given pigment stack.
+     *
+     * @param instance Pigment stack to match
+     *
+     * @return A {@link CrTPigmentStackIngredient} that matches a given pigment stack.
+     */
     @ZenCodeType.Method
     public static CrTPigmentStackIngredient from(ICrTPigmentStack instance) {
         assertValid(instance, "PigmentStackIngredients");
         return new CrTPigmentStackIngredient(PigmentStackIngredient.from(instance.getInternal()));
     }
 
+    /**
+     * Creates a {@link CrTPigmentStackIngredient} that matches a given pigment tag with a given amount.
+     *
+     * @param pigmentTag Tag to match
+     * @param amount     Amount needed
+     *
+     * @return A {@link CrTPigmentStackIngredient} that matches a given pigment tag with a given amount.
+     */
     @ZenCodeType.Method
     public static CrTPigmentStackIngredient from(MCTag<ICrTPigment> pigmentTag, long amount) {
         ITag<Pigment> tag = assertValidAndGet(pigmentTag, amount, CrTPigmentTagManager.INSTANCE::getInternal, "PigmentStackIngredients");
         return new CrTPigmentStackIngredient(PigmentStackIngredient.from(tag, amount));
     }
 
+    /**
+     * Combines multiple {@link CrTPigmentStackIngredient}s into a single {@link CrTPigmentStackIngredient}.
+     *
+     * @param crtIngredients Ingredients to combine
+     *
+     * @return A single {@link CrTPigmentStackIngredient} representing all the passed in ingredients.
+     */
     @ZenCodeType.Method
     public static CrTPigmentStackIngredient createMulti(CrTPigmentStackIngredient... crtIngredients) {
         return createMulti("PigmentStackIngredients", PigmentStackIngredient[]::new,
