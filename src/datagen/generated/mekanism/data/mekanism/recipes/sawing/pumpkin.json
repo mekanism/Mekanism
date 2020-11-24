@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:pumpkin"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:carved_pumpkin"
+  },
+  "secondaryOutput": {
+    "item": "minecraft:pumpkin_seeds",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

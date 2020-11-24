@@ -108,6 +108,13 @@ class SawingRecipeProvider implements ISubRecipeProvider {
               MekanismItems.SAWDUST.getItemStack(),
               0.25
         ).build(consumer, Mekanism.rl(basePath + "planks"));
+        //Pumpkin
+        SawmillRecipeBuilder.sawing(
+              ItemStackIngredient.from(Blocks.PUMPKIN),
+              new ItemStack(Blocks.CARVED_PUMPKIN, 1),
+              new ItemStack(Items.PUMPKIN_SEEDS, 4),
+              1
+        ).build(consumer, Mekanism.rl(basePath + "pumpkin"));
         //Redstone torch
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(Items.REDSTONE_TORCH),
