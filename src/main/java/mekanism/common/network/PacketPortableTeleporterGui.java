@@ -75,6 +75,9 @@ public class PacketPortableTeleporterGui {
                                 player.connection.floatingTickCount = 0;
                                 player.closeScreen();
                                 Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.getPosition()), player.world, coords.getPos());
+                                if (player.isPassenger()) {
+                                    player.stopRiding();
+                                }
                                 TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
                                 BlockPos coordsPos = coords.getPos();
                                 Direction frameDirection = teleporter.frameDirection();

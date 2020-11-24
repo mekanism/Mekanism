@@ -289,6 +289,9 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
                     energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
+                    if (player.isPassenger()) {
+                        player.stopRiding();
+                    }
                     player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
                     player.fallDistance = 0.0F;
                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(pos.up()), world, pos);
