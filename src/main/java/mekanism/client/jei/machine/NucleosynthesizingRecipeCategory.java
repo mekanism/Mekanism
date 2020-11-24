@@ -3,7 +3,6 @@ package mekanism.client.jei.machine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
@@ -25,7 +24,6 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -90,10 +88,7 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
     @Override
     public void setIngredients(NucleosynthesizingRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
-        List<@NonNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
-        long scale = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
-        List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, scale)).collect(Collectors.toList());
-        ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(scaledGases));
+        ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getChemicalInput().getRepresentations()));
         ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getOutputDefinition()));
     }
 
@@ -108,15 +103,11 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
         GasStackIngredient gasInput = recipe.getChemicalInput();
         List<ItemStack> gasItemProviders = new ArrayList<>();
         List<@NonNull GasStack> gasInputs = gasInput.getRepresentations();
-        List<GasStack> scaledGases = new ArrayList<>();
-        long scale = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
         for (GasStack gas : gasInputs) {
             gasItemProviders.addAll(MekanismJEI.GAS_STACK_HELPER.getStacksFor(gas.getType(), true));
-            //While we are already looping the gases ensure we scale it to get the average amount that will get used over all
-            scaledGases.add(new GasStack(gas, scale));
         }
         itemStacks.set(2, gasItemProviders);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initChemical(gasStacks, 0, true, 6 - xOffset, 19 - yOffset, 16, 46, scaledGases, true);
+        initChemical(gasStacks, 0, true, 6 - xOffset, 19 - yOffset, 16, 46, gasInputs, true);
     }
 }
