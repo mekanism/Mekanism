@@ -1,11 +1,10 @@
-package mekanism.common.capabilities.resolver.basic;
+package mekanism.common.capabilities.resolver;
 
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;

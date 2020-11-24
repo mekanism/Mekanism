@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.resolver.basic;
+package mekanism.common.capabilities.resolver;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +8,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.energy.ISidedStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;

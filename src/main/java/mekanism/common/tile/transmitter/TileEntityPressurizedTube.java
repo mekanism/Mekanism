@@ -1,48 +1,61 @@
 package mekanism.common.tile.transmitter;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
-import mekanism.api.chemical.infuse.IInfusionHandler.IMekanismInfusionHandler;
-import mekanism.api.chemical.pigment.IPigmentHandler.IMekanismPigmentHandler;
-import mekanism.api.chemical.slurry.ISlurryHandler.IMekanismSlurryHandler;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.transmitter.ChemicalTransmitterWrapper.GasTransmitterWrapper;
-import mekanism.common.capabilities.chemical.transmitter.ChemicalTransmitterWrapper.InfusionTransmitterWrapper;
-import mekanism.common.capabilities.chemical.transmitter.ChemicalTransmitterWrapper.PigmentTransmitterWrapper;
-import mekanism.common.capabilities.chemical.transmitter.ChemicalTransmitterWrapper.SlurryTransmitterWrapper;
-import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyGasHandler;
-import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyInfusionHandler;
-import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyPigmentHandler;
-import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxySlurryHandler;
-import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
+import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
+import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicGasHandler;
+import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicInfusionHandler;
+import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicPigmentHandler;
+import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicSlurryHandler;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.GasHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.InfusionHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.PigmentHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.SlurryHandlerManager;
 import mekanism.common.content.network.BoxedChemicalNetwork;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter {
 
+    private final GasHandlerManager gasHandlerManager;
+    private final InfusionHandlerManager infusionHandlerManager;
+    private final PigmentHandlerManager pigmentHandlerManager;
+    private final SlurryHandlerManager slurryHandlerManager;
+
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
         super(blockProvider);
-        BoxedPressurizedTube tube = getTransmitter();
-        IMekanismGasHandler gasHandler = new GasTransmitterWrapper(tube, tube::getGasTanks);
-        IMekanismInfusionHandler infusionHandler = new InfusionTransmitterWrapper(tube, tube::getInfusionTanks);
-        IMekanismPigmentHandler pigmentHandler = new PigmentTransmitterWrapper(tube, tube::getPigmentTanks);
-        IMekanismSlurryHandler slurryHandler = new SlurryTransmitterWrapper(tube, tube::getSlurryTanks);
-        addCapabilityResolver(AdvancedCapabilityResolver.readOnly(Capabilities.GAS_HANDLER_CAPABILITY, gasHandler,
-              () -> new ProxyGasHandler(gasHandler, null, null)));
-        addCapabilityResolver(AdvancedCapabilityResolver.readOnly(Capabilities.INFUSION_HANDLER_CAPABILITY, infusionHandler,
-              () -> new ProxyInfusionHandler(infusionHandler, null, null)));
-        addCapabilityResolver(AdvancedCapabilityResolver.readOnly(Capabilities.PIGMENT_HANDLER_CAPABILITY, pigmentHandler,
-              () -> new ProxyPigmentHandler(pigmentHandler, null, null)));
-        addCapabilityResolver(AdvancedCapabilityResolver.readOnly(Capabilities.SLURRY_HANDLER_CAPABILITY, slurryHandler,
-              () -> new ProxySlurryHandler(slurryHandler, null, null)));
+        InteractPredicate canExtract = getExtractPredicate();
+        InteractPredicate canInsert = getInsertPredicate();
+        addCapabilityResolver(gasHandlerManager = new GasHandlerManager(getHolder(BoxedPressurizedTube::getGasTanks),
+              new DynamicGasHandler(this::getGasTanks, canExtract, canInsert, null)));
+        addCapabilityResolver(infusionHandlerManager = new InfusionHandlerManager(getHolder(BoxedPressurizedTube::getInfusionTanks),
+              new DynamicInfusionHandler(this::getInfusionTanks, canExtract, canInsert, null)));
+        addCapabilityResolver(pigmentHandlerManager = new PigmentHandlerManager(getHolder(BoxedPressurizedTube::getPigmentTanks),
+              new DynamicPigmentHandler(this::getPigmentTanks, canExtract, canInsert, null)));
+        addCapabilityResolver(slurryHandlerManager = new SlurryHandlerManager(getHolder(BoxedPressurizedTube::getSlurryTanks),
+              new DynamicSlurryHandler(this::getSlurryTanks, canExtract, canInsert, null)));
     }
 
     @Override
@@ -95,5 +108,49 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter {
             updateTag.putFloat(NBTConstants.SCALE, network.currentScale);
         }
         return updateTag;
+    }
+
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
+    IChemicalTankHolder<CHEMICAL, STACK, TANK> getHolder(BiFunction<BoxedPressurizedTube, Direction, List<TANK>> tankFunction) {
+        BoxedPressurizedTube tube = getTransmitter();
+        return direction -> {
+            if (direction != null && tube.getConnectionTypeRaw(direction) == ConnectionType.NONE) {
+                //If we actually have a side, and our connection type on that side is none, then return that we have no tanks
+                return Collections.emptyList();
+            }
+            return tankFunction.apply(tube, direction);
+        };
+    }
+
+    private List<IGasTank> getGasTanks(@Nullable Direction side) {
+        return gasHandlerManager.getContainers(side);
+    }
+
+    private List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
+        return infusionHandlerManager.getContainers(side);
+    }
+
+    private List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
+        return pigmentHandlerManager.getContainers(side);
+    }
+
+    private List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
+        return slurryHandlerManager.getContainers(side);
+    }
+
+    @Override
+    public void sideChanged(@Nonnull Direction side, @Nonnull ConnectionType old, @Nonnull ConnectionType type) {
+        super.sideChanged(side, old, type);
+        if (type == ConnectionType.NONE) {
+            invalidateCapability(Capabilities.GAS_HANDLER_CAPABILITY, side);
+            invalidateCapability(Capabilities.INFUSION_HANDLER_CAPABILITY, side);
+            invalidateCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY, side);
+            invalidateCapability(Capabilities.SLURRY_HANDLER_CAPABILITY, side);
+            //Notify the neighbor on that side our state changed and we no longer have a capability
+            WorldUtils.notifyNeighborOfChange(world, side, pos);
+        } else if (old == ConnectionType.NONE) {
+            //Notify the neighbor on that side our state changed and we now do have a capability
+            WorldUtils.notifyNeighborOfChange(world, side, pos);
+        }
     }
 }

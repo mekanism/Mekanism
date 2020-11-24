@@ -14,7 +14,7 @@ import mekanism.api.energy.ISidedStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
-import mekanism.common.capabilities.resolver.basic.EnergyCapabilityResolver;
+import mekanism.common.capabilities.resolver.EnergyCapabilityResolver;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;

@@ -1,28 +1,41 @@
 package mekanism.common.tile.transmitter;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
-import mekanism.common.capabilities.proxy.ProxyFluidHandler;
-import mekanism.common.capabilities.resolver.advanced.AdvancedCapabilityResolver;
+import mekanism.common.capabilities.fluid.DynamicFluidHandler;
+import mekanism.common.capabilities.resolver.manager.FluidHandlerManager;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class TileEntityMechanicalPipe extends TileEntityTransmitter {
 
+    private final FluidHandlerManager fluidHandlerManager;
+
     public TileEntityMechanicalPipe(IBlockProvider blockProvider) {
         super(blockProvider);
-        IMekanismFluidHandler handler = getTransmitter();
-        addCapabilityResolver(AdvancedCapabilityResolver.readOnly(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, handler,
-              () -> new ProxyFluidHandler(handler, null, null)));
+        addCapabilityResolver(fluidHandlerManager = new FluidHandlerManager(direction -> {
+            MechanicalPipe pipe = getTransmitter();
+            if (direction != null && pipe.getConnectionTypeRaw(direction) == ConnectionType.NONE) {
+                //If we actually have a side, and our connection type on that side is none, then return that we have no tanks
+                return Collections.emptyList();
+            }
+            return pipe.getFluidTanks(direction);
+        }, new DynamicFluidHandler(this::getFluidTanks, getExtractPredicate(), getInsertPredicate(), null)));
     }
 
     @Override
@@ -75,5 +88,22 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter {
             updateTag.putFloat(NBTConstants.SCALE, network.currentScale);
         }
         return updateTag;
+    }
+
+    private List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+        return fluidHandlerManager.getContainers(side);
+    }
+
+    @Override
+    public void sideChanged(@Nonnull Direction side, @Nonnull ConnectionType old, @Nonnull ConnectionType type) {
+        super.sideChanged(side, old, type);
+        if (type == ConnectionType.NONE) {
+            invalidateCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
+            //Notify the neighbor on that side our state changed and we no longer have a capability
+            WorldUtils.notifyNeighborOfChange(world, side, pos);
+        } else if (old == ConnectionType.NONE) {
+            //Notify the neighbor on that side our state changed and we now do have a capability
+            WorldUtils.notifyNeighborOfChange(world, side, pos);
+        }
     }
 }

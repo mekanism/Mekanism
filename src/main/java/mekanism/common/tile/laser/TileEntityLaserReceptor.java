@@ -7,7 +7,7 @@ import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import net.minecraft.util.Direction;
 
 public abstract class TileEntityLaserReceptor extends TileEntityBasicLaser implements ILaserReceptor {

@@ -151,7 +151,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
             return getCenter();
         }
         Transmitter<?, ?, ?> transmitter = tile.getTransmitter();
-        ConnectionType[] connectionTypes = new ConnectionType[transmitter.connectionTypes.length];
+        ConnectionType[] connectionTypes = new ConnectionType[transmitter.getConnectionTypesRaw().length];
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
             //Get the actual connection types
             connectionTypes[i] = transmitter.getConnectionType(EnumUtils.DIRECTIONS[i]);

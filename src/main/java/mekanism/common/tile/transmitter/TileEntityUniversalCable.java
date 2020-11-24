@@ -1,23 +1,41 @@
 package mekanism.common.tile.transmitter;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
-import mekanism.common.capabilities.resolver.advanced.AdvancedEnergyCapabilityResolver;
+import mekanism.common.capabilities.energy.DynamicStrictEnergyHandler;
+import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.transmitter.UniversalCable;
+import mekanism.common.integration.energy.EnergyCompatUtils;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter {
 
+    private final EnergyHandlerManager energyHandlerManager;
+
     public TileEntityUniversalCable(IBlockProvider blockProvider) {
         super(blockProvider);
-        addCapabilityResolver(new AdvancedEnergyCapabilityResolver(getTransmitter()));
+        addCapabilityResolver(energyHandlerManager = new EnergyHandlerManager(direction -> {
+            UniversalCable cable = getTransmitter();
+            if (direction != null && cable.getConnectionTypeRaw(direction) == ConnectionType.NONE) {
+                //If we actually have a side, and our connection type on that side is none, then return that we have no containers
+                return Collections.emptyList();
+            }
+            return cable.getEnergyContainers(direction);
+        }, new DynamicStrictEnergyHandler(this::getEnergyContainers, getExtractPredicate(), getInsertPredicate(), null)));
     }
 
     @Override
@@ -70,5 +88,22 @@ public class TileEntityUniversalCable extends TileEntityTransmitter {
             updateTag.putFloat(NBTConstants.SCALE, network.currentScale);
         }
         return updateTag;
+    }
+
+    private List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+        return energyHandlerManager.getContainers(side);
+    }
+
+    @Override
+    public void sideChanged(@Nonnull Direction side, @Nonnull ConnectionType old, @Nonnull ConnectionType type) {
+        super.sideChanged(side, old, type);
+        if (type == ConnectionType.NONE) {
+            invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), side);
+            //Notify the neighbor on that side our state changed and we no longer have a capability
+            WorldUtils.notifyNeighborOfChange(world, side, pos);
+        } else if (old == ConnectionType.NONE) {
+            //Notify the neighbor on that side our state changed and we now do have a capability
+            WorldUtils.notifyNeighborOfChange(world, side, pos);
+        }
     }
 }

@@ -161,7 +161,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     @Nullable
     @Override
     public PressurizedTubeUpgradeData getUpgradeData() {
-        return new PressurizedTubeUpgradeData(redstoneReactive, connectionTypes, getShare());
+        return new PressurizedTubeUpgradeData(redstoneReactive, getConnectionTypesRaw(), getShare());
     }
 
     @Override
@@ -172,7 +172,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     @Override
     public void parseUpgradeData(@Nonnull PressurizedTubeUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
-        connectionTypes = data.connectionTypes;
+        setConnectionTypesRaw(data.connectionTypes);
         takeChemical(data.contents, Action.EXECUTE);
     }
 

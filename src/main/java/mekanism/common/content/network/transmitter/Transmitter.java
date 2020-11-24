@@ -53,7 +53,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return types[side.ordinal()];
     }
 
-    public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
+    private ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
                                                ConnectionType.NORMAL};
     private final AbstractAcceptorCache<ACCEPTOR, ?> acceptorCache;
     public byte currentTransmitterConnections = 0x00;
@@ -84,6 +84,33 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public TileEntityTransmitter getTransmitterTile() {
         return transmitterTile;
+    }
+
+    /**
+     * @apiNote Don't use this to directly modify the backing array, use the helper set methods.
+     */
+    public ConnectionType[] getConnectionTypesRaw() {
+        return connectionTypes;
+    }
+
+    public void setConnectionTypesRaw(@Nonnull ConnectionType[] connectionTypes) {
+        if (this.connectionTypes.length != connectionTypes.length) {
+            throw new IllegalArgumentException("Mismatched connection types length");
+        }
+        this.connectionTypes = connectionTypes;
+    }
+
+    public ConnectionType getConnectionTypeRaw(@Nonnull Direction side) {
+        return connectionTypes[side.ordinal()];
+    }
+
+    public void setConnectionTypeRaw(@Nonnull Direction side, @Nonnull ConnectionType type) {
+        int index = side.ordinal();
+        ConnectionType old = connectionTypes[index];
+        if (old != type) {
+            connectionTypes[index] = type;
+            getTransmitterTile().sideChanged(side, old, type);
+        }
     }
 
     @Override
@@ -293,7 +320,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public boolean canConnectToAcceptor(Direction side) {
-        ConnectionType type = connectionTypes[side.ordinal()];
+        ConnectionType type = getConnectionTypeRaw(side);
         return type == ConnectionType.NORMAL || type == ConnectionType.PUSH;
     }
 
@@ -331,7 +358,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public boolean canConnect(Direction side) {
-        if (connectionTypes[side.ordinal()] == ConnectionType.NONE) {
+        if (getConnectionTypeRaw(side) == ConnectionType.NONE) {
             return false;
         }
         if (handlesRedstone()) {
@@ -359,8 +386,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public CompoundNBT getReducedUpdateTag(CompoundNBT updateTag) {
         updateTag.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         updateTag.putByte(NBTConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            updateTag.putInt(NBTConstants.SIDE + i, connectionTypes[i].ordinal());
+        for (Direction direction : EnumUtils.DIRECTIONS) {
+            updateTag.putInt(NBTConstants.SIDE + direction.ordinal(), getConnectionTypeRaw(direction).ordinal());
         }
         //Transmitter
         if (hasTransmitterNetwork()) {
@@ -372,9 +399,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
         NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            int index = i;
-            NBTUtils.setEnumIfPresent(tag, NBTConstants.SIDE + index, ConnectionType::byIndexStatic, type -> connectionTypes[index] = type);
+        for (Direction direction : EnumUtils.DIRECTIONS) {
+            NBTUtils.setEnumIfPresent(tag, NBTConstants.SIDE + direction.ordinal(), ConnectionType::byIndexStatic, type -> setConnectionTypeRaw(direction, type));
         }
         //Transmitter
         NBTUtils.setUUIDIfPresentElse(tag, NBTConstants.NETWORK, networkID -> {
@@ -405,17 +431,16 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public void read(@Nonnull CompoundNBT nbtTags) {
         redstoneReactive = nbtTags.getBoolean(NBTConstants.REDSTONE);
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            int index = i;
-            NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.CONNECTION + index, ConnectionType::byIndexStatic, color -> connectionTypes[index] = color);
+        for (Direction direction : EnumUtils.DIRECTIONS) {
+            NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.CONNECTION + direction.ordinal(), ConnectionType::byIndexStatic, type -> setConnectionTypeRaw(direction, type));
         }
     }
 
     @Nonnull
     public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
         nbtTags.putBoolean(NBTConstants.REDSTONE, redstoneReactive);
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            nbtTags.putInt(NBTConstants.CONNECTION + i, connectionTypes[i].ordinal());
+        for (Direction direction : EnumUtils.DIRECTIONS) {
+            nbtTags.putInt(NBTConstants.CONNECTION + direction.ordinal(), getConnectionTypeRaw(direction).ordinal());
         }
         return nbtTags;
     }

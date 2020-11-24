@@ -98,27 +98,10 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         getTransmitterTile().markDirty(false);
     }
 
-    @Nonnull
-    @Override
-    public FloatingLong insertEnergy(int container, @Nonnull FloatingLong amount, @Nullable Direction side, @Nonnull Action action) {
-        IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        if (energyContainer == null) {
-            return amount;
-        } else if (side == null) {
-            return energyContainer.insert(amount, action, AutomationType.INTERNAL);
-        }
-        //If we have a side only allow inserting if our connection allows it
-        ConnectionType connectionType = getConnectionType(side);
-        if (connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL) {
-            return energyContainer.insert(amount, action, AutomationType.EXTERNAL);
-        }
-        return amount;
-    }
-
     @Nullable
     @Override
     public UniversalCableUpgradeData getUpgradeData() {
-        return new UniversalCableUpgradeData(redstoneReactive, connectionTypes, buffer);
+        return new UniversalCableUpgradeData(redstoneReactive, getConnectionTypesRaw(), buffer);
     }
 
     @Override
@@ -129,7 +112,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     @Override
     public void parseUpgradeData(@Nonnull UniversalCableUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
-        connectionTypes = data.connectionTypes;
+        setConnectionTypesRaw(data.connectionTypes);
         buffer.setEnergy(data.buffer.getEnergy());
     }
 

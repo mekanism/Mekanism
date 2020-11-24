@@ -64,7 +64,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     @Nullable
     @Override
     public LogisticalTransporterUpgradeData getUpgradeData() {
-        return new LogisticalTransporterUpgradeData(redstoneReactive, connectionTypes, getColor(), transit, needsSync, nextId, delay, delayCount);
+        return new LogisticalTransporterUpgradeData(redstoneReactive, getConnectionTypesRaw(), getColor(), transit, needsSync, nextId, delay, delayCount);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     @Override
     public void parseUpgradeData(@Nonnull LogisticalTransporterUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
-        connectionTypes = data.connectionTypes;
+        setConnectionTypesRaw(data.connectionTypes);
         setColor(data.color);
         transit.putAll(data.transit);
         needsSync.putAll(data.needsSync);

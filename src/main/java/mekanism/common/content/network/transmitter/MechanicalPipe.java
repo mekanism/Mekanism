@@ -95,27 +95,10 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         return Math.min(tier.getPipePullAmount(), buffer.getNeeded());
     }
 
-    @Nonnull
-    @Override
-    public FluidStack insertFluid(int tank, @Nonnull FluidStack stack, @Nullable Direction side, @Nonnull Action action) {
-        IExtendedFluidTank fluidTank = getFluidTank(tank, side);
-        if (fluidTank == null) {
-            return stack;
-        } else if (side == null) {
-            return fluidTank.insert(stack, action, AutomationType.INTERNAL);
-        }
-        //If we have a side only allow inserting if our connection allows it
-        ConnectionType connectionType = getConnectionType(side);
-        if (connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL) {
-            return fluidTank.insert(stack, action, AutomationType.EXTERNAL);
-        }
-        return stack;
-    }
-
     @Nullable
     @Override
     public MechanicalPipeUpgradeData getUpgradeData() {
-        return new MechanicalPipeUpgradeData(redstoneReactive, connectionTypes, getShare());
+        return new MechanicalPipeUpgradeData(redstoneReactive, getConnectionTypesRaw(), getShare());
     }
 
     @Override
@@ -126,7 +109,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     @Override
     public void parseUpgradeData(@Nonnull MechanicalPipeUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
-        connectionTypes = data.connectionTypes;
+        setConnectionTypesRaw(data.connectionTypes);
         takeFluid(data.contents, Action.EXECUTE);
     }
 

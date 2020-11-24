@@ -17,7 +17,8 @@ import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.basic.BasicCapabilityResolver;
+import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.IUpgradeableTransmitter;
 import mekanism.common.content.network.transmitter.Transmitter;
@@ -193,7 +194,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             if (boxIndex < list.size()) {
                 hitSide = list.get(boxIndex);
             } else {
-                if (transmitter.connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, side) == ActionResultType.SUCCESS) {
+                if (transmitter.getConnectionTypeRaw(side) != ConnectionType.NONE && onConfigure(player, side) == ActionResultType.SUCCESS) {
                     //Refresh/notify so that we actually update the block and how it can connect given color or things might have changed
                     getTransmitter().refreshConnections();
                     getTransmitter().notifyTileChange();
@@ -201,11 +202,13 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                 }
                 hitSide = side;
             }
-            transmitter.connectionTypes[hitSide.ordinal()] = transmitter.connectionTypes[hitSide.ordinal()].getNext();
+            transmitter.setConnectionTypeRaw(hitSide, transmitter.getConnectionTypeRaw(hitSide).getNext());
+            //TODO - 10.1: Re-evaluate how much of this is needed because in theory we could try and get most
+            // of it to be handled in the sideChanged method
             getTransmitter().onModeChange(Direction.byIndex(hitSide.ordinal()));
             getTransmitter().refreshConnections();
             getTransmitter().notifyTileChange();
-            player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.connectionTypes[hitSide.ordinal()]), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(transmitter.getConnectionTypeRaw(hitSide)), Util.DUMMY_UUID);
             sendUpdatePacket();
         }
         return ActionResultType.SUCCESS;
@@ -223,10 +226,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
 
     public List<VoxelShape> getCollisionBoxes() {
         List<VoxelShape> list = new ArrayList<>();
-        byte connections = getTransmitter().getAllCurrentConnections();
         boolean isSmall = getTransmitterType().getSize() == Size.SMALL;
         for (Direction side : EnumUtils.DIRECTIONS) {
-            ConnectionType connectionType = Transmitter.getConnectionType(side, connections, transmitter.currentTransmitterConnections, transmitter.connectionTypes);
+            ConnectionType connectionType = getTransmitter().getConnectionType(side);
             if (connectionType != ConnectionType.NONE) {
                 if (isSmall) {
                     list.add(BlockSmallTransmitter.getSideForType(connectionType, side));
@@ -350,5 +352,32 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     @Nonnull
     protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
         return current;
+    }
+
+    public void sideChanged(@Nonnull Direction side, @Nonnull ConnectionType old, @Nonnull ConnectionType type) {
+    }
+
+    protected InteractPredicate getExtractPredicate() {
+        return (tank, side) -> {
+            if (side == null) {
+                //Note: We return true here, but extraction isn't actually allowed and gets blocked by the read only handler
+                return true;
+            }
+            //If we have a side only allow extracting if our connection allows it
+            ConnectionType connectionType = getTransmitter().getConnectionType(side);
+            return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PUSH;
+        };
+    }
+
+    protected InteractPredicate getInsertPredicate() {
+        return (tank, side) -> {
+            if (side == null) {
+                //Note: We return true here, but insertion isn't actually allowed and gets blocked by the read only handler
+                return true;
+            }
+            //If we have a side only allow inserting if our connection allows it
+            ConnectionType connectionType = getTransmitter().getConnectionType(side);
+            return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL;
+        };
     }
 }

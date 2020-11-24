@@ -503,34 +503,28 @@ public class WorldUtils {
     }
 
     /**
-     * Calls BOTH neighbour changed functions because nobody can decide on which one to implement.
+     * Calls BOTH neighbour changed functions because nobody can decide on which one to implement, assuming that the neighboring position is loaded.
      *
      * @param world   world the change exists in
      * @param pos     neighbor to notify
      * @param fromPos pos of our block that updated
      */
     public static void notifyNeighborOfChange(@Nullable World world, BlockPos pos, BlockPos fromPos) {
-        if (world != null) {
-            BlockState state = world.getBlockState(pos);
-            state.getBlock().onNeighborChange(state, world, pos, fromPos);
+        getBlockState(world, pos).ifPresent(state -> {
+            state.onNeighborChange(world, pos, fromPos);
             state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
-        }
+        });
     }
 
     /**
-     * Calls BOTH neighbour changed functions because nobody can decide on which one to implement.
+     * Calls BOTH neighbour changed functions because nobody can decide on which one to implement, assuming that the neighboring position is loaded.
      *
      * @param world        world the change exists in
      * @param neighborSide The side the neighbor to notify is on
      * @param fromPos      pos of our block that updated
      */
     public static void notifyNeighborOfChange(@Nullable World world, Direction neighborSide, BlockPos fromPos) {
-        if (world != null) {
-            BlockPos neighbor = fromPos.offset(neighborSide);
-            BlockState state = world.getBlockState(neighbor);
-            state.getBlock().onNeighborChange(state, world, neighbor, fromPos);
-            state.neighborChanged(world, neighbor, world.getBlockState(fromPos).getBlock(), fromPos, false);
-        }
+        notifyNeighborOfChange(world, fromPos.offset(neighborSide), fromPos);
     }
 
     /**

@@ -83,7 +83,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     @Nullable
     @Override
     public ThermodynamicConductorUpgradeData getUpgradeData() {
-        return new ThermodynamicConductorUpgradeData(redstoneReactive, connectionTypes, buffer.getHeat());
+        return new ThermodynamicConductorUpgradeData(redstoneReactive, getConnectionTypesRaw(), buffer.getHeat());
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     @Override
     public void parseUpgradeData(@Nonnull ThermodynamicConductorUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
-        connectionTypes = data.connectionTypes;
+        setConnectionTypesRaw(data.connectionTypes);
         buffer.setHeat(data.heat);
     }
 
