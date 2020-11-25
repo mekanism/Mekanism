@@ -24,7 +24,6 @@ import mekanism.client.gui.item.GuiDictionary.DictionaryTagType;
 import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -42,7 +41,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -196,7 +194,7 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
         //Update the list being viewed
         tagSetter.accept(tags.keySet());
         if (playSound) {
-            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            playClickSound();
         }
     }
 

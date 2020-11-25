@@ -15,17 +15,14 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 
@@ -357,9 +354,12 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     @Override
     public void playDownSound(@Nonnull SoundHandler soundHandler) {
         if (playClickSound) {
-            //Respect the sound config
-            soundHandler.play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1, MekanismConfig.client.baseSoundVolume.get()));
+            super.playDownSound(soundHandler);
         }
+    }
+
+    protected void playClickSound() {
+        super.playDownSound(minecraft.getSoundHandler());
     }
 
     protected void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite) {

@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostBlockItemConsumer;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.IMaterialFilter;
@@ -15,7 +14,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
@@ -67,6 +65,6 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
     private void setFilterStack(@Nonnull ItemStack stack) {
         filter.setMaterialItem(stack);
         slotDisplay.updateStackList();
-        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+        playClickSound();
     }
 }
