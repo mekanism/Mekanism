@@ -277,7 +277,7 @@ public class Mekanism {
 
     private void serverStopped(FMLServerStoppedEvent event) {
         //Clear all cache data, wait until server stopper though so that we make sure saving can use any data it needs
-        playerState.clear();
+        playerState.clear(false);
         activeVibrators.clear();
         worldTickHandler.resetRegenChunks();
         FrequencyType.clear();

@@ -46,15 +46,17 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void onPlayerLogoutEvent(PlayerLoggedOutEvent event) {
-        Mekanism.playerState.clearPlayer(event.getPlayer().getUniqueID());
-        Mekanism.packetHandler.sendToAll(new PacketResetPlayerClient(event.getPlayer().getUniqueID()));
+        PlayerEntity player = event.getPlayer();
+        Mekanism.playerState.clearPlayer(player.getUniqueID(), false);
+        Mekanism.playerState.clearPlayerServerSideOnly(player.getUniqueID());
     }
 
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
-        Mekanism.playerState.clearPlayer(event.getPlayer().getUniqueID());
-        Mekanism.packetHandler.sendToAll(new PacketResetPlayerClient(event.getPlayer().getUniqueID()));
-        event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayerEntity) event.getPlayer()));
+        PlayerEntity player = event.getPlayer();
+        Mekanism.playerState.clearPlayer(player.getUniqueID(), false);
+        Mekanism.playerState.reapplyServerSideOnly(player);
+        player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayerEntity) player));
 
     }
 

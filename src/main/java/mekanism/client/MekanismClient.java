@@ -47,7 +47,7 @@ public class MekanismClient {
         ClientTickHandler.firstTick = true;
         ClientTickHandler.visionEnhancement = false;
 
-        Mekanism.playerState.clear();
+        Mekanism.playerState.clear(true);
         Mekanism.activeVibrators.clear();
         Mekanism.radiationManager.resetClient();
         SoundHandler.radiationSoundMap.clear();

@@ -18,6 +18,7 @@ import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalM
 import mekanism.common.network.PacketFlyingSync;
 import mekanism.common.network.PacketGearStateUpdate;
 import mekanism.common.network.PacketGearStateUpdate.GearType;
+import mekanism.common.network.PacketResetPlayerClient;
 import mekanism.common.network.PacketStepHeightSync;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
@@ -26,7 +27,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorld;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class PlayerState {
 
@@ -39,32 +39,53 @@ public class PlayerState {
 
     private IWorld world;
 
-    public void clear() {
+    public void clear(boolean isRemote) {
         activeJetpacks.clear();
         activeScubaMasks.clear();
-        stepAssistedPlayers.clear();
         activeGravitationalModulators.clear();
-        flightInfoMap.clear();
         activeFlamethrowers.clear();
-        if (FMLEnvironment.dist.isClient()) {
+        if (isRemote) {
             SoundHandler.clearPlayerSounds();
+        } else {
+            stepAssistedPlayers.clear();
+            flightInfoMap.clear();
         }
     }
 
-    public void clearPlayer(UUID uuid) {
+    public void clearPlayer(UUID uuid, boolean isRemote) {
         activeJetpacks.remove(uuid);
         activeScubaMasks.remove(uuid);
-        stepAssistedPlayers.removeFloat(uuid);
         activeGravitationalModulators.remove(uuid);
-        flightInfoMap.remove(uuid);
         activeFlamethrowers.remove(uuid);
-        if (FMLEnvironment.dist.isClient()) {
+        if (isRemote) {
             SoundHandler.clearPlayerSounds(uuid);
             if (Minecraft.getInstance().player == null || Minecraft.getInstance().player.getUniqueID().equals(uuid)) {
                 SoundHandler.radiationSoundMap.clear();
             }
         }
         Mekanism.radiationManager.resetPlayer(uuid);
+        if (!isRemote) {
+            Mekanism.packetHandler.sendToAll(new PacketResetPlayerClient(uuid));
+        }
+    }
+
+    public void clearPlayerServerSideOnly(UUID uuid) {
+        stepAssistedPlayers.removeFloat(uuid);
+        flightInfoMap.remove(uuid);
+    }
+
+    public void reapplyServerSideOnly(PlayerEntity player) {
+        //For when the dimension changes/we need to reapply the step assist/flight info values to the client
+        UUID uuid = player.getUniqueID();
+        if (stepAssistedPlayers.containsKey(uuid)) {
+            updateClientServerStepHeight(player, stepAssistedPlayers.getFloat(uuid));
+        }
+        if (flightInfoMap.containsKey(uuid)) {
+            FlightInfo flightInfo = flightInfoMap.get(uuid);
+            if (flightInfo.wasFlyingAllowed || flightInfo.wasFlying) {
+                updateClientServerFlight(player, flightInfo.wasFlyingAllowed, flightInfo.wasFlying);
+            }
+        }
     }
 
     public void init(IWorld world) {
@@ -271,7 +292,6 @@ public class PlayerState {
     }
 
     private void updateClientServerFlight(PlayerEntity player, boolean allowFlying, boolean isFlying) {
-        //TODO: Make sure changing dimensions doesn't break players who are currently flying
         Mekanism.packetHandler.sendTo(new PacketFlyingSync(allowFlying, isFlying), (ServerPlayerEntity) player);
         player.abilities.allowFlying = allowFlying;
         player.abilities.isFlying = isFlying;
