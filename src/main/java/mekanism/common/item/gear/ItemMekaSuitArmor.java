@@ -37,16 +37,13 @@ import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.interfaces.IModeItem;
-import mekanism.common.item.interfaces.ISpecialGear;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -59,7 +56,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem, IModeItem, ISpecialGear {
+public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IModeItem {
 
     // TODO separate these into individual modules maybe (specifically fire-related - on_fire, in_fire, lava)
     private static final Set<DamageSource> ALWAYS_SUPPORTED_SOURCES = new HashSet<>(Arrays.asList(
@@ -224,11 +221,6 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
         return slotType == getEquipmentSlot() && Modules.loadAll(stack).stream().anyMatch(Module::handlesModeChange);
     }
 
-    @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-        return "mekanism:render/null_armor.png";
-    }
-
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -276,11 +268,6 @@ public class ItemMekaSuitArmor extends ArmorItem implements IModuleContainerItem
             }
         }
         return 0;
-    }
-
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return material.getEnchantability() > 0;
     }
 
     public List<HUDElement> getHUDElements(ItemStack stack) {

@@ -12,13 +12,10 @@ import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
 import mekanism.common.item.interfaces.IGasItem;
-import mekanism.common.item.interfaces.ISpecialGear;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -31,7 +28,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear, IGasItem {
+public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem {
 
     protected ItemGasArmor(IArmorMaterial material, EquipmentSlotType slot, Properties properties) {
         super(material, slot, properties.rarity(Rarity.RARE).setNoRepair().maxStackSize(1));
@@ -62,11 +59,6 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear, IG
     @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
         return ChemicalUtil.getRGBDurabilityForDisplay(stack);
-    }
-
-    @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-        return "mekanism:render/null_armor.png";
     }
 
     @Nonnull

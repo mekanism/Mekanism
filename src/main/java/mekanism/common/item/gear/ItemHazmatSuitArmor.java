@@ -1,10 +1,12 @@
 package mekanism.common.item.gear;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
@@ -43,8 +45,18 @@ public class ItemHazmatSuitArmor extends ArmorItem {
     }
 
     @Override
+    public boolean isEnchantable(@Nonnull ItemStack stack) {
+        return material.getEnchantability() > 0 && super.isEnchantable(stack);
+    }
+
+    @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return material.getEnchantability() > 0;
+        return isEnchantable(stack) && super.isBookEnchantable(stack, book);
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return isEnchantable(stack) && super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     @ParametersAreNonnullByDefault

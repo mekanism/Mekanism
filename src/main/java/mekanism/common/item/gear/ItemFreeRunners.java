@@ -22,14 +22,11 @@ import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
-import mekanism.common.item.interfaces.ISpecialGear;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -42,17 +39,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUDProvider, IModeItem {
+public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, IModeItem {
 
     private static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
 
     public ItemFreeRunners(Properties properties) {
         super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, properties.rarity(Rarity.RARE).setNoRepair().setISTER(ISTERProvider::freeRunners));
-    }
-
-    @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-        return "mekanism:render/null_armor.png";
     }
 
     @Nonnull
@@ -130,11 +122,6 @@ public class ItemFreeRunners extends ArmorItem implements ISpecialGear, IItemHUD
     @Override
     public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
         return slotType == getEquipmentSlot();
-    }
-
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return material.getEnchantability() > 0;
     }
 
     public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent {
