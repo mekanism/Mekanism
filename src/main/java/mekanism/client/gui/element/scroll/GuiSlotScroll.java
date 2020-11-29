@@ -1,20 +1,23 @@
 package mekanism.client.gui.element.scroll;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiSlotScroll extends GuiRelativeElement {
@@ -119,7 +122,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
 
     private void renderSlot(MatrixStack matrix, IScrollableSlot slot, int slotX, int slotY) {
         // sanity checks
-        if (slot.getItem() == null || slot.getItem().getStack() == null || slot.getItem().getStack().isEmpty()) {
+        if (isSlotEmpty(slot)) {
             return;
         }
         guiObj.renderItemWithOverlay(matrix, slot.getItem().getStack(), slotX + 1, slotY + 1, 1.0F, "");
@@ -130,40 +133,49 @@ public class GuiSlotScroll extends GuiRelativeElement {
 
     private void renderSlotTooltip(MatrixStack matrix, IScrollableSlot slot, int slotX, int slotY) {
         // sanity checks
-        if (slot.getItem() == null || slot.getItem().getStack() == null || slot.getItem().getStack().isEmpty()) {
+        if (isSlotEmpty(slot)) {
             return;
         }
-        guiObj.renderItemTooltip(matrix, slot.getItem().getStack(), slotX, slotY);
+        ItemStack stack = slot.getItem().getStack();
+        long count = slot.getCount();
+        if (count < 10_000) {
+            guiObj.renderItemTooltip(matrix, stack, slotX, slotY);
+        } else {
+            //If the slot's displayed count is truncated, make sure we also add the the actual amount to the tooltip
+            guiObj.renderItemTooltipWithExtra(matrix, stack, slotX, slotY, Collections.singletonList(MekanismLang.QIO_STORED_COUNT.translateColored(EnumColor.GRAY,
+                  EnumColor.INDIGO, TextUtils.format(count))));
+        }
+    }
+
+    private boolean isSlotEmpty(IScrollableSlot slot) {
+        return slot.getItem() == null || slot.getItem().getStack() == null || slot.getItem().getStack().isEmpty();
     }
 
     private void renderSlotText(MatrixStack matrix, String text, int x, int y) {
         matrix.push();
         MekanismRenderer.resetColor();
         float scale = 0.6F;
+        int width = getFont().getStringWidth(text);
+        //If we need a lower scale due to having a lot of text, calculate it
+        scale = Math.min(1, 16F / (width * scale)) * scale;
         float yAdd = 4 - (scale * 8) / 2F;
-        matrix.translate(x + 16 - getFont().getStringWidth(text) * scale, y + 9 + yAdd, 200F);
+        matrix.translate(x + 16 - width * scale, y + 9 + yAdd, 200F);
         matrix.scale(scale, scale, scale);
 
-        IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-        getFont().renderString(text, 0, 0, 0xFFFFFF, true, matrix.getLast().getMatrix(), buffer, false, 0, MekanismRenderer.FULL_LIGHT);
-        buffer.finish();
+        getFont().drawStringWithShadow(matrix, text, 0, 0, 0xFFFFFF);
         matrix.pop();
     }
 
     private String getCountText(long count) {
         if (count <= 1) {
             return null;
-        }
-        if (count < 10_000) {
+        } else if (count < 10_000) {
             return Long.toString(count);
-        }
-        if (count < 10_000_000) {
+        } else if (count < 10_000_000) {
             return Double.toString(Math.round(count / 1_000D)) + "K";
-        }
-        if (count < 10_000_000_000L) {
+        } else if (count < 10_000_000_000L) {
             return Double.toString(Math.round(count / 1_000_000D)) + "M";
-        }
-        if (count < 10_000_000_000_000L) {
+        } else if (count < 10_000_000_000_000L) {
             return Double.toString(Math.round(count / 1_000_000_000D)) + "B";
         }
         return ">10T";

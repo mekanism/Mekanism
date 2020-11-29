@@ -91,6 +91,14 @@ public interface IGuiWrapper {
         Mekanism.logger.error("Tried to call 'renderItemTooltip' but unsupported in {}", getClass().getName());
     }
 
+    default void renderItemTooltipWithExtra(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, List<ITextComponent> toAppend) {
+        if (toAppend.isEmpty()) {
+            renderItemTooltip(matrix, stack, xAxis, yAxis);
+        } else {
+            Mekanism.logger.error("Tried to call 'renderItemTooltipWithExtra' but unsupported in {}", getClass().getName());
+        }
+    }
+
     default void renderItemWithOverlay(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, String text) {
         GuiUtils.renderItem(matrix, getItemRenderer(), stack, xAxis, yAxis, scale, getFont(), text, true);
     }

@@ -392,6 +392,20 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
+    public void renderItemTooltipWithExtra(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, List<ITextComponent> toAppend) {
+        if (toAppend.isEmpty()) {
+            renderItemTooltip(matrix, stack, xAxis, yAxis);
+        } else {
+            FontRenderer font = stack.getItem().getFontRenderer(stack);
+            net.minecraftforge.fml.client.gui.GuiUtils.preItemToolTip(stack);
+            List<ITextComponent> tooltip = new ArrayList<>(getTooltipFromItem(stack));
+            tooltip.addAll(toAppend);
+            renderWrappedToolTip(matrix, tooltip, xAxis, yAxis, (font == null ? this.font : font));
+            net.minecraftforge.fml.client.gui.GuiUtils.postItemToolTip();
+        }
+    }
+
+    @Override
     public ItemRenderer getItemRenderer() {
         return itemRenderer;
     }
