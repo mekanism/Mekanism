@@ -116,7 +116,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
             }
         }
         if (!hasGas) {
-            list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, MekanismLang.NO_GAS.translate()));
+            list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, MekanismLang.NO_GAS));
         }
         list.add(MekanismLang.MODE.translate(getMode(stack)));
     }
@@ -128,8 +128,8 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
         if (mode != newMode) {
             setMode(stack, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.FLAMETHROWER_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)), Util.DUMMY_UUID);
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
+                      MekanismLang.FLAMETHROWER_MODE_CHANGE.translate(newMode)), Util.DUMMY_UUID);
             }
         }
     }

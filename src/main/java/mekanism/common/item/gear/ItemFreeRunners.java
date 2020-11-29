@@ -113,8 +113,8 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         if (mode != newMode) {
             setMode(stack, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.FREE_RUNNER_MODE_CHANGE.translateColored(EnumColor.GRAY, newMode)), Util.DUMMY_UUID);
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
+                      MekanismLang.FREE_RUNNER_MODE_CHANGE.translate(newMode)), Util.DUMMY_UUID);
             }
         }
     }

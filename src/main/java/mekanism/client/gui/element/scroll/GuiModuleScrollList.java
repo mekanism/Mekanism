@@ -126,7 +126,8 @@ public class GuiModuleScrollList extends GuiScrollList {
             ModuleData<?> module = currentList.get(index);
             Module instance = Modules.load(currentItem, module);
             int multipliedElement = elementHeight * i;
-            if (mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1 && mouseY >= relativeY + 1 + multipliedElement && mouseY < relativeY + 1 + multipliedElement + elementHeight) {
+            if (instance != null && mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1 && mouseY >= relativeY + 1 + multipliedElement &&
+                mouseY < relativeY + 1 + multipliedElement + elementHeight) {
                 ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
                 guiObj.displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX, mouseY, guiObj.getWidth());
             }

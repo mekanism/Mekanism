@@ -91,8 +91,8 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         modes[index] = newMode;
         refreshConnections();
         notifyTileChange();
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-              MekanismLang.TOGGLE_DIVERTER.translateColored(EnumColor.GRAY, EnumColor.RED, newMode)), Util.DUMMY_UUID);
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
+              MekanismLang.TOGGLE_DIVERTER.translate(EnumColor.RED, newMode)), Util.DUMMY_UUID);
         getTransmitterTile().sendUpdatePacket();
         return ActionResultType.SUCCESS;
     }

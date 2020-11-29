@@ -52,8 +52,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  MekanismLang.INDUCTION_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))), Util.DUMMY_UUID);
+            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
+                  MekanismLang.INDUCTION_PORT_MODE.translate(InputOutput.of(oldMode, true))), Util.DUMMY_UUID);
         }
         return ActionResultType.SUCCESS;
     }

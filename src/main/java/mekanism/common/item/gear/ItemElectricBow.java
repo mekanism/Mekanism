@@ -179,8 +179,8 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
             boolean newState = !getFireState(stack);
             setFireState(stack, newState);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                      MekanismLang.FIRE_MODE.translateColored(EnumColor.GRAY, OnOff.of(newState, true))), Util.DUMMY_UUID);
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
+                      MekanismLang.FIRE_MODE.translate(OnOff.of(newState, true))), Util.DUMMY_UUID);
             }
         }
     }
