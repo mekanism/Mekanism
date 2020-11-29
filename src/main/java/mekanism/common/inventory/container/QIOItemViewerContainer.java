@@ -251,10 +251,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     private void sortItemList() {
-        if (itemList == null) {
-            return;
+        if (itemList != null) {
+            sortType.sort(itemList, sortDirection);
         }
-        sortType.sort(itemList, sortDirection);
     }
 
     public void setSortDirection(SortDirection sortDirection) {
@@ -423,22 +422,30 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public enum ListSortType implements IDropdownEnum<ListSortType> {
-        NAME(MekanismLang.LIST_SORT_NAME, MekanismLang.LIST_SORT_NAME_DESC, (a, b) -> a.getDisplayName().compareTo(b.getDisplayName())),
-        SIZE(MekanismLang.LIST_SORT_COUNT, MekanismLang.LIST_SORT_COUNT_DESC, (a, b) -> Long.compare(a.getCount(), b.getCount())),
-        MOD(MekanismLang.LIST_SORT_MOD, MekanismLang.LIST_SORT_MOD_DESC, (a, b) -> a.getModID().compareTo(b.getModID()));
+        NAME(MekanismLang.LIST_SORT_NAME, MekanismLang.LIST_SORT_NAME_DESC, Comparator.comparing(IScrollableSlot::getDisplayName)),
+        SIZE(MekanismLang.LIST_SORT_COUNT, MekanismLang.LIST_SORT_COUNT_DESC, Comparator.comparingLong(IScrollableSlot::getCount).thenComparing(IScrollableSlot::getDisplayName),
+              Comparator.comparingLong(IScrollableSlot::getCount).reversed().thenComparing(IScrollableSlot::getDisplayName)),
+        MOD(MekanismLang.LIST_SORT_MOD, MekanismLang.LIST_SORT_MOD_DESC, Comparator.comparing(IScrollableSlot::getModID).thenComparing(IScrollableSlot::getDisplayName),
+              Comparator.comparing(IScrollableSlot::getModID).reversed().thenComparing(IScrollableSlot::getDisplayName));
 
         private final ILangEntry name;
         private final ILangEntry tooltip;
-        private final Comparator<IScrollableSlot> comparator;
+        private final Comparator<IScrollableSlot> ascendingComparator;
+        private final Comparator<IScrollableSlot> descendingComparator;
 
-        ListSortType(ILangEntry name, ILangEntry tooltip, Comparator<IScrollableSlot> comparator) {
+        ListSortType(ILangEntry name, ILangEntry tooltip, Comparator<IScrollableSlot> ascendingComparator) {
+            this(name, tooltip, ascendingComparator, ascendingComparator.reversed());
+        }
+
+        ListSortType(ILangEntry name, ILangEntry tooltip, Comparator<IScrollableSlot> ascendingComparator, Comparator<IScrollableSlot> descendingComparator) {
             this.name = name;
             this.tooltip = tooltip;
-            this.comparator = comparator;
+            this.ascendingComparator = ascendingComparator;
+            this.descendingComparator = descendingComparator;
         }
 
         public void sort(List<IScrollableSlot> list, SortDirection direction) {
-            list.sort(direction.isAscending() ? comparator : comparator.reversed());
+            list.sort(direction.isAscending() ? ascendingComparator : descendingComparator);
         }
 
         @Override
