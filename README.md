@@ -2,6 +2,9 @@
 
 ### This is an custom version that is using several forked versions of mekanism and can be unstable, i used other peoples fixes to bugs and dupes because i dont do work when someone else has already done it
 
+#### Download at curseforge
+https://www.curseforge.com/minecraft/mc-mods/mekanism-terralization-edition
+
 ## Fixes by
 
 #### Clienthax : 
