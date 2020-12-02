@@ -89,9 +89,9 @@ public class MekanismGenerators implements IModule {
         //Register dispenser behaviors
         event.enqueueWork(GeneratorsFluids.FLUIDS::registerBucketDispenserBehavior);
 
-        BuildCommand.register("turbine", new TurbineBuilder());
-        BuildCommand.register("fission", new FissionReactorBuilder());
-        BuildCommand.register("fusion", new FusionReactorBuilder());
+        BuildCommand.register("turbine", GeneratorsLang.TURBINE, new TurbineBuilder());
+        BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());
+        BuildCommand.register("fusion", GeneratorsLang.FUSION_REACTOR, new FusionReactorBuilder());
 
         packetHandler.initialize();
 

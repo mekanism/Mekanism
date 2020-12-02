@@ -267,11 +267,11 @@ public class Mekanism {
     }
 
     private void registerCommands(RegisterCommandsEvent event) {
-        BuildCommand.register("boiler", new BoilerBuilder());
-        BuildCommand.register("matrix", new MatrixBuilder());
-        BuildCommand.register("tank", new TankBuilder());
-        BuildCommand.register("evaporation", new EvaporationBuilder());
-        BuildCommand.register("sps", new SPSBuilder());
+        BuildCommand.register("boiler", MekanismLang.BOILER, new BoilerBuilder());
+        BuildCommand.register("matrix", MekanismLang.MATRIX, new MatrixBuilder());
+        BuildCommand.register("tank", MekanismLang.DYNAMIC_TANK, new TankBuilder());
+        BuildCommand.register("evaporation", MekanismLang.EVAPORATION_PLANT, new EvaporationBuilder());
+        BuildCommand.register("sps", MekanismLang.SPS, new SPSBuilder());
         event.getDispatcher().register(CommandMek.register());
     }
 
