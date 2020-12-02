@@ -965,7 +965,7 @@
   "jetpack.mekanism.hover": "비행 유지",
   "jetpack.mekanism.mode_change": "제트팩의 모드가 다음으로 변경됨: %s",
   "jetpack.mekanism.normal": "일반",
-  "key.mekanism.chest_mode": "상자 모드 전환",
+  "key.mekanism.chest_mode": "몸통 방어구 모드 전환",
   "key.mekanism.description": "설명 보기",
   "key.mekanism.details": "세부 정보 보기",
   "key.mekanism.feet_mode": "부츠 모드 전환",
