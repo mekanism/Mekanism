@@ -357,14 +357,14 @@ dependencies {
     runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
-    //compileOnly fg.deobf("curse.maven:projecte:${projecte_api_id}")
-    compileOnly fg.deobf("curse.maven:flux-networks:${flux_networks_id}")
+    //compileOnly fg.deobf("curse.maven:projecte-226410:${projecte_api_id}")
+    compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
 
     //Dependencies for data generators for mod compat reference
     datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
-    datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api:${biomesoplenty_api_id}")
-    datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_id}")
-    datagenmainImplementation fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
+    datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
+    datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
+    datagenmainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
 }
 
 processResources {
