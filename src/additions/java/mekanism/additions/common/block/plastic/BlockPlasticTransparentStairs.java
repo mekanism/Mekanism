@@ -3,9 +3,8 @@ package mekanism.additions.common.block.plastic;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
+import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
-import net.minecraft.entity.EntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -14,7 +13,7 @@ import net.minecraft.world.IWorldReader;
 public class BlockPlasticTransparentStairs extends BlockPlasticStairs {
 
     public BlockPlasticTransparentStairs(IBlockProvider blockProvider, EnumColor color) {
-        super(blockProvider, color, Properties::notSolid);
+        super(blockProvider, color, properties -> properties.notSolid().setAllowsSpawn(AttributeMobSpawn.NEVER_PREDICATE));
     }
 
     @Override
@@ -32,11 +31,6 @@ public class BlockPlasticTransparentStairs extends BlockPlasticStairs {
     @Override
     public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
         return true;
-    }
-
-    @Override
-    public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, PlacementType type, EntityType<?> entityType) {
-        return false;
     }
 
     @Override

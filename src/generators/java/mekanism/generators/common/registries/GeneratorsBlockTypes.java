@@ -6,6 +6,7 @@ import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.attribute.Attributes.AttributeMultiblock;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
@@ -115,39 +116,39 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityTurbineCasing> TURBINE_CASING = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_CASING, GeneratorsLang.DESCRIPTION_TURBINE_CASING)
           .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Turbine Valve
     public static final BlockTypeTile<TileEntityTurbineValve> TURBINE_VALVE = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VALVE, GeneratorsLang.DESCRIPTION_TURBINE_VALVE)
           .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
-          .with(new AttributeComparator(), new AttributeMultiblock())
+          .with(new AttributeComparator(), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Turbine Vent
     public static final BlockTypeTile<TileEntityTurbineVent> TURBINE_VENT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VENT, GeneratorsLang.DESCRIPTION_TURBINE_VENT)
           .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Electromagnetic Coil
     public static final BlockTypeTile<TileEntityElectromagneticCoil> ELECTROMAGNETIC_COIL = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.ELECTROMAGNETIC_COIL, GeneratorsLang.DESCRIPTION_ELECTROMAGNETIC_COIL)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.NEVER)
           .build();
     // Rotational Complex
     public static final BlockTypeTile<TileEntityRotationalComplex> ROTATIONAL_COMPLEX = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.ROTATIONAL_COMPLEX, GeneratorsLang.DESCRIPTION_ROTATIONAL_COMPLEX)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.NEVER)
           .build();
     // Saturating Condenser
     public static final BlockTypeTile<TileEntitySaturatingCondenser> SATURATING_CONDENSER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.SATURATING_CONDENSER, GeneratorsLang.DESCRIPTION_SATURATING_CONDENSER)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.NEVER)
           .build();
     // Turbine Rotor
     public static final BlockTypeTile<TileEntityTurbineRotor> TURBINE_ROTOR = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_ROTOR, GeneratorsLang.DESCRIPTION_TURBINE_ROTOR)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.NEVER)
           .build();
 
     // Fission Reactor Casing
@@ -156,12 +157,12 @@ public class GeneratorsBlockTypes {
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
           .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Fission Reactor Port
     public static final BlockTypeTile<TileEntityFissionReactorPort> FISSION_REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_PORT)
-          .with(new AttributeStateFissionPortMode(), new AttributeMultiblock())
+          .with(new AttributeStateFissionPortMode(), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
           .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
@@ -170,7 +171,7 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_LOGIC_ADAPTER)
           .with(new AttributeRedstoneEmitter<>(tile -> tile.getStatus() == RedstoneStatus.OUTPUTTING ? 15 : 0))
-          .with(new AttributeRedstone(), new AttributeMultiblock())
+          .with(new AttributeRedstone(), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
           .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
@@ -178,13 +179,13 @@ public class GeneratorsBlockTypes {
     // Fission Fuel Assembly
     public static final BlockTypeTile<TileEntityFissionFuelAssembly> FISSION_FUEL_ASSEMBLY = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_FUEL_ASSEMBLY, GeneratorsLang.DESCRIPTION_FISSION_FUEL_ASSEMBLY)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.NEVER)
           .withCustomShape(BlockShapes.FUEL_ASSEMBLY)
           .build();
     // Control Rod Assembly
     public static final BlockTypeTile<TileEntityControlRodAssembly> CONTROL_ROD_ASSEMBLY = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.CONTROL_ROD_ASSEMBLY, GeneratorsLang.DESCRIPTION_CONTROL_ROD_ASSEMBLY)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.NEVER)
           .withCustomShape(BlockShapes.CONTROL_ROD_ASSEMBLY)
           .build();
 
@@ -193,35 +194,35 @@ public class GeneratorsBlockTypes {
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_CONTROLLER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_CONTROLLER)
           .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_CONTROLLER)
           .withSound(GeneratorsSounds.FUSION_REACTOR)
-          .with(new AttributeStateActive(), new AttributeInventory(), new AttributeMultiblock())
+          .with(new AttributeStateActive(), new AttributeInventory(), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Fusion Reactor Port
     public static final BlockTypeTile<TileEntityFusionReactorPort> FUSION_REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_PORT)
-          .with(new AttributeStateActive(), new AttributeMultiblock())
+          .with(new AttributeStateActive(), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Fusion Reactor Frame
     public static final BlockTypeTile<TileEntityFusionReactorBlock> FUSION_REACTOR_FRAME = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_FRAME, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_FRAME)
           .withEnergyConfig(null, null)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Fusion Reactor Logic Adapter
     public static final BlockTypeTile<TileEntityFusionReactorLogicAdapter> FUSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_LOGIC_ADAPTER)
           .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
           .with(new AttributeRedstoneEmitter<>(tile -> tile.checkMode() ? 15 : 0))
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .withEmptyContainer(GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
           .build();
     // Laser Focus Matrix
     public static final BlockTypeTile<TileEntityLaserFocusMatrix> LASER_FOCUS_MATRIX = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.LASER_FOCUS_MATRIX, GeneratorsLang.DESCRIPTION_LASER_FOCUS_MATRIX)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.NEVER)
           .build();
     // Reactor Glass
     public static final BlockTypeTile<TileEntityReactorGlass> REACTOR_GLASS = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.REACTOR_GLASS, GeneratorsLang.DESCRIPTION_REACTOR_GLASS)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.NEVER)
           .build();
 }

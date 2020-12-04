@@ -20,7 +20,7 @@ import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeMultiblock;
-import mekanism.common.block.attribute.Attributes.AttributeNoMobSpawn;
+import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
@@ -492,68 +492,68 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_TANK, MekanismLang.DESCRIPTION_DYNAMIC_TANK)
           .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK)
           .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile)))
-          .with(new AttributeInventory(), new AttributeMultiblock())
+          .with(new AttributeInventory(), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Dynamic Valve
     public static final BlockTypeTile<TileEntityDynamicValve> DYNAMIC_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_VALVE, MekanismLang.DESCRIPTION_DYNAMIC_VALVE)
           .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK)
           .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile)))
-          .with(new AttributeInventory(), new AttributeComparator(), new AttributeMultiblock())
+          .with(new AttributeInventory(), new AttributeComparator(), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Boiler Casing
     public static final BlockTypeTile<TileEntityBoilerCasing> BOILER_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.BOILER_CASING, MekanismLang.DESCRIPTION_BOILER_CASING)
           .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
           .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, (TileEntityBoilerCasing) tile)))
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Boiler Valve
     public static final BlockTypeTile<TileEntityBoilerValve> BOILER_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.BOILER_VALVE, MekanismLang.DESCRIPTION_BOILER_VALVE)
           .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
           .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, (TileEntityBoilerCasing) tile)))
-          .with(new AttributeInventory(), new AttributeComparator(), new AttributeStateBoilerValveMode(), new AttributeMultiblock())
+          .with(new AttributeInventory(), new AttributeComparator(), new AttributeStateBoilerValveMode(), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Pressure Disperser
     public static final BlockTypeTile<TileEntityPressureDisperser> PRESSURE_DISPERSER =
           BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.PRESSURE_DISPERSER, MekanismLang.DESCRIPTION_PRESSURE_DISPERSER)
-                .with(new AttributeMultiblock())
+                .with(new AttributeMultiblock(), AttributeMobSpawn.NEVER)
                 .build();
     // Superheating Element
     public static final BlockTypeTile<TileEntitySuperheatingElement> SUPERHEATING_ELEMENT =
           BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.SUPERHEATING_ELEMENT, MekanismLang.DESCRIPTION_SUPERHEATING_ELEMENT)
-                .with(new AttributeStateActive(), new AttributeMultiblock())
+                .with(new AttributeStateActive(), new AttributeMultiblock(), AttributeMobSpawn.NEVER)
                 .build();
     // Induction Casing
     public static final BlockTypeTile<TileEntityInductionCasing> INDUCTION_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.INDUCTION_CASING, MekanismLang.DESCRIPTION_INDUCTION_CASING)
           .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX)
           .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile)))
-          .with(new AttributeInventory(), new AttributeComparator(), new AttributeMultiblock())
+          .with(new AttributeInventory(), new AttributeComparator(), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Induction Port
     public static final BlockTypeTile<TileEntityInductionPort> INDUCTION_PORT = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.INDUCTION_PORT, MekanismLang.DESCRIPTION_INDUCTION_PORT)
           .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX)
           .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile)))
-          .with(new AttributeInventory(), new AttributeComparator(), new AttributeStateActive(), new AttributeMultiblock())
+          .with(new AttributeInventory(), new AttributeComparator(), new AttributeStateActive(), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Thermal Evaporation Controller
     public static final BlockTypeTile<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER)
           .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER)
-          .with(new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(9), new AttributeMultiblock())
+          .with(new AttributeInventory(), new AttributeStateActive(), new AttributeStateFacing(), new AttributeCustomResistance(9), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Thermal Evaporation Valve
     public static final BlockTypeTile<TileEntityThermalEvaporationValve> THERMAL_EVAPORATION_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_VALVE)
-          .with(new AttributeComparator(), new AttributeCustomResistance(9), new AttributeMultiblock())
+          .with(new AttributeComparator(), new AttributeCustomResistance(9), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Thermal Evaporation Block
     public static final BlockTypeTile<TileEntityThermalEvaporationBlock> THERMAL_EVAPORATION_BLOCK = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_BLOCK)
-          .with(new AttributeCustomResistance(9), new AttributeMultiblock())
+          .with(new AttributeCustomResistance(9), new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Steel Casing
     public static final BlockType STEEL_CASING = BlockTypeBuilder
@@ -575,14 +575,14 @@ public class MekanismBlockTypes {
     // Structural Glass
     public static final BlockTypeTile<TileEntityStructuralGlass> STRUCTURAL_GLASS = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.STRUCTURAL_GLASS, MekanismLang.DESCRIPTION_STRUCTURAL_GLASS)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.NEVER)
           .build();
     // SPS Casing
     public static final BlockTypeTile<TileEntitySPSCasing> SPS_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SPS_CASING, MekanismLang.DESCRIPTION_SPS_CASING)
           .withGui(() -> MekanismContainerTypes.SPS)
           .withSound(MekanismSounds.SPS)
-          .with(new AttributeMultiblock())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // SPS Port
     public static final BlockTypeTile<TileEntitySPSPort> SPS_PORT = BlockTileBuilder
@@ -590,7 +590,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.SPS)
           .withSound(MekanismSounds.SPS)
           .withEnergyConfig(() -> FloatingLong.ZERO, MekanismConfig.storage.spsPort)
-          .with(new AttributeMultiblock(), new AttributeStateActive())
+          .with(new AttributeMultiblock(), AttributeMobSpawn.WHEN_NOT_FORMED, new AttributeStateActive())
           .build();
     // Supercharged Coil
     public static final BlockTypeTile<TileEntitySuperchargedCoil> SUPERCHARGED_COIL = BlockTileBuilder
@@ -655,13 +655,13 @@ public class MekanismBlockTypes {
     private static <TILE extends TileEntityInductionCell> BlockTypeTile<TILE> createInductionCell(InductionCellTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
         return BlockTileBuilder.createBlock(tile, MekanismLang.DESCRIPTION_INDUCTION_CELL)
               .withEnergyConfig(tier::getMaxEnergy)
-              .with(new AttributeTier<>(tier), new AttributeNoMobSpawn())
+              .with(new AttributeTier<>(tier), AttributeMobSpawn.NEVER)
               .build();
     }
 
     private static <TILE extends TileEntityInductionProvider> BlockTypeTile<TILE> createInductionProvider(InductionProviderTier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile) {
         return BlockTileBuilder.createBlock(tile, MekanismLang.DESCRIPTION_INDUCTION_PROVIDER)
-              .with(new AttributeTier<>(tier), new AttributeNoMobSpawn())
+              .with(new AttributeTier<>(tier), AttributeMobSpawn.NEVER)
               .build();
     }
 

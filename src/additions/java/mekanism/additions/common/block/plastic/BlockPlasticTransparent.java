@@ -2,11 +2,10 @@ package mekanism.additions.common.block.plastic;
 
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.interfaces.IColoredBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
-import net.minecraft.entity.EntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.IBooleanFunction;
@@ -18,7 +17,7 @@ import net.minecraft.world.IWorldReader;
 public class BlockPlasticTransparent extends BlockPlastic {
 
     public BlockPlasticTransparent(EnumColor color) {
-        super(color, properties -> properties.hardnessAndResistance(5, 6).notSolid());
+        super(color, properties -> properties.hardnessAndResistance(5, 6).notSolid().setAllowsSpawn(AttributeMobSpawn.NEVER_PREDICATE));
     }
 
     @Override
@@ -36,11 +35,6 @@ public class BlockPlasticTransparent extends BlockPlastic {
     @Override
     public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
         return true;
-    }
-
-    @Override
-    public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, PlacementType type, EntityType<?> entityType) {
-        return false;
     }
 
     @Override

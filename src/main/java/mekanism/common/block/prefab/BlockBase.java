@@ -1,13 +1,11 @@
 package mekanism.common.block.prefab;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.attribute.AttributeCustomShape;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
-import mekanism.common.block.attribute.Attributes.AttributeNoMobSpawn;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.block.states.IStateFluidLoggable;
@@ -15,8 +13,6 @@ import mekanism.common.content.blocktype.BlockType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
-import net.minecraft.entity.EntityType;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -61,11 +57,6 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion) {
         return type.has(AttributeCustomResistance.class) ? type.get(AttributeCustomResistance.class).getResistance()
                                                          : super.getExplosionResistance(state, world, pos, explosion);
-    }
-
-    @Override
-    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType placement, @Nullable EntityType<?> entityType) {
-        return !type.has(AttributeNoMobSpawn.class) && super.canCreatureSpawn(state, world, pos, placement, entityType);
     }
 
     @Nonnull

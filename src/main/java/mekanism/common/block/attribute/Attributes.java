@@ -3,7 +3,14 @@ package mekanism.common.block.attribute;
 import java.util.function.ToIntFunction;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.prefab.TileEntityMultiblock;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.AbstractBlock.IExtendedPositionPredicate;
+import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.entity.EntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.world.IWorldReader;
 
 public class Attributes {
 
@@ -23,7 +30,42 @@ public class Attributes {
     public static class AttributeRedstone implements Attribute {}
 
     /** If mobs can spawn on the block. */
-    public static class AttributeNoMobSpawn implements Attribute {}
+    public static class AttributeMobSpawn implements Attribute {
+
+        public static final IExtendedPositionPredicate<EntityType<?>> NEVER_PREDICATE = (state, reader, pos, entityType) -> false;
+        public static final AttributeMobSpawn NEVER = new AttributeMobSpawn(NEVER_PREDICATE);
+        //TODO: Make mob spawn denying on internal multiblocks smarter?
+        public static final AttributeMobSpawn WHEN_NOT_FORMED = new AttributeMobSpawn((state, reader, pos, entityType) -> {
+            TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, reader, pos);
+            if (tile != null) {
+                if (reader instanceof IWorldReader && ((IWorldReader) reader).isRemote()) {
+                    //If we are on the client just check if we are formed as we don't sync structure information
+                    // to the client. This way the client is at least relatively accurate with what values
+                    // it returns for if mobs can spawn
+                    if (tile.getMultiblock().isFormed()) {
+                        return false;
+                    }
+                } else if (tile.getMultiblock().isPositionInsideBounds(tile.getStructure(), pos.up())) {
+                    //If the multiblock is formed and the position above this block is inside the bounds of the multiblock
+                    // don't allow spawning on it.
+                    return false;
+                }
+            }
+            //Super implementation
+            return state.isSolidSide(reader, pos, Direction.UP) && state.getLightValue(reader, pos) < 14;
+        });
+
+        private final IExtendedPositionPredicate<EntityType<?>> spawningPredicate;
+
+        public AttributeMobSpawn(IExtendedPositionPredicate<EntityType<?>> spawningPredicate) {
+            this.spawningPredicate = spawningPredicate;
+        }
+
+        @Override
+        public void adjustProperties(Properties props) {
+            props.setAllowsSpawn(spawningPredicate);
+        }
+    }
 
     /** If this block is a part of a multiblock. */
     public static class AttributeMultiblock implements Attribute {}
