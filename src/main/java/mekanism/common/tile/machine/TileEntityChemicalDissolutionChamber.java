@@ -48,7 +48,7 @@ import net.minecraft.item.ItemStack;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMachine<ChemicalDissolutionRecipe> {
 
-    public static final long MAX_GAS = 10_000;
+    private static final long MAX_CHEMICAL = 10_000;
     public static final int BASE_INJECT_USAGE = 1;
     public static final int BASE_TICKS_REQUIRED = 100;
     public IGasTank injectTank;
@@ -89,10 +89,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     protected void presetVariables() {
         outputTank = MergedChemicalTank.create(
-              ChemicalTankBuilder.GAS.ejectOutput(MAX_GAS, this),
-              ChemicalTankBuilder.INFUSION.ejectOutput(MAX_GAS, this),
-              ChemicalTankBuilder.PIGMENT.ejectOutput(MAX_GAS, this),
-              ChemicalTankBuilder.SLURRY.ejectOutput(MAX_GAS, this)
+              ChemicalTankBuilder.GAS.output(MAX_CHEMICAL, this),
+              ChemicalTankBuilder.INFUSION.output(MAX_CHEMICAL, this),
+              ChemicalTankBuilder.PIGMENT.output(MAX_CHEMICAL, this),
+              ChemicalTankBuilder.SLURRY.output(MAX_CHEMICAL, this)
         );
     }
 
@@ -100,7 +100,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(injectTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
+        builder.addTank(injectTank = ChemicalTankBuilder.GAS.input(MAX_CHEMICAL, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
         builder.addTank(outputTank.getGasTank());
         return builder.build();
     }
