@@ -1,8 +1,9 @@
 package mekanism.common.tile.interfaces;
 
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 
-public interface ITileSound {
+public interface ITileSound extends ITileWrapper {
 
     default boolean hasSound() {
         return true;
@@ -18,5 +19,9 @@ public interface ITileSound {
 
     default SoundCategory getSoundCategory() {
         return SoundCategory.BLOCKS;
+    }
+
+    default BlockPos getSoundPos() {
+        return getTilePos();
     }
 }

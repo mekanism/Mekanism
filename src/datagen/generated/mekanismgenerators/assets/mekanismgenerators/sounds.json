@@ -2,7 +2,10 @@
   "tile.generator.solar": {
     "subtitle": "sound_event.mekanismgenerators.tile.generator.solar",
     "sounds": [
-      "mekanismgenerators:generator/solar"
+      {
+        "attenuation_distance": 8,
+        "name": "mekanismgenerators:generator/solar"
+      }
     ]
   },
   "tile.generator.bio": {
@@ -26,7 +29,10 @@
   "tile.generator.wind": {
     "subtitle": "sound_event.mekanismgenerators.tile.generator.wind",
     "sounds": [
-      "mekanismgenerators:generator/wind"
+      {
+        "attenuation_distance": 8,
+        "name": "mekanismgenerators:generator/wind"
+      }
     ]
   },
   "tile.machine.fission_reactor": {

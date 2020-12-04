@@ -141,6 +141,11 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     }
 
     @Override
+    public BlockPos getSoundPos() {
+        return super.getSoundPos().up(4);
+    }
+
+    @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableFloatingLong.create(this::getCurrentMultiplier, value -> currentMultiplier = value));

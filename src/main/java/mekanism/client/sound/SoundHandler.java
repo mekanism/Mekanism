@@ -21,6 +21,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.audio.Sound;
 import net.minecraft.client.audio.SoundEngine;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.player.PlayerEntity;
@@ -146,6 +147,12 @@ public class SoundHandler {
             // The TileTickableSound will then periodically poll to see if the volume should be adjusted
             s = new TileTickableSound(soundEvent, category, pos, volume);
 
+            if (!isClientPlayerInRange(s)) {
+                //If the player is not in range of the sound the tile would play,
+                // instead of starting it, just don't
+                return null;
+            }
+
             // Start the sound
             playSound(s);
 
@@ -160,11 +167,34 @@ public class SoundHandler {
         long posKey = pos.toLong();
         ISound s = soundMap.get(posKey);
         if (s != null) {
-            // TODO: Saw some code that suggests there is a soundMap MC already tracks; investigate further
             // and maybe we can avoid this dedicated soundMap
             Minecraft.getInstance().getSoundHandler().stop(s);
             soundMap.remove(posKey);
         }
+    }
+
+    private static boolean isClientPlayerInRange(ISound sound) {
+        if (sound.isGlobal() || sound.getAttenuationType() == ISound.AttenuationType.NONE) {
+            //If the sound is global or has no attenuation, then return that the player is in range
+            return true;
+        }
+        PlayerEntity player = Minecraft.getInstance().player;
+        if (player == null) {
+            //Shouldn't happen but just in case
+            return false;
+        }
+        Sound s = sound.getSound();
+        if (s == null) {
+            //If the sound hasn't been initialized yet for some reason try initializing it
+            sound.createAccessor(Minecraft.getInstance().getSoundHandler());
+            s = sound.getSound();
+        }
+        //Attenuation distance, defaults to 16 blocks
+        int attenuationDistance = s.getAttenuationDistance();
+        //Scale the distance based on the sound's volume
+        float scaledDistance = Math.max(sound.getVolume(), 1) * attenuationDistance;
+        //Check if the player is within range of hearing the sound
+        return player.getPositionVec().squareDistanceTo(sound.getX(), sound.getY(), sound.getZ()) < scaledDistance * scaledDistance;
     }
 
     @SubscribeEvent
@@ -237,6 +267,11 @@ public class SoundHandler {
         public void tick() {
             // Every configured interval, see if we need to adjust muffling
             if (Minecraft.getInstance().world.getGameTime() % checkInterval == 0) {
+                if (!isClientPlayerInRange(this)) {
+                    //If the player is not in range of hearing this sound any more; go ahead and shutdown
+                    finishPlaying();
+                    return;
+                }
                 // Run the event bus with the original sound. Note that we must making sure to set the GLOBAL/STATIC
                 // flag that ensures we don't wrap already muffled sounds. This is...NOT ideal and makes some
                 // significant (hopefully well-informed) assumptions about locking/ordering of all these calls.
