@@ -35,7 +35,7 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
                 return ActionResultType.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return super.onRightClick(player, side);
     }
 
     @Override

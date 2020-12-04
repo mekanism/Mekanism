@@ -12,17 +12,17 @@ public class VoxelPlane {
     private int minCol, maxCol;
     private int minRow, maxRow;
     private int size;
-    private boolean hasController;
+    private boolean hasFrame;
 
     private final Set<BlockPos> outsideSet = new HashSet<>();
 
-    public VoxelPlane(Axis axis, BlockPos pos, boolean controller) {
+    public VoxelPlane(Axis axis, BlockPos pos, boolean frame) {
         this.axis = axis;
-        if (controller) {
+        if (frame) {
             size = 1;
             minCol = maxCol = axis.horizontal().getCoord(pos);
             minRow = maxRow = axis.vertical().getCoord(pos);
-            hasController = true;
+            hasFrame = true;
         } else {
             outsideSet.add(pos);
         }
@@ -37,41 +37,50 @@ public class VoxelPlane {
     }
 
     public int length() {
-        return hasController ? (maxCol - minCol) + 1 : 0;
+        return hasFrame ? (maxCol - minCol) + 1 : 0;
     }
 
     public int height() {
-        return hasController ? (maxRow - minRow) + 1 : 0;
+        return hasFrame ? (maxRow - minRow) + 1 : 0;
     }
 
-    public boolean hasController() {
-        return hasController;
+    public boolean hasFrame() {
+        return hasFrame;
     }
 
     public void merge(VoxelPlane other) {
+        //Combine all blocks in the plane that are outside of the frames
         outsideSet.addAll(other.outsideSet);
-        if (other.hasController) {
+        if (other.hasFrame) {
+            //If the other VoxelPlane has a frame around it
+            // increase our size by how many it has in the frame
             size += other.size;
-            if (!hasController) {
-                minCol = other.minCol;
-                maxCol = other.maxCol;
-                minRow = other.minRow;
-                maxRow = other.maxRow;
-            } else {
+            // and update the bounds of our plane
+            if (hasFrame) {
                 minCol = Math.min(minCol, other.minCol);
                 maxCol = Math.max(maxCol, other.maxCol);
                 minRow = Math.min(minRow, other.minRow);
                 maxRow = Math.max(maxRow, other.maxRow);
+            } else {
+                minCol = other.minCol;
+                maxCol = other.maxCol;
+                minRow = other.minRow;
+                maxRow = other.maxRow;
+                hasFrame = true;
             }
-            hasController = true;
         }
-        outsideSet.removeIf(pos -> {
-            if (!isOutside(pos)) {
+        if (hasFrame) {
+            //Afterwards if we have a frame, go through all the blocks that are outside
+            outsideSet.removeIf(pos -> {
+                if (isOutside(pos)) {
+                    return false;
+                }
+                // and if they are inside our frame, add them to our plane's size and remove them
+                // from the positions that are outside of frame but in the plane
                 size++;
                 return true;
-            }
-            return false;
-        });
+            });
+        }
     }
 
     public Axis getAxis() {
@@ -105,7 +114,7 @@ public class VoxelPlane {
 
     @Override
     public String toString() {
-        return "Plane(full=" + isFull() + ",size=" + size() + ",controller=" + hasController + ",bounds=" + Arrays.asList(minCol, minRow, maxCol, maxRow).toString() + ")";
+        return "Plane(full=" + isFull() + ", size=" + size() + ", frame=" + hasFrame + ", bounds=" + Arrays.asList(minCol, minRow, maxCol, maxRow).toString() + ")";
     }
 
     @Override

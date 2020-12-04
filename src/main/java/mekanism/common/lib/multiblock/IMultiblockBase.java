@@ -30,7 +30,9 @@ public interface IMultiblockBase extends ITileWrapper {
 
     void setStructure(MultiblockManager<?> manager, Structure structure);
 
-    default void resetStructure(MultiblockManager<?> manager) {
-        setStructure(manager, new Structure(this));
+    default Structure resetStructure(MultiblockManager<?> manager) {
+        Structure structure = new Structure(this);
+        setStructure(manager, structure);
+        return structure;
     }
 }

@@ -66,7 +66,7 @@ public class StructureHelper {
         int missing = 0;
         CuboidBuilder builder = new CuboidBuilder();
         for (CuboidSide side : sides) {
-            Axis axis = side.getAxis(), horizontal = side.getAxis().horizontal(), vertical = side.getAxis().vertical();
+            Axis axis = side.getAxis(), horizontal = axis.horizontal(), vertical = axis.vertical();
             NavigableMap<Integer, VoxelPlane> map = structure.getMajorAxisMap(axis);
             Map.Entry<Integer, VoxelPlane> entry = side.getFace().isPositive() ? map.lastEntry() : map.firstEntry();
             // fail fast if the plane doesn't exist
@@ -82,16 +82,10 @@ public class StructureHelper {
             // set bounds from dimension of plane's axis
             builder.set(side, entry.getKey());
             // update cuboidal dimensions from each corner of the plane
-            if (!builder.trySet(CuboidSide.get(Face.NEGATIVE, horizontal), plane.getMinCol())) {
-                return null;
-            }
-            if (!builder.trySet(CuboidSide.get(Face.POSITIVE, horizontal), plane.getMaxCol())) {
-                return null;
-            }
-            if (!builder.trySet(CuboidSide.get(Face.NEGATIVE, vertical), plane.getMinRow())) {
-                return null;
-            }
-            if (!builder.trySet(CuboidSide.get(Face.POSITIVE, vertical), plane.getMaxRow())) {
+            if (!builder.trySet(CuboidSide.get(Face.NEGATIVE, horizontal), plane.getMinCol()) ||
+                !builder.trySet(CuboidSide.get(Face.POSITIVE, horizontal), plane.getMaxCol()) ||
+                !builder.trySet(CuboidSide.get(Face.NEGATIVE, vertical), plane.getMinRow()) ||
+                !builder.trySet(CuboidSide.get(Face.POSITIVE, vertical), plane.getMaxRow())) {
                 return null;
             }
         }

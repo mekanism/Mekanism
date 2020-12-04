@@ -123,8 +123,9 @@ public class FormationProtocol<T extends MultiblockData> {
         traversed.add(start);
         while (!openSet.isEmpty()) {
             BlockPos ptr = openSet.poll();
-            if (traversed.size() >= maxCount) {
-                return traversed.size();
+            int traversedSize = traversed.size();
+            if (traversedSize >= maxCount) {
+                return traversedSize;
             }
             for (Direction side : EnumUtils.DIRECTIONS) {
                 BlockPos offset = ptr.offset(side);
