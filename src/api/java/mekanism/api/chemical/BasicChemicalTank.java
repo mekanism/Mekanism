@@ -78,6 +78,10 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     private void setStack(STACK stack, boolean validateStack) {
         if (stack.isEmpty()) {
+            if (stored.isEmpty()) {
+                //If we are already empty just exit, so as to not fire onContentsChanged
+                return;
+            }
             stored = getEmptyStack();
         } else if (!validateStack || isValid(stack)) {
             stored = createStack(stack, stack.getAmount());

@@ -115,6 +115,10 @@ public class BasicInventorySlot implements IInventorySlot {
 
     private void setStack(ItemStack stack, boolean validateStack) {
         if (stack.isEmpty()) {
+            if (current.isEmpty()) {
+                //If we are already empty just exit, so as to not fire onContentsChanged
+                return;
+            }
             current = ItemStack.EMPTY;
         } else if (!validateStack || isItemValid(stack)) {
             current = stack.copy();
@@ -233,7 +237,7 @@ public class BasicInventorySlot implements IInventorySlot {
             return 0;
         } else if (amount <= 0) {
             if (action.execute()) {
-                setStack(ItemStack.EMPTY);
+                setEmpty();
             }
             return 0;
         }

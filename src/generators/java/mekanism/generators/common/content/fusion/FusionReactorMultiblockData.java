@@ -232,7 +232,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             if (gasHandlerItem.getTanks() > 0) {
                 fuelTank.insert(gasHandlerItem.getChemicalInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
                 lastPlasmaTemperature = getPlasmaTemp();
-                reactorSlot.setStack(ItemStack.EMPTY);
+                reactorSlot.setEmpty();
                 setBurning(true);
             }
         }

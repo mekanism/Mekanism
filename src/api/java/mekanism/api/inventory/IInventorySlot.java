@@ -202,7 +202,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT>, IContents
             return 0;
         } else if (amount <= 0) {
             if (action.execute()) {
-                setStack(ItemStack.EMPTY);
+                setEmpty();
             }
             return 0;
         }
@@ -272,6 +272,13 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT>, IContents
      */
     default boolean isEmpty() {
         return getStack().isEmpty();
+    }
+
+    /**
+     * Convenience method for emptying this {@link IInventorySlot}.
+     */
+    default void setEmpty() {
+        setStack(ItemStack.EMPTY);
     }
 
     /**

@@ -161,7 +161,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                                         energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
                                     }
                                     Block.spawnAsEntity(world, pos, inventorySlot.getStack().copy());
-                                    inventorySlot.setStack(ItemStack.EMPTY);
+                                    inventorySlot.setEmpty();
                                 }
                             }
                             return ActionResultType.SUCCESS;

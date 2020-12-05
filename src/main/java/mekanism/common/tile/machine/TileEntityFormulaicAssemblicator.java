@@ -474,9 +474,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 //If we don't have the item stored anymore (already filled all previous slots with it),
                 // then we need to empty the slot as the items in it has been moved to a more "optimal" slot
                 //Note: We only set them to empty if they are not already empty to avoid onContentsChanged being called
+                // Technically our default implementation doesn't fire onContentsChanged if the stack was already empty
+                // but this is not an API contract
                 IInventorySlot slot = inputSlots.get(i);
                 if (!slot.isEmpty()) {
-                    slot.setStack(ItemStack.EMPTY);
+                    slot.setEmpty();
                 }
             }
         }
@@ -487,8 +489,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             if (empty) {
                 //If we don't have any more items to sort, clear all the other slots that we haven't set something in
                 //Note: We only set them to empty if they are not already empty to avoid onContentsChanged being called
+                // Technically our default implementation doesn't fire onContentsChanged if the stack was already empty
+                // but this is not an API contract
                 if (!slot.isEmpty()) {
-                    slot.setStack(ItemStack.EMPTY);
+                    slot.setEmpty();
                 }
             } else {
                 empty = setSlotIfChanged(storedMap, slot);

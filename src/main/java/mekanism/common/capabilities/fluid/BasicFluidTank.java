@@ -151,6 +151,10 @@ public class BasicFluidTank implements IExtendedFluidTank {
 
     private void setStack(FluidStack stack, boolean validateStack) {
         if (stack.isEmpty()) {
+            if (stored.isEmpty()) {
+                //If we are already empty just exit, so as to not fire onContentsChanged
+                return;
+            }
             stored = FluidStack.EMPTY;
         } else if (!validateStack || isFluidValid(stack)) {
             stored = new FluidStack(stack, stack.getAmount());
