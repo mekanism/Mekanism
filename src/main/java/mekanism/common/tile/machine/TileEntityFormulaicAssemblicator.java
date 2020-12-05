@@ -451,7 +451,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         for (IInventorySlot inputSlot : inputSlots) {
             ItemStack stack = inputSlot.getStack();
             if (!stack.isEmpty()) {
-                HashedItem hashed = new HashedItem(stack);
+                HashedItem hashed = HashedItem.create(stack);
                 storedMap.put(hashed, storedMap.getOrDefault(hashed, 0) + stack.getCount());
             }
         }
@@ -550,7 +550,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 stockControlMap[j] = null;
                 stockControlMap[j + 1] = null;
             } else {
-                HashedItem hashedItem = new HashedItem(stack);
+                HashedItem hashedItem = HashedItem.create(stack);
                 stockControlMap[j] = hashedItem;
                 stockControlMap[j + 1] = hashedItem;
             }

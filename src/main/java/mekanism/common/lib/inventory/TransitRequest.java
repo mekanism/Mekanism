@@ -44,7 +44,7 @@ public abstract class TransitRequest {
             ItemStack stack = inventory.extractItem(i, max, true);
 
             if (!stack.isEmpty() && finder.modifies(stack)) {
-                HashedItem hashed = new HashedItem(stack);
+                HashedItem hashed = HashedItem.create(stack);
                 int toUse = Math.min(stack.getCount(), max - ret.getCount(hashed));
                 if (toUse == 0) {
                     continue; // continue if we don't need anymore of this item type
@@ -196,7 +196,7 @@ public abstract class TransitRequest {
         public static class SimpleItemData extends ItemData {
 
             public SimpleItemData(ItemStack stack) {
-                super(new HashedItem(stack));
+                super(HashedItem.create(stack));
                 totalCount = stack.getCount();
             }
         }

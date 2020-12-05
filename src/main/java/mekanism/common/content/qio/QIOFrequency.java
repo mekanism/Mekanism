@@ -94,7 +94,7 @@ public class QIOFrequency extends Frequency {
     }
 
     public ItemStack addItem(ItemStack stack) {
-        HashedItem type = new HashedItem(stack);
+        HashedItem type = HashedItem.create(stack);
         // these checks are extremely important; they prevent us from wasting CPU searching for a place to put the new items,
         // and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
         if (totalCount == totalCountCapacity || (!itemDataMap.containsKey(type) && itemDataMap.size() == totalTypeCapacity)) {
@@ -115,7 +115,7 @@ public class QIOFrequency extends Frequency {
     }
 
     public ItemStack removeItem(ItemStack stack, int amount) {
-        return removeByType(new HashedItem(stack), amount);
+        return removeByType(HashedItem.create(stack), amount);
     }
 
     public ItemStack removeByType(@Nullable HashedItem itemType, int amount) {

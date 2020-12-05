@@ -78,7 +78,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             if (stack.isEmpty()) {
                 continue;
             }
-            HashedItem type = new HashedItem(stack);
+            HashedItem type = HashedItem.create(stack);
             // if we don't have room for another item type, skip
             if (!typesAdded.contains(type) && typesAdded.size() == maxTypes) {
                 continue;

@@ -19,6 +19,12 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
 
     TYPE getMatchingInstance(TYPE type);
 
+    default long getNeededAmount(TYPE type) {
+        //TODO - 10.1: Remove default implementation, we only default this as to not be "breaking" if some
+        // addon somehow has custom input ingredients
+        return testType(type) ? 1 : 0;
+    }
+
     /**
      * Primarily for JEI, a list of valid instances of the type
      *

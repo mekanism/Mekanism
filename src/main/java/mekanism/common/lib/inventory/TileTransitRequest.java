@@ -25,7 +25,7 @@ public class TileTransitRequest extends TransitRequest {
     }
 
     public void addItem(ItemStack stack, int slot) {
-        HashedItem hashed = new HashedItem(stack);
+        HashedItem hashed = HashedItem.create(stack);
         itemMap.computeIfAbsent(hashed, TileItemData::new).addSlot(slot, stack);
     }
 

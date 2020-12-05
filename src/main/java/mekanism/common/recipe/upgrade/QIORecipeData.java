@@ -34,7 +34,7 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
         for (int i = 0; i < nbtItemMap.size(); i++) {
             CompoundNBT tag = nbtItemMap.getCompound(i);
             ItemStack itemType = ItemStack.read(tag.getCompound(NBTConstants.ITEM));
-            itemMap.put(new HashedItem(itemType), tag.getLong(NBTConstants.AMOUNT));
+            itemMap.put(HashedItem.create(itemType), tag.getLong(NBTConstants.AMOUNT));
         }
     }
 

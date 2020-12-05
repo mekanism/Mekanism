@@ -27,10 +27,10 @@ import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 //Compressing, injecting, purifying
 public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IHasDumpButton {
@@ -84,48 +84,35 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     @Override
-    public boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
-          boolean updateCache) {
-        if (outputSlot.isEmpty()) {
-            return true;
-        }
-        CachedRecipe<ItemStackGasToItemStackRecipe> cached = getCachedRecipe(process);
+    protected int getNeededInput(ItemStackGasToItemStackRecipe recipe, ItemStack inputStack) {
+        return MathUtils.clampToInt(recipe.getItemInput().getNeededAmount(inputStack));
+    }
+
+    @Override
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackGasToItemStackRecipe> cached, @Nonnull ItemStack stack) {
         if (cached != null) {
             ItemStackGasToItemStackRecipe cachedRecipe = cached.getRecipe();
-            if (cachedRecipe.getItemInput().testType(fallbackInput) && (gasTank.isEmpty() || cachedRecipe.getChemicalInput().testType(gasTank.getType()))) {
-                //Our input matches the recipe we have cached for this slot
-                return true;
-            }
-            //If there is no cached item input or it doesn't match our fallback then it is an out of date cache, so we ignore the fact that we have a cache
+            return cachedRecipe.getItemInput().testType(stack) && (gasTank.isEmpty() || cachedRecipe.getChemicalInput().testType(gasTank.getType()));
         }
+        return false;
+    }
+
+    @Override
+    protected ItemStackGasToItemStackRecipe findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot,
+          @Nullable IInventorySlot secondaryOutputSlot) {
         GasStack gasStack = gasTank.getStack();
         Gas gas = gasStack.getType();
         ItemStack output = outputSlot.getStack();
-        ItemStackGasToItemStackRecipe foundRecipe = findFirstRecipe(recipe -> {
+        return findFirstRecipe(recipe -> {
             if (recipe.getItemInput().testType(fallbackInput)) {
                 //If we don't have a gas stored ignore checking for a match
                 if (gasStack.isEmpty() || recipe.getChemicalInput().testType(gas)) {
-                    //TODO: Give it something that is not null when we don't have a stored gas stack
-                    return ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput, gasStack), output);
+                    //TODO: Give it something that is not empty when we don't have a stored gas stack?
+                    return InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput, gasStack), output);
                 }
             }
             return false;
         });
-        if (foundRecipe == null) {
-            //We could not find any valid recipe for the given item that matches the items in the current output slots
-            return false;
-        }
-        if (updateCache) {
-            //If we want to update the cache, then create a new cache with the recipe we found
-            CachedRecipe<ItemStackGasToItemStackRecipe> newCachedRecipe = createNewCachedRecipe(foundRecipe, process);
-            if (newCachedRecipe == null) {
-                //If we want to update the cache but failed to create a new cache then return that the item is not valid for the slot as something goes wrong
-                // I believe we can actually make createNewCachedRecipe Nonnull which will remove this if statement
-                return false;
-            }
-            updateCachedRecipe(newCachedRecipe, process);
-        }
-        return true;
     }
 
     @Override

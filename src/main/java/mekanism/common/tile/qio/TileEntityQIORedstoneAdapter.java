@@ -44,7 +44,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     public void handleStackChange(ItemStack stack) {
-        itemType = stack.isEmpty() ? null : new HashedItem(stack);
+        itemType = stack.isEmpty() ? null : HashedItem.create(stack);
         markDirty(false);
     }
 
@@ -97,7 +97,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.read(state, nbtTags);
-        NBTUtils.setItemStackIfPresent(nbtTags, NBTConstants.SINGLE_ITEM, item -> itemType = new HashedItem(item));
+        NBTUtils.setItemStackIfPresent(nbtTags, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
         NBTUtils.setLongIfPresent(nbtTags, NBTConstants.AMOUNT, value -> count = value);
     }
 
@@ -136,7 +136,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             if (value.isEmpty()) {
                 itemType = null;
             } else {
-                itemType = new HashedItem(value);
+                itemType = HashedItem.create(value);
             }
         }));
         container.track(SyncableLong.create(this::getCount, value -> count = value));

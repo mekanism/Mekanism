@@ -218,7 +218,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         private TransportInformation(TransporterStack transporterStack) {
             this.progress = transporterStack.progress;
             this.color = transporterStack.color;
-            this.item = new HashedItem(transporterStack.itemStack);
+            this.item = HashedItem.create(transporterStack.itemStack);
         }
 
         @Override

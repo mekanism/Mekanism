@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -17,9 +18,9 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<CombinerRecipe> {
 
@@ -51,45 +52,31 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    public boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
-          boolean updateCache) {
-        if (outputSlot.isEmpty()) {
-            return true;
-        }
-        CachedRecipe<CombinerRecipe> cached = getCachedRecipe(process);
+    protected int getNeededInput(CombinerRecipe recipe, ItemStack inputStack) {
+        return MathUtils.clampToInt(recipe.getMainInput().getNeededAmount(inputStack));
+    }
+
+    @Override
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<CombinerRecipe> cached, @Nonnull ItemStack stack) {
         if (cached != null) {
             CombinerRecipe cachedRecipe = cached.getRecipe();
-            if (cachedRecipe.getMainInput().testType(fallbackInput) && (extraSlot.isEmpty() || cachedRecipe.getExtraInput().testType(extraSlot.getStack()))) {
-                //Our input matches the recipe we have cached for this slot
-                return true;
-            }
-            //If there is no cached item input or it doesn't match our fallback then it is an out of date cache, so we ignore the fact that we have a cache
+            return cachedRecipe.getMainInput().testType(stack) && (extraSlot.isEmpty() || cachedRecipe.getExtraInput().testType(extraSlot.getStack()));
         }
+        return false;
+    }
+
+    @Override
+    protected CombinerRecipe findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         ItemStack extra = extraSlot.getStack();
         ItemStack output = outputSlot.getStack();
-        CombinerRecipe foundRecipe = findFirstRecipe(recipe -> {
+        return findFirstRecipe(recipe -> {
             if (recipe.getMainInput().testType(fallbackInput)) {
                 if (extra.isEmpty() || recipe.getExtraInput().testType(extra)) {
-                    return ItemHandlerHelper.canItemStacksStack(recipe.getOutput(fallbackInput, extra), output);
+                    return InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput, extra), output);
                 }
             }
             return false;
         });
-        if (foundRecipe == null) {
-            //We could not find any valid recipe for the given item that matches the items in the current output slots
-            return false;
-        }
-        if (updateCache) {
-            //If we want to update the cache, then create a new cache with the recipe we found
-            CachedRecipe<CombinerRecipe> newCachedRecipe = createNewCachedRecipe(foundRecipe, process);
-            if (newCachedRecipe == null) {
-                //If we want to update the cache but failed to create a new cache then return that the item is not valid for the slot as something goes wrong
-                // I believe we can actually make createNewCachedRecipe Nonnull which will remove this if statement
-                return false;
-            }
-            updateCachedRecipe(newCachedRecipe, process);
-        }
-        return true;
     }
 
     @Nonnull

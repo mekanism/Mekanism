@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
@@ -22,6 +23,7 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.SawmillUpgradeData;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -62,22 +64,23 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
     }
 
     @Override
-    public boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
-          boolean updateCache) {
-        if (outputSlot.isEmpty()) {
-            return true;
-        }
-        CachedRecipe<SawmillRecipe> cached = getCachedRecipe(process);
-        if (cached != null && cached.getRecipe().getInput().testType(fallbackInput)) {
-            return true;
-        }
-        //If there is no cached item input or it doesn't match our fallback then it is an out of date cache, so we ignore the fact that we have a cache
+    protected int getNeededInput(SawmillRecipe recipe, ItemStack inputStack) {
+        return MathUtils.clampToInt(recipe.getInput().getNeededAmount(inputStack));
+    }
+
+    @Override
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<SawmillRecipe> cached, @Nonnull ItemStack stack) {
+        return cached != null && cached.getRecipe().getInput().testType(stack);
+    }
+
+    @Override
+    protected SawmillRecipe findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         ItemStack output = outputSlot.getStack();
         ItemStack extra = secondaryOutputSlot == null ? ItemStack.EMPTY : secondaryOutputSlot.getStack();
-        SawmillRecipe foundRecipe = findFirstRecipe(recipe -> {
+        return findFirstRecipe(recipe -> {
             if (recipe.getInput().testType(fallbackInput)) {
                 ChanceOutput chanceOutput = recipe.getOutput(fallbackInput);
-                if (ItemHandlerHelper.canItemStacksStack(chanceOutput.getMainOutput(), output)) {
+                if (InventoryUtils.areItemsStackable(chanceOutput.getMainOutput(), output)) {
                     //If the input is good and the primary output matches, make sure that the secondary
                     // output of this recipe will stack with what is currently in the secondary slot
                     if (extra.isEmpty()) {
@@ -89,21 +92,6 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
             }
             return false;
         });
-        if (foundRecipe == null) {
-            //We could not find any valid recipe for the given item that matches the items in the current output slots
-            return false;
-        }
-        if (updateCache) {
-            //If we want to update the cache, then create a new cache with the recipe we found
-            CachedRecipe<SawmillRecipe> newCachedRecipe = createNewCachedRecipe(foundRecipe, process);
-            if (newCachedRecipe == null) {
-                //If we want to update the cache but failed to create a new cache then return that the item is not valid for the slot as something goes wrong
-                // I believe we can actually make createNewCachedRecipe Nonnull which will remove this if statement
-                return false;
-            }
-            updateCachedRecipe(newCachedRecipe, process);
-        }
-        return true;
     }
 
     @Nonnull

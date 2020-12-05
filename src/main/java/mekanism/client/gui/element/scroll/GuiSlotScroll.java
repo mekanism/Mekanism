@@ -148,7 +148,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
     }
 
     private boolean isSlotEmpty(IScrollableSlot slot) {
-        return slot.getItem() == null || slot.getItem().getStack() == null || slot.getItem().getStack().isEmpty();
+        return slot.getItem() == null || slot.getItem().getStack().isEmpty();
     }
 
     private void renderSlotText(MatrixStack matrix, String text, int x, int y) {

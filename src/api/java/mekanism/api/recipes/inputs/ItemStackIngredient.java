@@ -161,6 +161,11 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
             return ItemStack.EMPTY;
         }
 
+        @Override
+        public long getNeededAmount(@Nonnull ItemStack stack) {
+            return testType(stack) ? amount : 0;
+        }
+
         @Nonnull
         @Override
         public List<@NonNull ItemStack> getRepresentations() {
@@ -229,6 +234,17 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
                 }
             }
             return ItemStack.EMPTY;
+        }
+
+        @Override
+        public long getNeededAmount(@Nonnull ItemStack stack) {
+            for (ItemStackIngredient ingredient : ingredients) {
+                long amount = ingredient.getNeededAmount(stack);
+                if (amount > 0) {
+                    return amount;
+                }
+            }
+            return 0;
         }
 
         @Nonnull

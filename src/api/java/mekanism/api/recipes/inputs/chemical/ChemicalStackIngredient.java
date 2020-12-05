@@ -55,6 +55,11 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
             return getIngredientInfo().getEmptyStack();
         }
 
+        @Override
+        public long getNeededAmount(@Nonnull STACK stack) {
+            return testType(stack) ? chemicalInstance.getAmount() : 0;
+        }
+
         @Nonnull
         @Override
         public List<@NonNull STACK> getRepresentations() {
@@ -111,6 +116,11 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
                 return getIngredientInfo().createStack(chemicalStack, amount);
             }
             return getIngredientInfo().getEmptyStack();
+        }
+
+        @Override
+        public long getNeededAmount(@Nonnull STACK stack) {
+            return testType(stack) ? amount : 0;
         }
 
         @Nonnull
@@ -184,6 +194,17 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
                 }
             }
             return getIngredientInfo().getEmptyStack();
+        }
+
+        @Override
+        public long getNeededAmount(@Nonnull STACK stack) {
+            for (INGREDIENT ingredient : ingredients) {
+                long amount = ingredient.getNeededAmount(stack);
+                if (amount > 0) {
+                    return amount;
+                }
+            }
+            return 0;
         }
 
         @Nonnull

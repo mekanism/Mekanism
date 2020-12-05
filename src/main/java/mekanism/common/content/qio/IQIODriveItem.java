@@ -25,7 +25,7 @@ public interface IQIODriveItem {
                     //Only add the item if the item could be read. If it can't that means the mod adding the item was probaly removed
                     //TODO: Eventually we may want to keep the NBT so that if the mod gets added back it exists again
                     long count = tag.getLong(NBTConstants.AMOUNT);
-                    data.getItemMap().put(new HashedItem(itemType), count);
+                    data.getItemMap().put(HashedItem.create(itemType), count);
                 }
             }
         }

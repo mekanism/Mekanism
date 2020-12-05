@@ -147,6 +147,11 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             return test(fluidStack) ? fluidInstance : FluidStack.EMPTY;
         }
 
+        @Override
+        public long getNeededAmount(@Nonnull FluidStack stack) {
+            return testType(stack) ? fluidInstance.getAmount() : 0;
+        }
+
         @Nonnull
         @Override
         public List<@NonNull FluidStack> getRepresentations() {
@@ -205,6 +210,11 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 return new FluidStack(fluidStack, amount);
             }
             return FluidStack.EMPTY;
+        }
+
+        @Override
+        public long getNeededAmount(@Nonnull FluidStack stack) {
+            return testType(stack) ? amount : 0;
         }
 
         @Nonnull
@@ -267,6 +277,17 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 }
             }
             return FluidStack.EMPTY;
+        }
+
+        @Override
+        public long getNeededAmount(@Nonnull FluidStack stack) {
+            for (FluidStackIngredient ingredient : ingredients) {
+                long amount = ingredient.getNeededAmount(stack);
+                if (amount > 0) {
+                    return amount;
+                }
+            }
+            return 0;
         }
 
         @Nonnull

@@ -86,7 +86,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         Object2LongMap<HashedItem> map = new Object2LongOpenHashMap<>();
         for (QIOFilter<?> filter : getFilters()) {
             if (filter instanceof QIOItemStackFilter) {
-                HashedItem type = new HashedItem(((QIOItemStackFilter) filter).getItemStack());
+                HashedItem type = HashedItem.create(((QIOItemStackFilter) filter).getItemStack());
                 map.put(type, freq.getStored(type));
             } else if (filter instanceof QIOTagFilter) {
                 String tagName = ((QIOTagFilter) filter).getTagName();
