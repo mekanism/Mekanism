@@ -17,13 +17,13 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
@@ -189,33 +189,21 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
         if (upgradeData instanceof AdvancedMachineUpgradeData) {
-            AdvancedMachineUpgradeData data = (AdvancedMachineUpgradeData) upgradeData;
-            redstone = data.redstone;
-            setControlType(data.controlType);
-            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
-            sorting = data.sorting;
-            gasTank.setStack(data.stored);
-            extraSlot.setStack(data.gasSlot.getStack());
-            energySlot.setStack(data.energySlot.getStack());
-            System.arraycopy(data.progress, 0, progress, 0, data.progress.length);
-            for (int i = 0; i < data.inputSlots.size(); i++) {
-                inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
-            }
-            for (int i = 0; i < data.outputSlots.size(); i++) {
-                outputSlots.get(i).setStack(data.outputSlots.get(i).getStack());
-            }
-            for (ITileComponent component : getComponents()) {
-                component.read(data.components);
-            }
-        } else {
+            //Generic factory upgrade data handling
             super.parseUpgradeData(upgradeData);
+            AdvancedMachineUpgradeData data = (AdvancedMachineUpgradeData) upgradeData;
+            //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
+            gasTank.deserializeNBT(data.stored.serializeNBT());
+            extraSlot.deserializeNBT(data.gasSlot.serializeNBT());
+        } else {
+            Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }
     }
 
     @Nonnull
     @Override
     public AdvancedMachineUpgradeData getUpgradeData() {
-        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, gasTank.getStack(), extraSlot, energySlot, inputSlots, outputSlots,
+        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, gasTank, extraSlot, energySlot, inputSlots, outputSlots,
               isSorting(), getComponents());
     }
 

@@ -17,13 +17,13 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.machine.TileEntityMetallurgicInfuser;
 import mekanism.common.upgrade.IUpgradeData;
@@ -152,33 +152,21 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
         if (upgradeData instanceof MetallurgicInfuserUpgradeData) {
-            MetallurgicInfuserUpgradeData data = (MetallurgicInfuserUpgradeData) upgradeData;
-            redstone = data.redstone;
-            setControlType(data.controlType);
-            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
-            sorting = data.sorting;
-            infusionTank.setStack(data.stored);
-            extraSlot.setStack(data.infusionSlot.getStack());
-            energySlot.setStack(data.energySlot.getStack());
-            System.arraycopy(data.progress, 0, progress, 0, data.progress.length);
-            for (int i = 0; i < data.inputSlots.size(); i++) {
-                inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
-            }
-            for (int i = 0; i < data.outputSlots.size(); i++) {
-                outputSlots.get(i).setStack(data.outputSlots.get(i).getStack());
-            }
-            for (ITileComponent component : getComponents()) {
-                component.read(data.components);
-            }
-        } else {
+            //Generic factory upgrade data handling
             super.parseUpgradeData(upgradeData);
+            MetallurgicInfuserUpgradeData data = (MetallurgicInfuserUpgradeData) upgradeData;
+            //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
+            infusionTank.deserializeNBT(data.stored.serializeNBT());
+            extraSlot.deserializeNBT(data.infusionSlot.serializeNBT());
+        } else {
+            Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }
     }
 
     @Nonnull
     @Override
     public MetallurgicInfuserUpgradeData getUpgradeData() {
-        return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, infusionTank.getStack(), extraSlot, energySlot,
+        return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, infusionTank, extraSlot, energySlot,
               inputSlots, outputSlots, isSorting(), getComponents());
     }
 

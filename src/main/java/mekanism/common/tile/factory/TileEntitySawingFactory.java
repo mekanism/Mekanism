@@ -15,13 +15,13 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.common.Mekanism;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.InventoryUtils;
@@ -49,7 +49,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
             int xPos = baseX + (i * baseXMult);
             OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 57);
             OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 77);
-            IInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, updateSortingListener, xPos, 13);
+            FactoryInputInventorySlot<SawmillRecipe> inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, updateSortingListener, xPos, 13);
             builder.addSlot(inputSlot);
             builder.addSlot(outputSlot);
             builder.addSlot(secondaryOutputSlot);
@@ -125,24 +125,10 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
         if (upgradeData instanceof SawmillUpgradeData) {
-            SawmillUpgradeData data = (SawmillUpgradeData) upgradeData;
-            redstone = data.redstone;
-            setControlType(data.controlType);
-            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
-            sorting = data.sorting;
-            energySlot.setStack(data.energySlot.getStack());
-            System.arraycopy(data.progress, 0, progress, 0, data.progress.length);
-            for (int i = 0; i < data.inputSlots.size(); i++) {
-                inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
-            }
-            for (int i = 0; i < data.outputSlots.size(); i++) {
-                outputSlots.get(i).setStack(data.outputSlots.get(i).getStack());
-            }
-            for (ITileComponent component : getComponents()) {
-                component.read(data.components);
-            }
-        } else {
+            //Validate we have the correct type of data before passing it upwards
             super.parseUpgradeData(upgradeData);
+        } else {
+            Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }
     }
 

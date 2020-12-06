@@ -214,7 +214,7 @@ public class BasicInventorySlot implements IInventorySlot {
     @Nullable
     @Override
     public InventoryContainerSlot createContainerSlot() {
-        return new InventoryContainerSlot(this, x, y, slotType, slotOverlay);
+        return new InventoryContainerSlot(this, x, y, slotType, slotOverlay, this::setStackUnchecked);
     }
 
     public void setSlotType(ContainerSlotType slotType) {
@@ -309,9 +309,8 @@ public class BasicInventorySlot implements IInventorySlot {
             stack = ItemStack.read(nbt.getCompound(NBTConstants.ITEM));
             NBTUtils.setIntIfPresent(nbt, NBTConstants.SIZE_OVERRIDE, stack::setCount);
         }
-        //Directly set the stack in case the item is no longer valid for the stack.
-        // We do this instead of using setStackUnchecked to avoid calling markDirty when we are loading
-        // the inventory and the world is still null on the tile
+        //Set the stack in an unchecked way so that if it is no longer valid, we don't end up
+        // crashing due to the stack not being valid
         setStackUnchecked(stack);
     }
 }

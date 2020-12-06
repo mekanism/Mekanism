@@ -2,7 +2,6 @@ package mekanism.common.tile.factory;
 
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
@@ -35,7 +34,7 @@ public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe>
         for (int i = 0; i < tier.processes; i++) {
             int xPos = baseX + (i * baseXMult);
             OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 57);
-            IInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, updateSortingListener, xPos, 13);
+            FactoryInputInventorySlot<RECIPE> inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, updateSortingListener, xPos, 13);
             builder.addSlot(inputSlot);
             builder.addSlot(outputSlot);
             inputHandlers[i] = InputHelper.getInputHandler(inputSlot);

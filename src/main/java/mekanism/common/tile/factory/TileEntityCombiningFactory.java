@@ -12,11 +12,11 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CombinerCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.InventoryUtils;
@@ -114,25 +114,13 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
         if (upgradeData instanceof CombinerUpgradeData) {
-            CombinerUpgradeData data = (CombinerUpgradeData) upgradeData;
-            redstone = data.redstone;
-            setControlType(data.controlType);
-            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
-            sorting = data.sorting;
-            extraSlot.setStack(data.extraSlot.getStack());
-            energySlot.setStack(data.energySlot.getStack());
-            System.arraycopy(data.progress, 0, progress, 0, data.progress.length);
-            for (int i = 0; i < data.inputSlots.size(); i++) {
-                inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
-            }
-            for (int i = 0; i < data.outputSlots.size(); i++) {
-                outputSlots.get(i).setStack(data.outputSlots.get(i).getStack());
-            }
-            for (ITileComponent component : getComponents()) {
-                component.read(data.components);
-            }
-        } else {
+            //Generic factory upgrade data handling
             super.parseUpgradeData(upgradeData);
+            CombinerUpgradeData data = (CombinerUpgradeData) upgradeData;
+            //Copy the stack using NBT so that if it is not actually valid due to a reload we don't crash
+            extraSlot.deserializeNBT(data.extraSlot.serializeNBT());
+        } else {
+            Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }
     }
 

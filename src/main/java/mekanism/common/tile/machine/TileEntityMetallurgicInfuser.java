@@ -153,7 +153,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     @Nonnull
     @Override
     public MetallurgicInfuserUpgradeData getUpgradeData() {
-        return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), infusionTank.getStack(), infusionSlot, energySlot,
+        return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), infusionTank, infusionSlot, energySlot,
               inputSlot, outputSlot, getComponents());
     }
 

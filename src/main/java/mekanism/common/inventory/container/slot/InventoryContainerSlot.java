@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container.slot;
 
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -16,16 +17,19 @@ import net.minecraft.item.ItemStack;
 public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     private static final IInventory emptyInventory = new Inventory(0);
+    private final Consumer<ItemStack> uncheckedSetter;
     private final ContainerSlotType slotType;
     private final BasicInventorySlot slot;
     @Nullable
     private final SlotOverlay slotOverlay;
 
-    public InventoryContainerSlot(BasicInventorySlot slot, int x, int y, ContainerSlotType slotType, @Nullable SlotOverlay slotOverlay) {
+    public InventoryContainerSlot(BasicInventorySlot slot, int x, int y, ContainerSlotType slotType, @Nullable SlotOverlay slotOverlay,
+          Consumer<ItemStack> uncheckedSetter) {
         super(emptyInventory, 0, x, y);
         this.slot = slot;
         this.slotType = slotType;
         this.slotOverlay = slotOverlay;
+        this.uncheckedSetter = uncheckedSetter;
     }
 
     public IInventorySlot getInventorySlot() {
@@ -68,7 +72,9 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Override
     public void putStack(@Nonnull ItemStack stack) {
-        slot.setStack(stack);
+        //Note: We have to set the stack in an unchecked manor here, so that if we sync a stack from the server to the client that
+        // the client does not think is valid for the stack, it doesn't cause major issues
+        uncheckedSetter.accept(stack);
         onSlotChanged();
     }
 

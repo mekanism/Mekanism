@@ -136,7 +136,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
             setControlType(data.controlType);
             getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             chargeSlot.setStack(data.chargeSlot.getStack());
-            dischargeSlot.setStack(data.dischargeSlot.getStack());
+            //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
+            dischargeSlot.deserializeNBT(data.dischargeSlot.serializeNBT());
             for (ITileComponent component : getComponents()) {
                 component.read(data.components);
             }

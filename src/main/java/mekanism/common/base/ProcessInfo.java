@@ -3,18 +3,19 @@ package mekanism.common.base;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 
 public class ProcessInfo {
 
     @Nonnull
-    private final IInventorySlot inputSlot;
+    private final FactoryInputInventorySlot<?> inputSlot;
     @Nonnull
     private final IInventorySlot outputSlot;
     @Nullable
     private final IInventorySlot secondaryOutputSlot;
     private final int process;
 
-    public ProcessInfo(int process, @Nonnull IInventorySlot inputSlot, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    public ProcessInfo(int process, @Nonnull FactoryInputInventorySlot<?> inputSlot, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         this.inputSlot = inputSlot;
         this.outputSlot = outputSlot;
         this.secondaryOutputSlot = secondaryOutputSlot;
@@ -26,7 +27,7 @@ public class ProcessInfo {
     }
 
     @Nonnull
-    public IInventorySlot getInputSlot() {
+    public FactoryInputInventorySlot<?> getInputSlot() {
         return inputSlot;
     }
 

@@ -9,8 +9,6 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.tile.component.ITileComponent;
-import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -79,30 +77,6 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
-    }
-
-    @Override
-    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
-        if (upgradeData instanceof MachineUpgradeData) {
-            MachineUpgradeData data = (MachineUpgradeData) upgradeData;
-            redstone = data.redstone;
-            setControlType(data.controlType);
-            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
-            sorting = data.sorting;
-            energySlot.setStack(data.energySlot.getStack());
-            System.arraycopy(data.progress, 0, progress, 0, data.progress.length);
-            for (int i = 0; i < data.inputSlots.size(); i++) {
-                inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
-            }
-            for (int i = 0; i < data.outputSlots.size(); i++) {
-                outputSlots.get(i).setStack(data.outputSlots.get(i).getStack());
-            }
-            for (ITileComponent component : getComponents()) {
-                component.read(data.components);
-            }
-        } else {
-            super.parseUpgradeData(upgradeData);
-        }
     }
 
     @Nonnull
