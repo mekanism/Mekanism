@@ -1,23 +1,23 @@
 package mekanism.common.lib.transmitter;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
+import java.util.function.LongConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Range3D;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.eventbus.api.Event;
 
 public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
       TRANSMITTER extends BufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER> {
 
-    protected final Set<ChunkPos> chunks = new ObjectOpenHashSet<>();
+    protected final LongSet chunks = new LongOpenHashSet();
     @Nullable
     protected Range3D packetRange;
     protected long capacity;
@@ -61,7 +61,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         updateCapacity(transmitter);
         absorbBuffer(transmitter);
         super.addTransmitterFromCommit(transmitter);
-        chunks.add(new ChunkPos(transmitter.getTilePos()));
+        chunks.add(WorldUtils.getChunkPosAsLong(transmitter.getTilePos()));
     }
 
     @Override
@@ -168,7 +168,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     public void markDirty() {
         if (world != null && !world.isRemote && world.getGameTime() != lastMarkDirtyTime) {
             lastMarkDirtyTime = world.getGameTime();
-            chunks.forEach(chunk -> WorldUtils.markChunkDirty(world, chunk.asBlockPos()));
+            chunks.forEach((LongConsumer) chunk -> WorldUtils.markChunkDirty(world, WorldUtils.getBlockPosFromChunkPos(chunk)));
         }
     }
 

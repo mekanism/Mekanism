@@ -2,12 +2,14 @@ package mekanism.common.tile.machine;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -96,7 +98,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IAdvancedBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
       IHasSortableFilters {
 
-    public Map<ChunkPos, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
+    public Long2ObjectMap<BitSet> oresToMine = new Long2ObjectOpenHashMap<>();
     public Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
     private HashList<MinerFilter<?>> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
@@ -216,8 +218,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 if (delay == 0) {
                     boolean did = false;
-                    for (Iterator<ChunkPos> it = oresToMine.keySet().iterator(); it.hasNext(); ) {
-                        ChunkPos chunk = it.next();
+                    for (LongIterator it = oresToMine.keySet().iterator(); it.hasNext(); ) {
+                        long chunk = it.nextLong();
                         BitSet set = oresToMine.get(chunk);
                         int next = 0;
                         while (!did) {

@@ -2,6 +2,8 @@ package mekanism.common.content.miner;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.BitSet;
 import java.util.List;
@@ -18,7 +20,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.Region;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -29,7 +30,7 @@ public class ThreadMinerSearch extends Thread {
 
     public State state = State.IDLE;
 
-    private final Map<ChunkPos, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
+    private final Long2ObjectMap<BitSet> oresToMine = new Long2ObjectOpenHashMap<>();
     private final Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
     private final Map<Block, MinerFilter<?>> acceptedItems = new Object2ObjectOpenHashMap<>();
     private Region chunkCache;
@@ -109,7 +110,7 @@ public class ThreadMinerSearch extends Thread {
     }
 
     public void set(int i, BlockPos pos) {
-        ChunkPos chunk = new ChunkPos(pos);
+        long chunk = WorldUtils.getChunkPosAsLong(pos);
         oresToMine.computeIfAbsent(chunk, k -> new BitSet());
         oresToMine.get(chunk).set(i);
     }

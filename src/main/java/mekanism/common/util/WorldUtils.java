@@ -621,4 +621,24 @@ public class WorldUtils {
         f1 = (float) (f1 * (1.0D - world.getThunderStrength(partialTicks) * 5.0F / 16.0D));
         return f1 * 0.8F + 0.2F;
     }
+
+    /**
+     * Converts a {@link BlockPos} to a long representing the {@link ChunkPos} it is in without creating a temporary {@link ChunkPos} object.
+     *
+     * @param pos Pos to convert.
+     */
+    public static long getChunkPosAsLong(BlockPos pos) {
+        long x = pos.getX() >> 4;
+        long z = pos.getZ() >> 4;
+        return x & 0xFFFFFFFFL | (z & 0xFFFFFFFFL) << 32;
+    }
+
+    /**
+     * Converts a long representing a {@link ChunkPos} to a {@link BlockPos} without creating a temporary {@link ChunkPos} object.
+     *
+     * @param chunkPos Pos to convert.
+     */
+    public static BlockPos getBlockPosFromChunkPos(long chunkPos) {
+        return new BlockPos((int) chunkPos, 0, (int) (chunkPos >> 32));
+    }
 }
