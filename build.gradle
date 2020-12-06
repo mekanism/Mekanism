@@ -730,7 +730,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addArtifact apiJar
-            addGameVersion "1.16.3"//TODO: Remove this when we end up needing something new from forge that only exists in 1.16.4
             addGameVersion "${minecraft_version}"
         }
 
@@ -745,7 +744,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
-            addGameVersion "1.16.3"//TODO: Remove this when we end up needing something new from forge that only exists in 1.16.4
             addGameVersion "${minecraft_version}"
         }
 
@@ -774,7 +772,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
-            addGameVersion "1.16.3"//TODO: Remove this when we end up needing something new from forge that only exists in 1.16.4
             addGameVersion "${minecraft_version}"
         }
 
@@ -789,7 +786,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
-            addGameVersion "1.16.3"//TODO: Remove this when we end up needing something new from forge that only exists in 1.16.4
             addGameVersion "${minecraft_version}"
         }
     }
