@@ -2,6 +2,7 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -57,14 +58,17 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+        //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
+        // as maybe the valid recipes have changed and we need to sort again
         builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes,
-              gas -> containsRecipe(recipe -> recipe.getChemicalInput().testType(gas)), this));
+              gas -> containsRecipe(recipe -> recipe.getChemicalInput().testType(gas)), this::onContentsChangedUpdateSorting));
         return builder.build();
     }
 
     @Override
-    protected void addSlots(InventorySlotHelper builder) {
-        super.addSlots(builder);
+    protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
+        super.addSlots(builder, updateSortingListener);
+        //Note: We care about the gas tank not the slot when it comes to recipes and updating sorting
         builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::getWorld, this, 7, 57));
     }
 

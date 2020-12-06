@@ -2,6 +2,7 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -49,14 +50,17 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
         ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
+        //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
+        // as maybe the valid recipes have changed and we need to sort again
         builder.addTank(infusionTank = ChemicalTankBuilder.INFUSION.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes,
-              type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this));
+              type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this::onContentsChangedUpdateSorting));
         return builder.build();
     }
 
     @Override
-    protected void addSlots(InventorySlotHelper builder) {
-        super.addSlots(builder);
+    protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
+        super.addSlots(builder, updateSortingListener);
+        //Note: We care about the infusion tank not the slot when it comes to recipes and updating sorting
         builder.addSlot(extraSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getWorld, this, 7, 57));
     }
 

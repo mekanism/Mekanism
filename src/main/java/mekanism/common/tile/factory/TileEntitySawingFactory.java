@@ -2,6 +2,7 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
@@ -38,7 +39,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
     }
 
     @Override
-    protected void addSlots(InventorySlotHelper builder) {
+    protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
         inputHandlers = new IInputHandler[tier.processes];
         outputHandlers = new IOutputHandler[tier.processes];
         processInfoSlots = new ProcessInfo[tier.processes];
@@ -46,9 +47,9 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
         int baseXMult = tier == FactoryTier.BASIC ? 38 : tier == FactoryTier.ADVANCED ? 26 : 19;
         for (int i = 0; i < tier.processes; i++) {
             int xPos = baseX + (i * baseXMult);
-            OutputInventorySlot outputSlot = OutputInventorySlot.at(this, xPos, 57);
-            OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(this, xPos, 77);
-            IInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, this, xPos, 13);
+            OutputInventorySlot outputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 57);
+            OutputInventorySlot secondaryOutputSlot = OutputInventorySlot.at(updateSortingListener, xPos, 77);
+            IInventorySlot inputSlot = FactoryInputInventorySlot.create(this, i, outputSlot, secondaryOutputSlot, updateSortingListener, xPos, 13);
             builder.addSlot(inputSlot);
             builder.addSlot(outputSlot);
             builder.addSlot(secondaryOutputSlot);

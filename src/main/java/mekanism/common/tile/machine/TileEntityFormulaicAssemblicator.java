@@ -272,6 +272,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     @Override
     public void markDirty(boolean recheckBlockState) {
         super.markDirty(recheckBlockState);
+        //TODO: Should this be changed to being in onContentsChanged instead of markDirty?
         recalculateRecipe();
     }
 

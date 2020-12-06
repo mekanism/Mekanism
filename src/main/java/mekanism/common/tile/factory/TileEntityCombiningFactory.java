@@ -2,6 +2,7 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
@@ -34,9 +35,9 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    protected void addSlots(InventorySlotHelper builder) {
-        super.addSlots(builder);
-        builder.addSlot(extraSlot = InputInventorySlot.at(stack -> containsRecipe(recipe -> recipe.getExtraInput().testType(stack)), this, 7, 57));
+    protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
+        super.addSlots(builder, updateSortingListener);
+        builder.addSlot(extraSlot = InputInventorySlot.at(stack -> containsRecipe(recipe -> recipe.getExtraInput().testType(stack)), updateSortingListener, 7, 57));
         extraSlot.setSlotType(ContainerSlotType.EXTRA);
     }
 
