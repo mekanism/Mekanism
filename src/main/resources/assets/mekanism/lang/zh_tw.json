@@ -285,7 +285,6 @@
   "command.mekanism.radiation.clear.player": "已清除玩家的輻射: %s.",
   "command.mekanism.radiation.get": "目前輻射在(%s)位置%s: %s",
   "command.mekanism.radiation.remove_all": "已移除所有輻射源.",
-  "command.mekanism.retrogen.chunk_queued": "Queued chunk (%s) in %s for retrogen.",
   "command.mekanism.testrules": "啟用死後保留物品, 並且禁用怪物生成, 日夜交替, 天氣變化和生物改變方塊!",
   "command.mekanism.tp": "傳送至 (%s) - 已將最後位置儲存至堆棧.",
   "command.mekanism.tpop": "返回至 (%s); 堆棧第 %s 個位置.",
