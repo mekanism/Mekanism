@@ -280,7 +280,7 @@
   "command.mekanism.error.retrogen.disabled": "重新生成(Retrogen) 已禁用, 請在配置中啟用它.",
   "command.mekanism.error.retrogen.failure": "無法對任何區塊進行排列以重新生成.",
   "command.mekanism.error.tpop.empty": "堆棧上沒有位置.",
-  "command.mekanism.radiation.add": "在(%2s)位置 %3s 的輻射增加%1s.",
+  "command.mekanism.radiation.add": "在(%2$s)位置 %3$s 的輻射增加%1$s.",
   "command.mekanism.radiation.clear": "已清除玩家的輻射.",
   "command.mekanism.radiation.clear.player": "已清除玩家的輻射: %s.",
   "command.mekanism.radiation.get": "目前輻射在(%s)位置%s: %s",
