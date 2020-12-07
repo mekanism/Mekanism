@@ -253,7 +253,10 @@ public class RenderTickHandler {
                             if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem)) {
                                 Pos3D flameVec;
                                 if (player == p && minecraft.gameSettings.getPointOfView().func_243192_a()) {
-                                    flameVec = new Pos3D(1, 1, 1).multiply(p.getLook(1)).rotateYaw(5).translate(0, p.getEyeHeight() - 0.1, 0);
+                                    flameVec = new Pos3D(1, 1, 1)
+                                          .multiply(p.getLook(event.renderTickTime))
+                                          .rotateYaw(15)
+                                          .translate(0, p.getEyeHeight() - 0.1, 0);
                                 } else {
                                     double flameXCoord = -0.2;
                                     double flameYCoord = 1;
