@@ -182,7 +182,7 @@
   "turbine.mekanismgenerators.invalid_vent_below_complex": "Nie można utworzyć, wykryto Wyciąg turbiny poniżej warstwy Zaworu ciśnieniowego. Wyciągi muszą znajdować się powyżej lub na tej samej wysokości co warstwa Zaworów ciśnieniowych.",
   "turbine.mekanismgenerators.production_amount": "Produkcja: %s",
   "turbine.mekanismgenerators.stats": "Statystyki turbiny",
-  "turbine.mekanismgenerators.stats.blades": "Śmigła: %s %s",
+  "turbine.mekanismgenerators.stats.blades": "Łopaty: %s %s",
   "turbine.mekanismgenerators.stats.coils": "Cewki: %s %s",
   "turbine.mekanismgenerators.stats.dispersers": "Zawory: %s %s",
   "turbine.mekanismgenerators.stats.limiting": "(Ograniczenie)",
