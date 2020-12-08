@@ -14,7 +14,9 @@ import mekanism.common.capabilities.chemical.StackedWasteBarrel;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
@@ -31,7 +33,6 @@ import net.minecraft.world.World;
 public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism implements IConfigurable {
 
     private static final float TOLERANCE = 0.05F;
-    private static final int MAX_PROCESS_TICKS = 1_200;
 
     private long lastProcessTick;
     private StackedWasteBarrel gasTank;
@@ -55,11 +56,13 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (world.getGameTime() > lastProcessTick) {
-            //If we are not on the same tick do stuff, otherwise ignore it (anti tick accellerator protection)
+            //If we are not on the same tick do stuff, otherwise ignore it (anti tick accelerator protection)
             lastProcessTick = world.getGameTime();
-            if (++processTicks >= MAX_PROCESS_TICKS) {
+            if (MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get() > 0 && !gasTank.isEmpty() &&
+                !gasTank.getType().isIn(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST) &&
+                ++processTicks >= MekanismConfig.general.radioactiveWasteBarrelProcessTicks.get()) {
                 processTicks = 0;
-                gasTank.shrinkStack(1, Action.EXECUTE);
+                gasTank.shrinkStack(MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get(), Action.EXECUTE);
             }
             if (getActive()) {
                 ChemicalUtil.emit(EnumSet.of(Direction.DOWN), gasTank, this);
