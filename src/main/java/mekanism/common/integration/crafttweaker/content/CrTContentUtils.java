@@ -89,7 +89,7 @@ public class CrTContentUtils {
         //We register and load our content scripts here in the first registry event of ours for our types of content
         // to make sure that the new registry events have fired and that the registries exist and the bracket handler
         // validators won't choke
-        CraftTweakerAPI.loadScripts(new ScriptLoadingOptions().setLoaderName(Mekanism.MODID + "content").execute().firstRun());
+        CraftTweakerAPI.loadScripts(new ScriptLoadingOptions().setLoaderName(Mekanism.MODID + "content").execute());
         if (queuedGases != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
             //Copy the reference and then invalidate the other reference so that we properly don't allow more registration to
             // happen once we start registering it
