@@ -122,8 +122,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    protected RelativeSide getEnergySide() {
-        return RelativeSide.BOTTOM;
+    protected RelativeSide[] getEnergySides() {
+        return new RelativeSide[]{RelativeSide.BOTTOM};
     }
 
     protected FloatingLong getConfiguredMax() {

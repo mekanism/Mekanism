@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile;
 
 import java.util.EnumSet;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
@@ -12,6 +13,7 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.util.Direction;
 
 public abstract class TileEntityGenerator extends TileEntityMekanism {
 
@@ -29,22 +31,28 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
         output = out;
     }
 
-    protected RelativeSide getEnergySide() {
-        return RelativeSide.FRONT;
+    protected RelativeSide[] getEnergySides() {
+        return new RelativeSide[]{RelativeSide.FRONT};
     }
 
     @Nonnull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers() {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
-        builder.addContainer(energyContainer = BasicEnergyContainer.output(MachineEnergyContainer.validateBlock(this).getStorage(), this), getEnergySide());
+        builder.addContainer(energyContainer = BasicEnergyContainer.output(MachineEnergyContainer.validateBlock(this).getStorage(), this), getEnergySides());
         return builder.build();
     }
 
     @Override
     protected void onUpdateServer() {
         if (MekanismUtils.canFunction(this)) {
-            CableUtils.emit(EnumSet.of(getEnergySide().getDirection(getDirection())), energyContainer, this, getMaxOutput());
+            //TODO: Cache the directions?
+            Set<Direction> emitDirections = EnumSet.noneOf(Direction.class);
+            Direction direction = getDirection();
+            for (RelativeSide energySide : getEnergySides()) {
+                emitDirections.add(energySide.getDirection(direction));
+            }
+            CableUtils.emit(emitDirections, energyContainer, this, getMaxOutput());
         }
     }
 

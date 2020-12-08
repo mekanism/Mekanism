@@ -23,8 +23,8 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    protected RelativeSide getEnergySide() {
-        return RelativeSide.FRONT;
+    protected RelativeSide[] getEnergySides() {
+        return new RelativeSide[]{RelativeSide.FRONT, RelativeSide.BOTTOM};
     }
 
     @Override

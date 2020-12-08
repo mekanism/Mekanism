@@ -2,6 +2,7 @@ package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.RelativeSide;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -41,6 +42,11 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), this, 143, 35));
         return builder.build();
+    }
+
+    @Override
+    protected RelativeSide[] getEnergySides() {
+        return new RelativeSide[]{RelativeSide.FRONT, RelativeSide.BOTTOM};
     }
 
     @Override
