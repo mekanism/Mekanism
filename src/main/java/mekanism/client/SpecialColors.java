@@ -35,6 +35,7 @@ public class SpecialColors {
     public static final ColorRegistryObject TAB_CHEMICAL_WASHER = GUI_OBJECTS.register();
     public static final ColorRegistryObject TAB_MULTIBLOCK_MAIN = GUI_OBJECTS.register();
     public static final ColorRegistryObject TAB_MULTIBLOCK_STATS = GUI_OBJECTS.register();
+    public static final ColorRegistryObject TAB_CRAFTING_WINDOW = GUI_OBJECTS.register();
 
     public static final ColorRegistryObject TEXT_TITLE = GUI_TEXT.register();
     public static final ColorRegistryObject TEXT_HEADING = GUI_TEXT.register();

@@ -113,8 +113,12 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     public void setListenerTab(Supplier<? extends GuiElement> elementSupplier) {
-        closeListener = () -> elementSupplier.get().active = true;
-        reattachListener = () -> elementSupplier.get().active = false;
+        setTabListeners(() -> elementSupplier.get().active = true, () -> elementSupplier.get().active = false);
+    }
+
+    public void setTabListeners(Runnable closeListener, Runnable reattachListener) {
+        this.closeListener = closeListener;
+        this.reattachListener = reattachListener;
     }
 
     @Override

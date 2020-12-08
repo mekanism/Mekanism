@@ -22,10 +22,40 @@ public abstract class GuiWindowCreatorTab<ELEMENT extends GuiWindowCreatorTab<EL
     @Override
     public void onClick(double mouseX, double mouseY) {
         GuiWindow window = createWindow();
-        window.setListenerTab(elementSupplier);
-        active = false;
+        window.setTabListeners(getCloseListener(), getReAttachListener());
+        disableTab();
         guiObj.addWindow(window);
     }
 
-    public abstract GuiWindow createWindow();
+    @Nonnull
+    protected final Supplier<ELEMENT> getElementSupplier() {
+        return elementSupplier;
+    }
+
+    public void adoptWindows(int prevLeft, int prevTop, GuiWindow...windows) {
+        int left = guiObj.getLeft();
+        int top = guiObj.getTop();
+        for (GuiWindow window : windows) {
+            Runnable reattachListener = getReAttachListener();
+            //TODO: Fix the windows after being adopted not being able to be closed??
+            window.setTabListeners(getCloseListener(), reattachListener);
+            //TODO: Fix positioning
+            //reattachListener.run();
+            window.resize(prevLeft, prevTop, left, top);
+        }
+    }
+
+    protected void disableTab() {
+        active = false;
+    }
+
+    protected Runnable getCloseListener() {
+        return () -> elementSupplier.get().active = true;
+    }
+
+    protected Runnable getReAttachListener() {
+        return () -> elementSupplier.get().disableTab();
+    }
+
+    protected abstract GuiWindow createWindow();
 }

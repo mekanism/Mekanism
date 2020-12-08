@@ -3,6 +3,7 @@ package mekanism.client.gui.qio;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -11,6 +12,7 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiDigitalIconToggle;
 import mekanism.client.gui.element.GuiDropdown;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.gui.element.custom.GuiResizeControls;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeType;
 import mekanism.client.gui.element.scroll.GuiSlotScroll;
@@ -160,6 +162,11 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         getMinecraft().displayGuiScreen(s);
         s.searchField.setText(searchField.getText());
         c.updateSearch(searchField.getText());
+        //TODO: Do the window transferring in a more expandable way
+        s.transferWindows(getGuiLeft(), getGuiTop(), windows);
+    }
+
+    protected void transferWindows(int prevLeft, int prevTop, Collection<GuiWindow> windows) {
     }
 
     public abstract GuiQIOItemViewer<CONTAINER> recreate(CONTAINER container);

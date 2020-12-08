@@ -1,7 +1,11 @@
 package mekanism.client.gui.qio;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.Collection;
 import javax.annotation.Nonnull;
+import mekanism.client.gui.element.GuiWindow;
+import mekanism.client.gui.element.custom.GuiCraftingWindow;
+import mekanism.client.gui.element.tab.GuiCraftingWindowTab;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
@@ -14,6 +18,7 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
 
     private final TileEntityQIODashboard tile;
+    private GuiCraftingWindowTab craftingWindowTab;
 
     public GuiQIODashboard(QIODashboardContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -25,11 +30,25 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
     public void init() {
         super.init();
         addButton(new GuiQIOFrequencyTab(this, tile));
+        //TODO: Figure out how we want to implement this into the portable QIO dashboard
+        addButton(craftingWindowTab = new GuiCraftingWindowTab(this, tile, () -> craftingWindowTab));
     }
 
     @Override
     public GuiQIOItemViewer<QIODashboardContainer> recreate(QIODashboardContainer container) {
         return new GuiQIODashboard(container, playerInventory, title);
+    }
+
+    @Override
+    protected void transferWindows(int prevLeft, int prevTop, Collection<GuiWindow> windows) {
+        for (GuiWindow window : windows) {
+            //Transition all current popup windows over to the new screen.
+            addWindow(window);
+            //TODO: Figure out a cleaner way of doing this that is more generic
+            if (window instanceof GuiCraftingWindow) {
+                craftingWindowTab.adoptWindows(prevLeft, prevTop, window);
+            }
+        }
     }
 
     @Override

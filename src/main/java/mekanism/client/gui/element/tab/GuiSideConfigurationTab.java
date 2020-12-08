@@ -30,7 +30,7 @@ public class GuiSideConfigurationTab extends GuiWindowCreatorTab<GuiSideConfigur
     }
 
     @Override
-    public GuiWindow createWindow() {
+    protected GuiWindow createWindow() {
         return new GuiSideConfiguration(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, dataSource);
     }
 }
