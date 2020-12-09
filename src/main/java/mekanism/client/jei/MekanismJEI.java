@@ -341,6 +341,8 @@ public class MekanismJEI implements IModPlugin {
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
         registry.addRecipeTransferHandler(CraftingRobitContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
+        //TODO - 10.1: Validate we are properly allowing for searching all slots in the formulaic assemblicator and the player's inventory
         registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 19, 9, 35, 36);
+        registry.addRecipeTransferHandler(new QIOCraftingTransferHandler(registry.getTransferHelper()), VanillaRecipeCategoryUid.CRAFTING);
     }
 }

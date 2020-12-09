@@ -1,4 +1,4 @@
-package mekanism.client.gui.element.tab;
+package mekanism.client.gui.element.tab.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Supplier;
@@ -6,16 +6,17 @@ import javax.annotation.Nonnull;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiWindow;
-import mekanism.client.gui.element.custom.GuiSideConfiguration;
+import mekanism.client.gui.element.window.GuiSideConfiguration;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
-public class GuiSideConfigurationTab extends GuiWindowCreatorTab<GuiSideConfigurationTab> {
+public class GuiSideConfigurationTab<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindowCreatorTab<TILE, GuiSideConfigurationTab<TILE>> {
 
-    public GuiSideConfigurationTab(IGuiWrapper gui, TileEntityMekanism tile, Supplier<GuiSideConfigurationTab> elementSupplier) {
+    public GuiSideConfigurationTab(IGuiWrapper gui, TILE tile, Supplier<GuiSideConfigurationTab<TILE>> elementSupplier) {
         super(MekanismUtils.getResource(ResourceType.GUI, "configuration.png"), gui, tile, -26, 6, 26, 18, true, elementSupplier);
     }
 
@@ -31,6 +32,6 @@ public class GuiSideConfigurationTab extends GuiWindowCreatorTab<GuiSideConfigur
 
     @Override
     protected GuiWindow createWindow() {
-        return new GuiSideConfiguration(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, dataSource);
+        return new GuiSideConfiguration<>(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, dataSource);
     }
 }

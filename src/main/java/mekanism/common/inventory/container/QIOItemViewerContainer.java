@@ -63,8 +63,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private List<IScrollableSlot> searchList;
 
     private Map<String, List<IScrollableSlot>> searchCache = new Object2ObjectOpenHashMap<>();
-
     private String searchQuery = "";
+
+    /**
+     * Keeps track of which crafting grid the player has open. Only used on the client for use in JEI, so doesn't need to keep track of other players.
+     */
+    private int selectedCraftingGrid = -1;
 
     private int doubleClickTransferTicks = 0;
     private int lastSlot = -1;
@@ -97,6 +101,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         container.searchList = searchList;
         container.searchCache = searchCache;
         container.searchQuery = searchQuery;
+        container.selectedCraftingGrid = selectedCraftingGrid;
     }
 
     @Override
@@ -177,12 +182,10 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 if (frequency != null) {
                     if (!slotStack.isEmpty()) {
                         ItemStack ret = frequency.addItem(slotStack);
-                        if (slotStack.getCount() != ret.getCount()) {
-                            setTransferTracker(slotStack, slotID);
-                        } else {
+                        if (slotStack.getCount() == ret.getCount()) {
                             return ItemStack.EMPTY;
                         }
-
+                        setTransferTracker(slotStack, slotID);
                         return updateSlot(player, currentSlot, ret);
                     } else {
                         if (slotID == lastSlot && !lastStack.isEmpty()) {
@@ -296,6 +299,14 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public int getTotalTypes() {
         return itemList != null ? itemList.size() : 0;
+    }
+
+    public int getSelectedCraftingGrid() {
+        return selectedCraftingGrid;
+    }
+
+    public void setSelectedCraftingGrid(int selectedCraftingGrid) {
+        this.selectedCraftingGrid = selectedCraftingGrid;
     }
 
     public ItemStack insertIntoPlayerInventory(ItemStack stack) {

@@ -6,7 +6,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
-import mekanism.client.gui.element.custom.GuiSideConfiguration;
+import mekanism.client.gui.element.window.GuiSideConfiguration;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.MekanismUtils;
@@ -16,9 +16,9 @@ import net.minecraft.util.ResourceLocation;
 public class GuiConfigTypeTab extends GuiInsetElement<Void> {
 
     private final TransmissionType transmission;
-    private final GuiSideConfiguration config;
+    private final GuiSideConfiguration<?> config;
 
-    public GuiConfigTypeTab(IGuiWrapper gui, TransmissionType type, int x, int y, GuiSideConfiguration config, boolean left) {
+    public GuiConfigTypeTab(IGuiWrapper gui, TransmissionType type, int x, int y, GuiSideConfiguration<?> config, boolean left) {
         super(getResource(type), gui, null, x, y, 26, 18, left);
         this.config = config;
         transmission = type;

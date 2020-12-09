@@ -1,4 +1,4 @@
-package mekanism.client.gui.element.custom;
+package mekanism.client.gui.element.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.RelativeSide;
@@ -27,34 +27,35 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiTransporterConfig extends GuiWindow {
+public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindow {
 
-    private final TileEntityMekanism tile;
+    private final TILE tile;
 
-    public GuiTransporterConfig(IGuiWrapper gui, int x, int y, TileEntityMekanism tile) {
+    public GuiTransporterConfig(IGuiWrapper gui, int x, int y, TILE tile) {
         super(gui, x, y, 156, 95);
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
         addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
         addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 136, gui.getTop() + relativeY + 6, 14, getButtonLocation("strict_input"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos())), getOnHover(MekanismLang.STRICT_INPUT)));
-        addChild(new ColorButton(gui, gui.getLeft() + relativeX + 112, gui.getTop() + relativeY + 49, 16, 16, () -> getTile().getEjector().getOutputColor(),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos(), Screen.hasShiftDown() ? 2 : 0)),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos(), 1))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getPos())), getOnHover(MekanismLang.STRICT_INPUT)));
+        addChild(new ColorButton(gui, gui.getLeft() + relativeX + 112, gui.getTop() + relativeY + 49, 16, 16,
+              () -> this.tile.getEjector().getOutputColor(),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getPos(), Screen.hasShiftDown() ? 2 : 0)),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getPos(), 1))));
         addSideDataButton(RelativeSide.BOTTOM, 44, 64);
         addSideDataButton(RelativeSide.TOP, 44, 34);
         addSideDataButton(RelativeSide.FRONT, 44, 49);
         addSideDataButton(RelativeSide.BACK, 29, 64);
         addSideDataButton(RelativeSide.LEFT, 29, 49);
         addSideDataButton(RelativeSide.RIGHT, 59, 49);
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, tile, 0));
-        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).startTracking(0, ((ISideConfiguration) tile).getEjector());
+        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, this.tile, 0));
+        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).startTracking(0, this.tile.getEjector());
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
         addChild(new SideDataButton(guiObj, guiObj.getLeft() + relativeX + xPos, guiObj.getTop() + relativeY + yPos, side,
-              () -> getTile().getConfig().getDataType(TransmissionType.ITEM, side), () -> getTile().getEjector().getInputColor(side), tile, () -> null,
+              () -> tile.getConfig().getDataType(TransmissionType.ITEM, side), () -> tile.getEjector().getInputColor(side), tile, () -> null,
               ConfigurationPacket.INPUT_COLOR, getOnHover(side)));
     }
 
@@ -63,10 +64,6 @@ public class GuiTransporterConfig extends GuiWindow {
         super.close();
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, 0));
         ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).stopTracking(0);
-    }
-
-    public <TILE extends TileEntityMekanism & ISideConfiguration> TILE getTile() {
-        return (TILE) tile;
     }
 
     private IHoverable getOnHover(RelativeSide side) {
@@ -87,7 +84,8 @@ public class GuiTransporterConfig extends GuiWindow {
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
-        drawTextScaledBound(matrix, MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(getTile().getEjector().hasStrictInput())), relativeX + 43, relativeY + 17, screenTextColor(), 70);
+        drawTextScaledBound(matrix, MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())), relativeX + 43, relativeY + 17,
+              screenTextColor(), 70);
         drawString(matrix, MekanismLang.INPUT.translate(), relativeX + 38, relativeY + 81, subheadingTextColor());
         drawString(matrix, MekanismLang.OUTPUT.translate(), relativeX + 104, relativeY + 68, subheadingTextColor());
     }

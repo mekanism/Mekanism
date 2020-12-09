@@ -1,21 +1,20 @@
-package mekanism.client.gui.element.tab;
+package mekanism.client.gui.element.tab.window;
 
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.element.GuiWindow;
-import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class GuiWindowCreatorTab<ELEMENT extends GuiWindowCreatorTab<ELEMENT>> extends GuiInsetElement<TileEntityMekanism> {
+public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindowCreatorTab<DATA_SOURCE, ELEMENT>> extends GuiInsetElement<DATA_SOURCE> {
 
     @Nonnull
     private final Supplier<ELEMENT> elementSupplier;
 
-    public GuiWindowCreatorTab(ResourceLocation overlay, IGuiWrapper gui, TileEntityMekanism tile, int x, int y, int height, int innerSize, boolean left,
+    public GuiWindowCreatorTab(ResourceLocation overlay, IGuiWrapper gui, DATA_SOURCE dataSource, int x, int y, int height, int innerSize, boolean left,
           @Nonnull Supplier<ELEMENT> elementSupplier) {
-        super(overlay, gui, tile, x, y, height, innerSize, left);
+        super(overlay, gui, dataSource, x, y, height, innerSize, left);
         this.elementSupplier = elementSupplier;
     }
 

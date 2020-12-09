@@ -1,23 +1,26 @@
-package mekanism.client.gui.element.custom;
+package mekanism.client.gui.element.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiRightArrow;
 import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
-import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.ISideConfiguration;
 
-public class GuiCraftingWindow extends GuiWindow {
+public class GuiCraftingWindow<DATA_SOURCE> extends GuiWindow {
 
-    private final TileEntityMekanism tile;
+    private final DATA_SOURCE dataSource;
+    //TODO: Implement calculating what this is
+    private int index;
 
-    public GuiCraftingWindow(IGuiWrapper gui, int x, int y, TileEntityMekanism tile) {
+    public GuiCraftingWindow(IGuiWrapper gui, int x, int y, DATA_SOURCE dataSource) {
         super(gui, x, y, 118, 80);
-        this.tile = tile;
+        this.dataSource = dataSource;
         interactionStrategy = InteractionStrategy.ALL;
+        //TODO: Have this stuff sync, the container will need to always be syncing the slots just in case
+        // the order of which one is open changes or stuff
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {
                 addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 8 + column * 18, relativeY + 18 + row * 18));
@@ -25,27 +28,19 @@ public class GuiCraftingWindow extends GuiWindow {
         }
         addChild(new GuiRightArrow(gui, relativeX + 66, relativeY + 38).jeiCrafting());
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 92, relativeY + 36));
-        //TODO: Implement something for this
-        //Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, 1));
-        //((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).startTracking(1, ((ISideConfiguration) tile).getConfig());
     }
 
     @Override
     public void close() {
         super.close();
-        //TODO: Implement something for this
-        //Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, 1));
-        //((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).stopTracking(1);
-    }
-
-    public <TILE extends TileEntityMekanism & ISideConfiguration> TILE getTile() {
-        return (TILE) tile;
     }
 
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         //TODO: Should this have its own translation key
-        drawTitleText(matrix, MekanismLang.CRAFTING.translate(), 5);
+        //drawTitleText(matrix, MekanismLang.CRAFTING.translate(), 5);
+        //Display the index for debug purposes
+        drawTitleText(matrix, TextComponentUtil.build(MekanismLang.CRAFTING, " ", index), 5);
     }
 }

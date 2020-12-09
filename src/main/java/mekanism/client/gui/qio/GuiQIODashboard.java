@@ -4,8 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.element.GuiWindow;
-import mekanism.client.gui.element.custom.GuiCraftingWindow;
-import mekanism.client.gui.element.tab.GuiCraftingWindowTab;
+import mekanism.client.gui.element.window.GuiCraftingWindow;
+import mekanism.client.gui.element.tab.window.GuiCraftingWindowTab;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
@@ -18,7 +18,7 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
 
     private final TileEntityQIODashboard tile;
-    private GuiCraftingWindowTab craftingWindowTab;
+    private GuiCraftingWindowTab<TileEntityQIODashboard> craftingWindowTab;
 
     public GuiQIODashboard(QIODashboardContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -30,8 +30,9 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
     public void init() {
         super.init();
         addButton(new GuiQIOFrequencyTab(this, tile));
-        //TODO: Figure out how we want to implement this into the portable QIO dashboard
-        addButton(craftingWindowTab = new GuiCraftingWindowTab(this, tile, () -> craftingWindowTab));
+        //TODO: Figure out how we want to implement this into the portable QIO dashboard, as it may still need a decent
+        // bit of refactoring to properly allow for updating the selected crafting grid window's index in the container
+        addButton(craftingWindowTab = new GuiCraftingWindowTab<>(this, tile, () -> craftingWindowTab));
     }
 
     @Override

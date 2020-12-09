@@ -1,4 +1,4 @@
-package mekanism.client.gui.element.custom;
+package mekanism.client.gui.element.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
@@ -26,13 +26,13 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 
-public class GuiSideConfiguration extends GuiWindow {
+public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindow {
 
     private final List<GuiConfigTypeTab> configTabs = new ArrayList<>();
-    private final TileEntityMekanism tile;
+    private final TILE tile;
     private TransmissionType currentType;
 
-    public GuiSideConfiguration(IGuiWrapper gui, int x, int y, TileEntityMekanism tile) {
+    public GuiSideConfiguration(IGuiWrapper gui, int x, int y, TILE tile) {
         super(gui, x, y, 156, 115);
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
@@ -40,7 +40,7 @@ public class GuiSideConfiguration extends GuiWindow {
         //TODO: Try to make the GUI look a bit better as it still seems a bit off with the scales and such
         // Maybe we want to eventually add some sort of "in world preview" type thing
         addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 25, 74, 12));
-        List<TransmissionType> transmissions = getTile().getConfig().getTransmissions();
+        List<TransmissionType> transmissions = this.tile.getConfig().getTransmissions();
         for (int i = 0; i < transmissions.size(); i++) {
             GuiConfigTypeTab tab = new GuiConfigTypeTab(gui, transmissions.get(i), relativeX + (i < 4 ? -26 : width), relativeY + (2 + 28 * (i % 4)), this, i < 4);
             addChild(tab);
@@ -48,7 +48,7 @@ public class GuiSideConfiguration extends GuiWindow {
         }
         updateTabs();
         addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 136, gui.getTop() + relativeY + 6, 14, getButtonLocation("auto_eject"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(tile.getPos(), currentType)), getOnHover(MekanismLang.AUTO_EJECT)));
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getPos(), currentType)), getOnHover(MekanismLang.AUTO_EJECT)));
         addSideDataButton(RelativeSide.BOTTOM, 71, 74);
         addSideDataButton(RelativeSide.TOP, 71, 44);
         addSideDataButton(RelativeSide.FRONT, 71, 59);
@@ -56,13 +56,13 @@ public class GuiSideConfiguration extends GuiWindow {
         addSideDataButton(RelativeSide.LEFT, 56, 59);
         addSideDataButton(RelativeSide.RIGHT, 86, 59);
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, 1));
-        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).startTracking(1, ((ISideConfiguration) tile).getConfig());
+        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).startTracking(1, this.tile.getConfig());
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
         addChild(new SideDataButton(guiObj, guiObj.getLeft() + relativeX + xPos, guiObj.getTop() + relativeY + yPos, side,
-              () -> getTile().getConfig().getDataType(currentType, side), () -> {
-            DataType dataType = getTile().getConfig().getDataType(currentType, side);
+              () -> tile.getConfig().getDataType(currentType, side), () -> {
+            DataType dataType = tile.getConfig().getDataType(currentType, side);
             return dataType == null ? EnumColor.GRAY : dataType.getColor();
         }, tile, () -> currentType, ConfigurationPacket.SIDE_DATA, getOnHover(side)));
     }
@@ -72,10 +72,6 @@ public class GuiSideConfiguration extends GuiWindow {
         super.close();
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, 1));
         ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).stopTracking(1);
-    }
-
-    public <TILE extends TileEntityMekanism & ISideConfiguration> TILE getTile() {
-        return (TILE) tile;
     }
 
     private IHoverable getOnHover(RelativeSide side) {
@@ -91,7 +87,7 @@ public class GuiSideConfiguration extends GuiWindow {
     }
 
     private TransmissionType getTopTransmission() {
-        return getTile().getConfig().getTransmissions().get(0);
+        return tile.getConfig().getTransmissions().get(0);
     }
 
     public void setCurrentType(TransmissionType type) {
@@ -108,7 +104,7 @@ public class GuiSideConfiguration extends GuiWindow {
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.CONFIG_TYPE.translate(currentType), 5);
-        ConfigInfo config = getTile().getConfig().getConfig(currentType);
+        ConfigInfo config = tile.getConfig().getConfig(currentType);
         if (config == null || !config.canEject()) {
             drawString(matrix, MekanismLang.NO_EJECT.translate(), relativeX + 43, relativeY + 27, screenTextColor());
         } else {

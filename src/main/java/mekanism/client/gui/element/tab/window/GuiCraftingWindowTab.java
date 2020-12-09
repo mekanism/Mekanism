@@ -1,4 +1,4 @@
-package mekanism.client.gui.element.tab;
+package mekanism.client.gui.element.tab.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.Supplier;
@@ -6,20 +6,19 @@ import javax.annotation.Nonnull;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiWindow;
-import mekanism.client.gui.element.custom.GuiCraftingWindow;
+import mekanism.client.gui.element.window.GuiCraftingWindow;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
-public class GuiCraftingWindowTab extends GuiWindowCreatorTab<GuiCraftingWindowTab> {
+public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_SOURCE, GuiCraftingWindowTab<DATA_SOURCE>> {
 
     private static final int MAX_WINDOWS = 3;
     private int currentWindows;
 
-    public GuiCraftingWindowTab(IGuiWrapper gui, TileEntityMekanism tile, Supplier<GuiCraftingWindowTab> elementSupplier) {
-        super(MekanismUtils.getResource(ResourceType.GUI_BUTTON, "crafting.png"), gui, tile, -26, 34, 26, 18, true, elementSupplier);
+    public GuiCraftingWindowTab(IGuiWrapper gui, DATA_SOURCE dataSource, Supplier<GuiCraftingWindowTab<DATA_SOURCE>> elementSupplier) {
+        super(MekanismUtils.getResource(ResourceType.GUI_BUTTON, "crafting.png"), gui, dataSource, -26, 34, 26, 18, true, elementSupplier);
     }
 
     @Override
@@ -37,7 +36,7 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<GuiCraftingWindowT
     @Override
     protected Runnable getCloseListener() {
         return () -> {
-            GuiCraftingWindowTab tab = getElementSupplier().get();
+            GuiCraftingWindowTab<DATA_SOURCE> tab = getElementSupplier().get();
             tab.currentWindows--;
             if (tab.currentWindows < MAX_WINDOWS) {
                 //If we have less than the max number of windows re-enable the tab
@@ -57,6 +56,6 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<GuiCraftingWindowT
 
     @Override
     protected GuiWindow createWindow() {
-        return new GuiCraftingWindow(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, dataSource);
+        return new GuiCraftingWindow<>(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, dataSource);
     }
 }
