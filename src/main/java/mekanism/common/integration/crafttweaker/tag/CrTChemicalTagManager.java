@@ -37,7 +37,7 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>,
     public void addElements(MCTag<CRT_CHEMICAL> to, List<CRT_CHEMICAL> toAdd) {
         ITag<CHEMICAL> internal = getInternal(to);
         List<CHEMICAL> itemsFromDefinitions = getChemicals(toAdd);
-        if(internal == null) {
+        if (internal == null) {
             Tag<CHEMICAL> tagFromContents = Tag.getTagFromContents(Sets.newHashSet(itemsFromDefinitions));
             CraftTweakerAPI.apply(new ActionTagCreate<>(getTagCollection(), tagFromContents, to));
         } else {

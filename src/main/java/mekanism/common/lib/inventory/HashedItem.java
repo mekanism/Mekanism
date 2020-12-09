@@ -22,8 +22,8 @@ public class HashedItem {
     /**
      * Uses the passed in stack as the raw stack, instead of making a copy of it with a size of one.
      *
-     * @apiNote When using this, you should be very careful to not accidentally modify the backing stack, this is mainly for use where we want to use an {@link
-     * ItemStack} as a key in a map that is local to a single method, and don't want the overhead of copying the stack when it is not needed.
+     * @apiNote When using this, you should be very careful to not accidentally modify the backing stack, this is mainly for use where we want to use an {@link ItemStack}
+     * as a key in a map that is local to a single method, and don't want the overhead of copying the stack when it is not needed.
      */
     public static HashedItem raw(@Nonnull ItemStack stack) {
         return new HashedItem(stack);

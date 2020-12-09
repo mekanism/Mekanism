@@ -5,7 +5,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiColorPickerSlot;
 import mekanism.client.gui.element.GuiScreenSwitch;
 import mekanism.client.gui.element.GuiSlider;
-import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement.HUDColor;

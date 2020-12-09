@@ -39,8 +39,6 @@ public class QIOCraftingTransferHandler implements IRecipeTransferHandler<QIOIte
 
         //TODO: Validate recipe -> missing items -> createUserErrorForSlots "jei.tooltip.error.recipe.transfer.missing")
 
-
-
         if (doTransfer) {
             //TODO: Send packet to server with information of what to transfer and where
         }

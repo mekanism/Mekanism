@@ -31,7 +31,7 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindow
         return elementSupplier;
     }
 
-    public void adoptWindows(int prevLeft, int prevTop, GuiWindow...windows) {
+    public void adoptWindows(int prevLeft, int prevTop, GuiWindow... windows) {
         int left = guiObj.getLeft();
         int top = guiObj.getTop();
         for (GuiWindow window : windows) {
