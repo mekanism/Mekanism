@@ -3,7 +3,7 @@ package mekanism.client.gui.qio;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collection;
 import javax.annotation.Nonnull;
-import mekanism.client.gui.element.GuiWindow;
+import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.gui.element.window.GuiCraftingWindow;
 import mekanism.client.gui.element.tab.window.GuiCraftingWindowTab;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;

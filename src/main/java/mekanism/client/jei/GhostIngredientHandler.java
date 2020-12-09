@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.element.GuiWindow;
+import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
 import mekanism.common.lib.LRU;

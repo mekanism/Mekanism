@@ -12,7 +12,7 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiDigitalIconToggle;
 import mekanism.client.gui.element.GuiDropdown;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.GuiWindow;
+import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.gui.element.custom.GuiResizeControls;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeType;
 import mekanism.client.gui.element.scroll.GuiSlotScroll;

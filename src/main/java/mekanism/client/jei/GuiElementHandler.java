@@ -7,7 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiRelativeElement;
-import mekanism.client.gui.element.GuiWindow;
+import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;

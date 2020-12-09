@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.window.GuiColorWindow;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.text.TextUtils;

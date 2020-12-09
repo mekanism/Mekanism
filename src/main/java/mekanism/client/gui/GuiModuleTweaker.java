@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.TranslationButton;
-import mekanism.client.gui.element.custom.GuiMekaSuitHelmetOptions;
+import mekanism.client.gui.element.window.GuiMekaSuitHelmetOptions;
 import mekanism.client.gui.element.custom.GuiModuleScreen;
 import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;

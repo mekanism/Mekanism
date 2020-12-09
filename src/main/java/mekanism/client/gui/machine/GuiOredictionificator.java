@@ -8,7 +8,7 @@ import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.FilterButton;
 import mekanism.client.gui.element.button.TranslationButton;
-import mekanism.client.gui.element.filter.GuiOredictionificatorFilter;
+import mekanism.client.gui.element.window.filter.GuiOredictionificatorFilter;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.scroll.GuiScrollBar;

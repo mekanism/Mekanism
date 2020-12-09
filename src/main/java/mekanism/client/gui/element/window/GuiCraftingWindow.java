@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiRightArrow;
-import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;

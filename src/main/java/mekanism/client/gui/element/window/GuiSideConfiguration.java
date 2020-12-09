@@ -8,7 +8,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.GuiWindow;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.SideDataButton;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;

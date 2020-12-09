@@ -13,6 +13,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
