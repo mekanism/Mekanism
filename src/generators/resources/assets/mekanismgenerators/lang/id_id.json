@@ -5,6 +5,7 @@
   "description.mekanismgenerators.reactor.logic.disabled": "Will not emit a redstone signal",
   "description.mekanismgenerators.reactor.logic.ready": "Reactor has reached the required heat level to ignite",
   "description.mekanismgenerators.reactor_glass": "Reinforced glass that can be used in the Fusion Reactor multiblock.",
+  "item.mekanismgenerators.solar_panel": "Panel Surya",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Suara Reaktor Nuklir",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Suara Reaktor fusi"
 }
