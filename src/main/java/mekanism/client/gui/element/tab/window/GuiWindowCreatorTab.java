@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.tab.window;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
@@ -35,11 +36,8 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindow
         int left = guiObj.getLeft();
         int top = guiObj.getTop();
         for (GuiWindow window : windows) {
-            Runnable reattachListener = getReAttachListener();
             //TODO: Fix the windows after being adopted not being able to be closed??
-            window.setTabListeners(getCloseListener(), reattachListener);
-            //TODO: Fix positioning
-            //reattachListener.run();
+            window.setTabListeners(getCloseListener(), getReAttachListener());
             window.resize(prevLeft, prevTop, left, top);
         }
     }
@@ -48,12 +46,12 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindow
         active = false;
     }
 
-    protected Runnable getCloseListener() {
-        return () -> elementSupplier.get().active = true;
+    protected Consumer<GuiWindow> getCloseListener() {
+        return window -> elementSupplier.get().active = true;
     }
 
-    protected Runnable getReAttachListener() {
-        return () -> elementSupplier.get().disableTab();
+    protected Consumer<GuiWindow> getReAttachListener() {
+        return window -> elementSupplier.get().disableTab();
     }
 
     protected abstract GuiWindow createWindow();

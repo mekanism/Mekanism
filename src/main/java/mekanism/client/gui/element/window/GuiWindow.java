@@ -2,6 +2,7 @@ package mekanism.client.gui.element.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
@@ -19,8 +20,8 @@ public class GuiWindow extends GuiTexturedElement {
 
     private static final Color OVERLAY_COLOR = Color.rgbai(60, 60, 60, 128);
 
-    private Runnable closeListener;
-    private Runnable reattachListener;
+    private Consumer<GuiWindow> closeListener;
+    private Consumer<GuiWindow> reattachListener;
 
     private boolean dragging = false;
     private double dragX, dragY;
@@ -35,6 +36,13 @@ public class GuiWindow extends GuiTexturedElement {
         if (!isFocusOverlay()) {
             addCloseButton();
         }
+    }
+
+    public void onFocusLost() {
+        //TODO: Validate onFocusLost gets called properly
+    }
+
+    public void onFocused() {
     }
 
     protected void addCloseButton() {
@@ -115,10 +123,10 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     public void setListenerTab(Supplier<? extends GuiElement> elementSupplier) {
-        setTabListeners(() -> elementSupplier.get().active = true, () -> elementSupplier.get().active = false);
+        setTabListeners(window -> elementSupplier.get().active = true, window -> elementSupplier.get().active = false);
     }
 
-    public void setTabListeners(Runnable closeListener, Runnable reattachListener) {
+    public void setTabListeners(Consumer<GuiWindow> closeListener, Consumer<GuiWindow> reattachListener) {
         this.closeListener = closeListener;
         this.reattachListener = reattachListener;
     }
@@ -127,7 +135,7 @@ public class GuiWindow extends GuiTexturedElement {
     public void resize(int prevLeft, int prevTop, int left, int top) {
         super.resize(prevLeft, prevTop, left, top);
         if (reattachListener != null) {
-            reattachListener.run();
+            reattachListener.accept(this);
         }
     }
 
@@ -146,7 +154,7 @@ public class GuiWindow extends GuiTexturedElement {
             ((GuiMekanism<?>) guiObj).setListener(null);
         }
         if (closeListener != null) {
-            closeListener.run();
+            closeListener.accept(this);
         }
     }
 

@@ -49,6 +49,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
+import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
@@ -59,6 +60,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -340,9 +342,10 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
+        IRecipeTransferHandlerHelper transferHelper = registry.getTransferHelper();
         registry.addRecipeTransferHandler(CraftingRobitContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
         //TODO - 10.1: Validate we are properly allowing for searching all slots in the formulaic assemblicator and the player's inventory
         registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 19, 9, 35, 36);
-        registry.addRecipeTransferHandler(new QIOCraftingTransferHandler(registry.getTransferHelper()), VanillaRecipeCategoryUid.CRAFTING);
+        registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, QIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
     }
 }

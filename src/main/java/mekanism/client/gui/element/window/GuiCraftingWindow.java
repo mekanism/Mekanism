@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.function.Consumer;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiRightArrow;
@@ -10,13 +11,15 @@ import mekanism.common.MekanismLang;
 
 public class GuiCraftingWindow<DATA_SOURCE> extends GuiWindow {
 
+    private final Consumer<GuiCraftingWindow<DATA_SOURCE>> onFocus;
     private final DATA_SOURCE dataSource;
-    //TODO: Implement calculating what this is
-    private int index;
+    private final int index;
 
-    public GuiCraftingWindow(IGuiWrapper gui, int x, int y, DATA_SOURCE dataSource) {
+    public GuiCraftingWindow(IGuiWrapper gui, int x, int y, DATA_SOURCE dataSource, Consumer<GuiCraftingWindow<DATA_SOURCE>> onFocus, int index) {
         super(gui, x, y, 118, 80);
         this.dataSource = dataSource;
+        this.onFocus = onFocus;
+        this.index = index;
         interactionStrategy = InteractionStrategy.ALL;
         //TODO: Have this stuff sync, the container will need to always be syncing the slots just in case
         // the order of which one is open changes or stuff
@@ -30,8 +33,13 @@ public class GuiCraftingWindow<DATA_SOURCE> extends GuiWindow {
     }
 
     @Override
-    public void close() {
-        super.close();
+    public void onFocused() {
+        super.onFocused();
+        onFocus.accept(this);
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     @Override

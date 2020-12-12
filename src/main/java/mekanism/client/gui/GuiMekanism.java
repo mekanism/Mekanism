@@ -242,7 +242,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             }
             // this check prevents us from moving the window to the top of the stack if the clicked window opened up an additional window
             if (top != focused) {
+                top.onFocusLost();
                 windows.moveUp(focused);
+                focused.onFocused();
             }
             return true;
         }
@@ -416,7 +418,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public void addWindow(GuiWindow window) {
+        GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
+        if (top != null) {
+            top.onFocusLost();
+        }
         windows.add(window);
+        window.onFocused();
     }
 
     @Override

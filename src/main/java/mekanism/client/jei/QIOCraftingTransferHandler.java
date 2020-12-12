@@ -8,22 +8,24 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 
-public class QIOCraftingTransferHandler implements IRecipeTransferHandler<QIOItemViewerContainer> {
+public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer> implements IRecipeTransferHandler<CONTAINER> {
 
     private final IRecipeTransferHandlerHelper handlerHelper;
+    private final Class<CONTAINER> containerClass;
 
-    public QIOCraftingTransferHandler(IRecipeTransferHandlerHelper handlerHelper) {
+    public QIOCraftingTransferHandler(IRecipeTransferHandlerHelper handlerHelper, Class<CONTAINER> containerClass) {
         this.handlerHelper = handlerHelper;
+        this.containerClass = containerClass;
     }
 
     @Override
-    public Class<QIOItemViewerContainer> getContainerClass() {
-        return QIOItemViewerContainer.class;
+    public Class<CONTAINER> getContainerClass() {
+        return containerClass;
     }
 
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(QIOItemViewerContainer container, Object recipe, IRecipeLayout recipeLayout, PlayerEntity player, boolean maxTransfer,
+    public IRecipeTransferError transferRecipe(CONTAINER container, Object recipe, IRecipeLayout recipeLayout, PlayerEntity player, boolean maxTransfer,
           boolean doTransfer) {
         if (container.getSelectedCraftingGrid() == -1) {
             //Note: While the java docs recommend to log a message to the console when returning an internal error,
