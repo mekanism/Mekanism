@@ -35,7 +35,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     public void init() {
         super.init();
         getMinecraft().keyboardListener.enableRepeatEvents(true);
-        addButton(itemNameField = new TextFieldWidget(font, guiLeft + 62, guiTop + 24, 103, 12, new StringTextComponent("")));
+        addButton(itemNameField = new TextFieldWidget(font, guiLeft + 62, guiTop + 24, 103, 12, StringTextComponent.EMPTY));
         itemNameField.setCanLoseFocus(false);
         itemNameField.changeFocus(true);
         itemNameField.setTextColor(-1);
@@ -48,10 +48,12 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
-        String s = itemNameField.getText();
-        super.resize(minecraft, scaledWidth, scaledHeight);
-        itemNameField.setText(s);
+    public void init(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        //Handle initial initialization when it will be null, as well as later initializations
+        // such as going back to the screen from JEI
+        String previousName = itemNameField == null ? "" : itemNameField.getText();
+        super.init(minecraft, scaledWidth, scaledHeight);
+        itemNameField.setText(previousName);
     }
 
     private void onTextUpdate(String newText) {

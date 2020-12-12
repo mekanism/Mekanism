@@ -121,12 +121,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
-        blockList.clear();
-    }
-
-    @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }

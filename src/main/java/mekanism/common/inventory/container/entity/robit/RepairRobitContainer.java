@@ -47,6 +47,9 @@ public class RepairRobitContainer extends RepairContainer implements IEntityCont
     public void onContainerClosed(@Nonnull PlayerEntity player) {
         super.onContainerClosed(player);
         entity.close(player);
+        //TODO - 10.1: Re-evaluate this, and other onContainerClosed overrides we have as they
+        // get called when opening JEI, and then we are sometimes not in the fully correct state
+        // after exiting JEI (for example here with the robit's repair container)
     }
 
     @Override

@@ -67,6 +67,9 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         children.forEach(GuiElement::tick);
     }
 
+    /**
+     * @apiNote prevLeft and prevTop may be equal to left and top when things are being reinitialized such as when returning from viewing recipes in JEI.
+     */
     public void resize(int prevLeft, int prevTop, int left, int top) {
         x = x - prevLeft + left;
         y = y - prevTop + top;

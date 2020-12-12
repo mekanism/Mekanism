@@ -102,8 +102,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void resize(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
-        super.resize(minecraft, sizeX, sizeY);
+    public void init(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
+        super.init(minecraft, sizeX, sizeY);
         container.updateSearch(searchField.getText());
         //Validate the height is still valid, and if it isn't recreate it
         int maxY = QIOItemViewerContainer.getSlotsYMax();

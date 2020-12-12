@@ -124,7 +124,13 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     @Override
-    public void resize(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
+    public void init(@Nonnull Minecraft minecraft, int width, int height) {
+        //Note: We are forced to do the logic that normally would be inside the "resize" method
+        // here in init, as when mods like JEI take over the screen to show recipes, and then
+        // return the screen to the "state" it was beforehand it does not actually properly
+        // transfer the state from the previous instance to the new instance. If we run the
+        // code we normally would run for when things get resized, we then are able to
+        // properly reinstate/transfer the states of the various elements
         List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
         for (int i = 0; i < buttons.size(); i++) {
             Widget widget = buttons.get(i);
@@ -135,7 +141,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // flush the focus listeners list unless it's an overlay
         focusListeners.removeIf(element -> !element.isOverlay);
         int prevLeft = guiLeft, prevTop = guiTop;
-        super.resize(minecraft, sizeX, sizeY);
+        super.init(minecraft, width, height);
 
         windows.forEach(window -> {
             window.resize(prevLeft, prevTop, guiLeft, guiTop);

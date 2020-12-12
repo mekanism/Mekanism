@@ -83,12 +83,6 @@ public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_
             }
         }
         openWindows[index] = true;
-        //TODO: Fix indexing after exiting JEI it gets screwed up and resets
-        // It does this because onClose is called, which means we then think the window is closed
-        // To fix this would mean we have to keep track of how things close and maybe just not fire
-        // the on close stuff if everything gets closed? Could lead to things that are supposed to
-        // save on close not happening
-        // TODO: Replace what calls onClose to call it with a "source"??? ^ may not even be true actually
         return new GuiCraftingWindow<>(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, dataSource, onFocus, index);
     }
 }
