@@ -1,6 +1,6 @@
 {
-  "description.mekanismgenerators.laser_focus_matrix": "A panel of Reactor Glass that is capable of absorbing optical energy and thereby heating up the Fusion Reactor.",
-  "description.mekanismgenerators.reactor.logic.capacity": "The reactor's core heat capacity has been met",
-  "description.mekanismgenerators.reactor.logic.depleted": "The reactor has insufficient fuel to sustain a reaction",
-  "description.mekanismgenerators.reactor.logic.ready": "Reactor has reached the required heat level to ignite"
+  "description.mekanismgenerators.laser_focus_matrix": "Një panel i Xhamit të Reaktorit të Fuzionit që është i aftë të përthithë energji optike dhe si rrjedhojë nxehë Reaktorin e Fuzionit.",
+  "description.mekanismgenerators.reactor.logic.capacity": "Lësho sinjal kur kapaciteti i nxehtësisë së bërthamës së reaktorit është arritur",
+  "description.mekanismgenerators.reactor.logic.depleted": "Lësho sinjal kur reaktori nuk ka mjaftueshëm lëndë djegëse për të fuqizuar reaksionin",
+  "description.mekanismgenerators.reactor.logic.ready": "Lësho sinjal kur reaktori ka arritur nivelin e nevojshëm të nxehtësisë për tu ndezur"
 }
