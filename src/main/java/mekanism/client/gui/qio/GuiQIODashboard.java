@@ -41,15 +41,19 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
     }
 
     @Override
-    protected void transferWindows(int prevLeft, int prevTop, Collection<GuiWindow> windows) {
+    protected void transferWindows(Collection<GuiWindow> windows) {
+        //Go through and adopt all the crafting windows so that we can
+        // update the references that have for the listeners
         for (GuiWindow window : windows) {
-            //Transition all current popup windows over to the new screen.
-            addWindow(window);
             //TODO: Figure out a cleaner way of doing this that is more generic
             if (window instanceof GuiCraftingWindow) {
-                craftingWindowTab.adoptWindows(prevLeft, prevTop, window);
+                craftingWindowTab.adoptWindows(window);
             }
         }
+        // and then call super to transfer them over and call resize which will reattach it
+        //TODO: Once we figure out how we are going to handle the datasource for the item viewer
+        // we can just move this into super and it will be a lot cleaner
+        super.transferWindows(windows);
     }
 
     @Override

@@ -25,6 +25,17 @@ public abstract class GuiRelativeElement extends GuiElement {
     }
 
     @Override
+    public void move(int changeX, int changeY) {
+        super.move(changeX, changeY);
+        //Note: When moving we need to adjust our relative position
+        // but when resizing, we don't as we are relative to the
+        // positions changing when resizing, instead of moving
+        // where we are in relation to
+        relativeX += changeX;
+        relativeY += changeY;
+    }
+
+    @Override
     public void drawCenteredTextScaledBound(MatrixStack matrix, ITextComponent text, float maxLength, float y, int color) {
         float scale = Math.min(1, maxLength / getStringWidth(text));
         drawScaledCenteredText(matrix, text, relativeX + getXSize() / 2F, relativeY + y, color, scale);

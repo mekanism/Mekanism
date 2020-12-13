@@ -162,11 +162,16 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         getMinecraft().displayGuiScreen(s);
         s.searchField.setText(searchField.getText());
         c.updateSearch(searchField.getText());
-        //TODO: Do the window transferring in a more expandable way
-        s.transferWindows(getGuiLeft(), getGuiTop(), windows);
+        //Transfer all the windows to the new GUI
+        s.transferWindows(windows);
     }
 
-    protected void transferWindows(int prevLeft, int prevTop, Collection<GuiWindow> windows) {
+    protected void transferWindows(Collection<GuiWindow> windows) {
+        for (GuiWindow window : windows) {
+            //Transition all current popup windows over to the new screen.
+            addWindow(window);
+            window.transferToNewGui(this);
+        }
     }
 
     public abstract GuiQIOItemViewer<CONTAINER> recreate(CONTAINER container);

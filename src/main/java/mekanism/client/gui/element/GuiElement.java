@@ -38,7 +38,9 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     protected final List<GuiElement> children = new ArrayList<>();
 
-    protected final IGuiWrapper guiObj;
+    //TODO - 10.1: Make this private and change it to a getter so that it can't be accidentally overriden
+    // except via transferToNewGui
+    protected IGuiWrapper guiObj;
 
     protected boolean playClickSound;
     public boolean isOverlay;
@@ -46,6 +48,23 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent text) {
         super(x, y, width, height, text);
         guiObj = gui;
+    }
+
+    /**
+     * Transfers this {@link GuiElement} to a new parent {@link IGuiWrapper}, and moves elements as needed.
+     */
+    public void transferToNewGui(IGuiWrapper gui) {
+        int prevLeft = guiObj.getLeft();
+        int prevTop = guiObj.getTop();
+        //Use a separate method to update the guiObj for the element and all children
+        // so that resize only gets called once
+        transferToNewGuiInternal(gui);
+        resize(prevLeft, prevTop, guiObj.getLeft(), guiObj.getTop());
+    }
+
+    private void transferToNewGuiInternal(IGuiWrapper gui) {
+        guiObj = gui;
+        children.forEach(child -> child.transferToNewGuiInternal(gui));
     }
 
     protected void addChild(GuiElement element) {
@@ -85,10 +104,6 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     public void move(int changeX, int changeY) {
         x += changeX;
         y += changeY;
-        if (this instanceof GuiRelativeElement) {
-            ((GuiRelativeElement) this).relativeX += changeX;
-            ((GuiRelativeElement) this).relativeY += changeY;
-        }
         children.forEach(child -> child.move(changeX, changeY));
     }
 

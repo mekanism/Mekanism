@@ -32,13 +32,9 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindow
         return elementSupplier;
     }
 
-    public void adoptWindows(int prevLeft, int prevTop, GuiWindow... windows) {
-        int left = guiObj.getLeft();
-        int top = guiObj.getTop();
+    public void adoptWindows(GuiWindow... windows) {
         for (GuiWindow window : windows) {
-            //TODO: Fix the windows after being adopted not being able to be closed??
             window.setTabListeners(getCloseListener(), getReAttachListener());
-            window.resize(prevLeft, prevTop, left, top);
         }
     }
 
