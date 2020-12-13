@@ -109,6 +109,7 @@ import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
+import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.block.ItemBlockCardboardBox;
@@ -154,7 +155,9 @@ import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -169,6 +172,13 @@ public class ClientRegistration {
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
         MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
         MinecraftForge.EVENT_BUS.register(SoundHandler.class);
+        if (ModList.get().isLoaded(MekanismHooks.JEI_MOD_ID)) {
+            //Note: We check this directly instead of using our value stored in Mekanism hooks
+            // as that is initialized in CommonSetup and I believe that may be fired in parallel
+            // to ClientSetup, in which case there would be a chance this gets ran before it is
+            // properly initialized and will have the wrong value
+            MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, RenderTickHandler::guiOpening);
+        }
         new MekanismKeyHandler();
         HolidayManager.init();
 

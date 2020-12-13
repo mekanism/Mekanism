@@ -54,6 +54,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     protected boolean dynamicSlots;
     protected final LRU<GuiWindow> windows = new LRU<>();
     protected final List<GuiElement> focusListeners = new ArrayList<>();
+    public boolean switchingToJEI;
 
     private boolean hasClicked = false;
 
@@ -61,6 +62,16 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     protected GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void onClose() {
+        if (!switchingToJEI) {
+            //If we are not switching to JEI then run the super close method
+            // which will exit the container. We don't want to mark the
+            // container as exited if it will be revived when leaving JEI
+            super.onClose();
+        }
     }
 
     @Override
@@ -125,6 +136,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public void init(@Nonnull Minecraft minecraft, int width, int height) {
+        //Mark that we are not switching to JEI if we start being initialized again
+        switchingToJEI = false;
         //Note: We are forced to do the logic that normally would be inside the "resize" method
         // here in init, as when mods like JEI take over the screen to show recipes, and then
         // return the screen to the "state" it was beforehand it does not actually properly

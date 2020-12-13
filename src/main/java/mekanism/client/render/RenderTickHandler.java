@@ -16,6 +16,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.MekanismClient;
+import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -54,6 +55,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
+import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -85,6 +87,7 @@ import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawHighlightEvent;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -122,6 +125,18 @@ public class RenderTickHandler {
 
     public static void renderBolt(Object renderer, BoltEffect bolt) {
         boltRenderer.update(renderer, bolt, MekanismRenderer.getPartialTick());
+    }
+
+    //Note: This listener is only registered if JEI is loaded
+    public static void guiOpening(GuiOpenEvent event) {
+        if (Minecraft.getInstance().currentScreen instanceof GuiMekanism) {
+            //If JEI is loaded and our current screen is a mekanism gui,
+            // check if the new screen is a JEI recipe screen
+            if (event.getGui() instanceof IRecipesGui) {
+                //If it is mark on our current screen that we are switching to JEI
+                ((GuiMekanism<?>) Minecraft.getInstance().currentScreen).switchingToJEI = true;
+            }
+        }
     }
 
     @SubscribeEvent
