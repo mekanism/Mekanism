@@ -23,7 +23,7 @@ public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, Tile
     @Override
     protected void init() {
         super.init();
-        addSorterDefaults(guiObj, filter, getSlotOffset(), this::addChild);
+        addSorterDefaults(gui(), filter, getSlotOffset(), this::addChild);
     }
 
     @Override

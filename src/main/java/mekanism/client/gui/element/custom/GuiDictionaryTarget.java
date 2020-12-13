@@ -65,7 +65,7 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (target instanceof ItemStack) {
-            guiObj.renderItem(matrix, (ItemStack) target, x, y);
+            gui().renderItem(matrix, (ItemStack) target, x, y);
         } else if (target instanceof FluidStack) {
             FluidStack stack = (FluidStack) this.target;
             MekanismRenderer.color(stack);
@@ -83,7 +83,7 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (target instanceof ItemStack) {
-            guiObj.renderItemTooltip(matrix, (ItemStack) target, mouseX, mouseY);
+            gui().renderItemTooltip(matrix, (ItemStack) target, mouseX, mouseY);
         } else if (target != null) {
             displayTooltip(matrix, TextComponentUtil.build(target), mouseX, mouseY);
         }

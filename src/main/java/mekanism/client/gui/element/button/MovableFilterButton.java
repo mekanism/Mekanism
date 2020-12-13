@@ -60,7 +60,7 @@ public class MovableFilterButton extends FilterButton {
 
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
-        int xAxis = mouseX - guiObj.getLeft(), yAxis = mouseY - guiObj.getTop();
+        int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
         if (upButton.isMouseOverCheckWindows(mouseX, mouseY)) {
             upButton.renderToolTip(matrix, xAxis, yAxis);
         } else if (downButton.isMouseOverCheckWindows(mouseX, mouseY)) {
@@ -73,8 +73,8 @@ public class MovableFilterButton extends FilterButton {
             slotDisplay.updateStackList();
             prevFilter = filter;
         }
-        int x = this.x - guiObj.getLeft();
-        int y = this.y - guiObj.getTop();
+        int x = this.x - getGuiLeft();
+        int y = this.y - getGuiTop();
         if (filter instanceof IItemStackFilter) {
             drawTextScaledBound(matrix, MekanismLang.ITEM_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
         } else if (filter instanceof ITagFilter) {

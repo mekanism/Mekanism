@@ -22,7 +22,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     @Override
     protected void init() {
         super.init();
-        addChild(text = new GuiTextField(guiObj, relativeX + 31, relativeY + 4 + getScreenHeight(), getScreenWidth() - 4, 12));
+        addChild(text = new GuiTextField(gui(), relativeX + 31, relativeY + 4 + getScreenHeight(), getScreenWidth() - 4, 12));
         text.setMaxStringLength(SorterFilter.MAX_LENGTH);
         text.setInputValidator(getInputValidator());
         text.setEnabled(true);

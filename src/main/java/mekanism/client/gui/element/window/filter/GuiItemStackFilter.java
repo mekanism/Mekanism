@@ -51,7 +51,7 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return mouseClickSlot(getGuiObj(), button, mouseX, mouseY, relativeX + 8, relativeY + getSlotOffset() + 1, NOT_EMPTY, this::setFilterStack) ||
+        return mouseClickSlot(gui(), button, mouseX, mouseY, relativeX + 8, relativeY + getSlotOffset() + 1, NOT_EMPTY, this::setFilterStack) ||
                super.mouseClicked(mouseX, mouseY, button);
     }
 

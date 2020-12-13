@@ -49,7 +49,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         TYPE mode = getMode();
         if (mode != null) {
-            guiObj.displayTooltip(matrix, mode.getDescription(), mouseX, mouseY);
+            displayTooltip(matrix, mode.getDescription(), mouseX, mouseY);
         }
     }
 
@@ -75,7 +75,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
         TYPE mode = getMode();
         if (mode != null) {
             int typeOffset = 22 * index;
-            guiObj.renderItem(matrix, mode.getRenderStack(), 20, 35 + typeOffset);
+            gui().renderItem(matrix, mode.getRenderStack(), 20, 35 + typeOffset);
             drawString(matrix, TextComponentUtil.build(EnumColor.WHITE, mode), 39, 34 + typeOffset, titleTextColor());
             super.renderForeground(matrix, mouseX, mouseY);
         }

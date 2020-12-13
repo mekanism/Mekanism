@@ -38,9 +38,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     protected final List<GuiElement> children = new ArrayList<>();
 
-    //TODO - 10.1: Make this private and change it to a getter so that it can't be accidentally overriden
-    // except via transferToNewGui
-    protected IGuiWrapper guiObj;
+    private IGuiWrapper guiObj;
 
     protected boolean playClickSound;
     public boolean isOverlay;
@@ -54,12 +52,12 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
      * Transfers this {@link GuiElement} to a new parent {@link IGuiWrapper}, and moves elements as needed.
      */
     public void transferToNewGui(IGuiWrapper gui) {
-        int prevLeft = guiObj.getLeft();
-        int prevTop = guiObj.getTop();
+        int prevLeft = getGuiLeft();
+        int prevTop = getGuiTop();
         //Use a separate method to update the guiObj for the element and all children
         // so that resize only gets called once
         transferToNewGuiInternal(gui);
-        resize(prevLeft, prevTop, guiObj.getLeft(), guiObj.getTop());
+        resize(prevLeft, prevTop, getGuiLeft(), getGuiTop());
     }
 
     private void transferToNewGuiInternal(IGuiWrapper gui) {
@@ -74,8 +72,24 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         }
     }
 
-    public IGuiWrapper getGuiObj() {
+    public final IGuiWrapper gui() {
         return guiObj;
+    }
+
+    public final int getGuiLeft() {
+        return guiObj.getLeft();
+    }
+
+    public final int getGuiTop() {
+        return guiObj.getTop();
+    }
+
+    public final int getGuiWidth() {
+        return guiObj.getWidth();
+    }
+
+    public final int getGuiHeight() {
+        return guiObj.getHeight();
     }
 
     public List<GuiElement> children() {
@@ -150,14 +164,14 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
             // update the max total offset to prevent clashing of future overlays
             GuiMekanism.maxZOffset = Math.max(totalOffset, GuiMekanism.maxZOffset);
             // fix render offset for background drawing
-            matrix.translate(-guiObj.getLeft(), -guiObj.getTop(), 0);
+            matrix.translate(-getGuiLeft(), -getGuiTop(), 0);
             // render background overlay and children above everything else
             renderBackgroundOverlay(matrix, mouseX, mouseY);
             // render children just above background overlay
             children.forEach(child -> child.render(matrix, mouseX, mouseY, 0));
             children.forEach(child -> child.onDrawBackground(matrix, mouseX, mouseY, 0));
             // translate back to top right corner and forward to render foregrounds
-            matrix.translate(guiObj.getLeft(), guiObj.getTop(), 0);
+            matrix.translate(getGuiLeft(), getGuiTop(), 0);
             renderForeground(matrix, mouseX, mouseY);
             // translate forward to render child foreground
             children.forEach(child -> child.onRenderForeground(matrix, mouseX, mouseY, 50, totalOffset + 50));
@@ -173,7 +187,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        children.stream().filter(child -> child.isMouseOver(mouseX + guiObj.getLeft(), mouseY + guiObj.getTop()))
+        children.stream().filter(child -> child.isMouseOver(mouseX + getGuiLeft(), mouseY + getGuiTop()))
               .forEach(child -> child.renderToolTip(matrix, mouseX, mouseY));
     }
 
@@ -317,7 +331,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         if (!message.getString().isEmpty()) {
             //TODO: Improve the math for this so that it calculates the y value better
             int halfWidthLeft = width / 2;
-            drawCenteredString(matrix, getFont(), message, x - guiObj.getLeft() + halfWidthLeft, y - guiObj.getTop() + (height - 8) / 2,
+            drawCenteredString(matrix, getFont(), message, x - getGuiLeft() + halfWidthLeft, y - getGuiTop() + (height - 8) / 2,
                   getFGColor() | MathHelper.ceil(alpha * 255.0F) << 24);
         }
     }

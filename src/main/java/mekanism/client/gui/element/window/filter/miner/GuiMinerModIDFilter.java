@@ -28,7 +28,7 @@ public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEn
     @Override
     protected void init() {
         super.init();
-        addMinerDefaults(guiObj, filter, getSlotOffset(), this::addChild);
+        addMinerDefaults(gui(), filter, getSlotOffset(), this::addChild);
     }
 
     @Override
@@ -48,11 +48,11 @@ public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEn
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        renderReplaceStack(matrix, guiObj, filter);
+        renderReplaceStack(matrix, gui(), filter);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return tryClickReplaceStack(guiObj, mouseX, mouseY, button, getSlotOffset(), filter) || super.mouseClicked(mouseX, mouseY, button);
+        return tryClickReplaceStack(gui(), mouseX, mouseY, button, getSlotOffset(), filter) || super.mouseClicked(mouseX, mouseY, button);
     }
 }

@@ -55,11 +55,11 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         addSideDataButton(RelativeSide.LEFT, 56, 59);
         addSideDataButton(RelativeSide.RIGHT, 86, 59);
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, 1));
-        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).startTracking(1, this.tile.getConfig());
+        ((MekanismContainer) ((GuiMekanism<?>) gui()).getContainer()).startTracking(1, this.tile.getConfig());
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
-        addChild(new SideDataButton(guiObj, guiObj.getLeft() + relativeX + xPos, guiObj.getTop() + relativeY + yPos, side,
+        addChild(new SideDataButton(gui(), getGuiLeft() + relativeX + xPos, getGuiTop() + relativeY + yPos, side,
               () -> tile.getConfig().getDataType(currentType, side), () -> {
             DataType dataType = tile.getConfig().getDataType(currentType, side);
             return dataType == null ? EnumColor.GRAY : dataType.getColor();
@@ -70,7 +70,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     public void close() {
         super.close();
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, 1));
-        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).stopTracking(1);
+        ((MekanismContainer) ((GuiMekanism<?>) gui()).getContainer()).stopTracking(1);
     }
 
     private IHoverable getOnHover(RelativeSide side) {

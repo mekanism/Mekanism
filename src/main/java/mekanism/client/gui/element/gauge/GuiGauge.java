@@ -81,8 +81,8 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         ItemStack stack = minecraft.player.inventory.getItemStack();
         EnumColor color = gaugeType.getGaugeInfo().getColor();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
-            if (guiObj instanceof GuiMekanismTile) {
-                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) guiObj).getTileEntity();
+            if (gui() instanceof GuiMekanismTile) {
+                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) gui()).getTileEntity();
                 if (tile instanceof ISideConfiguration && getTransmission() != null) {
                     DataType dataType = null;
                     ConfigInfo config = ((ISideConfiguration) tile).getConfig().getConfig(getTransmission());
@@ -96,9 +96,9 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                         }
                     }
                     if (dataType == null) {
-                        guiObj.displayTooltip(matrix, MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()), mouseX, mouseY);
+                        displayTooltip(matrix, MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()), mouseX, mouseY);
                     } else {
-                        guiObj.displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, dataType, color.getName()), mouseX, mouseY);
+                        displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, dataType, color.getName()), mouseX, mouseY);
                     }
                 }
             }
@@ -108,7 +108,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                 list.add(getLabel());
             }
             list.addAll(getTooltipText());
-            guiObj.displayTooltips(matrix, list, mouseX, mouseY);
+            displayTooltips(matrix, list, mouseX, mouseY);
         }
     }
 

@@ -49,11 +49,11 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         addSideDataButton(RelativeSide.LEFT, 29, 49);
         addSideDataButton(RelativeSide.RIGHT, 59, 49);
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, this.tile, 0));
-        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).startTracking(0, this.tile.getEjector());
+        ((MekanismContainer) ((GuiMekanism<?>) gui()).getContainer()).startTracking(0, this.tile.getEjector());
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
-        addChild(new SideDataButton(guiObj, guiObj.getLeft() + relativeX + xPos, guiObj.getTop() + relativeY + yPos, side,
+        addChild(new SideDataButton(gui(), getGuiLeft() + relativeX + xPos, getGuiTop() + relativeY + yPos, side,
               () -> tile.getConfig().getDataType(TransmissionType.ITEM, side), () -> tile.getEjector().getInputColor(side), tile, () -> null,
               ConfigurationPacket.INPUT_COLOR, getOnHover(side)));
     }
@@ -62,7 +62,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     public void close() {
         super.close();
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, 0));
-        ((MekanismContainer) ((GuiMekanism<?>) guiObj).getContainer()).stopTracking(0);
+        ((MekanismContainer) ((GuiMekanism<?>) gui()).getContainer()).stopTracking(0);
     }
 
     private IHoverable getOnHover(RelativeSide side) {

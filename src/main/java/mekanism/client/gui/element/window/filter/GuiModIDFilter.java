@@ -85,7 +85,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return mouseClickSlot(getGuiObj(), button, mouseX, mouseY, relativeX + 8, relativeY + getSlotOffset() + 1, NOT_EMPTY, this::setFilterName) ||
+        return mouseClickSlot(gui(), button, mouseX, mouseY, relativeX + 8, relativeY + getSlotOffset() + 1, NOT_EMPTY, this::setFilterName) ||
                super.mouseClicked(mouseX, mouseY, button);
     }
 

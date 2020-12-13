@@ -55,8 +55,8 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     @Override
     protected GaugeInfo getGaugeColor() {
         IExtendedFluidTank tank;
-        if (guiObj instanceof GuiMekanismTile && tankSupplier != null && (tank = tankSupplier.get()) != null) {
-            TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) guiObj).getContainer().getTileEntity();
+        if (gui() instanceof GuiMekanismTile && tankSupplier != null && (tank = tankSupplier.get()) != null) {
+            TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) gui()).getContainer().getTileEntity();
             if (tile instanceof ISideConfiguration) {
                 DataType dataType = ((ISideConfiguration) tile).getActiveDataType(tank);
                 if (dataType != null) {

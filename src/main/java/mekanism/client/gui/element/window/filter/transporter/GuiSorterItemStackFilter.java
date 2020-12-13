@@ -37,16 +37,16 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
     @Override
     protected void init() {
         super.init();
-        addSorterDefaults(guiObj, filter, getSlotOffset(), this::addChild);
-        addChild(minField = new GuiTextField(guiObj, relativeX + 169, relativeY + 32, 20, 11));
+        addSorterDefaults(gui(), filter, getSlotOffset(), this::addChild);
+        addChild(minField = new GuiTextField(gui(), relativeX + 169, relativeY + 32, 20, 11));
         minField.setMaxStringLength(2);
         minField.setInputValidator(InputValidator.DIGIT);
         minField.setText("" + filter.min);
-        addChild(maxField = new GuiTextField(guiObj, relativeX + 169, relativeY + 44, 20, 11));
+        addChild(maxField = new GuiTextField(gui(), relativeX + 169, relativeY + 44, 20, 11));
         maxField.setMaxStringLength(2);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.setText("" + filter.max);
-        addChild(new MekanismImageButton(guiObj, x + 148, y + 57, 11, 14, getButtonLocation("silk_touch"),
+        addChild(new MekanismImageButton(gui(), x + 148, y + 57, 11, 14, getButtonLocation("silk_touch"),
               () -> filter.sizeMode = !filter.sizeMode, (onHover, matrix, xAxis, yAxis) -> {
             if (tile.singleItem && filter.sizeMode) {
                 displayTooltip(matrix, MekanismLang.SIZE_MODE_CONFLICT.translate(), xAxis, yAxis);
@@ -54,7 +54,7 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
                 displayTooltip(matrix, MekanismLang.SIZE_MODE.translate(), xAxis, yAxis);
             }
         }));
-        addChild(new MekanismImageButton(guiObj, x + 148, y + 70, 11, 14, getButtonLocation("fuzzy"),
+        addChild(new MekanismImageButton(gui(), x + 148, y + 70, 11, 14, getButtonLocation("fuzzy"),
               () -> filter.fuzzyMode = !filter.fuzzyMode, getOnHover(MekanismLang.FUZZY_MODE)));
     }
 

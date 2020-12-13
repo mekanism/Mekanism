@@ -129,7 +129,7 @@ public class GuiModuleScrollList extends GuiScrollList {
             if (instance != null && mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1 && mouseY >= relativeY + 1 + multipliedElement &&
                 mouseY < relativeY + 1 + multipliedElement + elementHeight) {
                 ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
-                guiObj.displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX, mouseY, guiObj.getWidth());
+                gui().displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX, mouseY, getGuiWidth());
             }
         }
     }
@@ -157,7 +157,7 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     private void renderModule(MatrixStack matrix, ModuleData<?> type, int x, int y, float size) {
-        guiObj.renderItem(matrix, type.getStack(), (int) (x / size), (int) (y / size), size);
+        gui().renderItem(matrix, type.getStack(), (int) (x / size), (int) (y / size), size);
     }
 
     @Override

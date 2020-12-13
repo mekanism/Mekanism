@@ -32,6 +32,6 @@ public class GuiTransporterConfigTab<TILE extends TileEntityMekanism & ISideConf
 
     @Override
     protected GuiWindow createWindow() {
-        return new GuiTransporterConfig<>(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, dataSource);
+        return new GuiTransporterConfig<>(gui(), getGuiWidth() / 2 - 156 / 2, 15, dataSource);
     }
 }

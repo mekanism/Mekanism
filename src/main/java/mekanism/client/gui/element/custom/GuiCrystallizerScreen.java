@@ -74,7 +74,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
         minecraft.textureManager.bindTexture(getResource());
         blit(matrix, slotX, y, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
         if (!renderStack.isEmpty()) {
-            guiObj.renderItem(matrix, renderStack, slotX + 1, y + 1);
+            gui().renderItem(matrix, renderStack, slotX + 1, y + 1);
         }
     }
 

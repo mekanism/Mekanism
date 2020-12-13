@@ -15,21 +15,21 @@ public class GuiSorterFilerSelect extends GuiFilterSelect {
 
     @Override
     protected GuiSorterItemStackFilter createNewItemStackFilter() {
-        return GuiSorterItemStackFilter.create(getGuiObj(), tile);
+        return GuiSorterItemStackFilter.create(gui(), tile);
     }
 
     @Override
     protected GuiSorterTagFilter createNewTagFilter() {
-        return GuiSorterTagFilter.create(getGuiObj(), tile);
+        return GuiSorterTagFilter.create(gui(), tile);
     }
 
     @Override
     protected GuiSorterMaterialFilter createNewMaterialFilter() {
-        return GuiSorterMaterialFilter.create(getGuiObj(), tile);
+        return GuiSorterMaterialFilter.create(gui(), tile);
     }
 
     @Override
     protected GuiSorterModIDFilter createNewModIDFilter() {
-        return GuiSorterModIDFilter.create(getGuiObj(), tile);
+        return GuiSorterModIDFilter.create(gui(), tile);
     }
 }

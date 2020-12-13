@@ -38,7 +38,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         int scroll = getScroll();
         if (mouseX >= barX && mouseX <= barX + barWidth && mouseY >= barY + scroll && mouseY <= barY + scroll + barHeight) {
             if (needsScrollBars()) {
-                double yAxis = mouseY - guiObj.getTop();
+                double yAxis = mouseY - getGuiTop();
                 dragOffset = (int) (yAxis - (scroll + barY));
                 //Mark that we are dragging so that we can continue to "drag" even if our mouse goes off of being over the element
                 isDragging = true;
@@ -52,7 +52,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
         super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
         if (needsScrollBars() && isDragging) {
-            double yAxis = mouseY - guiObj.getTop();
+            double yAxis = mouseY - getGuiTop();
             this.scroll = Math.min(Math.max((yAxis - barY - dragOffset) / getMax(), 0), 1);
         }
     }

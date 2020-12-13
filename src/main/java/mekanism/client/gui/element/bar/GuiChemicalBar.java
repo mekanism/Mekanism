@@ -80,7 +80,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY)) {
             ItemStack stack = Minecraft.getInstance().player.inventory.getItemStack();
-            if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
+            if (gui() instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TankType tankType = null;
                 CHEMICAL type = getHandler().getStack().getType();
                 if (type instanceof Gas) {
@@ -101,7 +101,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                         } else {
                             action = DropperAction.DRAIN_DROPPER;
                         }
-                        Mekanism.packetHandler.sendToServer(new PacketDropperUse(((GuiMekanismTile<?, ?>) guiObj).getTileEntity().getPos(), action, tankType, index));
+                        Mekanism.packetHandler.sendToServer(new PacketDropperUse(((GuiMekanismTile<?, ?>) gui()).getTileEntity().getPos(), action, tankType, index));
                     }
                     return true;
                 }

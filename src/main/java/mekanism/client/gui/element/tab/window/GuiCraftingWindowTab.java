@@ -83,6 +83,6 @@ public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_
             }
         }
         openWindows[index] = true;
-        return new GuiCraftingWindow<>(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, dataSource, onFocus, index);
+        return new GuiCraftingWindow<>(gui(), getGuiWidth() / 2 - 156 / 2, 15, dataSource, onFocus, index);
     }
 }

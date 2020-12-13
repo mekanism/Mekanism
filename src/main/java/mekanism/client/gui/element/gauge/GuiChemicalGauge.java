@@ -54,10 +54,10 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     @Override
     protected GaugeInfo getGaugeColor() {
-        if (guiObj instanceof GuiMekanismTile) {
+        if (gui() instanceof GuiMekanismTile) {
             TANK tank = getTank();
             if (tank != null) {
-                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) guiObj).getContainer().getTileEntity();
+                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) gui()).getContainer().getTileEntity();
                 if (tile instanceof ISideConfiguration) {
                     DataType dataType = ((ISideConfiguration) tile).getActiveDataType(tank);
                     if (dataType != null) {

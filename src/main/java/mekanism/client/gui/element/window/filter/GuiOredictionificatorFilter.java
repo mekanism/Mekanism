@@ -46,13 +46,13 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     @Override
     protected void init() {
         super.init();
-        addChild(new MekanismImageButton(guiObj, x + 10, y + 18, 12, getButtonLocation("left"), () -> {
+        addChild(new MekanismImageButton(gui(), x + 10, y + 18, 12, getButtonLocation("left"), () -> {
             if (filter.hasFilter()) {
                 filter.previous();
                 slotDisplay.updateStackList();
             }
         }, getOnHover(MekanismLang.LAST_ITEM)));
-        addChild(new MekanismImageButton(guiObj, x + 10, y + 52, 12, getButtonLocation("right"), () -> {
+        addChild(new MekanismImageButton(gui(), x + 10, y + 52, 12, getButtonLocation("right"), () -> {
             if (filter.hasFilter()) {
                 filter.next();
                 slotDisplay.updateStackList();

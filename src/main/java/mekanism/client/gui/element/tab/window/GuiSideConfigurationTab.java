@@ -32,6 +32,6 @@ public class GuiSideConfigurationTab<TILE extends TileEntityMekanism & ISideConf
 
     @Override
     protected GuiWindow createWindow() {
-        return new GuiSideConfiguration<>(guiObj, guiObj.getWidth() / 2 - 156 / 2, 15, dataSource);
+        return new GuiSideConfiguration<>(gui(), getGuiWidth() / 2 - 156 / 2, 15, dataSource);
     }
 }

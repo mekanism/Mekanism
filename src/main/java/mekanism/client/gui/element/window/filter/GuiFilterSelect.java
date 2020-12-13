@@ -36,7 +36,7 @@ public abstract class GuiFilterSelect extends GuiWindow {
 
     private void openCreateFilterDialog(GuiFilter<?, ?> filterDialog) {
         //Add the window for the filter dialog to the parent gui
-        getGuiObj().addWindow(filterDialog);
+        gui().addWindow(filterDialog);
         //And close the filter select dialog
         close();
     }

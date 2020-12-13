@@ -31,7 +31,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY) && tankType != null) {
             ItemStack stack = minecraft.player.inventory.getItemStack();
-            if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
+            if (gui() instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 int index = infoHandler.getTankIndex();
                 if (index != -1) {
                     DropperAction action;
@@ -40,7 +40,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
                     } else {
                         action = DropperAction.DRAIN_DROPPER;
                     }
-                    Mekanism.packetHandler.sendToServer(new PacketDropperUse(((GuiMekanismTile<?, ?>) guiObj).getTileEntity().getPos(), action, tankType, index));
+                    Mekanism.packetHandler.sendToServer(new PacketDropperUse(((GuiMekanismTile<?, ?>) gui()).getTileEntity().getPos(), action, tankType, index));
                 }
                 return true;
             }

@@ -65,7 +65,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        int xAxis = mouseX - guiObj.getLeft(), yAxis = mouseY - guiObj.getTop();
+        int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
         int slotX = (xAxis - relativeX) / 18, slotY = (yAxis - relativeY) / 18;
         if (slotX >= 0 && slotY >= 0 && slotX < xSlots && slotY < ySlots) {
             int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
@@ -125,7 +125,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
         if (isSlotEmpty(slot)) {
             return;
         }
-        guiObj.renderItemWithOverlay(matrix, slot.getItem().getStack(), slotX + 1, slotY + 1, 1.0F, "");
+        gui().renderItemWithOverlay(matrix, slot.getItem().getStack(), slotX + 1, slotY + 1, 1.0F, "");
         if (slot.getCount() > 1) {
             renderSlotText(matrix, getCountText(slot.getCount()), slotX + 1, slotY + 1);
         }
@@ -139,10 +139,10 @@ public class GuiSlotScroll extends GuiRelativeElement {
         ItemStack stack = slot.getItem().getStack();
         long count = slot.getCount();
         if (count < 10_000) {
-            guiObj.renderItemTooltip(matrix, stack, slotX, slotY);
+            gui().renderItemTooltip(matrix, stack, slotX, slotY);
         } else {
             //If the slot's displayed count is truncated, make sure we also add the the actual amount to the tooltip
-            guiObj.renderItemTooltipWithExtra(matrix, stack, slotX, slotY, Collections.singletonList(MekanismLang.QIO_STORED_COUNT.translateColored(EnumColor.GRAY,
+            gui().renderItemTooltipWithExtra(matrix, stack, slotX, slotY, Collections.singletonList(MekanismLang.QIO_STORED_COUNT.translateColored(EnumColor.GRAY,
                   EnumColor.INDIGO, TextUtils.format(count))));
         }
     }

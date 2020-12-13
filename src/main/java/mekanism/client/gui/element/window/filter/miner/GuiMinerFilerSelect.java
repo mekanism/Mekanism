@@ -15,21 +15,21 @@ public class GuiMinerFilerSelect extends GuiFilterSelect {
 
     @Override
     protected GuiMinerItemStackFilter createNewItemStackFilter() {
-        return GuiMinerItemStackFilter.create(getGuiObj(), tile);
+        return GuiMinerItemStackFilter.create(gui(), tile);
     }
 
     @Override
     protected GuiMinerTagFilter createNewTagFilter() {
-        return GuiMinerTagFilter.create(getGuiObj(), tile);
+        return GuiMinerTagFilter.create(gui(), tile);
     }
 
     @Override
     protected GuiMinerMaterialFilter createNewMaterialFilter() {
-        return GuiMinerMaterialFilter.create(getGuiObj(), tile);
+        return GuiMinerMaterialFilter.create(gui(), tile);
     }
 
     @Override
     protected GuiMinerModIDFilter createNewModIDFilter() {
-        return GuiMinerModIDFilter.create(getGuiObj(), tile);
+        return GuiMinerModIDFilter.create(gui(), tile);
     }
 }

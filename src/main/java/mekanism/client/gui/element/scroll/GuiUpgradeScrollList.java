@@ -87,7 +87,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
             Upgrade upgrade = upgrades[index];
             int multipliedElement = elementHeight * i;
             if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
-                guiObj.displayTooltip(matrix, upgrade.getDescription(), mouseX - guiObj.getLeft(), mouseY - guiObj.getTop(), guiObj.getWidth());
+                gui().displayTooltip(matrix, upgrade.getDescription(), mouseX - getGuiLeft(), mouseY - getGuiTop(), getGuiWidth());
             }
         }
     }
@@ -120,7 +120,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     }
 
     private void renderUpgrade(MatrixStack matrix, Upgrade type, int x, int y, float size) {
-        guiObj.renderItem(matrix, UpgradeUtils.getStack(type), (int) (x / size), (int) (y / size), size);
+        gui().renderItem(matrix, UpgradeUtils.getStack(type), (int) (x / size), (int) (y / size), size);
     }
 
     @Override

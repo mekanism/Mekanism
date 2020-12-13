@@ -97,17 +97,17 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     protected void init() {
         int screenTop = relativeY + 18;
         int screenBottom = screenTop + getScreenHeight();
-        addChild(new GuiInnerScreen(guiObj, relativeX + 29, screenTop, getScreenWidth(), getScreenHeight(), this::getScreenText).clearFormat());
-        addChild(new TranslationButton(guiObj, getLeftButtonX(), guiObj.getTop() + screenBottom + 2, 60, 20,
+        addChild(new GuiInnerScreen(gui(), relativeX + 29, screenTop, getScreenWidth(), getScreenHeight(), this::getScreenText).clearFormat());
+        addChild(new TranslationButton(gui(), getLeftButtonX(), getGuiTop() + screenBottom + 2, 60, 20,
               isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
             if (origFilter != null) {
                 Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
             }
             close();
         }));
-        addChild(new TranslationButton(guiObj, getLeftButtonX() + 62, guiObj.getTop() + screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
-        addChild(new GuiSlot(SlotType.NORMAL, guiObj, relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true).setGhostHandler(getGhostHandler()));
-        addChild(slotDisplay = new GuiSequencedSlotDisplay(guiObj, relativeX + 8, relativeY + getSlotOffset() + 1, this::getRenderStacks));
+        addChild(new TranslationButton(gui(), getLeftButtonX() + 62, getGuiTop() + screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
+        addChild(new GuiSlot(SlotType.NORMAL, gui(), relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true).setGhostHandler(getGhostHandler()));
+        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui(), relativeX + 8, relativeY + getSlotOffset() + 1, this::getRenderStacks));
     }
 
     @Nullable
@@ -117,7 +117,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     private void openFilterSelect() {
         //Add the window for the filter select dialog to the parent gui
-        getGuiObj().addWindow(getFilterSelect(getGuiObj(), tile));
+        gui().addWindow(getFilterSelect(gui(), tile));
         //And close the filter filter
         close();
     }

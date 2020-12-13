@@ -54,7 +54,7 @@ public class GuiTextField extends GuiRelativeElement {
                 checkmarkButton.active = !textField.getText().isEmpty();
             }
         });
-        guiObj.addFocusListener(this);
+        gui().addFocusListener(this);
         updateTextField();
     }
 
@@ -146,7 +146,7 @@ public class GuiTextField extends GuiRelativeElement {
     @Override
     public void onWindowClose() {
         super.onWindowClose();
-        guiObj.removeFocusListener(this);
+        gui().removeFocusListener(this);
     }
 
     @Override
@@ -172,7 +172,7 @@ public class GuiTextField extends GuiRelativeElement {
         boolean ret = textField.mouseClicked(scaledX, mouseY, button);
         // detect if we're now focused
         if (!prevFocus && isTextFieldFocused()) {
-            guiObj.focusChange(this);
+            gui().focusChange(this);
         }
         return ret || super.mouseClicked(mouseX, mouseY, button);
     }
@@ -225,7 +225,7 @@ public class GuiTextField extends GuiRelativeElement {
                 }
                 return true;
             } else if (keyCode == GLFW.GLFW_KEY_TAB) {
-                guiObj.incrementFocus(this);
+                gui().incrementFocus(this);
                 return true;
             }
             textField.keyPressed(keyCode, scanCode, modifiers);
@@ -270,7 +270,7 @@ public class GuiTextField extends GuiRelativeElement {
         super.setFocused(focused);
         textField.setFocused2(focused);
         if (focused) {
-            guiObj.focusChange(this);
+            gui().focusChange(this);
         }
     }
 

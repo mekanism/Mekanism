@@ -46,7 +46,7 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     protected void addCloseButton() {
-        addChild(new GuiCloseButton(getGuiObj(), this.x + 6, this.y + 6, this));
+        addChild(new GuiCloseButton(gui(), this.x + 6, this.y + 6, this));
     }
 
     @Override
@@ -62,11 +62,11 @@ public class GuiWindow extends GuiTexturedElement {
                 prevDY = 0;
             }
         } else if (!ret && interactionStrategy.allowContainer()) {
-            if (guiObj instanceof GuiMekanism) {
-                Container c = ((GuiMekanism<?>) guiObj).getContainer();
+            if (gui() instanceof GuiMekanism) {
+                Container c = ((GuiMekanism<?>) gui()).getContainer();
                 if (!(c instanceof IEmptyContainer)) {
                     // allow interaction with slots
-                    if (mouseX >= guiObj.getLeft() && mouseX < guiObj.getLeft() + guiObj.getWidth() && mouseY >= guiObj.getTop() + guiObj.getHeight() - 90) {
+                    if (mouseX >= getGuiLeft() && mouseX < getGuiLeft() + getGuiWidth() && mouseY >= getGuiTop() + getGuiHeight() - 90) {
                         return false;
                     }
                 }
@@ -149,9 +149,9 @@ public class GuiWindow extends GuiTexturedElement {
 
     public void close() {
         children.forEach(GuiElement::onWindowClose);
-        guiObj.removeWindow(this);
-        if (guiObj instanceof GuiMekanism) {
-            ((GuiMekanism<?>) guiObj).setListener(null);
+        gui().removeWindow(this);
+        if (gui() instanceof GuiMekanism) {
+            ((GuiMekanism<?>) gui()).setListener(null);
         }
         if (closeListener != null) {
             closeListener.accept(this);

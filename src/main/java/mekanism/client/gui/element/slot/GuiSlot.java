@@ -106,7 +106,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
                 int yPos = y + 1;
                 fill(matrix, xPos, yPos, xPos + 16, yPos + 16, INVALID_SLOT_COLOR);
                 MekanismRenderer.resetColor();
-                guiObj.renderItem(matrix, invalid, xPos, yPos);
+                gui().renderItem(matrix, invalid, xPos, yPos);
             }
         }
         if (overlaySupplier != null) {
@@ -138,7 +138,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
         }
         if (isHovered()) {
             //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
-            renderToolTip(matrix, mouseX - guiObj.getLeft(), mouseY - guiObj.getTop());
+            renderToolTip(matrix, mouseX - getGuiLeft(), mouseY - getGuiTop());
         }
     }
 
