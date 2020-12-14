@@ -18,8 +18,8 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
     private static final int INVALID_SLOT_COLOR = MekanismRenderer.getColorARGB(EnumColor.DARK_RED, 0.8F);
     public static final int DEFAULT_HOVER_COLOR = 0x80FFFFFF;
-    private boolean hasValidityCheck;
-    private Supplier<ItemStack> validityCheck = () -> ItemStack.EMPTY;
+    private Supplier<ItemStack> validityCheck;
+    private Supplier<ItemStack> storedStackSupplier;
     private Supplier<SlotOverlay> overlaySupplier;
     private IntSupplier overlayColorSupplier;
     private SlotOverlay overlay;
@@ -37,8 +37,15 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     public GuiSlot validity(Supplier<ItemStack> validityCheck) {
-        hasValidityCheck = true;
         this.validityCheck = validityCheck;
+        return this;
+    }
+
+    /**
+     * @apiNote For use when there is no validity check and this is a "fake" slot in that the container screen doesn't render the item by default.
+     */
+    public GuiSlot stored(Supplier<ItemStack> storedStackSupplier) {
+        this.storedStackSupplier = storedStackSupplier;
         return this;
     }
 
@@ -99,7 +106,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     private void draw(@Nonnull MatrixStack matrix) {
         minecraft.textureManager.bindTexture(getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
-        if (hasValidityCheck) {
+        if (validityCheck != null) {
             ItemStack invalid = validityCheck.get();
             if (!invalid.isEmpty()) {
                 int xPos = x + 1;
@@ -107,6 +114,11 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
                 fill(matrix, xPos, yPos, xPos + 16, yPos + 16, INVALID_SLOT_COLOR);
                 MekanismRenderer.resetColor();
                 gui().renderItem(matrix, invalid, xPos, yPos);
+            }
+        } else if (storedStackSupplier != null) {
+            ItemStack stored = storedStackSupplier.get();
+            if (!stored.isEmpty()) {
+                gui().renderItem(matrix, stored, x + 1, y + 1);
             }
         }
         if (overlaySupplier != null) {

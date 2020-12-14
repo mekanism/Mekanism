@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -21,6 +22,7 @@ import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
+import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.network.PacketGuiItemDataRequest;
@@ -42,8 +44,8 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
     public static final int SLOTS_X_MIN = 8, SLOTS_X_MAX = 16, SLOTS_Y_MIN = 2, SLOTS_Y_MAX = 48;
-
     public static final int SLOTS_START_Y = 43;
+    public static final int MAX_CRAFTING_WINDOWS = 3;
     private static final int DOUBLE_CLICK_TRANSFER_DURATION = 20;
 
     public static int getSlotsYMax() {
@@ -73,6 +75,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private int doubleClickTransferTicks = 0;
     private int lastSlot = -1;
     private ItemStack lastStack = ItemStack.EMPTY;
+    private final IInventorySlot[][] craftingSlots = new IInventorySlot[MAX_CRAFTING_WINDOWS][10];
 
     protected QIOItemViewerContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, boolean remote) {
         super(type, id, inv);
@@ -115,6 +118,31 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
+    protected void addSlots() {
+        super.addSlots();
+        //TODO: Implement interacting with the slots, including shift clicking
+        // Note: For shift clicking we only will care about the currently selected window
+        //TODO: We also need to make sure to implement proper persistence for the crafting slots
+        for (int tableIndex = 0; tableIndex < MAX_CRAFTING_WINDOWS; tableIndex++) {
+            for (int row = 0; row < 3; row++) {
+                for (int column = 0; column < 3; column++) {
+                    addCraftingSlot(CraftingWindowInventorySlot.input(tableIndex, row * 3 + column));
+                }
+            }
+            addCraftingSlot(CraftingWindowInventorySlot.output(tableIndex, 9));
+        }
+    }
+
+    private void addCraftingSlot(CraftingWindowInventorySlot slot) {
+        craftingSlots[slot.getTableIndex()][slot.getSlotIndex()] = slot;
+        track(slot.createSyncableItemStack());
+    }
+
+    public IInventorySlot getCraftingWindowSlot(int tableIndex, int slotIndex) {
+        return craftingSlots[tableIndex][slotIndex];
+    }
+
+    @Override
     protected void openInventory(@Nonnull PlayerInventory inv) {
         super.openInventory(inv);
         if (inv.player.world.isRemote()) {
@@ -126,8 +154,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     protected void closeInventory(PlayerEntity player) {
         super.closeInventory(player);
         QIOFrequency freq = getFrequency();
-        if (!inv.player.world.isRemote() && freq != null) {
-            freq.closeItemViewer((ServerPlayerEntity) inv.player);
+        if (!player.world.isRemote() && freq != null) {
+            freq.closeItemViewer((ServerPlayerEntity) player);
         }
     }
 

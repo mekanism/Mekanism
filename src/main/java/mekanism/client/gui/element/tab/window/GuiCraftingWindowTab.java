@@ -10,21 +10,21 @@ import mekanism.client.gui.element.window.GuiCraftingWindow;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
 public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_SOURCE, GuiCraftingWindowTab<DATA_SOURCE>> {
 
-    private static final int MAX_WINDOWS = 3;
-    private final Consumer<GuiCraftingWindow<DATA_SOURCE>> onFocus;
     //TODO: Evaluate a better way of doing this than this weird openWindows thing
-    private final boolean[] openWindows = new boolean[MAX_WINDOWS];
+    private final boolean[] openWindows = new boolean[QIOItemViewerContainer.MAX_CRAFTING_WINDOWS];
+    private final QIODashboardContainer container;
     private int currentWindows;
 
-    public GuiCraftingWindowTab(IGuiWrapper gui, DATA_SOURCE dataSource, Supplier<GuiCraftingWindowTab<DATA_SOURCE>> elementSupplier,
-          Consumer<GuiCraftingWindow<DATA_SOURCE>> onFocus) {
+    public GuiCraftingWindowTab(IGuiWrapper gui, DATA_SOURCE dataSource, Supplier<GuiCraftingWindowTab<DATA_SOURCE>> elementSupplier, QIODashboardContainer container) {
         super(MekanismUtils.getResource(ResourceType.GUI_BUTTON, "crafting.png"), gui, dataSource, -26, 34, 26, 18, true, elementSupplier);
-        this.onFocus = onFocus;
+        this.container = container;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_
                 tab.openWindows[((GuiCraftingWindow<?>) window).getIndex()] = false;
             }
             tab.currentWindows--;
-            if (tab.currentWindows < MAX_WINDOWS) {
+            if (tab.currentWindows < QIOItemViewerContainer.MAX_CRAFTING_WINDOWS) {
                 //If we have less than the max number of windows re-enable the tab
                 tab.active = true;
             }
@@ -67,7 +67,7 @@ public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_
     @Override
     protected void disableTab() {
         currentWindows++;
-        if (currentWindows >= MAX_WINDOWS) {
+        if (currentWindows >= QIOItemViewerContainer.MAX_CRAFTING_WINDOWS) {
             //If we have the max number of windows we are allowed then disable the tab
             super.disableTab();
         }
@@ -83,6 +83,6 @@ public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_
             }
         }
         openWindows[index] = true;
-        return new GuiCraftingWindow<>(gui(), getGuiWidth() / 2 - 156 / 2, 15, dataSource, onFocus, index);
+        return new GuiCraftingWindow<>(gui(), getGuiWidth() / 2 - 156 / 2, 15, dataSource, container, index);
     }
 }

@@ -32,7 +32,7 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
         addButton(new GuiQIOFrequencyTab(this, tile));
         //TODO: Figure out how we want to implement this into the portable QIO dashboard, as it may still need a decent
         // bit of refactoring to properly allow for updating the selected crafting grid window's index in the container
-        addButton(craftingWindowTab = new GuiCraftingWindowTab<>(this, tile, () -> craftingWindowTab, window -> container.setSelectedCraftingGrid(window.getIndex())));
+        addButton(craftingWindowTab = new GuiCraftingWindowTab<>(this, tile, () -> craftingWindowTab, container));
     }
 
     @Override
@@ -48,6 +48,7 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
             //TODO: Figure out a cleaner way of doing this that is more generic
             if (window instanceof GuiCraftingWindow) {
                 craftingWindowTab.adoptWindows(window);
+                ((GuiCraftingWindow<?>) window).updateContainer(container);
             }
         }
         // and then call super to transfer them over and call resize which will reattach it
