@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -22,6 +21,7 @@ import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
+import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
@@ -75,7 +75,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private int doubleClickTransferTicks = 0;
     private int lastSlot = -1;
     private ItemStack lastStack = ItemStack.EMPTY;
-    private final IInventorySlot[][] craftingSlots = new IInventorySlot[MAX_CRAFTING_WINDOWS][10];
+    private final VirtualInventoryContainerSlot[][] craftingSlots = new VirtualInventoryContainerSlot[MAX_CRAFTING_WINDOWS][10];
 
     protected QIOItemViewerContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, boolean remote) {
         super(type, id, inv);
@@ -134,11 +134,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     private void addCraftingSlot(CraftingWindowInventorySlot slot) {
-        craftingSlots[slot.getTableIndex()][slot.getSlotIndex()] = slot;
-        track(slot.createSyncableItemStack());
+        VirtualInventoryContainerSlot containerSlot = slot.createContainerSlot();
+        craftingSlots[slot.getTableIndex()][slot.getSlotIndex()] = containerSlot;
+        addSlot(containerSlot);
     }
 
-    public IInventorySlot getCraftingWindowSlot(int tableIndex, int slotIndex) {
+    public VirtualInventoryContainerSlot getCraftingWindowSlot(int tableIndex, int slotIndex) {
         return craftingSlots[tableIndex][slotIndex];
     }
 

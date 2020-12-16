@@ -1,9 +1,10 @@
 package mekanism.common.inventory.slot;
 
 import java.util.function.BiPredicate;
+import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.inventory.container.sync.SyncableItemStack;
+import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.minecraft.item.ItemStack;
 
 public class CraftingWindowInventorySlot extends BasicInventorySlot {
@@ -36,8 +37,9 @@ public class CraftingWindowInventorySlot extends BasicInventorySlot {
         return slotIndex;
     }
 
-    public SyncableItemStack createSyncableItemStack() {
-        //Sets the stack in an unchecked manner so that it always properly works on the client
-        return SyncableItemStack.create(this::getStack, this::setStackUnchecked);
+    @Nonnull
+    @Override
+    public VirtualInventoryContainerSlot createContainerSlot() {
+        return new VirtualInventoryContainerSlot(this, getSlotOverlay(), this::setStackUnchecked);
     }
 }

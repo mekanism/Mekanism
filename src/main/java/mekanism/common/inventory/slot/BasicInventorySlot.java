@@ -225,6 +225,15 @@ public class BasicInventorySlot implements IInventorySlot {
         this.slotOverlay = slotOverlay;
     }
 
+    @Nullable
+    protected final SlotOverlay getSlotOverlay() {
+        return slotOverlay;
+    }
+
+    protected final ContainerSlotType getSlotType() {
+        return slotType;
+    }
+
     /**
      * {@inheritDoc}
      *

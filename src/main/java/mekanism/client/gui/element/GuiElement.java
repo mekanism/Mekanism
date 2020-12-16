@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
@@ -107,6 +108,14 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         x = x - prevLeft + left;
         y = y - prevTop + top;
         children.forEach(child -> child.resize(prevLeft, prevTop, left, top));
+    }
+
+    public boolean childrenContainsElement(Predicate<GuiElement> checker) {
+        return children.stream().anyMatch(e -> e.containsElement(checker));
+    }
+
+    public boolean containsElement(Predicate<GuiElement> checker) {
+        return checker.test(this) || childrenContainsElement(checker);
     }
 
     @Override
@@ -296,7 +305,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         if (isHovering) {
             //If the mouse is over this element, check if there is a window that would intercept the mouse
             GuiWindow window = guiObj.getWindowHovering(mouseX, mouseY);
-            if (window != null && !window.children().contains(this)) {
+            if (window != null && !window.childrenContainsElement(e -> e == this)) {
                 //If there is and this element is not part of that window,
                 // then mark that our mouse is not over the element
                 isHovering = false;

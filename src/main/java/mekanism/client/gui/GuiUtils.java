@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -234,7 +235,7 @@ public class GuiUtils {
     }
 
     public static void renderItem(MatrixStack matrix, ItemRenderer renderer, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, FontRenderer font,
-          String text, boolean overlay) {
+          @Nullable String text, boolean overlay) {
         if (!stack.isEmpty()) {
             try {
                 matrix.push();

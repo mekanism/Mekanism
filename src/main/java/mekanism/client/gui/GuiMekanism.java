@@ -14,12 +14,14 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
 import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -32,7 +34,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.entity.player.PlayerInventory;
@@ -44,7 +45,7 @@ import net.minecraft.util.text.ITextComponent;
 import org.apache.commons.lang3.tuple.Pair;
 
 //TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
-public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
+public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
 
     private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     public static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
@@ -312,16 +313,76 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         return getListener() != null && isDragging() && button == 0 && getListener().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }
 
-    protected boolean isMouseOverSlot(Slot slot, double mouseX, double mouseY) {
+    @Nullable
+    @Override
+    @Deprecated//Don't use directly, this is normally private in ContainerScreen
+    protected Slot getSelectedSlot(double mouseX, double mouseY) {
+        //We override the implementation we have in VirtualSlotContainerScreen so that we can cache getting our window
+        // and have some general performance improvements given we can batch a bunch of lookups together
+        boolean checkedWindow = false;
+        boolean overNoButtons = false;
+        GuiWindow window = null;
+        for (Slot slot : container.inventorySlots) {
+            boolean virtual = slot instanceof IVirtualSlot;
+            int xPos = slot.xPos;
+            int yPos = slot.yPos;
+            if (virtual) {
+                //Virtual slots need special handling to allow for matching them to the window they may be attached to
+                IVirtualSlot virtualSlot = (IVirtualSlot) slot;
+                xPos = virtualSlot.getActualX();
+                yPos = virtualSlot.getActualY();
+            }
+            if (super.isPointInRegion(xPos, yPos, 16, 16, mouseX, mouseY)) {
+                if (!checkedWindow) {
+                    //Only lookup the window once
+                    checkedWindow = true;
+                    window = getWindowHovering(mouseX, mouseY);
+                    overNoButtons = overNoButtons(window, mouseX, mouseY);
+                }
+                if (overNoButtons && slot.isEnabled()) {
+                    if (window == null) {
+                        return slot;
+                    } else if (virtual && window.childrenContainsElement(element ->
+                          element instanceof GuiVirtualSlot && ((GuiVirtualSlot) element).isElementForSlot((IVirtualSlot) slot))) {
+                        return slot;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected boolean isMouseOverSlot(@Nonnull Slot slot, double mouseX, double mouseY) {
+        if (slot instanceof IVirtualSlot) {
+            //Virtual slots need special handling to allow for matching them to the window they may be attached to
+            IVirtualSlot virtualSlot = (IVirtualSlot) slot;
+            int xPos = virtualSlot.getActualX();
+            int yPos = virtualSlot.getActualY();
+            if (super.isPointInRegion(xPos, yPos, 16, 16, mouseX, mouseY)) {
+                GuiWindow window = getWindowHovering(mouseX, mouseY);
+                //If we are hovering over a window, check if the virtual slot is a child of the window
+                if (window == null || window.childrenContainsElement(element -> element instanceof GuiVirtualSlot && ((GuiVirtualSlot) element).isElementForSlot(virtualSlot))) {
+                    return overNoButtons(window, mouseX, mouseY);
+                }
+            }
+            return false;
+        }
         return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);
+    }
+
+    private boolean overNoButtons(@Nullable GuiWindow window, double mouseX, double mouseY) {
+        if (window == null) {
+            return buttons.stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
+        }
+        return !window.childrenContainsElement(e -> e.isMouseOver(mouseX, mouseY));
     }
 
     @Override
     protected boolean isPointInRegion(int x, int y, int width, int height, double mouseX, double mouseY) {
         // overridden to prevent slot interactions when a GuiElement is blocking
-        return super.isPointInRegion(x, y, width, height, mouseX, mouseY) &&
-               getWindowHovering(mouseX, mouseY) == null &&
-               buttons.stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
+        return super.isPointInRegion(x, y, width, height, mouseX, mouseY) && getWindowHovering(mouseX, mouseY) == null &&
+               overNoButtons(null, mouseX, mouseY);
     }
 
     protected void addSlots() {
