@@ -43,6 +43,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
 
         if (doTransfer) {
             //TODO: Send packet to server with information of what to transfer and where
+            // Look at how various mods including JEI does it, also may be worth looking at vanilla's ServerRecipePlacer
         }
         //TODO: Switch this back to returning null, this for now is mainly for debug purposes
         return this.handlerHelper.createUserErrorWithTooltip("QIO Crafting Grid " + container.getSelectedCraftingGrid() + " selected.");

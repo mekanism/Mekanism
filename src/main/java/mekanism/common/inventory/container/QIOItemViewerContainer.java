@@ -8,18 +8,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.SearchQueryParser;
 import mekanism.common.content.qio.SearchQueryParser.ISearchQuery;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.inventory.ISlotClickHandler;
+import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
@@ -40,6 +43,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
@@ -75,7 +79,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private int doubleClickTransferTicks = 0;
     private int lastSlot = -1;
     private ItemStack lastStack = ItemStack.EMPTY;
-    private final VirtualInventoryContainerSlot[][] craftingSlots = new VirtualInventoryContainerSlot[MAX_CRAFTING_WINDOWS][10];
+    private final QIOCraftingWindow[] craftingWindows = new QIOCraftingWindow[MAX_CRAFTING_WINDOWS];
+    private final IVirtualSlot[][] craftingSlots = new IVirtualSlot[MAX_CRAFTING_WINDOWS][10];
 
     protected QIOItemViewerContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, boolean remote) {
         super(type, id, inv);
@@ -87,6 +92,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 // save the updated config info
                 MekanismConfig.client.getConfigSpec().save();
             }
+        }
+        //TODO: Pass in our crafting windows from the tile/item so that we can make sure they are properly persistent
+        // Also get the world supplier from the tile/item
+        Supplier<World> worldSupplier = inv == null ? () -> null : inv.player::getEntityWorld;
+        for (int tableIndex = 0; tableIndex < MAX_CRAFTING_WINDOWS; tableIndex++) {
+            craftingWindows[tableIndex] = new QIOCraftingWindow(tableIndex, worldSupplier);
         }
     }
 
@@ -120,26 +131,27 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     protected void addSlots() {
         super.addSlots();
-        //TODO: Implement interacting with the slots, including shift clicking
-        // Note: For shift clicking we only will care about the currently selected window
-        //TODO: We also need to make sure to implement proper persistence for the crafting slots
-        for (int tableIndex = 0; tableIndex < MAX_CRAFTING_WINDOWS; tableIndex++) {
+        //TODO: Make shift clicking for item viewer sed to open crafting window before sending to QIO storage
+        // Also make sure shift clicking out of the crafting windows targets the correct places
+        for (QIOCraftingWindow craftingWindow : craftingWindows) {
+            int tableIndex = craftingWindow.getWindowIndex();
             for (int row = 0; row < 3; row++) {
                 for (int column = 0; column < 3; column++) {
-                    addCraftingSlot(CraftingWindowInventorySlot.input(tableIndex, row * 3 + column));
+                    int slotIndex = row * 3 + column;
+                    addCraftingSlot(craftingWindow.getInputSlot(slotIndex), tableIndex, slotIndex);
                 }
             }
-            addCraftingSlot(CraftingWindowInventorySlot.output(tableIndex, 9));
+            addCraftingSlot(craftingWindow.getOutputSlot(), tableIndex, 9);
         }
     }
 
-    private void addCraftingSlot(CraftingWindowInventorySlot slot) {
+    private void addCraftingSlot(CraftingWindowInventorySlot slot, int tableIndex, int slotIndex) {
         VirtualInventoryContainerSlot containerSlot = slot.createContainerSlot();
-        craftingSlots[slot.getTableIndex()][slot.getSlotIndex()] = containerSlot;
+        craftingSlots[tableIndex][slotIndex] = containerSlot;
         addSlot(containerSlot);
     }
 
-    public VirtualInventoryContainerSlot getCraftingWindowSlot(int tableIndex, int slotIndex) {
+    public IVirtualSlot getCraftingWindowSlot(int tableIndex, int slotIndex) {
         return craftingSlots[tableIndex][slotIndex];
     }
 
@@ -203,31 +215,34 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         if (currentSlot == null) {
             return ItemStack.EMPTY;
         }
-        ItemStack slotStack = currentSlot.getStack().copy();
+        if (currentSlot instanceof InventoryContainerSlot) {
+            return super.transferStackInSlot(player, slotID);
+        }
         // special handling for shift-clicking into GUI
-        if (!(currentSlot instanceof InventoryContainerSlot)) {
-            if (!player.world.isRemote()) {
-                QIOFrequency frequency = getFrequency();
-                if (frequency != null) {
-                    if (!slotStack.isEmpty()) {
-                        ItemStack ret = frequency.addItem(slotStack);
-                        if (slotStack.getCount() == ret.getCount()) {
-                            return ItemStack.EMPTY;
-                        }
-                        setTransferTracker(slotStack, slotID);
-                        return updateSlot(player, currentSlot, ret);
-                    } else {
-                        if (slotID == lastSlot && !lastStack.isEmpty()) {
-                            doDoubleClickTransfer(player);
-                        }
-                        resetTransferTracker();
+        if (!player.world.isRemote()) {
+            //TODO: Try to put it inside the currently selected crafting window.
+            // NOTE: To do this properly we are going to have to sync the currently
+            // selected/open crafting window to the server
+            QIOFrequency frequency = getFrequency();
+            if (frequency != null) {
+                if (currentSlot.getHasStack()) {
+                    ItemStack slotStack = currentSlot.getStack().copy();
+                    ItemStack ret = frequency.addItem(slotStack);
+                    if (slotStack.getCount() == ret.getCount()) {
                         return ItemStack.EMPTY;
                     }
+                    setTransferTracker(slotStack, slotID);
+                    return updateSlot(player, currentSlot, ret);
+                } else {
+                    if (slotID == lastSlot && !lastStack.isEmpty()) {
+                        doDoubleClickTransfer(player);
+                    }
+                    resetTransferTracker();
+                    return ItemStack.EMPTY;
                 }
             }
-            return ItemStack.EMPTY;
         }
-        return super.transferStackInSlot(player, slotID);
+        return ItemStack.EMPTY;
     }
 
     private ItemStack updateSlot(PlayerEntity player, Slot currentSlot, ItemStack ret) {

@@ -71,6 +71,11 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     }
 
     @Override
+    public boolean getHasStack() {
+        return !slot.isEmpty();
+    }
+
+    @Override
     public void putStack(@Nonnull ItemStack stack) {
         //Note: We have to set the stack in an unchecked manor here, so that if we sync a stack from the server to the client that
         // the client does not think is valid for the stack, it doesn't cause major issues
@@ -86,7 +91,11 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Override
     public void onSlotChange(@Nonnull ItemStack current, @Nonnull ItemStack newStack) {
-        slot.onContentsChanged();
+        int change = newStack.getCount() - current.getCount();
+        if (change > 0) {
+            slot.onContentsChanged();
+            onCrafting(newStack, change);
+        }
     }
 
     @Override

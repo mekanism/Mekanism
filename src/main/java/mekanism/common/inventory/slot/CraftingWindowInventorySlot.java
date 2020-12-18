@@ -2,39 +2,32 @@ package mekanism.common.inventory.slot;
 
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IContentsListener;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
+import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.minecraft.item.ItemStack;
 
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class CraftingWindowInventorySlot extends BasicInventorySlot {
 
-    //TODO: is having no listener correct or will we actually want to have one for purposes of marking
-    // things as saved
-    public static CraftingWindowInventorySlot input(int tableIndex, int slotIndex) {
-        return new CraftingWindowInventorySlot(notExternal, alwaysTrueBi, tableIndex, slotIndex);
+    public static CraftingWindowInventorySlot input(QIOCraftingWindow window) {
+        return new CraftingWindowInventorySlot(notExternal, alwaysTrueBi, window, window);
     }
 
-    public static CraftingWindowInventorySlot output(int tableIndex, int slotIndex) {
-        return new CraftingWindowInventorySlot(manualOnly, internalOnly, tableIndex, slotIndex);
-    }
+    protected final QIOCraftingWindow craftingWindow;
 
-    private final int tableIndex;
-    private final int slotIndex;
-
-    private CraftingWindowInventorySlot(BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert, int tableIndex, int slotIndex) {
-        super(canExtract, canInsert, alwaysTrue, null, 0, 0);
-        this.tableIndex = tableIndex;
-        this.slotIndex = slotIndex;
-    }
-
-    public int getTableIndex() {
-        return tableIndex;
-    }
-
-    public int getSlotIndex() {
-        return slotIndex;
+    protected CraftingWindowInventorySlot(BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract,
+          BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert, QIOCraftingWindow craftingWindow, @Nullable IContentsListener listener) {
+        super(canExtract, canInsert, alwaysTrue, listener, 0, 0);
+        this.craftingWindow = craftingWindow;
     }
 
     @Nonnull
