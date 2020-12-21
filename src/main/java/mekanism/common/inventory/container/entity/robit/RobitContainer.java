@@ -40,7 +40,7 @@ public abstract class RobitContainer extends MekanismEntityContainer<EntityRobit
     }
 
     @Override
-    protected void closeInventory(PlayerEntity player) {
+    protected void closeInventory(@Nonnull PlayerEntity player) {
         super.closeInventory(player);
         entity.close(player);
     }

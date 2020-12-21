@@ -16,6 +16,8 @@ public class PacketHandler extends BasePacketHandler {
 
     @Override
     public void initialize() {
+        //TODO - 10.1: Refactor our network package so packets are in a package based on which side they go to
+        // this will make it easier/cleaner to keep track of which packet goes which direction
         //Client to server messages
         registerClientToServer(PacketRobit.class, PacketRobit::encode, PacketRobit::decode, PacketRobit::handle);
         registerClientToServer(PacketModeChange.class, PacketModeChange::encode, PacketModeChange::decode, PacketModeChange::handle);
@@ -41,6 +43,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketGuiItemDataRequest.class, PacketGuiItemDataRequest::encode, PacketGuiItemDataRequest::decode, PacketGuiItemDataRequest::handle);
         registerClientToServer(PacketQIOSetColor.class, PacketQIOSetColor::encode, PacketQIOSetColor::decode, PacketQIOSetColor::handle);
         registerClientToServer(PacketTeleporterSetColor.class, PacketTeleporterSetColor::encode, PacketTeleporterSetColor::decode, PacketTeleporterSetColor::handle);
+        registerClientToServer(PacketQIOCraftingWindowSelect.class, PacketQIOCraftingWindowSelect::encode, PacketQIOCraftingWindowSelect::decode, PacketQIOCraftingWindowSelect::handle);
 
         //Server to client messages
         registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);

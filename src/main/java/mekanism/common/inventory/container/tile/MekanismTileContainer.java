@@ -56,7 +56,7 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     }
 
     @Override
-    protected void closeInventory(PlayerEntity player) {
+    protected void closeInventory(@Nonnull PlayerEntity player) {
         if (tile != null) {
             tile.close(player);
         }

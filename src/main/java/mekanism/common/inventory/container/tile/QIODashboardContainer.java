@@ -60,7 +60,7 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    protected void closeInventory(PlayerEntity player) {
+    protected void closeInventory(@Nonnull PlayerEntity player) {
         super.closeInventory(player);
         if (tile != null) {
             tile.close(player);

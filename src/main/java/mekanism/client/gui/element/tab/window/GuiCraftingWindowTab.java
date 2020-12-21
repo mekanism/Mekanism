@@ -20,7 +20,7 @@ public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_
     //TODO: Evaluate a better way of doing this than this weird openWindows thing
     private final boolean[] openWindows = new boolean[QIOItemViewerContainer.MAX_CRAFTING_WINDOWS];
     private final QIODashboardContainer container;
-    private int currentWindows;
+    private byte currentWindows;
 
     public GuiCraftingWindowTab(IGuiWrapper gui, DATA_SOURCE dataSource, Supplier<GuiCraftingWindowTab<DATA_SOURCE>> elementSupplier, QIODashboardContainer container) {
         super(MekanismUtils.getResource(ResourceType.GUI_BUTTON, "crafting.png"), gui, dataSource, -26, 34, 26, 18, true, elementSupplier);
@@ -75,10 +75,11 @@ public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_
 
     @Override
     protected GuiWindow createWindow() {
-        int index = 0;
+        byte index = 0;
         for (int i = 0; i < openWindows.length; i++) {
             if (!openWindows[i]) {
-                index = i;
+                //Note: We cast it to a byte as it realistically will never be more than 2
+                index = (byte) i;
                 break;
             }
         }

@@ -30,26 +30,24 @@ public class QIOCraftingWindow implements IContentsListener {
     private final CraftingWindowInventorySlot[] inputSlots = new CraftingWindowInventorySlot[9];
     private final CraftingWindowOutputInventorySlot outputSlot;
     private final QIOCraftingInventory craftingInventory;
-    private final int windowIndex;
+    private final byte windowIndex;
     @Nullable
     private ICraftingRecipe lastRecipe;
     private boolean isCrafting;
     private boolean changedWhileCrafting;
     private Supplier<World> worldSupplier;
 
-    public QIOCraftingWindow(int windowIndex, Supplier<World> worldSupplier) {
+    public QIOCraftingWindow(byte windowIndex, Supplier<World> worldSupplier) {
         this.windowIndex = windowIndex;
         this.worldSupplier = worldSupplier;
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 3; column++) {
-                inputSlots[row * 3 + column] = CraftingWindowInventorySlot.input(this);
-            }
+        for (int slotIndex = 0; slotIndex < 9; slotIndex++) {
+            inputSlots[slotIndex] = CraftingWindowInventorySlot.input(this);
         }
         outputSlot = CraftingWindowOutputInventorySlot.create(this);
         craftingInventory = new QIOCraftingInventory();
     }
 
-    public int getWindowIndex() {
+    public byte getWindowIndex() {
         return windowIndex;
     }
 

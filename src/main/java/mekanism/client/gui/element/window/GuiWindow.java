@@ -39,7 +39,6 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     public void onFocusLost() {
-        //TODO: Validate onFocusLost gets called properly
     }
 
     public void onFocused() {
@@ -148,11 +147,8 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     public void close() {
-        children.forEach(GuiElement::onWindowClose);
         gui().removeWindow(this);
-        if (gui() instanceof GuiMekanism) {
-            ((GuiMekanism<?>) gui()).setListener(null);
-        }
+        children.forEach(GuiElement::onWindowClose);
         if (closeListener != null) {
             closeListener.accept(this);
         }

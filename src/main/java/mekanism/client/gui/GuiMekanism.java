@@ -256,15 +256,20 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
         GuiWindow focused = windows.stream().filter(overlay -> overlay.mouseClicked(mouseX, mouseY, button)).findFirst().orElse(null);
         if (focused != null) {
-            setListener(focused);
-            if (button == 0) {
-                setDragging(true);
-            }
-            // this check prevents us from moving the window to the top of the stack if the clicked window opened up an additional window
-            if (top != focused) {
-                top.onFocusLost();
-                windows.moveUp(focused);
-                focused.onFocused();
+            if (windows.contains(focused)) {
+                //Validate that the focused window is still one of our windows, as if it wasn't focused/on top and
+                // it is being closed, we don't want to update and mark it as focused, as our defocusing code won't
+                // run as we ran it when we pressed the button
+                setListener(focused);
+                if (button == 0) {
+                    setDragging(true);
+                }
+                // this check prevents us from moving the window to the top of the stack if the clicked window opened up an additional window
+                if (top != focused) {
+                    top.onFocusLost();
+                    windows.moveUp(focused);
+                    focused.onFocused();
+                }
             }
             return true;
         }
@@ -508,7 +513,29 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
 
     @Override
     public void removeWindow(GuiWindow window) {
-        windows.remove(window);
+        if (!windows.isEmpty()) {
+            GuiWindow top = windows.iterator().next();
+            windows.remove(window);
+            if (window == top) {
+                //If the window was the top window, make it lose focus
+                window.onFocusLost();
+                //Amd check if a new window is now in focus
+                GuiWindow newTop = windows.isEmpty() ? null : windows.iterator().next();
+                if (newTop == null) {
+                    //If there isn't any because they have all been removed
+                    // fire an "event" for any post all windows being closed
+                    lastWindowRemoved();
+                } else {
+                    //Otherwise mark the new window as being focused
+                    newTop.onFocused();
+                }
+                //Update the listener to being the window that is now selected or null if none are
+                setListener(newTop);
+            }
+        }
+    }
+
+    protected void lastWindowRemoved() {
     }
 
     @Nullable

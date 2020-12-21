@@ -146,7 +146,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         closeInventory(player);
     }
 
-    protected void closeInventory(PlayerEntity player) {
+    protected void closeInventory(@Nonnull PlayerEntity player) {
     }
 
     protected void openInventory(@Nonnull PlayerInventory inv) {
@@ -245,11 +245,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
             return ItemStack.EMPTY;
         }
         //Otherwise decrease the stack by the amount we inserted, and return it as a new stack for what is now in the slot
-        int difference = slotStack.getCount() - stackToInsert.getCount();
-        currentSlot.decrStackSize(difference);
-        ItemStack newStack = StackUtils.size(slotStack, difference);
-        currentSlot.onTake(player, newStack);
-        return newStack;
+        return transferSuccess(currentSlot, player, slotStack, stackToInsert);
     }
 
     //TODO: JAVADOC?
@@ -272,6 +268,15 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
             }
         }
         return stack;
+    }
+
+    @Nonnull
+    protected ItemStack transferSuccess(@Nonnull Slot currentSlot, @Nonnull PlayerEntity player, @Nonnull ItemStack slotStack, @Nonnull ItemStack stackToInsert) {
+        int difference = slotStack.getCount() - stackToInsert.getCount();
+        currentSlot.decrStackSize(difference);
+        ItemStack newStack = StackUtils.size(slotStack, difference);
+        currentSlot.onTake(player, newStack);
+        return newStack;
     }
 
     //Start container sync management

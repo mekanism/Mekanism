@@ -15,10 +15,10 @@ public class GuiCraftingWindow<DATA_SOURCE> extends GuiWindow {
 
     private final List<GuiVirtualSlot> slots;
     private final DATA_SOURCE dataSource;
-    private final int index;
+    private final byte index;
     private QIODashboardContainer container;
 
-    public GuiCraftingWindow(IGuiWrapper gui, int x, int y, DATA_SOURCE dataSource, QIODashboardContainer container, int index) {
+    public GuiCraftingWindow(IGuiWrapper gui, int x, int y, DATA_SOURCE dataSource, QIODashboardContainer container, byte index) {
         super(gui, x, y, 118, 80);
         this.dataSource = dataSource;
         this.container = container;
@@ -55,7 +55,7 @@ public class GuiCraftingWindow<DATA_SOURCE> extends GuiWindow {
         container.setSelectedCraftingGrid(index);
     }
 
-    public int getIndex() {
+    public byte getIndex() {
         return index;
     }
 

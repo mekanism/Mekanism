@@ -122,6 +122,13 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         getMinecraft().keyboardListener.enableRepeatEvents(false);
     }
 
+    @Override
+    protected void lastWindowRemoved() {
+        super.lastWindowRemoved();
+        //Mark that no crafting grids are now selected
+        container.setSelectedCraftingGrid((byte) -1);
+    }
+
     private boolean isValidSearchChar(char c) {
         return ALLOWED_SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isAlphabetic(c);
     }
