@@ -224,6 +224,7 @@
   "command.mekanism.debug": "Ubah mode debug: %s.",
   "command.mekanism.testrules": "Mengaktifkan keepInventory, and disabled doMobSpawning, doDaylightCycle, doWeatherCycle and mobGriefing!",
   "configuration.mekanism.config_type": "%s Konfigurasi",
+  "configuration.mekanism.side": "Konfigurasi Sampingan",
   "configuration.mekanism.slots": "Slot",
   "configuration.mekanism.transporter": "Konfigurasi Transporter",
   "configuration_card.mekanism.got": "Data konfigurasi dari %s didapatkan",
