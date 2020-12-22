@@ -36,7 +36,6 @@ import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -286,11 +285,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     private ItemStack updateSlot(PlayerEntity player, Slot currentSlot, ItemStack ret) {
-        int difference = currentSlot.getStack().getCount() - ret.getCount();
-        currentSlot.decrStackSize(difference);
-        ItemStack newStack = StackUtils.size(currentSlot.getStack(), difference);
-        currentSlot.onTake(player, newStack);
-        return newStack;
+        return transferSuccess(currentSlot, player, currentSlot.getStack(), ret);
     }
 
     public void handleBatchUpdate(Object2LongMap<UUIDAwareHashedItem> itemMap, long countCapacity, int typeCapacity) {

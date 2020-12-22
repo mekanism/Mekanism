@@ -102,7 +102,9 @@ public class QIOCraftingWindow implements IContentsListener {
     }
 
     @Nonnull
-    public ItemStack performCraft(@Nonnull PlayerEntity player, @Nonnull ItemStack result, int amountCrafted) {
+    public ItemStack performCraft(@Nonnull PlayerEntity player, @Nonnull ItemStack result, int amountCrafted, boolean shiftClicked) {
+        //TODO: Implement shiftClicking properly
+        //TODO: Test how well our crafting windows handle how our bins allow inputting and outputting their inputs via crafting recipes
         if (amountCrafted == 0 || lastRecipe == null || result.isEmpty()) {
             //Nothing actually crafted or no recipe, return no result
             return ItemStack.EMPTY;
@@ -124,20 +126,45 @@ public class QIOCraftingWindow implements IContentsListener {
         //Mark that we are crafting so changes to the slots below don't force a bunch of recalculations to take place
         isCrafting = true;
         //Craft the result
+        //TODO: We need to make sure we take the amountCrafted into account properly when shift clicking
+        // as we will need to increment the item crafted stat further. It may be easier for us to just
+        // manually increment the stat rather than holding off on calling result.onCrafting until we
+        // know how much is actually being crafted as we pass it to the firePlayerCraftingEvent.
+        // Is this even valid though given if we want to represent how much actually is being crafted
+        // we may still need to just fire the event multiple times, especially in "weird" cases where
+        // the container item is still valid for the recipe, but then the output becomes something different
+        // because of NBT
         result.onCrafting(world, player, amountCrafted);
         BasicEventHooks.firePlayerCraftingEvent(player, result, craftingInventory);
         ForgeHooks.setCraftingPlayer(player);
         NonNullList<ItemStack> remaining = lastRecipe.getRemainingItems(craftingInventory);
-        ForgeHooks.setCraftingPlayer(null);
         //Update slots with remaining contents
-        //TODO: Figure out how we want to handle this in relationship to the stored stuff in the QIO
-        // Aka we don't necessarily want to actually remove everything from the inputs if we have more
-        // that is stored in the QIO that can be used
-        //TODO: Make caller loop when shift clicking, if we also do this when handling removal and make it
-        // so that container/other remaining items don't stay in the input slots by default unless there are
-        // no more items, then we can probably even bypass/skip rechecking if the recipe matches as we know
-        // for certain that it will match, we will need a way to know if it is shift crafting but that should
-        // hopefully be relatively simple to achieve
+        //TODO: Make caller loop when shift clicking, which should be able to improve the performance a fair bit,
+        // we can also then take into account the handling of removal of items and adding of container items so
+        // that if we aren't updating the inputs because the container item is still valid (for example a damageable
+        // input, in which case we would need to recheck), we won't have to relookup the remaining items as nothing
+        // will have changed so they will still be valid
+        //TODO: Behavior for shift clicking, use "all" the inputs, so if we say have four stacks of stone then
+        // we craft four stacks of stone bricks and leave four pieces of stone in the crafting window. Then if
+        // we shift click again we only craft up to one stack of the output. Note: We probably shouldn't have
+        // it craft more items than fit in the inventory even if there is room in the QIO for them. The player
+        // can easily enough just move items from the inventory into the QIO, if they are trying to fill the
+        // QIO with something
+        //TODO: We will do a similar thing for normal clicking in regards to the backing QIO inventory, in that
+        // if the inputs are stacked we just use from the crafting window, otherwise we try taking from the QIO's
+        // inventory, and only take from the crafting window if there is nothing stored in the QIO
+        //TODO: Handling for remainder items:
+        // if container item is still valid in that slot for the recipe
+        //    or we don't have enough contents to do the recipe again,
+        //      put it there
+        // else try putting it into the player's inventory
+        //    if there is no room for it then try putting it in the backing storage
+        //      if there is no room there for it either (due to item type restrictions),
+        //        put it in the crafting slots
+        // if everything fails do what vanilla does as fallback and just drops it on the ground as the player
+        //TODO: Figure out how we want to handle refilling if we run out of an item but have another item stored
+        // that is valid for the recipe in that spot. Potentially we want to stop crafting, and refill it, but then
+        // highlight the slot or something so that the player has an easier time seeing it changed
         for (int i = 0; i < remaining.size(); i++) {
             CraftingWindowInventorySlot inputSlot = inputSlots[i];
             //If the input slot contains an item, reduce the size of it by one
@@ -159,6 +186,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 }
             }
         }
+        ForgeHooks.setCraftingPlayer(null);
         //Mark that we are done crafting
         isCrafting = false;
         if (changedWhileCrafting) {
