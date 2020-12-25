@@ -86,6 +86,7 @@ public class TileEntityChemicalTank extends TileEntityMekanism implements ISideC
 
     @Override
     protected void presetVariables() {
+        super.presetVariables();
         tier = Attribute.getTier(getBlockType(), ChemicalTankTier.class);
         chemicalTank = ChemicalTankChemicalTank.create(tier, this);
     }

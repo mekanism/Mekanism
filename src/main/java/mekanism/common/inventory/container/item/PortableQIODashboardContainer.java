@@ -2,6 +2,7 @@ package mekanism.common.inventory.container.item;
 
 import javax.annotation.Nonnull;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.inventory.PortableQIODashboardInventory;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.item.ItemPortableQIODashboard;
@@ -24,7 +25,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     protected final ItemStack stack;
 
     private PortableQIODashboardContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack, boolean remote) {
-        super(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, id, inv, remote);
+        super(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, id, inv, remote, new PortableQIODashboardInventory(stack, inv == null ? null : inv.player.getEntityWorld()));
         this.hand = hand;
         this.stack = stack;
         addSlotsAndOpen();

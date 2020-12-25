@@ -7,6 +7,7 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.item.interfaces.IGuiItem;
+import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.util.ItemDataUtils;
@@ -24,7 +25,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem {
+//TODO - 10.1: Decide if we should display the "has inventory" for if there is stuff stored in the crafting windows
+public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem, IItemSustainedInventory {
 
     public ItemPortableQIODashboard(Properties properties) {
         super(properties.maxStackSize(1).rarity(Rarity.RARE));

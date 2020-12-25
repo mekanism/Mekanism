@@ -9,18 +9,16 @@ import mekanism.client.gui.element.GuiRightArrow;
 import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.QIODashboardContainer;
+import mekanism.common.inventory.container.QIOItemViewerContainer;
 
-public class GuiCraftingWindow<DATA_SOURCE> extends GuiWindow {
+public class GuiCraftingWindow extends GuiWindow {
 
     private final List<GuiVirtualSlot> slots;
-    private final DATA_SOURCE dataSource;
     private final byte index;
-    private QIODashboardContainer container;
+    private QIOItemViewerContainer container;
 
-    public GuiCraftingWindow(IGuiWrapper gui, int x, int y, DATA_SOURCE dataSource, QIODashboardContainer container, byte index) {
+    public GuiCraftingWindow(IGuiWrapper gui, int x, int y, QIOItemViewerContainer container, byte index) {
         super(gui, x, y, 118, 80);
-        this.dataSource = dataSource;
         this.container = container;
         this.index = index;
         interactionStrategy = InteractionStrategy.ALL;
@@ -40,7 +38,7 @@ public class GuiCraftingWindow<DATA_SOURCE> extends GuiWindow {
         slots.add(slot);
     }
 
-    public void updateContainer(QIODashboardContainer container) {
+    public void updateContainer(QIOItemViewerContainer container) {
         //Update our container reference and lookup the slots again
         // and update the stored lookup method
         this.container = container;

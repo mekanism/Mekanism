@@ -2,6 +2,7 @@ package mekanism.client.gui.qio;
 
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
@@ -47,6 +48,7 @@ public class GuiQIOItemFrequencySelect extends GuiQIOFrequencySelect<QIOFrequenc
         }
     }
 
+    @Nullable
     @Override
     public QIOFrequency getFrequency() {
         return container.getFrequency();

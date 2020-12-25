@@ -48,6 +48,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     @Override
     protected void presetVariables() {
+        super.presetVariables();
         tier = Attribute.getTier(getBlockType(), BinTier.class);
     }
 

@@ -57,6 +57,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "PigmentTanks",
+                  "target": "mekData.PigmentTanks",
+                  "op": "replace"
+                },
+                {
                   "source": "SlurryTanks",
                   "target": "mekData.SlurryTanks",
                   "op": "replace"

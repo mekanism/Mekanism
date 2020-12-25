@@ -82,6 +82,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
 
     @Override
     protected void presetVariables() {
+        super.presetVariables();
         inputTank = MergedChemicalTank.create(
               ChemicalTankBuilder.GAS.input(MAX_CHEMICAL, gas -> containsRecipe(recipe -> {
                   IChemicalStackIngredient<?, ?> input = recipe.getInput();

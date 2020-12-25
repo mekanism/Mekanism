@@ -144,6 +144,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     protected void presetVariables() {
+        super.presetVariables();
         tier = Attribute.getTier(getBlockType(), FactoryTier.class);
     }
 

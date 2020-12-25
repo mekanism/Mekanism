@@ -68,6 +68,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Override
     protected void presetVariables() {
+        super.presetVariables();
         tier = Attribute.getTier(getBlockType(), FluidTankTier.class);
     }
 

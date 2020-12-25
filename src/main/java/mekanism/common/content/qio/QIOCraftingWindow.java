@@ -2,7 +2,6 @@ package mekanism.common.content.qio;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -30,16 +29,16 @@ public class QIOCraftingWindow implements IContentsListener {
     private final CraftingWindowInventorySlot[] inputSlots = new CraftingWindowInventorySlot[9];
     private final CraftingWindowOutputInventorySlot outputSlot;
     private final QIOCraftingInventory craftingInventory;
+    private final IQIOCraftingWindowHolder holder;
     private final byte windowIndex;
     @Nullable
     private ICraftingRecipe lastRecipe;
     private boolean isCrafting;
     private boolean changedWhileCrafting;
-    private Supplier<World> worldSupplier;
 
-    public QIOCraftingWindow(byte windowIndex, Supplier<World> worldSupplier) {
+    public QIOCraftingWindow(IQIOCraftingWindowHolder holder, byte windowIndex) {
         this.windowIndex = windowIndex;
-        this.worldSupplier = worldSupplier;
+        this.holder = holder;
         for (int slotIndex = 0; slotIndex < 9; slotIndex++) {
             inputSlots[slotIndex] = CraftingWindowInventorySlot.input(this);
         }
@@ -64,7 +63,8 @@ public class QIOCraftingWindow implements IContentsListener {
 
     @Override
     public void onContentsChanged() {
-        //TODO: Call the tile/item to update persistence of contents as well
+        //Mark the contents as having changed in the holder so as to make sure it properly persists
+        holder.onContentsChanged();
         //Update the output slot
         if (isCrafting) {
             //If we are currently crafting mark that we changed while crafting
@@ -77,7 +77,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
     //TODO: Re-evaluate our implementation of this
     private void updateOutputSlot() {
-        World world = worldSupplier.get();
+        World world = holder.getHolderWorld();
         if (world != null && !world.isRemote && world.getServer() != null) {
             if (craftingInventory.isEmpty()) {
                 //If there is no input, then set the output to empty as there can't be a matching recipe
@@ -109,8 +109,8 @@ public class QIOCraftingWindow implements IContentsListener {
             //Nothing actually crafted or no recipe, return no result
             return ItemStack.EMPTY;
         }
-        World world = worldSupplier.get();
-        if (!lastRecipe.matches(craftingInventory, world)) {
+        World world = holder.getHolderWorld();
+        if (world == null || !lastRecipe.matches(craftingInventory, world)) {
             //If the recipe isn't valid for the inputs, fail
             return ItemStack.EMPTY;
         }

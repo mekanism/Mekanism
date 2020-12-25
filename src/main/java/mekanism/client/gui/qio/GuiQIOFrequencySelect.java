@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.button.ColorButton;
@@ -191,6 +192,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
 
     public abstract void sendColorUpdate(int extra);
 
+    @Nullable
     public abstract QIOFrequency getFrequency();
 
     public abstract String getOwnerUsername();

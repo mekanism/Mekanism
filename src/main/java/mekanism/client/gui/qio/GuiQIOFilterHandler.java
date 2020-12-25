@@ -50,10 +50,10 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         addButton(new GuiInnerScreen(this, 9, 16, xSize - 18, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             QIOFrequency freq = tile.getQIOFrequency();
-            if (freq != null) {
-                list.add(MekanismLang.FREQUENCY.translate(freq.getKey()));
-            } else {
+            if (freq == null) {
                 list.add(MekanismLang.NO_FREQUENCY.translate());
+            } else {
+                list.add(MekanismLang.FREQUENCY.translate(freq.getKey()));
             }
             return list;
         }).tooltip(() -> {

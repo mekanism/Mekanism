@@ -459,7 +459,7 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.QIO_DASHBOARD, MekanismLang.DESCRIPTION_QIO_DASHBOARD)
           .withGui(() -> MekanismContainerTypes.QIO_DASHBOARD)
           .withCustomShape(BlockShapes.QIO_DASHBOARD)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeStateActive())
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), new AttributeSecurity(), new AttributeStateActive(), new AttributeInventory())
           .withCustomContainerProvider(tile -> (i, inv, player) -> new QIODashboardContainer(i, inv, (TileEntityQIODashboard) tile))
           .build();
     // QIO Importer

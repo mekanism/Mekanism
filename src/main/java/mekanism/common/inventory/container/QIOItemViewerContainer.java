@@ -10,13 +10,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.SearchQueryParser;
@@ -44,13 +44,11 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
     public static final int SLOTS_X_MIN = 8, SLOTS_X_MAX = 16, SLOTS_Y_MIN = 2, SLOTS_Y_MAX = 48;
     public static final int SLOTS_START_Y = 43;
-    public static final byte MAX_CRAFTING_WINDOWS = 3;
     private static final int DOUBLE_CLICK_TRANSFER_DURATION = 20;
 
     public static int getSlotsYMax() {
@@ -82,11 +80,23 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private int doubleClickTransferTicks = 0;
     private int lastSlot = -1;
     private ItemStack lastStack = ItemStack.EMPTY;
-    private final QIOCraftingWindow[] craftingWindows = new QIOCraftingWindow[MAX_CRAFTING_WINDOWS];
-    private final VirtualInventoryContainerSlot[][] craftingSlots = new VirtualInventoryContainerSlot[MAX_CRAFTING_WINDOWS][10];
+    private final QIOCraftingWindow[] craftingWindows;
+    private final VirtualInventoryContainerSlot[][] craftingSlots = new VirtualInventoryContainerSlot[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS][10];
 
-    protected QIOItemViewerContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, boolean remote) {
+    protected QIOItemViewerContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, boolean remote, IQIOCraftingWindowHolder holder) {
         super(type, id, inv);
+        if (holder == null) {
+            //Should never happen, but in case there was an error getting the tile it may have
+            craftingWindows = null;
+            Mekanism.logger.error("Error getting crafting window holder, closing.");
+            closeInventory(inv.player);
+            return;
+        }
+        this.craftingWindows = holder.getCraftingWindows();
+        if (craftingWindows.length != IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS) {
+            throw new IllegalArgumentException("Invalid number of crafting windows, expected " + IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS + " received " +
+                                               craftingWindows.length);
+        }
         if (remote) {
             //Validate the max size when we are on the client, and fix it if it is incorrect
             int maxY = getSlotsYMax();
@@ -96,16 +106,10 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 MekanismConfig.client.getConfigSpec().save();
             }
         }
-        //TODO: Pass in our crafting windows from the tile/item so that we can make sure they are properly persistent
-        // Also get the world supplier from the tile/item
-        Supplier<World> worldSupplier = inv == null ? () -> null : inv.player::getEntityWorld;
-        for (byte tableIndex = 0; tableIndex < MAX_CRAFTING_WINDOWS; tableIndex++) {
-            craftingWindows[tableIndex] = new QIOCraftingWindow(tableIndex, worldSupplier);
-        }
         if (!remote) {
             //Only keep track of uuid based selected grids on the server
             selectedCraftingGrids = new Object2ByteOpenHashMap<>();
-            craftingGridInputSlots = new List[MAX_CRAFTING_WINDOWS];
+            craftingGridInputSlots = new List[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS];
         }
     }
 
@@ -400,7 +404,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     public void setSelectedCraftingGrid(UUID player, byte selectedCraftingGrid) {
         if (selectedCraftingGrid == -1) {
             clearSelectedCraftingGrid(player);
-        } else if (selectedCraftingGrid < MAX_CRAFTING_WINDOWS) {
+        } else if (selectedCraftingGrid < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS) {
             //Validate that the packet sent a valid crafting grid
             selectedCraftingGrids.put(player, selectedCraftingGrid);
         }

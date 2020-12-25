@@ -31,7 +31,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         super.onUpdateServer();
         EnumColor prev = lastColor;
         QIOFrequency frequency = getQIOFrequency();
-        lastColor = frequency != null ? frequency.getColor() : null;
+        lastColor = frequency == null ? null : frequency.getColor();
         if (prev != lastColor) {
             sendUpdatePacket();
         }

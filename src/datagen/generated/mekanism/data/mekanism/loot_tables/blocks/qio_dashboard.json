@@ -20,6 +20,11 @@
                   "source": "componentSecurity.securityMode",
                   "target": "mekData.securityMode",
                   "op": "replace"
+                },
+                {
+                  "source": "Items",
+                  "target": "mekData.Items",
+                  "op": "replace"
                 }
               ]
             }

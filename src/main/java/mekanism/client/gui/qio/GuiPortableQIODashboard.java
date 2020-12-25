@@ -13,7 +13,6 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
 
     public GuiPortableQIODashboard(PortableQIODashboardContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        dynamicSlots = true;
     }
 
     @Override

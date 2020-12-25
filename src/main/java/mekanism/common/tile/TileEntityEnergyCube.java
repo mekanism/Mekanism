@@ -64,6 +64,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
 
     @Override
     protected void presetVariables() {
+        super.presetVariables();
         tier = Attribute.getTier(getBlockType(), EnergyCubeTier.class);
     }
 

@@ -51,8 +51,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
         }
 
         if (world.getGameTime() % 10 == 0) {
-            QIOFrequency frequency = getQIOFrequency();
-            setActive(frequency != null);
+            setActive(getQIOFrequency() != null);
         }
     }
 

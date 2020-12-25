@@ -60,7 +60,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
             setActive(frequency != null);
             for (int i = 0; i < DRIVE_SLOTS; i++) {
                 QIODriveSlot slot = (QIODriveSlot) driveSlots.get(i);
-                QIODriveData data = frequency != null ? frequency.getDriveData(slot.getKey()) : null;
+                QIODriveData data = frequency == null ? null : frequency.getDriveData(slot.getKey());
                 if (frequency == null || data == null) {
                     setDriveStatus(i, slot.getStack().isEmpty() ? DriveStatus.NONE : DriveStatus.OFFLINE);
                     continue;

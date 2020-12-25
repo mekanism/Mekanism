@@ -17,7 +17,7 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
     private final TileEntityQIODashboard tile;
 
     private QIODashboardContainer(int id, PlayerInventory inv, TileEntityQIODashboard tile, boolean remote) {
-        super(MekanismContainerTypes.QIO_DASHBOARD, id, inv, remote);
+        super(MekanismContainerTypes.QIO_DASHBOARD, id, inv, remote, tile);
         this.tile = tile;
         if (tile != null) {
             tile.addContainerTrackers(this);

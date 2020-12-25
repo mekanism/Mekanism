@@ -15,8 +15,10 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.custom.GuiResizeControls;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeType;
 import mekanism.client.gui.element.scroll.GuiSlotScroll;
+import mekanism.client.gui.element.tab.window.GuiCraftingWindowTab;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.client.gui.element.window.GuiCraftingWindow;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -40,6 +42,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     private GuiTextField searchField;
+    private GuiCraftingWindowTab craftingWindowTab;
 
     protected GuiQIOItemViewer(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -47,6 +50,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         ySize = QIOItemViewerContainer.SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 96;
         playerInventoryTitleY = ySize - 94;
         titleY = 5;
+        dynamicSlots = true;
     }
 
     @Override
@@ -89,6 +93,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         addButton(new GuiDigitalIconToggle<>(this, xSize - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, container::getSortDirection, container::setSortDirection));
         addButton(new GuiResizeControls(this, (getMinecraft().getMainWindow().getScaledHeight() / 2) - 20 - guiTop, this::resize));
+        addButton(craftingWindowTab = new GuiCraftingWindowTab(this, () -> craftingWindowTab, container));
     }
 
     @Override
@@ -176,6 +181,11 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     protected void transferWindows(Collection<GuiWindow> windows) {
         for (GuiWindow window : windows) {
             //Transition all current popup windows over to the new screen.
+            if (window instanceof GuiCraftingWindow) {
+                //Updating the references for listeners and the like for crafting windows
+                craftingWindowTab.adoptWindows(window);
+                ((GuiCraftingWindow) window).updateContainer(container);
+            }
             addWindow(window);
             window.transferToNewGui(this);
         }

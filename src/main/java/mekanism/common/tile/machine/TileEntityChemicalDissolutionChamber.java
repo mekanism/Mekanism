@@ -91,6 +91,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     @Override
     protected void presetVariables() {
+        super.presetVariables();
         outputTank = MergedChemicalTank.create(
               ChemicalTankBuilder.GAS.output(MAX_CHEMICAL, this),
               ChemicalTankBuilder.INFUSION.output(MAX_CHEMICAL, this),

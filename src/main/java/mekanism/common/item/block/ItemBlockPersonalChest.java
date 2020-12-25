@@ -7,6 +7,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
+import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.registration.impl.ItemDeferredRegister;
@@ -15,6 +16,7 @@ import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -25,7 +27,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?>> implements IItemSustainedInventory, ISecurityItem {
+public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?>> implements IItemSustainedInventory, ISecurityItem, IGuiItem {
 
     public ItemBlockPersonalChest(BlockTileModel<?, ?> block) {
         super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
@@ -47,8 +49,7 @@ public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?
             }
         } else if (SecurityUtils.canAccess(player, stack)) {
             if (!world.isRemote) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(),
-                      (i, inv, p) -> new PersonalChestItemContainer(i, inv, hand, stack)), buf -> {
+                NetworkHooks.openGui((ServerPlayerEntity) player, getContainerProvider(stack, hand), buf -> {
                     buf.writeEnumValue(hand);
                     buf.writeItemStack(stack);
                 });
@@ -67,5 +68,10 @@ public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?
         PlayerEntity player = context.getPlayer();
         //Only allow placing if there is no player, it is a fake player, or the player is sneaking
         return (player == null || player instanceof FakePlayer || player.isSneaking()) && super.canPlace(context, state);
+    }
+
+    @Override
+    public INamedContainerProvider getContainerProvider(ItemStack stack, Hand hand) {
+        return new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PersonalChestItemContainer(i, inv, hand, stack));
     }
 }

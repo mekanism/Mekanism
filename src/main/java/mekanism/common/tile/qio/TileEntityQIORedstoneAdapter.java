@@ -67,8 +67,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         }
 
         if (world.getGameTime() % 10 == 0) {
-            QIOFrequency frequency = getQIOFrequency();
-            setActive(frequency != null);
+            setActive(getQIOFrequency() != null);
         }
     }
 

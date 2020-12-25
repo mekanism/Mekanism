@@ -10,20 +10,20 @@ import mekanism.client.gui.element.window.GuiCraftingWindow;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
-public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_SOURCE, GuiCraftingWindowTab<DATA_SOURCE>> {
+public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingWindowTab> {
 
     //TODO: Evaluate a better way of doing this than this weird openWindows thing
-    private final boolean[] openWindows = new boolean[QIOItemViewerContainer.MAX_CRAFTING_WINDOWS];
-    private final QIODashboardContainer container;
+    private final boolean[] openWindows = new boolean[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS];
+    private final QIOItemViewerContainer container;
     private byte currentWindows;
 
-    public GuiCraftingWindowTab(IGuiWrapper gui, DATA_SOURCE dataSource, Supplier<GuiCraftingWindowTab<DATA_SOURCE>> elementSupplier, QIODashboardContainer container) {
-        super(MekanismUtils.getResource(ResourceType.GUI_BUTTON, "crafting.png"), gui, dataSource, -26, 34, 26, 18, true, elementSupplier);
+    public GuiCraftingWindowTab(IGuiWrapper gui, Supplier<GuiCraftingWindowTab> elementSupplier, QIOItemViewerContainer container) {
+        super(MekanismUtils.getResource(ResourceType.GUI_BUTTON, "crafting.png"), gui, null, -26, 34, 26, 18, true, elementSupplier);
         this.container = container;
     }
 
@@ -42,12 +42,12 @@ public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_
     @Override
     protected Consumer<GuiWindow> getCloseListener() {
         return window -> {
-            GuiCraftingWindowTab<DATA_SOURCE> tab = getElementSupplier().get();
+            GuiCraftingWindowTab tab = getElementSupplier().get();
             if (window instanceof GuiCraftingWindow) {
-                tab.openWindows[((GuiCraftingWindow<?>) window).getIndex()] = false;
+                tab.openWindows[((GuiCraftingWindow) window).getIndex()] = false;
             }
             tab.currentWindows--;
-            if (tab.currentWindows < QIOItemViewerContainer.MAX_CRAFTING_WINDOWS) {
+            if (tab.currentWindows < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS) {
                 //If we have less than the max number of windows re-enable the tab
                 tab.active = true;
             }
@@ -58,8 +58,8 @@ public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_
     protected Consumer<GuiWindow> getReAttachListener() {
         return super.getReAttachListener().andThen(window -> {
             if (window instanceof GuiCraftingWindow) {
-                GuiCraftingWindowTab<DATA_SOURCE> tab = getElementSupplier().get();
-                tab.openWindows[((GuiCraftingWindow<?>) window).getIndex()] = true;
+                GuiCraftingWindowTab tab = getElementSupplier().get();
+                tab.openWindows[((GuiCraftingWindow) window).getIndex()] = true;
             }
         });
     }
@@ -67,7 +67,7 @@ public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_
     @Override
     protected void disableTab() {
         currentWindows++;
-        if (currentWindows >= QIOItemViewerContainer.MAX_CRAFTING_WINDOWS) {
+        if (currentWindows >= IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS) {
             //If we have the max number of windows we are allowed then disable the tab
             super.disableTab();
         }
@@ -84,6 +84,6 @@ public class GuiCraftingWindowTab<DATA_SOURCE> extends GuiWindowCreatorTab<DATA_
             }
         }
         openWindows[index] = true;
-        return new GuiCraftingWindow<>(gui(), getGuiWidth() / 2 - 156 / 2, 15, dataSource, container, index);
+        return new GuiCraftingWindow(gui(), getGuiWidth() / 2 - 156 / 2, 15, container, index);
     }
 }
