@@ -12,4 +12,10 @@ public interface IQIOCraftingWindowHolder extends IContentsListener {
     World getHolderWorld();
 
     QIOCraftingWindow[] getCraftingWindows();
+
+    /**
+     * @apiNote Only should be used on the server, so it is perfectly safe to always just be returning null when on the client.
+     */
+    @Nullable
+    QIOFrequency getFrequency();
 }

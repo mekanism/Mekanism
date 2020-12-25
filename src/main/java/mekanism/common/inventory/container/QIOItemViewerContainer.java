@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -80,22 +81,17 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private int doubleClickTransferTicks = 0;
     private int lastSlot = -1;
     private ItemStack lastStack = ItemStack.EMPTY;
-    private final QIOCraftingWindow[] craftingWindows;
+    protected final IQIOCraftingWindowHolder craftingWindowHolder;
     private final VirtualInventoryContainerSlot[][] craftingSlots = new VirtualInventoryContainerSlot[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS][10];
 
-    protected QIOItemViewerContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, boolean remote, IQIOCraftingWindowHolder holder) {
+    protected QIOItemViewerContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, boolean remote, IQIOCraftingWindowHolder craftingWindowHolder) {
         super(type, id, inv);
-        if (holder == null) {
+        this.craftingWindowHolder = craftingWindowHolder;
+        if (craftingWindowHolder == null) {
             //Should never happen, but in case there was an error getting the tile it may have
-            craftingWindows = null;
             Mekanism.logger.error("Error getting crafting window holder, closing.");
             closeInventory(inv.player);
             return;
-        }
-        this.craftingWindows = holder.getCraftingWindows();
-        if (craftingWindows.length != IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS) {
-            throw new IllegalArgumentException("Invalid number of crafting windows, expected " + IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS + " received " +
-                                               craftingWindows.length);
         }
         if (remote) {
             //Validate the max size when we are on the client, and fix it if it is incorrect
@@ -113,8 +109,14 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
     }
 
-    public abstract QIOFrequency getFrequency();
+    @Nullable
+    public QIOFrequency getFrequency() {
+        return craftingWindowHolder.getFrequency();
+    }
 
+    /**
+     * @apiNote Only used on the client
+     */
     public abstract QIOItemViewerContainer recreate();
 
     protected void sync(QIOItemViewerContainer container) {
@@ -143,7 +145,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     protected void addSlots() {
         super.addSlots();
-        for (QIOCraftingWindow craftingWindow : craftingWindows) {
+        for (QIOCraftingWindow craftingWindow : craftingWindowHolder.getCraftingWindows()) {
             byte tableIndex = craftingWindow.getWindowIndex();
             for (int slotIndex = 0; slotIndex < 9; slotIndex++) {
                 addCraftingSlot(craftingWindow.getInputSlot(slotIndex), tableIndex, slotIndex);
@@ -207,12 +209,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private void doDoubleClickTransfer(PlayerEntity player) {
         QIOFrequency freq = getFrequency();
         mainInventorySlots.forEach(slot -> {
-            if (slot.getHasStack() && slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
+            if (freq != null && slot.getHasStack() && slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
                 updateSlot(player, slot, freq.addItem(slot.getStack()));
             }
         });
         hotBarSlots.forEach(slot -> {
-            if (slot.getHasStack() && slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
+            if (freq != null && slot.getHasStack() && slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
                 updateSlot(player, slot, freq.addItem(slot.getStack()));
             }
         });
@@ -231,6 +233,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             for (int i = 0; i < 9; i++) {
                 craftingGridSlots.add(getCraftingWindowSlot(selectedCraftingGrid, i));
             }
+            craftingGridInputSlots[selectedCraftingGrid] = craftingGridSlots;
         }
         return craftingGridSlots;
     }
@@ -427,7 +430,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public void updateSearch(String queryText) {
         // searches should only updated on client-side
-        if (!inv.player.world.isRemote() || itemList == null) {
+        if (inv == null || !inv.player.world.isRemote() || itemList == null) {
             return;
         }
 

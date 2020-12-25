@@ -6,6 +6,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOCraftingWindow;
+import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.world.World;
 
@@ -61,5 +62,11 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     @Override
     public QIOCraftingWindow[] getCraftingWindows() {
         return craftingWindows;
+    }
+
+    @Nullable
+    @Override
+    public QIOFrequency getFrequency() {
+        return getQIOFrequency();
     }
 }
