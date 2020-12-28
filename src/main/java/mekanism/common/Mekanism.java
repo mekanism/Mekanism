@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import com.mojang.authlib.GameProfile;
+import dan200.computercraft.api.ComputerCraftAPI;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.computercraft.MekanismPeripheralProvider;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
 import mekanism.common.lib.Version;
@@ -335,6 +337,10 @@ public class Mekanism {
 
         //Fake player info
         logger.info("Fake player readout: UUID = {}, name = {}", gameProfile.getId(), gameProfile.getName());
+
+        // Register CC peripheral provider
+        if(hooks.CCLoaded)
+            ComputerCraftAPI.registerPeripheralProvider(new MekanismPeripheralProvider());
 
         //Completion notification
         logger.info("Loading complete.");

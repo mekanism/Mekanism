@@ -18,6 +18,7 @@ public final class MekanismHooks {
     public static final String CRAFTTWEAKER_MOD_ID = "crafttweaker";
     public static final String PROJECTE_MOD_ID = "projecte";
     public static final String FLUX_NETWORKS_MOD_ID = "fluxnetworks";
+    public static final String COMPUTER_CRAFT_MOD_ID = "computercraft";
 
     public boolean JEILoaded = false;
     public boolean CraftTweakerLoaded = false;
@@ -25,6 +26,7 @@ public final class MekanismHooks {
     public boolean FluxNetworksLoaded = false;
     public boolean ProjectELoaded = false;
     public boolean TOPLoaded = false;
+    public boolean CCLoaded = false;
 
     public void hookCommonSetup() {
         ModList modList = ModList.get();
@@ -34,6 +36,7 @@ public final class MekanismHooks {
         ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
+        CCLoaded = modList.isLoaded(COMPUTER_CRAFT_MOD_ID);
     }
 
     public void sendIMCMessages(InterModEnqueueEvent event) {
