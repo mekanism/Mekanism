@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
@@ -31,6 +32,7 @@ public class QIOCraftingWindow implements IContentsListener {
     private final QIOCraftingInventory craftingInventory;
     private final IQIOCraftingWindowHolder holder;
     private final byte windowIndex;
+    //TODO: Invalidate this properly when a reload is performed
     @Nullable
     private ICraftingRecipe lastRecipe;
     private boolean isCrafting;
@@ -86,6 +88,8 @@ public class QIOCraftingWindow implements IContentsListener {
                 }
             }//If we don't have a cached recipe, or our cached recipe doesn't match our inventory contents
             else if (lastRecipe == null || !lastRecipe.matches(craftingInventory, world)) {
+                //TODO: Fixme, this doesn't seem to properly be able to switch from stone bricks to stone buttons
+
                 //Lookup the recipe
                 ICraftingRecipe recipe = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, craftingInventory, world).orElse(null);
                 if (recipe != lastRecipe) {
@@ -105,8 +109,11 @@ public class QIOCraftingWindow implements IContentsListener {
     public ItemStack performCraft(@Nonnull PlayerEntity player, @Nonnull ItemStack result, int amountCrafted, boolean shiftClicked) {
         //TODO: Implement shiftClicking properly
         //TODO: Test how well our crafting windows handle how our bins allow inputting and outputting their inputs via crafting recipes
+        // Maybe we even just want to special case the recipes and make it so they are quick ways to fill/empty an entire bin at once
+        // into the frequency if there is one selected
         if (amountCrafted == 0 || lastRecipe == null || result.isEmpty()) {
             //Nothing actually crafted or no recipe, return no result
+            // Note: lastRecipe will always null on the client, so we can assume we are server side below
             return ItemStack.EMPTY;
         }
         World world = holder.getHolderWorld();
@@ -144,6 +151,9 @@ public class QIOCraftingWindow implements IContentsListener {
         // that if we aren't updating the inputs because the container item is still valid (for example a damageable
         // input, in which case we would need to recheck), we won't have to relookup the remaining items as nothing
         // will have changed so they will still be valid
+        //TODO: We could probably even short circuit further if there are no remaining items at all and it is a shift
+        // click by just shrinking the stacks all at once (this may sort of happen regardless actually) as long as hte
+        // remaining items are not valid
         //TODO: Behavior for shift clicking, use "all" the inputs, so if we say have four stacks of stone then
         // we craft four stacks of stone bricks and leave four pieces of stone in the crafting window. Then if
         // we shift click again we only craft up to one stack of the output. Note: We probably shouldn't have
@@ -154,7 +164,7 @@ public class QIOCraftingWindow implements IContentsListener {
         // if the inputs are stacked we just use from the crafting window, otherwise we try taking from the QIO's
         // inventory, and only take from the crafting window if there is nothing stored in the QIO
         //TODO: Handling for remainder items:
-        // if container item is still valid in that slot for the recipe
+        // if container item is still valid in that slot for the recipe (and it isn't currently a stacked input)
         //    or we don't have enough contents to do the recipe again,
         //      put it there
         // else try putting it into the player's inventory
@@ -165,26 +175,43 @@ public class QIOCraftingWindow implements IContentsListener {
         //TODO: Figure out how we want to handle refilling if we run out of an item but have another item stored
         // that is valid for the recipe in that spot. Potentially we want to stop crafting, and refill it, but then
         // highlight the slot or something so that the player has an easier time seeing it changed
-        for (int i = 0; i < remaining.size(); i++) {
-            CraftingWindowInventorySlot inputSlot = inputSlots[i];
-            //If the input slot contains an item, reduce the size of it by one
-            if (!inputSlot.isEmpty()) {
+        boolean updatedInputs = false;
+        QIOFrequency frequency = holder.getFrequency();
+        for (int index = 0; index < remaining.size(); index++) {
+            ItemStack remainder = remaining.get(index);
+            CraftingWindowInventorySlot inputSlot = inputSlots[index];
+            if (inputSlot.getCount() > 1) {
+                //If the input slot contains an item that is stacked, reduce the size of it by one
                 MekanismUtils.logMismatchedStackSize(1, inputSlot.shrinkStack(1, Action.EXECUTE));
-            }
-            //Add the remaining stack for the slot back into the slot
-            //Note: We don't bother checking if it is empty as insertItem will just short circuit if it is
-            ItemStack remainder = inputSlot.insertItem(remaining.get(i), Action.EXECUTE, AutomationType.INTERNAL);
-            if (!remainder.isEmpty()) {
-                //If some or all of the stack could not be returned to the input slot
-                // add it to the player's inventory
-                if (!player.inventory.addItemStackToInventory(remainder)) {
-                    // and failing that drop it as the player
-                    player.dropItem(remainder, false);
-                    //TODO: Decide if before dropping it (or maybe even before adding to the player's inventory)
-                    // we should have it first try to insert it into the QIO. Probably, yes before dropping,
-                    // no before player inventory
+                //TODO: How do we handle if the remaining item is still valid for the recipe if there is a stacked input
+                // probably ignore it and don't check and just add to places as desired
+            } else if (inputSlot.getCount() == 1) {
+                //TODO: Inline this?
+                updatedInputs = updateRemainderHelperInputs(updatedInputs, remainder);
+                //Else if the input slot only has a single item in it, try removing from the frequency
+                if (RemainderHelper.INSTANCE.isStackStillValid(lastRecipe, world, remainder, index) || frequency == null) {
+                    //If the remaining item is still valid for the recipe in that slot or there is no frequency set, remove the stack from the slot
+                    MekanismUtils.logMismatchedStackSize(1, inputSlot.shrinkStack(1, Action.EXECUTE));
+                    //TODO: Re-evaluate when we check if the frequency is null for purposes of shrinking it to make sure
+                    // that we can properly take the remaining stack stuff into account
+                    //TODO: We will need to update the list of remaining items next iteration if we are shift clicking
+                    // if we replaced an item and due to it still being valid
+                } else {
+                    //Otherwise try and remove the stack from the QIO frequency
+                    ItemStack removed = frequency.removeItem(inputSlot.getStack(), 1);
+                    if (removed.isEmpty()) {
+                        //If we were not able to remove any from the frequency, remove it from the crafting grid
+                        MekanismUtils.logMismatchedStackSize(1, inputSlot.shrinkStack(1, Action.EXECUTE));
+                    }
+                    //TODO: How do we want to handle when we run out of something, do we replace it with the container item
+                    // or do we first try and look if there is a valid alternative in the QIO's frequency
                 }
+            } else {
+                //TODO: Evaluate this, in theory a recipe could end up with a remaining item in a slot that was previously empty
+                // In which case we probably should just set it?
             }
+            //TODO: Inline this if we really have it just in a common spot like it is now
+            addRemainingItem(player, frequency, inputSlot, remainder);
         }
         ForgeHooks.setCraftingPlayer(null);
         //Mark that we are done crafting
@@ -195,6 +222,45 @@ public class QIOCraftingWindow implements IContentsListener {
             updateOutputSlot();
         }
         return result;
+    }
+
+    private void addRemainingItem(PlayerEntity player, @Nullable QIOFrequency frequency, IInventorySlot slot, @Nonnull ItemStack remainder) {
+        //Add the remaining stack for the slot back into the slot
+        //Note: We don't bother checking if it is empty as insertItem will just short circuit if it is
+        remainder = slot.insertItem(remainder, Action.EXECUTE, AutomationType.INTERNAL);
+        if (!remainder.isEmpty()) {
+            //TODO: Do we need to copy remainder (at least when shift clicking) so that addItemStackToInventory doesn't
+            // mutate our remaining stack? (Only will matter if it isn't still valid for the slot)
+            //If some or all of the stack could not be returned to the input slot add it to the player's inventory
+            if (!player.inventory.addItemStackToInventory(remainder)) {
+                //failing that try adding it to the qio frequency if there is one
+                if (frequency != null) {
+                    remainder = frequency.addItem(remainder);
+                    if (remainder.isEmpty()) {
+                        //If we added it all to the QIO, don't bother trying to drop it
+                        return;
+                    }
+                }
+                //TODO: Before dropping it we may want to try putting it into the crafting inventory,
+                // and then have the current stack go into the inventory/QIO?? In theory it sounds like
+                // a good idea but may be way too convoluted to implement cleanly
+                //If there is no frequency or we couldn't add it all to the QIO, drop the remaining item as the player
+                player.dropItem(remainder, false);
+            }
+        }
+    }
+
+    private boolean updateRemainderHelperInputs(boolean updated, @Nonnull ItemStack remainder) {
+        if (updated) {
+            //If it has already been updated, no reason to update it again
+            return true;
+        } else if (remainder.isEmpty()) {
+            //If the remainder is empty we don't actually need to update what our inputs are
+            return false;
+        }
+        //Update inputs and return that we have updated them
+        RemainderHelper.INSTANCE.updateInputs(inputSlots);
+        return true;
     }
 
     private class QIOCraftingInventory extends CraftingInventory {
@@ -218,9 +284,13 @@ public class QIOCraftingWindow implements IContentsListener {
         @Nonnull
         @Override
         public ItemStack getStackInSlot(int index) {
-            //TODO: Evaluate this, do we really want to/need to be copying?
             if (index >= 0 && index < getSizeInventory()) {
-                return getInputSlot(index).getStack().copy();
+                CraftingWindowInventorySlot inputSlot = getInputSlot(index);
+                if (!inputSlot.isEmpty()) {
+                    //Note: We copy this as we don't want to allow someone trying to interact with the stack directly
+                    // to change the size of it
+                    return inputSlot.getStack().copy();
+                }
             }
             return ItemStack.EMPTY;
         }
@@ -283,5 +353,34 @@ public class QIOCraftingWindow implements IContentsListener {
                 helper.accountPlainStack(copyNeeded ? stack.copy() : stack);
             }
         }
+    }
+
+    private static class RemainderHelper {
+
+        public static final RemainderHelper INSTANCE = new RemainderHelper();
+
+        private final CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
+
+        public void updateInputs(IInventorySlot[] inputSlots) {
+            for (int index = 0; index < inputSlots.length; index++) {
+                //TODO: Does this and isStackStillValid need to be copying the stack
+                dummy.setInventorySlotContents(index, inputSlots[index].getStack());
+            }
+        }
+
+        public boolean isStackStillValid(ICraftingRecipe recipe, World world, ItemStack stack, int index) {
+            ItemStack old = dummy.getStackInSlot(index);
+            dummy.setInventorySlotContents(index, stack);
+            if (recipe.matches(dummy, world)) {
+                //If the remaining item is still valid in the recipe in that position
+                // return that it is still valid
+                return true;
+            }
+            //Otherwise, revert the contents of the slot to what used to be in that slot
+            // and return that the remaining item is not still valid in the slot
+            dummy.setInventorySlotContents(index, old);
+            return false;
+        }
+
     }
 }

@@ -26,6 +26,7 @@ import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
+import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
@@ -245,7 +246,15 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         if (currentSlot == null) {
             return ItemStack.EMPTY;
         }
-        if (currentSlot instanceof InventoryContainerSlot) {
+        if (currentSlot instanceof VirtualCraftingOutputSlot) {
+            //If we are clicking an output crafting slot, allow the slot itself to handle the transferring
+            //TODO: Let the slot handle this so it can properly add batch the shift click,
+            // and also allow for transferring the stack after the onCrafting is called on it
+            // instead of adding the "incorrect" item to the slots
+            return super.transferStackInSlot(player, slotID);
+        } else if (currentSlot instanceof InventoryContainerSlot) {
+            //Otherwise if we are an inventory container slot (crafting input slots in this case)
+            // use our normal handling to attempt and transfer the contents to the player's inventory
             return super.transferStackInSlot(player, slotID);
         }
         // special handling for shift-clicking into GUI
@@ -256,7 +265,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 //If the player has a crafting window open, try transferring into it before
                 // transferring into the frequency
                 ItemStack stackToInsert = slotStack;
-                List<InventoryContainerSlot> craftingGridSlots =getCraftingGridSlots(selectedCraftingGrid);
+                List<InventoryContainerSlot> craftingGridSlots = getCraftingGridSlots(selectedCraftingGrid);
                 //Start by trying to stack it with other things
                 stackToInsert = insertItem(craftingGridSlots, stackToInsert, true);
                 // and if that fails try to insert it into empty slots

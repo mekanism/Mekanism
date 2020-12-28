@@ -115,7 +115,7 @@ public class QIOFrequency extends Frequency {
     }
 
     public ItemStack removeItem(ItemStack stack, int amount) {
-        return removeByType(HashedItem.create(stack), amount);
+        return removeByType(HashedItem.raw(stack), amount);
     }
 
     public ItemStack removeByType(@Nullable HashedItem itemType, int amount) {
