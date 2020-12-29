@@ -21,7 +21,7 @@ public class ThreadGetData extends Thread
 	@Override
 	public void run()
 	{
-		List<String> ret = MekanismUtils.getHTML("http://aidancbrady.com/data/versions/Mekanism.txt");
+		List<String> ret = MekanismUtils.getHTML("https://technic-solder.eu-central-1.linodeobjects.com/Mekanism.txt");
 		
 		Mekanism.latestVersionNumber = "null";
 		Mekanism.recentNews = "null";
@@ -30,7 +30,7 @@ public class ThreadGetData extends Thread
 		{
 			String[] text = s.split(":");
 			
-			if(text.length == 3 && !text[0].contains("UTF-8") && !text[0].contains("HTML") && !text[0].contains("http"))
+			if(text.length == 3 && !text[0].contains("UTF-8") && !text[0].contains("HTML") && !text[0].contains("https"))
 			{
 				if(Version.get(text[0]) != null && Version.get(text[0]).equals(Version.get((String)FMLInjectionData.data()[4])))
 				{
