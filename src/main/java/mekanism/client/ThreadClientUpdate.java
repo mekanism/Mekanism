@@ -203,7 +203,7 @@ public class ThreadClientUpdate extends Thread
 	{
 		try {
 			return new URL("http://technic-solder.eu-central-1.linodeobjects.com/mekanism/latestmekanism.zip");
-		} catch(Exception e) {}s
+		} catch(Exception e) {}
 
 		return null;
 	}
