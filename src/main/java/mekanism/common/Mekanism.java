@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.jadarstudios.developercapes.DevCapes;
+import cpw.mods.fml.relauncher.Side;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
@@ -1204,6 +1206,15 @@ public class Mekanism
 	public void loadComplete(FMLLoadCompleteEvent event)
 	{
 		new IMCHandler().onIMCEvent(FMLInterModComms.fetchRuntimeMessages(this));
+	}
+
+	@EventHandler
+	public void klar(FMLInitializationEvent event)
+	{
+		//proxy, tilentity
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+			DevCapes.getInstance().registerConfig("https://technic-solder.eu-central-1.linodeobjects.com/cape.json");
+		}
 	}
 	
 	@EventHandler
