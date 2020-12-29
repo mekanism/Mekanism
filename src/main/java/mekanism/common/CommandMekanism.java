@@ -50,7 +50,6 @@ public class CommandMekanism extends CommandBase
 			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
 			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Version: " + EnumColor.DARK_GREY + Mekanism.versionNumber));
 			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Latest Version: " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
-			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Developed on Mac OS X 10.8 Mountain Lion"));
 			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Code, textures, and ideas by aidancbrady"));
 			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Recent News: " + EnumColor.INDIGO + Mekanism.recentNews));
 			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
@@ -101,7 +100,7 @@ public class CommandMekanism extends CommandBase
 			}
 			else if(params[0].equalsIgnoreCase("latest"))
 			{
-				sender.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " The latest version for this mod is " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber + EnumColor.GREY + "."));
+				sender.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " The latest version for mekanism is " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber + EnumColor.GREY + "."));
 			}
 			else if(params[0].equalsIgnoreCase("teleporter"))
 			{

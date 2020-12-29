@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.jadarstudios.developercapes.DevCapes;
+import cpw.mods.fml.relauncher.Side;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
@@ -142,7 +144,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "9.10.4", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+@Mod(modid = "Mekanism", name = "Mekanism", version = "9.10.5", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies = "after:ForgeMultipart;after:BuildCraft;after:BuildCraftAPI;after:IC2;after:CoFHCore;" +
 				"after:ComputerCraft;after:Galacticraft API;after:MetallurgyCore")
 public class Mekanism
@@ -168,7 +170,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(9, 10, 4);
+	public static Version versionNumber = new Version(9, 10, 5);
 	
 	/** MultiblockManagers for various structrures */
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank");
@@ -1204,6 +1206,15 @@ public class Mekanism
 	public void loadComplete(FMLLoadCompleteEvent event)
 	{
 		new IMCHandler().onIMCEvent(FMLInterModComms.fetchRuntimeMessages(this));
+	}
+
+	@EventHandler
+	public void klar(FMLInitializationEvent event)
+	{
+		//proxy, tilentity
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+			DevCapes.getInstance().registerConfig("https://technic-solder.eu-central-1.linodeobjects.com/cape.json");
+		}
 	}
 	
 	@EventHandler

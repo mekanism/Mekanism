@@ -202,7 +202,7 @@ public class ThreadClientUpdate extends Thread
 	private static URL createURL()
 	{
 		try {
-			return new URL("http://ci.aidancbrady.com/job/Mekanism/Recommended/artifact/*zip*/archive.zip");
+			return new URL("http://technic-solder.eu-central-1.linodeobjects.com/mekanism/latestmekanism.zip");
 		} catch(Exception e) {}
 
 		return null;
