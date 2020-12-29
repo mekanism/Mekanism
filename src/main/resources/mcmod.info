@@ -18,8 +18,8 @@
   "modid": "MekanismGenerators",
   "name": "MekanismGenerators",
   "description": "Generators module of Mekanism.",
-  "version": "9.10.3",
-  "mcversion": "1.7.10",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
   "updateUrl": "",
   "authorList": [
     "aidancbrady"
@@ -33,8 +33,8 @@
   "modid": "MekanismTools",
   "name": "MekanismTools",
   "description": "Tools module for Mekanism.",
-  "version": "9.10.3",
-  "mcversion": "1.7.10",
+  "version": "${version}",
+  "mcversion": "${mc_version}",
   "updateUrl": "",
   "authorList": [
     "aidancbrady"
