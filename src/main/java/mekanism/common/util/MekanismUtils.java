@@ -141,7 +141,7 @@ public final class MekanismUtils
 
 						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.consider") + " " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
 						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.newFeatures") + ": " + EnumColor.INDIGO + Mekanism.recentNews));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.visit") + " " + EnumColor.DARK_GREY + "aidancbrady.com/mekanism" + EnumColor.GREY + " " + LangUtils.localize("update.toDownload") + "."));
+						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.visit") + " " + EnumColor.DARK_GREY + "https://thorfusion.com" + EnumColor.GREY + " " + LangUtils.localize("update.toDownload") + "."));
 						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 						return true;
 					}
