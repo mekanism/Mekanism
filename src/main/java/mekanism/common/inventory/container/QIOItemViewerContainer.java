@@ -248,10 +248,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
         if (currentSlot instanceof VirtualCraftingOutputSlot) {
             //If we are clicking an output crafting slot, allow the slot itself to handle the transferring
-            //TODO: Let the slot handle this so it can properly add batch the shift click,
-            // and also allow for transferring the stack after the onCrafting is called on it
-            // instead of adding the "incorrect" item to the slots
-            return super.transferStackInSlot(player, slotID);
+            return ((VirtualCraftingOutputSlot) currentSlot).shiftClickSlot(player, hotBarSlots, mainInventorySlots);
         } else if (currentSlot instanceof InventoryContainerSlot) {
             //Otherwise if we are an inventory container slot (crafting input slots in this case)
             // use our normal handling to attempt and transfer the contents to the player's inventory
@@ -262,6 +259,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             ItemStack slotStack = currentSlot.getStack();
             byte selectedCraftingGrid = selectedCraftingGrids.getOrDefault(player.getUniqueID(), (byte) -1);
             if (selectedCraftingGrid != -1) {
+                //TODO: Re-evaluate this as when shift click crafting, and then shift clicking to transfer
+                // it into the QIO sends it to the crafting slot instead.
                 //If the player has a crafting window open, try transferring into it before
                 // transferring into the frequency
                 ItemStack stackToInsert = slotStack;

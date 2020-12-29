@@ -248,21 +248,25 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         return transferSuccess(currentSlot, player, slotStack, stackToInsert);
     }
 
+    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, boolean ignoreEmpty) {
+        return insertItem(slots, stack, ignoreEmpty, Action.EXECUTE);
+    }
+
     //TODO: JAVADOC?
     //Returns remainder, don't modify inserted stack
     @Nonnull
-    protected <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, boolean ignoreEmpty) {
+    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, boolean ignoreEmpty, Action action) {
         if (stack.isEmpty()) {
             //Skip doing anything if the stack is already empty.
             // Makes it easier to chain calls, rather than having to check if the stack is empty after our previous call
             return stack;
         }
         for (SLOT slot : slots) {
-            if (ignoreEmpty && slot.getStack().isEmpty()) {
+            if (ignoreEmpty && !slot.getHasStack()) {
                 //Skip checking empty stacks if we want to ignore them
                 continue;
             }
-            stack = slot.insertItem(stack, Action.EXECUTE);
+            stack = slot.insertItem(stack, action);
             if (stack.isEmpty()) {
                 break;
             }

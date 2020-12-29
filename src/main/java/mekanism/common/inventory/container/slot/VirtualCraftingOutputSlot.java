@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container.slot;
 
+import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,11 +54,6 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot {
         //TODO: Does simulating here cause issues in relation to the canTakeStack
         // because of us not actually decreasing the size and then maybe something assuming
         // that it does get reduced in size
-        //TODO - cont: At the very least I think not decreasing the stack size, and then setting it again POST crafting,
-        // will cause issues because of how shift clicking in vanilla with the transferStackInSlot call loops until the
-        // output slot is empty. In theory if we have to we potentially could get around this by keeping track of which
-        // game tick the output slot was last modified and just not allowing shift clicking to happen "twice" in a
-        // single game tick
         //TODO: Also evaluate putStack as we don't want other people to be able to do it, we just want to be able to do it ourselves
         // for purposes of syncing from server to client. Best solution is probably add another method that we have our sync specifically
         // call for purposes of unchecked setting. Using unchecked setting may be valid though at least for purposes of realistically
@@ -86,9 +82,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot {
     @Nonnull
     @Override
     public ItemStack onTake(@Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
-        //TODO: Pass shiftClicked as needed, maybe we can add a method to let slots handle shift clicking,
-        // and default it to MekanismContainer#transferSuccess.
-        ItemStack result = craftingWindow.performCraft(player, stack, amountCrafted, false);
+        ItemStack result = craftingWindow.performCraft(player, stack, amountCrafted);
         amountCrafted = 0;
         return result;
     }
@@ -102,5 +96,16 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot {
     @Override
     public ItemStack getStackToRender() {
         return canCraft ? super.getStackToRender() : ItemStack.EMPTY;
+    }
+
+    @Nonnull
+    public ItemStack shiftClickSlot(@Nonnull PlayerEntity player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
+        //TODO: Should this take the inventory slots as params? (We could just direct it to them manually though)
+        //Perform the craft in the crafting window. This handles moving the stacks to the proper inventory slots
+        craftingWindow.performCraft(player, hotBarSlots, mainInventorySlots);
+        // afterwards we want to "stop" crafting as our window determines how much a shift click should produce
+        // so even though we may still have an output in the slot, we return empty here so that vanilla's loop
+        // it performs for shift clicking, doesn't cause us to craft as much as we are able to.
+        return ItemStack.EMPTY;
     }
 }
