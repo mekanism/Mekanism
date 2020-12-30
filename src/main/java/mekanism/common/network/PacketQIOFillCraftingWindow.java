@@ -2,13 +2,26 @@ package mekanism.common.network;
 
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
+import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularHashedItemSource;
+import mekanism.common.content.qio.QIOCraftingWindow;
+import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketQIOFillCraftingWindow {
@@ -27,14 +40,24 @@ public class PacketQIOFillCraftingWindow {
         Context ctx = context.get();
         ctx.enqueueWork(() -> {
             ServerPlayerEntity player = ctx.getSender();
-            //TODO: Add warnings if things are invalid?
-            if (player != null && player.openContainer instanceof QIOItemViewerContainer) {
+            if (player != null && player.openContainer instanceof QIOItemViewerContainer && player.world instanceof ServerWorld) {
                 QIOItemViewerContainer container = (QIOItemViewerContainer) player.openContainer;
                 byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUniqueID());
-                if (selectedCraftingGrid != -1) {
-                    //TODO: Validate that the recipe we are trying to set exists and the items we want to set in the slots
-                    // are valid for the recipe, if it isn't fail and print out a warning
-                    //TODO: Transfer the stacks to the proper places
+                if (selectedCraftingGrid == -1) {
+                    Mekanism.logger.warn("Received transfer request from: {}, but they do not currently have a crafting window open.", player);
+                } else {
+                    Optional<? extends IRecipe<?>> optionalIRecipe = player.world.getRecipeManager().getRecipe(message.recipeID);
+                    if (optionalIRecipe.isPresent()) {
+                        IRecipe<?> recipe = optionalIRecipe.get();
+                        if (recipe instanceof ICraftingRecipe) {
+                            transferRecipe(container, (ICraftingRecipe) recipe, message.sources, message.maxTransfer, selectedCraftingGrid, player);
+                        } else {
+                            Mekanism.logger.warn("Received transfer request from: {}, but the type ({}) of the specified recipe was not a crafting recipe.",
+                                  player, recipe.getClass());
+                        }
+                    } else {
+                        Mekanism.logger.warn("Received transfer request from: {}, but could not find specified recipe.", player);
+                    }
                 }
             }
         });
@@ -83,5 +106,52 @@ public class PacketQIOFillCraftingWindow {
             }
         }
         return new PacketQIOFillCraftingWindow(recipeID, maxTransfer, sources);
+    }
+
+    private static void transferRecipe(QIOItemViewerContainer container, ICraftingRecipe recipe, Byte2ObjectMap<SingularHashedItemSource> sources, boolean maxTransfer,
+          byte selectedCraftingGrid, PlayerEntity player) {
+        QIOFrequency frequency = container.getFrequency();
+        CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
+        QIOCraftingWindow craftingWindow = container.getCraftingWindow(selectedCraftingGrid);
+        for (Byte2ObjectMap.Entry<SingularHashedItemSource> entry : sources.byte2ObjectEntrySet()) {
+            ItemStack stack;
+            SingularHashedItemSource source = entry.getValue();
+            byte slot = source.getSlot();
+            if (slot == -1) {
+                UUID qioSource = source.getQioSource();
+                if (qioSource == null) {
+                    Mekanism.logger.warn("Received transfer request from: {} with no valid source.", player);
+                    return;
+                }
+                if (frequency == null) {
+                    Mekanism.logger.warn("Received transfer request from: {}, with a QIO source but no selected frequency.", player);
+                    return;
+                }
+                HashedItem storedItem = frequency.getTypeByUUID(qioSource);
+                if (storedItem == null) {
+                    Mekanism.logger.warn("Received transfer request from: {}, could not find stored item with UUID: {}.", player, qioSource);
+                    return;
+                }
+                stack = storedItem.getStack();
+            } else if (slot >= 0 && slot < 9 + PlayerInventory.getHotbarSize() + 27) {
+                if (slot < 9) {
+                    //Crafting Window
+                    stack = craftingWindow.getInputSlot(slot).getStack();
+                } else {
+                    //Hotbar/main inventory
+                    stack = player.inventory.mainInventory.get(slot - 9);
+                }
+            } else {
+                Mekanism.logger.warn("Received transfer request from: {}, with an invalid slot id: {}.", player, slot);
+                return;
+            }
+            dummy.setInventorySlotContents(entry.getByteKey(), stack);
+        }
+        if (!recipe.matches(dummy, player.world)) {
+            Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipe.getId());
+            return;
+        }
+        //TODO: Transfer the stacks to the proper places
+
     }
 }

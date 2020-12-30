@@ -169,12 +169,12 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         int xOffset = getInventoryXOffset();
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                addSlot(new MainInventorySlot(inv, slotX + slotY * 9 + 9, xOffset + slotX * 18, yOffset + slotY * 18));
+                addSlot(new MainInventorySlot(inv, PlayerInventory.getHotbarSize() + slotX + slotY * 9, xOffset + slotX * 18, yOffset + slotY * 18));
             }
         }
         yOffset += 58;
-        for (int slotY = 0; slotY < PlayerInventory.getHotbarSize(); slotY++) {
-            addSlot(createHotBarSlot(inv, slotY, xOffset + slotY * 18, yOffset));
+        for (int slotX = 0; slotX < PlayerInventory.getHotbarSize(); slotX++) {
+            addSlot(createHotBarSlot(inv, slotX, xOffset + slotX * 18, yOffset));
         }
     }
 

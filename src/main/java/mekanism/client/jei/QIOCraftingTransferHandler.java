@@ -32,7 +32,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.util.ResourceLocation;
 
 //TODO - 10.1: Min JEI version of 7.6.1, or whatever the version ends up being that has the getUniqueIdentifierForStack exposure
@@ -57,9 +57,11 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
     @Override
     public IRecipeTransferError transferRecipe(CONTAINER container, Object rawRecipe, IRecipeLayout recipeLayout, PlayerEntity player, boolean maxTransfer,
           boolean doTransfer) {
-        if (!(rawRecipe instanceof IRecipe)) {
+        if (!(rawRecipe instanceof ICraftingRecipe)) {
             //Ensure that we actually have an IRecipe as if we succeed we will be using the id it provides
             // to inform the server what recipe is being auto filled transfer the data to the server
+            //Note: Technically we could check this as IRecipe, but we do ICraftingRecipe as it really should be
+            // a crafting recipe, and if it isn't the server won't know how to transfer it anyways
             return handlerHelper.createInternalError();
         }
         byte selectedCraftingGrid = container.getSelectedCraftingGrid();
@@ -95,7 +97,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 }
             }
         }
-        ResourceLocation recipeID = ((IRecipe<?>) rawRecipe).getId();
+        ResourceLocation recipeID = ((ICraftingRecipe) rawRecipe).getId();
         if (inputCount > 9) {
             //I don't believe this ever will happen with a normal crafting recipe but just in case it does, error
             // if we have more than nine inputs, we check it as an extra validation step, but we don't hold off on
