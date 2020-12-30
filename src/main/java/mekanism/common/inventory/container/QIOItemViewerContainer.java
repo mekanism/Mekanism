@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
+import mekanism.common.content.qio.QIOCraftingTransferHelper;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.SearchQueryParser;
@@ -331,38 +331,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         cachedInventory.clear();
     }
 
-    /**
-     * Gets a map of {@link HashedItem}s to counts for stored items in the frequency, the selected crafting grid, and the player's inventory. This method also merges any
-     * UUID distinct items into one as the client for checking amounts for JEI filling doesn't have access to the extra data anyways so makes do without it.
-     *
-     * @apiNote For use in JEI transfer handling, cache this result as it returns a new map.
-     * @implNote We use raw hashed items as none of this stuff should or will be modified while doing these checks so we may as well remove some unneeded copies.
-     */
-    public Object2LongMap<HashedItem> getFlattenedCache(byte selectedCraftingGrid) {
-        QIOCraftingWindow craftingWindow = getCraftingWindow(selectedCraftingGrid);
-        Object2LongMap<HashedItem> inventory = new Object2LongOpenHashMap<>();
-        for (Object2LongMap.Entry<UUIDAwareHashedItem> entry : cachedInventory.object2LongEntrySet()) {
-            inventory.mergeLong(entry.getKey().asRawHashedItem(), entry.getLongValue(), Long::sum);
-        }
-        for (int i = 0; i < 9; i++) {
-            IInventorySlot slot = craftingWindow.getInputSlot(i);
-            if (!slot.isEmpty()) {
-                inventory.mergeLong(HashedItem.raw(slot.getStack()), slot.getCount(), Long::sum);
-            }
-        }
-        addSlotsToMap(inventory, hotBarSlots);
-        addSlotsToMap(inventory, mainInventorySlots);
-        return inventory;
-    }
-
-    //For use with getFlattenedCache
-    private void addSlotsToMap(Object2LongMap<HashedItem> inventory, List<? extends Slot> slots) {
-        for (Slot slot : slots) {
-            if (slot.getHasStack()) {
-                ItemStack stack = slot.getStack();
-                inventory.mergeLong(HashedItem.raw(stack), stack.getCount(), Long::sum);
-            }
-        }
+    public QIOCraftingTransferHelper getTransferHelper(PlayerEntity player, byte selectedCraftingGrid) {
+        return new QIOCraftingTransferHelper(cachedInventory, hotBarSlots, mainInventorySlots, getCraftingWindow(selectedCraftingGrid), player);
     }
 
     private void syncItemList() {
@@ -432,6 +402,13 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public byte getSelectedCraftingGrid() {
         return selectedCraftingGrid;
+    }
+
+    /**
+     * @apiNote Only call on server
+     */
+    public byte getSelectedCraftingGrid(UUID player) {
+        return selectedCraftingGrids.getOrDefault(player, (byte) -1);
     }
 
     public QIOCraftingWindow getCraftingWindow(int selectedCraftingGrid) {

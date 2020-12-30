@@ -1,5 +1,7 @@
 package mekanism.client.jei;
 
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
@@ -10,11 +12,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.qio.QIOCraftingTransferHelper;
+import mekanism.common.content.qio.QIOCraftingTransferHelper.HashedItemSource;
+import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularHashedItemSource;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.network.PacketQIOFillCraftingWindow;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
 import mezz.jei.api.helpers.IStackHelper;
@@ -100,7 +107,8 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
         //Get all our available items in the QIO frequency, we flatten the cache to stack together items that
         // as far as the client is concerned are the same instead of keeping them UUID separated, and add all
         // the items in the currently selected crafting window and the player's inventory to our available items
-        Object2LongMap<HashedItem> availableItems = container.getFlattenedCache(selectedCraftingGrid);
+        QIOCraftingTransferHelper qioTransferHelper = container.getTransferHelper(player, selectedCraftingGrid);
+        Object2LongMap<HashedItem> availableItems = qioTransferHelper.getAvailableItems();
         Int2ObjectMap<HashedItem> matchedItems = new Int2ObjectArrayMap<>(inputCount);
         IntSet missingSlots = new IntArraySet(inputCount);
         for (Int2ObjectMap.Entry<Set<HashedItem>> entry : hashedIngredients.int2ObjectEntrySet()) {
@@ -108,6 +116,9 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
             // and one combination it is not valid. For example if we have a single piece of stone and it is valid in either slot 1 or 2
             // but slot 2 only allows for stone, and slot 1 can accept granite instead and we have granite available. When coming up with
             // a solution to this, we also will need to handle the slower comparison method.
+            // We also when looking into this should figure out about the fact that if there are multiple valid combinations, and maxTransfer
+            // is true, then we probably want to do it so that the most that can fit in that slot is taken, rather than splitting one type
+            // between multiple inputs
             boolean matchFound = false;
             for (HashedItem validInput : entry.getValue()) {
                 long stored = availableItems.getOrDefault(validInput, 0);
@@ -196,19 +207,33 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
         // of a short circuit though based on if we have enough room in the QIO to store the items
 
         if (doTransfer) {
-            //TODO: Implement me
-            //TODO: Do we want to do a recipe matches here? And if it already matches, leave it be?
+            //TODO: Do we want to do a recipe "matches" here? And if it already matches, leave it be?
             // if we shift click then we want to do maxTransfer so may still need to fill in the slots
-            //TODO: Send packet to server with information of what to transfer and where. This packet will consist of
-            // recipe id, maxTransfer, slot indices to item for that slot.
-            // We will need to do a "reverse" lookup from matchedItems in the order/taking priority of:
-            // crafting window input slots, player inventory, and finally QIO frequency
-            // The items from the crafting window and player inventory can use slot indices, the items from the QIO should use their UUID.
-            // This means if we combined multiple "identical" stacks but with different UUIDs that the client should properly send the
-            // various UUIDs for the different slots.
-            // Finally on the server we will need to validate they have a container and crafting window open, as well as, if the recipe is
-            // valid for the items in said slots, and if it isn't fail and print out a warning (and maybe send one to the client?)
+            // If we are doing so we should probably either do so higher up (before trying to match the various stacks)
+            Byte2ObjectMap<SingularHashedItemSource> sources = new Byte2ObjectArrayMap<>(inputCount);
+            for (Int2ObjectMap.Entry<HashedItem> entry : matchedItems.int2ObjectEntrySet()) {
+                HashedItem hashedItem = entry.getValue();
+                HashedItemSource source = qioTransferHelper.getSource(hashedItem);
+                if (source == null) {
+                    //If something went wrong and we don't actually have the item we think we do, error
+                    return invalidSource(hashedItem.getStack());
+                }
+                //Try to use the item and figure out where it is coming from
+                SingularHashedItemSource actualSource = source.use();
+                if (actualSource == null) {
+                    //If something went wrong and we don't actually have enough of the item for some reason, error
+                    return invalidSource(hashedItem.getStack());
+                }
+                //TODO: This should always be within a byte, but we may want to validate it is just in case?
+                sources.put((byte) entry.getIntKey(), actualSource);
+            }
+            Mekanism.packetHandler.sendToServer(new PacketQIOFillCraftingWindow(recipeID, maxTransfer, sources));
         }
         return null;
+    }
+
+    private IRecipeTransferError invalidSource(@Nonnull ItemStack stack) {
+        Mekanism.logger.warn("Error finding source for: {} with nbt: {}. This should not be possible happen.", stack.getItem(), stack.getTag());
+        return handlerHelper.createInternalError();
     }
 }

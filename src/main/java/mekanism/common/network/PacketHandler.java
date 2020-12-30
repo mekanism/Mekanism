@@ -44,6 +44,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketQIOSetColor.class, PacketQIOSetColor::encode, PacketQIOSetColor::decode, PacketQIOSetColor::handle);
         registerClientToServer(PacketTeleporterSetColor.class, PacketTeleporterSetColor::encode, PacketTeleporterSetColor::decode, PacketTeleporterSetColor::handle);
         registerClientToServer(PacketQIOCraftingWindowSelect.class, PacketQIOCraftingWindowSelect::encode, PacketQIOCraftingWindowSelect::decode, PacketQIOCraftingWindowSelect::handle);
+        registerClientToServer(PacketQIOFillCraftingWindow.class, PacketQIOFillCraftingWindow::encode, PacketQIOFillCraftingWindow::decode, PacketQIOFillCraftingWindow::handle);
 
         //Server to client messages
         registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
