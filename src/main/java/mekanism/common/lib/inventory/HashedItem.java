@@ -122,5 +122,12 @@ public class HashedItem {
             }
             return super.hashCode();
         }
+
+        /**
+         * Converts this to a raw HashedItem that doesn't care about UUID anymore.
+         */
+        public HashedItem asRawHashedItem() {
+            return new HashedItem(this);
+        }
     }
 }

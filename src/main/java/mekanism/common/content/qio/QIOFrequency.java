@@ -209,7 +209,7 @@ public class QIOFrequency extends Frequency {
 
     public long getStored(HashedItem itemType) {
         QIOItemTypeData data = itemDataMap.get(itemType);
-        return data != null ? data.count : 0;
+        return data == null ? 0 : data.count;
     }
 
     public QIODriveData getDriveData(QIODriveKey key) {

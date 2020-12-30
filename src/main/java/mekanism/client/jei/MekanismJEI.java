@@ -48,6 +48,7 @@ import mekanism.client.jei.machine.SawmillRecipeCategory;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
+import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -57,6 +58,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
@@ -343,9 +345,11 @@ public class MekanismJEI implements IModPlugin {
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
         IRecipeTransferHandlerHelper transferHelper = registry.getTransferHelper();
+        IStackHelper stackHelper = registry.getJeiHelpers().getStackHelper();
         registry.addRecipeTransferHandler(CraftingRobitContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
         //TODO - 10.1: Validate we are properly allowing for searching all slots in the formulaic assemblicator and the player's inventory
         registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 19, 9, 35, 36);
-        registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, QIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
+        registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, QIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
+        registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, PortableQIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
     }
 }

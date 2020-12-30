@@ -492,7 +492,7 @@ public class QIOCraftingWindow implements IContentsListener {
         @Override
         public ItemStack getStackInSlot(int index) {
             if (index >= 0 && index < getSizeInventory()) {
-                CraftingWindowInventorySlot inputSlot = getInputSlot(index);
+                IInventorySlot inputSlot = getInputSlot(index);
                 if (!inputSlot.isEmpty()) {
                     //Note: We copy this as we don't want to allow someone trying to interact with the stack directly
                     // to change the size of it
@@ -506,7 +506,7 @@ public class QIOCraftingWindow implements IContentsListener {
         @Override
         public ItemStack removeStackFromSlot(int index) {
             if (index >= 0 && index < getSizeInventory()) {
-                CraftingWindowInventorySlot inputSlot = getInputSlot(index);
+                IInventorySlot inputSlot = getInputSlot(index);
                 ItemStack stored = inputSlot.getStack();
                 inputSlot.setEmpty();
                 //Note: We don't bother copying the stack as we are setting it to empty so
