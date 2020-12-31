@@ -93,7 +93,8 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                     // so we may as well remove some unneeded copies
                     //TODO: Evaluate if we need to convert the hashed item for the stack to be "reduced" in what data it has
                     // to be more in line with the data that we would have on the client from the network
-                    hashedIngredients.put(entry.getKey().intValue(), validIngredients.stream().map(HashedItem::raw).collect(Collectors.toSet()));
+                    //Note: We decrement the index by one because JEI uses the first index for the output
+                    hashedIngredients.put(entry.getKey() - 1, validIngredients.stream().map(HashedItem::raw).collect(Collectors.toSet()));
                 }
             }
         }

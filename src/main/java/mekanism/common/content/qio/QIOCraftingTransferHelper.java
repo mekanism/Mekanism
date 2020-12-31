@@ -114,15 +114,19 @@ public class QIOCraftingTransferHelper {
                 if (iter.hasNext()) {
                     Byte2IntMap.Entry entry = iter.next();
                     int stored = entry.getIntValue();
+                    //Get the key before we potentially remove it as after removing it fast util
+                    // makes it so that the entry is no longer valid
+                    byte slot = entry.getByteKey();
                     if (stored == 1) {
                         iter.remove();
                         if (slots.isEmpty()) {
                             slots = null;
                         }
                     } else {
-                        entry.setValue(stored - 1);
+                        //Note: entry.setValue is not supported in array maps
+                        slots.put(slot, stored - 1);
                     }
-                    return new SingularHashedItemSource(entry.getByteKey());
+                    return new SingularHashedItemSource(slot);
                 }
             }
             //If we didn't find an item to use for it, we look at the qio slots
@@ -131,6 +135,9 @@ public class QIOCraftingTransferHelper {
                 if (iter.hasNext()) {
                     Object2LongMap.Entry<UUID> entry = iter.next();
                     long stored = entry.getLongValue();
+                    //Get the key before we potentially remove it as after removing it fast util
+                    // makes it so that the entry is no longer valid
+                    UUID key = entry.getKey();
                     if (stored == 1) {
                         iter.remove();
                         if (qioSources.isEmpty()) {
@@ -139,7 +146,7 @@ public class QIOCraftingTransferHelper {
                     } else {
                         entry.setValue(stored - 1);
                     }
-                    return new SingularHashedItemSource(entry.getKey());
+                    return new SingularHashedItemSource(key);
                 }
             }
             //Something went wrong, fallback to null. We tried to use more than we have

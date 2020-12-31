@@ -124,6 +124,7 @@ public class PacketQIOFillCraftingWindow {
         QIOCraftingWindow craftingWindow = container.getCraftingWindow(selectedCraftingGrid);
         List<HotBarSlot> hotBarSlots = container.getHotBarSlots();
         List<MainInventorySlot> mainInventorySlots = container.getMainInventorySlots();
+        ResourceLocation recipeID = recipe.getId();
         for (Byte2ObjectMap.Entry<SingularHashedItemSource> entry : sources.byte2ObjectEntrySet()) {
             ItemStack stack;
             SingularHashedItemSource source = entry.getValue();
@@ -131,15 +132,15 @@ public class PacketQIOFillCraftingWindow {
             if (slot == -1) {
                 UUID qioSource = source.getQioSource();
                 if (qioSource == null) {
-                    Mekanism.logger.warn("Received transfer request from: {} with no valid source.", player);
+                    Mekanism.logger.warn("Received transfer request from: {}, for: {}, with no valid source.", player, recipeID);
                     return;
                 } else if (frequency == null) {
-                    Mekanism.logger.warn("Received transfer request from: {}, with a QIO source but no selected frequency.", player);
+                    Mekanism.logger.warn("Received transfer request from: {}, for: {}, with a QIO source but no selected frequency.", player, recipeID);
                     return;
                 }
                 HashedItem storedItem = frequency.getTypeByUUID(qioSource);
                 if (storedItem == null) {
-                    Mekanism.logger.warn("Received transfer request from: {}, could not find stored item with UUID: {}.", player, qioSource);
+                    Mekanism.logger.warn("Received transfer request from: {}, for: {}, could not find stored item with UUID: {}.", player, recipeID, qioSource);
                     return;
                 }
                 stack = storedItem.getStack();
@@ -150,8 +151,8 @@ public class PacketQIOFillCraftingWindow {
                     //Note: This isn't a super accurate validation of if we can take the stack or not, given in theory we
                     // always should be able to, but we have this check that mimics our implementation here just in case
                     if (inputSlot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
-                        Mekanism.logger.warn("Received transfer request from: {}, with a request to take from crafting window slot: {}, "
-                                             + "but that slot cannot be taken from.", player, slot);
+                        Mekanism.logger.warn("Received transfer request from: {}, for: {}, with a request to take from crafting window slot: {}, "
+                                             + "but that slot cannot be taken from.", player, recipeID, slot);
                         return;
                     }
                     stack = inputSlot.getStack();
@@ -160,15 +161,15 @@ public class PacketQIOFillCraftingWindow {
                     int actualSlot = slot - 9;
                     if (actualSlot >= hotBarSlots.size()) {
                         //Something went wrong, shouldn't happen even with an invalid packet
-                        Mekanism.logger.warn("Received transfer request from: {}, could not find hotbar slot: {}.", player, actualSlot);
+                        Mekanism.logger.warn("Received transfer request from: {}, for: {}, could not find hotbar slot: {}.", player, recipeID, actualSlot);
                         return;
                     }
                     HotBarSlot hotbarSlot = hotBarSlots.get(actualSlot);
                     if (hotbarSlot.canTakeStack(player)) {
                         stack = hotbarSlot.getStack();
                     } else {
-                        Mekanism.logger.warn("Received transfer request from: {}, with a request to take from hotbar slot: {}, "
-                                             + "but that slot cannot be taken from.", player, actualSlot);
+                        Mekanism.logger.warn("Received transfer request from: {}, for: {}, with a request to take from hotbar slot: {}, "
+                                             + "but that slot cannot be taken from.", player, recipeID, actualSlot);
                         return;
                     }
                 } else {
@@ -176,35 +177,35 @@ public class PacketQIOFillCraftingWindow {
                     int actualSlot = slot - 9 - PlayerInventory.getHotbarSize();
                     if (actualSlot >= mainInventorySlots.size()) {
                         //Something went wrong, shouldn't happen even with an invalid packet
-                        Mekanism.logger.warn("Received transfer request from: {}, could not find main inventory slot: {}.", player, actualSlot);
+                        Mekanism.logger.warn("Received transfer request from: {}, for: {}, could not find main inventory slot: {}.", player, recipeID, actualSlot);
                         return;
                     }
                     MainInventorySlot mainInventorySlot = mainInventorySlots.get(actualSlot);
                     if (mainInventorySlot.canTakeStack(player)) {
                         stack = mainInventorySlot.getStack();
                     } else {
-                        Mekanism.logger.warn("Received transfer request from: {}, with a request to take from main inventory slot: {}, "
-                                             + "but that slot cannot be taken from.", player, actualSlot);
+                        Mekanism.logger.warn("Received transfer request from: {}, for: {}, with a request to take from main inventory slot: {}, "
+                                             + "but that slot cannot be taken from.", player, recipeID, actualSlot);
                         return;
                     }
                 }
             } else {
-                Mekanism.logger.warn("Received transfer request from: {}, with an invalid slot id: {}.", player, slot);
+                Mekanism.logger.warn("Received transfer request from: {}, for: {}, with an invalid slot id: {}.", player, recipeID, slot);
                 return;
             }
             if (stack.isEmpty()) {
-                Mekanism.logger.warn("Received transfer request from: {}, for an empty slot: {}.", player, slot);
+                Mekanism.logger.warn("Received transfer request from: {}, for: {}, for an empty slot: {}.", player, recipeID, slot);
                 return;
             }
             byte targetSlot = entry.getByteKey();
             if (targetSlot < 0 || targetSlot >= 9) {
-                Mekanism.logger.warn("Received transfer request from: {}, with an invalid target slot id: {}.", player, targetSlot);
+                Mekanism.logger.warn("Received transfer request from: {}, for: {}, with an invalid target slot id: {}.", player, recipeID, targetSlot);
                 return;
             }
             dummy.setInventorySlotContents(targetSlot, stack);
         }
         if (!recipe.matches(dummy, player.world)) {
-            Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipe.getId());
+            Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipeID);
             return;
         }
         //TODO: Figure out how we will validate if there is room to do all that before we actually do so?
@@ -215,11 +216,11 @@ public class PacketQIOFillCraftingWindow {
         // We will need to pass the proper data to transferItems, but I believe once we get simulation working, we can probably relatively easily extend it so that it
         // also calculates how much will come from each slot and how much we can even handle in the recipe.
         // One short circuit that probably will be worth doing is if one of the inputs to the recipe is not stackable, then we can just treat maxTransfer as false
-        transferItems(frequency, craftingWindow, player, hotBarSlots, mainInventorySlots, sources);
+        transferItems(frequency, craftingWindow, player, hotBarSlots, mainInventorySlots, sources, recipeID);
     }
 
     private static void transferItems(@Nullable QIOFrequency frequency, QIOCraftingWindow craftingWindow, PlayerEntity player, List<HotBarSlot> hotBarSlots,
-          List<MainInventorySlot> mainInventorySlots, Byte2ObjectMap<SingularHashedItemSource> sources) {
+          List<MainInventorySlot> mainInventorySlots, Byte2ObjectMap<SingularHashedItemSource> sources, ResourceLocation recipeID) {
         //Extract items that will be put into the crafting window
         Byte2ObjectMap<ItemStack> targetContents = new Byte2ObjectArrayMap<>(sources.size());
         for (Byte2ObjectMap.Entry<SingularHashedItemSource> entry : sources.byte2ObjectEntrySet()) {
@@ -233,14 +234,14 @@ public class PacketQIOFillCraftingWindow {
                 }
                 HashedItem storedItem = frequency.getTypeByUUID(qioSource);
                 if (storedItem == null) {
-                    Mekanism.logger.warn("Received transfer request from: {}, could not find stored item with UUID: {}. "
-                                         + "This likely means that more of it was requested than is stored.", player, qioSource);
+                    Mekanism.logger.warn("Received transfer request from: {}, for: {}, could not find stored item with UUID: {}. "
+                                         + "This likely means that more of it was requested than is stored.", player, recipeID, qioSource);
                     return;
                 }
                 ItemStack stack = frequency.removeByType(storedItem, 1);
                 if (stack.isEmpty()) {
-                    Mekanism.logger.warn("Received transfer request from: {}, but could not extract item: {} with nbt: {} from the QIO.", player,
-                          storedItem.getStack().getItem(), storedItem.getStack().getTag());
+                    Mekanism.logger.warn("Received transfer request from: {}, for: {}, but could not extract item: {} with nbt: {} from the QIO.", player,
+                          recipeID, storedItem.getStack().getItem(), storedItem.getStack().getTag());
                     return;
                 }
                 targetContents.put(entry.getByteKey(), stack);
@@ -249,8 +250,8 @@ public class PacketQIOFillCraftingWindow {
                 CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
                 ItemStack stack = inputSlot.extractItem(1, Action.EXECUTE, AutomationType.MANUAL);
                 if (stack.isEmpty()) {
-                    Mekanism.logger.warn("Received transfer request from: {}, could not extract item from crafting window slot: {}. "
-                                         + "This likely means that more of it was requested than is stored.", player, slot);
+                    Mekanism.logger.warn("Received transfer request from: {}, for: {}, could not extract item from crafting window slot: {}. "
+                                         + "This likely means that more of it was requested than is stored.", player, recipeID, slot);
                     return;
                 }
                 targetContents.put(entry.getByteKey(), stack);
@@ -260,8 +261,8 @@ public class PacketQIOFillCraftingWindow {
                 HotBarSlot hotbarSlot = hotBarSlots.get(actualSlot);
                 ItemStack stack = hotbarSlot.decrStackSize(1);
                 if (stack.isEmpty()) {
-                    Mekanism.logger.warn("Received transfer request from: {}, could not extract item from hotbar window slot: {}. "
-                                         + "This likely means that more of it was requested than is stored.", player, actualSlot);
+                    Mekanism.logger.warn("Received transfer request from: {}, for: {}, could not extract item from hotbar window slot: {}. "
+                                         + "This likely means that more of it was requested than is stored.", player, recipeID, actualSlot);
                     return;
                 }
                 targetContents.put(entry.getByteKey(), stack);
@@ -271,8 +272,8 @@ public class PacketQIOFillCraftingWindow {
                 MainInventorySlot mainInventorySlot = mainInventorySlots.get(actualSlot);
                 ItemStack stack = mainInventorySlot.decrStackSize(1);
                 if (stack.isEmpty()) {
-                    Mekanism.logger.warn("Received transfer request from: {}, could not extract item from main inventory window slot: {}. "
-                                         + "This likely means that more of it was requested than is stored.", player, actualSlot);
+                    Mekanism.logger.warn("Received transfer request from: {}, for: {}, could not extract item from main inventory window slot: {}. "
+                                         + "This likely means that more of it was requested than is stored.", player, recipeID, actualSlot);
                     return;
                 }
                 targetContents.put(entry.getByteKey(), stack);
@@ -326,8 +327,8 @@ public class PacketQIOFillCraftingWindow {
                         // drop it as the player, and print a warning as ideally we should never have been able to get to this
                         // point as our simulation should have marked it as invalid
                         player.dropItem(stack, false);
-                        Mekanism.logger.warn("Received transfer request from: {}, and was unable to fit all contents that were in the crafting window into the player's "
-                                             + "inventory/QIO system; dropping items by player.", player);
+                        Mekanism.logger.warn("Received transfer request from: {}, for: {}, and was unable to fit all contents that were in the crafting window "
+                                             + "into the player's inventory/QIO system; dropping items by player.", player, recipeID);
                         //TODO: Make sure we don't get to this point by having accurate simulation
                     }
                 }
