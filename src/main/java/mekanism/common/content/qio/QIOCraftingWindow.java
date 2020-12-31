@@ -39,7 +39,6 @@ public class QIOCraftingWindow implements IContentsListener {
     private final QIOCraftingInventory craftingInventory;
     private final IQIOCraftingWindowHolder holder;
     private final byte windowIndex;
-    //TODO: Invalidate this properly when a reload is performed
     @Nullable
     private ICraftingRecipe lastRecipe;
     private boolean isCrafting;
@@ -87,6 +86,19 @@ public class QIOCraftingWindow implements IContentsListener {
         }
     }
 
+    public void invalidateRecipe() {
+        //Clear the cached recipe and output slot
+        lastRecipe = null;
+        if (!outputSlot.isEmpty()) {
+            outputSlot.setEmpty();
+        }
+        World world = holder.getHolderWorld();
+        if (world != null && !world.isRemote) {
+            //And recheck the recipe
+            updateOutputSlot(world);
+        }
+    }
+
     /**
      * @apiNote Only call on server
      */
@@ -97,19 +109,27 @@ public class QIOCraftingWindow implements IContentsListener {
                 if (!outputSlot.isEmpty()) {
                     outputSlot.setEmpty();
                 }
-            }//If we don't have a cached recipe, or our cached recipe doesn't match our inventory contents
-            else if (lastRecipe == null || !lastRecipe.matches(craftingInventory, world)) {
-                //TODO: Fixme, this doesn't seem to properly be able to switch from stone bricks to stone buttons
-
-                //Lookup the recipe
+            } else if (lastRecipe != null && lastRecipe.matches(craftingInventory, world)) {
+                //If the recipe matches, and the output slot is empty
+                if (outputSlot.isEmpty()) {
+                    //Set the slot to the recipe result, this fixes it not properly updating when
+                    // we remove a single item recipe such as for buttons, and put it back in
+                    outputSlot.setStack(lastRecipe.getCraftingResult(craftingInventory));
+                }
+            } else {
+                //If we don't have a cached recipe, or our cached recipe doesn't match our inventory contents, lookup the recipe
                 ICraftingRecipe recipe = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, craftingInventory, world).orElse(null);
                 if (recipe != lastRecipe) {
-                    //If the recipe is different, update the output
-                    lastRecipe = recipe;
-                    if (lastRecipe == null) {
-                        outputSlot.setEmpty();
+                    if (recipe == null) {
+                        //If there is no found recipe, clear the output, but don't update our last recipe
+                        // as we can start by checking if they are doing the same recipe as we last found
+                        if (!outputSlot.isEmpty()) {
+                            outputSlot.setEmpty();
+                        }
                     } else {
-                        outputSlot.setStack(recipe.getCraftingResult(craftingInventory));
+                        //If the recipe is different, update the output
+                        lastRecipe = recipe;
+                        outputSlot.setStack(lastRecipe.getCraftingResult(craftingInventory));
                     }
                 }
             }

@@ -34,6 +34,10 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
         } else {
             this.world = inv.player.getEntityWorld();
             this.playerUUID = inv.player.getUniqueID();
+            for (QIOCraftingWindow craftingWindow : craftingWindows) {
+                //Force refresh the recipe now that we have a world set and can actually calculate it
+                craftingWindow.invalidateRecipe();
+            }
         }
     }
 

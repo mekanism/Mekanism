@@ -211,9 +211,10 @@ public class PacketQIOFillCraftingWindow {
         // Realistically we will probably need to do it "twice", once by simulating, once by not
         // (maybe we can do a similar thing to how the TransportManager simulates insertion)
         // And if our simulation is screwed up and we are wrong, then we will have to dump whatever excess items we had on the ground?
-        //TODO: Handle maxTransfer, also make sure to validate the other slots we are grabbing from that we didn't validate when checking the recipe is valid
-        // We will need to decide when we want to handle max transfer, if we want to move items, and then try to stack them on top of the crafting items
-        // or figure out how much we need to extract from each slot first. The figuring out first probably can be done as part of our simulation stage
+        //TODO: Support the maxTransfer flag, and make sure to validate the other slots we are grabbing from that we didn't validate when checking the recipe is valid
+        // We will need to pass the proper data to transferItems, but I believe once we get simulation working, we can probably relatively easily extend it so that it
+        // also calculates how much will come from each slot and how much we can even handle in the recipe.
+        // One short circuit that probably will be worth doing is if one of the inputs to the recipe is not stackable, then we can just treat maxTransfer as false
         transferItems(frequency, craftingWindow, player, hotBarSlots, mainInventorySlots, sources);
     }
 

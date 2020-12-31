@@ -6,9 +6,12 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.qio.IQIOCraftingWindowHolder;
+import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.lib.chunkloading.ChunkManager;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.world.GenHandler;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
@@ -84,7 +87,18 @@ public class CommonWorldTickHandler {
         if (!world.isRemote) {
             Mekanism.radiationManager.tickServerWorld(world);
             ChunkManager.tick(world);
-            flushTagAndRecipeCaches = false;
+            if (flushTagAndRecipeCaches) {
+                //Loop all open containers and if it is a portable qio dashboard force refresh the window's recipes
+                for (ServerPlayerEntity player : world.getPlayers()) {
+                    if (player.openContainer instanceof PortableQIODashboardContainer) {
+                        PortableQIODashboardContainer qioDashboard = (PortableQIODashboardContainer) player.openContainer;
+                        for (byte index = 0; index < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS; index++) {
+                            qioDashboard.getCraftingWindow(index).invalidateRecipe();
+                        }
+                    }
+                }
+                flushTagAndRecipeCaches = false;
+            }
 
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;

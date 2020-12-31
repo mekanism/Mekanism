@@ -2,6 +2,7 @@ package mekanism.common.tile.qio;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
@@ -16,6 +17,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
      * @apiNote This is only not final for purposes of being able to assign it in presetVariables so that we can use it in getInitialInventory.
      */
     private QIOCraftingWindow[] craftingWindows;
+    private boolean recipesChecked = false;
 
     public TileEntityQIODashboard() {
         super(MekanismBlocks.QIO_DASHBOARD);
@@ -48,6 +50,14 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
+        if (CommonWorldTickHandler.flushTagAndRecipeCaches || !recipesChecked) {
+            //If we need to update the recipes because of a reload or if we just haven't checked the recipes yet
+            // after loading, as there was no world set yet, refresh the recipes
+            recipesChecked = true;
+            for (QIOCraftingWindow craftingWindow : craftingWindows) {
+                craftingWindow.invalidateRecipe();
+            }
+        }
         if (world.getGameTime() % 10 == 0) {
             setActive(getQIOFrequency() != null);
         }
