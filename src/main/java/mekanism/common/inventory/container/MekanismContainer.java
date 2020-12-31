@@ -2,6 +2,7 @@ package mekanism.common.inventory.container;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -183,6 +184,14 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     }
 
     protected void addSlots() {
+    }
+
+    public List<MainInventorySlot> getMainInventorySlots() {
+        return Collections.unmodifiableList(mainInventorySlots);
+    }
+
+    public List<HotBarSlot> getHotBarSlots() {
+        return Collections.unmodifiableList(hotBarSlots);
     }
 
     /**

@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
@@ -45,8 +47,9 @@ public class QIOCraftingTransferHelper {
         byte inventorySlotIndex = 0;
         for (; inventorySlotIndex < 9; inventorySlotIndex++) {
             IInventorySlot slot = craftingWindow.getInputSlot(inventorySlotIndex);
-            //TODO - 10.1: Do we want to/need to validate that we can remove the given stack from the QIO crafting window?
-            if (!slot.isEmpty()) {
+            //Note: This isn't a super accurate validation of if we can take the stack or not, given in theory we
+            // always should be able to, but we have this check that mimics our implementation here just in case
+            if (!slot.isEmpty() && !slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
                 int stored = slot.getCount();
                 HashedItem hashedItem = HashedItem.raw(slot.getStack());
                 availableItems.mergeLong(hashedItem, stored, Long::sum);
