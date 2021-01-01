@@ -29,3 +29,9 @@ license="MIT"
     versionRange="${crafttweaker_version}"
     ordering="AFTER"
     side="BOTH"
+[[dependencies.mekanism]]
+    modId="jei"
+    mandatory=false
+    versionRange="${jei_version}"
+    ordering="AFTER"
+    side="BOTH"
