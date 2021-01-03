@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker.content.builder;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.impl.util.MCResourceLocation;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -17,14 +16,14 @@ public class CrTPigmentBuilder extends CrTChemicalBuilder<Pigment, PigmentBuilde
     /**
      * Creates a builder for registering a custom {@link Pigment}.
      *
-     * @param textureLocation If present the {@link MCResourceLocation} representing the texture this {@link Pigment} will use, otherwise defaults to our default {@link
+     * @param textureLocation If present the {@link ResourceLocation} representing the texture this {@link Pigment} will use, otherwise defaults to our default {@link
      *                        Pigment} texture.
      *
      * @return A builder for creating a custom {@link Pigment}.
      */
     @ZenCodeType.Method
-    public static CrTPigmentBuilder builder(@ZenCodeType.Optional MCResourceLocation textureLocation) {
-        return new CrTPigmentBuilder(textureLocation == null ? PigmentBuilder.builder() : PigmentBuilder.builder(textureLocation.getInternal()));
+    public static CrTPigmentBuilder builder(@ZenCodeType.Optional ResourceLocation textureLocation) {
+        return new CrTPigmentBuilder(textureLocation == null ? PigmentBuilder.builder() : PigmentBuilder.builder(textureLocation));
     }
 
     protected CrTPigmentBuilder(PigmentBuilder builder) {

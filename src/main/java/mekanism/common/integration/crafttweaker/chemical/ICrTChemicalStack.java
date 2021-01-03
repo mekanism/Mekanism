@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.chemical;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
-import com.blamejared.crafttweaker.impl.util.MCResourceLocation;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -28,6 +27,7 @@ import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient
 import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTPigmentStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTSlurryStackIngredient;
+import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -43,8 +43,8 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
-    default MCResourceLocation getRegistryName() {
-        return new MCResourceLocation(getInternal().getTypeRegistryName());
+    default ResourceLocation getRegistryName() {
+        return getInternal().getTypeRegistryName();
     }
 
     /**

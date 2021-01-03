@@ -4,7 +4,6 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCIngredientList;
-import com.blamejared.crafttweaker.impl.item.MCItemDefinition;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import com.blamejared.crafttweaker.impl.tag.manager.TagManagerItem;
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, Item
      * @return A {@link CrTItemStackIngredient} that matches a given item with an amount of one.
      */
     @ZenCodeType.Method
-    public static CrTItemStackIngredient from(MCItemDefinition item) {
+    public static CrTItemStackIngredient from(Item item) {
         return from(item, 1);
     }
 
@@ -57,9 +56,9 @@ public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, Item
      * @return A {@link CrTItemStackIngredient} that matches a given item and amount.
      */
     @ZenCodeType.Method
-    public static CrTItemStackIngredient from(MCItemDefinition item, int amount) {
+    public static CrTItemStackIngredient from(Item item, int amount) {
         assertValidAmount("ItemStackIngredients", amount);
-        return new CrTItemStackIngredient(ItemStackIngredient.from(item.getInternal(), amount));
+        return new CrTItemStackIngredient(ItemStackIngredient.from(item, amount));
     }
 
     /**
@@ -70,7 +69,7 @@ public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, Item
      * @return A {@link CrTItemStackIngredient} that matches a given item tag with an amount of one.
      */
     @ZenCodeType.Method
-    public static CrTItemStackIngredient from(MCTag<MCItemDefinition> itemTag) {
+    public static CrTItemStackIngredient from(MCTag<Item> itemTag) {
         return from(itemTag, 1);
     }
 
@@ -83,7 +82,7 @@ public class CrTItemStackIngredient extends CrTIngredientWrapper<ItemStack, Item
      * @return A {@link CrTItemStackIngredient} that matches a given item tag with a given amount.
      */
     @ZenCodeType.Method
-    public static CrTItemStackIngredient from(MCTag<MCItemDefinition> itemTag, int amount) {
+    public static CrTItemStackIngredient from(MCTag<Item> itemTag, int amount) {
         ITag<Item> tag = assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
         return new CrTItemStackIngredient(ItemStackIngredient.from(tag, amount));
     }

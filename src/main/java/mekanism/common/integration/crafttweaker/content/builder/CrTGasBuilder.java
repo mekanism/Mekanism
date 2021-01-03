@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker.content.builder;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.impl.util.MCResourceLocation;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -17,14 +16,14 @@ public class CrTGasBuilder extends CrTChemicalBuilder<Gas, GasBuilder, ICrTGasAt
     /**
      * Creates a builder for registering a custom {@link Gas}.
      *
-     * @param textureLocation If present the {@link MCResourceLocation} representing the texture this {@link Gas} will use, otherwise defaults to our default {@link Gas}
+     * @param textureLocation If present the {@link ResourceLocation} representing the texture this {@link Gas} will use, otherwise defaults to our default {@link Gas}
      *                        texture.
      *
      * @return A builder for creating a custom {@link Gas}.
      */
     @ZenCodeType.Method
-    public static CrTGasBuilder builder(@ZenCodeType.Optional MCResourceLocation textureLocation) {
-        return new CrTGasBuilder(textureLocation == null ? GasBuilder.builder() : GasBuilder.builder(textureLocation.getInternal()));
+    public static CrTGasBuilder builder(@ZenCodeType.Optional ResourceLocation textureLocation) {
+        return new CrTGasBuilder(textureLocation == null ? GasBuilder.builder() : GasBuilder.builder(textureLocation));
     }
 
     protected CrTGasBuilder(GasBuilder builder) {

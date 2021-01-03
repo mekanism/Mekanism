@@ -2,9 +2,7 @@ package mekanism.common.integration.crafttweaker.chemical;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
-import com.blamejared.crafttweaker.impl.util.MCResourceLocation;
 import java.util.Set;
-import java.util.stream.Collectors;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -30,6 +28,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
+import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -45,8 +44,8 @@ public interface ICrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends
      */
     @ZenCodeType.Method("getRegistryName")
     @ZenCodeType.Getter("registryName")
-    default MCResourceLocation getCrTRegistryName() {
-        return new MCResourceLocation(getChemical().getRegistryName());
+    default ResourceLocation getCrTRegistryName() {
+        return getChemical().getRegistryName();
     }
 
     /**
@@ -77,8 +76,8 @@ public interface ICrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends
      * @return All the tags this chemical is a part of.
      */
     @ZenCodeType.Method
-    default Set<MCResourceLocation> getTags() {
-        return getChemical().getTags().stream().map(MCResourceLocation::new).collect(Collectors.toSet());
+    default Set<ResourceLocation> getTags() {
+        return getChemical().getTags();
     }
 
     /**

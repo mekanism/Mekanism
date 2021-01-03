@@ -5,10 +5,10 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCIngredientList;
-import com.blamejared.crafttweaker.impl.item.MCItemDefinition;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
+import net.minecraft.item.Item;
 import org.openzen.zencode.java.ZenCodeType;
 
 /**
@@ -67,10 +67,10 @@ public class CrTIngredientExpansion {
     public static class ItemTagExpansion {
 
         /**
-         * Allows for casting {@link MCTag<MCItemDefinition>}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link MCTag< Item >}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTItemStackIngredient asItemStackIngredient(MCTag<MCItemDefinition> _this) {
+        public static CrTItemStackIngredient asItemStackIngredient(MCTag<Item> _this) {
             return CrTItemStackIngredient.from(_this);
         }
     }
@@ -80,10 +80,10 @@ public class CrTIngredientExpansion {
     public static class MCItemDefinitionExpansion {
 
         /**
-         * Allows for casting {@link MCItemDefinition}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link Item}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTItemStackIngredient asItemStackIngredient(MCItemDefinition _this) {
+        public static CrTItemStackIngredient asItemStackIngredient(Item _this) {
             return CrTItemStackIngredient.from(_this);
         }
     }

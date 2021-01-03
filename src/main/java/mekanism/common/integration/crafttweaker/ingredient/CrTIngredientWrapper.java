@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -26,8 +25,8 @@ public class CrTIngredientWrapper<TYPE, INGREDIENT extends InputIngredient<TYPE>
     /**
      * Validates that the amount is greater than zero and that the tag exists. If it does it gets and returns the tag, otherwise it throws an error.
      */
-    protected static <TYPE, CRT_TYPE extends CommandStringDisplayable> ITag<TYPE> assertValidAndGet(MCTag<CRT_TYPE> crtTag, long amount,
-          Function<MCTag<CRT_TYPE>, ITag<TYPE>> getter, String ingredientType) {
+    protected static <TYPE, CRT_TYPE> ITag<TYPE> assertValidAndGet(MCTag<CRT_TYPE> crtTag, long amount, Function<MCTag<CRT_TYPE>, ITag<TYPE>> getter,
+          String ingredientType) {
         assertValidAmount(ingredientType, amount);
         ITag<TYPE> tag = getter.apply(crtTag);
         if (tag == null) {

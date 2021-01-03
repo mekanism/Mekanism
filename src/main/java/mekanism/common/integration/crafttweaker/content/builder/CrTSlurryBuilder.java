@@ -1,14 +1,13 @@
 package mekanism.common.integration.crafttweaker.content.builder;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.impl.item.MCItemDefinition;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.util.MCResourceLocation;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.integration.crafttweaker.content.attribute.ICrTChemicalAttribute.ICrTSlurryAttribute;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -39,13 +38,13 @@ public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, 
     /**
      * Creates a builder for registering a custom {@link Slurry}.
      *
-     * @param textureLocation A {@link MCResourceLocation} representing the texture this {@link Slurry} will use.
+     * @param textureLocation A {@link ResourceLocation} representing the texture this {@link Slurry} will use.
      *
      * @return A builder for creating a custom {@link Slurry}.
      */
     @ZenCodeType.Method
-    public static CrTSlurryBuilder builder(MCResourceLocation textureLocation) {
-        return new CrTSlurryBuilder(SlurryBuilder.builder(textureLocation.getInternal()));
+    public static CrTSlurryBuilder builder(ResourceLocation textureLocation) {
+        return new CrTSlurryBuilder(SlurryBuilder.builder(textureLocation));
     }
 
     protected CrTSlurryBuilder(SlurryBuilder builder) {
@@ -55,11 +54,12 @@ public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, 
     /**
      * Sets the tag that represents the ore that goes with this {@link Slurry}.
      *
-     * @param oreTagLocation {@link MCResourceLocation} of the item tag representing the ore.
+     * @param oreTagLocation {@link ResourceLocation} of the item tag representing the ore.
      */
     @ZenCodeType.Method
-    public CrTSlurryBuilder ore(MCResourceLocation oreTagLocation) {
-        return ore(oreTagLocation.getInternal());
+    public CrTSlurryBuilder ore(ResourceLocation oreTagLocation) {
+        getInternal().ore(oreTagLocation);
+        return this;
     }
 
     /**
@@ -71,13 +71,8 @@ public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, 
      * collection is empty, and the goal of this method is to let the slurry have an {@link net.minecraft.tags.ITag.INamedTag}
      */
     @ZenCodeType.Method
-    public CrTSlurryBuilder ore(MCTag<MCItemDefinition> oreTag) {
+    public CrTSlurryBuilder ore(MCTag<Item> oreTag) {
         return ore(oreTag.getIdInternal());
-    }
-
-    private CrTSlurryBuilder ore(ResourceLocation oreTagLocation) {
-        getInternal().ore(oreTagLocation);
-        return this;
     }
 
     @Override

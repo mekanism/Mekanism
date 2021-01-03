@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.impl.fluid.MCFluid;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import com.blamejared.crafttweaker.impl.tag.manager.TagManagerFluid;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
@@ -20,15 +19,14 @@ public class CrTFluidStackIngredient extends CrTIngredientWrapper<FluidStack, Fl
     /**
      * Creates a {@link CrTFluidStackIngredient} that matches a given fluid and amount.
      *
-     * @param instance Fluid to match
-     * @param amount   Amount needed
+     * @param fluid  Fluid to match
+     * @param amount Amount needed
      *
      * @return A {@link CrTFluidStackIngredient} that matches a given fluid and amount.
      */
     @ZenCodeType.Method
-    public static CrTFluidStackIngredient from(MCFluid instance, int amount) {
+    public static CrTFluidStackIngredient from(Fluid fluid, int amount) {
         assertValidAmount("FluidStackIngredients", amount);
-        Fluid fluid = instance.getInternal();
         if (fluid == Fluids.EMPTY) {
             throw new IllegalArgumentException("FluidStackIngredients cannot be created from an empty fluid.");
         }
@@ -60,7 +58,7 @@ public class CrTFluidStackIngredient extends CrTIngredientWrapper<FluidStack, Fl
      * @return A {@link CrTFluidStackIngredient} that matches a given fluid tag with a given amount.
      */
     @ZenCodeType.Method
-    public static CrTFluidStackIngredient from(MCTag<MCFluid> fluidTag, int amount) {
+    public static CrTFluidStackIngredient from(MCTag<Fluid> fluidTag, int amount) {
         ITag<Fluid> tag = assertValidAndGet(fluidTag, amount, TagManagerFluid.INSTANCE::getInternal, "FluidStackIngredients");
         return new CrTFluidStackIngredient(FluidStackIngredient.from(tag, amount));
     }
