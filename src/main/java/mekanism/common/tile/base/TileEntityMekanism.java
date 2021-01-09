@@ -739,7 +739,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public Direction getDirection() {
         if (isDirectional()) {
-            return Attribute.getFacing(getBlockState());
+            Direction facing = Attribute.getFacing(getBlockState());
+            return facing != null ? facing : Direction.NORTH;
         }
         //TODO: Remove, give it some better default, or allow it to be null
         return Direction.NORTH;
