@@ -1,5 +1,6 @@
 {
   "assemblicator.mekanism.auto_mode_toggle": "Automatický Mód: %s",
+  "block.mekanism.advanced_combining_factory": "Pokročilá Kombinačná Továreň",
   "block.mekanism.basic_bin": "Základná Debňa",
   "block.mekanism.basic_combining_factory": "Základná Kombinačná Továreň",
   "block.mekanism.basic_crushing_factory": "Základná Drviaca Továreň",
@@ -81,6 +82,7 @@
   "constants.mekanism.ic2": "IndustrialCraft",
   "constants.mekanism.log_format": "[%s] %s",
   "constants.mekanism.mod_name": "Mekanism",
+  "container.mekanism.advanced_combining_factory": "Pokročilá Kombinačná Továreň",
   "container.mekanism.basic_combining_factory": "Základná Kombinačná Továreň",
   "container.mekanism.basic_crushing_factory": "Základná Drviaca Továreň",
   "container.mekanism.basic_energy_cube": "Základná Kocka Energie",
