@@ -234,21 +234,20 @@ public final class MekanismUtils {
     }
 
     /**
-     * Gets the secondary energy required per tick for a machine via upgrades.
+     * Gets the secondary energy multiplier required per tick for a machine via upgrades.
      *
      * @param tile - tile containing upgrades
-     * @param def  - the original, default secondary energy required
      *
      * @return max secondary energy per tick
      */
-    public static double getGasPerTickMean(IUpgradeTile tile, long def) {
+    public static double getGasPerTickMeanMultiplier(IUpgradeTile tile) {
         if (tile.supportsUpgrades()) {
             if (tile.getComponent().supports(Upgrade.GAS)) {
-                return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.GAS));
+                return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.GAS));
             }
-            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.SPEED));
+            return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.SPEED));
         }
-        return def;
+        return 1;
     }
 
     /**

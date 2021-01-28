@@ -90,12 +90,9 @@ public class InputHelper {
 
             @Override
             public void use(@Nonnull STACK recipeInput, long operations) {
-                if (operations == 0) {
+                if (operations == 0 || recipeInput.isEmpty()) {
                     //Just exit if we are somehow here at zero operations
-                    return;
-                }
-                if (recipeInput.isEmpty()) {
-                    //Something went wrong, this if should never really be true if we got to finishProcessing
+                    // or if something went wrong, this if should never really be true if we got to finishProcessing
                     return;
                 }
                 STACK inputGas = getInput();
@@ -145,12 +142,9 @@ public class InputHelper {
 
             @Override
             public void use(@Nonnull FluidStack recipeInput, int operations) {
-                if (operations == 0) {
+                if (operations == 0 || recipeInput.isEmpty()) {
                     //Just exit if we are somehow here at zero operations
-                    return;
-                }
-                if (recipeInput.isEmpty()) {
-                    //Something went wrong, this if should never really be true if we got to finishProcessing
+                    // or if something went wrong, this if should never really be true if we got to finishProcessing
                     return;
                 }
                 FluidStack inputFluid = getInput();

@@ -1,5 +1,6 @@
 package mekanism.common.tile.factory;
 
+import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
@@ -38,11 +39,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
-    /**
-     * How much secondary energy each operation consumes per tick
-     */
-    private double secondaryEnergyPerTick;
-    private long secondaryEnergyThisTick;
+    private double secondaryEnergyPerTickMultiplier = 1;
     private GasInventorySlot extraSlot;
     private IGasTank gasTank;
 
@@ -51,7 +48,6 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         gasInputHandler = InputHelper.getInputHandler(gasTank);
         configComponent.addSupported(TransmissionType.GAS);
         configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
-        secondaryEnergyPerTick = getSecondaryEnergyPerTick();
     }
 
     @Nonnull
@@ -122,11 +118,6 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     protected void handleSecondaryFuel() {
         extraSlot.fillTankOrConvert();
-        if (getSupportedUpgrade().contains(Upgrade.GAS)) {
-            secondaryEnergyThisTick = StatUtils.inversePoisson(secondaryEnergyPerTick);
-        } else {
-            secondaryEnergyThisTick = MathUtils.clampToLong(Math.ceil(secondaryEnergyPerTick));
-        }
     }
 
     @Nonnull
@@ -160,7 +151,13 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Override
     public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
-        return new ItemStackGasToItemStackCachedRecipe<>(recipe, inputHandlers[cacheIndex], gasInputHandler, () -> secondaryEnergyThisTick, outputHandlers[cacheIndex])
+        LongSupplier secondaryEnergyUsage;
+        if (getSupportedUpgrade().contains(Upgrade.GAS)) {
+            secondaryEnergyUsage = () -> StatUtils.inversePoisson(secondaryEnergyPerTickMultiplier);
+        } else {
+            secondaryEnergyUsage = () -> MathUtils.clampToLong(Math.ceil(secondaryEnergyPerTickMultiplier));
+        }
+        return new ItemStackGasToItemStackCachedRecipe<>(recipe, inputHandlers[cacheIndex], gasInputHandler, secondaryEnergyUsage, outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
@@ -178,12 +175,8 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED || upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS)) {
-            secondaryEnergyPerTick = getSecondaryEnergyPerTick();
+            secondaryEnergyPerTickMultiplier = MekanismUtils.getGasPerTickMeanMultiplier(this);
         }
-    }
-
-    public double getSecondaryEnergyPerTick() {
-        return MekanismUtils.getGasPerTickMean(this, TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK);
     }
 
     @Override

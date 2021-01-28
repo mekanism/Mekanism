@@ -77,21 +77,21 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addChemicalInjectorCoralRevivalRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BRAIN_CORAL_BLOCK, Blocks.BRAIN_CORAL_BLOCK, 750);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BUBBLE_CORAL_BLOCK, Blocks.BUBBLE_CORAL_BLOCK, 750);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_FIRE_CORAL_BLOCK, Blocks.FIRE_CORAL_BLOCK, 750);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_HORN_CORAL_BLOCK, Blocks.HORN_CORAL_BLOCK, 750);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_TUBE_CORAL_BLOCK, Blocks.TUBE_CORAL_BLOCK, 750);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BRAIN_CORAL, Blocks.BRAIN_CORAL, 500);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BUBBLE_CORAL, Blocks.BUBBLE_CORAL, 500);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_FIRE_CORAL, Blocks.FIRE_CORAL, 500);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_HORN_CORAL, Blocks.HORN_CORAL, 500);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_TUBE_CORAL, Blocks.TUBE_CORAL, 500);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_BRAIN_CORAL_FAN, Items.BRAIN_CORAL_FAN, 500);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_BUBBLE_CORAL_FAN, Items.BUBBLE_CORAL_FAN, 500);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_FIRE_CORAL_FAN, Items.FIRE_CORAL_FAN, 500);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_HORN_CORAL_FAN, Items.HORN_CORAL_FAN, 500);
-        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_TUBE_CORAL_FAN, Items.TUBE_CORAL_FAN, 500);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BRAIN_CORAL_BLOCK, Blocks.BRAIN_CORAL_BLOCK, 5);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BUBBLE_CORAL_BLOCK, Blocks.BUBBLE_CORAL_BLOCK, 5);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_FIRE_CORAL_BLOCK, Blocks.FIRE_CORAL_BLOCK, 5);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_HORN_CORAL_BLOCK, Blocks.HORN_CORAL_BLOCK, 5);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_TUBE_CORAL_BLOCK, Blocks.TUBE_CORAL_BLOCK, 5);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BRAIN_CORAL, Blocks.BRAIN_CORAL, 3);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BUBBLE_CORAL, Blocks.BUBBLE_CORAL, 3);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_FIRE_CORAL, Blocks.FIRE_CORAL, 3);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_HORN_CORAL, Blocks.HORN_CORAL, 3);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_TUBE_CORAL, Blocks.TUBE_CORAL, 3);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_BRAIN_CORAL_FAN, Items.BRAIN_CORAL_FAN, 3);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_BUBBLE_CORAL_FAN, Items.BUBBLE_CORAL_FAN, 3);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_FIRE_CORAL_FAN, Items.FIRE_CORAL_FAN, 3);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_HORN_CORAL_FAN, Items.HORN_CORAL_FAN, 3);
+        addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_TUBE_CORAL_FAN, Items.TUBE_CORAL_FAN, 3);
     }
 
     private void addChemicalInjectorCoralRevivalRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider dead, IItemProvider living, int water) {

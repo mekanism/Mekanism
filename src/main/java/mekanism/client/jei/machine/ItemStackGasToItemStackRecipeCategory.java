@@ -53,8 +53,8 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
     public void setIngredients(ItemStackGasToItemStackRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
         List<@NonNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
-        long scale = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
-        List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, scale)).collect(Collectors.toList());
+        List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, gas.getAmount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED))
+              .collect(Collectors.toList());
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(scaledGases));
         ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getOutputDefinition()));
     }
@@ -71,11 +71,10 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         List<ItemStack> gasItemProviders = new ArrayList<>();
         List<@NonNull GasStack> gasInputs = gasInput.getRepresentations();
         List<GasStack> scaledGases = new ArrayList<>();
-        long scale = TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK;
         for (GasStack gas : gasInputs) {
             gasItemProviders.addAll(MekanismJEI.GAS_STACK_HELPER.getStacksFor(gas.getType(), true));
             //While we are already looping the gases ensure we scale it to get the average amount that will get used over all
-            scaledGases.add(new GasStack(gas, scale));
+            scaledGases.add(new GasStack(gas, gas.getAmount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED));
         }
         itemStacks.set(2, gasItemProviders);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);

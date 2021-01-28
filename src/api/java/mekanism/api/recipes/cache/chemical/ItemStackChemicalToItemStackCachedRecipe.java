@@ -24,6 +24,7 @@ public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
     private final ILongInputHandler<@NonNull STACK> chemicalInputHandler;
     private final LongSupplier chemicalUsage;
+    private long chemicalUsageMultiplier;
 
     public ItemStackChemicalToItemStackCachedRecipe(RECIPE recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
           ILongInputHandler<@NonNull STACK> chemicalInputHandler, LongSupplier chemicalUsage, IOutputHandler<@NonNull ItemStack> outputHandler) {
@@ -34,8 +35,9 @@ public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<
         this.outputHandler = outputHandler;
     }
 
-    private long getChemicalUsage() {
-        return chemicalUsage.getAsLong();
+    @Override
+    protected void setupVariableValues() {
+        chemicalUsageMultiplier = chemicalUsage.getAsLong();
     }
 
     @Override
@@ -65,7 +67,7 @@ public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<
             return -1;
         }
         //Calculate the current max based on the chemical input, and the given usage amount
-        currentMax = chemicalInputHandler.operationsCanSupport(recipe.getChemicalInput(), currentMax, getChemicalUsage());
+        currentMax = chemicalInputHandler.operationsCanSupport(recipe.getChemicalInput(), currentMax, chemicalUsageMultiplier);
         //Calculate the max based on the space in the output
         return outputHandler.operationsRoomFor(recipe.getOutput(recipeItem, recipeChemical), currentMax);
     }
@@ -76,9 +78,7 @@ public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<
         //Ensure that we check that we have enough for that the recipe matches *and* also that we have enough for how much we need to use
         if (!chemicalStack.isEmpty() && recipe.test(itemInputHandler.getInput(), chemicalStack)) {
             STACK recipeChemical = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
-            //TODO: Decide how to best handle usage, given technically the input is still valid regardless of extra usage
-            // we just can't process it yet
-            return !recipeChemical.isEmpty() && chemicalStack.getAmount() >= recipeChemical.getAmount();// * getChemicalUsage();
+            return !recipeChemical.isEmpty() && chemicalStack.getAmount() >= recipeChemical.getAmount();
         }
         return false;
     }
@@ -92,10 +92,8 @@ public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<
             //Something went wrong, this if should never really be true if we are in useResources
             return;
         }
-        //TODO: Verify we actually have enough and should be passing operations like this?
-        chemicalInputHandler.use(recipeChemical, operations * getChemicalUsage());
-        //TODO: Else throw some error? It really should already have the needed amount due to the hasResourceForTick call
-        // but it may make sense to check anyways
+        //Note: We should have enough because of the getOperationsThisTick call to reduce it based on amounts
+        chemicalInputHandler.use(recipeChemical, operations * chemicalUsageMultiplier);
     }
 
     @Override
