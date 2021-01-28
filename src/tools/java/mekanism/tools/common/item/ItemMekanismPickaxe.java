@@ -8,8 +8,8 @@ import javax.annotation.Nullable;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.tools.common.IHasRepairType;
-import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.material.MaterialCreator;
+import mekanism.tools.common.util.ToolsUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
@@ -43,7 +43,8 @@ public class ItemMekanismPickaxe extends PickaxeItem implements IHasRepairType, 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
+        super.addInformation(stack, world, tooltip, flag);
+        ToolsUtils.addDurability(tooltip, stack);
     }
 
     @Override
