@@ -333,9 +333,6 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                 transmitterNetwork.invalidate(null);
                 if (!player.isCreative()) {
                     stack.shrink(1);
-                    if (stack.getCount() == 0) {
-                        player.setHeldItem(hand, ItemStack.EMPTY);
-                    }
                 }
             }
         }

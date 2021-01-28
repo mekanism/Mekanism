@@ -57,7 +57,7 @@ public class ItemConfigurationCard extends Item {
             TileEntity tile = WorldUtils.getTileEntity(world, pos);
             if (CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
                 if (SecurityUtils.canAccess(player, tile)) {
-                    ItemStack stack = player.getHeldItem(context.getHand());
+                    ItemStack stack = context.getItem();
                     if (player.isSneaking()) {
                         Optional<ISpecialConfigData> configData = CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).resolve();
                         CompoundNBT data = configData.isPresent() ? configData.get().getConfigurationData(getBaseData(tile)) : getBaseData(tile);

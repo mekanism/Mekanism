@@ -26,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Rarity;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -60,9 +59,8 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
         TileEntityMekanism chargepad = WorldUtils.getTileEntity(TileEntityChargepad.class, world, pos);
         if (chargepad != null) {
             if (!chargepad.getActive()) {
-                Hand hand = context.getHand();
-                ItemStack stack = player.getHeldItem(hand);
                 if (!world.isRemote) {
+                    ItemStack stack = context.getItem();
                     EntityRobit robit = new EntityRobit(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
                     robit.setHome(Coord4D.get(chargepad));
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
@@ -81,8 +79,8 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
                     robit.setCustomName(getName(stack));
                     robit.setSecurityMode(getSecurity(stack));
                     world.addEntity(robit);
+                    stack.shrink(1);
                 }
-                player.setHeldItem(hand, ItemStack.EMPTY);
                 return ActionResultType.SUCCESS;
             }
         }

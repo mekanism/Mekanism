@@ -52,11 +52,9 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
-        }
-        if (world.isRemote) {
+        } else if (world.isRemote) {
             return genericClientActivated(player, hand, hit);
-        }
-        if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+        } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
         }
         ItemStack stack = player.getHeldItem(hand);
@@ -65,9 +63,6 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
                 if (tile.addBlade()) {
                     if (!player.isCreative()) {
                         stack.shrink(1);
-                        if (stack.getCount() == 0) {
-                            player.setHeldItem(hand, ItemStack.EMPTY);
-                        }
                     }
                 }
             }

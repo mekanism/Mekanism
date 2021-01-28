@@ -12,7 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
@@ -37,8 +36,7 @@ public class ItemAlloy extends Item {
             LazyOptional<IAlloyInteraction> capability = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, context.getFace());
             if (capability.isPresent()) {
                 if (!world.isRemote) {
-                    Hand hand = context.getHand();
-                    capability.resolve().get().onAlloyInteraction(player, hand, player.getHeldItem(hand), tier);
+                    capability.resolve().get().onAlloyInteraction(player, context.getHand(), context.getItem(), tier);
                 }
                 return ActionResultType.SUCCESS;
             }

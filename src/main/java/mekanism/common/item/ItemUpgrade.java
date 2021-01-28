@@ -59,7 +59,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
                 IUpgradeTile upgradeTile = (IUpgradeTile) tile;
                 if (upgradeTile.supportsUpgrades()) {
                     TileComponentUpgrade component = upgradeTile.getComponent();
-                    ItemStack stack = player.getHeldItem(context.getHand());
+                    ItemStack stack = context.getItem();
                     Upgrade type = getUpgradeType(stack);
                     if (component.supports(type)) {
                         if (!world.isRemote && component.getUpgrades(type) < type.getMax()) {
