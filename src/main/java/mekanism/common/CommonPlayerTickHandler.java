@@ -68,19 +68,14 @@ public class CommonPlayerTickHandler {
 
     }
 
-    public static boolean isScubaMaskOn(PlayerEntity player) {
-        ItemStack tank = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+    public static boolean isScubaMaskOn(PlayerEntity player, ItemStack tank) {
         ItemStack mask = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
         return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemScubaMask && ChemicalUtil.hasGas(tank) &&
                ((ItemScubaTank) tank.getItem()).getFlowing(tank);
     }
 
-    public static boolean isFlamethrowerOn(PlayerEntity player) {
-        if (Mekanism.playerState.isFlamethrowerOn(player)) {
-            ItemStack currentItem = player.inventory.getCurrentItem();
-            return !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower;
-        }
-        return false;
+    private static boolean isFlamethrowerOn(PlayerEntity player, ItemStack currentItem) {
+        return Mekanism.playerState.isFlamethrowerOn(player) && !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower;
     }
 
     public static float getStepBoost(PlayerEntity player) {
@@ -113,17 +108,17 @@ public class CommonPlayerTickHandler {
             Mekanism.radiationManager.tickServer((ServerPlayerEntity) player);
         }
 
-        if (isFlamethrowerOn(player)) {
+        ItemStack currentItem = player.inventory.getCurrentItem();
+        if (isFlamethrowerOn(player, currentItem)) {
             player.world.addEntity(new EntityFlame(player));
             if (MekanismUtils.isPlayingMode(player)) {
-                ItemStack currentItem = player.inventory.getCurrentItem();
                 ((ItemFlamethrower) currentItem.getItem()).useGas(currentItem, 1);
             }
         }
 
-        if (isJetpackOn(player)) {
-            ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-            JetpackMode mode = getJetpackMode(stack);
+        ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        if (isJetpackOn(player, chest)) {
+            JetpackMode mode = getJetpackMode(chest);
             Vector3d motion = player.getMotion();
             if (mode == JetpackMode.NORMAL) {
                 player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.5D), motion.getZ());
@@ -148,19 +143,18 @@ public class CommonPlayerTickHandler {
             if (player instanceof ServerPlayerEntity) {
                 ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
             }
-            if (stack.getItem() instanceof ItemJetpack) {
-                ((ItemJetpack) stack.getItem()).useGas(stack, 1);
+            if (chest.getItem() instanceof ItemJetpack) {
+                ((ItemJetpack) chest.getItem()).useGas(chest, 1);
             } else {
-                ((ItemMekaSuitArmor) stack.getItem()).useGas(stack, MekanismGases.HYDROGEN.get(), 1);
+                ((ItemMekaSuitArmor) chest.getItem()).useGas(chest, MekanismGases.HYDROGEN.get(), 1);
             }
         }
 
-        if (isScubaMaskOn(player)) {
-            ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-            ItemScubaTank tank = (ItemScubaTank) stack.getItem();
+        if (isScubaMaskOn(player, chest)) {
+            ItemScubaTank tank = (ItemScubaTank) chest.getItem();
             final int max = 300;
-            tank.useGas(stack, 1);
-            GasStack received = tank.useGas(stack, max - player.getAir());
+            tank.useGas(chest, 1);
+            GasStack received = tank.useGas(chest, max - player.getAir());
             if (!received.isEmpty()) {
                 player.setAir(player.getAir() + (int) received.getAmount());
             }
@@ -176,21 +170,18 @@ public class CommonPlayerTickHandler {
         Mekanism.playerState.updateFlightInfo(player);
     }
 
-    public static boolean isJetpackOn(PlayerEntity player) {
-        if (MekanismUtils.isPlayingMode(player)) {
-            ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-            if (!chest.isEmpty()) {
-                JetpackMode mode = getJetpackMode(chest);
-                if (mode == JetpackMode.NORMAL) {
-                    return Mekanism.keyMap.has(player.getUniqueID(), KeySync.ASCEND);
-                } else if (mode == JetpackMode.HOVER) {
-                    boolean ascending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.ASCEND);
-                    boolean descending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.DESCEND);
-                    if (!ascending || descending) {
-                        return !isOnGroundOrSleeping(player);
-                    }
-                    return true;
+    private static boolean isJetpackOn(PlayerEntity player, ItemStack chest) {
+        if (MekanismUtils.isPlayingMode(player) && !chest.isEmpty()) {
+            JetpackMode mode = getJetpackMode(chest);
+            if (mode == JetpackMode.NORMAL) {
+                return Mekanism.keyMap.has(player.getUniqueID(), KeySync.ASCEND);
+            } else if (mode == JetpackMode.HOVER) {
+                boolean ascending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.ASCEND);
+                boolean descending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.DESCEND);
+                if (!ascending || descending) {
+                    return !isOnGroundOrSleeping(player);
                 }
+                return true;
             }
         }
         return false;
