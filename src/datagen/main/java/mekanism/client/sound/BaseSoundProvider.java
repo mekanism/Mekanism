@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
@@ -22,7 +22,7 @@ public abstract class BaseSoundProvider implements IDataProvider {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private final Map<String, SoundEventBuilder> soundEventBuilders = new HashMap<>();
+    private final Map<String, SoundEventBuilder> soundEventBuilders = new LinkedHashMap<>();
     private final ExistingFileHelper existingFileHelper;
     private final DataGenerator gen;
     private final String modid;
@@ -88,7 +88,7 @@ public abstract class BaseSoundProvider implements IDataProvider {
             try {
                 IDataProvider.save(GSON, cache, jsonObject, gen.getOutputFolder().resolve("assets/" + modid + "/sounds.json"));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Couldn't save sounds.json for mod: " + modid, e);
             }
         }
     }
