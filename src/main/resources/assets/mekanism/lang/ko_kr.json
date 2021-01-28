@@ -209,7 +209,7 @@
   "boiler.mekanism.thermoelectric_boiler": "열전류 보일러",
   "boiler.mekanism.valve_mode_change": "밸브 모드가 다음으로 변경됨: %s",
   "boiler.mekanism.valve_mode_input": "투입 전용",
-  "boiler.mekanism.valve_mode_output_coolant": "냉각제 방출",
+  "boiler.mekanism.valve_mode_output_coolant": "냉각재 방출",
   "boiler.mekanism.valve_mode_output_steam": "증기 방출",
   "boiler.mekanism.water_tank": "물탱크",
   "boolean.mekanism.active": "작동",
