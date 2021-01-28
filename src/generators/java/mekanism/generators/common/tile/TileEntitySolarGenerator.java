@@ -16,6 +16,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
@@ -82,11 +83,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // Sort out if the generator can see the sun; we no longer check if it's raining here,
         // since under the new rules, we can still generate power when it's raining, albeit at a
         // significant penalty.
-        World world = getWorld();
-        if (world != null) {
-            seesSun = world.isDaytime() && canSeeSky() && world.getDimensionType().hasSkyLight();
-        }
-
+        seesSun = WorldUtils.canSeeSun(world, getSkyCheckPos());
         if (seesSun && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero()) {
             setActive(true);
             FloatingLong production = getProduction();
@@ -97,9 +94,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         }
     }
 
-    protected boolean canSeeSky() {
-        World world = getWorld();
-        return world != null && world.canBlockSeeSky(getPos());
+    protected BlockPos getSkyCheckPos() {
+        return pos;
     }
 
     public FloatingLong getProduction() {

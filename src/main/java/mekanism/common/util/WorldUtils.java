@@ -623,6 +623,22 @@ public class WorldUtils {
     }
 
     /**
+     * Checks to see if the block at the position can see the sky and it is daytime.
+     *
+     * @param world World to check in.
+     * @param pos   Position to check.
+     *
+     * @return {@code true} if it can.
+     */
+    @Contract("null, _ -> false")
+    public static boolean canSeeSun(@Nullable World world, BlockPos pos) {
+        //Note: We manually handle the world#isDaytime check by just checking the subtracted skylight
+        // as vanilla returns false if the world's time is set to a fixed value even if that time
+        // would effectively be daytime
+        return world != null && world.getDimensionType().hasSkyLight() && world.getSkylightSubtracted() < 4 && world.canBlockSeeSky(pos);
+    }
+
+    /**
      * Converts a {@link BlockPos} to a long representing the {@link ChunkPos} it is in without creating a temporary {@link ChunkPos} object.
      *
      * @param pos Pos to convert.

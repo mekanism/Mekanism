@@ -151,8 +151,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     private boolean canFunction() {
         // Sort out if the solar neutron activator can see the sun; we no longer check if it's raining here,
         // since under the new rules, we can still function when it's raining, albeit at a significant penalty.
-        boolean seesSun = world.isDaytime() && world.canBlockSeeSky(pos.up()) && world.getDimensionType().hasSkyLight();
-        return seesSun && MekanismUtils.canFunction(this);
+        return MekanismUtils.canFunction(this) && WorldUtils.canSeeSun(world, pos.up());
     }
 
     private float recalculateProductionRate() {
