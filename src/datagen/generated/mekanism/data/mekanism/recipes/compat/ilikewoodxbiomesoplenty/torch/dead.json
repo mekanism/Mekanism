@@ -1,0 +1,31 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbiomesoplenty",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "amount": 4,
+    "ingredient": {
+      "item": "ilikewood:dead_torch"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:dead_stick"
+  },
+  "secondaryOutput": {
+    "item": "minecraft:coal"
+  },
+  "secondaryChance": 1.0
+}

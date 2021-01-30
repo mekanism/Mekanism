@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbiomesoplenty",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:purple_magic_bed"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:magic_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:purple_wool",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

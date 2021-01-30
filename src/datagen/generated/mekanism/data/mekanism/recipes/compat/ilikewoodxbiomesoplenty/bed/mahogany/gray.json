@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbiomesoplenty",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:gray_mahogany_bed"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:mahogany_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:gray_wool",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

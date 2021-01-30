@@ -12,6 +12,7 @@ import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -96,21 +97,59 @@ public class RecipeProviderUtil {
         builder.build(consumer, Mekanism.rl(path));
     }
 
-    public static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider bed, IItemProvider wool, String name) {
-        addPrecisionSawmillBedRecipe(consumer, basePath, bed, Blocks.OAK_PLANKS, wool, name, null);
+    public static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider bed, DyeColor color) {
+        addPrecisionSawmillBedRecipe(consumer, basePath, bed, Blocks.OAK_PLANKS, color, null);
     }
 
-    public static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider bed, IItemProvider planks, IItemProvider wool,
-          String name, @Nullable ICondition condition) {
+    public static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider bed, IItemProvider planks, DyeColor color,
+          @Nullable ICondition condition) {
         SawmillRecipeBuilder bedRecipeBuilder = SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(bed),
               new ItemStack(planks, 3),
-              new ItemStack(wool, 3),
+              new ItemStack(getWool(color), 3),
               1
         );
         if (condition != null) {
             bedRecipeBuilder.addCondition(condition);
         }
-        bedRecipeBuilder.build(consumer, Mekanism.rl(basePath + name));
+        bedRecipeBuilder.build(consumer, Mekanism.rl(basePath + color));
+    }
+
+    private static IItemProvider getWool(DyeColor color) {
+        switch (color) {
+            default:
+            case WHITE:
+                return Items.WHITE_WOOL;
+            case ORANGE:
+                return Items.ORANGE_WOOL;
+            case MAGENTA:
+                return Items.MAGENTA_WOOL;
+            case LIGHT_BLUE:
+                return Items.LIGHT_BLUE_WOOL;
+            case YELLOW:
+                return Items.YELLOW_WOOL;
+            case LIME:
+                return Items.LIME_WOOL;
+            case PINK:
+                return Items.PINK_WOOL;
+            case GRAY:
+                return Items.GRAY_WOOL;
+            case LIGHT_GRAY:
+                return Items.LIGHT_GRAY_WOOL;
+            case CYAN:
+                return Items.CYAN_WOOL;
+            case PURPLE:
+                return Items.PURPLE_WOOL;
+            case BLUE:
+                return Items.BLUE_WOOL;
+            case BROWN:
+                return Items.BROWN_WOOL;
+            case GREEN:
+                return Items.GREEN_WOOL;
+            case RED:
+                return Items.RED_WOOL;
+            case BLACK:
+                return Items.BLACK_WOOL;
+        }
     }
 }
