@@ -3,6 +3,7 @@ package mekanism.common.lib.security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.HashList;
 import mekanism.common.lib.frequency.Frequency;
@@ -29,7 +30,10 @@ public class SecurityFrequency extends Frequency {
 
     private SecurityMode securityMode = SecurityMode.PUBLIC;
 
-    public SecurityFrequency(UUID uuid) {
+    /**
+     * @param uuid Should only be null if we have incomplete data that we are loading
+     */
+    public SecurityFrequency(@Nullable UUID uuid) {
         super(FrequencyType.SECURITY, SECURITY, uuid);
     }
 

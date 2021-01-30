@@ -509,7 +509,10 @@ public final class MekanismUtils {
     }
 
     @Nonnull
-    public static String getLastKnownUsername(UUID uuid) {
+    public static String getLastKnownUsername(@Nullable UUID uuid) {
+        if (uuid == null) {
+            return "<???>";
+        }
         String ret = UsernameCache.getLastKnownUsername(uuid);
         if (ret == null && !warnedFails.contains(uuid) && EffectiveSide.get().isServer()) { // see if MC/Yggdrasil knows about it?!
             GameProfile gp = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getProfileByUUID(uuid);

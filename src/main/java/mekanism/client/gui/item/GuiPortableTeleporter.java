@@ -176,7 +176,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             Frequency freq = privateMode ? getPrivateFrequencies().get(scrollList.getSelection()) :
                              getPublicFrequencies().get(scrollList.getSelection());
             setButton.active = getFrequency() == null || !getFrequency().areIdentitiesEqual(freq);
-            deleteButton.active = getOwnerUUID().equals(freq.getOwner());
+            UUID ownerUUID = getOwnerUUID();
+            deleteButton.active = ownerUUID != null && freq.ownerMatches(ownerUUID);
         } else {
             setButton.active = false;
             deleteButton.active = false;
