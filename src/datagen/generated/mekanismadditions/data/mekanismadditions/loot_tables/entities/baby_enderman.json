@@ -2,6 +2,7 @@
   "type": "minecraft:entity",
   "pools": [
     {
+      "name": "pearls",
       "rolls": 1,
       "entries": [
         {

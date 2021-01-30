@@ -21,24 +21,38 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.advancements.criterion.EnchantmentPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.block.Block;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.loot.ConstantRange;
 import net.minecraft.loot.IRandomRange;
 import net.minecraft.loot.ItemLootEntry;
+import net.minecraft.loot.LootEntry;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTable.Builder;
+import net.minecraft.loot.conditions.BlockStateProperty;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.loot.conditions.MatchTool;
 import net.minecraft.loot.functions.ApplyBonus;
 import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.loot.functions.CopyNbt.Source;
 import net.minecraft.loot.functions.SetCount;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.items.IItemHandler;
 
 public abstract class BaseBlockLootTables extends BlockLootTables {
+
+    //Copy of BlockLootTables#SILK_TOUCH
+    private static final ILootCondition.IBuilder SILK_TOUCH = MatchTool.builder(ItemPredicate.Builder.create()
+          .enchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.IntBound.atLeast(1))));
 
     private final Set<Block> knownBlocks = new ObjectOpenHashSet<>();
     private final Set<Block> toSkip = new ObjectOpenHashSet<>();
@@ -71,8 +85,10 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
     }
 
     protected static LootTable.Builder droppingWithFortuneOrRandomly(Block block, IItemProvider item, IRandomRange range) {
-        return droppingWithSilkTouch(block, withExplosionDecay(block, ItemLootEntry.builder(item.asItem()).acceptFunction(SetCount.builder(range))
-              .acceptFunction(ApplyBonus.oreDrops(Enchantments.FORTUNE))));
+        return droppingWithSilkTouch(block, withExplosionDecay(block, ItemLootEntry.builder(item.asItem())
+              .acceptFunction(SetCount.builder(range))
+              .acceptFunction(ApplyBonus.oreDrops(Enchantments.FORTUNE))
+        ));
     }
 
     //IBlockProvider versions of BlockLootTable methods, modified to support varargs
@@ -166,9 +182,76 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 // that block
                 registerDropSelfLootTable(block);
             } else {
-                registerLootTable(block, LootTable.builder().addLootPool(withSurvivesExplosion(block, LootPool.builder().rolls(ConstantRange.of(1))
-                      .addEntry(ItemLootEntry.builder(block).acceptFunction(nbtBuilder)))));
+                registerLootTable(block, LootTable.builder().addLootPool(withSurvivesExplosion(block, LootPool.builder()
+                      .name("main")
+                      .rolls(ConstantRange.of(1))
+                      .addEntry(ItemLootEntry.builder(block).acceptFunction(nbtBuilder))
+                )));
             }
         }
+    }
+
+    /**
+     * Like vanilla's droppingSlab except with a named pool
+     */
+    protected static LootTable.Builder droppingSlab(Block slab) {
+        return LootTable.builder().addLootPool(LootPool.builder()
+              .name("main")
+              .rolls(ConstantRange.of(1))
+              .addEntry(withExplosionDecay(slab, ItemLootEntry.builder(slab)
+                          .acceptFunction(SetCount.builder(ConstantRange.of(2))
+                                .acceptCondition(BlockStateProperty.builder(slab)
+                                      .fromProperties(StatePropertiesPredicate.Builder.newBuilder().withProp(SlabBlock.TYPE, SlabType.DOUBLE)))
+                          )
+                    )
+              )
+        );
+    }
+
+    /**
+     * Like vanilla's registerDropping except with a named pool
+     */
+    @Override
+    public void registerDropping(@Nonnull Block block, @Nonnull IItemProvider drop) {
+        registerLootTable(block, dropping(drop));
+    }
+
+    /**
+     * Like vanilla's dropping except with a named pool
+     */
+    protected static LootTable.Builder dropping(IItemProvider item) {
+        return LootTable.builder().addLootPool(withSurvivesExplosion(item, LootPool.builder()
+              .name("main")
+              .rolls(ConstantRange.of(1))
+              .addEntry(ItemLootEntry.builder(item))
+        ));
+    }
+
+    /**
+     * Like vanilla's droppingWithSilkTouchOrRandomly except with a named pool
+     */
+    protected static LootTable.Builder droppingWithSilkTouchOrRandomly(@Nonnull Block block, @Nonnull IItemProvider item, @Nonnull IRandomRange range) {
+        return droppingWithSilkTouch(block, withExplosionDecay(block, ItemLootEntry.builder(item).acceptFunction(SetCount.builder(range))));
+    }
+
+    /**
+     * Like vanilla's droppingWithSilkTouch except with a named pool
+     */
+    protected static LootTable.Builder droppingWithSilkTouch(@Nonnull Block block, @Nonnull LootEntry.Builder<?> builder) {
+        return dropping(block, SILK_TOUCH, builder);
+    }
+
+    /**
+     * Like vanilla's dropping except with a named pool
+     */
+    protected static LootTable.Builder dropping(@Nonnull Block block, @Nonnull ILootCondition.IBuilder conditionBuilder, @Nonnull LootEntry.Builder<?> entry) {
+        return LootTable.builder().addLootPool(LootPool.builder()
+              .name("main")
+              .rolls(ConstantRange.of(1))
+              .addEntry(ItemLootEntry.builder(block)
+                    .acceptCondition(conditionBuilder)
+                    .alternatively(entry)
+              )
+        );
     }
 }
