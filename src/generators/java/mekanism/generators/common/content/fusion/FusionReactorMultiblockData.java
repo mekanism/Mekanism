@@ -49,9 +49,9 @@ import net.minecraftforge.fluids.FluidAttributes;
 public class FusionReactorMultiblockData extends MultiblockData {
 
     private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000_000);
-    public static final int MAX_WATER = 1_000 * FluidAttributes.BUCKET_VOLUME;
-    public static final long MAX_STEAM = MAX_WATER * 100L;
-    public static final long MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
+    private static final int MAX_WATER = 1_000 * FluidAttributes.BUCKET_VOLUME;
+    private static final long MAX_STEAM = MAX_WATER * 100L;
+    private static final long MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
 
     public static final int MAX_INJECTION = 98;//this is the effective cap in the GUI, as text field is limited to 2 chars
     //Reaction characteristics
@@ -59,8 +59,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private static final double burnRatio = 1;
     //Thermal characteristics
     private static final double plasmaHeatCapacity = 100;
-    public static final double caseHeatCapacity = 1;
-    public static final double inverseInsulation = 100_000;
+    private static final double caseHeatCapacity = 1;
+    private static final double inverseInsulation = 100_000;
     private static final double thermocoupleEfficiency = 0.05;
     //Heat transfer metrics
     private static final double plasmaCaseConductivity = 0.2;
@@ -92,7 +92,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public IGasTank tritiumTank;
     @ContainerSync(tags = "fuel")
     public IGasTank fuelTank;
-    @ContainerSync(tags = "fuel", getter = "getInjectionRate", setter = "setInjectionRate")
+    @ContainerSync(tags = {"fuel", "heat"}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 2;
 
     public double plasmaTemperature = HeatAPI.AMBIENT_TEMP;
