@@ -71,7 +71,7 @@ public class ItemBalloon extends Item {
         if (player == null) {
             return ActionResultType.PASS;
         }
-        ItemStack stack = player.getHeldItem(context.getHand());
+        ItemStack stack = context.getItem();
         if (player.isSneaking()) {
             BlockPos pos = context.getPos();
             AxisAlignedBB bound = new AxisAlignedBB(pos, pos.add(1, 3, 1));

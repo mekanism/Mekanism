@@ -41,7 +41,7 @@ public class PacketTeleporterSetColor {
             ServerPlayerEntity player = ctx.getSender();
             if (player != null) {
                 TeleporterFrequency freq = FrequencyType.TELEPORTER.getFrequency(message.identity, player.getUniqueID());
-                if (freq != null && freq.getOwner().equals(player.getUniqueID())) {
+                if (freq != null && freq.ownerMatches(player.getUniqueID())) {
                     freq.setColor(message.extra == 0 ? freq.getColor().getNext() : freq.getColor().getPrevious());
                     if (message.type == Type.ITEM) {
                         Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(message.currentHand, FrequencyType.TELEPORTER, player.getUniqueID(), freq), player);

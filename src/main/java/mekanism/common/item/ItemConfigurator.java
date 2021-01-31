@@ -54,7 +54,6 @@ import net.minecraft.item.Rarity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
@@ -91,8 +90,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
         if (!world.isRemote && player != null) {
             BlockPos pos = context.getPos();
             Direction side = context.getFace();
-            Hand hand = context.getHand();
-            ItemStack stack = player.getHeldItem(hand);
+            ItemStack stack = context.getItem();
             TileEntity tile = WorldUtils.getTileEntity(world, pos);
             ConfiguratorMode mode = getMode(stack);
             if (mode.isConfigurating()) { //Configurate

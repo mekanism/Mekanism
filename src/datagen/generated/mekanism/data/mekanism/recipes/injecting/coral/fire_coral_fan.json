@@ -6,7 +6,7 @@
     }
   },
   "gasInput": {
-    "amount": 500,
+    "amount": 3,
     "tag": "mekanism:water_vapor"
   },
   "output": {

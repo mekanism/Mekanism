@@ -132,7 +132,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
         if (player == null) {
             return ActionResultType.PASS;
         }
-        ItemStack stack = player.getHeldItem(context.getHand());
+        ItemStack stack = context.getItem();
         if (getBucketMode(stack)) {
             return ActionResultType.PASS;
         }

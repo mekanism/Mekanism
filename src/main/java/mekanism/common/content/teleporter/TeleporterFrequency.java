@@ -3,6 +3,7 @@ package mekanism.common.content.teleporter;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
@@ -18,7 +19,10 @@ public class TeleporterFrequency extends Frequency {
     private final Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
     private EnumColor color = EnumColor.PURPLE;
 
-    public TeleporterFrequency(String n, UUID uuid) {
+    /**
+     * @param uuid Should only be null if we have incomplete data that we are loading
+     */
+    public TeleporterFrequency(String n, @Nullable UUID uuid) {
         super(FrequencyType.TELEPORTER, n, uuid);
     }
 

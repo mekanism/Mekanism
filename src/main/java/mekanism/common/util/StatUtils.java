@@ -7,8 +7,9 @@ public class StatUtils {
     private StatUtils() {
     }
 
-    public static final Random rand = new Random();
+    private static final Random rand = new Random();
 
+    //TODO: Re-evaluate the need for this
     public static int inversePoisson(double mean) {
         double r = rand.nextDouble() * Math.exp(mean);
         int m = 0;

@@ -63,7 +63,7 @@ public class ItemNetworkReader extends ItemEnergized {
             if (tile != null) {
                 if (!player.isCreative()) {
                     FloatingLong energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
-                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(player.getHeldItem(context.getHand()), 0);
+                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(context.getItem(), 0);
                     if (energyContainer == null || energyContainer.extract(energyPerUse, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerUse)) {
                         return ActionResultType.FAIL;
                     }

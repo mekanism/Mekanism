@@ -1,5 +1,6 @@
 package mekanism.common.tile.prefab;
 
+import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Upgrade;
@@ -41,13 +42,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     public static final int BASE_TICKS_REQUIRED = 200;
     public static final long MAX_GAS = 210;
-    public static final long BASE_GAS_PER_TICK = 1;
 
-    /**
-     * How much secondary energy this machine uses per tick, including upgrades.
-     */
-    public double gasUsage;
-    private long gasUsageThisTick;
+    private double gasUsage = 1;
     public IGasTank gasTank;
 
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;
@@ -70,7 +66,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
-        gasUsage = BASE_GAS_PER_TICK;
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
         gasInputHandler = InputHelper.getInputHandler(gasTank);
         outputHandler = OutputHelper.getOutputHandler(outputSlot);
@@ -107,9 +102,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     protected void onUpdateServer() {
         energySlot.fillContainerOrConvert();
         secondarySlot.fillTankOrConvert();
-        //TODO: Is there some better way to do this rather than storing it and then doing it like this?
-        // Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics
-        gasUsageThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(gasUsage) : MathUtils.clampToLong(Math.ceil(gasUsage));
         cachedRecipe = getUpdatedCache(0);
         if (cachedRecipe != null) {
             cachedRecipe.process();
@@ -143,7 +135,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Nullable
     @Override
     public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
-        return new ItemStackGasToItemStackCachedRecipe<>(recipe, itemInputHandler, gasInputHandler, () -> gasUsageThisTick, outputHandler)
+        LongSupplier gasUsageMultiplier;
+        if (useStatisticalMechanics()) {
+            gasUsageMultiplier = () -> StatUtils.inversePoisson(gasUsage);
+        } else {
+            gasUsageMultiplier = () -> MathUtils.clampToLong(Math.ceil(gasUsage));
+        }
+        return new ItemStackGasToItemStackCachedRecipe<>(recipe, itemInputHandler, gasInputHandler, gasUsageMultiplier, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
@@ -156,7 +154,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED || (upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS))) {
-            gasUsage = MekanismUtils.getGasPerTickMean(this, BASE_GAS_PER_TICK);
+            gasUsage = MekanismUtils.getGasPerTickMeanMultiplier(this);
         }
     }
 

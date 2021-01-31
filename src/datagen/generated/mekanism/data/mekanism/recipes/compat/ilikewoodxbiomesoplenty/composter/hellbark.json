@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbiomesoplenty",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:hellbark_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:hellbark_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "biomesoplenty:hellbark_fence",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

@@ -98,7 +98,7 @@ public class FrequencyManager<FREQ extends Frequency> {
 
     public void remove(Object key, UUID ownerUUID) {
         FREQ freq = getFrequency(key);
-        if (freq != null && freq.getOwner().equals(ownerUUID)) {
+        if (freq != null && freq.ownerMatches(ownerUUID)) {
             freq.onRemove();
             frequencies.remove(key);
             if (dataHandler != null) {
@@ -151,7 +151,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         return frequencies.get(key);
     }
 
-    public FREQ getOrCreateFrequency(FrequencyIdentity identity, UUID ownerUUID) {
+    public FREQ getOrCreateFrequency(FrequencyIdentity identity, @Nullable UUID ownerUUID) {
         FREQ freq = getFrequency(identity.getKey());
         if (freq == null) {
             freq = frequencyType.create(identity.getKey(), ownerUUID);

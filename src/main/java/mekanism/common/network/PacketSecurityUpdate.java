@@ -72,9 +72,11 @@ public class PacketSecurityUpdate {
             List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyType.SECURITY.getManager(null).getFrequencies());
             buf.writeVarInt(frequencies.size());
             for (SecurityFrequency frequency : frequencies) {
-                buf.writeUniqueId(frequency.getOwner());
+                UUID owner = frequency.getOwner();
+                //In theory I don't think we can ever get here if this is null
+                buf.writeUniqueId(owner);
                 new SecurityData(frequency).write(buf);
-                buf.writeString(MekanismUtils.getLastKnownUsername(frequency.getOwner()));
+                buf.writeString(MekanismUtils.getLastKnownUsername(owner));
             }
         }
     }

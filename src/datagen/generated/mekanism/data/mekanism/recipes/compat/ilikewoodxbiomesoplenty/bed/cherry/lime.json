@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbiomesoplenty",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:lime_cherry_bed"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:cherry_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:lime_wool",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

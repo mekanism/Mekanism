@@ -35,7 +35,7 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
         if (player == null) {
             return ActionResultType.PASS;
         }
-        ItemStack stack = player.getHeldItem(context.getHand());
+        ItemStack stack = context.getItem();
         if (stack.isEmpty()) {
             return ActionResultType.FAIL;//WTF
         }

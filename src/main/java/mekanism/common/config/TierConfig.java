@@ -170,7 +170,7 @@ public class TierConfig extends BaseMekanismConfig {
         builder.comment("Logistical Transporters").push(ITEMS_CATEGORY);
         for (TransporterTier tier : EnumUtils.TRANSPORTER_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
-            CachedIntValue pullReference = CachedIntValue.wrap(this, builder.comment("Item throughput rate of " + tierName + " logistical transporters in items/s.")
+            CachedIntValue pullReference = CachedIntValue.wrap(this, builder.comment("Item throughput rate of " + tierName + " logistical transporters in items/half second.")
                   .defineInRange(tierName.toLowerCase(Locale.ROOT) + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE));
             CachedIntValue speedReference = CachedIntValue.wrap(this, builder.comment("Five times travel speed of " + tierName + " logistical transporter.")
                   .defineInRange(tierName.toLowerCase(Locale.ROOT) + "Speed", tier.getBaseSpeed(), 1, Integer.MAX_VALUE));

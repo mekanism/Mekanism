@@ -739,8 +739,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public Direction getDirection() {
         if (isDirectional()) {
-            Direction facing = Attribute.getFacing(getBlockState());
-            return facing != null ? facing : Direction.NORTH;
+            BlockState state = getBlockState();
+            Direction facing = Attribute.getFacing(state);
+            if (facing != null) {
+                return facing;
+            } else if (!getType().isValidBlock(state.getBlock())) {
+                //This is probably always true if we couldn't get the direction it is facing
+                // but double check just in case before logging
+                Mekanism.logger.warn("Error invalid block for tile {} at {} in {}. Unable to get direction, falling back to north, "
+                                     + "things will probably not work correctly. This is almost certainly due to another mod incorrectly "
+                                     + "trying to move this tile and not properly updating the position.", getType().getRegistryName(), pos, world);
+            }
         }
         //TODO: Remove, give it some better default, or allow it to be null
         return Direction.NORTH;

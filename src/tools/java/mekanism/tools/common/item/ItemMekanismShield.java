@@ -4,8 +4,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.tools.common.IHasRepairType;
-import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.material.BaseMekanismMaterial;
+import mekanism.tools.common.util.ToolsUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -30,7 +30,7 @@ public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);//Add the banner type description
-        tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
+        ToolsUtils.addDurability(tooltip, stack);
     }
 
     @Nonnull

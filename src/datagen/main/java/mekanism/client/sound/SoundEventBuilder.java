@@ -3,7 +3,7 @@ package mekanism.client.sound;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -29,7 +29,7 @@ public class SoundEventBuilder {
     private boolean replace;
     @Nullable
     private String translationKey;
-    private final Map<ResourceLocation, SoundBuilder> soundBuilders = new HashMap<>();
+    private final Map<ResourceLocation, SoundBuilder> soundBuilders = new LinkedHashMap<>();
 
     private SoundEventBuilder(SoundEventRegistryObject<?> soundEventRO) {
         path = soundEventRO.getSoundEvent().getRegistryName().getPath();

@@ -19,6 +19,7 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
     private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
     private final LongSupplier gasUsage;
+    private long gasUsageMultiplier;
 
     public ChemicalDissolutionCachedRecipe(ChemicalDissolutionRecipe recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
           ILongInputHandler<@NonNull GasStack> chemicalInputHandler, LongSupplier gasUsage, BoxedChemicalOutputHandler outputHandler) {
@@ -29,8 +30,9 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
         this.outputHandler = outputHandler;
     }
 
-    private long getGasUsage() {
-        return gasUsage.getAsLong();
+    @Override
+    protected void setupVariableValues() {
+        gasUsageMultiplier = gasUsage.getAsLong();
     }
 
     @Override
@@ -60,7 +62,7 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
             return -1;
         }
         //Calculate the current max based on the gas input, and the given usage amount
-        currentMax = gasInputHandler.operationsCanSupport(recipe.getGasInput(), currentMax, getGasUsage());
+        currentMax = gasInputHandler.operationsCanSupport(recipe.getGasInput(), currentMax, gasUsageMultiplier);
         //Calculate the max based on the space in the output
         return outputHandler.operationsRoomFor(recipe.getOutput(recipeItem, recipeGas), currentMax);
     }
@@ -71,9 +73,7 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
         //Ensure that we check that we have enough for that the recipe matches *and* also that we have enough for how much we need to use
         if (!gasStack.isEmpty() && recipe.test(itemInputHandler.getInput(), gasStack)) {
             GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
-            //TODO: Decide how to best handle usage, given technically the input is still valid regardless of extra usage
-            // we just can't process it yet
-            return !recipeGas.isEmpty() && gasStack.getAmount() >= recipeGas.getAmount();// * getGasUsage();
+            return !recipeGas.isEmpty() && gasStack.getAmount() >= recipeGas.getAmount();
         }
         return false;
     }
@@ -87,10 +87,8 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
             //Something went wrong, this if should never really be true if we are in useResources
             return;
         }
-        //TODO: Verify we actually have enough and should be passing operations like this?
-        gasInputHandler.use(recipeGas, operations * getGasUsage());
-        //TODO: Else throw some error? It really should already have the needed amount due to the hasResourceForTick call
-        // but it may make sense to check anyways
+        //Note: We should have enough because of the getOperationsThisTick call to reduce it based on amounts
+        gasInputHandler.use(recipeGas, operations * gasUsageMultiplier);
     }
 
     @Override

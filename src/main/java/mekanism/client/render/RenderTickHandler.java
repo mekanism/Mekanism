@@ -74,7 +74,6 @@ import net.minecraft.particles.BasicParticleType;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -356,10 +355,10 @@ public class RenderTickHandler {
             }
             profiler.endSection();
 
-            ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
+            ItemStack stack = player.getHeldItemMainhand();
             if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
                 //If we are not holding a configurator, look if we are in the offhand
-                stack = player.getHeldItem(Hand.OFF_HAND);
+                stack = player.getHeldItemOffhand();
                 if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
                     if (shouldCancel) {
                         event.setCanceled(true);

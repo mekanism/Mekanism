@@ -11,6 +11,9 @@ public class AttributeStateActive implements AttributeState {
 
     private static final BooleanProperty activeProperty = BooleanProperty.create("active");
 
+    AttributeStateActive() {
+    }
+
     public boolean isActive(BlockState state) {
         return state.get(activeProperty);
     }

@@ -57,7 +57,10 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     private List<IEnergyContainer> energyContainers;
     private List<IHeatCapacitor> heatCapacitors;
 
-    public InventoryFrequency(String n, UUID uuid) {
+    /**
+     * @param uuid Should only be null if we have incomplete data that we are loading
+     */
+    public InventoryFrequency(String n,  @Nullable UUID uuid) {
         super(FrequencyType.INVENTORY, n, uuid);
         presetVariables();
     }

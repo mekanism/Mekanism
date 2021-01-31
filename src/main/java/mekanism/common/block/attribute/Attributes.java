@@ -14,20 +14,43 @@ import net.minecraft.world.IWorldReader;
 
 public class Attributes {
 
+    public static final Attribute ACTIVE = new AttributeStateActive();
+    public static final Attribute COMPARATOR = new AttributeComparator();
+    public static final Attribute INVENTORY = new AttributeInventory();
+    public static final Attribute MULTIBLOCK = new AttributeMultiblock();
+    public static final Attribute REDSTONE = new AttributeRedstone();
+    public static final Attribute SECURITY = new AttributeSecurity();
+
     private Attributes() {
     }
 
     /** If a block supports security. */
-    public static class AttributeSecurity implements Attribute {}
+    public static class AttributeSecurity implements Attribute {
+
+        private AttributeSecurity() {
+        }
+    }
 
     /** If a block has an inventory. */
-    public static class AttributeInventory implements Attribute {}
+    public static class AttributeInventory implements Attribute {
+
+        private AttributeInventory() {
+        }
+    }
 
     /** If a block supports comparators. */
-    public static class AttributeComparator implements Attribute {}
+    public static class AttributeComparator implements Attribute {
+
+        private AttributeComparator() {
+        }
+    }
 
     /** If a block has a redstone input configuration. */
-    public static class AttributeRedstone implements Attribute {}
+    public static class AttributeRedstone implements Attribute {
+
+        private AttributeRedstone() {
+        }
+    }
 
     /** If mobs can spawn on the block. */
     public static class AttributeMobSpawn implements Attribute {
@@ -68,7 +91,11 @@ public class Attributes {
     }
 
     /** If this block is a part of a multiblock. */
-    public static class AttributeMultiblock implements Attribute {}
+    public static class AttributeMultiblock implements Attribute {
+
+        private AttributeMultiblock() {
+        }
+    }
 
     /** If a block can emit redstone. */
     public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements TileAttribute<TILE> {

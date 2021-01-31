@@ -50,6 +50,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addFuels();
         addAlloys();
         addCircuits();
+        addEndermanBlacklist();
         addEnriched();
         addChests();
         addOres();
@@ -246,6 +247,26 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Items.CIRCUITS_ULTIMATE, MekanismItems.ULTIMATE_CONTROL_CIRCUIT);
         getItemBuilder(MekanismTags.Items.CIRCUITS).add(MekanismTags.Items.CIRCUITS_BASIC, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismTags.Items.CIRCUITS_ELITE,
               MekanismTags.Items.CIRCUITS_ULTIMATE);
+    }
+
+    private void addEndermanBlacklist() {
+        addToTag(Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST,
+              MekanismBlocks.DYNAMIC_TANK,
+              MekanismBlocks.DYNAMIC_VALVE,
+              MekanismBlocks.BOILER_CASING,
+              MekanismBlocks.BOILER_VALVE,
+              MekanismBlocks.PRESSURE_DISPERSER,
+              MekanismBlocks.SUPERHEATING_ELEMENT,
+              MekanismBlocks.INDUCTION_CASING,
+              MekanismBlocks.INDUCTION_PORT,
+              MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
+              MekanismBlocks.THERMAL_EVAPORATION_VALVE,
+              MekanismBlocks.THERMAL_EVAPORATION_BLOCK,
+              MekanismBlocks.STRUCTURAL_GLASS,
+              MekanismBlocks.SPS_CASING,
+              MekanismBlocks.SPS_PORT,
+              MekanismBlocks.SUPERCHARGED_COIL
+        );
     }
 
     private void addEnriched() {

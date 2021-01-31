@@ -149,7 +149,7 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
             Frequency frequency = tile.getFrequency(null);
             setButton.active = frequency == null || !frequency.equals(freq);
             UUID ownerUUID = tile.getOwnerUUID();
-            deleteButton.active = ownerUUID != null && ownerUUID.equals(freq.getOwner());
+            deleteButton.active = ownerUUID != null && freq.ownerMatches(ownerUUID);
         } else {
             setButton.active = false;
             deleteButton.active = false;
