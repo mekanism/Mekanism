@@ -83,6 +83,14 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             String[] split = newFilter.split(":");
             modid = split[0];
             newFilter = split[1];
+            if (modid.contains("/")) {
+                filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG);
+                return;
+            }
+        }
+        if (newFilter.contains(":")) {
+            filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG);
+            return;
         }
         ResourceLocation filterLocation = new ResourceLocation(modid, newFilter);
         if (filter.hasFilter() && filter.filterMatches(filterLocation)) {
