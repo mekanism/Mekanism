@@ -1306,6 +1306,7 @@
   "transmitter.mekanism.insulation": "Изоляция: %s",
   "transmitter.mekanism.items": "- Предметы (%s)",
   "transmitter.mekanism.pump_rate": "Скорость помпы: %s/s",
+  "transmitter.mekanism.pump_rate.mb": "Скорость помпы: %s mB/t",
   "transmitter.mekanism.speed": "Скорость: %s m/s",
   "transmitter.mekanism.universal": "любые",
   "upgrade.mekanism.anchor": "Якорь",
