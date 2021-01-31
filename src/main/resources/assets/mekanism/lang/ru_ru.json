@@ -984,6 +984,7 @@
   "laser_amplifier.mekanism.entity_detection": "Обнаружение сущностей",
   "laser_amplifier.mekanism.redstone_output": "Редстоун выход: %s",
   "logistical_sorter.mekanism.auto_eject": "Авто:",
+  "logistical_sorter.mekanism.auto_eject.description": "Извлекает нефильтрованные предметы автоматически в подключенные инвентари, используя конфигурацию по умолчанию.",
   "logistical_sorter.mekanism.default": "По умолчанию:",
   "logistical_sorter.mekanism.round_robin": "RR:",
   "logistical_sorter.mekanism.round_robin.description": "Цикл между всеми соединёнными инвентарями при отправке предметов.",
