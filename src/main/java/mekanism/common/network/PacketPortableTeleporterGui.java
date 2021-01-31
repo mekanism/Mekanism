@@ -8,7 +8,6 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.content.teleporter.TeleporterFrequency;
-import mekanism.common.content.teleporter.TeleporterMultiblockData;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -19,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -80,9 +80,9 @@ public class PacketPortableTeleporterGui {
                                 }
                                 TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
                                 BlockPos coordsPos = coords.getPos();
-                                TeleporterMultiblockData multiblock = teleporter.getMultiblock();
-                                if (multiblock.isFormed()) {
-                                    coordsPos = multiblock.getTeleportTargetCoords();
+                                Direction frameDirection = teleporter.frameDirection();
+                                if (frameDirection != null) {
+                                    coordsPos = coordsPos.down().offset(frameDirection);
                                 }
                                 TileEntityTeleporter.alignPlayer(player, coordsPos);
                                 player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);

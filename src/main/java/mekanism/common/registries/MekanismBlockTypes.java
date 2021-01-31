@@ -112,7 +112,6 @@ import mekanism.common.tile.multiblock.TileEntitySPSPort;
 import mekanism.common.tile.multiblock.TileEntityStructuralGlass;
 import mekanism.common.tile.multiblock.TileEntitySuperchargedCoil;
 import mekanism.common.tile.multiblock.TileEntitySuperheatingElement;
-import mekanism.common.tile.multiblock.TileEntityTeleporterFrame;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationValve;
@@ -318,14 +317,8 @@ public class MekanismBlockTypes {
           .withEnergyConfig(() -> TELEPORTER_USAGE, MekanismConfig.storage.teleporter)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .without(AttributeStateActive.class, AttributeStateFacing.class, AttributeParticleFX.class)
-          .with(new AttributeSecurity(), new AttributeMultiblock())
           .withLight(10)
           .build();
-    // Teleporter Frame
-    public static final BlockTypeTile<TileEntityTeleporterFrame> TELEPORTER_FRAME = BlockTileBuilder
-            .createBlock(() -> MekanismTileEntityTypes.TELEPORTER_FRAME, MekanismLang.DESCRIPTION_TELEPORTER_FRAME)
-            .with(new AttributeMultiblock())
-            .build();
     // Chargepad
     public static final BlockTypeTile<TileEntityChargepad> CHARGEPAD = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.CHARGEPAD, MekanismLang.DESCRIPTION_CHARGEPAD)

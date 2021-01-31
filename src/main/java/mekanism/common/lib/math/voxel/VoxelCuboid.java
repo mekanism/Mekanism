@@ -2,7 +2,6 @@ package mekanism.common.lib.math.voxel;
 
 import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 public class VoxelCuboid implements IShape {
@@ -98,17 +97,20 @@ public class VoxelCuboid implements IShape {
         int matches = 0;
         if (pos.getX() == minPos.getX()) {
             matches++;
-        } else if (pos.getX() == maxPos.getX()) {
+        }
+        if (pos.getX() == maxPos.getX()) {
             matches++;
         }
         if (pos.getY() == minPos.getY()) {
             matches++;
-        } else if (pos.getY() == maxPos.getY()) {
+        }
+        if (pos.getY() == maxPos.getY()) {
             matches++;
         }
         if (pos.getZ() == minPos.getZ()) {
             matches++;
-        } else if (pos.getZ() == maxPos.getZ()) {
+        }
+        if (pos.getZ() == maxPos.getZ()) {
             matches++;
         }
         return matches;
@@ -163,13 +165,6 @@ public class VoxelCuboid implements IShape {
     @Override
     public String toString() {
         return "Cuboid(start=" + minPos + ",bounds=(" + length() + "," + height() + "," + width() + "))";
-    }
-
-    public AxisAlignedBB toAxisAlignedBB() {
-        return new AxisAlignedBB(
-           minPos.getX(), minPos.getY(), minPos.getZ(),
-           maxPos.getX()+1, maxPos.getY()+1, maxPos.getZ()+1
-        );
     }
 
     public enum WallRelative {

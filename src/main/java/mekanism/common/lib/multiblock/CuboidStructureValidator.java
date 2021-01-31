@@ -151,7 +151,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
 
     @Override
     public boolean precheck() {
-        cuboid = StructureHelper.fetchCuboid(structure, minBounds, maxBounds, true);
+        cuboid = StructureHelper.fetchCuboid(structure, minBounds, maxBounds);
         return cuboid != null;
     }
 
