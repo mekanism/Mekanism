@@ -149,8 +149,8 @@ public class Structure {
                         //Otherwise, if the minor map does have an entry, merge them
                         minorPlane.merge(value);
                         //If after merging the planes
-                        if (minorPlane.hasFrame() && minorPlane.length() >= 2 && minorPlane.height() >= 2) {
-                            // the plane has a frame and is at least two by two
+                        if (minorPlane.hasFrame()) {
+                            // the plane has a frame
                             // move it from the minor plane map to the major plane map
                             majorMap.put(key, minorPlane);
                             minorMap.remove(key);

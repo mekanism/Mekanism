@@ -21,15 +21,16 @@ public class StructureHelper {
      * @param structure structure to check
      * @param minBounds minimum size of the cuboid
      * @param maxBounds maximum size of the cuboid
+     * @param filled if true, the sides must be filled, otherwise, just framed
      *
      * @return found cuboid, or null if it doesn't exist
      */
-    public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds) {
+    public static VoxelCuboid fetchCuboid(Structure structure, VoxelCuboid minBounds, VoxelCuboid maxBounds, boolean filled) {
         VoxelCuboid prev = null;
         for (Axis axis : Axis.AXES) {
             NavigableMap<Integer, VoxelPlane> map = structure.getMajorAxisMap(axis);
             Map.Entry<Integer, VoxelPlane> first = map.firstEntry(), last = map.lastEntry();
-            if (first == null || !first.getValue().equals(last.getValue()) || !first.getValue().isFull()) {
+            if (first == null || !first.getValue().equals(last.getValue()) || (filled && !first.getValue().isFull()) || !first.getValue().hasFrame()) {
                 return null;
             }
             VoxelCuboid cuboid = VoxelCuboid.from(first.getValue(), last.getValue(), first.getKey(), last.getKey());
