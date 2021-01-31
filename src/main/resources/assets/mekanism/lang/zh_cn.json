@@ -1307,7 +1307,7 @@
   "transmitter.mekanism.insulation": "热阻: %s",
   "transmitter.mekanism.items": "- 物品 (%s)",
   "transmitter.mekanism.pump_rate": "泵速: %s/s",
-  "transmitter.mekanism.pump_rate.mb": "泵速： %s mB/s",
+  "transmitter.mekanism.pump_rate.mb": "泵速： %s mB/t",
   "transmitter.mekanism.speed": "速度: %s m/s",
   "transmitter.mekanism.universal": "通用",
   "upgrade.mekanism.anchor": "锚",
