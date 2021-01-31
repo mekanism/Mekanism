@@ -107,7 +107,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Fusion Settings").push(FUSION_CATEGORY);
-        fusionThermocoupleEfficiency = CachedDoubleValue.wrap(this, builder.comment("The fraction of the heat dissipated from the case that is converted to RF.")
+        fusionThermocoupleEfficiency = CachedDoubleValue.wrap(this, builder.comment("The fraction of the heat dissipated from the case that is converted to Joules.")
                .defineInRange("fusionThermocoupleEfficiency", 0.05D, 0D, 1D));
         fusionCasingThermalConductivity = CachedDoubleValue.wrap(this, builder.comment("The fraction fraction of heat from the casing that can be transfered to all sources that are not water. Will impact max heat, heat transfer to thermodynamic conductors, and power generation.")
                .defineInRange("caseAirConductivity", 0.1D, 0D, 1D));

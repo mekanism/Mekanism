@@ -59,8 +59,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private static final double burnRatio = 1;
     //Thermal characteristics
     private static final double plasmaHeatCapacity = 100;
-    public static final double caseHeatCapacity = 1;
-    public static final double inverseInsulation = 100_000;
+    private static final double caseHeatCapacity = 1;
+    private static final double inverseInsulation = 100_000;
     //Heat transfer metrics
     private static final double plasmaCaseConductivity = 0.2;
 
