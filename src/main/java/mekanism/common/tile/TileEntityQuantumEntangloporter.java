@@ -252,9 +252,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.INVENTORY, ItemDataUtils.getCompound(itemStack, NBTConstants.FREQUENCY));
-        if (freq != null) {
-            setFrequency(FrequencyType.INVENTORY, freq);
+        //TODO - 10.1: Re-evaluate the entirety of BlockMekanism#onBlockPlacedBy and see what parts potentially should not be getting
+        // called at all when on the client side. My guess is that read sustained data isn't one of these but for now I am just catching
+        // the issue here
+        if (!isRemote()) {
+            FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.INVENTORY, ItemDataUtils.getCompound(itemStack, NBTConstants.FREQUENCY));
+            if (freq != null) {
+                setFrequency(FrequencyType.INVENTORY, freq);
+            }
         }
     }
 
