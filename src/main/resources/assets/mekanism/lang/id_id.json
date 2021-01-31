@@ -693,7 +693,6 @@
   "laser_amplifier.mekanism.entity_detection": "Deteksi Entitas",
   "laser_amplifier.mekanism.redstone_output": "Output Batu Merah: %s",
   "logistical_sorter.mekanism.auto_eject": "Otomatis:",
-  "logistical_sorter.mekanism.auto_eject.description": "Mengeluarkan item secara otomatis ke penyimpanan terhubung.",
   "logistical_sorter.mekanism.default": "Default:",
   "logistical_sorter.mekanism.single_item": "Tunggal:",
   "matrix.mekanism.dimensions": "Dimensi:",
