@@ -94,7 +94,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     // any updates (esp. if it's a tile entity backed block). Ideally, we could avoid
                     // double updates, but if the block we are wrapping has multiple stacked blocks,
                     // we need to make sure it has a chance to update.
-                    world.removeBlock(pos, false);
+                    //world.removeBlock(pos, false);
                     world.setBlockState(pos, getBlock().getDefaultState().with(BlockStateHelper.storageProperty, true));
                     CommonPlayerTracker.monitoringCardboardBox = false;
                     TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
