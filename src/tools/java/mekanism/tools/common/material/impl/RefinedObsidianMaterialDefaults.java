@@ -32,7 +32,7 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getPaxelHarvestLevel() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getHarvestLevel() {
-        return 3;
+        return 4;
     }
 
     @Override
