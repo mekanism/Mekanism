@@ -1,0 +1,39 @@
+{
+  "comment": "Default values for Mekanism items.",
+  "values": {
+    "before": {
+      "mekanism:salt": 8,
+      "mekanism:fluorite_gem": 576,
+      "mekanism:hdpe_pellet": 32,
+      "mekanism:ingot_uranium": 4096
+    },
+    "conversion": [
+      {
+        "output": "mekanism:ingot_osmium",
+        "ingredients": {
+          "#forge:ingots/iron": 2
+        }
+      },
+      {
+        "output": "mekanism:ingot_copper",
+        "count": 2,
+        "ingredients": [
+          "#forge:ingots/iron"
+        ]
+      },
+      {
+        "output": "mekanism:ingot_tin",
+        "ingredients": [
+          "#forge:ingots/iron"
+        ]
+      },
+      {
+        "output": "mekanism:ingot_lead",
+        "count": 2,
+        "ingredients": [
+          "#forge:ingots/iron"
+        ]
+      }
+    ]
+  }
+}

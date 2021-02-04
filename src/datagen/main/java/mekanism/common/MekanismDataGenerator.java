@@ -4,6 +4,7 @@ import mekanism.client.lang.MekanismLangProvider;
 import mekanism.client.model.MekanismItemModelProvider;
 import mekanism.client.sound.MekanismSoundProvider;
 import mekanism.client.state.MekanismBlockStateProvider;
+import mekanism.common.integration.MekanismCustomConversions;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.tag.MekanismTagProvider;
@@ -38,6 +39,7 @@ public class MekanismDataGenerator {
             gen.addProvider(new MekanismTagProvider(gen, existingFileHelper));
             gen.addProvider(new MekanismLootProvider(gen));
             gen.addProvider(new MekanismRecipeProvider(gen));
+            gen.addProvider(new MekanismCustomConversions(gen));
         }
     }
 }
