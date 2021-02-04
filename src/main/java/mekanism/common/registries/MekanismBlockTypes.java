@@ -329,13 +329,13 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityLaser> LASER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.LASER, MekanismLang.DESCRIPTION_LASER)
           .withEnergyConfig(MekanismConfig.usage.laser, MekanismConfig.storage.laser)
-          .withSound(MekanismSounds.LASER).with(Attributes.ACTIVE, new AttributeStateFacing(BlockStateProperties.FACING), Attributes.SECURITY)
+          .withSound(MekanismSounds.LASER).with(Attributes.ACTIVE, new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY)
           .withCustomShape(BlockShapes.LASER)
           .build();
     // Laser Amplifier
     public static final BlockTypeTile<TileEntityLaserAmplifier> LASER_AMPLIFIER = BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.LASER_AMPLIFIER, MekanismLang.DESCRIPTION_LASER_AMPLIFIER)
           .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER).withEnergyConfig(null, () -> LARGE_LASER)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING),
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE),
                 new AttributeRedstoneEmitter<>(TileEntityMekanism::getRedstoneLevel), Attributes.REDSTONE, Attributes.COMPARATOR, Attributes.SECURITY)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER).build();
     // Laser Tractor Beam
@@ -343,7 +343,7 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.LASER_TRACTOR_BEAM, MekanismLang.DESCRIPTION_LASER_TRACTOR_BEAM)
           .withGui(() -> MekanismContainerTypes.LASER_TRACTOR_BEAM)
           .withEnergyConfig(null, () -> LARGE_LASER)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING), Attributes.COMPARATOR, Attributes.SECURITY, Attributes.INVENTORY)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.COMPARATOR, Attributes.SECURITY, Attributes.INVENTORY)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
           .build();
     // Resistive Heater
@@ -399,7 +399,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.LOGISTICAL_SORTER, MekanismLang.DESCRIPTION_LOGISTICAL_SORTER)
           .withGui(() -> MekanismContainerTypes.LOGISTICAL_SORTER)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
-          .with(new AttributeStateFacing(BlockStateProperties.FACING))
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE))
           .withCustomShape(BlockShapes.LOGISTICAL_SORTER)
           .withSound(MekanismSounds.LOGISTICAL_SORTER)
           .build();
