@@ -326,7 +326,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return maxY;
     }
 
-    public void setSilkTouch(boolean newSilkTouch) {
+    private void setSilkTouch(boolean newSilkTouch) {
         boolean changed = silkTouch != newSilkTouch;
         silkTouch = newSilkTouch;
         if (changed && (hasWorld() && !isRemote())) {
@@ -766,6 +766,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     filters.add((MinerFilter<?>) filter);
                 }
             }
+        }
+        if (!hasWorld()) {
+            //If we don't have a world yet (reading from save), update the energy per tick in case any of the values changed.
+            // It would be slightly cleaner to also validate the fact the values changed, but it would make the code a decent
+            // bit messier as we couldn't use NBTUtils, and it is a rather quick check to update the energy per tick, and in
+            // most cases at least one of the settings will not be at the default value
+            energyContainer.updateMinerEnergyPerTick();
         }
     }
 
