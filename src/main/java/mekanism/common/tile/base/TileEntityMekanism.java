@@ -408,9 +408,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             int newRedstoneLevel = getRedstoneLevel();
             if (newRedstoneLevel != currentRedstoneLevel) {
                 currentRedstoneLevel = newRedstoneLevel;
-                world.updateComparatorOutputLevel(pos, getBlockType());
+                notifyComparatorChange();
             }
         }
+    }
+
+    protected void notifyComparatorChange() {
+        world.updateComparatorOutputLevel(pos, getBlockType());
     }
 
     public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {

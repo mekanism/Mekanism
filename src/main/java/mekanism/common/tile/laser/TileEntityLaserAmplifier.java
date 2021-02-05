@@ -43,8 +43,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Override
     protected void onUpdateServer() {
-        boolean prevRedstone = emittingRedstone;
-        emittingRedstone = false;
+        setEmittingRedstone(false);
         if (ticks < time) {
             ticks++;
         } else {
@@ -52,10 +51,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         }
         super.onUpdateServer();
         if (outputMode != RedstoneOutput.ENTITY_DETECTION) {
-            emittingRedstone = false;
-        }
-        if (emittingRedstone != prevRedstone) {
-            world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+            setEmittingRedstone(false);
         }
     }
 
@@ -75,11 +71,16 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Override
     public int getRedstoneLevel() {
-        //TODO: Do we have to keep track of this and when it changes notify the comparator the level changed. Probably
         if (outputMode == RedstoneOutput.ENERGY_CONTENTS) {
             return MekanismUtils.redstoneLevelFromContents(energyContainer.getEnergy(), energyContainer.getMaxEnergy());
         }
         return emittingRedstone ? 15 : 0;
+    }
+
+    @Override
+    protected void notifyComparatorChange() {
+        //Notify neighbors instead of just comparators as we also allow for direct redstone levels
+        world.notifyNeighborsOfStateChange(getPos(), getBlockType());
     }
 
     public void setTime(int time) {
