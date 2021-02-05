@@ -29,6 +29,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -140,6 +141,11 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
         return getRealShape(world, pos);
     }
 
+    @Override
+    public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type) {
+        return false;
+    }
+    
     protected abstract VoxelShape getCenter();
 
     protected abstract VoxelShape getSide(ConnectionType type, Direction side);
