@@ -28,6 +28,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedBooleanValue allowModeScroll;
     public final CachedBooleanValue enableMultiblockFormationParticles;
     public final CachedBooleanValue alignHUDLeft;
+    public final CachedFloatValue hudScale;
     public final CachedBooleanValue enableHUD;
     public final CachedIntValue radiationParticleRadius;
     public final CachedIntValue radiationParticleCount;
@@ -70,8 +71,10 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("allowModeScroll", true));
         enableMultiblockFormationParticles = CachedBooleanValue.wrap(this, builder.comment("Set to false to prevent particle spam when loading multiblocks (notification message will display instead).")
               .define("enableMultiblockFormationParticles", true));
-        alignHUDLeft = CachedBooleanValue.wrap(this, builder.comment("Align HUD with left (if true) or right (if false)")
+        alignHUDLeft = CachedBooleanValue.wrap(this, builder.comment("Align HUD (text) with left (if true) or right (if false)")
               .define("alignHUDLeft", true));
+        hudScale = CachedFloatValue.wrap(this, builder.comment("Scale of the text displayed on the HUD.")
+              .defineInRange("hudScale", 0.6, 0.25, 1));
         enableHUD = CachedBooleanValue.wrap(this, builder.comment("Enable item information HUD during gameplay")
               .define("enableHUD", true));
         radiationParticleRadius = CachedIntValue.wrap(this, builder.comment("How far (in blocks) from the player radiation particles can spawn.")

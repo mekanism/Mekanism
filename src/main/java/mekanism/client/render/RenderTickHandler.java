@@ -105,8 +105,6 @@ public class RenderTickHandler {
                                                                                        EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS,
                                                                                        EquipmentSlotType.FEET};
 
-    private static final float HUD_SCALE = 0.6F;
-
     private static final HUDRenderer hudRenderer = new HUDRenderer();
 
     public static int modeSwitchTimer = 0;
@@ -186,22 +184,25 @@ public class RenderTickHandler {
                         }
                     }
                 }
-                int start = (renderStrings.size() * 2) + (count * 9);
-                boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
-                MainWindow window = event.getWindow();
-                int y = window.getScaledHeight();
                 MatrixStack matrix = event.getMatrixStack();
-                matrix.push();
-                matrix.scale(HUD_SCALE, HUD_SCALE, HUD_SCALE);
-                for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
-                    for (ITextComponent text : entry.getValue()) {
-                        drawString(window, matrix, text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xC8C8C8);
-                        start -= 9;
+                if (count > 0) {
+                    int start = (renderStrings.size() * 2) + (count * 9);
+                    boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
+                    MainWindow window = event.getWindow();
+                    int y = window.getScaledHeight();
+                    float hudScale = MekanismConfig.client.hudScale.get();
+                    int yScale = (int) ((1 / hudScale) * y);
+                    matrix.push();
+                    matrix.scale(hudScale, hudScale, hudScale);
+                    for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
+                        for (ITextComponent text : entry.getValue()) {
+                            drawString(window, matrix, text, alignLeft, yScale - start, 0xC8C8C8);
+                            start -= 9;
+                        }
+                        start -= 2;
                     }
-                    start -= 2;
+                    matrix.pop();
                 }
-                matrix.pop();
-
                 if (minecraft.player.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
                     hudRenderer.renderHUD(matrix, event.getPartialTicks());
                 }
