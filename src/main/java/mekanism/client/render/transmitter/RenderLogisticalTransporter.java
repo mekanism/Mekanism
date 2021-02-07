@@ -148,7 +148,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         model.setTexture(icon);
         switch (side) {
             case DOWN:
-                model.minY = -0.01;
+                model.minY = -0.01F;
                 model.maxY = 0;
 
                 model.minX = 0;
@@ -158,7 +158,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 break;
             case UP:
                 model.minY = 1;
-                model.maxY = 1.01;
+                model.maxY = 1.01F;
 
                 model.minX = 0;
                 model.minZ = 0;
@@ -166,7 +166,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 model.maxZ = 1;
                 break;
             case NORTH:
-                model.minZ = -0.01;
+                model.minZ = -0.01F;
                 model.maxZ = 0;
 
                 model.minX = 0;
@@ -176,7 +176,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 break;
             case SOUTH:
                 model.minZ = 1;
-                model.maxZ = 1.01;
+                model.maxZ = 1.01F;
 
                 model.minX = 0;
                 model.minY = 0;
@@ -184,7 +184,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 model.maxY = 1;
                 break;
             case WEST:
-                model.minX = -0.01;
+                model.minX = -0.01F;
                 model.maxX = 0;
 
                 model.minY = 0;
@@ -194,7 +194,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 break;
             case EAST:
                 model.minX = 1;
-                model.maxX = 1.01;
+                model.maxX = 1.01F;
 
                 model.minY = 0;
                 model.minZ = 0;

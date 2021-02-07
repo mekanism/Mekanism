@@ -32,12 +32,12 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
             if (model == null) {
                 model = new Model3D();
                 model.setTexture(MekanismRenderer.whiteIcon);
-                model.minX = 0.01;
-                model.minY = 0.01;
-                model.minZ = 0.01;
-                model.maxX = 0.99;
-                model.maxY = 0.99;
-                model.maxZ = 0.99;
+                model.minX = 0.01F;
+                model.minY = 0.01F;
+                model.minZ = 0.01F;
+                model.maxX = 0.99F;
+                model.maxY = 0.99F;
+                model.maxZ = 0.99F;
             }
             //TODO: Eventually we may want to make it so that the model can support each face being a different
             // color to make it easier to see the "depth"

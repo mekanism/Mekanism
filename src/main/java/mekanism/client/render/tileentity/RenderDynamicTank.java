@@ -18,7 +18,6 @@ import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
@@ -46,7 +45,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
                     IVertexBuilder buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
                     BlockPos pos = tile.getPos();
                     matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
-                    int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
+                    int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
                     Model3D model = ModelRenderer.getModel(data, multiblock.prevScale);
                     MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevScale), glow, overlayLight);
                     matrix.pop();

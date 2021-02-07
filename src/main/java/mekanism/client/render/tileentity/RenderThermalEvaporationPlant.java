@@ -11,7 +11,6 @@ import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +35,7 @@ public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<Ti
                 data.width = 2;
                 matrix.push();
                 BlockPos pos = tile.getPos();
-                int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
+                int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
                 matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                 IVertexBuilder buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
                 MekanismRenderer.renderObject(ModelRenderer.getModel(data, Math.min(1, multiblock.prevScale)), matrix, buffer,

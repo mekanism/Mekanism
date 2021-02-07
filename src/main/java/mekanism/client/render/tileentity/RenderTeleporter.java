@@ -84,43 +84,43 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
 
     private void setUpDownDimensions(Model3D model, boolean rotated) {
         if (rotated) {
-            model.minX = 0.46;
-            model.maxX = 0.54;
+            model.minX = 0.46F;
+            model.maxX = 0.54F;
             model.minZ = 0;
             model.maxZ = 1;
         } else {
             model.minX = 0;
             model.maxX = 1;
-            model.minZ = 0.46;
-            model.maxZ = 0.54;
+            model.minZ = 0.46F;
+            model.maxZ = 0.54F;
         }
     }
 
     private void setEastWestDimensions(Model3D model, boolean rotated) {
         if (rotated) {
-            model.minY = 0.46;
-            model.maxY = 0.54;
+            model.minY = 0.46F;
+            model.maxY = 0.54F;
             model.minZ = 0;
             model.maxZ = 1;
         } else {
             model.minY = 0;
             model.maxY = 1;
-            model.minZ = 0.46;
-            model.maxZ = 0.54;
+            model.minZ = 0.46F;
+            model.maxZ = 0.54F;
         }
     }
 
     private void setNorthSouthDimensions(Model3D model, boolean rotated) {
         if (rotated) {
-            model.minY = 0.46;
-            model.maxY = 0.54;
+            model.minY = 0.46F;
+            model.maxY = 0.54F;
             model.minX = 0;
             model.maxX = 1;
         } else {
             model.minY = 0;
             model.maxY = 1;
-            model.minX = 0.46;
-            model.maxX = 0.54;
+            model.minX = 0.46F;
+            model.maxX = 0.54F;
         }
     }
 

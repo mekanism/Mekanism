@@ -46,13 +46,13 @@ public final class ModelRenderer {
         model.setTexture(data.getTexture());
 
         cachedCenter.put(stage, model);
-        model.minX = 0.01;
-        model.minY = 0.01;
-        model.minZ = 0.01;
+        model.minX = 0.01F;
+        model.minY = 0.01F;
+        model.minZ = 0.01F;
 
-        model.maxX = data.length - .01;
-        model.maxY = (stage / (float) maxStages) * data.height - .01;
-        model.maxZ = data.width - .01;
+        model.maxX = data.length - 0.02F;
+        model.maxY = data.height * (stage / (float) maxStages) - 0.02F;
+        model.maxZ = data.width - 0.02F;
         return model;
     }
 
@@ -66,58 +66,58 @@ public final class ModelRenderer {
         cachedValveFluids.put(data, model);
         switch (data.side) {
             case DOWN:
-                model.minX = 0.3;
-                model.minY = 1.01;
-                model.minZ = 0.3;
+                model.minX = 0.3F;
+                model.minY = 1.01F;
+                model.minZ = 0.3F;
 
-                model.maxX = 0.7;
-                model.maxY = 1.5;
-                model.maxZ = 0.7;
+                model.maxX = 0.7F;
+                model.maxY = 1.5F;
+                model.maxZ = 0.7F;
                 break;
             case UP:
-                model.minX = 0.3;
-                model.minY = -data.height - 0.01;
-                model.minZ = 0.3;
+                model.minX = 0.3F;
+                model.minY = -data.height - 0.01F;
+                model.minZ = 0.3F;
 
-                model.maxX = 0.7;
-                model.maxY = -0.01;
-                model.maxZ = 0.7;
+                model.maxX = 0.7F;
+                model.maxY = -0.01F;
+                model.maxZ = 0.7F;
                 break;
             case NORTH:
-                model.minX = 0.3;
-                model.minY = -getValveFluidHeight(data) + 0.01;
-                model.minZ = 1.02;
+                model.minX = 0.3F;
+                model.minY = -getValveFluidHeight(data) + 0.01F;
+                model.minZ = 1.02F;
 
-                model.maxX = 0.7;
-                model.maxY = 0.7;
-                model.maxZ = 1.4;
+                model.maxX = 0.7F;
+                model.maxY = 0.7F;
+                model.maxZ = 1.4F;
                 break;
             case SOUTH:
-                model.minX = 0.3;
-                model.minY = -getValveFluidHeight(data) + 0.01;
-                model.minZ = -0.4;
+                model.minX = 0.3F;
+                model.minY = -getValveFluidHeight(data) + 0.01F;
+                model.minZ = -0.4F;
 
-                model.maxX = 0.7;
-                model.maxY = 0.7;
-                model.maxZ = -0.02;
+                model.maxX = 0.7F;
+                model.maxY = 0.7F;
+                model.maxZ = -0.02F;
                 break;
             case WEST:
-                model.minX = 1.02;
-                model.minY = -getValveFluidHeight(data) + 0.01;
-                model.minZ = 0.3;
+                model.minX = 1.02F;
+                model.minY = -getValveFluidHeight(data) + 0.01F;
+                model.minZ = 0.3F;
 
-                model.maxX = 1.4;
-                model.maxY = 0.7;
-                model.maxZ = 0.7;
+                model.maxX = 1.4F;
+                model.maxY = 0.7F;
+                model.maxZ = 0.7F;
                 break;
             case EAST:
-                model.minX = -0.4;
-                model.minY = -getValveFluidHeight(data) + 0.01;
-                model.minZ = 0.3;
+                model.minX = -0.4F;
+                model.minY = -getValveFluidHeight(data) + 0.01F;
+                model.minZ = 0.3F;
 
-                model.maxX = -0.02;
-                model.maxY = 0.7;
-                model.maxZ = 0.7;
+                model.maxX = -0.02F;
+                model.maxY = 0.7F;
+                model.maxZ = 0.7F;
                 break;
             default:
                 break;

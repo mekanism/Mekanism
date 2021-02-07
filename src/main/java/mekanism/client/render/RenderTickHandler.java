@@ -485,8 +485,8 @@ public class RenderTickHandler {
 
         switch (side) {
             case DOWN:
-                toReturn.minY = -.01;
-                toReturn.maxY = -.001;
+                toReturn.minY = -0.01F;
+                toReturn.maxY = -0.001F;
 
                 toReturn.minX = 0;
                 toReturn.minZ = 0;
@@ -494,8 +494,8 @@ public class RenderTickHandler {
                 toReturn.maxZ = 1;
                 break;
             case UP:
-                toReturn.minY = 1.001;
-                toReturn.maxY = 1.01;
+                toReturn.minY = 1.001F;
+                toReturn.maxY = 1.01F;
 
                 toReturn.minX = 0;
                 toReturn.minZ = 0;
@@ -503,8 +503,8 @@ public class RenderTickHandler {
                 toReturn.maxZ = 1;
                 break;
             case NORTH:
-                toReturn.minZ = -.01;
-                toReturn.maxZ = -.001;
+                toReturn.minZ = -0.01F;
+                toReturn.maxZ = -0.001F;
 
                 toReturn.minX = 0;
                 toReturn.minY = 0;
@@ -512,8 +512,8 @@ public class RenderTickHandler {
                 toReturn.maxY = 1;
                 break;
             case SOUTH:
-                toReturn.minZ = 1.001;
-                toReturn.maxZ = 1.01;
+                toReturn.minZ = 1.001F;
+                toReturn.maxZ = 1.01F;
 
                 toReturn.minX = 0;
                 toReturn.minY = 0;
@@ -521,8 +521,8 @@ public class RenderTickHandler {
                 toReturn.maxY = 1;
                 break;
             case WEST:
-                toReturn.minX = -.01;
-                toReturn.maxX = -.001;
+                toReturn.minX = -0.01F;
+                toReturn.maxX = -0.001F;
 
                 toReturn.minY = 0;
                 toReturn.minZ = 0;
@@ -530,8 +530,8 @@ public class RenderTickHandler {
                 toReturn.maxZ = 1;
                 break;
             case EAST:
-                toReturn.minX = 1.001;
-                toReturn.maxX = 1.01;
+                toReturn.minX = 1.001F;
+                toReturn.maxX = 1.01F;
 
                 toReturn.minY = 0;
                 toReturn.minZ = 0;

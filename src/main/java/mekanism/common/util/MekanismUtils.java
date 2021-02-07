@@ -169,29 +169,35 @@ public final class MekanismUtils {
     }
 
     public static float getScale(float prevScale, int stored, int capacity, boolean empty) {
-        return getScale(prevScale, capacity == 0 ? 0 : (float) stored / capacity, empty);
+        return getScale(prevScale, capacity == 0 ? 0 : stored / (float) capacity, empty, stored == capacity);
     }
 
     public static float getScale(float prevScale, long stored, long capacity, boolean empty) {
-        return getScale(prevScale, capacity == 0 ? 0 : (float) (stored / (double) capacity), empty);
+        return getScale(prevScale, capacity == 0 ? 0 : (float) (stored / (double) capacity), empty, stored == capacity);
     }
 
 
     public static float getScale(float prevScale, IEnergyContainer container) {
         float targetScale;
-        FloatingLong maxEnergy = container.getMaxEnergy();
-        if (maxEnergy.isZero()) {
+        FloatingLong stored = container.getEnergy();
+        FloatingLong capacity = container.getMaxEnergy();
+        if (capacity.isZero()) {
             targetScale = 0;
         } else {
-            FloatingLong scale = container.getEnergy().divide(maxEnergy);
-            targetScale = scale.floatValue();
+            targetScale = stored.divide(capacity).floatValue();
         }
-        return getScale(prevScale, targetScale, container.isEmpty());
+        return getScale(prevScale, targetScale, container.isEmpty(), stored.equals(capacity));
     }
 
-    public static float getScale(float prevScale, float targetScale, boolean empty) {
-        if (Math.abs(prevScale - targetScale) > 0.01) {
+    public static float getScale(float prevScale, float targetScale, boolean empty, boolean full) {
+        float difference = Math.abs(prevScale - targetScale);
+        if (difference > 0.01) {
             return (9 * prevScale + targetScale) / 10;
+        } else if (!empty && full && difference > 0) {
+            //If we are full but our difference is less than 0.01 but we want to get our scale all the way up to the target
+            // instead of leaving it at a value just under. Note: We also check that are are not empty as we technically may
+            // be both empty and full if the current capacity is zero
+            return targetScale;
         } else if (!empty && prevScale == 0) {
             //If we have any contents make sure we end up rendering it
             return targetScale;
