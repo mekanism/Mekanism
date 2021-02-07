@@ -53,7 +53,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         if (!rateLimitField.getText().isEmpty()) {
             try {
                 double limit = Double.parseDouble(rateLimitField.getText());
-                if (limit >= 0 && limit < 10_000) {
+                if (limit >= 0 && limit <= tile.getMaxBurnRate()) {
                     // round to two decimals
                     limit = (double) Math.round(limit * 100) / 100;
                     MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.INJECTION_RATE, tile, limit));

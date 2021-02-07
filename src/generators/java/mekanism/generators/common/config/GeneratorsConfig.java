@@ -49,6 +49,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedBooleanValue fissionMeltdownsEnabled;
     public final CachedDoubleValue fissionMeltdownChance;
     public final CachedDoubleValue fissionMeltdownRadiationMultiplier;
+    public final CachedDoubleValue defaultBurnRate;
+    public final CachedLongValue burnPerAssembly;
 
     public final CachedLongValue hohlraumMaxGas;
     public final CachedLongValue hohlraumFillRate;
@@ -139,6 +141,10 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("meltdownChance", 0.001D, 0D, 1D));
         fissionMeltdownRadiationMultiplier = CachedDoubleValue.wrap(this, builder.comment("How much radioactivity of fuel/waste contents are multiplied during a meltdown.")
               .define("meltdownRadiationMultiplier", 50D));
+        defaultBurnRate = CachedDoubleValue.wrap(this, builder.comment("The default burn rate of the fission reactor.")
+              .defineInRange("defaultBurnRate", 0.1D, 0.001D, 1D));
+        burnPerAssembly = CachedLongValue.wrap(this, builder.comment("The burn rate increase each fuel assembly provides. Max Burn Rate = fuelAssemblies * burnPerAssembly")
+              .defineInRange("burnPerAssembly", 1L, 1, 1_000_000));
         builder.pop();
 
         builder.pop();
