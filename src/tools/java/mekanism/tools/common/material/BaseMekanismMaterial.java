@@ -8,7 +8,7 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
 
     public abstract int getShieldDurability();
 
-    public int getSwordDamage() {
+    public float getSwordDamage() {
         return 3;
     }
 
@@ -28,7 +28,7 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
 
     public abstract float getAxeAtkSpeed();
 
-    public int getPickaxeDamage() {
+    public float getPickaxeDamage() {
         return 1;
     }
 
@@ -36,9 +36,9 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
         return -2.8F;
     }
 
-    public int getHoeDamage() {
+    public float getHoeDamage() {
         //Default to match the vanilla hoe's implementation of being negative the attack damage of the material
-        return (int) -getAttackDamage();
+        return -getAttackDamage();
     }
 
     public float getHoeAtkSpeed() {

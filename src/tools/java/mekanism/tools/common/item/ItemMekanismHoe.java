@@ -34,7 +34,7 @@ public class ItemMekanismHoe extends HoeItem implements IHasRepairType, IAttribu
     private final AttributeCache attributeCache;
 
     public ItemMekanismHoe(MaterialCreator material, Item.Properties properties) {
-        super(material, material.getHoeDamage(), material.getHoeAtkSpeed(), properties);
+        super(material, (int) material.getHoeDamage(), material.getHoeAtkSpeed(), properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.hoeDamage, material.hoeAtkSpeed);
     }

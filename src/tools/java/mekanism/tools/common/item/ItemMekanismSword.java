@@ -31,7 +31,7 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAtt
     private final AttributeCache attributeCache;
 
     public ItemMekanismSword(MaterialCreator material, Item.Properties properties) {
-        super(material, material.getSwordDamage(), material.getSwordAtkSpeed(), properties);
+        super(material, (int) material.getSwordDamage(), material.getSwordAtkSpeed(), properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.swordDamage, material.swordAtkSpeed);
     }

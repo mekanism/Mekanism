@@ -35,7 +35,7 @@ public class ItemMekanismPickaxe extends PickaxeItem implements IHasRepairType, 
     private final AttributeCache attributeCache;
 
     public ItemMekanismPickaxe(MaterialCreator material, Item.Properties properties) {
-        super(material, material.getPickaxeDamage(), material.getPickaxeAtkSpeed(), properties);
+        super(material, (int) material.getPickaxeDamage(), material.getPickaxeAtkSpeed(), properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.pickaxeDamage, material.pickaxeAtkSpeed);
     }
