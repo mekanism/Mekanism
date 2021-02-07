@@ -70,11 +70,35 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
 
     @Override
     public boolean canExtract() {
-        return !handler.extractEnergy(FloatingLong.ONE, Action.SIMULATE).isZero();
+        //Mark that we can receive energy if we can insert energy
+        if (!handler.extractEnergy(FloatingLong.ONE, Action.SIMULATE).isZero()) {
+            return true;
+        }
+        //Or all our containers are empty. This isn't fully accurate but will give the best
+        // accuracy to other mods of if we may be able to extract given we are predicate based
+        // instead of having strict can receive checks
+        for (int container = 0; container < handler.getEnergyContainerCount(); container++) {
+            if (!handler.getEnergy(container).isZero()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public boolean canReceive() {
-        return handler.insertEnergy(FloatingLong.ONE, Action.SIMULATE).smallerThan(FloatingLong.ONE);
+        //Mark that we can receive energy if we can insert energy
+        if (handler.insertEnergy(FloatingLong.ONE, Action.SIMULATE).smallerThan(FloatingLong.ONE)) {
+            return true;
+        }
+        //Or all our containers are full. This isn't fully accurate but will give the best
+        // accuracy to other mods of if we may be able to receive given we are predicate based
+        // instead of having strict can receive checks
+        for (int container = 0; container < handler.getEnergyContainerCount(); container++) {
+            if (!handler.getNeededEnergy(container).isZero()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
