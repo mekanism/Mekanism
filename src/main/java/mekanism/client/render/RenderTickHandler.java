@@ -70,7 +70,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particles.BasicParticleType;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -243,7 +242,7 @@ public class RenderTickHandler {
                             Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(p.getLook(1)).translate(0, -0.2, 0);
                             Pos3D motion = vec.scale(0.2).translate(p.getMotion());
                             Pos3D v = new Pos3D(p).translate(0, p.getEyeHeight(), 0).translate(vec);
-                            world.addParticle((BasicParticleType) MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
+                            world.addParticle(MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                         }
                     }
                     //Traverse players and do animations for idle flame throwers
@@ -271,7 +270,7 @@ public class RenderTickHandler {
                                 Pos3D flameMotion = new Pos3D(motion.getX(), p.isOnGround() ? 0 : motion.getY(), motion.getZ());
                                 Pos3D playerPos = new Pos3D(p);
                                 Pos3D mergedVec = playerPos.translate(flameVec);
-                                world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(),
+                                world.addParticle(MekanismParticleTypes.JETPACK_FLAME.getParticleType(),
                                       mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
                             }
                         }
@@ -451,7 +450,7 @@ public class RenderTickHandler {
                         int x = minecraft.getMainWindow().getScaledWidth();
                         int y = minecraft.getMainWindow().getScaledHeight();
                         int color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F).argb();
-                        minecraft.fontRenderer.func_243248_b(matrix, scrollTextComponent, x / 2 - minecraft.fontRenderer.getStringPropertyWidth(scrollTextComponent) / 2, y - 60, color);
+                        minecraft.fontRenderer.func_243248_b(matrix, scrollTextComponent, (x - minecraft.fontRenderer.getStringPropertyWidth(scrollTextComponent)) / 2, y - 60, color);
                     }
                 }
             }
@@ -460,8 +459,8 @@ public class RenderTickHandler {
     }
 
     private void renderJetpackSmoke(World world, Pos3D pos, Pos3D motion) {
-        world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
-        world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+        world.addParticle(MekanismParticleTypes.JETPACK_FLAME.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+        world.addParticle(MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
     }
 
     private void drawString(MainWindow window, MatrixStack matrix, ITextComponent text, boolean leftSide, int y, int color) {

@@ -272,7 +272,7 @@ public class StorageUtils {
         } else {
             color = EnumColor.BRIGHT_GREEN;
         }
-        return TextComponentUtil.build(color, TextUtils.getPercent(ratio));
+        return TextComponentUtil.build(color, text);
     }
 
     public static double getDurabilityForDisplay(ItemStack stack) {

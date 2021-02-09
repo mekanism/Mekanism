@@ -19,6 +19,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextUtils;
 import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.GeneratorsLang;
@@ -49,9 +50,9 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 double rate = multiblock.lowerVolume * (multiblock.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
                 rate = Math.min(rate, multiblock.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
                 list.add(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(EnergyDisplay.of(energyMultiplier.multiply(multiblock.clientFlow))));
-                list.add(GeneratorsLang.TURBINE_FLOW_RATE.translate(formatInt(multiblock.clientFlow)));
-                list.add(GeneratorsLang.TURBINE_CAPACITY.translate(formatInt(multiblock.getSteamCapacity())));
-                list.add(GeneratorsLang.TURBINE_MAX_FLOW.translate(formatInt((long) rate)));
+                list.add(GeneratorsLang.TURBINE_FLOW_RATE.translate(TextUtils.format(multiblock.clientFlow)));
+                list.add(GeneratorsLang.TURBINE_CAPACITY.translate(TextUtils.format(multiblock.getSteamCapacity())));
+                list.add(GeneratorsLang.TURBINE_MAX_FLOW.translate(TextUtils.format((long) rate)));
             }
             return list;
         }));
@@ -78,7 +79,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return GeneratorsLang.TURBINE_STEAM_INPUT_RATE.translate(formatInt(tile.getMultiblock().lastSteamInput));
+                return GeneratorsLang.TURBINE_STEAM_INPUT_RATE.translate(TextUtils.format(tile.getMultiblock().lastSteamInput));
             }
 
             @Override

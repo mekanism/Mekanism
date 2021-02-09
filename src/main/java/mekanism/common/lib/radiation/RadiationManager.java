@@ -36,7 +36,6 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.particles.BasicParticleType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -195,7 +194,7 @@ public class RadiationManager {
                 double x = player.getPosX() + player.world.getRandom().nextDouble() * radius * 2 - radius;
                 double y = player.getPosY() + player.world.getRandom().nextDouble() * radius * 2 - radius;
                 double z = player.getPosZ() + player.world.getRandom().nextDouble() * radius * 2 - radius;
-                player.world.addParticle((BasicParticleType) MekanismParticleTypes.RADIATION.getParticleType(), x, y, z, 0, 0, 0);
+                player.world.addParticle(MekanismParticleTypes.RADIATION.getParticleType(), x, y, z, 0, 0, 0);
             }
         }
     }

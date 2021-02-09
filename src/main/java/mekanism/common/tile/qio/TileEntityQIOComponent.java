@@ -55,6 +55,6 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         } else {
             lastColor = null;
         }
-        WorldUtils.updateBlock(getWorld(), getPos());
+        WorldUtils.updateBlock(getWorld(), getPos(), this);
     }
 }

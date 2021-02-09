@@ -19,6 +19,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
@@ -66,7 +67,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
             }
             ret.add(MekanismLang.CAPACITY.translate(""));
             // capacity is the same for the tank no matter what type it is currently stored
-            ret.add(MekanismLang.GENERIC_MB.translate(formatInt(multiblock.getTankCapacity())));
+            ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(multiblock.getTankCapacity())));
             return ret;
         }).defaultFormat().spacing(2));
         addButton(new GuiDownArrow(this, 150, 39));
@@ -80,7 +81,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
 
     private <STACK> void addStored(List<ITextComponent> ret, STACK stack, ToLongFunction<STACK> amountGetter) {
         ret.add(MekanismLang.GENERIC_PRE_COLON.translate(stack));
-        ret.add(MekanismLang.GENERIC_MB.translate(formatInt(amountGetter.applyAsLong(stack))));
+        ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(amountGetter.applyAsLong(stack))));
     }
 
     @Override

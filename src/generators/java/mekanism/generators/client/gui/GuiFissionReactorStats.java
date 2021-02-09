@@ -8,6 +8,7 @@ import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.util.text.TextUtils;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab.FissionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
@@ -70,12 +71,12 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         FissionReactorMultiblockData multiblock = tile.getMultiblock();
         // heat stats
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_HEAT_STATISTICS.translate(), 6, 20, headingTextColor(), xSize - 12);
-        drawTextScaledBound(matrix, GeneratorsLang.FISSION_HEAT_CAPACITY.translate(formatInt((int) multiblock.heatCapacitor.getHeatCapacity())), 6, 32, titleTextColor(), xSize - 12);
-        drawTextScaledBound(matrix, GeneratorsLang.FISSION_SURFACE_AREA.translate(formatInt(multiblock.surfaceArea)), 6, 42, titleTextColor(), xSize - 12);
+        drawTextScaledBound(matrix, GeneratorsLang.FISSION_HEAT_CAPACITY.translate(TextUtils.format((long) multiblock.heatCapacitor.getHeatCapacity())), 6, 32, titleTextColor(), xSize - 12);
+        drawTextScaledBound(matrix, GeneratorsLang.FISSION_SURFACE_AREA.translate(TextUtils.format(multiblock.surfaceArea)), 6, 42, titleTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_BOIL_EFFICIENCY.translate(tile.getBoilEfficiency()), 6, 52, titleTextColor(), xSize - 12);
         // fuel stats
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_FUEL_STATISTICS.translate(), 6, 68, headingTextColor(), xSize - 12);
-        drawTextScaledBound(matrix, GeneratorsLang.FISSION_MAX_BURN_RATE.translate(formatInt(tile.getMaxBurnRate())), 6, 80, titleTextColor(), xSize - 12);
+        drawTextScaledBound(matrix, GeneratorsLang.FISSION_MAX_BURN_RATE.translate(TextUtils.format(tile.getMaxBurnRate())), 6, 80, titleTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_RATE_LIMIT.translate(multiblock.rateLimit), 6, 90, titleTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_CURRENT_BURN_RATE.translate(), 6, 104, titleTextColor(), xSize - 12);
         drawTextScaledBound(matrix, GeneratorsLang.FISSION_SET_RATE_LIMIT.translate(), 6, 130, titleTextColor(), 69);

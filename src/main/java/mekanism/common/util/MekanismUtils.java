@@ -24,7 +24,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.GenericWrench;
 import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.tile.interfaces.IActiveState;
 import mekanism.common.tile.interfaces.IRedstoneControl;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
@@ -48,7 +47,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
@@ -56,7 +54,6 @@ import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.UsernameCache;
@@ -113,22 +110,6 @@ public final class MekanismUtils {
             return registryName.getNamespace();
         }
         return modid;
-    }
-
-    /**
-     * Checks if a machine is in it's active state.
-     *
-     * @param world World of the machine to check
-     * @param pos   The position of the machine
-     *
-     * @return if machine is active
-     */
-    public static boolean isActive(IBlockReader world, BlockPos pos) {
-        TileEntity tile = WorldUtils.getTileEntity(world, pos);
-        if (tile instanceof IActiveState) {
-            return ((IActiveState) tile).getActive();
-        }
-        return false;
     }
 
     /**

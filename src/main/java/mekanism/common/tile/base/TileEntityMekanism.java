@@ -481,7 +481,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
             if (isActivatable()) {
                 if (ticker == 0) {
-                    WorldUtils.updateBlock(getWorld(), getPos());
+                    WorldUtils.updateBlock(getWorld(), getPos(), this);
                 }
             }
             onUpdateClient();

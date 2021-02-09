@@ -13,11 +13,11 @@ public class ParticleTypeDeferredRegister extends WrappedDeferredRegister<Partic
         super(modid, ForgeRegistries.PARTICLE_TYPES);
     }
 
-    public ParticleTypeRegistryObject<BasicParticleType> registerBasicParticle(String name) {
+    public ParticleTypeRegistryObject<BasicParticleType, BasicParticleType> registerBasicParticle(String name) {
         return register(name, () -> new BasicParticleType(false));
     }
 
-    public <PARTICLE extends IParticleData> ParticleTypeRegistryObject<PARTICLE> register(String name, Supplier<ParticleType<PARTICLE>> sup) {
+    public <PARTICLE extends IParticleData, TYPE extends ParticleType<PARTICLE>> ParticleTypeRegistryObject<PARTICLE, TYPE> register(String name, Supplier<TYPE> sup) {
         return register(name, sup, ParticleTypeRegistryObject::new);
     }
 }

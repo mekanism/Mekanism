@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -28,7 +27,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
-    private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60;
 
     public static final Minecraft minecraft = Minecraft.getInstance();
@@ -364,10 +362,6 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     protected void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite) {
         GuiUtils.drawTiledSprite(matrix, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, getBlitOffset());
-    }
-
-    protected static String formatInt(long l) {
-        return intFormatter.format(l);
     }
 
     public enum ButtonBackground {

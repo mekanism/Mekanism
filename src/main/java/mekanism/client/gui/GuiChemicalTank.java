@@ -16,6 +16,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -35,7 +36,7 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
             Current current = tile.getChemicalTank().getCurrent();
             if (current == Current.EMPTY) {
                 ret.add(MekanismLang.CHEMICAL.translate(MekanismLang.NONE));
-                ret.add(MekanismLang.GENERIC_FRACTION.translate(0, tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : formatInt(tile.getTier().getStorage())));
+                ret.add(MekanismLang.GENERIC_FRACTION.translate(0, tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : TextUtils.format(tile.getTier().getStorage())));
             } else if (current == Current.GAS) {
                 addStored(ret, tile.getChemicalTank().getGasTank(), MekanismLang.GAS);
             } else if (current == Current.INFUSION) {
@@ -59,8 +60,8 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
         if (!tank.isEmpty() && tile.getTier() == ChemicalTankTier.CREATIVE) {
             ret.add(MekanismLang.INFINITE.translate());
         } else {
-            ret.add(MekanismLang.GENERIC_FRACTION.translate(formatInt(tank.getStored()),
-                  tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : formatInt(tank.getCapacity())));
+            ret.add(MekanismLang.GENERIC_FRACTION.translate(TextUtils.format(tank.getStored()),
+                  tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : TextUtils.format(tank.getCapacity())));
         }
     }
 
