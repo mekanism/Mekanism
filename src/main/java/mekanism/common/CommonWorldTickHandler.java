@@ -83,7 +83,6 @@ public class CommonWorldTickHandler {
     private void tickEnd(ServerWorld world) {
         if (!world.isRemote) {
             Mekanism.radiationManager.tickServerWorld(world);
-            ChunkManager.tick(world);
             flushTagAndRecipeCaches = false;
 
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {

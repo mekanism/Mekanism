@@ -78,6 +78,7 @@ import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tile.component.TileComponentChunkLoader.ChunkValidationCallback;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
@@ -90,6 +91,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -306,6 +308,8 @@ public class Mekanism {
             GenHandler.setupWorldGenFeatures();
             //Collect sync mapper scan data
             SyncMapper.collectScanData();
+            //Add chunk loading callbacks
+            ForgeChunkManager.setForcedChunkLoadingCallback(Mekanism.MODID, ChunkValidationCallback.INSTANCE);
             //Entity attribute assignments
             GlobalEntityTypeAttributes.put(MekanismEntityTypes.ROBIT.get(), EntityRobit.getDefaultAttributes().create());
             //Register dispenser behaviors

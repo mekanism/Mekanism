@@ -13,7 +13,6 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -216,10 +215,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             ejectorNBT.putInt(NBTConstants.COLOR + i, TransporterUtils.getColorIndex(inputColors[i]));
         }
         nbtTags.put(NBTConstants.COMPONENT_EJECTOR, ejectorNBT);
-    }
-
-    @Override
-    public void trackForMainContainer(MekanismContainer container) {
     }
 
     @Override

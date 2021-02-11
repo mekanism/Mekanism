@@ -21,7 +21,6 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -283,10 +282,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             configNBT.put(NBTConstants.CONFIG + type.ordinal(), sideConfig);
         }
         nbtTags.put(NBTConstants.COMPONENT_CONFIG, configNBT);
-    }
-
-    @Override
-    public void trackForMainContainer(MekanismContainer container) {
     }
 
     @Override
