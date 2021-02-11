@@ -21,10 +21,10 @@ public class RenderResizableCuboid {
     /**
      * @implNote Based off of Tinker's
      */
-    public static void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay) {
+    public static void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay, boolean backFace) {
         //TODO - 10.1: Re-evaluate back face culling. It currently makes it so that the evap tower and other things don't show as rendering
         // when you are inside of them, and I believe it is the cause of why the mechanical pipe and stuff sometimes don't have parts rendering
-        // when partially filled and vertical
+        // when partially filled and vertical. Maybe we can somehow force this only when needed such as if the player is inside the area?
         //TODO - 10.1: Further attempt to fix z-fighting at larger distances if we make it not render the sides when it is in a solid block
         // that may improve performance some, but definitely would reduce/remove the majority of remaining z-fighting that is going on
         int xd = calculateD(cube.minX, cube.maxX);
@@ -59,12 +59,12 @@ public class RenderResizableCuboid {
                     //Set bounds
                     from.setX(xBounds[x]);
                     to.setX(xBounds[x + 1]);
-                    putTexturedQuad(buffer, matrix4f, normal, westSprite, from, to, Direction.WEST, red, green, blue, alpha, light, overlay);
-                    putTexturedQuad(buffer, matrix4f, normal, eastSprite, from, to, Direction.EAST, red, green, blue, alpha, light, overlay);
-                    putTexturedQuad(buffer, matrix4f, normal, northSprite, from, to, Direction.NORTH, red, green, blue, alpha, light, overlay);
-                    putTexturedQuad(buffer, matrix4f, normal, southSprite, from, to, Direction.SOUTH, red, green, blue, alpha, light, overlay);
-                    putTexturedQuad(buffer, matrix4f, normal, upSprite, from, to, Direction.UP, red, green, blue, alpha, light, overlay);
-                    putTexturedQuad(buffer, matrix4f, normal, downSprite, from, to, Direction.DOWN, red, green, blue, alpha, light, overlay);
+                    putTexturedQuad(buffer, matrix4f, normal, westSprite, from, to, Direction.WEST, red, green, blue, alpha, light, overlay, backFace);
+                    putTexturedQuad(buffer, matrix4f, normal, eastSprite, from, to, Direction.EAST, red, green, blue, alpha, light, overlay, backFace);
+                    putTexturedQuad(buffer, matrix4f, normal, northSprite, from, to, Direction.NORTH, red, green, blue, alpha, light, overlay, backFace);
+                    putTexturedQuad(buffer, matrix4f, normal, southSprite, from, to, Direction.SOUTH, red, green, blue, alpha, light, overlay, backFace);
+                    putTexturedQuad(buffer, matrix4f, normal, upSprite, from, to, Direction.UP, red, green, blue, alpha, light, overlay, backFace);
+                    putTexturedQuad(buffer, matrix4f, normal, downSprite, from, to, Direction.DOWN, red, green, blue, alpha, light, overlay, backFace);
                 }
             }
         }
@@ -104,7 +104,7 @@ public class RenderResizableCuboid {
      * @implNote From Mantle with some adjustments
      */
     private static void putTexturedQuad(IVertexBuilder buffer, Matrix4f matrix, Matrix3f normal, @Nullable SpriteInfo spriteInfo, Vector3f from, Vector3f to,
-          Direction face, float red, float green, float blue, float alpha, int light, int overlay) {
+          Direction face, float red, float green, float blue, float alpha, int light, int overlay, boolean backFace) {
         if (spriteInfo == null) {
             return;
         }
@@ -170,41 +170,66 @@ public class RenderResizableCuboid {
         // add quads
         switch (face) {
             case DOWN:
-                buffer.pos(matrix, x1, y1, z2).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x1, y1, z1).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x2, y1, z1).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x2, y1, z2).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, backFace,
+                      x1, y1, z2,
+                      x1, y1, z1,
+                      x2, y1, z1,
+                      x2, y1, z2);
                 break;
             case UP:
-                buffer.pos(matrix, x1, y2, z1).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x1, y2, z2).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x2, y2, z2).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x2, y2, z1).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, backFace,
+                      x1, y2, z1,
+                      x1, y2, z2,
+                      x2, y2, z2,
+                      x2, y2, z1);
                 break;
             case NORTH:
-                buffer.pos(matrix, x1, y1, z1).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x1, y2, z1).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x2, y2, z1).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x2, y1, z1).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, backFace,
+                      x1, y1, z1,
+                      x1, y2, z1,
+                      x2, y2, z1,
+                      x2, y1, z1);
                 break;
             case SOUTH:
-                buffer.pos(matrix, x2, y1, z2).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x2, y2, z2).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x1, y2, z2).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x1, y1, z2).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, backFace,
+                      x2, y1, z2,
+                      x2, y2, z2,
+                      x1, y2, z2,
+                      x1, y1, z2);
                 break;
             case WEST:
-                buffer.pos(matrix, x1, y1, z2).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x1, y2, z2).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x1, y2, z1).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x1, y1, z1).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, backFace,
+                      x1, y1, z2,
+                      x1, y2, z2,
+                      x1, y2, z1,
+                      x1, y1, z1);
                 break;
             case EAST:
-                buffer.pos(matrix, x2, y1, z1).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x2, y2, z1).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x2, y2, z2).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-                buffer.pos(matrix, x2, y1, z2).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, backFace,
+                      x2, y1, z1,
+                      x2, y2, z1,
+                      x2, y2, z2,
+                      x2, y1, z2);
                 break;
+        }
+    }
+
+    private static void drawFace(IVertexBuilder buffer, Matrix4f matrix, Matrix3f normal, float red, float green, float blue, float alpha, float minU, float maxU,
+          float minV, float maxV, int light, int overlay, boolean backFace,
+          float x1, float y1, float z1,
+          float x2, float y2, float z2,
+          float x3, float y3, float z3,
+          float x4, float y4, float z4) {
+        buffer.pos(matrix, x1, y1, z1).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+        buffer.pos(matrix, x2, y2, z2).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+        buffer.pos(matrix, x3, y3, z3).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+        buffer.pos(matrix, x4, y4, z4).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+        if (backFace) {
+            //Draw the back face as well
+            buffer.pos(matrix, x2, y2, z2).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+            buffer.pos(matrix, x1, y1, z1).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+            buffer.pos(matrix, x4, y4, z4).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+            buffer.pos(matrix, x3, y3, z3).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
         }
     }
 }

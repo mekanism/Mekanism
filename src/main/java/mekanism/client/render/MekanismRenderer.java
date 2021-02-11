@@ -120,8 +120,12 @@ public class MekanismRenderer {
     }
 
     public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay) {
+        renderObject(object, matrix, buffer, argb, light, overlay, false);
+    }
+
+    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay, boolean backFace) {
         if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay);
+            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, backFace);
         }
     }
 

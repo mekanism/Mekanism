@@ -47,8 +47,9 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
             //Adjust it slightly so that it does not clip into the blocks that are just on the outside of the radius
             matrix.scale(SCALE_FIX, SCALE_FIX, SCALE_FIX);
             matrix.translate(OFFSET_FIX, OFFSET_FIX, OFFSET_FIX);
+            //Force back face rendering as it is likely the player may be inside the area
             MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
-                  MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight);
+                  MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight, true);
             matrix.pop();
         }
     }
