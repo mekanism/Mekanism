@@ -12,6 +12,8 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.gui.GuiUtils;
+import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
@@ -19,22 +21,14 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
-import org.lwjgl.opengl.GL11;
 
 public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements IIngredientRenderer<STACK> {
 
-    protected static final int TEX_WIDTH = 16;
-    protected static final int TEX_HEIGHT = 16;
+    private static final int TEX_WIDTH = 16;
+    private static final int TEX_HEIGHT = 16;
     private static final int MIN_CHEMICAL_HEIGHT = 1; // ensure tiny amounts of chemical are still visible
 
     private final long capacityMb;
@@ -91,58 +85,10 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
             desiredHeight = height;
         }
         Chemical<?> chemical = stack.getType();
-        drawTiledSprite(matrix, xPosition, yPosition, width, desiredHeight, height, chemical);
-    }
-
-    private void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int desiredWidth, int desiredHeight, int yOffset, @Nonnull Chemical<?> chemical) {
-        if (desiredWidth == 0 || desiredHeight == 0) {
-            return;
-        }
-        Matrix4f matrix4f = matrix.getLast().getMatrix();
         MekanismRenderer.color(chemical);
-        TextureAtlasSprite sprite = MekanismRenderer.getSprite(chemical.getIcon());
-        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        int xTileCount = desiredWidth / TEX_WIDTH;
-        int xRemainder = desiredWidth - (xTileCount * TEX_WIDTH);
-        int yTileCount = desiredHeight / TEX_HEIGHT;
-        int yRemainder = desiredHeight - (yTileCount * TEX_HEIGHT);
-        int yStart = yPosition + yOffset;
-        int zLevel = 100;
-        float uMin = sprite.getMinU();
-        float uMax = sprite.getMaxU();
-        float vMin = sprite.getMinV();
-        float vMax = sprite.getMaxV();
-        float uDif = uMax - uMin;
-        float vDif = vMax - vMin;
-        BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
-        vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        for (int xTile = 0; xTile <= xTileCount; xTile++) {
-            int width = (xTile == xTileCount) ? xRemainder : TEX_WIDTH;
-            if (width == 0) {
-                break;
-            }
-            int x = xPosition + (xTile * TEX_WIDTH);
-            int maskRight = TEX_WIDTH - width;
-            int shiftedX = x + TEX_WIDTH - maskRight;
-            float uMaxLocal = uMax - (uDif * maskRight / TEX_WIDTH);
-            for (int yTile = 0; yTile <= yTileCount; yTile++) {
-                int height = (yTile == yTileCount) ? yRemainder : TEX_HEIGHT;
-                if (height == 0) {
-                    //Note: We don't want to fully break out because our height will be zero if we are looking to
-                    // draw the remainder, but there is no remainder as it divided evenly
-                    break;
-                }
-                int y = yStart - ((yTile + 1) * TEX_HEIGHT);
-                int maskTop = TEX_HEIGHT - height;
-                float vMaxLocal = vMax - (vDif * maskTop / TEX_HEIGHT);
-                vertexBuffer.pos(matrix4f, x, y + TEX_HEIGHT, zLevel).tex(uMin, vMaxLocal).endVertex();
-                vertexBuffer.pos(matrix4f, shiftedX, y + TEX_HEIGHT, zLevel).tex(uMaxLocal, vMaxLocal).endVertex();
-                vertexBuffer.pos(matrix4f, shiftedX, y + maskTop, zLevel).tex(uMaxLocal, vMin).endVertex();
-                vertexBuffer.pos(matrix4f, x, y + maskTop, zLevel).tex(uMin, vMin).endVertex();
-            }
-        }
-        vertexBuffer.finishDrawing();
-        WorldVertexBufferUploader.draw(vertexBuffer);
+        //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
+        GuiUtils.drawTiledSprite(matrix, xPosition, yPosition, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
+              TEX_WIDTH, TEX_HEIGHT, 100, TilingDirection.UP_RIGHT, false);
         MekanismRenderer.resetColor();
     }
 

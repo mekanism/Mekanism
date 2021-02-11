@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.render.MekanismRenderer;
@@ -67,7 +68,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         TextureAtlasSprite icon = getIcon();
         if (scale > 0 && icon != null) {
             applyRenderColor();
-            drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, scale, icon);
+            drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, scale, icon, TilingDirection.UP_RIGHT);
             MekanismRenderer.resetColor();
         }
         //Draw the bar overlay

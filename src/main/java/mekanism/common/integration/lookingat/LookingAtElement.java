@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.GuiUtils;
+import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -32,7 +33,8 @@ public abstract class LookingAtElement {
             int scale = getScaledLevel(width - 2);
             if (scale > 0) {
                 boolean colored = applyRenderColor();
-                GuiUtils.drawTiledSprite(matrix, x + 1, y + 1, height - 2, scale, height - 2, icon, 16, 16, 0);
+                GuiUtils.drawTiledSprite(matrix, x + 1, y + 1, height - 2, scale, height - 2, icon,
+                      16, 16, 0, TilingDirection.DOWN_RIGHT);
                 if (colored) {
                     MekanismRenderer.resetColor();
                 }

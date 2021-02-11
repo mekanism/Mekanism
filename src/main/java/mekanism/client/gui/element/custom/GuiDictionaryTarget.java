@@ -17,6 +17,7 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiRelativeElement;
@@ -69,12 +70,12 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
         } else if (target instanceof FluidStack) {
             FluidStack stack = (FluidStack) this.target;
             MekanismRenderer.color(stack);
-            drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidType.STILL));
+            drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidType.STILL), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor();
         } else if (target instanceof ChemicalStack) {
             ChemicalStack<?> stack = (ChemicalStack<?>) this.target;
             MekanismRenderer.color(stack);
-            drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getChemicalTexture(stack.getType()));
+            drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getChemicalTexture(stack.getType()), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor();
         }
     }

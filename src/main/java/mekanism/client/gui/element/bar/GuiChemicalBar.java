@@ -12,6 +12,7 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiChemicalBar.ChemicalInfoProvider;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
@@ -49,9 +50,9 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                 MekanismRenderer.color(type);
                 TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(type);
                 if (horizontal) {
-                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, (int) (level * (width - 2)), height - 2, icon);
+                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, (int) (level * (width - 2)), height - 2, icon, TilingDirection.DOWN_RIGHT);
                 } else {
-                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, (int) (level * (height - 2)), icon);
+                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, (int) (level * (height - 2)), icon, TilingDirection.DOWN_RIGHT);
                 }
                 MekanismRenderer.resetColor();
             }
