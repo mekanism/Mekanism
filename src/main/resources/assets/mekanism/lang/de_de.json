@@ -277,6 +277,7 @@
   "command.mekanism.chunk.watch": "Chunk (%s) zur Beobachtungsliste hinzugefügt.",
   "command.mekanism.debug": "Debug-Modus umgeschaltet: %s.",
   "command.mekanism.error.build.miss": "Kein passendes Ziel gefunden.",
+  "command.mekanism.error.tpop.empty": "Keine Positionen auf dem Stack.",
   "command.mekanism.radiation.clear": "Verstrahlung vom Spieler entfernt.",
   "command.mekanism.radiation.remove_all": "Alle Strahlungsquellen entfernt.",
   "condensentrator.mekanism.condensentrating": "Kondensentrieren",
