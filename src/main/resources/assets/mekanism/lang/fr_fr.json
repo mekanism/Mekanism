@@ -199,7 +199,7 @@
   "boiler.mekanism.invalid_air_pockets": "Formation impossible: Poches d'air intérieures déconnectée détectées.",
   "boiler.mekanism.invalid_extra_disperser": "Formation impossible: Disperseur de pression invalide détectés.",
   "boiler.mekanism.invalid_missing_disperser": "Formation impossible: Disperseur de pression non détecté à %s.",
-  "boiler.mekanism.invalid_no_disperser": "Formation impossible: Pas de couche de disperseur de pression détectées.",
+  "boiler.mekanism.invalid_no_disperser": "Formation impossible: Pas de couche de disperseur de pression détectée.",
   "boiler.mekanism.invalid_superheating": "Formation impossible: Arrangement des éléments de surchauffe invalide.",
   "boiler.mekanism.max_boil": "Ébullition maximale : %s mB/t",
   "boiler.mekanism.max_steam": "Vapeur maximale : %s mB",
