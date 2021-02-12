@@ -60,7 +60,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                         Model3D gasModel = ModelRenderer.getModel(data, 1);
                         MekanismRenderer.renderObject(gasModel, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
-                              data.getColorARGB(multiblock.prevSteamScale), glow, overlayLight);
+                              data.getColorARGB(multiblock.prevSteamScale), glow, overlayLight, getFaceDisplay(data, gasModel));
                         matrix.pop();
                     }
                 }

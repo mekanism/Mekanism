@@ -14,6 +14,7 @@ import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
@@ -67,15 +68,17 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     ConnectionType connectionType = pipe.getConnectionType(side);
                     if (connectionType == ConnectionType.NORMAL) {
-                        MekanismRenderer.renderObject(getModel(side, fluidStack, stage), matrix, buffer, color, glow, overlayLight);
+                        //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
+                        MekanismRenderer.renderObject(getModel(side, fluidStack, stage), matrix, buffer, color, glow, overlayLight, FaceDisplay.FRONT);
                     } else if (connectionType != ConnectionType.NONE) {
                         connectionContents.add(side.getString() + connectionType.getString().toUpperCase(Locale.ROOT));
                     }
                     if (model != null) {
-                        model.setSideRender(side, connectionType == ConnectionType.NONE);
+                        //Render the side if there is no connection on that side, or it is a vertical connection and we are not full
+                        model.setSideRender(side, connectionType == ConnectionType.NONE || (side.getAxis().isVertical() && stage != stages - 1));
                     }
                 }
-                MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, fluidScale), glow, overlayLight);
+                MekanismRenderer.renderObject(model, matrix, buffer, MekanismRenderer.getColorARGB(fluidStack, fluidScale), glow, overlayLight, FaceDisplay.FRONT);
                 if (!connectionContents.isEmpty()) {
                     matrix.push();
                     matrix.translate(0.5, 0.5, 0.5);

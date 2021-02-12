@@ -56,6 +56,11 @@ public final class ModelRenderer {
         return model;
     }
 
+    //Undoes the z-fighting height shift from the model
+    public static float getActualHeight(Model3D model) {
+        return model.maxY + 0.02F;
+    }
+
     public static Model3D getValveModel(ValveRenderData data) {
         if (cachedValveFluids.containsKey(data)) {
             return cachedValveFluids.get(data);
@@ -85,7 +90,7 @@ public final class ModelRenderer {
                 break;
             case NORTH:
                 model.minX = 0.3F;
-                model.minY = -getValveFluidHeight(data) + 0.01F;
+                model.minY = -getValveFluidHeight(data) + 0.02F;
                 model.minZ = 1.02F;
 
                 model.maxX = 0.7F;
@@ -94,16 +99,16 @@ public final class ModelRenderer {
                 break;
             case SOUTH:
                 model.minX = 0.3F;
-                model.minY = -getValveFluidHeight(data) + 0.01F;
+                model.minY = -getValveFluidHeight(data) + 0.02F;
                 model.minZ = -0.4F;
 
                 model.maxX = 0.7F;
                 model.maxY = 0.7F;
-                model.maxZ = -0.02F;
+                model.maxZ = -0.03F;
                 break;
             case WEST:
                 model.minX = 1.02F;
-                model.minY = -getValveFluidHeight(data) + 0.01F;
+                model.minY = -getValveFluidHeight(data) + 0.02F;
                 model.minZ = 0.3F;
 
                 model.maxX = 1.4F;
@@ -112,10 +117,10 @@ public final class ModelRenderer {
                 break;
             case EAST:
                 model.minX = -0.4F;
-                model.minY = -getValveFluidHeight(data) + 0.01F;
+                model.minY = -getValveFluidHeight(data) + 0.02F;
                 model.minZ = 0.3F;
 
-                model.maxX = -0.02F;
+                model.maxX = -0.03F;
                 model.maxY = 0.7F;
                 model.maxZ = 0.7F;
                 break;

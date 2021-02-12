@@ -19,6 +19,7 @@ import mekanism.client.MekanismClient;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.Vertex;
@@ -382,7 +383,7 @@ public class RenderTickHandler {
                             matrix.push();
                             matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
                             MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
-                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT);
                             matrix.pop();
                         }
                     }
@@ -478,67 +479,10 @@ public class RenderTickHandler {
         if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(type)) {
             return cachedOverlays.get(side).get(type);
         }
-
         Model3D toReturn = new Model3D();
         toReturn.setTexture(MekanismRenderer.overlays.get(type));
-        cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class)).putIfAbsent(type, toReturn);
-
-        switch (side) {
-            case DOWN:
-                toReturn.minY = -0.01F;
-                toReturn.maxY = -0.001F;
-
-                toReturn.minX = 0;
-                toReturn.minZ = 0;
-                toReturn.maxX = 1;
-                toReturn.maxZ = 1;
-                break;
-            case UP:
-                toReturn.minY = 1.001F;
-                toReturn.maxY = 1.01F;
-
-                toReturn.minX = 0;
-                toReturn.minZ = 0;
-                toReturn.maxX = 1;
-                toReturn.maxZ = 1;
-                break;
-            case NORTH:
-                toReturn.minZ = -0.01F;
-                toReturn.maxZ = -0.001F;
-
-                toReturn.minX = 0;
-                toReturn.minY = 0;
-                toReturn.maxX = 1;
-                toReturn.maxY = 1;
-                break;
-            case SOUTH:
-                toReturn.minZ = 1.001F;
-                toReturn.maxZ = 1.01F;
-
-                toReturn.minX = 0;
-                toReturn.minY = 0;
-                toReturn.maxX = 1;
-                toReturn.maxY = 1;
-                break;
-            case WEST:
-                toReturn.minX = -0.01F;
-                toReturn.maxX = -0.001F;
-
-                toReturn.minY = 0;
-                toReturn.minZ = 0;
-                toReturn.maxY = 1;
-                toReturn.maxZ = 1;
-                break;
-            case EAST:
-                toReturn.minX = 1.001F;
-                toReturn.maxX = 1.01F;
-
-                toReturn.minY = 0;
-                toReturn.minZ = 0;
-                toReturn.maxY = 1;
-                toReturn.maxZ = 1;
-                break;
-        }
+        MekanismRenderer.prepSingleFaceModelSize(toReturn, side);
+        cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class)).put(type, toReturn);
         return toReturn;
     }
 

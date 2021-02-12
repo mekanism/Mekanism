@@ -8,6 +8,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
@@ -18,6 +19,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.client.SpecialColors;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
+import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.item.block.RenderFluidTankItem;
@@ -119,22 +121,86 @@ public class MekanismRenderer {
         model.setTextures(still, still, flowing, flowing, flowing, flowing);
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay) {
-        renderObject(object, matrix, buffer, argb, light, overlay, false);
-    }
-
-    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay, boolean backFace) {
-        if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, backFace);
+    public static void prepSingleFaceModelSize(Model3D model, Direction face) {
+        switch (face) {
+            case DOWN:
+                model.minX = 0;
+                model.maxX = 1;
+                model.minY = -0.01F;
+                model.maxY = -0.001F;
+                model.minZ = 0;
+                model.maxZ = 1;
+                break;
+            case UP:
+                model.minX = 0;
+                model.maxX = 1;
+                model.minY = 1.001F;
+                model.maxY = 1.01F;
+                model.minZ = 0;
+                model.maxZ = 1;
+                break;
+            case NORTH:
+                model.minX = 0;
+                model.maxX = 1;
+                model.minY = 0;
+                model.maxY = 1;
+                model.minZ = -0.01F;
+                model.maxZ = -0.001F;
+                break;
+            case SOUTH:
+                model.minX = 0;
+                model.maxX = 1;
+                model.minY = 0;
+                model.maxY = 1;
+                model.minZ = 1.001F;
+                model.maxZ = 1.01F;
+                break;
+            case WEST:
+                model.minX = -0.01F;
+                model.maxX = -0.001F;
+                model.minY = 0;
+                model.maxY = 1;
+                model.minZ = 0;
+                model.maxZ = 1;
+                break;
+            case EAST:
+                model.minX = 1.001F;
+                model.maxX = 1.01F;
+                model.minY = 0;
+                model.maxY = 1;
+                model.minZ = 0;
+                model.maxZ = 1;
+                break;
         }
     }
 
-    public static void renderValves(MatrixStack matrix, IVertexBuilder buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow, int overlay) {
-        for (ValveData valveData : valves) {
-            matrix.push();
-            matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
-            renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow, overlay);
-            matrix.pop();
+    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay,
+          FaceDisplay faceDisplay) {
+        if (object != null) {
+            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay);
+        }
+    }
+
+    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int[] colors, int light, int overlay,
+          FaceDisplay faceDisplay) {
+        if (object != null) {
+            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay);
+        }
+    }
+
+    public static void renderValves(MatrixStack matrix, IVertexBuilder buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow, int overlay,
+          BooleanSupplier inMultiblock) {
+        FaceDisplay faceDisplay;
+        if (!valves.isEmpty()) {
+            //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside of them
+            // if we aren't in the multiblock though we can just get away with only rendering the front faces
+            faceDisplay = inMultiblock.getAsBoolean() ? FaceDisplay.BOTH : FaceDisplay.FRONT;
+            for (ValveData valveData : valves) {
+                matrix.push();
+                matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
+                renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow, overlay, faceDisplay);
+                matrix.pop();
+            }
         }
     }
 
@@ -446,6 +512,10 @@ public class MekanismRenderer {
             return null;
         }
 
+        public void setTexture(Direction side, SpriteInfo spriteInfo) {
+            textures[side.ordinal()] = spriteInfo;
+        }
+
         public void setTexture(TextureAtlasSprite tex) {
             setTexture(tex, 16);
         }
@@ -463,12 +533,12 @@ public class MekanismRenderer {
             textures[5] = east;
         }
 
-        public static class SpriteInfo {
+        public static final class SpriteInfo {
 
             public final TextureAtlasSprite sprite;
             public final int size;
 
-            private SpriteInfo(TextureAtlasSprite sprite, int size) {
+            public SpriteInfo(TextureAtlasSprite sprite, int size) {
                 this.sprite = sprite;
                 this.size = size;
             }

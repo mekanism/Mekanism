@@ -1030,15 +1030,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     private boolean getClientActive() {
-        return Attribute.isActive(getBlockState());
+        return isActivatable() && Attribute.isActive(getBlockState());
     }
 
     @Override
     public void setActive(boolean active) {
-        if (isActivatable()) {
+        if (isActivatable() && active != currentActive) {
             BlockState state = getBlockState();
             Block block = state.getBlock();
-            if (active != currentActive && Attribute.has(block, AttributeStateActive.class)) {
+            if (Attribute.has(block, AttributeStateActive.class)) {
                 currentActive = active;
                 if (getClientActive() != active) {
                     if (active) {

@@ -4,19 +4,29 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
+import net.minecraft.util.Direction;
 
 @ParametersAreNonnullByDefault
 public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDigitalMiner> {
 
-    private static final float SCALE_FIX = 0.9999F;
-    private static final float OFFSET_FIX = 0.00005F;
     private static Model3D model;
+    private static final int[] colors = new int[EnumUtils.DIRECTIONS.length];
+    static {
+        colors[Direction.DOWN.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.82F);
+        colors[Direction.UP.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.82F);
+        colors[Direction.NORTH.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.8F);
+        colors[Direction.SOUTH.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.8F);
+        colors[Direction.WEST.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.78F);
+        colors[Direction.EAST.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.78F);
+    }
 
     public static void resetCachedVisuals() {
         model = null;
@@ -32,24 +42,24 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
             if (model == null) {
                 model = new Model3D();
                 model.setTexture(MekanismRenderer.whiteIcon);
-                model.minX = 0.01F;
-                model.minY = 0.01F;
-                model.minZ = 0.01F;
-                model.maxX = 0.99F;
-                model.maxY = 0.99F;
-                model.maxZ = 0.99F;
+                model.minX = 0;
+                model.minY = 0;
+                model.minZ = 0;
+                model.maxX = 1;
+                model.maxY = 1;
+                model.maxZ = 1;
             }
-            //TODO: Eventually we may want to make it so that the model can support each face being a different
-            // color to make it easier to see the "depth"
             matrix.push();
-            matrix.translate(-miner.getRadius(), miner.getMinY() - miner.getPos().getY(), -miner.getRadius());
-            matrix.scale(miner.getDiameter(), miner.getMaxY() - miner.getMinY(), miner.getDiameter());
-            //Adjust it slightly so that it does not clip into the blocks that are just on the outside of the radius
-            matrix.scale(SCALE_FIX, SCALE_FIX, SCALE_FIX);
-            matrix.translate(OFFSET_FIX, OFFSET_FIX, OFFSET_FIX);
-            //Force back face rendering as it is likely the player may be inside the area
-            MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
-                  MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight, true);
+            //Adjust translation and scale ever so slightly so that no z-fighting happens at the edges if there are blocks there
+            matrix.translate(-miner.getRadius() + 0.01, miner.getMinY() - miner.getPos().getY() + 0.01, -miner.getRadius() + 0.01);
+            float diameter = miner.getDiameter() - 0.02F;
+            matrix.scale(diameter, miner.getMaxY() - miner.getMinY() - 0.02F, diameter);
+            //If we are inside of the visualization we don't have to render the "front" face, otherwise we need to render both given how the visualization works
+            // we want to be able to see all faces easily
+            FaceDisplay faceDisplay = isInsideBounds(miner.getPos().getX() - miner.getRadius(), miner.getMinY(), miner.getPos().getZ() - miner.getRadius(),
+                  miner.getPos().getX() + miner.getRadius(), miner.getMaxY(), miner.getPos().getZ() + miner.getRadius()) ? FaceDisplay.BACK : FaceDisplay.BOTH;
+            MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()), colors, MekanismRenderer.FULL_LIGHT, overlayLight,
+                  faceDisplay);
             matrix.pop();
         }
     }
