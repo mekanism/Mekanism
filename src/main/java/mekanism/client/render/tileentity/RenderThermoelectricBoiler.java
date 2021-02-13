@@ -13,7 +13,6 @@ import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
@@ -40,15 +39,14 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                         data.height = height;
                         data.length = multiblock.length();
                         data.width = multiblock.width();
-                        int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
+                        int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
                         matrix.push();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                         buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
-                        MekanismRenderer.renderObject(ModelRenderer.getModel(data, multiblock.prevWaterScale), matrix, buffer,
-                              data.getColorARGB(multiblock.prevWaterScale), glow, overlayLight);
+                        Model3D model = ModelRenderer.getModel(data, multiblock.prevWaterScale);
+                        MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevWaterScale), glow, overlayLight, getFaceDisplay(data, model));
                         matrix.pop();
-
-                        MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, data, pos, glow, overlayLight);
+                        MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, data, pos, glow, overlayLight, isInsideMultiblock(data));
                     }
                 }
                 if (!multiblock.steamTank.isEmpty()) {
@@ -62,11 +60,12 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                         if (buffer == null) {
                             buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
                         }
-                        int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
+                        int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
                         matrix.push();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                         Model3D gasModel = ModelRenderer.getModel(data, 1);
-                        MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(multiblock.prevSteamScale), glow, overlayLight);
+                        MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(multiblock.prevSteamScale), glow, overlayLight,
+                              getFaceDisplay(data, gasModel));
                         matrix.pop();
                     }
                 }

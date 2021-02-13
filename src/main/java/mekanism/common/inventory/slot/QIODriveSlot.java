@@ -12,6 +12,7 @@ import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.qio.QIOFrequency;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -35,6 +36,21 @@ public class QIODriveSlot extends BasicInventorySlot {
             removeDrive();
         }
         super.setStack(stack);
+        // if we just added a new drive, add it to the frequency
+        // (note that both of these operations can happen in this order if a user replaces the drive in the slot)
+        if (!isRemote() && !isEmpty()) {
+            addDrive(getStack());
+        }
+    }
+
+    @Override
+    protected void setStackUnchecked(ItemStack stack) {
+        // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
+        // Note: We don't check to see if the new stack is empty so that we properly are able to handle direct changes
+        if (!isRemote() && !isEmpty()) {
+            removeDrive();
+        }
+        super.setStackUnchecked(stack);
         // if we just added a new drive, add it to the frequency
         // (note that both of these operations can happen in this order if a user replaces the drive in the slot)
         if (!isRemote() && !isEmpty()) {
@@ -67,7 +83,10 @@ public class QIODriveSlot extends BasicInventorySlot {
     }
 
     private boolean isRemote() {
-        return ((TileEntity) driveHolder).getWorld().isRemote();
+        World world = ((TileEntity) driveHolder).getWorld();
+        //Treat world as remote if it is null (hasn't been assigned yet)
+        // which may happen when loading the drives from memory
+        return world == null || world.isRemote();
     }
 
     private void addDrive(ItemStack stack) {

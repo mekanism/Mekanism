@@ -60,8 +60,8 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
     public void setIngredients(ChemicalDissolutionRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
         List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
-        int scale = TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;
-        List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, scale)).collect(Collectors.toList());
+        List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, gas.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))
+              .collect(Collectors.toList());
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(scaledGases));
         BoxedChemicalStack outputDefinition = recipe.getOutputDefinition();
         ChemicalType chemicalType = outputDefinition.getChemicalType();
@@ -84,8 +84,8 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
         itemStacks.init(0, true, 27 - xOffset, 35 - yOffset);
         itemStacks.set(0, recipe.getItemInput().getRepresentations());
         List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
-        int scale = TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;
-        List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, scale)).collect(Collectors.toList());
+        List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, gas.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))
+              .collect(Collectors.toList());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initChemical(gasStacks, 0, true, 8 - xOffset, 5 - yOffset, 16, 58, scaledGases, true);
         BoxedChemicalStack outputDefinition = recipe.getOutputDefinition();

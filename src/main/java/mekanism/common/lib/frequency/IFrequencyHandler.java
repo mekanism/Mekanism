@@ -16,6 +16,10 @@ public interface IFrequencyHandler extends ISecurityTile {
         getFrequencyComponent().setFrequencyFromData(type, data);
     }
 
+    default void unsetFrequency(FrequencyType<?> type) {
+        getFrequencyComponent().unsetFrequency(type);
+    }
+
     default void removeFrequency(FrequencyType<?> type, FrequencyIdentity data) {
         getFrequencyComponent().removeFrequencyFromData(type, data);
     }

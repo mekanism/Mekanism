@@ -70,7 +70,7 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static <T extends IParticleData> void registerParticleFactory(ParticleTypeRegistryObject<T> particleTypeRO, ParticleManager.IParticleMetaFactory<T> factory) {
+    public static <T extends IParticleData> void registerParticleFactory(ParticleTypeRegistryObject<T, ?> particleTypeRO, ParticleManager.IParticleMetaFactory<T> factory) {
         Minecraft.getInstance().particles.registerFactory(particleTypeRO.getParticleType(), factory);
     }
 

@@ -13,7 +13,7 @@
       "tag": "forge:circuits/ultimate"
     },
     "W": {
-      "tag": "forge:chests"
+      "tag": "forge:chests/wooden"
     },
     "P": {
       "item": "mekanism:hdpe_sheet"

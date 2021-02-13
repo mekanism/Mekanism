@@ -2,12 +2,8 @@ package mekanism.generators.common.content.blocktype;
 
 import java.util.function.Supplier;
 import mekanism.api.text.ILangEntry;
-import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateFacing;
-import mekanism.common.block.attribute.Attributes.AttributeComparator;
-import mekanism.common.block.attribute.Attributes.AttributeInventory;
-import mekanism.common.block.attribute.Attributes.AttributeRedstone;
-import mekanism.common.block.attribute.Attributes.AttributeSecurity;
+import mekanism.common.block.attribute.Attributes;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -16,8 +12,7 @@ public class Generator<TILE extends TileEntityMekanism> extends BlockTypeTile<TI
 
     public Generator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
         super(tileEntityRegistrar, description);
-
-        add(new AttributeStateActive(), new AttributeStateFacing(), new AttributeSecurity(), new AttributeInventory(), new AttributeRedstone(), new AttributeComparator());
+        add(Attributes.ACTIVE, new AttributeStateFacing(), Attributes.SECURITY, Attributes.INVENTORY, Attributes.REDSTONE, Attributes.COMPARATOR);
     }
 
     public static class GeneratorBuilder<GENERATOR extends Generator<TILE>, TILE extends TileEntityMekanism, T extends GeneratorBuilder<GENERATOR, TILE, T>> extends BlockTileBuilder<GENERATOR, TILE, T> {

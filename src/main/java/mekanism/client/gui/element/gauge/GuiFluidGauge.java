@@ -16,6 +16,7 @@ import mekanism.common.network.PacketDropperUse.TankType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
@@ -127,7 +128,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
         if (amount == Integer.MAX_VALUE) {
             return Collections.singletonList(MekanismLang.GENERIC_STORED.translate(fluidStack, MekanismLang.INFINITE));
         }
-        return Collections.singletonList(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, formatInt(amount)));
+        return Collections.singletonList(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, TextUtils.format(amount)));
     }
 
     @Override

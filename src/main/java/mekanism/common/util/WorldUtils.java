@@ -577,8 +577,9 @@ public class WorldUtils {
      *
      * @param world world the block is in
      * @param pos   Position of the block
+     * @param tile The tile entity at the position
      */
-    public static void updateBlock(@Nullable World world, BlockPos pos) {
+    public static void updateBlock(@Nullable World world, BlockPos pos, TileEntity tile) {
         if (!isBlockLoaded(world, pos)) {
             return;
         }
@@ -592,7 +593,6 @@ public class WorldUtils {
         //TODO: Fix this as it is not ideal to just pretend the block was previously air to force it to update
         // Maybe should use notifyUpdate
         world.markBlockRangeForRenderUpdate(pos, Blocks.AIR.getDefaultState(), blockState);
-        TileEntity tile = getTileEntity(world, pos);
         if (!(tile instanceof IActiveState) || ((IActiveState) tile).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
             //Update all light types at the position
             recheckLighting(world, pos);
@@ -620,6 +620,22 @@ public class WorldUtils {
         f1 = (float) (f1 * (1.0D - world.getRainStrength(partialTicks) * 5.0F / 16.0D));
         f1 = (float) (f1 * (1.0D - world.getThunderStrength(partialTicks) * 5.0F / 16.0D));
         return f1 * 0.8F + 0.2F;
+    }
+
+    /**
+     * Checks to see if the block at the position can see the sky and it is daytime.
+     *
+     * @param world World to check in.
+     * @param pos   Position to check.
+     *
+     * @return {@code true} if it can.
+     */
+    @Contract("null, _ -> false")
+    public static boolean canSeeSun(@Nullable World world, BlockPos pos) {
+        //Note: We manually handle the world#isDaytime check by just checking the subtracted skylight
+        // as vanilla returns false if the world's time is set to a fixed value even if that time
+        // would effectively be daytime
+        return world != null && world.getDimensionType().hasSkyLight() && world.getSkylightSubtracted() < 4 && world.canBlockSeeSky(pos);
     }
 
     /**

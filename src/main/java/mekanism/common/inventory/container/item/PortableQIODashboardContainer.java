@@ -11,7 +11,6 @@ import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -79,11 +78,15 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     @Nonnull
     @Override
     public ItemStack slotClick(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
-        //Block pressing f to swap it when it is in the offhand
-        if (clickType == ClickType.SWAP && dragType == 40 && hand == Hand.OFF_HAND) {
-            ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.OFFHAND);
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableQIODashboard) {
+        if (clickType == ClickType.SWAP) {
+            if (hand == Hand.OFF_HAND && dragType == 40) {
+                //Block pressing f to swap it when it is in the offhand
                 return ItemStack.EMPTY;
+            } else if (hand == Hand.MAIN_HAND && dragType >= 0 && dragType < PlayerInventory.getHotbarSize()) {
+                //Block taking out of the selected slot (we don't validate we have a hotbar slot as we always should for this container)
+                if (!hotBarSlots.get(dragType).canTakeStack(player)) {
+                    return ItemStack.EMPTY;
+                }
             }
         }
         return super.slotClick(slotId, dragType, clickType, player);

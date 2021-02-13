@@ -12,6 +12,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -30,7 +31,7 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
         super.init();
         addButton(new GuiInnerScreen(this, 48, 23, 80, 40, () -> Arrays.asList(
               EnergyDisplay.of(tile.getEnergyContainer().getEnergy()).getTextComponent(),
-              GeneratorsLang.STORED_BIO_FUEL.translate(formatInt(tile.bioFuelTank.getFluidAmount())),
+              GeneratorsLang.STORED_BIO_FUEL.translate(TextUtils.format(tile.bioFuelTank.getFluidAmount())),
               GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput()))
         )).defaultFormat());
         addButton(new GuiRedstoneControlTab(this, tile));

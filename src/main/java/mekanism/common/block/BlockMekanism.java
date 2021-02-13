@@ -355,6 +355,21 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
+    @Deprecated
+    public float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+        return getPlayerRelativeBlockHardness(state, player, world, pos, hasTileEntity(state) ? WorldUtils.getTileEntity(world, pos) : null);
+    }
+
+    /**
+     * Like {@link AbstractBlock#getPlayerRelativeBlockHardness(BlockState, PlayerEntity, IBlockReader, BlockPos)} except also passes the tile so as to only have to get
+     * it once.
+     */
+    protected float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
+          @Nullable TileEntity tile) {
+        return super.getPlayerRelativeBlockHardness(state, player, world, pos);
+    }
+
+    @Override
     @OnlyIn(Dist.CLIENT)
     public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
         //Copy of ParticleManager#addBlockDestroyEffects, but removes the minimum number of particles each voxel shape produces

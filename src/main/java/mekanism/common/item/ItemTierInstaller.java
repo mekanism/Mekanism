@@ -98,7 +98,7 @@ public class ItemTierInstaller extends Item {
                             upgradedTile.sendUpdatePacket();
                             upgradedTile.markDirty();
                             if (!player.isCreative()) {
-                                player.getHeldItem(context.getHand()).shrink(1);
+                                context.getItem().shrink(1);
                             }
                             return ActionResultType.SUCCESS;
                         }

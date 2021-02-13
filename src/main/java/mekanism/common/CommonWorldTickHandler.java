@@ -86,7 +86,6 @@ public class CommonWorldTickHandler {
     private void tickEnd(ServerWorld world) {
         if (!world.isRemote) {
             Mekanism.radiationManager.tickServerWorld(world);
-            ChunkManager.tick(world);
             if (flushTagAndRecipeCaches) {
                 //Loop all open containers and if it is a portable qio dashboard force refresh the window's recipes
                 for (ServerPlayerEntity player : world.getPlayers()) {

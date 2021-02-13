@@ -656,6 +656,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(() -> autoMode, value -> autoMode = value));
         container.track(SyncableInt.create(() -> operatingTicks, value -> operatingTicks = value));
+        container.track(SyncableInt.create(() -> ticksRequired, value -> ticksRequired = value));
         container.track(SyncableBoolean.create(() -> isRecipe, value -> isRecipe = value));
         container.track(SyncableBoolean.create(() -> stockControl, value -> stockControl = value));
         container.track(SyncableBoolean.create(() -> formula != null, hasFormula -> {

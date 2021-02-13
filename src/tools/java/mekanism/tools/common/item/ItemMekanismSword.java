@@ -8,8 +8,8 @@ import javax.annotation.Nullable;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.tools.common.IHasRepairType;
-import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.material.MaterialCreator;
+import mekanism.tools.common.util.ToolsUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -31,7 +31,7 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAtt
     private final AttributeCache attributeCache;
 
     public ItemMekanismSword(MaterialCreator material, Item.Properties properties) {
-        super(material, material.getSwordDamage(), material.getSwordAtkSpeed(), properties);
+        super(material, (int) material.getSwordDamage(), material.getSwordAtkSpeed(), properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.swordDamage, material.swordAtkSpeed);
     }
@@ -39,7 +39,8 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAtt
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
+        super.addInformation(stack, world, tooltip, flag);
+        ToolsUtils.addDurability(tooltip, stack);
     }
 
     @Override

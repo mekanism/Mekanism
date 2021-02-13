@@ -13,7 +13,6 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar {
 
@@ -60,9 +59,8 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    protected boolean canSeeSky() {
-        World world = getWorld();
-        return world != null && world.canBlockSeeSky(getPos().up(2));
+    protected BlockPos getSkyCheckPos() {
+        return pos.up(2);
     }
 
     @Nonnull

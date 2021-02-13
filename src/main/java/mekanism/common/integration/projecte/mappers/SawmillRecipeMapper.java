@@ -1,4 +1,4 @@
-/*package mekanism.common.integration.projecte.mappers;
+package mekanism.common.integration.projecte.mappers;
 
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
@@ -6,6 +6,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
+import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
 import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSItem;
@@ -39,7 +40,7 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe, INSSFakeGroupManager groupManager) {
         if (!(iRecipe instanceof SawmillRecipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
@@ -101,4 +102,4 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
         }
         return handled;
     }
-}*/
+}

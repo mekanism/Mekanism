@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.StorageUtils;
@@ -54,7 +55,7 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
                     renderType = Atlases.getTranslucentCullBlockType();
                 }
                 MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(renderType),
-                      MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight);
+                      MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT);
             }
         }
         matrix.push();
@@ -76,13 +77,13 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
         Model3D model = new Model3D();
         model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
         if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
-            model.minX = 0.125 + .01;
-            model.minY = 0.0625 + .01;
-            model.minZ = 0.125 + .01;
+            model.minX = 0.135F;//0.125 + .01;
+            model.minY = 0.0725F;//0.0625 + .01;
+            model.minZ = 0.135F;//0.125 + .01;
 
-            model.maxX = 0.875 - .01;
-            model.maxY = 0.0625 + (stage / (float) stages) * 0.875 - .01;
-            model.maxZ = 0.875 - .01;
+            model.maxX = 0.865F;//0.875 - .01;
+            model.maxY = 0.0525F + 0.875F * (stage / (float) stages);//0.0625 - .01 + 0.875 * (stage / (float) stages);
+            model.maxZ = 0.865F;//0.875 - .01;
         }
         cachedCenterFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>()).put(stage, model);
         return model;

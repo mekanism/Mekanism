@@ -8,8 +8,8 @@ import javax.annotation.Nullable;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.tools.common.IHasRepairType;
-import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.material.MaterialCreator;
+import mekanism.tools.common.util.ToolsUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -34,7 +34,7 @@ public class ItemMekanismHoe extends HoeItem implements IHasRepairType, IAttribu
     private final AttributeCache attributeCache;
 
     public ItemMekanismHoe(MaterialCreator material, Item.Properties properties) {
-        super(material, material.getHoeDamage(), material.getHoeAtkSpeed(), properties);
+        super(material, (int) material.getHoeDamage(), material.getHoeAtkSpeed(), properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.hoeDamage, material.hoeAtkSpeed);
     }
@@ -42,7 +42,8 @@ public class ItemMekanismHoe extends HoeItem implements IHasRepairType, IAttribu
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
+        super.addInformation(stack, world, tooltip, flag);
+        ToolsUtils.addDurability(tooltip, stack);
     }
 
     @Override

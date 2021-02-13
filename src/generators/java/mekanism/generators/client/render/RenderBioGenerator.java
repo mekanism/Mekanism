@@ -9,6 +9,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.registries.GeneratorsFluids;
@@ -41,7 +42,8 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             FluidStack fluid = tile.bioFuelTank.getFluid();
             float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
             MekanismRenderer.renderObject(getModel(tile.getDirection(), (int) (fluidScale * (stages - 1))), matrix,
-                  renderer.getBuffer(Atlases.getTranslucentCullBlockType()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT, overlayLight);
+                  renderer.getBuffer(Atlases.getTranslucentCullBlockType()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT, overlayLight,
+                  FaceDisplay.FRONT);
             matrix.pop();
         }
     }
@@ -60,36 +62,36 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         model.setTexture(MekanismRenderer.getFluidTexture(GeneratorsFluids.BIOETHANOL.getFluidStack(1), FluidType.STILL));
         switch (side) {
             case NORTH:
-                model.minZ = 0.499;
-                model.maxZ = 0.875;
+                model.minZ = 0.499F;
+                model.maxZ = 0.875F;
 
-                model.minX = 0.188;
-                model.maxX = 0.821;
+                model.minX = 0.188F;
+                model.maxX = 0.821F;
                 break;
             case SOUTH:
-                model.minZ = 0.125;
-                model.maxZ = 0.499;
+                model.minZ = 0.125F;
+                model.maxZ = 0.499F;
 
-                model.minX = 0.188;
-                model.maxX = 0.821;
+                model.minX = 0.188F;
+                model.maxX = 0.821F;
                 break;
             case WEST:
-                model.minX = 0.499;
-                model.maxX = 0.875;
+                model.minX = 0.499F;
+                model.maxX = 0.875F;
 
-                model.minZ = 0.187;
-                model.maxZ = 0.821;
+                model.minZ = 0.187F;
+                model.maxZ = 0.821F;
                 break;
             case EAST:
-                model.minX = 0.125;
-                model.maxX = 0.499;
+                model.minX = 0.125F;
+                model.maxX = 0.499F;
 
-                model.minZ = 0.186;
-                model.maxZ = 0.821;
+                model.minZ = 0.186F;
+                model.maxZ = 0.821F;
                 break;
         }
-        model.minY = 0.4375 + 0.001;  //prevent z fighting at low fuel levels
-        model.maxY = 0.4375 + ((float) stage / stages) * 0.4375 + 0.001;
+        model.minY = 0.4385F;//0.4375 + 0.001; - prevent z fighting at low fuel levels
+        model.maxY = 0.4385F + 0.4375F * (stage / (float) stages);//0.4375 + 0.001 + 0.4375 * (stage / (float) stages);
         energyDisplays.computeIfAbsent(side, s -> new Int2ObjectOpenHashMap<>()).putIfAbsent(stage, model);
         return model;
     }

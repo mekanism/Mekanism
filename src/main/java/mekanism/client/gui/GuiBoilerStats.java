@@ -15,6 +15,7 @@ import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -44,13 +45,13 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawCenteredText(matrix, MekanismLang.BOILER_STATS.translate(), 0, xSize, titleY, titleTextColor());
         BoilerMultiblockData multiblock = tile.getMultiblock();
-        drawString(matrix, MekanismLang.BOILER_MAX_WATER.translate(formatInt(multiblock.waterTank.getCapacity())), 8, 26, titleTextColor());
-        drawString(matrix, MekanismLang.BOILER_MAX_STEAM.translate(formatInt(multiblock.steamTank.getCapacity())), 8, 35, titleTextColor());
+        drawString(matrix, MekanismLang.BOILER_MAX_WATER.translate(TextUtils.format(multiblock.waterTank.getCapacity())), 8, 26, titleTextColor());
+        drawString(matrix, MekanismLang.BOILER_MAX_STEAM.translate(TextUtils.format(multiblock.steamTank.getCapacity())), 8, 35, titleTextColor());
         drawString(matrix, MekanismLang.BOILER_HEAT_TRANSFER.translate(), 8, 49, subheadingTextColor());
         drawString(matrix, MekanismLang.BOILER_HEATERS.translate(multiblock.superheatingElements), 14, 58, titleTextColor());
         double boilCapacity = MekanismConfig.general.superheatingHeatTransfer.get() * multiblock.superheatingElements / HeatUtils.getWaterThermalEnthalpy();
         boilCapacity *= HeatUtils.getSteamEnergyEfficiency();
-        drawString(matrix, MekanismLang.BOILER_CAPACITY.translate(formatInt((long) boilCapacity)), 8, 72, titleTextColor());
+        drawString(matrix, MekanismLang.BOILER_CAPACITY.translate(TextUtils.format((long) boilCapacity)), 8, 72, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

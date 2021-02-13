@@ -20,6 +20,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     private static final String WIND_CATEGORY = "wind_generator";
     private static final String HEAT_CATEGORY = "heat_generator";
     private static final String HOHLRAUM_CATEGORY = "hohlraum";
+    private static final String FUSION_CATEGORY = "fusion_reactor";
     private static final String FISSION_CATEGORY = "fission_reactor";
 
     private final ForgeConfigSpec configSpec;
@@ -33,6 +34,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedIntValue turbineBladesPerCoil;
     public final CachedDoubleValue turbineVentGasFlow;
     public final CachedDoubleValue turbineDisperserGasFlow;
+    public final CachedDoubleValue turbineDumpExcessKeepRatio;
     public final CachedIntValue condenserRate;
     public final CachedFloatingLongValue energyPerFusionFuel;
     public final CachedFloatingLongValue windGenerationMin;
@@ -47,9 +49,15 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedBooleanValue fissionMeltdownsEnabled;
     public final CachedDoubleValue fissionMeltdownChance;
     public final CachedDoubleValue fissionMeltdownRadiationMultiplier;
+    public final CachedDoubleValue defaultBurnRate;
+    public final CachedLongValue burnPerAssembly;
 
     public final CachedLongValue hohlraumMaxGas;
     public final CachedLongValue hohlraumFillRate;
+        
+    public final CachedDoubleValue fusionThermocoupleEfficiency;
+    public final CachedDoubleValue fusionCasingThermalConductivity;
+    public final CachedDoubleValue fusionWaterHeatingRatio;
 
     GeneratorsConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -82,6 +90,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .define("turbineDisperserGasFlow", 1_280D));
         condenserRate = CachedIntValue.wrap(this, builder.comment("The rate at which steam is condensed in the turbine.")
               .define("condenserRate", 64_000));
+        turbineDumpExcessKeepRatio = CachedDoubleValue.wrap(this, builder.comment("The percentage of the turbine's steam tank to leave steam in when set to dumping excess.")
+              .defineInRange("dumpExcessKeepRatio", 0.9D, 0.001D, 1D));
         builder.pop();
 
         builder.comment("Wind Generator Settings").push(WIND_CATEGORY);
@@ -100,6 +110,16 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         windGenerationDimBlacklist = CachedResourceLocationListValue.wrap(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
               .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> o instanceof String && ResourceLocation.tryCreate(((String) o).toLowerCase(Locale.ROOT)) != null));
         builder.pop();
+
+        builder.comment("Fusion Settings").push(FUSION_CATEGORY);
+        fusionThermocoupleEfficiency = CachedDoubleValue.wrap(this, builder.comment("The fraction of the heat dissipated from the case that is converted to Joules.")
+               .defineInRange("thermocoupleEfficiency", 0.05D, 0D, 1D));
+        fusionCasingThermalConductivity = CachedDoubleValue.wrap(this, builder.comment("The fraction fraction of heat from the casing that can be transfered to all sources that are not water. Will impact max heat, heat transfer to thermodynamic conductors, and power generation.")
+               .defineInRange("casingThermalConductivity", 0.1D, 0.001D, 1D));
+        fusionWaterHeatingRatio = CachedDoubleValue.wrap(this, builder.comment("The fraction of the heat from the casing that is dissipated to water when water cooling is in use. Will impact max heat, and steam generation.")
+               .defineInRange("waterHeatingRatio", 0.3D, 0D, 1D));
+        builder.pop();
+            
 
         builder.comment("Hohlraum Settings").push(HOHLRAUM_CATEGORY);
         hohlraumMaxGas = CachedLongValue.wrap(this, builder.comment("Hohlraum capacity in mB.")
@@ -121,6 +141,10 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("meltdownChance", 0.001D, 0D, 1D));
         fissionMeltdownRadiationMultiplier = CachedDoubleValue.wrap(this, builder.comment("How much radioactivity of fuel/waste contents are multiplied during a meltdown.")
               .define("meltdownRadiationMultiplier", 50D));
+        defaultBurnRate = CachedDoubleValue.wrap(this, builder.comment("The default burn rate of the fission reactor.")
+              .defineInRange("defaultBurnRate", 0.1D, 0.001D, 1D));
+        burnPerAssembly = CachedLongValue.wrap(this, builder.comment("The burn rate increase each fuel assembly provides. Max Burn Rate = fuelAssemblies * burnPerAssembly")
+              .defineInRange("burnPerAssembly", 1L, 1, 1_000_000));
         builder.pop();
 
         builder.pop();

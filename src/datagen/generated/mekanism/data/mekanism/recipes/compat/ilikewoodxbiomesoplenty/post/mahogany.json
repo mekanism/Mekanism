@@ -1,0 +1,38 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbiomesoplenty",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": [
+    {
+      "ingredient": {
+        "item": "ilikewood:mahogany_post"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "ilikewood:stripped_mahogany_post"
+      }
+    }
+  ],
+  "mainOutput": {
+    "item": "biomesoplenty:mahogany_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  },
+  "secondaryChance": 0.125
+}

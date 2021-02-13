@@ -8,6 +8,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
@@ -17,6 +18,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.SpecialColors;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
+import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
+import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.item.block.RenderFluidTankItem;
@@ -64,6 +67,7 @@ public class MekanismRenderer {
     //TODO: Replace various usages of this with the getter for calculating glow light, at least if we end up making it only
     // effect block light for the glow rather than having it actually become full light
     public static final int FULL_LIGHT = 0xF000F0;
+    public static final int FULL_SKY_LIGHT = LightTexture.packLight(0, 15);
 
     public static OBJModel contentsModel;
     public static TextureAtlasSprite energyIcon;
@@ -112,23 +116,91 @@ public class MekanismRenderer {
     }
 
     public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
-        TextureAtlasSprite still = getFluidTexture(fluid, FluidType.STILL);
-        TextureAtlasSprite flowing = getFluidTexture(fluid, FluidType.FLOWING);
+        SpriteInfo still = new SpriteInfo(getFluidTexture(fluid, FluidType.STILL), 16);
+        SpriteInfo flowing = new SpriteInfo(getFluidTexture(fluid, FluidType.FLOWING), 8);
         model.setTextures(still, still, flowing, flowing, flowing, flowing);
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay) {
-        if (object != null) {
-            RenderResizableCuboid.INSTANCE.renderCube(object, matrix, buffer, argb, light, overlay);
+    public static void prepSingleFaceModelSize(Model3D model, Direction face) {
+        switch (face) {
+            case DOWN:
+                model.minX = 0;
+                model.maxX = 1;
+                model.minY = -0.01F;
+                model.maxY = -0.001F;
+                model.minZ = 0;
+                model.maxZ = 1;
+                break;
+            case UP:
+                model.minX = 0;
+                model.maxX = 1;
+                model.minY = 1.001F;
+                model.maxY = 1.01F;
+                model.minZ = 0;
+                model.maxZ = 1;
+                break;
+            case NORTH:
+                model.minX = 0;
+                model.maxX = 1;
+                model.minY = 0;
+                model.maxY = 1;
+                model.minZ = -0.01F;
+                model.maxZ = -0.001F;
+                break;
+            case SOUTH:
+                model.minX = 0;
+                model.maxX = 1;
+                model.minY = 0;
+                model.maxY = 1;
+                model.minZ = 1.001F;
+                model.maxZ = 1.01F;
+                break;
+            case WEST:
+                model.minX = -0.01F;
+                model.maxX = -0.001F;
+                model.minY = 0;
+                model.maxY = 1;
+                model.minZ = 0;
+                model.maxZ = 1;
+                break;
+            case EAST:
+                model.minX = 1.001F;
+                model.maxX = 1.01F;
+                model.minY = 0;
+                model.maxY = 1;
+                model.minZ = 0;
+                model.maxZ = 1;
+                break;
         }
     }
 
-    public static void renderValves(MatrixStack matrix, IVertexBuilder buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow, int overlay) {
-        for (ValveData valveData : valves) {
-            matrix.push();
-            matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
-            renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow, overlay);
-            matrix.pop();
+    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay,
+          FaceDisplay faceDisplay) {
+        if (object != null) {
+            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay);
+        }
+    }
+
+    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int[] colors, int light, int overlay,
+          FaceDisplay faceDisplay) {
+        if (object != null) {
+            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay);
+        }
+    }
+
+    public static void renderValves(MatrixStack matrix, IVertexBuilder buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow, int overlay,
+          BooleanSupplier inMultiblock) {
+        FaceDisplay faceDisplay;
+        if (!valves.isEmpty()) {
+            //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside of them
+            // if we aren't in the multiblock though we can just get away with only rendering the front faces
+            faceDisplay = inMultiblock.getAsBoolean() ? FaceDisplay.BOTH : FaceDisplay.FRONT;
+            for (ValveData valveData : valves) {
+                matrix.push();
+                matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
+                renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow, overlay, faceDisplay);
+                matrix.pop();
+            }
         }
     }
 
@@ -251,17 +323,13 @@ public class MekanismRenderer {
         return argb;
     }
 
-    public static int calculateGlowLight(int light, @Nonnull FluidStack fluid) {
-        return fluid.isEmpty() ? light : calculateGlowLight(light, fluid.getFluid().getAttributes().getLuminosity(fluid));
+    public static int calculateGlowLight(int combinedLight, @Nonnull FluidStack fluid) {
+        return fluid.isEmpty() ? combinedLight : calculateGlowLight(combinedLight, fluid.getFluid().getAttributes().getLuminosity(fluid));
     }
 
-    public static int calculateGlowLight(int light, int glow) {
-        if (glow >= 15) {
-            return MekanismRenderer.FULL_LIGHT;
-        }
-        int blockLight = LightTexture.getLightBlock(light);
-        int skyLight = LightTexture.getLightSky(light);
-        return LightTexture.packLight(Math.max(blockLight, glow), Math.max(skyLight, glow));
+    public static int calculateGlowLight(int combinedLight, int glow) {
+        //Only factor the glow into the block light portion
+        return (combinedLight & 0xFFFF0000) | Math.max(Math.min(glow, 15) << 4, combinedLight & 0xFFFF);
     }
 
     public static void renderColorOverlay(MatrixStack matrix, int x, int y, int width, int height, int color) {
@@ -412,44 +480,68 @@ public class MekanismRenderer {
 
     public static class Model3D {
 
-        public double minX, minY, minZ;
-        public double maxX, maxY, maxZ;
+        public float minX, minY, minZ;
+        public float maxX, maxY, maxZ;
 
-        public final TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
-
-        public final boolean[] renderSides = new boolean[]{true, true, true, true, true, true, false};
-
-        public double sizeX() {
-            return maxX - minX;
-        }
-
-        public double sizeY() {
-            return maxY - minY;
-        }
-
-        public double sizeZ() {
-            return maxZ - minZ;
-        }
+        private final SpriteInfo[] textures = new SpriteInfo[6];
+        private final boolean[] renderSides = new boolean[]{true, true, true, true, true, true};
 
         public void setSideRender(Direction side, boolean value) {
             renderSides[side.ordinal()] = value;
         }
 
-        public boolean shouldSideRender(Direction side) {
-            return renderSides[side.ordinal()];
+        public Model3D copy() {
+            Model3D copy = new Model3D();
+            System.arraycopy(textures, 0, copy.textures, 0, textures.length);
+            System.arraycopy(renderSides, 0, copy.renderSides, 0, renderSides.length);
+            copy.minX = minX;
+            copy.minY = minY;
+            copy.minZ = minZ;
+            copy.maxX = maxX;
+            copy.maxY = maxY;
+            copy.maxZ = maxZ;
+            return copy;
+        }
+
+        @Nullable
+        public SpriteInfo getSpriteToRender(Direction side) {
+            int ordinal = side.ordinal();
+            if (renderSides[ordinal]) {
+                return textures[ordinal];
+            }
+            return null;
+        }
+
+        public void setTexture(Direction side, SpriteInfo spriteInfo) {
+            textures[side.ordinal()] = spriteInfo;
         }
 
         public void setTexture(TextureAtlasSprite tex) {
-            Arrays.fill(textures, tex);
+            setTexture(tex, 16);
         }
 
-        public void setTextures(TextureAtlasSprite down, TextureAtlasSprite up, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite west, TextureAtlasSprite east) {
+        public void setTexture(TextureAtlasSprite tex, int size) {
+            Arrays.fill(textures, new SpriteInfo(tex, size));
+        }
+
+        public void setTextures(SpriteInfo down, SpriteInfo up, SpriteInfo north, SpriteInfo south, SpriteInfo west, SpriteInfo east) {
             textures[0] = down;
             textures[1] = up;
             textures[2] = north;
             textures[3] = south;
             textures[4] = west;
             textures[5] = east;
+        }
+
+        public static final class SpriteInfo {
+
+            public final TextureAtlasSprite sprite;
+            public final int size;
+
+            public SpriteInfo(TextureAtlasSprite sprite, int size) {
+                this.sprite = sprite;
+                this.size = size;
+            }
         }
     }
 }

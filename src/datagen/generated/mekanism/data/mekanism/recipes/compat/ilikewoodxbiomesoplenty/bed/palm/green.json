@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbiomesoplenty",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:green_palm_bed"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:palm_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:green_wool",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

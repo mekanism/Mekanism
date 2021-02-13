@@ -19,6 +19,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
@@ -114,7 +115,7 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
         if (amount == Long.MAX_VALUE) {
             list.add(MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE));
         } else {
-            list.add(MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), formatInt(amount)));
+            list.add(MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), TextUtils.format(amount)));
         }
         list.addAll(ChemicalUtil.getAttributeTooltips(tank.getType()));
         return list;

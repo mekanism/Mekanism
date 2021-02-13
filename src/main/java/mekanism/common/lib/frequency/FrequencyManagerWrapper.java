@@ -46,6 +46,9 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
         if (!type.supportsPrivate()) {
             Mekanism.logger.error("Attempted to access private frequency manager of type {}. This shouldn't happen!", frequencyType.getName());
             return null;
+        } else if (ownerUUID == null) {
+            Mekanism.logger.error("Attempted to access private frequency manager of type {} with no owner. This shouldn't happen!", frequencyType.getName());
+            return null;
         }
 
         if (!privateManagers.containsKey(ownerUUID)) {

@@ -4,6 +4,7 @@ import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -17,8 +18,8 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
 
     private double getRateLimit() {
         if (rateLimit == -1) {
-            //If it never got set default to 0.1
-            return 0.1;
+            //If it never got set it to the default
+            return MekanismGeneratorsConfig.generators.defaultBurnRate.get();
         }
         //Otherwise return the actual so that it can be manually set down to zero
         return rateLimit;

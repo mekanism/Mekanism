@@ -2,6 +2,7 @@
   "type": "minecraft:entity",
   "pools": [
     {
+      "name": "coal",
       "rolls": 1,
       "entries": [
         {
@@ -28,6 +29,7 @@
       ]
     },
     {
+      "name": "bones",
       "rolls": 1,
       "entries": [
         {
@@ -54,6 +56,7 @@
       ]
     },
     {
+      "name": "skulls",
       "rolls": 1,
       "entries": [
         {

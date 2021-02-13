@@ -7,6 +7,8 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
@@ -30,6 +32,8 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     public TileEntityQIOFilterHandler(IBlockProvider blockProvider) {
         super(blockProvider);
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     @Override

@@ -316,6 +316,11 @@ public class PlayerState {
             activeFlamethrowers.add(uuid); // Off -> on
         }
 
+        if (world == null) {
+            //world is set from the OnWorldLoad event, a tick should never have happened before that.
+            throw new NullPointerException("mekanism.common.base.PlayerState#world is null. This should not happen. Optifine is known to cause this on client side.");
+        }
+
         if (world.isRemote()) {
             boolean startSound;
             // If something changed and we're in a remote world, take appropriate action

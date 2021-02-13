@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.common.base.ProfilerConstants;
@@ -11,7 +12,6 @@ import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
@@ -36,13 +36,13 @@ public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<Ti
                 data.width = 2;
                 matrix.push();
                 BlockPos pos = tile.getPos();
-                int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
+                int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
                 matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                 IVertexBuilder buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
-                MekanismRenderer.renderObject(ModelRenderer.getModel(data, Math.min(1, multiblock.prevScale)), matrix, buffer,
-                      data.getColorARGB(multiblock.prevScale), glow, overlayLight);
+                Model3D model = ModelRenderer.getModel(data, Math.min(1, multiblock.prevScale));
+                MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevScale), glow, overlayLight, getFaceDisplay(data, model));
                 matrix.pop();
-                MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, data, pos, glow, overlayLight);
+                MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, data, pos, glow, overlayLight, isInsideMultiblock(data));
             }
         }
     }

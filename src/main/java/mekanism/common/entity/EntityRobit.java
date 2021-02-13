@@ -60,7 +60,6 @@ import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -223,7 +222,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             //If this robit is currently following its owner and is being removed from the world (due to chunk unloading)
             // register a ticket that loads the chunk for a second, so that it has time to have its following check run again
             // (as it runs every 10 ticks, half a second), and then teleport to the owner.
-            ((ServerWorld) world).getChunkProvider().registerTicket(ROBIT_CHUNK_UNLOAD, new ChunkPos(getPosition()), TileComponentChunkLoader.TICKET_DISTANCE, getEntityId());
+            ((ServerWorld) world).getChunkProvider().registerTicket(ROBIT_CHUNK_UNLOAD, new ChunkPos(getPosition()), 2, getEntityId());
         }
         super.onRemovedFromWorld();
     }

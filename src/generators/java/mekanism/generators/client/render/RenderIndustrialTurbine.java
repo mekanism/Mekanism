@@ -15,7 +15,6 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
@@ -44,7 +43,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                     }
                     matrix.push();
                     matrix.translate(complexPos.getX() - pos.getX(), complexPos.getY() - pos.getY(), complexPos.getZ() - pos.getZ());
-                    RenderTurbineRotor.INSTANCE.render(rotor, matrix, buffer, LightTexture.packLight(0, 15), overlayLight);
+                    RenderTurbineRotor.INSTANCE.render(rotor, matrix, buffer, MekanismRenderer.FULL_SKY_LIGHT, overlayLight);
                     matrix.pop();
                 }
                 profiler.endSection();
@@ -56,12 +55,12 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                         data.height = height;
                         data.length = multiblock.length();
                         data.width = multiblock.width();
-                        int glow = data.calculateGlowLight(LightTexture.packLight(0, 15));
+                        int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
                         matrix.push();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                         Model3D gasModel = ModelRenderer.getModel(data, 1);
                         MekanismRenderer.renderObject(gasModel, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
-                              data.getColorARGB(multiblock.prevSteamScale), glow, overlayLight);
+                              data.getColorARGB(multiblock.prevSteamScale), glow, overlayLight, getFaceDisplay(data, gasModel));
                         matrix.pop();
                     }
                 }

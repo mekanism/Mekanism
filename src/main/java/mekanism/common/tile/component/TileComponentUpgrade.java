@@ -158,10 +158,6 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
     }
 
     @Override
-    public void trackForMainContainer(MekanismContainer container) {
-    }
-
-    @Override
     public void addToUpdateTag(CompoundNBT updateTag) {
         //Note: We only bother to sync how many muffling upgrades we have installed as that is the only thing the client cares about
         if (supports(Upgrade.MUFFLING)) {

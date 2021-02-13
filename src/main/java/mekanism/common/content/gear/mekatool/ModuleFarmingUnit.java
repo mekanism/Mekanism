@@ -24,7 +24,6 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
@@ -102,8 +101,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
             //If we don't have any blocks we are going to want to do, then skip it
             return ActionResultType.PASS;
         }
-        Hand hand = context.getHand();
-        ItemStack stack = player.getHeldItem(hand);
+        ItemStack stack = context.getItem();
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer == null) {
             return ActionResultType.FAIL;
@@ -182,8 +180,7 @@ public class ModuleFarmingUnit extends ModuleMekaTool {
             //If we don't have any blocks we are going to want to do, then skip it
             return ActionResultType.PASS;
         }
-        Hand hand = context.getHand();
-        ItemStack stack = player.getHeldItem(hand);
+        ItemStack stack = context.getItem();
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer == null) {
             return ActionResultType.FAIL;

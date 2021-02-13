@@ -105,11 +105,18 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     }
 
     public void process() {
-        //TODO: Given we are going to probably have ALL recipes check the getOperationsThisTick(), we are going to
-        // want some way to check things so that by default it doesn't do the max operations and instead does a single
-        // run for the majority of recipes
-        //TODO: Should this be passing Integer.MAX_VALUE or get the value from somewhere else. Some sort of thing the tile passes as a supplier
-        int operations = canHolderFunction() ? postProcessOperations.applyAsInt(getOperationsThisTick(Integer.MAX_VALUE)) : 0;
+        int operations;
+        boolean canFunction = canHolderFunction();
+        if (canFunction) {
+            setupVariableValues();
+            //TODO: Given we are going to probably have ALL recipes check the getOperationsThisTick(), we are going to
+            // want some way to check things so that by default it doesn't do the max operations and instead does a single
+            // run for the majority of recipes
+            //TODO: Should this be passing Integer.MAX_VALUE or get the value from somewhere else. Some sort of thing the tile passes as a supplier
+            operations = postProcessOperations.applyAsInt(getOperationsThisTick(Integer.MAX_VALUE));
+        } else {
+            operations = 0;
+        }
         if (operations > 0) {
             setActive.accept(true);
             //Always use energy, as that is a constant thing we can check
@@ -136,6 +143,10 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
                 operatingTicksChanged.accept(operatingTicks);
             }
         }
+    }
+
+    //TODO: Document, for use in setting up values for this tick
+    protected void setupVariableValues() {
     }
 
     public int getOperatingTicks() {
@@ -186,6 +197,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         return Math.min(getStoredElectricity().divide(energyPerTick).intValue(), currentMax);
     }
 
+    @Deprecated//TODO: Re-evaluate this but it seems unused and can probably be removed
     public boolean canFunction() {
         //TODO: Decide if we should be passing 1 as the current max or Integer.MAX_VALUE
         // Currently is passing 1, as if anything has something that is based off current operations

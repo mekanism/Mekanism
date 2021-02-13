@@ -13,6 +13,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
+import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.transmitter.DiversionTransporter;
 import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
@@ -21,6 +23,7 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
@@ -28,7 +31,6 @@ import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
@@ -43,10 +45,10 @@ import net.minecraft.util.math.RayTraceResult.Type;
 @ParametersAreNonnullByDefault
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
 
-    private static final Map<Direction, Map<DiversionControl, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
-    private static TextureAtlasSprite gunpowderIcon;
-    private static TextureAtlasSprite torchOffIcon;
-    private static TextureAtlasSprite torchOnIcon;
+    private static final Map<Direction, Model3D> cachedOverlays = new EnumMap<>(Direction.class);
+    private static SpriteInfo gunpowderIcon;
+    private static SpriteInfo torchOffIcon;
+    private static SpriteInfo torchOnIcon;
     private final ModelTransporterBox modelBox = new ModelTransporterBox();
     private final ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
     private final EntityRenderer<? super ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getRenderer(entityItem);
@@ -58,9 +60,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
     public static void onStitch(AtlasTexture map) {
         cachedOverlays.clear();
-        gunpowderIcon = map.getSprite(new ResourceLocation("minecraft", "item/gunpowder"));
-        torchOffIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_off"));
-        torchOnIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch"));
+        gunpowderIcon = new SpriteInfo(map.getSprite(new ResourceLocation("minecraft", "item/gunpowder")), 16);
+        torchOffIcon = new SpriteInfo(map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_off")), 16);
+        torchOnIcon = new SpriteInfo(map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch")), 16);
     }
 
     @Override
@@ -100,7 +102,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     matrix.translate(0.5, 0.5, 0.5);
                     DiversionControl mode = ((DiversionTransporter) transporter).modes[rayTraceResult.getFace().ordinal()];
                     MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getFace(), mode), matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
-                          MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight);
+                          MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
                     matrix.pop();
                 }
             }
@@ -129,10 +131,17 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     }
 
     private Model3D getOverlayModel(Direction side, DiversionControl mode) {
-        if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(mode)) {
-            return cachedOverlays.get(side).get(mode);
-        }
-        TextureAtlasSprite icon = null;
+        //Get the model or set it up if needed
+        Model3D model = cachedOverlays.computeIfAbsent(side, face -> {
+            Model3D m = new Model3D();
+            MekanismRenderer.prepSingleFaceModelSize(m, face);
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                m.setSideRender(direction, direction == face);
+            }
+            return m;
+        });
+        // and then figure out which texture we need to use
+        SpriteInfo icon = null;
         switch (mode) {
             case DISABLED:
                 icon = gunpowderIcon;
@@ -144,67 +153,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 icon = torchOffIcon;
                 break;
         }
-        Model3D model = new Model3D();
-        model.setTexture(icon);
-        switch (side) {
-            case DOWN:
-                model.minY = -0.01;
-                model.maxY = 0;
-
-                model.minX = 0;
-                model.minZ = 0;
-                model.maxX = 1;
-                model.maxZ = 1;
-                break;
-            case UP:
-                model.minY = 1;
-                model.maxY = 1.01;
-
-                model.minX = 0;
-                model.minZ = 0;
-                model.maxX = 1;
-                model.maxZ = 1;
-                break;
-            case NORTH:
-                model.minZ = -0.01;
-                model.maxZ = 0;
-
-                model.minX = 0;
-                model.minY = 0;
-                model.maxX = 1;
-                model.maxY = 1;
-                break;
-            case SOUTH:
-                model.minZ = 1;
-                model.maxZ = 1.01;
-
-                model.minX = 0;
-                model.minY = 0;
-                model.maxX = 1;
-                model.maxY = 1;
-                break;
-            case WEST:
-                model.minX = -0.01;
-                model.maxX = 0;
-
-                model.minY = 0;
-                model.minZ = 0;
-                model.maxY = 1;
-                model.maxZ = 1;
-                break;
-            case EAST:
-                model.minX = 1;
-                model.maxX = 1.01;
-
-                model.minY = 0;
-                model.minZ = 0;
-                model.maxY = 1;
-                model.maxZ = 1;
-                break;
-            default:
-                break;
-        }
-        cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(DiversionControl.class)).put(mode, model);
+        // and set that proper side to that texture
+        model.setTexture(side, icon);
         return model;
     }
 

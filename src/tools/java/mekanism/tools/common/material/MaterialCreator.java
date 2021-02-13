@@ -19,15 +19,15 @@ public class MaterialCreator extends BaseMekanismMaterial {
     private final BaseMekanismMaterial fallBack;
 
     private final CachedIntValue shieldDurability;
-    public final CachedIntValue swordDamage;
+    public final CachedFloatValue swordDamage;
     public final CachedFloatValue swordAtkSpeed;
     public final CachedFloatValue shovelDamage;
     public final CachedFloatValue shovelAtkSpeed;
     public final CachedFloatValue axeDamage;
     public final CachedFloatValue axeAtkSpeed;
-    public final CachedIntValue pickaxeDamage;
+    public final CachedFloatValue pickaxeDamage;
     public final CachedFloatValue pickaxeAtkSpeed;
-    public final CachedIntValue hoeDamage;
+    public final CachedFloatValue hoeDamage;
     public final CachedFloatValue hoeAtkSpeed;
     private final CachedIntValue paxelHarvestLevel;
     public final CachedFloatValue paxelDamage;
@@ -57,38 +57,46 @@ public class MaterialCreator extends BaseMekanismMaterial {
         builder.comment(" Material Settings for " + toolKey).push(toolKey);
         attackDamage = CachedFloatValue.wrap(config, builder.comment("Base attack damage of " + toolKey + " items.")
               .defineInRange(toolKey + "AttackDamage", materialDefaults.getAttackDamage(), 0, Float.MAX_VALUE));
-        //Note: Currently we don't allow tools that have float damage values to go negative, this predicate is used for ones
-        // that have int values so the hoe can mimic vanilla and use negative the default attack damage value
+        //Note: Damage predicate to allow for tools to go negative to the value of the base tier so that a tool
+        // can effectively have zero damage for things like the hoe
         Predicate<Object> damageModifierPredicate = value -> {
-            if (value instanceof Integer) {
-                int val = (int) value;
-                int baseDamageAsInt = (int) attackDamage.get();
-                //Note: We don't bother doing more accurate max value checking as it ends up
-                // getting combined together as a float so it won't end up overflowing anyways
-                return val >= -baseDamageAsInt && val <= Integer.MAX_VALUE;
+            if (value instanceof Double) {
+                double val = (double) value;
+                float actualValue;
+                if (val > Float.MAX_VALUE) {
+                    actualValue = Float.MAX_VALUE;
+                } else if (val < -Float.MAX_VALUE) {
+                    //Note: Float.MIN_VALUE is the smallest positive value a float can represent
+                    // the smallest value a float can represent overall is -Float.MAX_VALUE
+                    actualValue = -Float.MAX_VALUE;
+                } else {
+                    actualValue = (float) val;
+                }
+                float baseDamage = attackDamage.get();
+                return actualValue >= -baseDamage && actualValue <= Float.MAX_VALUE - baseDamage;
             }
             return false;
         };
         shieldDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " shields.")
               .defineInRange(toolKey + "ShieldDurability", materialDefaults.getShieldDurability(), 0, Integer.MAX_VALUE));
-        swordDamage = CachedIntValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " swords.")
-              .define(toolKey + "SwordDamage", materialDefaults.getSwordDamage(), damageModifierPredicate));
+        swordDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " swords.")
+              .define(toolKey + "SwordDamage", (double) materialDefaults.getSwordDamage(), damageModifierPredicate));
         swordAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " swords.")
               .define(toolKey + "SwordAtkSpeed", (double) materialDefaults.getSwordAtkSpeed()));
         shovelDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " shovels.")
-              .defineInRange(toolKey + "ShovelDamage", materialDefaults.getShovelDamage(), 0, Float.MAX_VALUE));
+              .define(toolKey + "ShovelDamage", (double) materialDefaults.getShovelDamage(), damageModifierPredicate));
         shovelAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " shovels.")
               .define(toolKey + "ShovelAtkSpeed", (double) materialDefaults.getShovelAtkSpeed()));
         axeDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " axes.")
-              .defineInRange(toolKey + "AxeDamage", materialDefaults.getAxeDamage(), 0, Float.MAX_VALUE));
+              .define(toolKey + "AxeDamage", (double) materialDefaults.getAxeDamage(), damageModifierPredicate));
         axeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " axes.")
               .define(toolKey + "AxeAtkSpeed", (double) materialDefaults.getAxeAtkSpeed()));
-        pickaxeDamage = CachedIntValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " pickaxes.")
-              .define(toolKey + "PickaxeDamage", materialDefaults.getPickaxeDamage(), damageModifierPredicate));
+        pickaxeDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " pickaxes.")
+              .define(toolKey + "PickaxeDamage", (double) materialDefaults.getPickaxeDamage(), damageModifierPredicate));
         pickaxeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " pickaxes.")
               .define(toolKey + "PickaxeAtkSpeed", (double) materialDefaults.getPickaxeAtkSpeed()));
-        hoeDamage = CachedIntValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " hoes.")
-              .define(toolKey + "HoeDamage", materialDefaults.getHoeDamage(), damageModifierPredicate));
+        hoeDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " hoes.")
+              .define(toolKey + "HoeDamage", (double) materialDefaults.getHoeDamage(), damageModifierPredicate));
         hoeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " hoes.")
               .define(toolKey + "HoeAtkSpeed", (double) materialDefaults.getHoeAtkSpeed()));
         toolMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " tools.")
@@ -98,7 +106,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
         paxelHarvestLevel = CachedIntValue.wrap(config, builder.comment("Harvest level of " + toolKey + " paxels.")
               .defineInRange(toolKey + "PaxelHarvestLevel", materialDefaults.getPaxelHarvestLevel(), 0, Integer.MAX_VALUE));
         paxelDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " paxels.")
-              .defineInRange(toolKey + "PaxelDamage", materialDefaults.getPaxelDamage(), 0, Float.MAX_VALUE));
+              .define(toolKey + "PaxelDamage", (double) materialDefaults.getPaxelDamage(), damageModifierPredicate));
         paxelAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " paxels.")
               .define(toolKey + "PaxelAtkSpeed", (double) materialDefaults.getPaxelAtkSpeed()));
         paxelEfficiency = CachedFloatValue.wrap(config, builder.comment("Efficiency of " + toolKey + " paxels.")
@@ -140,7 +148,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getSwordDamage() {
+    public float getSwordDamage() {
         return swordDamage.get();
     }
 
@@ -170,7 +178,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getPickaxeDamage() {
+    public float getPickaxeDamage() {
         return pickaxeDamage.get();
     }
 
@@ -180,7 +188,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getHoeDamage() {
+    public float getHoeDamage() {
         return hoeDamage.get();
     }
 

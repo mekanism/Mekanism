@@ -6,7 +6,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -38,7 +37,6 @@ import net.minecraft.tileentity.TileEntity;
 
 public class QIOFrequency extends Frequency {
 
-    public static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     private static final Random rand = new Random();
 
     private final Map<QIODriveKey, QIODriveData> driveMap = new LinkedHashMap<>();
@@ -66,7 +64,10 @@ public class QIOFrequency extends Frequency {
 
     private EnumColor color = EnumColor.INDIGO;
 
-    public QIOFrequency(String n, UUID uuid) {
+    /**
+     * @param uuid Should only be null if we have incomplete data that we are loading
+     */
+    public QIOFrequency(String n, @Nullable UUID uuid) {
         super(FrequencyType.QIO, n, uuid);
     }
 

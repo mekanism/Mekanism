@@ -1,0 +1,31 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbiomesoplenty",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:magic_item_frame"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:magic_stick",
+    "count": 8
+  },
+  "secondaryOutput": {
+    "item": "minecraft:leather"
+  },
+  "secondaryChance": 1.0
+}

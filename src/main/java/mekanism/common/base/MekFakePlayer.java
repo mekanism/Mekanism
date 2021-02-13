@@ -34,11 +34,9 @@ public class MekFakePlayer extends FakePlayer {
      */
     private UUID emulatingUUID = null;
 
-    /** Game Profile supporting us emulating an actual player. Can't supply to super as it's a child class */
-    private final FakeGameProfile gameProfile = new FakeGameProfile();
-
     public MekFakePlayer(ServerWorld world) {
-        super(world, Mekanism.gameProfile);
+        super(world, new FakeGameProfile());
+        ((FakeGameProfile)this.getGameProfile()).myFakePlayer = this;
     }
 
     @Override
@@ -56,12 +54,6 @@ public class MekFakePlayer extends FakePlayer {
         return this.emulatingUUID != null ? this.emulatingUUID : super.getUniqueID();
     }
 
-    @Nonnull
-    @Override
-    public GameProfile getGameProfile() {
-        return gameProfile;
-    }
-
     /**
      * Acquire a Fake Player and call a function which makes use of the player. Afterwards, the Fake Player's world is nulled out to prevent GC issues. Emulated UUID is
      * also reset.
@@ -74,6 +66,7 @@ public class MekFakePlayer extends FakePlayer {
      *
      * @return the return value of fakePlayerConsumer
      */
+    @SuppressWarnings("WeakerAccess")
     public static <R> R withFakePlayer(ServerWorld world, Function<MekFakePlayer, R> fakePlayerConsumer) {
         MekFakePlayer actual = INSTANCE != null ? INSTANCE.get() : null;
         if (actual == null) {
@@ -117,20 +110,31 @@ public class MekFakePlayer extends FakePlayer {
         }
     }
 
-    private class FakeGameProfile extends GameProfile {
+    /**
+     * Game profile supporting our UUID emulation
+     */
+    private static class FakeGameProfile extends GameProfile {
+
+        private MekFakePlayer myFakePlayer = null;
 
         public FakeGameProfile() {
             super(Mekanism.gameProfile.getId(), Mekanism.gameProfile.getName());
         }
 
+        private UUID getEmulatingUUID() {
+            return myFakePlayer != null ? myFakePlayer.emulatingUUID : null;
+        }
+
         @Override
         public UUID getId() {
-            return MekFakePlayer.this.emulatingUUID != null ? MekFakePlayer.this.emulatingUUID : super.getId();
+            UUID emulatingUUID = getEmulatingUUID();
+            return emulatingUUID != null ? emulatingUUID : super.getId();
         }
 
         @Override
         public String getName() {
-            return MekFakePlayer.this.emulatingUUID != null ? MekanismUtils.getLastKnownUsername(MekFakePlayer.this.emulatingUUID) : super.getName();
+            UUID emulatingUUID = getEmulatingUUID();
+            return emulatingUUID != null ? MekanismUtils.getLastKnownUsername(emulatingUUID) : super.getName();
         }
 
         //NB: super check they're the same class, we only check that name & id match

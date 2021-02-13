@@ -17,7 +17,8 @@ public interface ITileComponent {
     default void onChunkUnload() {
     }
 
-    void trackForMainContainer(MekanismContainer container);
+    default void trackForMainContainer(MekanismContainer container) {
+    }
 
     void addToUpdateTag(CompoundNBT updateTag);
 

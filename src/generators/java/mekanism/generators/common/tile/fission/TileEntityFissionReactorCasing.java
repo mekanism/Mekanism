@@ -8,6 +8,7 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.BlockState;
@@ -41,7 +42,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     public long getMaxBurnRate() {
-        return getMultiblock().fuelAssemblies * FissionReactorMultiblockData.BURN_PER_ASSEMBLY;
+        return getMultiblock().fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get();
     }
 
     public void setReactorActive(boolean active) {
@@ -64,7 +65,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     public void setRateLimitFromPacket(double rate) {
-        getMultiblock().rateLimit = Math.min(getMaxBurnRate(), rate);
+        getMultiblock().rateLimit = Math.max(Math.min(getMaxBurnRate(), rate), 0);
         markDirty(false);
     }
 

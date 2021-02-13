@@ -81,7 +81,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     public float getGasScale() {
-        return gasTank.getStored() / (float) gasTank.getCapacity();
+        return (float) (gasTank.getStored() / (double) gasTank.getCapacity());
     }
 
     public GasStack getGas() {

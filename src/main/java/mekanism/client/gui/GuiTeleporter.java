@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -141,7 +142,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
                              tile.getPublicCache(FrequencyType.TELEPORTER).get(scrollList.getSelection());
             TeleporterFrequency teleporterFrequency = tile.getFrequency(FrequencyType.TELEPORTER);
             setButton.active = teleporterFrequency == null || !teleporterFrequency.equals(freq);
-            deleteButton.active = tile.getOwnerUUID().equals(freq.getOwner());
+            UUID ownerUUID = tile.getOwnerUUID();
+            deleteButton.active = ownerUUID != null && freq.ownerMatches(ownerUUID);
         } else {
             setButton.active = false;
             deleteButton.active = false;

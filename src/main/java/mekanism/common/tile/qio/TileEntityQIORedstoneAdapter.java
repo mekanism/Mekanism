@@ -90,7 +90,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         super.handleUpdateTag(state, tag);
         prevPowering = tag.getBoolean(NBTConstants.ACTIVE);
         requestModelDataUpdate();
-        WorldUtils.updateBlock(getWorld(), getPos());
+        WorldUtils.updateBlock(getWorld(), getPos(), this);
     }
 
     @Override

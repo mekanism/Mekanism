@@ -21,6 +21,7 @@ import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.BooleanStateDisplay.ActiveDisabled;
+import mekanism.common.util.text.TextUtils;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab.FissionReactorTab;
 import mekanism.generators.common.GeneratorsLang;
@@ -55,7 +56,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
             return Arrays.asList(
                   MekanismLang.STATUS.translate(multiblock.isActive() ? EnumColor.BRIGHT_GREEN : EnumColor.RED, ActiveDisabled.of(multiblock.isActive())),
                   GeneratorsLang.GAS_BURN_RATE.translate(multiblock.lastBurnRate),
-                  GeneratorsLang.FISSION_HEATING_RATE.translate(formatInt(multiblock.lastBoilRate)),
+                  GeneratorsLang.FISSION_HEATING_RATE.translate(TextUtils.format(multiblock.lastBoilRate)),
                   MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(multiblock.heatCapacitor.getTemperature(), TemperatureUnit.KELVIN, true)),
                   GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
             );

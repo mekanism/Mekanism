@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
@@ -36,6 +37,7 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.heat.QuantumEntangloporterHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.QuantumEntangloporterInventorySlotHolder;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -70,11 +72,12 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
 
-public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, IFrequencyHandler, ISustainedData, IChunkLoader {
+public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, IFrequencyHandler, ISustainedData, IChunkLoader, ISpecialConfigData {
 
     public final TileComponentEjector ejectorComponent;
     public final TileComponentConfig configComponent;
@@ -111,6 +114,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.INVENTORY, true, true, true);
+
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     private <T> void setupConfig(TransmissionType type, ProxySlotInfoCreator<T> proxyCreator, Supplier<List<T>> supplier) {
@@ -252,9 +258,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.INVENTORY, ItemDataUtils.getCompound(itemStack, NBTConstants.FREQUENCY));
-        if (freq != null) {
-            setFrequency(FrequencyType.INVENTORY, freq);
+        //TODO - 10.1: Re-evaluate the entirety of BlockMekanism#onBlockPlacedBy and see what parts potentially should not be getting
+        // called at all when on the client side. My guess is that read sustained data isn't one of these but for now I am just catching
+        // the issue here
+        if (!isRemote()) {
+            FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.INVENTORY, ItemDataUtils.getCompound(itemStack, NBTConstants.FREQUENCY));
+            if (freq != null) {
+                setFrequency(FrequencyType.INVENTORY, freq);
+            }
         }
     }
 
@@ -283,5 +294,29 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         super.addContainerTrackers(container);
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+    }
+
+    @Override
+    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
+        InventoryFrequency freq = getFreq();
+        if (freq != null) {
+            nbtTags.put(NBTConstants.FREQUENCY, freq.serializeIdentity());
+        }
+        return nbtTags;
+    }
+
+    @Override
+    public void setConfigurationData(CompoundNBT nbtTags) {
+        FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.INVENTORY, nbtTags.getCompound(NBTConstants.FREQUENCY));
+        if (freq != null) {
+            setFrequency(FrequencyType.INVENTORY, freq);
+        } else {
+            unsetFrequency(FrequencyType.INVENTORY);
+        }
+    }
+
+    @Override
+    public String getDataType() {
+        return getBlockType().getTranslationKey();
     }
 }

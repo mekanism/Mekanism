@@ -40,20 +40,19 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class FissionReactorMultiblockData extends MultiblockData implements IValveHandler {
 
-    public static final double INVERSE_INSULATION_COEFFICIENT = 10_000;
-    public static final double INVERSE_CONDUCTION_COEFFICIENT = 10;
+    private static final double INVERSE_INSULATION_COEFFICIENT = 10_000;
+    private static final double INVERSE_CONDUCTION_COEFFICIENT = 10;
 
     private static final double waterConductivity = 0.5;
 
-    public static final int COOLANT_PER_VOLUME = 100_000;
-    public static final long HEATED_COOLANT_PER_VOLUME = 1_000_000;
-    public static final long FUEL_PER_ASSEMBLY = 8_000;
+    private static final int COOLANT_PER_VOLUME = 100_000;
+    private static final long HEATED_COOLANT_PER_VOLUME = 1_000_000;
+    private static final long FUEL_PER_ASSEMBLY = 8_000;
 
     public static final double MIN_DAMAGE_TEMPERATURE = 1_200;
     public static final double MAX_DAMAGE_TEMPERATURE = 1_800;
     public static final double MAX_DAMAGE = 100;
 
-    public static final long BURN_PER_ASSEMBLY = 1;
     private static final double EXPLOSION_CHANCE = 1D / (512_000);
 
     public final Set<FormedAssembly> assemblies = new LinkedHashSet<>();
@@ -84,14 +83,17 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     public double reactorDamage = 0;
     @ContainerSync
-    public double rateLimit = 0.1;
+    public double rateLimit = MekanismGeneratorsConfig.generators.defaultBurnRate.get();
     public double burnRemaining = 0, partialWaste = 0;
     @ContainerSync
     private boolean active;
 
     private AxisAlignedBB hotZone;
 
-    public float prevCoolantScale, prevFuelScale, prevHeatedCoolantScale, prevWasteScale;
+    public float prevCoolantScale;
+    private float prevFuelScale;
+    public float prevHeatedCoolantScale;
+    private float prevWasteScale;
 
     public FissionReactorMultiblockData(TileEntityFissionReactorCasing tile) {
         super(tile);
@@ -124,7 +126,6 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         super.onCreated(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
-
         hotZone = new AxisAlignedBB(getMinPos().getX() + 1, getMinPos().getY() + 1, getMinPos().getZ() + 1,
               getMaxPos().getX(), getMaxPos().getY(), getMaxPos().getZ());
     }
@@ -217,8 +218,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         // consider a meltdown only if it's config-enabled, we're passed the damage threshold and the temperature is still dangerous
         if (MekanismGeneratorsConfig.generators.fissionMeltdownsEnabled.get() && reactorDamage >= MAX_DAMAGE && temp >= MIN_DAMAGE_TEMPERATURE) {
             if (world.rand.nextDouble() < (reactorDamage / MAX_DAMAGE) * MekanismGeneratorsConfig.generators.fissionMeltdownChance.get()) {
-                double radiation = 0;
-                radiation += wasteTank.getStored() * MekanismGases.NUCLEAR_WASTE.get().get(GasAttributes.Radiation.class).getRadioactivity();
+                double radiation = wasteTank.getStored() * MekanismGases.NUCLEAR_WASTE.get().get(GasAttributes.Radiation.class).getRadioactivity();
                 if (wasteTank.getStack().has(GasAttributes.Radiation.class)) {
                     radiation += wasteTank.getStored() * wasteTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
                 }
@@ -264,7 +264,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     private void burnFuel(World world) {
         double storedFuel = fuelTank.getStored() + burnRemaining;
-        double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * BURN_PER_ASSEMBLY);
+        double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get());
         storedFuel -= toBurn;
         fuelTank.setStackSize((long) storedFuel, Action.EXECUTE);
         burnRemaining = storedFuel % 1;
@@ -289,7 +289,6 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     private void radiateEntities(World world) {
         if (MekanismConfig.general.radiationEnabled.get() && isBurning() && world.getRandom().nextInt() % 20 == 0) {
             List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesWithinAABB(LivingEntity.class, hotZone);
-
             for (LivingEntity entity : entitiesToRadiate) {
                 double wasteRadiation = 0;
                 if (wasteTank.getStored() > 0) {
@@ -317,7 +316,6 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     public boolean handlesSound(TileEntityFissionReactorCasing tile) {
         return getBounds().isOnCorner(tile.getPos());
-
     }
 
     public double getBoilEfficiency() {

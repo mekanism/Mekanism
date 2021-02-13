@@ -24,7 +24,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.GenericWrench;
 import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.tile.interfaces.IActiveState;
 import mekanism.common.tile.interfaces.IRedstoneControl;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
@@ -48,7 +47,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
@@ -56,7 +54,6 @@ import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.UsernameCache;
@@ -116,22 +113,6 @@ public final class MekanismUtils {
     }
 
     /**
-     * Checks if a machine is in it's active state.
-     *
-     * @param world World of the machine to check
-     * @param pos   The position of the machine
-     *
-     * @return if machine is active
-     */
-    public static boolean isActive(IBlockReader world, BlockPos pos) {
-        TileEntity tile = WorldUtils.getTileEntity(world, pos);
-        if (tile instanceof IActiveState) {
-            return ((IActiveState) tile).getActive();
-        }
-        return false;
-    }
-
-    /**
      * Gets the left side of a certain orientation.
      *
      * @param orientation Current orientation of the machine
@@ -169,29 +150,35 @@ public final class MekanismUtils {
     }
 
     public static float getScale(float prevScale, int stored, int capacity, boolean empty) {
-        return getScale(prevScale, capacity == 0 ? 0 : (float) stored / capacity, empty);
+        return getScale(prevScale, capacity == 0 ? 0 : stored / (float) capacity, empty, stored == capacity);
     }
 
     public static float getScale(float prevScale, long stored, long capacity, boolean empty) {
-        return getScale(prevScale, capacity == 0 ? 0 : (float) (stored / (double) capacity), empty);
+        return getScale(prevScale, capacity == 0 ? 0 : (float) (stored / (double) capacity), empty, stored == capacity);
     }
 
 
     public static float getScale(float prevScale, IEnergyContainer container) {
         float targetScale;
-        FloatingLong maxEnergy = container.getMaxEnergy();
-        if (maxEnergy.isZero()) {
+        FloatingLong stored = container.getEnergy();
+        FloatingLong capacity = container.getMaxEnergy();
+        if (capacity.isZero()) {
             targetScale = 0;
         } else {
-            FloatingLong scale = container.getEnergy().divide(maxEnergy);
-            targetScale = scale.floatValue();
+            targetScale = stored.divide(capacity).floatValue();
         }
-        return getScale(prevScale, targetScale, container.isEmpty());
+        return getScale(prevScale, targetScale, container.isEmpty(), stored.equals(capacity));
     }
 
-    public static float getScale(float prevScale, float targetScale, boolean empty) {
-        if (Math.abs(prevScale - targetScale) > 0.01) {
+    public static float getScale(float prevScale, float targetScale, boolean empty, boolean full) {
+        float difference = Math.abs(prevScale - targetScale);
+        if (difference > 0.01) {
             return (9 * prevScale + targetScale) / 10;
+        } else if (!empty && full && difference > 0) {
+            //If we are full but our difference is less than 0.01 but we want to get our scale all the way up to the target
+            // instead of leaving it at a value just under. Note: We also check that are are not empty as we technically may
+            // be both empty and full if the current capacity is zero
+            return targetScale;
         } else if (!empty && prevScale == 0) {
             //If we have any contents make sure we end up rendering it
             return targetScale;
@@ -234,21 +221,20 @@ public final class MekanismUtils {
     }
 
     /**
-     * Gets the secondary energy required per tick for a machine via upgrades.
+     * Gets the secondary energy multiplier required per tick for a machine via upgrades.
      *
      * @param tile - tile containing upgrades
-     * @param def  - the original, default secondary energy required
      *
      * @return max secondary energy per tick
      */
-    public static double getGasPerTickMean(IUpgradeTile tile, long def) {
+    public static double getGasPerTickMeanMultiplier(IUpgradeTile tile) {
         if (tile.supportsUpgrades()) {
             if (tile.getComponent().supports(Upgrade.GAS)) {
-                return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.GAS));
+                return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.GAS));
             }
-            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.SPEED));
+            return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.SPEED));
         }
-        return def;
+        return 1;
     }
 
     /**
@@ -510,7 +496,10 @@ public final class MekanismUtils {
     }
 
     @Nonnull
-    public static String getLastKnownUsername(UUID uuid) {
+    public static String getLastKnownUsername(@Nullable UUID uuid) {
+        if (uuid == null) {
+            return "<???>";
+        }
         String ret = UsernameCache.getLastKnownUsername(uuid);
         if (ret == null && !warnedFails.contains(uuid) && EffectiveSide.get().isServer()) { // see if MC/Yggdrasil knows about it?!
             GameProfile gp = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getProfileByUUID(uuid);

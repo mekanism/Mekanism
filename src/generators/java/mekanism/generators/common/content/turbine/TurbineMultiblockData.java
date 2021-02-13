@@ -119,9 +119,17 @@ public class TurbineMultiblockData extends MultiblockData {
             clientFlow = 0;
         }
 
-        if (dumpMode == GasMode.DUMPING && !gasTank.isEmpty()) {
+        if (dumpMode != GasMode.IDLE && !gasTank.isEmpty()) {
             long amount = gasTank.getStored();
-            gasTank.shrinkStack(Math.min(amount, Math.max(amount / 50, lastSteamInput * 2)), Action.EXECUTE);
+            if (dumpMode == GasMode.DUMPING) {
+                gasTank.shrinkStack(getDumpingAmount(amount), Action.EXECUTE);
+            } else {//DUMPING_EXCESS
+                //Don't allow dumping more than the configured amount
+                long targetLevel = MathUtils.clampToLong(gasTank.getCapacity() * MekanismGeneratorsConfig.generators.turbineDumpExcessKeepRatio.get());
+                if (targetLevel < amount) {
+                    gasTank.shrinkStack(Math.min(amount - targetLevel, getDumpingAmount(amount)), Action.EXECUTE);
+                }
+            }
         }
 
         float newRotation = (float) flowRate;
@@ -136,6 +144,10 @@ public class TurbineMultiblockData extends MultiblockData {
             prevSteamScale = scale;
         }
         return needsPacket;
+    }
+
+    private long getDumpingAmount(long stored) {
+        return Math.min(stored, Math.max(stored / 50, lastSteamInput * 2));
     }
 
     @Override

@@ -59,6 +59,12 @@ public class TileComponentFrequency implements ITileComponent {
         heldFrequencies.put(type, freq);
     }
 
+    public <FREQ extends Frequency> void unsetFrequency(FrequencyType<FREQ> type) {
+        deactivate(type);
+        heldFrequencies.remove(type);
+        setNeedsNotify(type);
+    }
+
     public <FREQ extends Frequency> List<FREQ> getPublicCache(FrequencyType<FREQ> type) {
         return (List<FREQ>) publicCache.computeIfAbsent(type, t -> new ArrayList<>());
     }

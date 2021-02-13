@@ -120,7 +120,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         super.handleUpdateTag(state, tag);
         driveStatus = tag.getByteArray(NBTConstants.DRIVES);
         requestModelDataUpdate();
-        WorldUtils.updateBlock(getWorld(), getPos());
+        WorldUtils.updateBlock(getWorld(), getPos(), this);
     }
 
     @Override

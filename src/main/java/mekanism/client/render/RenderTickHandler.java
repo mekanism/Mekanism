@@ -20,6 +20,7 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.Vertex;
@@ -72,11 +73,9 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particles.BasicParticleType;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -108,8 +107,6 @@ public class RenderTickHandler {
     private static final EquipmentSlotType[] EQUIPMENT_ORDER = new EquipmentSlotType[]{EquipmentSlotType.OFFHAND, EquipmentSlotType.MAINHAND,
                                                                                        EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS,
                                                                                        EquipmentSlotType.FEET};
-
-    private static final float HUD_SCALE = 0.6F;
 
     private static final HUDRenderer hudRenderer = new HUDRenderer();
 
@@ -202,22 +199,25 @@ public class RenderTickHandler {
                         }
                     }
                 }
-                int start = (renderStrings.size() * 2) + (count * 9);
-                boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
-                MainWindow window = event.getWindow();
-                int y = window.getScaledHeight();
                 MatrixStack matrix = event.getMatrixStack();
-                matrix.push();
-                matrix.scale(HUD_SCALE, HUD_SCALE, HUD_SCALE);
-                for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
-                    for (ITextComponent text : entry.getValue()) {
-                        drawString(window, matrix, text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xC8C8C8);
-                        start -= 9;
+                if (count > 0) {
+                    int start = (renderStrings.size() * 2) + (count * 9);
+                    boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
+                    MainWindow window = event.getWindow();
+                    int y = window.getScaledHeight();
+                    float hudScale = MekanismConfig.client.hudScale.get();
+                    int yScale = (int) ((1 / hudScale) * y);
+                    matrix.push();
+                    matrix.scale(hudScale, hudScale, hudScale);
+                    for (Map.Entry<EquipmentSlotType, List<ITextComponent>> entry : renderStrings.entrySet()) {
+                        for (ITextComponent text : entry.getValue()) {
+                            drawString(window, matrix, text, alignLeft, yScale - start, 0xC8C8C8);
+                            start -= 9;
+                        }
+                        start -= 2;
                     }
-                    start -= 2;
+                    matrix.pop();
                 }
-                matrix.pop();
-
                 if (minecraft.player.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
                     hudRenderer.renderHUD(matrix, event.getPartialTicks());
                 }
@@ -258,7 +258,7 @@ public class RenderTickHandler {
                             Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(p.getLook(1)).translate(0, -0.2, 0);
                             Pos3D motion = vec.scale(0.2).translate(p.getMotion());
                             Pos3D v = new Pos3D(p).translate(0, p.getEyeHeight(), 0).translate(vec);
-                            world.addParticle((BasicParticleType) MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
+                            world.addParticle(MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                         }
                     }
                     //Traverse players and do animations for idle flame throwers
@@ -286,7 +286,7 @@ public class RenderTickHandler {
                                 Pos3D flameMotion = new Pos3D(motion.getX(), p.isOnGround() ? 0 : motion.getY(), motion.getZ());
                                 Pos3D playerPos = new Pos3D(p);
                                 Pos3D mergedVec = playerPos.translate(flameVec);
-                                world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(),
+                                world.addParticle(MekanismParticleTypes.JETPACK_FLAME.getParticleType(),
                                       mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
                             }
                         }
@@ -371,10 +371,10 @@ public class RenderTickHandler {
             }
             profiler.endSection();
 
-            ItemStack stack = player.getHeldItem(Hand.MAIN_HAND);
+            ItemStack stack = player.getHeldItemMainhand();
             if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
                 //If we are not holding a configurator, look if we are in the offhand
-                stack = player.getHeldItem(Hand.OFF_HAND);
+                stack = player.getHeldItemOffhand();
                 if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
                     if (shouldCancel) {
                         event.setCanceled(true);
@@ -398,7 +398,7 @@ public class RenderTickHandler {
                             matrix.push();
                             matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
                             MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
-                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT);
                             matrix.pop();
                         }
                     }
@@ -466,7 +466,7 @@ public class RenderTickHandler {
                         int x = minecraft.getMainWindow().getScaledWidth();
                         int y = minecraft.getMainWindow().getScaledHeight();
                         int color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F).argb();
-                        minecraft.fontRenderer.func_243248_b(matrix, scrollTextComponent, x / 2 - minecraft.fontRenderer.getStringPropertyWidth(scrollTextComponent) / 2, y - 60, color);
+                        minecraft.fontRenderer.func_243248_b(matrix, scrollTextComponent, (x - minecraft.fontRenderer.getStringPropertyWidth(scrollTextComponent)) / 2, y - 60, color);
                     }
                 }
             }
@@ -475,8 +475,8 @@ public class RenderTickHandler {
     }
 
     private void renderJetpackSmoke(World world, Pos3D pos, Pos3D motion) {
-        world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
-        world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+        world.addParticle(MekanismParticleTypes.JETPACK_FLAME.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+        world.addParticle(MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
     }
 
     private void drawString(MainWindow window, MatrixStack matrix, ITextComponent text, boolean leftSide, int y, int color) {
@@ -494,67 +494,10 @@ public class RenderTickHandler {
         if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(type)) {
             return cachedOverlays.get(side).get(type);
         }
-
         Model3D toReturn = new Model3D();
         toReturn.setTexture(MekanismRenderer.overlays.get(type));
-        cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class)).putIfAbsent(type, toReturn);
-
-        switch (side) {
-            case DOWN:
-                toReturn.minY = -.01;
-                toReturn.maxY = -.001;
-
-                toReturn.minX = 0;
-                toReturn.minZ = 0;
-                toReturn.maxX = 1;
-                toReturn.maxZ = 1;
-                break;
-            case UP:
-                toReturn.minY = 1.001;
-                toReturn.maxY = 1.01;
-
-                toReturn.minX = 0;
-                toReturn.minZ = 0;
-                toReturn.maxX = 1;
-                toReturn.maxZ = 1;
-                break;
-            case NORTH:
-                toReturn.minZ = -.01;
-                toReturn.maxZ = -.001;
-
-                toReturn.minX = 0;
-                toReturn.minY = 0;
-                toReturn.maxX = 1;
-                toReturn.maxY = 1;
-                break;
-            case SOUTH:
-                toReturn.minZ = 1.001;
-                toReturn.maxZ = 1.01;
-
-                toReturn.minX = 0;
-                toReturn.minY = 0;
-                toReturn.maxX = 1;
-                toReturn.maxY = 1;
-                break;
-            case WEST:
-                toReturn.minX = -.01;
-                toReturn.maxX = -.001;
-
-                toReturn.minY = 0;
-                toReturn.minZ = 0;
-                toReturn.maxY = 1;
-                toReturn.maxZ = 1;
-                break;
-            case EAST:
-                toReturn.minX = 1.001;
-                toReturn.maxX = 1.01;
-
-                toReturn.minY = 0;
-                toReturn.minZ = 0;
-                toReturn.maxY = 1;
-                toReturn.maxZ = 1;
-                break;
-        }
+        MekanismRenderer.prepSingleFaceModelSize(toReturn, side);
+        cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class)).put(type, toReturn);
         return toReturn;
     }
 

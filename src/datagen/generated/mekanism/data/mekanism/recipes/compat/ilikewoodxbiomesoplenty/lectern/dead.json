@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbiomesoplenty",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "biomesoplenty",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:dead_lectern"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:dead_planks",
+    "count": 8
+  },
+  "secondaryOutput": {
+    "item": "minecraft:book",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

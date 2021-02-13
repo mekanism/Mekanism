@@ -804,7 +804,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DIVERSION_CONTROL_LOW, "Active without signal");
         add(MekanismLang.TOGGLE_DIVERTER, "Diverter mode changed to: %s");
         add(MekanismLang.PUMP_RATE, "Pump Rate: %s/s");
-        add(MekanismLang.PUMP_RATE_MB, "Pump Rate: %s mB/s");
+        add(MekanismLang.PUMP_RATE_MB, "Pump Rate: %s mB/t");
         add(MekanismLang.SPEED, "Speed: %s m/s");
         //Condensentrator
         add(MekanismLang.CONDENSENTRATOR_TOGGLE, "Toggle operation");
@@ -1035,7 +1035,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SORTER_AUTO_EJECT, "Auto:");
         add(MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION, "Sends a single item instead of a whole stack each time (overrides min and max set in ItemStack filters).");
         add(MekanismLang.SORTER_ROUND_ROBIN_DESCRIPTION, "Cycles between all connected inventories when sending items.");
-        add(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION, "Ejects items automatically to connected inventories.");
+        add(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION, "Ejects unfiltered items automatically to connected inventories, using the default configuration.");
         //Side data/config
         add(MekanismLang.SIDE_DATA_NONE, "None");
         add(MekanismLang.SIDE_DATA_INPUT, "Input");

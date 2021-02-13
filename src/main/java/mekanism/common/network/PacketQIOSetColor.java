@@ -44,7 +44,7 @@ public class PacketQIOSetColor {
             ServerPlayerEntity player = ctx.getSender();
             if (player != null) {
                 QIOFrequency freq = FrequencyType.QIO.getFrequency(message.identity, player.getUniqueID());
-                if (freq != null && freq.getOwner().equals(player.getUniqueID())) {
+                if (freq != null && freq.ownerMatches(player.getUniqueID())) {
                     freq.setColor(message.extra == 0 ? freq.getColor().getNext() : freq.getColor().getPrevious());
                     if (message.type == Type.ITEM) {
                         ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);

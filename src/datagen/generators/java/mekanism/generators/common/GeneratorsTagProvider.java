@@ -9,6 +9,7 @@ import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.data.DataGenerator;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class GeneratorsTagProvider extends BaseTagProvider {
@@ -20,6 +21,7 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     @Override
     protected void registerTags() {
         addBoxBlacklist();
+        addEndermanBlacklist();
         addFluids();
         addGases();
     }
@@ -35,6 +37,29 @@ public class GeneratorsTagProvider extends BaseTagProvider {
         };
         addToTag(MekanismTags.TileEntityTypes.IMMOVABLE, tilesToBlacklist);
         addToTag(MekanismTags.TileEntityTypes.RELOCATION_NOT_SUPPORTED, tilesToBlacklist);
+    }
+
+    private void addEndermanBlacklist() {
+        addToTag(Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST,
+              GeneratorsBlocks.TURBINE_CASING,
+              GeneratorsBlocks.TURBINE_VALVE,
+              GeneratorsBlocks.TURBINE_VENT,
+              GeneratorsBlocks.ELECTROMAGNETIC_COIL,
+              GeneratorsBlocks.ROTATIONAL_COMPLEX,
+              GeneratorsBlocks.SATURATING_CONDENSER,
+              GeneratorsBlocks.TURBINE_ROTOR,
+              GeneratorsBlocks.FISSION_REACTOR_CASING,
+              GeneratorsBlocks.FISSION_REACTOR_PORT,
+              GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER,
+              GeneratorsBlocks.FISSION_FUEL_ASSEMBLY,
+              GeneratorsBlocks.CONTROL_ROD_ASSEMBLY,
+              GeneratorsBlocks.FUSION_REACTOR_CONTROLLER,
+              GeneratorsBlocks.FUSION_REACTOR_PORT,
+              GeneratorsBlocks.FUSION_REACTOR_FRAME,
+              GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER,
+              GeneratorsBlocks.LASER_FOCUS_MATRIX,
+              GeneratorsBlocks.REACTOR_GLASS
+        );
     }
 
     private void addFluids() {

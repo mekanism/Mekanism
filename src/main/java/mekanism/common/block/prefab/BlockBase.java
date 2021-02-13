@@ -13,6 +13,7 @@ import mekanism.common.content.blocktype.BlockType;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -57,6 +58,14 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion) {
         return type.has(AttributeCustomResistance.class) ? type.get(AttributeCustomResistance.class).getResistance()
                                                          : super.getExplosionResistance(state, world, pos, explosion);
+    }
+
+    @Override
+    @Deprecated
+    public boolean allowsMovement(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType pathType) {
+        //If we have a custom shape which means we are not a full block then mark that movement is not
+        // allowed through this block it is not a full block. Otherwise use the normal handling for if movement is allowed
+        return !type.has(AttributeCustomShape.class) && super.allowsMovement(state, world, pos, pathType);
     }
 
     @Nonnull

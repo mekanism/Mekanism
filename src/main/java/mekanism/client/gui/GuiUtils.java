@@ -170,8 +170,13 @@ public class GuiUtils {
         RenderSystem.disableBlend();
     }
 
-    public static void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite, int textureWidth,
-          int textureHeight, int zLevel) {
+    public static void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
+          int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection) {
+        drawTiledSprite(matrix, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, textureWidth, textureHeight, zLevel, tilingDirection, true);
+    }
+
+    public static void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
+          int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection, boolean blendAlpha) {
         if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
             return;
         }
@@ -187,8 +192,10 @@ public class GuiUtils {
         float vMax = sprite.getMaxV();
         float uDif = uMax - uMin;
         float vDif = vMax - vMin;
-        RenderSystem.enableBlend();
-        RenderSystem.enableAlphaTest();
+        if (blendAlpha) {
+            RenderSystem.enableBlend();
+            RenderSystem.enableAlphaTest();
+        }
         BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
         vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         Matrix4f matrix4f = matrix.getLast().getMatrix();
@@ -200,7 +207,16 @@ public class GuiUtils {
             int x = xPosition + (xTile * textureWidth);
             int maskRight = textureWidth - width;
             int shiftedX = x + textureWidth - maskRight;
-            float uMaxLocal = uMax - (uDif * maskRight / textureWidth);
+            float uLocalDif = uDif * maskRight / textureWidth;
+            float uLocalMin;
+            float uLocalMax;
+            if (tilingDirection.right) {
+                uLocalMin = uMin;
+                uLocalMax = uMax - uLocalDif;
+            } else {
+                uLocalMin = uMin + uLocalDif;
+                uLocalMax = uMax;
+            }
             for (int yTile = 0; yTile <= yTileCount; yTile++) {
                 int height = (yTile == yTileCount) ? yRemainder : textureHeight;
                 if (height == 0) {
@@ -210,17 +226,28 @@ public class GuiUtils {
                 }
                 int y = yStart - ((yTile + 1) * textureHeight);
                 int maskTop = textureHeight - height;
-                float vMaxLocal = vMax - (vDif * maskTop / textureHeight);
-                vertexBuffer.pos(matrix4f, x, y + textureHeight, zLevel).tex(uMin, vMaxLocal).endVertex();
-                vertexBuffer.pos(matrix4f, shiftedX, y + textureHeight, zLevel).tex(uMaxLocal, vMaxLocal).endVertex();
-                vertexBuffer.pos(matrix4f, shiftedX, y + maskTop, zLevel).tex(uMaxLocal, vMin).endVertex();
-                vertexBuffer.pos(matrix4f, x, y + maskTop, zLevel).tex(uMin, vMin).endVertex();
+                float vLocalDif = vDif * maskTop / textureHeight;
+                float vLocalMin;
+                float vLocalMax;
+                if (tilingDirection.down) {
+                    vLocalMin = vMin;
+                    vLocalMax = vMax - vLocalDif;
+                } else {
+                    vLocalMin = vMin + vLocalDif;
+                    vLocalMax = vMax;
+                }
+                vertexBuffer.pos(matrix4f, x, y + textureHeight, zLevel).tex(uLocalMin, vLocalMax).endVertex();
+                vertexBuffer.pos(matrix4f, shiftedX, y + textureHeight, zLevel).tex(uLocalMax, vLocalMax).endVertex();
+                vertexBuffer.pos(matrix4f, shiftedX, y + maskTop, zLevel).tex(uLocalMax, vLocalMin).endVertex();
+                vertexBuffer.pos(matrix4f, x, y + maskTop, zLevel).tex(uLocalMin, vLocalMin).endVertex();
             }
         }
         vertexBuffer.finishDrawing();
         WorldVertexBufferUploader.draw(vertexBuffer);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.disableBlend();
+        if (blendAlpha) {
+            RenderSystem.disableAlphaTest();
+            RenderSystem.disableBlend();
+        }
     }
 
     // reverse-order iteration over children w/ built-in GuiElement check, runs a basic anyMatch with checker
@@ -260,6 +287,36 @@ public class GuiUtils {
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: {}", stack, e);
             }
+        }
+    }
+
+    /**
+     * Represents which direction our tiling is done when extending past the max size.
+     */
+    public enum TilingDirection {
+        /**
+         * Textures are being tiled/filled from top left to bottom right.
+         */
+        DOWN_RIGHT(true, true),
+        /**
+         * Textures are being tiled/filled from top right to bottom left.
+         */
+        DOWN_LEFT(true, false),
+        /**
+         * Textures are being tiled/filled from bottom left to top right.
+         */
+        UP_RIGHT(false, true),
+        /**
+         * Textures are being tiled/filled from bottom right to top left.
+         */
+        UP_LEFT(false, false);
+
+        private final boolean down;
+        private final boolean right;
+
+        TilingDirection(boolean down, boolean right) {
+            this.down = down;
+            this.right = right;
         }
     }
 }

@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -47,7 +46,6 @@ import org.apache.commons.lang3.tuple.Pair;
 //TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
 public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
 
-    private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     public static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
     public static final ResourceLocation SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
     public static final ResourceLocation BLUR = MekanismUtils.getResource(ResourceType.GUI, "blur.png");
@@ -495,10 +493,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     @Override
     public ItemRenderer getItemRenderer() {
         return itemRenderer;
-    }
-
-    protected static String formatInt(long l) {
-        return intFormatter.format(l);
     }
 
     @Override

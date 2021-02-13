@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -13,6 +12,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
+import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.render.IFancyFontRenderer;
@@ -30,7 +30,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
-    private static final NumberFormat intFormatter = NumberFormat.getIntegerInstance();
     private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60;
 
     public static final Minecraft minecraft = Minecraft.getInstance();
@@ -404,12 +403,9 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         super.playDownSound(minecraft.getSoundHandler());
     }
 
-    protected void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite) {
-        GuiUtils.drawTiledSprite(matrix, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, getBlitOffset());
-    }
-
-    protected static String formatInt(long l) {
-        return intFormatter.format(l);
+    protected void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
+          TilingDirection tilingDirection) {
+        GuiUtils.drawTiledSprite(matrix, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, getBlitOffset(), tilingDirection);
     }
 
     public enum ButtonBackground {

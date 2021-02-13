@@ -5,6 +5,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.recipe.ISubRecipeProvider;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.AndCondition;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 
@@ -14,10 +15,20 @@ public abstract class CompatRecipeProvider implements ISubRecipeProvider {
 
     protected final String modid;
     protected final ICondition modLoaded;
+    protected final ICondition allModsLoaded;
 
-    protected CompatRecipeProvider(String modid) {
+    protected CompatRecipeProvider(String modid, String... secondaryMods) {
         this.modid = modid;
         this.modLoaded = new ModLoadedCondition(modid);
+        if (secondaryMods.length == 0) {
+            allModsLoaded = modLoaded;
+        } else {
+            ICondition combined = modLoaded;
+            for (String secondaryMod : secondaryMods) {
+                combined = new AndCondition(combined, new ModLoadedCondition(secondaryMod));
+            }
+            allModsLoaded = combined;
+        }
     }
 
     @Override

@@ -1,0 +1,22 @@
+{
+  "values": [
+    "mekanismgenerators:turbine_casing",
+    "mekanismgenerators:turbine_valve",
+    "mekanismgenerators:turbine_vent",
+    "mekanismgenerators:electromagnetic_coil",
+    "mekanismgenerators:rotational_complex",
+    "mekanismgenerators:saturating_condenser",
+    "mekanismgenerators:turbine_rotor",
+    "mekanismgenerators:fission_reactor_casing",
+    "mekanismgenerators:fission_reactor_port",
+    "mekanismgenerators:fission_reactor_logic_adapter",
+    "mekanismgenerators:fission_fuel_assembly",
+    "mekanismgenerators:control_rod_assembly",
+    "mekanismgenerators:fusion_reactor_controller",
+    "mekanismgenerators:fusion_reactor_port",
+    "mekanismgenerators:fusion_reactor_frame",
+    "mekanismgenerators:fusion_reactor_logic_adapter",
+    "mekanismgenerators:laser_focus_matrix",
+    "mekanismgenerators:reactor_glass"
+  ]
+}

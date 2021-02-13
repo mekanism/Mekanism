@@ -108,6 +108,7 @@ public class GeneratorsClientRegistration {
             return;
         }
         RenderBioGenerator.resetCachedModels();
+        RenderFissionReactor.resetCachedModels();
         GeneratorsSpecialColors.GUI_OBJECTS.parse(MekanismGenerators.rl("textures/colormap/gui_objects.png"));
     }
 }

@@ -3,6 +3,7 @@ package mekanism.common.block.prefab;
 import java.util.Random;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeParticleFX;
@@ -16,7 +17,6 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.interfaces.IActiveState;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.AbstractBlock;
@@ -84,27 +84,30 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
-    @Deprecated
-    public float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return SecurityUtils.canAccess(player, WorldUtils.getTileEntity(world, pos)) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
+    protected float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
+          @Nullable TileEntity tile) {
+        return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos, tile) : 0.0F;
     }
 
     @Override
     public void animateTick(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Random random) {
-        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tile != null && MekanismUtils.isActive(world, pos) && Attribute.has(state.getBlock(), AttributeParticleFX.class)) {
-            for (Function<Random, Particle> particleFunction : type.get(AttributeParticleFX.class).getParticleFunctions()) {
-                Particle particle = particleFunction.apply(random);
-                Vector3d particlePos = particle.getPos();
-                if (tile.getDirection() == Direction.WEST) {
-                    particlePos = particlePos.rotateYaw(90);
-                } else if (tile.getDirection() == Direction.EAST) {
-                    particlePos = particlePos.rotateYaw(270);
-                } else if (tile.getDirection() == Direction.NORTH) {
-                    particlePos = particlePos.rotateYaw(180);
+        super.animateTick(state, world, pos, random);
+        if (Attribute.has(state.getBlock(), AttributeParticleFX.class)) {
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+            if (tile != null && tile.getActive()) {
+                for (Function<Random, Particle> particleFunction : type.get(AttributeParticleFX.class).getParticleFunctions()) {
+                    Particle particle = particleFunction.apply(random);
+                    Vector3d particlePos = particle.getPos();
+                    if (tile.getDirection() == Direction.WEST) {
+                        particlePos = particlePos.rotateYaw(90);
+                    } else if (tile.getDirection() == Direction.EAST) {
+                        particlePos = particlePos.rotateYaw(270);
+                    } else if (tile.getDirection() == Direction.NORTH) {
+                        particlePos = particlePos.rotateYaw(180);
+                    }
+                    particlePos = particlePos.add(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+                    world.addParticle(particle.getType(), particlePos.x, particlePos.y, particlePos.z, 0.0D, 0.0D, 0.0D);
                 }
-                particlePos = particlePos.add(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-                world.addParticle(particle.getType(), particlePos.x, particlePos.y, particlePos.z, 0.0D, 0.0D, 0.0D);
             }
         }
     }

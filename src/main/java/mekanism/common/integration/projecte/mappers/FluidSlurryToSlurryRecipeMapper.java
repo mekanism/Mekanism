@@ -1,4 +1,4 @@
-/*package mekanism.common.integration.projecte.mappers;
+package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
 import mekanism.api.annotations.NonNull;
@@ -7,6 +7,7 @@ import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
+import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
 import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSFluid;
@@ -34,7 +35,7 @@ public class FluidSlurryToSlurryRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe, INSSFakeGroupManager groupManager) {
         if (!(iRecipe instanceof FluidSlurryToSlurryRecipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
@@ -59,4 +60,4 @@ public class FluidSlurryToSlurryRecipeMapper implements IRecipeTypeMapper {
         }
         return handled;
     }
-}*/
+}

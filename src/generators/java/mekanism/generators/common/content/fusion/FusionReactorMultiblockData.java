@@ -49,9 +49,9 @@ import net.minecraftforge.fluids.FluidAttributes;
 public class FusionReactorMultiblockData extends MultiblockData {
 
     private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000_000);
-    public static final int MAX_WATER = 1_000 * FluidAttributes.BUCKET_VOLUME;
-    public static final long MAX_STEAM = MAX_WATER * 100L;
-    public static final long MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
+    private static final int MAX_WATER = 1_000 * FluidAttributes.BUCKET_VOLUME;
+    private static final long MAX_STEAM = MAX_WATER * 100L;
+    private static final long MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
 
     public static final int MAX_INJECTION = 98;//this is the effective cap in the GUI, as text field is limited to 2 chars
     //Reaction characteristics
@@ -59,13 +59,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private static final double burnRatio = 1;
     //Thermal characteristics
     private static final double plasmaHeatCapacity = 100;
-    public static final double caseHeatCapacity = 1;
-    public static final double inverseInsulation = 100_000;
-    private static final double thermocoupleEfficiency = 0.05;
+    private static final double caseHeatCapacity = 1;
+    private static final double inverseInsulation = 100_000;
     //Heat transfer metrics
     private static final double plasmaCaseConductivity = 0.2;
-    private static final double caseWaterConductivity = 0.3;
-    private static final double caseAirConductivity = 0.1;
 
     private final Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
 
@@ -92,7 +89,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public IGasTank tritiumTank;
     @ContainerSync(tags = "fuel")
     public IGasTank fuelTank;
-    @ContainerSync(tags = "fuel", getter = "getInjectionRate", setter = "setInjectionRate")
+    @ContainerSync(tags = {"fuel", "heat"}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 2;
 
     public double plasmaTemperature = HeatAPI.AMBIENT_TEMP;
@@ -263,7 +260,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         heatCapacitor.handleHeat(plasmaCaseHeat);
 
         //Transfer from casing to water if necessary
-        double caseWaterHeat = caseWaterConductivity * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
+        double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
         int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
         waterToVaporize = Math.min(waterToVaporize, Math.min(waterTank.getFluidAmount(), MathUtils.clampToInt(steamTank.getNeeded())));
         if (waterToVaporize > 0) {
@@ -278,9 +275,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
         }
 
         //Passive energy generation
-        double caseAirHeat = caseAirConductivity * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
+        double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
         heatCapacitor.handleHeat(-caseAirHeat);
-        energyContainer.insert(FloatingLong.create(caseAirHeat * thermocoupleEfficiency), Action.EXECUTE, AutomationType.INTERNAL);
+        energyContainer.insert(FloatingLong.create(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     public void setLastPlasmaTemp(double temp) {
@@ -345,7 +342,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     public int getMinInjectionRate(boolean active) {
-        double k = active ? caseWaterConductivity : 0;
+        double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
+        double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
         double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) /
                       (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
                        plasmaCaseConductivity * (k + caseAirConductivity));
@@ -353,18 +351,20 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     public double getMaxPlasmaTemperature(boolean active) {
-        double k = active ? caseWaterConductivity : 0;
+        double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
+        double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
         return injectionRate * MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() / plasmaCaseConductivity *
                (plasmaCaseConductivity + k + caseAirConductivity) / (k + caseAirConductivity);
     }
 
     public double getMaxCasingTemperature(boolean active) {
-        double k = active ? caseWaterConductivity : 0;
-        return MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(injectionRate).divide(k + caseAirConductivity).doubleValue();
+        double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
+        return MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().multiply(injectionRate).divide(k + MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get()).doubleValue();
     }
 
     public double getIgnitionTemperature(boolean active) {
-        double k = active ? caseWaterConductivity : 0;
+        double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
+        double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
         double energyPerFusionFuel = MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue();
         return burnTemperature * energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) /
                (energyPerFusionFuel * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
@@ -372,15 +372,15 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     public FloatingLong getPassiveGeneration(boolean active, boolean current) {
         double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(active);
-        return FloatingLong.create(thermocoupleEfficiency * caseAirConductivity * temperature);
+        return FloatingLong.create(MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get() * MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * temperature);
     }
 
     public long getSteamPerTick(boolean current) {
         double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(true);
-        return MathUtils.clampToLong(HeatUtils.getSteamEnergyEfficiency() * caseWaterConductivity * temperature / HeatUtils.getWaterThermalEnthalpy());
+        return MathUtils.clampToLong(HeatUtils.getSteamEnergyEfficiency() * MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * temperature / HeatUtils.getWaterThermalEnthalpy());
     }
 
     public static double getInverseConductionCoefficient() {
-        return 1 / caseAirConductivity;
+        return 1 / MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
     }
 }
