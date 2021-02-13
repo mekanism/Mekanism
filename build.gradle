@@ -4,7 +4,6 @@ import mekanism.tasks.MergeJars
 
 buildscript {
     repositories {
-        jcenter()
         maven {
             name "forge"
             url "https://files.minecraftforge.net/maven"
@@ -380,7 +379,7 @@ dependencies {
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
-    compileOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
+    compileOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:${computer_craft_version}")
 
     //Dependencies for data generators for mod compat reference
     datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
