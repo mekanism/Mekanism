@@ -531,6 +531,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.KEY_HAND_MODE, "Item Mode Switch");
         add(MekanismLang.KEY_HEAD_MODE, "Head Mode Switch");
         add(MekanismLang.KEY_CHEST_MODE, "Chest Mode Switch");
+        add(MekanismLang.KEY_LEGS_MODE, "Legs Mode Switch");
         add(MekanismLang.KEY_FEET_MODE, "Feet Mode Switch");
         add(MekanismLang.KEY_DETAILS_MODE, "Show Details");
         add(MekanismLang.KEY_DESCRIPTION_MODE, "Show Description");
