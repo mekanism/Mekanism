@@ -60,7 +60,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         ItemStack stack = player.getHeldItem(hand);
         if (!player.isSneaking()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
-                if (tile.addBlade()) {
+                if (tile.addBlade(true)) {
                     if (!player.isCreative()) {
                         stack.shrink(1);
                     }

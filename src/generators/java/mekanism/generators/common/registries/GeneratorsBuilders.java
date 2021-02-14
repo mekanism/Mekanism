@@ -2,6 +2,7 @@ package mekanism.generators.common.registries;
 
 import mekanism.common.command.builders.StructureBuilder;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +23,11 @@ public class GeneratorsBuilders {
         protected void build(World world, BlockPos start) {
             buildFrame(world, start);
             buildWalls(world, start);
-            buildColumn(world, start, new BlockPos(sizeX / 2, 1, sizeZ / 2), 14, GeneratorsBlocks.TURBINE_ROTOR.getBlock());
+            //Clear out the inside
+            buildInteriorLayers(world, start, 1, 14, Blocks.AIR);
+            //Add two blades to each rotor, they will be properly scanned when the multiblock forms at the end
+            buildColumn(world, start, new BlockPos(sizeX / 2, 1, sizeZ / 2), 14, GeneratorsBlocks.TURBINE_ROTOR.getBlock(), TileEntityTurbineRotor.class,
+                  rotor -> rotor.blades = 2);
             buildInteriorLayer(world, start, 15, MekanismBlocks.PRESSURE_DISPERSER.getBlock());
             world.setBlockState(start.add(sizeX / 2, 15, sizeZ / 2), GeneratorsBlocks.ROTATIONAL_COMPLEX.getBlock().getDefaultState());
             buildInteriorLayer(world, start, 16, GeneratorsBlocks.SATURATING_CONDENSER.getBlock());
@@ -88,6 +93,7 @@ public class GeneratorsBuilders {
         protected void build(World world, BlockPos start) {
             buildPartialFrame(world, start, 1);
             buildWalls(world, start);
+            buildInteriorLayers(world, start, 1, 3, Blocks.AIR);
             world.setBlockState(start.add(2, 4, 2), GeneratorsBlocks.FUSION_REACTOR_CONTROLLER.getBlock().getDefaultState());
         }
 

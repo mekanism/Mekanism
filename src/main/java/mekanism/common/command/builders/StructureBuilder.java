@@ -1,7 +1,10 @@
 package mekanism.common.command.builders;
 
+import java.util.function.Consumer;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -73,6 +76,12 @@ public abstract class StructureBuilder {
         }
     }
 
+    protected void buildInteriorLayers(World world, BlockPos start, int yMin, int yMax, Block block) {
+        for (int y = yMin; y <= yMax; y++) {
+            buildInteriorLayer(world, start, y, block);
+        }
+    }
+
     protected void buildInteriorLayer(World world, BlockPos start, int yLevel, Block block) {
         for (int x = 1; x < sizeX - 1; x++) {
             for (int z = 1; z < sizeZ - 1; z++) {
@@ -92,6 +101,17 @@ public abstract class StructureBuilder {
     protected void buildColumn(World world, BlockPos start, BlockPos pos, int height, Block block) {
         for (int y = 0; y < height; y++) {
             world.setBlockState(start.add(pos).add(0, y, 0), block.getDefaultState());
+        }
+    }
+
+    protected <T extends TileEntity> void buildColumn(World world, BlockPos start, BlockPos pos, int height, Block block, Class<T> tileClass, Consumer<T> tileConsumer) {
+        for (int y = 0; y < height; y++) {
+            BlockPos position = start.add(pos).add(0, y, 0);
+            world.setBlockState(position, block.getDefaultState());
+            T tile = WorldUtils.getTileEntity(tileClass, world, position);
+            if (tile != null) {
+                tileConsumer.accept(tile);
+            }
         }
     }
 
