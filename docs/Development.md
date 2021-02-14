@@ -1,10 +1,10 @@
 # Development
 
-Mekanism is developed for Minecraft 1.16.3 using Minecraft Forge.
+Mekanism is developed for Minecraft 1.16.5 using Minecraft Forge.
 
 ## Prerequisites
 
-* Gradle - Version 4.10.3 is known to work, your mileage with other versions may vary
+* Gradle - Version 5.6.4 is known to work, your mileage with other versions may vary
 
 ## Directory Structure
 
@@ -89,10 +89,14 @@ This jar is for development purposes
 
 ### Mekanism-all.jar
 
-All in one jar. Note: This jar does not have all data fully merged properly (mainly tags are not) so should only mainly be used for testing.
+All in one jar.
 
 * /assets - Assets of all above jars
 * /data - Data of all above jars (duplicate tags are last tag wins)
 * /mekanism - .class files from all above jars
 * /META-INF - META-INF of all above jars
 * logo.png
+
+## Building
+
+Mekanism is built in the same way that the vast majority of other mods are. If you are using an IDE such as Eclipse or IntelliJ IDEA, the normal ways of building/launching it work. If you are just trying to build the jars yourself without an IDE and are new to building mods, this can be done by downloading the sources from github and in the root directory running `gradlew build` or `gradlew.bat build`. The built jars will be output into the `build/libs/` folder.
