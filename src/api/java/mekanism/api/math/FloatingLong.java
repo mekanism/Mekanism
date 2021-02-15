@@ -349,7 +349,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      *
      * @param toDivide The value to divide by represented as an unsigned long.
      *
-     * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}.
+     * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given unsigned long.
      *
      * @throws ArithmeticException if {@code toDivide} is zero.
      * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}
