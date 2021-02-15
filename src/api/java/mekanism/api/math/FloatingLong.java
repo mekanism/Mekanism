@@ -331,6 +331,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public FloatingLong divideEquals(FloatingLong toDivide) {
         if (toDivide.isZero()) {
             throw new ArithmeticException("Division by zero");
+        } else if (this.isZero()) {
+            return FloatingLong.ZERO;
         }
         BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
         long value = divide.longValue();
@@ -354,10 +356,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public FloatingLong divideEquals(long toDivide) {
         if (toDivide == 0) {
             throw new ArithmeticException("Division by zero");
+        } else if (this.isZero()) {
+            return FloatingLong.ZERO;
         }
-        if (this.isZero())
-            return this;
-
         long val = Long.divideUnsigned(this.value, toDivide);
         long rem = Long.remainderUnsigned(this.value, toDivide);
 
@@ -374,25 +375,22 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         }
 
         //usually will expect to round to nearest, so we have to do that here
-        if (Long.remainderUnsigned(dec, 10) >= 5)
-            dec+=10;
+        if (Long.remainderUnsigned(dec, 10) >= 5) {
+            dec += 10;
+        }
         dec /= 10;
-
         return setAndClampValues(val, (short) dec);
     }
 
     /**
-     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to an integer value, modifying the current object unless it is a constant in which case it instead returns the
-     * result in a new object. This gets clamped at the upper bound of {@link Long#MAX_VALUE} rather than overflowing.
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to an integer value. This gets clamped at the upper bound of {@link
+     * Long#MAX_VALUE} rather than overflowing.
      *
-             * @param toDivide The {@link FloatingLong} to divide by.
+     * @param toDivide The {@link FloatingLong} to divide by.
      *
-             * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}.
-            *
-            * @throws ArithmeticException if {@code toDivide} is zero.
-            * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}
-     * <br>
-     * {@code value = value.divideToLong(toDivide)}
+     * @return A long representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}.
+     *
+     * @throws ArithmeticException if {@code toDivide} is zero.
      */
     public long divideToLong(FloatingLong toDivide) {
         if (toDivide.isZero()) {
@@ -400,50 +398,49 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         }
 
         // Return early if operation will return < 1
-        if (this.smallerThan(toDivide))
-            return 0L;
+        if (this.smallerThan(toDivide)) {
+            return 0;
+        }
 
         if (toDivide.greaterOrEqual(ONE)) {//If todivide >=1, then we don't care about this.decimal, so can optimize out accounting for that
             if (Long.compareUnsigned(toDivide.value, MAX_LONG_SHIFT) <= 0) { //don't case if *this* is < or > than shift
                 long div = toDivide.value * MAX_DECIMAL + toDivide.decimal;
                 return (Long.divideUnsigned(this.value, div) * MAX_DECIMAL) + (this.value % div * MAX_DECIMAL / div);
             } else { //we already know todivide is > max_long_shift, and other case is impossible
-                if (Long.compareUnsigned(toDivide.value, Long.divideUnsigned(-1L, 2) + 1L) >= 0) //need to check anyways to avoid overflow on toDivide.value +1, so might as well return early
-                    return 1L;
+                if (Long.compareUnsigned(toDivide.value, Long.divideUnsigned(-1L, 2) + 1L) >= 0) {
+                    //need to check anyways to avoid overflow on toDivide.value +1, so might as well return early
+                    return 1;
+                }
                 if (Long.divideUnsigned(this.value, (toDivide.value + 1)) != Long.divideUnsigned(this.value, toDivide.value)) {
                     // need to account for todivide.decimal in this case
                     long q = Long.divideUnsigned(this.value, toDivide.value);
                     return (toDivide.value * q + Long.divideUnsigned(toDivide.decimal * q, MAX_DECIMAL) <= this.value) ? q : q - 1;
-                }
-                else
+                } else {
                     return Long.divideUnsigned(this.value, toDivide.value);
+                }
             }
-        }
-        else {
+        } else {
             // In this case, we're really multiplying (definitely need to account for decimal as well
             if (Long.compareUnsigned(this.value, MAX_LONG_SHIFT) >= 0) {
                 return (this.value / toDivide.decimal) * MAX_DECIMAL //lose some precision here, have to add modulus
-                        + (this.value % toDivide.decimal) * MAX_DECIMAL / toDivide.decimal
-                        + (long)this.decimal * MAX_DECIMAL / toDivide.decimal;
+                       + (this.value % toDivide.decimal) * MAX_DECIMAL / toDivide.decimal
+                       + (long) this.decimal * MAX_DECIMAL / toDivide.decimal;
             } else {
                 long d = this.value * MAX_DECIMAL;
-                return d / toDivide.decimal + (long)this.decimal * MAX_DECIMAL / toDivide.decimal; //don't care about modulus since we're returning integers
+                return d / toDivide.decimal + (long) this.decimal * MAX_DECIMAL / toDivide.decimal; //don't care about modulus since we're returning integers
             }
         }
     }
 
     /**
-     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to an integer value, modifying the current object unless it is a constant in which case it instead returns the
-     * result in a new object. This gets clamped at the upper bound of {@link Integer#MAX_VALUE} rather than overflowing.
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to an integer value. This gets clamped at the upper bound of {@link
+     * Integer#MAX_VALUE} rather than overflowing.
      *
      * @param toDivide The {@link FloatingLong} to divide by.
      *
-     * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}.
+     * @return An int representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}.
      *
      * @throws ArithmeticException if {@code toDivide} is zero.
-     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}
-     * <br>
-     * {@code value = value.divideToLong(toDivide)}
      */
     public int divideToInt(FloatingLong toDivide) {
         return MathUtils.clampToInt(divideToLong(toDivide));
@@ -624,8 +621,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      *
      * @param toDivide The {@link FloatingLong} to divide by.
      *
-     * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}, or {@code 1} if the given {@link
-     * FloatingLong} is {@code 0}.
+     * @return A double representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}, or {@code 1} if the given {@link FloatingLong} is
+     * {@code 0}.
      *
      * @implNote This caps the returned value at {@code 1}
      */
