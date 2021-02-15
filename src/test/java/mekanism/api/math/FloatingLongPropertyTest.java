@@ -4,8 +4,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.quicktheories.QuickTheory;
 import org.quicktheories.WithQuickTheories;
-import org.quicktheories.dsl.TheoryBuilder4;
+import org.quicktheories.core.Gen;
+import org.quicktheories.dsl.TheoryBuilder2;
+import org.quicktheories.impl.Constraint;
 
 @DisplayName("Test the implementation of FloatingLong by testing Properties of FloatingLong")
 class FloatingLongPropertyTest implements WithQuickTheories {
@@ -35,95 +38,84 @@ class FloatingLongPropertyTest implements WithQuickTheories {
     }
 
     private static FloatingLong divideViaBigDecimal(FloatingLong a, FloatingLong b) {
-        return clampFromBigDecimal(new BigDecimal(a.toString()).divide(new BigDecimal(b.toString()), 4, RoundingMode.HALF_EVEN));
+        return clampFromBigDecimal(new BigDecimal(a.toString()).divide(new BigDecimal(b.toString()), 4, RoundingMode.HALF_UP));
     }
 
-    private TheoryBuilder4<Long, Integer, Long, Integer> theoryForAllPairs() {
-        return qt().forAll(
-              longs().all(),
-              integers().between(0, 9_999),
-              longs().all(),
-              integers().between(0, 9_999)
-        );
+    private static FloatingLong divideViaBigDecimalFloor(FloatingLong a, FloatingLong b) {
+        return clampFromBigDecimal(new BigDecimal(a.toString()).divide(new BigDecimal(b.toString()), 4, RoundingMode.FLOOR));
+    }
+
+    /**
+     * Generator for all possible floating longs
+     */
+    private Gen<FloatingLong> allFloatingLongs() {
+        //Value constraint is any possible long
+        Constraint valueConstraint = Constraint.between(Long.MIN_VALUE, Long.MAX_VALUE).withShrinkPoint(0);
+        //Decimal constraint is any possible decimal
+        Constraint decimalConstraint = Constraint.between(0, 9_999).withShrinkPoint(0);
+        //Given random generator create floating long using the two constraints we defined above]
+        return prng -> FloatingLong.createConst(prng.next(valueConstraint), (short) prng.next(decimalConstraint));
+    }
+
+    private TheoryBuilder2<FloatingLong, FloatingLong> floatingLongPairTheory() {
+        return qt().forAll(allFloatingLongs(), allFloatingLongs());
+    }
+
+    @Override
+    public QuickTheory qt() {
+        //Force our example count to be higher than the default by 100x
+        return WithQuickTheories.super.qt().withExamples(1_000_000);
     }
 
     @Test
     @DisplayName("Test parsing positive doubles")
     void testFromDouble() {
         qt().forAll(doubles().between(0, Double.MAX_VALUE))
-              .check(value -> FloatingLong.createConst(value).equals(clampFromBigDecimal(new BigDecimal(Double.toString(value)))));
+                .check(value -> FloatingLong.createConst(value).equals(clampFromBigDecimal(new BigDecimal(Double.toString(value)))));
     }
 
     @Test
     @DisplayName("Test addition and clamping at max value for overflow")
     void testAddition() {
-        theoryForAllPairs().check((v1, d1, v2, d2) -> {
-            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
-            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
-            return a.add(b).equals(addViaBigDecimal(a, b));
-        });
+        floatingLongPairTheory().check((a, b) -> a.add(b).equals(addViaBigDecimal(a, b)));
     }
 
     @Test
     @DisplayName("Test subtracting and clamping at zero for underflow")
     void testSubtraction() {
-        theoryForAllPairs().check((v1, d1, v2, d2) -> {
-            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
-            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
-            return a.subtract(b).equals(subtractViaBigDecimal(a, b));
-        });
+        floatingLongPairTheory().check((a, b) -> a.subtract(b).equals(subtractViaBigDecimal(a, b)));
     }
 
     @Test
     @DisplayName("Test multiplying and clamping at max value for overflow")
     void testMultiplying() {
-        theoryForAllPairs().check((v1, d1, v2, d2) -> {
-            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
-            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
-            return a.multiply(b).equals(multiplyViaBigDecimal(a, b));
-        });
+        floatingLongPairTheory().check((a, b) -> a.multiply(b).equals(multiplyViaBigDecimal(a, b)));
     }
 
     @Test
     @DisplayName("Test dividing and clamping at max value for overflow")
     void testDivision() {
-        theoryForAllPairs().check((v1, d1, v2, d2) -> {
-            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
-            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
-            return b.isZero() || a.divide(b).equals(divideViaBigDecimal(a, b));
-        });
+        floatingLongPairTheory().check((a, b) -> b.isZero() || a.divide(b).equals(divideViaBigDecimal(a, b)));
     }
 
     @Test
-    @DisplayName("Test dividing to unsigned long works correctly")
+    @DisplayName("Test dividing to unsigned long")
     void testDivisionToUnsignedLong() {
-        theoryForAllPairs().check((v1, d1, v2, d2) -> {
-            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
-            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
-            return b.isZero() || a.divideToUnsignedLong(b) == a.divide(b).getValue();
-        });
+        floatingLongPairTheory().check((a, b) -> b.isZero() || a.divideToUnsignedLong(b) == divideViaBigDecimalFloor(a, b).getValue());
     }
 
     @Test
-    @DisplayName("Test dividing to long works correctly")
+    @DisplayName("Test dividing to long")
     void testDivisionToLong() {
-        theoryForAllPairs().check((v1, d1, v2, d2) -> {
-            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
-            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
-            return b.isZero() || a.divideToLong(b) == a.divide(b).longValue();
-        });
+        floatingLongPairTheory().check((a, b) -> b.isZero() || a.divideToLong(b) == divideViaBigDecimalFloor(a, b).getValue());
     }
 
     @Test
-    @DisplayName("Test dividing by long works correctly")
+    @DisplayName("Test dividing by long")
     void testDivisionByLong() {
         qt().forAll(
-              longs().all(),
-              integers().between(0, 9_999),
-              longs().all()
-        ).check((v1, d1, b) -> {
-            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
-            return b == 0 || a.divide(b).equals(divideViaBigDecimal(a, FloatingLong.create(b)));
-        });
+                allFloatingLongs(),
+                longs().all()
+        ).check((a, b) -> b == 0 || a.divide(b).equals(divideViaBigDecimal(a, FloatingLong.create(b))));
     }
 }

@@ -38,9 +38,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     private static final short SINGLE_UNIT = MAX_DECIMAL + 1;
     /**
-     * The maximum value where the decimal can be eliminated without {@link #value} overflowing
+     * The maximum value where the decimal can be eliminated without {@link #value} overflowing, want to be able to shift twice
      */
-    private static final long MAX_LONG_SHIFT = Long.divideUnsigned(-1L, SINGLE_UNIT);
+    private static final long MAX_LONG_SHIFT = Long.divideUnsigned(Long.divideUnsigned(-1L, SINGLE_UNIT), SINGLE_UNIT);
     /**
      * A constant holding the value {@code 0}
      */
@@ -337,7 +337,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             //If we are dividing by a whole number, use our more optimized division algorithm
             return divideEquals(toDivide.value);
         }
-        BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+        BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_UP);
         long value = divide.longValue();
         short decimal = parseDecimal(divide.toPlainString());
         return setAndClampValues(value, decimal);
@@ -369,7 +369,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         long dec;
 
         //okay, now what if rem * SINGLE_UNIT * 10L will overflow?
-        if (Long.compareUnsigned(rem * 10, MAX_LONG_SHIFT) >= 0) {
+        if (Long.compareUnsigned(rem, MAX_LONG_SHIFT / 10) >= 0) {
             //if that'll overflow, then toDivide also has to be big. let's just lose some denominator precision and use that
             dec = Long.divideUnsigned(rem, Long.divideUnsigned(toDivide, SINGLE_UNIT * 10L)); //same as multiplying numerator
         } else {
@@ -380,6 +380,10 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         //usually will expect to round to nearest, so we have to do that here
         if (Long.remainderUnsigned(dec, 10) >= 5) {
             dec += 10;
+            if (dec >= SINGLE_UNIT * 10) { //round up + carry over to val
+                val++;
+                dec -= SINGLE_UNIT * 10;
+            }
         }
         dec /= 10;
         return setAndClampValues(val, (short) dec);
@@ -404,8 +408,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (toDivide.greaterOrEqual(ONE)) {
             //If toDivide >=1, then we don't care about this.decimal, so can optimize out accounting for that
             if (Long.compareUnsigned(toDivide.value, MAX_LONG_SHIFT) <= 0) { //don't case if *this* is < or > than shift
-                long div = toDivide.value * MAX_DECIMAL + toDivide.decimal;
-                return (Long.divideUnsigned(this.value, div) * MAX_DECIMAL) + Long.divideUnsigned(Long.remainderUnsigned(this.value, div) * MAX_DECIMAL, div);
+                long div = toDivide.value * SINGLE_UNIT + toDivide.decimal;
+                return (Long.divideUnsigned(this.value, div) * SINGLE_UNIT) + Long.divideUnsigned(Long.remainderUnsigned(this.value, div) * SINGLE_UNIT, div);
             }
             // we already know toDivide is > max_long_shift, and other case is impossible
             if (Long.compareUnsigned(toDivide.value, Long.divideUnsigned(-1L, 2) + 1L) >= 0) {
@@ -458,7 +462,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @throws ArithmeticException if {@code toDivide} is zero.
      */
     public int divideToInt(FloatingLong toDivide) {
-        return MathUtils.clampToInt(divideToLong(toDivide));
+        return MathUtils.clampUnsignedToInt(divideToLong(toDivide));
     }
 
     /**
