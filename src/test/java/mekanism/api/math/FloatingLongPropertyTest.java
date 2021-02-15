@@ -95,6 +95,16 @@ class FloatingLongPropertyTest implements WithQuickTheories {
     }
 
     @Test
+    @DisplayName("Test dividing to unsigned long works correctly")
+    void testDivisionToUnsignedLong() {
+        theoryForAllPairs().check((v1, d1, v2, d2) -> {
+            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
+            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
+            return b.isZero() || a.divideToUnsignedLong(b) == a.divide(b).getValue();
+        });
+    }
+
+    @Test
     @DisplayName("Test dividing to long works correctly")
     void testDivisionToLong() {
         theoryForAllPairs().check((v1, d1, v2, d2) -> {

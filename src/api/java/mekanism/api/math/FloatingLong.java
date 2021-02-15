@@ -386,16 +386,15 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to an integer value. This gets clamped at the upper bound of {@link
-     * Long#MAX_VALUE} rather than overflowing.
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to an unsigned long.
      *
      * @param toDivide The {@link FloatingLong} to divide by.
      *
-     * @return A long representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}.
+     * @return An unsigned long representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}.
      *
      * @throws ArithmeticException if {@code toDivide} is zero.
      */
-    public long divideToLong(FloatingLong toDivide) {
+    public long divideToUnsignedLong(FloatingLong toDivide) {
         if (toDivide.isZero()) {
             throw new ArithmeticException("Division by zero");
         } else if (this.smallerThan(toDivide)) {
@@ -406,7 +405,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             //If toDivide >=1, then we don't care about this.decimal, so can optimize out accounting for that
             if (Long.compareUnsigned(toDivide.value, MAX_LONG_SHIFT) <= 0) { //don't case if *this* is < or > than shift
                 long div = toDivide.value * MAX_DECIMAL + toDivide.decimal;
-                return (Long.divideUnsigned(this.value, div) * MAX_DECIMAL) + (this.value % div * MAX_DECIMAL / div);
+                return (Long.divideUnsigned(this.value, div) * MAX_DECIMAL) + Long.divideUnsigned(Long.remainderUnsigned(this.value, div) * MAX_DECIMAL, div);
             }
             // we already know toDivide is > max_long_shift, and other case is impossible
             if (Long.compareUnsigned(toDivide.value, Long.divideUnsigned(-1L, 2) + 1L) >= 0) {
@@ -417,20 +416,35 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             if (q != Long.divideUnsigned(this.value, toDivide.value + 1)) {
                 // check if we need to account for toDivide.decimal in this case
                 if (toDivide.value * q + Long.divideUnsigned(toDivide.decimal * q, MAX_DECIMAL) > this.value) {
-                    // if we do, reduce the result
+                    // if we do, reduce the result by one to account for it
                     return q - 1;
                 }
             }
             return q;
         }
-        // In this case, we're really multiplying (definitely need to account for decimal as well
+        //In this case, we're really multiplying (definitely need to account for decimal as well)
         if (Long.compareUnsigned(this.value, MAX_LONG_SHIFT) >= 0) {
-            return (this.value / toDivide.decimal) * MAX_DECIMAL //lose some precision here, have to add modulus
-                   + (this.value % toDivide.decimal) * MAX_DECIMAL / toDivide.decimal
+            return Long.divideUnsigned(this.value, toDivide.decimal) * MAX_DECIMAL //lose some precision here, have to add modulus
+                   + Long.divideUnsigned(Long.remainderUnsigned(this.value, toDivide.decimal) * MAX_DECIMAL, toDivide.decimal)
                    + (long) this.decimal * MAX_DECIMAL / toDivide.decimal;
         }
         long d = this.value * MAX_DECIMAL;
-        return d / toDivide.decimal + (long) this.decimal * MAX_DECIMAL / toDivide.decimal; //don't care about modulus since we're returning integers
+        //Note: We don't care about modulus since we're returning integers
+        return Long.divideUnsigned(d, toDivide.decimal) + ((long) this.decimal * MAX_DECIMAL / toDivide.decimal);
+    }
+
+    /**
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to a signed long. This gets clamped at the upper bound of {@link
+     * Long#MAX_VALUE} rather than overflowing.
+     *
+     * @param toDivide The {@link FloatingLong} to divide by.
+     *
+     * @return A long representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}.
+     *
+     * @throws ArithmeticException if {@code toDivide} is zero.
+     */
+    public long divideToLong(FloatingLong toDivide) {
+        return MathUtils.clampUnsignedToLong(divideToUnsignedLong(toDivide));
     }
 
     /**

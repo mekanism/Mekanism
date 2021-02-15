@@ -87,6 +87,13 @@ class FloatingLongTest {
     }
 
     @Test
+    @DisplayName("Test dividing to long and clamping to the max long because of bounds.")
+    void testDivideToLongIdentityClamp() {
+        FloatingLong a = FloatingLong.create(-1);
+        Assertions.assertEquals(a.divideToLong(FloatingLong.ONE), a.divide(FloatingLong.ONE).longValue());
+    }
+
+    @Test
     @DisplayName("Test division denominator underflow to 0")
     void testDivisionSmallDenominator() {
         FloatingLong a = FloatingLong.create(0, (short) 1);
