@@ -38,6 +38,10 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     private static final short SINGLE_UNIT = MAX_DECIMAL + 1;
     /**
+     * The maximum value where the decimal can be eliminated without {@link #value} overflowing
+     */
+    private static final long MAX_LONG_SHIFT = -1L / SINGLE_UNIT;
+    /**
      * A constant holding the value {@code 0}
      */
     public static final FloatingLong ZERO = createConst(0);
@@ -328,10 +332,79 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (toDivide.isZero()) {
             throw new ArithmeticException("Division by zero");
         }
+
         BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
         long value = divide.longValue();
         short decimal = parseDecimal(divide.toPlainString());
         return setAndClampValues(value, decimal);
+    }
+
+    /**
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to an integer value, modifying the current object unless it is a constant in which case it instead returns the
+     * result in a new object. This gets clamped at the upper bound of {@link Long#MAX_VALUE} rather than overflowing.
+     *
+             * @param toDivide The {@link FloatingLong} to divide by.
+     *
+             * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}.
+            *
+            * @throws ArithmeticException if {@code toDivide} is zero.
+            * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}
+     * <br>
+     * {@code value = value.divideToLong(toDivide)}
+     */
+    public long divideToLong(FloatingLong toDivide) {
+        if (toDivide.isZero()) {
+            throw new ArithmeticException("Division by zero");
+        }
+
+        // Return early if operation will return < 1
+        if (this.smallerThan(toDivide))
+            return 0L;
+
+        if (toDivide.greaterOrEqual(ONE)) {//If todivide >=1, then we don't care about this.decimal, so can optimize out accounting for that
+            if (Long.compareUnsigned(toDivide.value, MAX_LONG_SHIFT) <= 0) { //don't case if *this* is < or > than shift
+                long div = toDivide.value * MAX_DECIMAL + toDivide.decimal;
+                return (Long.divideUnsigned(this.value, div) * MAX_DECIMAL) + (this.value % div * MAX_DECIMAL / div);
+            } else { //we already know todivide is > max_long_shift, and other case is impossible
+                if (Long.compareUnsigned(toDivide.value, Long.divideUnsigned(-1L, 2) + 1L) >= 0) //need to check anyways to avoid overflow on toDivide.value +1, so might as well return early
+                    return 1L;
+                if (Long.divideUnsigned(this.value, (toDivide.value + 1)) != Long.divideUnsigned(this.value, toDivide.value)) {
+                    // need to account for todivide.decimal in this case
+                    long q = Long.divideUnsigned(this.value, toDivide.value);
+                    return (toDivide.value * q + Long.divideUnsigned(toDivide.decimal * q, MAX_DECIMAL) <= this.value) ? q : q - 1;
+                }
+                else
+                    return Long.divideUnsigned(this.value, toDivide.value);
+            }
+        }
+        else {
+            // In this case, we're really multiplying (definitely need to account for decimal as well
+            if (Long.compareUnsigned(this.value, MAX_LONG_SHIFT) >= 0) {
+                return (this.value / toDivide.decimal) * MAX_DECIMAL //lose some precision here, have to add modulus
+                        + (this.value % toDivide.decimal) * MAX_DECIMAL / toDivide.decimal
+                        + this.decimal * MAX_DECIMAL / toDivide.decimal;
+            } else {
+                long d = this.value * MAX_DECIMAL;
+                return d / toDivide.decimal + this.decimal * MAX_DECIMAL / toDivide.decimal; //don't care about modulus since we're returning integers
+            }
+        }
+    }
+
+    /**
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to an integer value, modifying the current object unless it is a constant in which case it instead returns the
+     * result in a new object. This gets clamped at the upper bound of {@link Integer#MAX_VALUE} rather than overflowing.
+     *
+     * @param toDivide The {@link FloatingLong} to divide by.
+     *
+     * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}.
+     *
+     * @throws ArithmeticException if {@code toDivide} is zero.
+     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}
+     * <br>
+     * {@code value = value.divideToLong(toDivide)}
+     */
+    public int divideToInt(FloatingLong toDivide) {
+        return divideToLong(toDivide) <= (long)Integer.MAX_VALUE ? (int)divideToLong((toDivide)) : Integer.MAX_VALUE;
     }
 
     /**
@@ -482,7 +555,33 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @throws ArithmeticException if {@code toDivide} is zero.
      */
     public FloatingLong divide(long toDivide) {
-        return divide(FloatingLong.create(toDivide));
+        if (toDivide == 0) {
+            throw new ArithmeticException("Division by zero");
+        }
+        if (this.isZero())
+            return this;
+
+        long val = Long.divideUnsigned(this.value, toDivide);
+        long rem = Long.remainderUnsigned(this.value, toDivide);
+
+        //just need to figure out remainder -> decimal
+        long dec;
+
+        //okay, now what if rem * SINGLE_UNIT * 10L will overflow?
+        if (Long.compareUnsigned(rem * 10, MAX_LONG_SHIFT) >= 0) {
+            //if that'll overflow, then todivide also has to be big. let's just lose some denominator precision and use that
+            dec = Long.divideUnsigned(rem, Long.divideUnsigned(toDivide, SINGLE_UNIT * 10L)); //same as multiplying numerator
+        } else {
+            dec = Long.divideUnsigned(rem * SINGLE_UNIT * 10L, toDivide); //trivial case
+            dec += (Long.divideUnsigned(this.decimal * 10L, toDivide)); //need to account for dividing decimal too in case toDivide < 10k
+        }
+
+        //usually will expect to round to nearest, so we have to do that here
+        if (Long.remainderUnsigned(dec, 10) >= 5)
+            dec+=10;
+        dec /= 10;
+
+        return create(val, (short) dec);
     }
 
     /**

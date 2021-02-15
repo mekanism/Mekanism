@@ -79,6 +79,14 @@ class FloatingLongTest {
     }
 
     @Test
+    @DisplayName("Test division with a very large denominator")
+    void testDivisionLargeDenominator() {
+        FloatingLong a = FloatingLong.create(922355340224119L);
+        FloatingLong b = FloatingLong.create(-1L);
+        Assertions.assertEquals(FloatingLong.create(0L, (short)1), a.divide(b));
+    }
+
+    @Test
     @DisplayName("Test to string as two decimals")
     void testConvertingStringToDecimal() {
         Assertions.assertEquals("0.00", FloatingLong.create(0, (short) 1).toString(2));
