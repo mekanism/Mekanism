@@ -194,7 +194,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
             return currentMax;
         }
         //Make sure we don't have any integer overflow in calculating how much we have room for
-        return Math.min(getStoredElectricity().divide(energyPerTick).intValue(), currentMax);
+        return Math.min(getStoredElectricity().divideToInt(energyPerTick), currentMax);
     }
 
     @Deprecated//TODO: Re-evaluate this but it seems unused and can probably be removed

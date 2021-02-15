@@ -46,7 +46,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
             if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
                 modelNumber = stages - 1;
             } else {
-                modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
+                modelNumber = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
             }
             buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
             MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, buffer, MekanismRenderer.getColorARGB(fluid, fluidScale),
@@ -56,7 +56,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
             if (buffer == null) {
                 buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
             }
-            MekanismRenderer.renderObject(getValveModel(tile.valveFluid, Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))), matrix, buffer,
+            MekanismRenderer.renderObject(getValveModel(tile.valveFluid, Math.min(stages - 1, (int) (fluidScale * (stages - 1)))), matrix, buffer,
                   MekanismRenderer.getColorARGB(tile.valveFluid), MekanismRenderer.calculateGlowLight(light, tile.valveFluid), overlayLight, FaceDisplay.FRONT);
         }
     }

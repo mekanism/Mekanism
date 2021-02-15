@@ -176,15 +176,20 @@ public class MekanismRenderer {
 
     public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay,
           FaceDisplay faceDisplay) {
+        renderObject(object, matrix, buffer, argb, light, overlay, faceDisplay, true);
+    }
+
+    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay,
+          FaceDisplay faceDisplay, boolean fakeDisableDiffuse) {
         if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay);
+            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay, fakeDisableDiffuse);
         }
     }
 
     public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int[] colors, int light, int overlay,
           FaceDisplay faceDisplay) {
         if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay);
+            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay, true);
         }
     }
 

@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.model.ModelRotation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoader;
@@ -41,6 +42,7 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
     public static final ResourceLocation MODEL_LOCATION = MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj");
     private static final IModelConfiguration contentsConfiguration = new ContentsModelConfiguration();
     private static final Map<ContentsModelData, List<BakedQuad>> contentModelCache = new Object2ObjectOpenHashMap<>();
+    private static final Vector3d NORMAL = new Vector3d(1, 1, 1).normalize();
 
     public static void onStitch() {
         contentModelCache.clear();
@@ -51,12 +53,11 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
             List<BakedQuad> bakedQuads = MekanismRenderer.contentsModel.bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible),
                   ModelLoader.instance(), material -> modelData.icon, ModelRotation.X0_Y0, ItemOverrideList.EMPTY, MODEL_LOCATION
             ).getQuads(null, null, world.getRandom(), EmptyModelData.INSTANCE);
-            //TODO: Try to improve this/do it better. It is close enough for now given it fixes render order issues, but could be improved further
             List<Quad> unpackedQuads = QuadUtils.unpack(bakedQuads);
             for (Quad unpackedQuad : unpackedQuads) {
                 for (Vertex vertex : unpackedQuad.getVertices()) {
-                    //Adjust the normals so it is closer to as if there were no normals set the same way we do it in Render Resizable Cuboid
-                    vertex.normal(vertex.getNormal().add(2.5, 2.5, 2.5).normalize());
+                    //Set the normals to ones that ignore the diffuse light in the same way we do it in Render Resizable Cuboid
+                    vertex.normal(NORMAL);
                 }
             }
             return QuadUtils.bake(unpackedQuads);

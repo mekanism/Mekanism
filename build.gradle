@@ -4,7 +4,6 @@ import mekanism.tasks.MergeJars
 
 buildscript {
     repositories {
-        jcenter()
         maven {
             name "forge"
             url "https://files.minecraftforge.net/maven"

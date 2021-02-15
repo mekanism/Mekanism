@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -16,9 +15,7 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -47,15 +44,9 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
                 } else {
                     modelNumber = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
                 }
-                RenderType renderType;
-                if (transformType == TransformType.GUI) {
-                    //TODO: Figure out why this doesn't actually fix it in JEI
-                    renderType = MekanismRenderType.getEntityTranslucentCullNoDiffuse(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                } else {
-                    renderType = Atlases.getTranslucentCullBlockType();
-                }
-                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(renderType),
-                      MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT);
+                MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
+                      MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT,
+                      transformType != TransformType.GUI);
             }
         }
         matrix.push();

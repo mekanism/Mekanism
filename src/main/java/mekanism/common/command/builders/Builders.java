@@ -22,7 +22,9 @@ public class Builders {
             buildFrame(world, start);
             buildWalls(world, start);
             buildInteriorLayer(world, start, 1, MekanismBlocks.SUPERHEATING_ELEMENT.getBlock());
+            buildInteriorLayers(world, start, 2, 14, Blocks.AIR);
             buildInteriorLayer(world, start, 15, MekanismBlocks.PRESSURE_DISPERSER.getBlock());
+            buildInteriorLayer(world, start, 16, Blocks.AIR);
         }
 
         @Override
@@ -41,6 +43,7 @@ public class Builders {
         public void build(World world, BlockPos start) {
             buildFrame(world, start);
             buildWalls(world, start);
+            buildInteriorLayers(world, start, 1, 16, Blocks.AIR);
         }
 
         @Override
@@ -59,9 +62,7 @@ public class Builders {
         public void build(World world, BlockPos start) {
             buildFrame(world, start);
             buildWalls(world, start);
-            for (int y = 1; y < 16; y++) {
-                buildInteriorLayer(world, start, y, MekanismBlocks.ULTIMATE_INDUCTION_CELL.getBlock());
-            }
+            buildInteriorLayers(world, start, 1, 15, MekanismBlocks.ULTIMATE_INDUCTION_CELL.getBlock());
             buildInteriorLayer(world, start, 16, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER.getBlock());
         }
 
@@ -81,11 +82,7 @@ public class Builders {
         public void build(World world, BlockPos start) {
             buildFrame(world, start);
             buildWalls(world, start);
-            for (int x = start.getX() + 1; x <= start.getX() + 2; x++) {
-                for (int z = start.getZ() + 1; z <= start.getZ() + 2; z++) {
-                    world.setBlockState(new BlockPos(x, start.getY() + 17, z), Blocks.AIR.getDefaultState());
-                }
-            }
+            buildInteriorLayers(world, start, 1, 17, Blocks.AIR);
             world.setBlockState(start.add(1, 1, 0), MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getBlock().getDefaultState());
         }
 
@@ -105,6 +102,7 @@ public class Builders {
         protected void build(World world, BlockPos start) {
             buildPartialFrame(world, start, 1);
             buildWalls(world, start);
+            buildInteriorLayers(world, start, 1, 5, Blocks.AIR);
             for (int x = -2; x < 2; ++x) {
                 for (int y = -2; y < 2; ++y) {
                     for (int z = -2; z < 2; ++z) {

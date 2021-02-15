@@ -11,6 +11,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextUtils;
 import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.GeneratorsLang;
@@ -74,8 +75,9 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
                   .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
             double rate = lowerVolume * (clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
             rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
-            drawString(matrix, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(energyMultiplier.multiply(rate))), 8, 104, titleTextColor());
-            drawString(matrix, GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(multiblock.condensers * MekanismGeneratorsConfig.generators.condenserRate.get()), 8, 113, titleTextColor());
+            drawTextScaledBound(matrix, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(energyMultiplier.multiply(rate))), 8, 104, titleTextColor(), 164);
+            String waterRate = TextUtils.format((long) multiblock.condensers * MekanismGeneratorsConfig.generators.condenserRate.get());
+            drawTextScaledBound(matrix, GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(waterRate), 8, 113, titleTextColor(), 164);
         }
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

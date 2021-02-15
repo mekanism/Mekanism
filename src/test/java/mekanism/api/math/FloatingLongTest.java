@@ -83,15 +83,22 @@ class FloatingLongTest {
     void testDivisionLargeDenominator() {
         FloatingLong a = FloatingLong.create(922355340224119L);
         FloatingLong b = FloatingLong.create(-1L);
-        Assertions.assertEquals(FloatingLong.create(0L, (short)1), a.divide(b));
+        Assertions.assertEquals(FloatingLong.create(0L, (short) 1), a.divide(b));
+    }
+
+    @Test
+    @DisplayName("Test dividing to long and clamping to the max long because of bounds.")
+    void testDivideToLongIdentityClamp() {
+        FloatingLong a = FloatingLong.create(-1);
+        Assertions.assertEquals(a.divideToLong(FloatingLong.ONE), a.divide(FloatingLong.ONE).longValue());
     }
 
     @Test
     @DisplayName("Test division denominator underflow to 0")
     void testDivisionSmallDenominator() {
-        FloatingLong a = FloatingLong.create(0, (short)1);
+        FloatingLong a = FloatingLong.create(0, (short) 1);
         long b = 2L;
-        Assertions.assertEquals(FloatingLong.create(0L, (short)1), a.divide(b));
+        Assertions.assertEquals(FloatingLong.create(0L, (short) 1), a.divide(b));
     }
 
     @Test
