@@ -332,11 +332,53 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         if (toDivide.isZero()) {
             throw new ArithmeticException("Division by zero");
         }
-
         BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
         long value = divide.longValue();
         short decimal = parseDecimal(divide.toPlainString());
         return setAndClampValues(value, decimal);
+    }
+
+    /**
+     * Divides this {@link FloatingLong} by the given unsigned long primitive, modifying the current object unless it is a constant in which case it instead returns the
+     * result in a new object. Rounds to the nearest 0.0001
+     *
+     * @param toDivide The value to divide by represented as an unsigned long.
+     *
+     * @return The {@link FloatingLong} representing the value of dividing this {@link FloatingLong} by the given {@link FloatingLong}.
+     *
+     * @throws ArithmeticException if {@code toDivide} is zero.
+     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}
+     * <br>
+     * {@code value = value.divideEquals(toDivide)}
+     */
+    public FloatingLong divideEquals(long toDivide) {
+        if (toDivide == 0) {
+            throw new ArithmeticException("Division by zero");
+        }
+        if (this.isZero())
+            return this;
+
+        long val = Long.divideUnsigned(this.value, toDivide);
+        long rem = Long.remainderUnsigned(this.value, toDivide);
+
+        //just need to figure out remainder -> decimal
+        long dec;
+
+        //okay, now what if rem * SINGLE_UNIT * 10L will overflow?
+        if (Long.compareUnsigned(rem * 10, MAX_LONG_SHIFT) >= 0) {
+            //if that'll overflow, then todivide also has to be big. let's just lose some denominator precision and use that
+            dec = Long.divideUnsigned(rem, Long.divideUnsigned(toDivide, SINGLE_UNIT * 10L)); //same as multiplying numerator
+        } else {
+            dec = Long.divideUnsigned(rem * SINGLE_UNIT * 10L, toDivide); //trivial case
+            dec += (Long.divideUnsigned(this.decimal * 10L, toDivide)); //need to account for dividing decimal too in case toDivide < 10k
+        }
+
+        //usually will expect to round to nearest, so we have to do that here
+        if (Long.remainderUnsigned(dec, 10) >= 5)
+            dec+=10;
+        dec /= 10;
+
+        return setAndClampValues(val, (short) dec);
     }
 
     /**
@@ -382,10 +424,10 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             if (Long.compareUnsigned(this.value, MAX_LONG_SHIFT) >= 0) {
                 return (this.value / toDivide.decimal) * MAX_DECIMAL //lose some precision here, have to add modulus
                         + (this.value % toDivide.decimal) * MAX_DECIMAL / toDivide.decimal
-                        + this.decimal * MAX_DECIMAL / toDivide.decimal;
+                        + (long)this.decimal * MAX_DECIMAL / toDivide.decimal;
             } else {
                 long d = this.value * MAX_DECIMAL;
-                return d / toDivide.decimal + this.decimal * MAX_DECIMAL / toDivide.decimal; //don't care about modulus since we're returning integers
+                return d / toDivide.decimal + (long)this.decimal * MAX_DECIMAL / toDivide.decimal; //don't care about modulus since we're returning integers
             }
         }
     }
@@ -404,7 +446,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * {@code value = value.divideToLong(toDivide)}
      */
     public int divideToInt(FloatingLong toDivide) {
-        return divideToLong(toDivide) <= (long)Integer.MAX_VALUE ? (int)divideToLong((toDivide)) : Integer.MAX_VALUE;
+        return MathUtils.clampToInt(divideToLong(toDivide));
     }
 
     /**
@@ -555,33 +597,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @throws ArithmeticException if {@code toDivide} is zero.
      */
     public FloatingLong divide(long toDivide) {
-        if (toDivide == 0) {
-            throw new ArithmeticException("Division by zero");
-        }
-        if (this.isZero())
-            return this;
-
-        long val = Long.divideUnsigned(this.value, toDivide);
-        long rem = Long.remainderUnsigned(this.value, toDivide);
-
-        //just need to figure out remainder -> decimal
-        long dec;
-
-        //okay, now what if rem * SINGLE_UNIT * 10L will overflow?
-        if (Long.compareUnsigned(rem * 10, MAX_LONG_SHIFT) >= 0) {
-            //if that'll overflow, then todivide also has to be big. let's just lose some denominator precision and use that
-            dec = Long.divideUnsigned(rem, Long.divideUnsigned(toDivide, SINGLE_UNIT * 10L)); //same as multiplying numerator
-        } else {
-            dec = Long.divideUnsigned(rem * SINGLE_UNIT * 10L, toDivide); //trivial case
-            dec += (Long.divideUnsigned(this.decimal * 10L, toDivide)); //need to account for dividing decimal too in case toDivide < 10k
-        }
-
-        //usually will expect to round to nearest, so we have to do that here
-        if (Long.remainderUnsigned(dec, 10) >= 5)
-            dec+=10;
-        dec /= 10;
-
-        return create(val, (short) dec);
+        return copy().divideEquals(toDivide);
     }
 
     /**
