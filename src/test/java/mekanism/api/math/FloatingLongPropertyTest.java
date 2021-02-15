@@ -93,4 +93,27 @@ class FloatingLongPropertyTest implements WithQuickTheories {
             return b.isZero() || a.divide(b).equals(divideViaBigDecimal(a, b));
         });
     }
+
+    @Test
+    @DisplayName("Test dividing to long works correctly")
+    void testDivisionToLong() {
+        theoryForAllPairs().check((v1, d1, v2, d2) -> {
+            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
+            FloatingLong b = FloatingLong.createConst(v2, d2.shortValue());
+            return b.isZero() || a.divideToLong(b) == a.divide(b).longValue();
+        });
+    }
+
+    @Test
+    @DisplayName("Test dividing by long works correctly")
+    void testDivisionByLong() {
+        qt().forAll(
+              longs().all(),
+              integers().between(0, 9_999),
+              longs().all()
+        ).check((v1, d1, b) -> {
+            FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
+            return b == 0 || a.divide(b).equals(divideViaBigDecimal(a, FloatingLong.create(b)));
+        });
+    }
 }
