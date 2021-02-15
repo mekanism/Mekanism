@@ -40,7 +40,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     /**
      * The maximum value where the decimal can be eliminated without {@link #value} overflowing
      */
-    private static final long MAX_LONG_SHIFT = -1L / SINGLE_UNIT;
+    private static final long MAX_LONG_SHIFT = Long.divideUnsigned(-1L, SINGLE_UNIT);
     /**
      * A constant holding the value {@code 0}
      */

@@ -87,6 +87,14 @@ class FloatingLongTest {
     }
 
     @Test
+    @DisplayName("Test division denominator underflow to 0")
+    void testDivisionSmallDenominator() {
+        FloatingLong a = FloatingLong.create(0, (short)1);
+        long b = 2L;
+        Assertions.assertEquals(FloatingLong.create(0L, (short)1), a.divide(b));
+    }
+
+    @Test
     @DisplayName("Test to string as two decimals")
     void testConvertingStringToDecimal() {
         Assertions.assertEquals("0.00", FloatingLong.create(0, (short) 1).toString(2));
