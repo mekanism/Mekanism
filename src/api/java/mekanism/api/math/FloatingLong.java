@@ -333,6 +333,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             throw new ArithmeticException("Division by zero");
         } else if (this.isZero()) {
             return FloatingLong.ZERO;
+        } else if (toDivide.decimal == 0) {
+            //If we are dividing by a whole number, use our more optimized division algorithm
+            return divideEquals(toDivide.value);
         }
         BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
         long value = divide.longValue();

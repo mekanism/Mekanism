@@ -113,7 +113,7 @@ class FloatingLongPropertyTest implements WithQuickTheories {
               longs().all()
         ).check((v1, d1, b) -> {
             FloatingLong a = FloatingLong.createConst(v1, d1.shortValue());
-            return b == 0 || a.divide(b).equals(a.divide(FloatingLong.create(b)));
+            return b == 0 || a.divide(b).equals(divideViaBigDecimal(a, FloatingLong.create(b)));
         });
     }
 }
