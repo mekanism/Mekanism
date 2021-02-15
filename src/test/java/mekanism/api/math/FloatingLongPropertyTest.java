@@ -64,7 +64,7 @@ class FloatingLongPropertyTest implements WithQuickTheories {
     @Override
     public QuickTheory qt() {
         //Force our example count to be higher than the default by 100x
-        return WithQuickTheories.super.qt().withExamples(1_000_000);
+        return WithQuickTheories.super.qt().withExamples(100_000);
     }
 
     @Test
