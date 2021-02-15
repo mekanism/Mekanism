@@ -367,11 +367,11 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
 
         //okay, now what if rem * SINGLE_UNIT * 10L will overflow?
         if (Long.compareUnsigned(rem * 10, MAX_LONG_SHIFT) >= 0) {
-            //if that'll overflow, then todivide also has to be big. let's just lose some denominator precision and use that
+            //if that'll overflow, then toDivide also has to be big. let's just lose some denominator precision and use that
             dec = Long.divideUnsigned(rem, Long.divideUnsigned(toDivide, SINGLE_UNIT * 10L)); //same as multiplying numerator
         } else {
             dec = Long.divideUnsigned(rem * SINGLE_UNIT * 10L, toDivide); //trivial case
-            dec += (Long.divideUnsigned(this.decimal * 10L, toDivide)); //need to account for dividing decimal too in case toDivide < 10k
+            dec += Long.divideUnsigned(this.decimal * 10L, toDivide); //need to account for dividing decimal too in case toDivide < 10k
         }
 
         //usually will expect to round to nearest, so we have to do that here
@@ -395,41 +395,39 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public long divideToLong(FloatingLong toDivide) {
         if (toDivide.isZero()) {
             throw new ArithmeticException("Division by zero");
-        }
-
-        // Return early if operation will return < 1
-        if (this.smallerThan(toDivide)) {
+        } else if (this.smallerThan(toDivide)) {
+            // Return early if operation will return < 1
             return 0;
         }
-
-        if (toDivide.greaterOrEqual(ONE)) {//If todivide >=1, then we don't care about this.decimal, so can optimize out accounting for that
+        if (toDivide.greaterOrEqual(ONE)) {
+            //If toDivide >=1, then we don't care about this.decimal, so can optimize out accounting for that
             if (Long.compareUnsigned(toDivide.value, MAX_LONG_SHIFT) <= 0) { //don't case if *this* is < or > than shift
                 long div = toDivide.value * MAX_DECIMAL + toDivide.decimal;
                 return (Long.divideUnsigned(this.value, div) * MAX_DECIMAL) + (this.value % div * MAX_DECIMAL / div);
-            } else { //we already know todivide is > max_long_shift, and other case is impossible
-                if (Long.compareUnsigned(toDivide.value, Long.divideUnsigned(-1L, 2) + 1L) >= 0) {
-                    //need to check anyways to avoid overflow on toDivide.value +1, so might as well return early
-                    return 1;
-                }
-                if (Long.divideUnsigned(this.value, (toDivide.value + 1)) != Long.divideUnsigned(this.value, toDivide.value)) {
-                    // need to account for todivide.decimal in this case
-                    long q = Long.divideUnsigned(this.value, toDivide.value);
-                    return (toDivide.value * q + Long.divideUnsigned(toDivide.decimal * q, MAX_DECIMAL) <= this.value) ? q : q - 1;
-                } else {
-                    return Long.divideUnsigned(this.value, toDivide.value);
+            }
+            // we already know toDivide is > max_long_shift, and other case is impossible
+            if (Long.compareUnsigned(toDivide.value, Long.divideUnsigned(-1L, 2) + 1L) >= 0) {
+                //need to check anyways to avoid overflow on toDivide.value +1, so might as well return early
+                return 1;
+            }
+            long q = Long.divideUnsigned(this.value, toDivide.value);
+            if (q != Long.divideUnsigned(this.value, toDivide.value + 1)) {
+                // check if we need to account for toDivide.decimal in this case
+                if (toDivide.value * q + Long.divideUnsigned(toDivide.decimal * q, MAX_DECIMAL) > this.value) {
+                    // if we do, reduce the result
+                    return q - 1;
                 }
             }
-        } else {
-            // In this case, we're really multiplying (definitely need to account for decimal as well
-            if (Long.compareUnsigned(this.value, MAX_LONG_SHIFT) >= 0) {
-                return (this.value / toDivide.decimal) * MAX_DECIMAL //lose some precision here, have to add modulus
-                       + (this.value % toDivide.decimal) * MAX_DECIMAL / toDivide.decimal
-                       + (long) this.decimal * MAX_DECIMAL / toDivide.decimal;
-            } else {
-                long d = this.value * MAX_DECIMAL;
-                return d / toDivide.decimal + (long) this.decimal * MAX_DECIMAL / toDivide.decimal; //don't care about modulus since we're returning integers
-            }
+            return q;
         }
+        // In this case, we're really multiplying (definitely need to account for decimal as well
+        if (Long.compareUnsigned(this.value, MAX_LONG_SHIFT) >= 0) {
+            return (this.value / toDivide.decimal) * MAX_DECIMAL //lose some precision here, have to add modulus
+                   + (this.value % toDivide.decimal) * MAX_DECIMAL / toDivide.decimal
+                   + (long) this.decimal * MAX_DECIMAL / toDivide.decimal;
+        }
+        long d = this.value * MAX_DECIMAL;
+        return d / toDivide.decimal + (long) this.decimal * MAX_DECIMAL / toDivide.decimal; //don't care about modulus since we're returning integers
     }
 
     /**
