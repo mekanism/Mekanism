@@ -18,6 +18,7 @@ plugins {
     id 'org.ajoberstar.grgit' version '4.1.0'
     id "com.matthewprenger.cursegradle" version '1.4.0'
     id 'java'
+    id 'eclipse'
     id 'idea'
     id 'maven'
     id 'maven-publish'
