@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -60,6 +61,17 @@ public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?
             return new ActionResult<>(ActionResultType.FAIL, stack);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, stack);
+    }
+
+    @Nonnull
+    @Override
+    public ActionResultType onItemUse(@Nonnull ItemUseContext context) {
+        //Like super.onItemUse, except we validate the player is not null, and pass the onItemRightClick regardless of if
+        // we are food or not (as we know the personal chest is never food). This allows us to open the personal chest's
+        // GUI if we didn't interact with a block that caused something to happen like opening a GUI.
+        ActionResultType result = tryPlace(new BlockItemUseContext(context));
+        PlayerEntity player = context.getPlayer();
+        return result.isSuccessOrConsume() || player == null ? result : onItemRightClick(context.getWorld(), player, context.getHand()).getType();
     }
 
     @Override
