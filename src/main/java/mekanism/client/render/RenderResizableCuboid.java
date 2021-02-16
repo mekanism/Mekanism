@@ -23,19 +23,25 @@ public class RenderResizableCuboid {
      * just use one backing "temporary" array.
      */
     private static final int[] combinedARGB = new int[EnumUtils.DIRECTIONS.length];
+    private static final Vector3f NORMAL = new Vector3f(1, 1, 1);
+    static {
+        NORMAL.normalize();
+    }
 
     private RenderResizableCuboid() {
     }
 
-    public static void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay, FaceDisplay faceDisplay) {
+    public static void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay, FaceDisplay faceDisplay,
+          boolean fakeDisableDiffuse) {
         Arrays.fill(combinedARGB, argb);
-        renderCube(cube, matrix, buffer, combinedARGB, light, overlay, faceDisplay);
+        renderCube(cube, matrix, buffer, combinedARGB, light, overlay, faceDisplay, fakeDisableDiffuse);
     }
 
     /**
      * @implNote Based off of Tinker's
      */
-    public static void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay) {
+    public static void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay,
+          boolean fakeDisableDiffuse) {
         //TODO - 10.1: Further attempt to fix z-fighting at larger distances if we make it not render the sides when it is in a solid block
         // that may improve performance some, but definitely would reduce/remove the majority of remaining z-fighting that is going on
         //Shift it so that the min values are all greater than or equal to zero as the various drawing code
@@ -59,7 +65,8 @@ public class RenderResizableCuboid {
         float[] zBounds = getBlockBounds(zDelta, minZ, maxZ);
         MatrixStack.Entry lastMatrix = matrix.getLast();
         Matrix4f matrix4f = lastMatrix.getMatrix();
-        Matrix3f normal = lastMatrix.getNormal();
+        Matrix3f normalMatrix = lastMatrix.getNormal();
+        Vector3f normal = fakeDisableDiffuse ? NORMAL : Vector3f.YP;
         Vector3f from = new Vector3f();
         Vector3f to = new Vector3f();
         // render each side
@@ -79,12 +86,12 @@ public class RenderResizableCuboid {
                     //Set bounds
                     from.setX(xBounds[x]);
                     to.setX(xBounds[x + 1]);
-                    putTexturedQuad(buffer, matrix4f, normal, westSprite, from, to, Direction.WEST, colors, light, overlay, faceDisplay);
-                    putTexturedQuad(buffer, matrix4f, normal, eastSprite, from, to, Direction.EAST, colors, light, overlay, faceDisplay);
-                    putTexturedQuad(buffer, matrix4f, normal, northSprite, from, to, Direction.NORTH, colors, light, overlay, faceDisplay);
-                    putTexturedQuad(buffer, matrix4f, normal, southSprite, from, to, Direction.SOUTH, colors, light, overlay, faceDisplay);
-                    putTexturedQuad(buffer, matrix4f, normal, upSprite, from, to, Direction.UP, colors, light, overlay, faceDisplay);
-                    putTexturedQuad(buffer, matrix4f, normal, downSprite, from, to, Direction.DOWN, colors, light, overlay, faceDisplay);
+                    putTexturedQuad(buffer, matrix4f, normalMatrix, westSprite, from, to, Direction.WEST, colors, light, overlay, faceDisplay, normal);
+                    putTexturedQuad(buffer, matrix4f, normalMatrix, eastSprite, from, to, Direction.EAST, colors, light, overlay, faceDisplay, normal);
+                    putTexturedQuad(buffer, matrix4f, normalMatrix, northSprite, from, to, Direction.NORTH, colors, light, overlay, faceDisplay, normal);
+                    putTexturedQuad(buffer, matrix4f, normalMatrix, southSprite, from, to, Direction.SOUTH, colors, light, overlay, faceDisplay, normal);
+                    putTexturedQuad(buffer, matrix4f, normalMatrix, upSprite, from, to, Direction.UP, colors, light, overlay, faceDisplay, normal);
+                    putTexturedQuad(buffer, matrix4f, normalMatrix, downSprite, from, to, Direction.DOWN, colors, light, overlay, faceDisplay, normal);
                 }
             }
         }
@@ -124,8 +131,8 @@ public class RenderResizableCuboid {
     /**
      * @implNote From Mantle with some adjustments
      */
-    private static void putTexturedQuad(IVertexBuilder buffer, Matrix4f matrix, Matrix3f normal, @Nullable SpriteInfo spriteInfo, Vector3f from, Vector3f to,
-          Direction face, int[] colors, int light, int overlay, FaceDisplay faceDisplay) {
+    private static void putTexturedQuad(IVertexBuilder buffer, Matrix4f matrix, Matrix3f normalMatrix, @Nullable SpriteInfo spriteInfo, Vector3f from, Vector3f to,
+          Direction face, int[] colors, int light, int overlay, FaceDisplay faceDisplay, Vector3f normal) {
         if (spriteInfo == null) {
             return;
         }
@@ -196,42 +203,42 @@ public class RenderResizableCuboid {
         // add quads
         switch (face) {
             case DOWN:
-                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay,
+                drawFace(buffer, matrix, normalMatrix, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
                       x1, y1, z2,
                       x1, y1, z1,
                       x2, y1, z1,
                       x2, y1, z2);
                 break;
             case UP:
-                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay,
+                drawFace(buffer, matrix, normalMatrix, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
                       x1, y2, z1,
                       x1, y2, z2,
                       x2, y2, z2,
                       x2, y2, z1);
                 break;
             case NORTH:
-                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay,
+                drawFace(buffer, matrix, normalMatrix, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
                       x1, y1, z1,
                       x1, y2, z1,
                       x2, y2, z1,
                       x2, y1, z1);
                 break;
             case SOUTH:
-                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay,
+                drawFace(buffer, matrix, normalMatrix, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
                       x2, y1, z2,
                       x2, y2, z2,
                       x1, y2, z2,
                       x1, y1, z2);
                 break;
             case WEST:
-                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay,
+                drawFace(buffer, matrix, normalMatrix, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
                       x1, y1, z2,
                       x1, y2, z2,
                       x1, y2, z1,
                       x1, y1, z1);
                 break;
             case EAST:
-                drawFace(buffer, matrix, normal, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay,
+                drawFace(buffer, matrix, normalMatrix, red, green, blue, alpha, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
                       x2, y1, z1,
                       x2, y2, z1,
                       x2, y2, z2,
@@ -240,23 +247,23 @@ public class RenderResizableCuboid {
         }
     }
 
-    private static void drawFace(IVertexBuilder buffer, Matrix4f matrix, Matrix3f normal, float red, float green, float blue, float alpha, float minU, float maxU,
-          float minV, float maxV, int light, int overlay, FaceDisplay faceDisplay,
+    private static void drawFace(IVertexBuilder buffer, Matrix4f matrix, Matrix3f normalMatrix, float red, float green, float blue, float alpha, float minU, float maxU,
+          float minV, float maxV, int light, int overlay, FaceDisplay faceDisplay, Vector3f normal,
           float x1, float y1, float z1,
           float x2, float y2, float z2,
           float x3, float y3, float z3,
           float x4, float y4, float z4) {
         if (faceDisplay.front) {
-            buffer.pos(matrix, x1, y1, z1).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-            buffer.pos(matrix, x2, y2, z2).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-            buffer.pos(matrix, x3, y3, z3).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
-            buffer.pos(matrix, x4, y4, z4).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, 1, 0).endVertex();
+            buffer.pos(matrix, x1, y1, z1).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normalMatrix, normal.getX(), normal.getY(), normal.getZ()).endVertex();
+            buffer.pos(matrix, x2, y2, z2).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normalMatrix, normal.getX(), normal.getY(), normal.getZ()).endVertex();
+            buffer.pos(matrix, x3, y3, z3).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normalMatrix, normal.getX(), normal.getY(), normal.getZ()).endVertex();
+            buffer.pos(matrix, x4, y4, z4).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normalMatrix, normal.getX(), normal.getY(), normal.getZ()).endVertex();
         }
         if (faceDisplay.back) {
-            buffer.pos(matrix, x4, y4, z4).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, -1, 0).endVertex();
-            buffer.pos(matrix, x3, y3, z3).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normal, 0, -1, 0).endVertex();
-            buffer.pos(matrix, x2, y2, z2).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normal, 0, -1, 0).endVertex();
-            buffer.pos(matrix, x1, y1, z1).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normal, 0, -1, 0).endVertex();
+            buffer.pos(matrix, x4, y4, z4).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normalMatrix, 0, -1, 0).endVertex();
+            buffer.pos(matrix, x3, y3, z3).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normalMatrix, 0, -1, 0).endVertex();
+            buffer.pos(matrix, x2, y2, z2).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normalMatrix, 0, -1, 0).endVertex();
+            buffer.pos(matrix, x1, y1, z1).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normalMatrix, 0, -1, 0).endVertex();
         }
     }
 

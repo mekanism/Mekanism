@@ -79,6 +79,77 @@ class FloatingLongTest {
     }
 
     @Test
+    @DisplayName("Test division with a very large denominator")
+    void testDivisionLargeDenominator() {
+        FloatingLong a = FloatingLong.create(922355340224119L);
+        FloatingLong b = FloatingLong.create(-1L);
+        Assertions.assertEquals(FloatingLong.create(0L, (short) 1), a.divide(b));
+    }
+
+    @Test
+    @DisplayName("Test division with a very large numerator & denominator")
+    void testDivisionLargeNumDen() {
+        FloatingLong a = FloatingLong.create(1844724002681593706L);
+        FloatingLong b = FloatingLong.create(-1L);
+        Assertions.assertEquals(FloatingLong.create(0L, (short) 1000), a.divide(b));
+    }
+
+    @Test
+    @DisplayName("Test division bad case 1")
+    void testDivisionBad1() {
+        FloatingLong a = FloatingLong.create(1L);
+        FloatingLong b = FloatingLong.create(32L);
+        Assertions.assertEquals(FloatingLong.create(0L, (short) 313), a.divide(b));
+    }
+
+    @Test
+    @DisplayName("Test division bad case 2")
+    void testDivisionBad2() {
+        FloatingLong a = FloatingLong.create(-1L);
+        FloatingLong b = FloatingLong.create(184948298500L);
+        Assertions.assertEquals(99740004L, a.divideToUnsignedLong(b));
+    }
+    @Test
+    @DisplayName("Test divisiontolong tough case")
+    void testDivisionTough1() {
+        FloatingLong a = FloatingLong.create(-705_739_103_007_515L - 1);
+        FloatingLong b = FloatingLong.create(185704605303L);
+        Assertions.assertEquals(99329999L, a.divideToUnsignedLong(b));
+    }
+
+    @Test
+    @DisplayName("Test divisionToUnsignedLong rounding case")
+    void testDivisionUnsignedRound() {
+        FloatingLong a = FloatingLong.create(-893067536972106880L);
+        FloatingLong b = FloatingLong.create(-892518212563104587L, (short)1);
+        Assertions.assertEquals(0L, a.divideToUnsignedLong(b));
+    }
+
+    @Test
+    @DisplayName("Test division by long, rounding case")
+    void testDivisionRound() {
+        FloatingLong a = FloatingLong.create(-3361844618367640110L);
+        FloatingLong b = FloatingLong.create(3016988510907153472L);
+        Assertions.assertEquals(FloatingLong.create(5L), a.divide(b));
+    }
+
+
+    @Test
+    @DisplayName("Test dividing to long and clamping to the max long because of bounds.")
+    void testDivideToLongIdentityClamp() {
+        FloatingLong a = FloatingLong.create(-1);
+        Assertions.assertEquals(a.divideToLong(FloatingLong.ONE), a.divide(FloatingLong.ONE).longValue());
+    }
+
+    @Test
+    @DisplayName("Test division denominator underflow to 0")
+    void testDivisionSmallDenominator() {
+        FloatingLong a = FloatingLong.create(0, (short) 1);
+        long b = 2L;
+        Assertions.assertEquals(FloatingLong.create(0L, (short) 1), a.divide(b));
+    }
+
+    @Test
     @DisplayName("Test to string as two decimals")
     void testConvertingStringToDecimal() {
         Assertions.assertEquals("0.00", FloatingLong.create(0, (short) 1).toString(2));

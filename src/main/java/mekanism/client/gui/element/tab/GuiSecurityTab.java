@@ -53,12 +53,14 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
     }
 
     private static ISecurityObject getItemSecurityObject(@Nonnull Hand hand) {
-        ItemStack stack = minecraft.player.getHeldItem(hand);
-        if (stack.isEmpty() || !(stack.getItem() instanceof ISecurityItem)) {
-            minecraft.player.closeScreen();
-            return ISecurityObject.NO_SECURITY;
-        }
-        return SecurityUtils.wrapSecurityItem(stack);
+        return SecurityUtils.wrapSecurityItem(() -> {
+            ItemStack stack = minecraft.player.getHeldItem(hand);
+            if (stack.isEmpty() || !(stack.getItem() instanceof ISecurityItem)) {
+                minecraft.player.closeScreen();
+                return ItemStack.EMPTY;
+            }
+            return stack;
+        });
     }
 
     public GuiSecurityTab(IGuiWrapper gui, @Nonnull Hand hand) {

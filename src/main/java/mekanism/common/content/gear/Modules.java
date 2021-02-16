@@ -113,7 +113,7 @@ public class Modules {
     // Pants
     public static final ModuleData<ModuleLocomotiveBoostingUnit> LOCOMOTIVE_BOOSTING_UNIT = register("locomotive_boosting_unit",
           MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, ModuleLocomotiveBoostingUnit::new, 4)
-          .rarity(Rarity.RARE);
+          .rarity(Rarity.RARE).setHandlesModeChange();
 
     // Boots
     public static final ModuleData<ModuleHydraulicPropulsionUnit> HYDRAULIC_PROPULSION_UNIT = register("hydraulic_propulsion_unit",

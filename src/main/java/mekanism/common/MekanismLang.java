@@ -82,6 +82,7 @@ public enum MekanismLang implements ILangEntry {
     KEY_HAND_MODE("key", "mode"),
     KEY_HEAD_MODE("key", "head_mode"),
     KEY_CHEST_MODE("key", "chest_mode"),
+    KEY_LEGS_MODE("key", "legs_mode"),
     KEY_FEET_MODE("key", "feet_mode"),
     KEY_DETAILS_MODE("key", "details"),
     KEY_DESCRIPTION_MODE("key", "description"),

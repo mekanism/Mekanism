@@ -75,12 +75,16 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         }
     }
 
-    public boolean addBlade() {
-        // If the the rotor beneath has less than two blades, add to it
-        TileEntityTurbineRotor next = getRotor(getPos().down());
-        if (next != null && next.blades < 2) {
-            return next.addBlade();
-        } else if (blades < 2) {
+    public boolean addBlade(boolean checkBelow) {
+        if (checkBelow) {
+            //If we want to check rotors that are below (aka we aren't being called by them)
+            // and if the the rotor beneath has less than two blades, add to it
+            TileEntityTurbineRotor previous = getRotor(getPos().down());
+            if (previous != null && previous.blades < 2) {
+                return previous.addBlade(true);
+            }
+        }
+        if (blades < 2) {
             // Add the blades to this rotor
             blades++;
             if (position == -1) {
@@ -96,8 +100,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
         // This rotor and the rotor below are full up; pass the call
         // on up to the next rotor in stack
-        next = getRotor(getPos().up());
-        return next != null && next.addBlade();
+        TileEntityTurbineRotor next = getRotor(getPos().up());
+        return next != null && next.addBlade(false);
     }
 
     public boolean removeBlade() {

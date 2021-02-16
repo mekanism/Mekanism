@@ -30,6 +30,8 @@ public class MekanismKeyHandler extends MekKeyHandler {
           GLFW.GLFW_KEY_V, MekanismLang.MEKANISM.getTranslationKey());
     public static final KeyBinding chestModeSwitchKey = new KeyBinding(MekanismLang.KEY_CHEST_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_G, MekanismLang.MEKANISM.getTranslationKey());
+    public static final KeyBinding legsModeSwitchKey = new KeyBinding(MekanismLang.KEY_LEGS_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
+          GLFW.GLFW_KEY_J, MekanismLang.MEKANISM.getTranslationKey());
     public static final KeyBinding feetModeSwitchKey = new KeyBinding(MekanismLang.KEY_FEET_MODE.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_B, MekanismLang.MEKANISM.getTranslationKey());
     public static final KeyBinding detailsKey = new KeyBinding(MekanismLang.KEY_DETAILS_MODE.getTranslationKey(), KeyConflictContext.GUI, InputMappings.Type.KEYSYM,
@@ -43,10 +45,11 @@ public class MekanismKeyHandler extends MekKeyHandler {
     public static final KeyBinding hudKey = new KeyBinding(MekanismLang.KEY_HUD.getTranslationKey(), KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM,
           GLFW.GLFW_KEY_H, MekanismLang.MEKANISM.getTranslationKey());
 
-    private static final Builder BINDINGS = new Builder(9)
+    private static final Builder BINDINGS = new Builder(10)
           .addBinding(handModeSwitchKey, false)
           .addBinding(headModeSwitchKey, false)
           .addBinding(chestModeSwitchKey, false)
+          .addBinding(legsModeSwitchKey, false)
           .addBinding(feetModeSwitchKey, false)
           .addBinding(detailsKey, false)
           .addBinding(descriptionKey, false)
@@ -59,6 +62,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
         ClientRegistry.registerKeyBinding(handModeSwitchKey);
         ClientRegistry.registerKeyBinding(headModeSwitchKey);
         ClientRegistry.registerKeyBinding(chestModeSwitchKey);
+        ClientRegistry.registerKeyBinding(legsModeSwitchKey);
         ClientRegistry.registerKeyBinding(feetModeSwitchKey);
         ClientRegistry.registerKeyBinding(detailsKey);
         ClientRegistry.registerKeyBinding(descriptionKey);
@@ -86,20 +90,13 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.OFFHAND, player.isSneaking()));
             }
         } else if (kb == headModeSwitchKey) {
-            if (IModeItem.isModeItem(player, EquipmentSlotType.HEAD)) {
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.HEAD, player.isSneaking()));
-                SoundHandler.playSound(MekanismSounds.HYDRAULIC);
-            }
+            handlePotentialModeItem(player, EquipmentSlotType.HEAD);
         } else if (kb == chestModeSwitchKey) {
-            if (IModeItem.isModeItem(player, EquipmentSlotType.CHEST)) {
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.CHEST, player.isSneaking()));
-                SoundHandler.playSound(MekanismSounds.HYDRAULIC);
-            }
+            handlePotentialModeItem(player, EquipmentSlotType.CHEST);
+        } else if (kb == legsModeSwitchKey) {
+            handlePotentialModeItem(player, EquipmentSlotType.LEGS);
         } else if (kb == feetModeSwitchKey) {
-            if (IModeItem.isModeItem(player, EquipmentSlotType.FEET)) {
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.FEET, player.isSneaking()));
-                SoundHandler.playSound(MekanismSounds.HYDRAULIC);
-            }
+            handlePotentialModeItem(player, EquipmentSlotType.FEET);
         } else if (kb == moduleTweakerKey) {
             if (ModuleTweakerContainer.hasTweakableItem(player)) {
                 Mekanism.packetHandler.sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
@@ -108,6 +105,13 @@ public class MekanismKeyHandler extends MekKeyHandler {
             MekanismClient.updateKey(kb, KeySync.BOOST);
         } else if (kb == hudKey) {
             MekanismClient.renderHUD = !MekanismClient.renderHUD;
+        }
+    }
+
+    private void handlePotentialModeItem(PlayerEntity player, EquipmentSlotType slot) {
+        if (IModeItem.isModeItem(player, slot)) {
+            Mekanism.packetHandler.sendToServer(new PacketModeChange(slot, player.isSneaking()));
+            SoundHandler.playSound(MekanismSounds.HYDRAULIC);
         }
     }
 

@@ -36,7 +36,7 @@ public class MekFakePlayer extends FakePlayer {
 
     public MekFakePlayer(ServerWorld world) {
         super(world, new FakeGameProfile());
-        ((FakeGameProfile)this.getGameProfile()).myFakePlayer = this;
+        ((FakeGameProfile) this.getGameProfile()).myFakePlayer = this;
     }
 
     @Override
@@ -71,6 +71,7 @@ public class MekFakePlayer extends FakePlayer {
         MekFakePlayer actual = INSTANCE != null ? INSTANCE.get() : null;
         if (actual == null) {
             actual = new MekFakePlayer(world);
+            actual.connection = new MekFakeNetHandler(world.getServer(), actual);
             INSTANCE = new WeakReference<>(actual);
         }
         MekFakePlayer player = actual;

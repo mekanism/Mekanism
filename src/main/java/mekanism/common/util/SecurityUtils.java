@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
@@ -185,6 +186,65 @@ public final class SecurityUtils {
             @Override
             public void setSecurityMode(SecurityMode mode) {
                 ((ISecurityItem) stack.getItem()).setSecurity(stack, mode);
+            }
+        };
+    }
+
+    /**
+     * @apiNote Mainly for use on the client side when the stack potentially could change while our security object currently exists
+     */
+    public static ISecurityObject wrapSecurityItem(@Nonnull Supplier<ItemStack> stackSupplier) {
+        ItemStack stack = stackSupplier.get();
+        if (stack.isEmpty() || !(stack.getItem() instanceof ISecurityItem)) {
+            return ISecurityObject.NO_SECURITY;
+        }
+        return new ISecurityObject() {
+
+            private ItemStack getAndValidateStack() {
+                ItemStack stack = stackSupplier.get();
+                if (stack.isEmpty() || !(stack.getItem() instanceof ISecurityItem)) {
+                    return ItemStack.EMPTY;
+                }
+                return stack;
+            }
+
+            @Override
+            public boolean hasSecurity() {
+                return !getAndValidateStack().isEmpty();
+            }
+
+            @Nullable
+            @Override
+            public UUID getOwnerUUID() {
+                ItemStack stack = getAndValidateStack();
+                if (stack.isEmpty()) {
+                    return null;
+                }
+                return ((ISecurityItem) stack.getItem()).getOwnerUUID(stack);
+            }
+
+            @Nullable
+            @Override
+            public String getOwnerName() {
+                UUID ownerUUID = getOwnerUUID();
+                return ownerUUID == null ? null : MekanismClient.clientUUIDMap.get(ownerUUID);
+            }
+
+            @Override
+            public SecurityMode getSecurityMode() {
+                ItemStack stack = getAndValidateStack();
+                if (stack.isEmpty()) {
+                    return SecurityMode.PUBLIC;
+                }
+                return ((ISecurityItem) stack.getItem()).getSecurity(stack);
+            }
+
+            @Override
+            public void setSecurityMode(SecurityMode mode) {
+                ItemStack stack = getAndValidateStack();
+                if (!stack.isEmpty()) {
+                    ((ISecurityItem) stack.getItem()).setSecurity(stack, mode);
+                }
             }
         };
     }
