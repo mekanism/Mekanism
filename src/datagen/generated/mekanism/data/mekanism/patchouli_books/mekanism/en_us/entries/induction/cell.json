@@ -1,0 +1,31 @@
+{
+  "name": "Induction Cells",
+  "category": "blocks",
+  "icon": "mekanism:basic_induction_cell",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Induction Cells are components in the Induction Matrix. Each cell increases the total energy storage of a Matrix. Note that this does not increase transfer rate; look to the Induction Providers for that."
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:basic_induction_cell",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:advanced_induction_cell",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:elite_induction_cell",
+      "link_recipe": true
+    },
+    {
+      "type": "spotlight",
+      "item": "mekanism:ultimate_induction_cell",
+      "link_recipe": true
+    }
+  ]
+}

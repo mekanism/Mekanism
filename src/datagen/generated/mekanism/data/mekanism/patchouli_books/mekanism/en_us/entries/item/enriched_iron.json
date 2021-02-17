@@ -1,0 +1,13 @@
+{
+  "name": "item.mekanism.enriched_iron",
+  "category": "items_metal_and_ore",
+  "icon": "mekanism:enriched_iron",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:enriched_iron",
+      "link_recipe": true
+    }
+  ],
+  "read_by_default": true
+}

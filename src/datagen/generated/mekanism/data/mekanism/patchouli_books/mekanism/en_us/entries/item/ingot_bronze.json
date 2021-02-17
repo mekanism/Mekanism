@@ -1,0 +1,13 @@
+{
+  "name": "item.mekanism.ingot_bronze",
+  "category": "items_metal_and_ore",
+  "icon": "mekanism:ingot_bronze",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:ingot_bronze",
+      "link_recipe": true
+    }
+  ],
+  "read_by_default": true
+}

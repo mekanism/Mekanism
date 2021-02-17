@@ -1,0 +1,13 @@
+{
+  "name": "item.mekanism.dust_bronze",
+  "category": "items_metal_and_ore",
+  "icon": "mekanism:dust_bronze",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:dust_bronze",
+      "link_recipe": true
+    }
+  ],
+  "read_by_default": true
+}

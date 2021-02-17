@@ -1,0 +1,14 @@
+{
+  "name": "item.mekanism.crafting_formula",
+  "category": "items",
+  "icon": "mekanism:crafting_formula",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:crafting_formula",
+      "link_recipe": true,
+      "text": "Used in the $(l:block/formulaic_assemblicator)Formulaic Assemblicator$(/l) to encode a crafting recipe for automatic operation."
+    }
+  ],
+  "read_by_default": true
+}

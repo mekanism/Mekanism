@@ -1,0 +1,13 @@
+{
+  "name": "item.mekanism.ingot_refined_glowstone",
+  "category": "items_metal_and_ore",
+  "icon": "mekanism:ingot_refined_glowstone",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "mekanism:ingot_refined_glowstone",
+      "link_recipe": true
+    }
+  ],
+  "read_by_default": true
+}
