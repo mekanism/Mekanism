@@ -7,7 +7,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.network.PacketDropperUse.TankType;
+import mekanism.common.network.to_server.PacketDropperUse.TankType;
 
 public class GuiGasGauge extends GuiChemicalGauge<Gas, GasStack, IGasTank> {
 

@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketUpdateTile;
+import mekanism.common.network.to_client.PacketUpdateTile;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;

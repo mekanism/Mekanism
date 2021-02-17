@@ -22,7 +22,7 @@ import mekanism.common.lib.HashList;
 import mekanism.common.lib.math.voxel.Chunk3D;
 import mekanism.common.lib.radiation.capability.IRadiationEntity;
 import mekanism.common.lib.radiation.capability.IRadiationShielding;
-import mekanism.common.network.PacketRadiationData;
+import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.CapabilityUtils;

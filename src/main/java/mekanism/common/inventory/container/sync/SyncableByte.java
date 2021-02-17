@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.sync;
 
 import it.unimi.dsi.fastutil.bytes.ByteConsumer;
 import mekanism.api.functions.ByteSupplier;
-import mekanism.common.network.container.property.BytePropertyData;
+import mekanism.common.network.to_client.container.property.BytePropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling bytes

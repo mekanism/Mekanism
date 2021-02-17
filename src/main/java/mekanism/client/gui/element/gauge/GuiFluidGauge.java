@@ -12,7 +12,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.network.PacketDropperUse.TankType;
+import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;

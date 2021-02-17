@@ -7,7 +7,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.network.PacketDropperUse.TankType;
+import mekanism.common.network.to_server.PacketDropperUse.TankType;
 
 public class GuiSlurryGauge extends GuiChemicalGauge<Slurry, SlurryStack, ISlurryTank> {
 

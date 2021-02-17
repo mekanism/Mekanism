@@ -4,8 +4,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.common.lib.frequency.Frequency;
-import mekanism.common.network.container.property.FrequencyPropertyData;
-import mekanism.common.network.container.property.PropertyData;
+import mekanism.common.network.to_client.container.property.FrequencyPropertyData;
+import mekanism.common.network.to_client.container.property.PropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling frequencies

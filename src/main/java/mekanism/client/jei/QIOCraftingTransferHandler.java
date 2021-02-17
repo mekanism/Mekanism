@@ -21,7 +21,7 @@ import mekanism.common.content.qio.QIOCraftingTransferHelper.HashedItemSource;
 import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularHashedItemSource;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.network.PacketQIOFillCraftingWindow;
+import mekanism.common.network.to_server.PacketQIOFillCraftingWindow;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
 import mezz.jei.api.helpers.IStackHelper;
@@ -35,7 +35,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.util.ResourceLocation;
 
-//TODO - 10.1: Min JEI version of 7.6.1, or whatever the version ends up being that has the getUniqueIdentifierForStack exposure
 public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer> implements IRecipeTransferHandler<CONTAINER> {
 
     private final IRecipeTransferHandlerHelper handlerHelper;

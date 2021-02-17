@@ -19,7 +19,7 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.lib.security.ISecurityItem;
-import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntitySecurityDesk;

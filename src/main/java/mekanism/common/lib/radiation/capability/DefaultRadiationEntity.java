@@ -10,7 +10,7 @@ import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
-import mekanism.common.network.PacketRadiationData;
+import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.LivingEntity;

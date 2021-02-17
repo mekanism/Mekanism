@@ -18,7 +18,7 @@ import mekanism.common.lib.security.ISecurityTile;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityMode;
-import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

@@ -10,7 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.IOwnerItem;
-import mekanism.common.network.PacketGuiItemDataRequest;
+import mekanism.common.network.to_server.PacketGuiItemDataRequest;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;

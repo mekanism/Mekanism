@@ -27,7 +27,7 @@ import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
-import mekanism.common.network.PacketQIOItemViewerGuiSync;
+import mekanism.common.network.to_client.PacketQIOItemViewerGuiSync;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;

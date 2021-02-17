@@ -14,7 +14,7 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
-import mekanism.common.network.PacketDropperUse.TankType;
+import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;

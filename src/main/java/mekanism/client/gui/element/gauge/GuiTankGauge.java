@@ -6,9 +6,9 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemGaugeDropper;
-import mekanism.common.network.PacketDropperUse;
-import mekanism.common.network.PacketDropperUse.DropperAction;
-import mekanism.common.network.PacketDropperUse.TankType;
+import mekanism.common.network.to_server.PacketDropperUse;
+import mekanism.common.network.to_server.PacketDropperUse.DropperAction;
+import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 

@@ -61,7 +61,7 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketHandler;
-import mekanism.common.network.PacketTransmitterUpdate;
+import mekanism.common.network.to_client.PacketTransmitterUpdate;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.recipe.condition.ModVersionLoadedCondition;

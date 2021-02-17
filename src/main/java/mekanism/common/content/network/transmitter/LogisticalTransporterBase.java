@@ -21,7 +21,7 @@ import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
-import mekanism.common.network.PacketTransporterUpdate;
+import mekanism.common.network.to_client.PacketTransporterUpdate;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;

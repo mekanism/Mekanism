@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.sync;
 
 import it.unimi.dsi.fastutil.shorts.ShortConsumer;
 import mekanism.api.functions.ShortSupplier;
-import mekanism.common.network.container.property.ShortPropertyData;
+import mekanism.common.network.to_client.container.property.ShortPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling shorts

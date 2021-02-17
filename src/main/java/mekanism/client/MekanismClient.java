@@ -11,7 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
-import mekanism.common.network.PacketKey;
+import mekanism.common.network.to_server.PacketKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;

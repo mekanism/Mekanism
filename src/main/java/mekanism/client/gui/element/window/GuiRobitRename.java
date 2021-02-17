@@ -8,7 +8,7 @@ import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.network.PacketRobit;
+import mekanism.common.network.to_server.PacketRobit;
 
 public class GuiRobitRename extends GuiWindow {
 

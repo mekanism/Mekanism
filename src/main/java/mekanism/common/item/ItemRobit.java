@@ -12,7 +12,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.security.ISecurityItem;
-import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;

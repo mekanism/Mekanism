@@ -1,9 +1,7 @@
 package mekanism.common.network;
 
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import mekanism.api.Range3D;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -21,8 +19,8 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -60,10 +58,10 @@ public abstract class BasePacketHandler {
         buffer.writeDouble(vector.getZ());
     }
 
-    public static void log(String log) {
+    public static void log(String logFormat, Object... params) {
         //TODO: Add more logging for packets using this
         if (MekanismConfig.general.logPackets.get()) {
-            Mekanism.logger.info(log);
+            Mekanism.logger.info(logFormat, params);
         }
     }
 
@@ -73,14 +71,16 @@ public abstract class BasePacketHandler {
 
     public abstract void initialize();
 
-    protected <MSG> void registerClientToServer(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
-          BiConsumer<MSG, Supplier<Context>> consumer) {
-        getChannel().registerMessage(index++, type, encoder, decoder, consumer, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+    protected <MSG extends IMekanismPacket> void registerClientToServer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+        registerMessage(type, decoder, NetworkDirection.PLAY_TO_SERVER);
     }
 
-    protected <MSG> void registerServerToClient(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
-          BiConsumer<MSG, Supplier<Context>> consumer) {
-        getChannel().registerMessage(index++, type, encoder, decoder, consumer, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+    protected <MSG extends IMekanismPacket> void registerServerToClient(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+        registerMessage(type, decoder, NetworkDirection.PLAY_TO_CLIENT);
+    }
+
+    private <MSG extends IMekanismPacket> void registerMessage(Class<MSG> type, Function<PacketBuffer, MSG> decoder, NetworkDirection networkDirection) {
+        getChannel().registerMessage(index++, type, IMekanismPacket::encode, decoder, IMekanismPacket::handle, Optional.of(networkDirection));
     }
 
     /**
@@ -90,7 +90,10 @@ public abstract class BasePacketHandler {
      * @param player  - the player to send it to
      */
     public <MSG> void sendTo(MSG message, ServerPlayerEntity player) {
-        getChannel().sendTo(message, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+        //Validate it is not a fake player, even though none of our code should call this with a fake player
+        if (!(player instanceof FakePlayer)) {
+            getChannel().sendTo(message, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+        }
     }
 
     /**
@@ -167,7 +170,7 @@ public abstract class BasePacketHandler {
             if (server != null) {
                 Range3D range = network.getPacketRange();
                 PlayerList playerList = server.getPlayerList();
-                //Ignore height for partial Cubic chunks support as range comparision gets used ignoring player height normally anyways
+                //Ignore height for partial Cubic chunks support as range comparison gets used ignoring player height normally anyways
                 int radius = playerList.getViewDistance() * 16;
                 for (ServerPlayerEntity player : playerList.getPlayers()) {
                     if (range.dimension == player.func_241141_L_()) {

@@ -16,7 +16,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.network.PacketUpdateInventorySlot;
+import mekanism.common.network.to_server.PacketUpdateInventorySlot;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;

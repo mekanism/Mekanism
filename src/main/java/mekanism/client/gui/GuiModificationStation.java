@@ -14,7 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.network.PacketRemoveModule;
+import mekanism.common.network.to_server.PacketRemoveModule;
 import mekanism.common.tile.TileEntityModificationStation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;

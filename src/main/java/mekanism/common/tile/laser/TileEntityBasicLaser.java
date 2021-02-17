@@ -18,7 +18,7 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.math.Pos3D;
-import mekanism.common.network.PacketLaserHitBlock;
+import mekanism.common.network.to_client.PacketLaserHitBlock;
 import mekanism.common.particle.LaserParticleData;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.tile.base.TileEntityMekanism;

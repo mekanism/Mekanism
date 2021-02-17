@@ -13,7 +13,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityMode;
-import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;

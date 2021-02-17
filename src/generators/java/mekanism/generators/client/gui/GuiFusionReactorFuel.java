@@ -18,8 +18,8 @@ import mekanism.generators.client.gui.element.GuiFusionReactorTab.FusionReactorT
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
-import mekanism.generators.common.network.PacketGeneratorsGuiInteract;
-import mekanism.generators.common.network.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
+import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
+import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;

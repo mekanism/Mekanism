@@ -37,7 +37,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
-import mekanism.common.network.container.property.PropertyType;
+import mekanism.common.network.to_client.container.property.PropertyType;
 import mekanism.common.util.LambdaMetaFactoryUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;

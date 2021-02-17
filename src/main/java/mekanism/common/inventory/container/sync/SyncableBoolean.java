@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.sync;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.function.BooleanSupplier;
-import mekanism.common.network.container.property.BooleanPropertyData;
+import mekanism.common.network.to_client.container.property.BooleanPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling booleans

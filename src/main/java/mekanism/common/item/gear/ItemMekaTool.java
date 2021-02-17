@@ -29,7 +29,7 @@ import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
-import mekanism.common.network.PacketPortalFX;
+import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;

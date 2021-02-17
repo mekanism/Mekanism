@@ -32,7 +32,7 @@ import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.network.PacketPortalFX;
+import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;

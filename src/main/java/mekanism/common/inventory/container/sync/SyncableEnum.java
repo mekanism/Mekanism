@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
-import mekanism.common.network.container.property.IntPropertyData;
+import mekanism.common.network.to_client.container.property.IntPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for making it easier to handle enums

@@ -8,9 +8,9 @@ import mekanism.api.chemical.slurry.IEmptySlurryProvider;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.common.network.container.property.LongPropertyData;
-import mekanism.common.network.container.property.PropertyData;
-import mekanism.common.network.container.property.chemical.SlurryStackPropertyData;
+import mekanism.common.network.to_client.container.property.LongPropertyData;
+import mekanism.common.network.to_client.container.property.PropertyData;
+import mekanism.common.network.to_client.container.property.chemical.SlurryStackPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling slurry stacks

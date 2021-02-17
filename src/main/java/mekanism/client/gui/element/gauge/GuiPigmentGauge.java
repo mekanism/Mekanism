@@ -7,7 +7,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.network.PacketDropperUse.TankType;
+import mekanism.common.network.to_server.PacketDropperUse.TankType;
 
 public class GuiPigmentGauge extends GuiChemicalGauge<Pigment, PigmentStack, IPigmentTank> {
 

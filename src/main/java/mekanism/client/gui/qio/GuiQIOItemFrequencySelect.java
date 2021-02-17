@@ -9,11 +9,11 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.item.QIOFrequencySelectItemContainer;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.network.PacketGuiButtonPress;
-import mekanism.common.network.PacketGuiButtonPress.ClickedItemButton;
-import mekanism.common.network.PacketGuiSetFrequency;
-import mekanism.common.network.PacketGuiSetFrequency.FrequencyUpdate;
-import mekanism.common.network.PacketQIOSetColor;
+import mekanism.common.network.to_server.PacketGuiButtonPress;
+import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedItemButton;
+import mekanism.common.network.to_server.PacketGuiSetFrequency;
+import mekanism.common.network.to_server.PacketGuiSetFrequency.FrequencyUpdate;
+import mekanism.common.network.to_server.PacketQIOSetColor;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
