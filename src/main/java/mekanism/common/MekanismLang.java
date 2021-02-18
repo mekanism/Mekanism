@@ -6,7 +6,6 @@ import net.minecraft.util.Util;
 
 public enum MekanismLang implements ILangEntry {
     //Vanilla lang strings we use, for purposes of not having to have them copy pasted all over the place
-    CRAFTING("container.crafting"),
     REPAIR_COST("container.repair.cost"),
     REPAIR_EXPENSIVE("container.repair.expensive"),
     //Gui lang strings
@@ -174,6 +173,8 @@ public enum MekanismLang implements ILangEntry {
     //Gui stuff
     HEIGHT("gui", "height"),
     WIDTH("gui", "width"),
+    CRAFTING_TAB("gui", "crafting.tab"),
+    CRAFTING_WINDOW("gui", "crafting.window"),
     PROGRESS("gui", "progress"),
     PROCESS_RATE("gui", "process_rate"),
     PROCESS_RATE_MB("gui", "process_rate_mb"),

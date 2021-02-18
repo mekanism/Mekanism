@@ -30,6 +30,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Contract;
 
 public class QIOCraftingWindow implements IContentsListener {
@@ -67,6 +68,13 @@ public class QIOCraftingWindow implements IContentsListener {
 
     public CraftingWindowOutputInventorySlot getOutputSlot() {
         return outputSlot;
+    }
+
+    /**
+     * Checks if the stack is equivalent to the current output.
+     */
+    public boolean isOutput(@Nonnull ItemStack stack) {
+        return ItemHandlerHelper.canItemStacksStack(outputSlot.getStack(), stack);
     }
 
     @Override

@@ -260,22 +260,24 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             ItemStack slotStack = currentSlot.getStack();
             byte selectedCraftingGrid = selectedCraftingGrids.getOrDefault(player.getUniqueID(), (byte) -1);
             if (selectedCraftingGrid != -1) {
-                //TODO: Re-evaluate this as when shift click crafting, and then shift clicking to transfer
-                // it into the QIO sends it to the crafting slot instead.
-                //If the player has a crafting window open, try transferring into it before
-                // transferring into the frequency
-                ItemStack stackToInsert = slotStack;
-                List<InventoryContainerSlot> craftingGridSlots = getCraftingGridSlots(selectedCraftingGrid);
-                //Start by trying to stack it with other things
-                stackToInsert = insertItem(craftingGridSlots, stackToInsert, true);
-                // and if that fails try to insert it into empty slots
-                stackToInsert = insertItem(craftingGridSlots, stackToInsert, false);
-                if (stackToInsert.getCount() != slotStack.getCount()) {
-                    //If something changed, decrease the stack by the amount we inserted,
-                    // and return it as a new stack for what is now in the slot
-                    return transferSuccess(currentSlot, player, slotStack, stackToInsert);
+                //If the player has a crafting window open
+                if (!getCraftingWindow(selectedCraftingGrid).isOutput(slotStack)) {
+                    // and the stack we are trying to transfer was not the output from the crafting window
+                    // as then shift clicking should be sending it into the QIO, then try transferring it
+                    // into the crafting window before transferring into the frequency
+                    ItemStack stackToInsert = slotStack;
+                    List<InventoryContainerSlot> craftingGridSlots = getCraftingGridSlots(selectedCraftingGrid);
+                    //Start by trying to stack it with other things
+                    stackToInsert = insertItem(craftingGridSlots, stackToInsert, true);
+                    // and if that fails try to insert it into empty slots
+                    stackToInsert = insertItem(craftingGridSlots, stackToInsert, false);
+                    if (stackToInsert.getCount() != slotStack.getCount()) {
+                        //If something changed, decrease the stack by the amount we inserted,
+                        // and return it as a new stack for what is now in the slot
+                        return transferSuccess(currentSlot, player, slotStack, stackToInsert);
+                    }
+                    //Otherwise if nothing changed, try to transfer into the QIO Frequency
                 }
-                //Otherwise if nothing changed, allow the
             }
             QIOFrequency frequency = getFrequency();
             if (frequency != null) {

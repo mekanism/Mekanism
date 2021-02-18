@@ -735,6 +735,8 @@
   "gui.mekanism.close": "\u01DDso\uA781\u0186",
   "gui.mekanism.color_picker": "\u0279\u01DD\u029E\u0254\u1D09\u0500 \u0279o\uA781o\u0186",
   "gui.mekanism.compass": "ss\u0250d\u026Fo\u0186",
+  "gui.mekanism.crafting.tab": "(%2$s/%1$s) \u1D77u\u1D09\u0287\u025F\u0250\u0279\u0186",
+  "gui.mekanism.crafting.window": "%s \u028Dopu\u1D09M \u1D77u\u1D09\u0287\u025F\u0250\u0279\u0186",
   "gui.mekanism.danger": "\u0279\u01DD\u1D77u\u0250\u15E1",
   "gui.mekanism.default": "\u0287\uA781n\u0250\u025F\u01DD\u15E1",
   "gui.mekanism.delay": "\u0287%s :\u028E\u0250\uA781\u01DD\u15E1",

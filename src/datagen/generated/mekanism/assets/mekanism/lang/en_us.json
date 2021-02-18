@@ -735,6 +735,8 @@
   "gui.mekanism.close": "Close",
   "gui.mekanism.color_picker": "Color Picker",
   "gui.mekanism.compass": "Compass",
+  "gui.mekanism.crafting.tab": "Crafting (%s/%s)",
+  "gui.mekanism.crafting.window": "Crafting Window %s",
   "gui.mekanism.danger": "Danger",
   "gui.mekanism.default": "Default",
   "gui.mekanism.delay": "Delay: %st",

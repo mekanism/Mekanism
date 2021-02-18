@@ -3,13 +3,13 @@ package mekanism.client.gui.element.window;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiRightArrow;
 import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiCraftingWindow extends GuiWindow {
 
@@ -60,9 +60,13 @@ public class GuiCraftingWindow extends GuiWindow {
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        //TODO: Should this have its own translation key
-        //drawTitleText(matrix, MekanismLang.CRAFTING.translate(), 5);
-        //Display the index for debug purposes
-        drawTitleText(matrix, TextComponentUtil.build(MekanismLang.CRAFTING, " ", index), 5);
+        //Increment index by one so we show: 1, 2, and 3 instead of 0, 1, and 2
+        // Note: We do some of the math here locally instead of using drawTitleText so that we
+        // can shift it slightly further away from the button and make it look slightly better
+        ITextComponent title = MekanismLang.CRAFTING_WINDOW.translate(index + 1);
+        int maxLength = getXSize() - 10;
+        float scale = Math.min(1, maxLength / getStringWidth(title));
+        float left = relativeX + getXSize() / 2F;
+        drawScaledCenteredText(matrix, title, left + 2, relativeY + 6, titleTextColor(), scale);
     }
 }

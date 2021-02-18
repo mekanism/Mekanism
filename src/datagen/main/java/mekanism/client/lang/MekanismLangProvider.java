@@ -637,6 +637,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Gui stuff
         add(MekanismLang.WIDTH, "Width");
         add(MekanismLang.HEIGHT, "Height");
+        add(MekanismLang.CRAFTING_TAB, "Crafting (%s/%s)");
+        add(MekanismLang.CRAFTING_WINDOW, "Crafting Window %s");
         add(MekanismLang.MIN, "Min: %s");
         add(MekanismLang.MAX, "Max: %s");
         add(MekanismLang.INFINITE, "Infinite");

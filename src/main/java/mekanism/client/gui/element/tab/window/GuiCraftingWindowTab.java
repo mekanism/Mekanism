@@ -17,7 +17,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 
 public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingWindowTab> {
 
-    //TODO: Evaluate a better way of doing this than this weird openWindows thing
     private final boolean[] openWindows = new boolean[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS];
     private final QIOItemViewerContainer container;
     private byte currentWindows;
@@ -29,9 +28,7 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        //TODO: Should this have its own translation key
-        //TODO: Make it have a "subtext" part of the tooltip for displaying how many more windows can be created
-        displayTooltip(matrix, MekanismLang.CRAFTING.translate(), mouseX, mouseY);
+        displayTooltip(matrix, MekanismLang.CRAFTING_TAB.translate(currentWindows, IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS), mouseX, mouseY);
     }
 
     @Override
