@@ -10,7 +10,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.0.18', changing: true
     }
 }
 
@@ -20,7 +20,6 @@ plugins {
     id 'java'
     id 'eclipse'
     id 'idea'
-    id 'maven'
     id 'maven-publish'
 }
 
@@ -179,7 +178,7 @@ replaceResourcesInfo.each { output, sourceSet ->
 group = "mekanism"
 version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "Mekanism"
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
     mappings channel: "snapshot", version: "${mappings_version}"
@@ -392,6 +391,7 @@ dependencies {
 }
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
     //Add our logo file
@@ -406,6 +406,7 @@ processResources {
 }
 
 processAdditionsResources {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
     //Add our logo file
@@ -420,6 +421,7 @@ processAdditionsResources {
 }
 
 processDefenseResources {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
     //Add our logo file
@@ -434,6 +436,7 @@ processDefenseResources {
 }
 
 processGeneratorsResources {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
     //Add our logo file
@@ -448,6 +451,7 @@ processGeneratorsResources {
 }
 
 processToolsResources {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
     //Add our logo file
@@ -534,20 +538,26 @@ task allJar(type: Jar) {
             processResources, processAdditionsResources, processDefenseResources,
             processGeneratorsResources, processToolsResources)
     afterEvaluate { finalizedBy reobfAllJar }
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     archiveClassifier.set("all")
     manifest.attributes(getManifestAttributes("MekanismAll"))
     //Start by generating the merged data
     doFirst(MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools))
     //Then copy all the files except for ones we are going to include from the merged
     from(sourceSets.api.output)
-    from(sourceSets.main.output, MergeJars.excludedMain())
-    Closure excluded = MergeJars.excludedGeneral()
-    from(sourceSets.additions.output, excluded)
-    from(sourceSets.defense.output, excluded)
-    from(sourceSets.generators.output, excluded)
-    from(sourceSets.tools.output, excluded)
+    List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project)
+    from(sourceSets.main.output, MergeJars.createExcludeClosure(baseExcludeData))
+    Closure excludeFromAll = MergeJars.createExcludeClosure(baseExcludeData, 'logo.png', 'pack.mcmeta')
+    from(sourceSets.additions.output, excludeFromAll)
+    from(sourceSets.defense.output, excludeFromAll)
+    from(sourceSets.generators.output, excludeFromAll)
+    from(sourceSets.tools.output, excludeFromAll)
     //And finally copy over the generated files
     MergeJars.getGeneratedClosures(version_properties).each { closure -> from("$buildDir/generated", closure) }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 artifacts {
