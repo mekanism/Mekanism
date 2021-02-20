@@ -1,0 +1,15 @@
+{
+  "name": "Sulfuric Acid",
+  "category": "chemicals",
+  "icon": "TODO",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Sulfuric acid is necesary for $(l:ore_processing/quintupling)Ore Quintupling$(/l).  It is used in the $(l:block/chemical_dissolution_chamber)Chemical Dissolution Chamber$(/l) to dissolve ores into slurry."
+    },
+    {
+      "type": "text",
+      "text": "It is created by combining $(l:chemicals/sulfur_trioxide)Sulfur Trioxide$(/l) and $(l:chemicals/water_vapor)Water Vapor$(/l) in the $(l:block/chemical_infuser)Chemical Infuser$(/l)."
+    }
+  ]
+}

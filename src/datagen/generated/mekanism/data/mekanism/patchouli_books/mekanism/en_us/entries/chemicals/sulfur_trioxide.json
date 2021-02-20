@@ -1,0 +1,15 @@
+{
+  "name": "Sulfur Trioxide",
+  "category": "chemicals",
+  "icon": "TODO",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Sulfur trioxide is another step in $(l:chemicals/sulfuric_acid)Sulfuric Acid$(/l) production. It is produced by combining $(l:chemicals/sulfur_dioxide)Sulfur Dioxide$(/l) and $(l:chemicals/oxygen)Oxygen$(/l) in a $(l:block/chemical_infuser)Chemical Infuser$(/l)."
+    },
+    {
+      "type": "text",
+      "text": "It is combined with $(l:chemicals/water_vapor)Water Vapor$(/l) in a Chemical Infuser to create sulfuric acid."
+    }
+  ]
+}

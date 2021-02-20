@@ -1,0 +1,15 @@
+{
+  "name": "Chlorine",
+  "category": "chemicals",
+  "icon": "TODO",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Chlorine is combined in a $(l:block/chemical_infuser)Chemical Infuser$(/l) along with $(l:chemicals/hydrogen)Hydrogen$(/l) to make $(l:chemicals/hydrogen_chloride)Hydrogen Chloride$(/l)."
+    },
+    {
+      "type": "text",
+      "text": "It is produced by putting brine in an $(l:block/electrolytic_separator)Electrolytic Seperator$(/l), which also produces $(l:chemicals/sodium)Sodium$(/l)"
+    }
+  ]
+}

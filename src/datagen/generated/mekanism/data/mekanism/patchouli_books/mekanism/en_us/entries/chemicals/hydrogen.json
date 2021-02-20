@@ -1,0 +1,15 @@
+{
+  "name": "Hydrogen",
+  "category": "chemicals",
+  "icon": "TODO",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Hydrogen is a carrier of energy.  It is produced by putting water in an $(l:block/electrolytic_separator)Electrolytic Seperator$(/l), and can be used as fuel in a Gas-Burning Generator, as well as a $(l:item/jetpack)Jetpack$(/l) or $(l:item/jetpack_armored)Armored Jetpack$(/l) and $(l:item/flamethrower)Flamethrower$(/l)."
+    },
+    {
+      "type": "text",
+      "text": "It is also used in a $(l:block/chemical_infuser)Chemical Infuser$(/l) to make $(l:chemicals/hydrogen_chloride)Hydrogen Chloride$(/l)."
+    }
+  ]
+}

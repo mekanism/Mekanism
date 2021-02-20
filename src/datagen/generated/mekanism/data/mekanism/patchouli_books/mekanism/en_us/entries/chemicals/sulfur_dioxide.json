@@ -1,0 +1,15 @@
+{
+  "name": "Sulfur Dioxide",
+  "category": "chemicals",
+  "icon": "TODO",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Sulfur dioxide is a step in $(l:chemicals/sulfuric_acid)Sulfuric Acid$(/l) production."
+    },
+    {
+      "type": "text",
+      "text": "It is created by putting sulfur in a $(l:block/chemical_oxidizer)Chemical Oxidizer$(/l) and used with $(l:chemicals/oxygen)Oxygen$(/l) in the $(l:block/chemical_infuser)Chemical Infuser$(/l) to create $(l:chemicals/sulfur_trioxide)Sulfur Trioxide$(/l)."
+    }
+  ]
+}
