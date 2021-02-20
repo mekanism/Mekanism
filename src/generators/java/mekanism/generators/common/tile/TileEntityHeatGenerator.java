@@ -115,17 +115,24 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         if (world == null) {
             return FloatingLong.ZERO;
         }
-        //Lava boost
-        long lavaSides = Arrays.stream(EnumUtils.DIRECTIONS).filter(side -> {
-            //Only check and add loaded neighbors to the which sides have lava on them
-            Optional<FluidState> fluidState = WorldUtils.getFluidState(world, pos.offset(side));
-            return fluidState.isPresent() && fluidState.get().isTagged(FluidTags.LAVA);
-        }).count();
-        if (getBlockState().getFluidState().isTagged(FluidTags.LAVA)) {
-            //If the heat generator is lava-logged then add it as another side that is adjacent to lava for the heat calculations
-            lavaSides++;
+        FloatingLong boost;
+        FloatingLong passiveLavaAmount = MekanismGeneratorsConfig.generators.heatGenerationLava.get();
+        if (passiveLavaAmount.isZero()) {
+            //If neighboring lava blocks produce no energy, don't bother checking the sides for them
+            boost = FloatingLong.ZERO;
+        } else {
+            //Otherwise, calculate boost to apply from lava
+            long lavaSides = Arrays.stream(EnumUtils.DIRECTIONS).filter(side -> {
+                //Only check and add loaded neighbors to the which sides have lava on them
+                Optional<FluidState> fluidState = WorldUtils.getFluidState(world, pos.offset(side));
+                return fluidState.isPresent() && fluidState.get().isTagged(FluidTags.LAVA);
+            }).count();
+            if (getBlockState().getFluidState().isTagged(FluidTags.LAVA)) {
+                //If the heat generator is lava-logged then add it as another side that is adjacent to lava for the heat calculations
+                lavaSides++;
+            }
+            boost = passiveLavaAmount.multiply(lavaSides);
         }
-        FloatingLong boost = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(lavaSides);
         if (world.getDimensionType().isUltrawarm()) {
             boost = boost.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
         }
