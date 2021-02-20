@@ -294,7 +294,7 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
         }
 
         @Override
-        public void channelActive(ChannelHandlerContext channelHandlerContext) throws Exception {
+        public void channelActive(ChannelHandlerContext channelHandlerContext) {
         }
 
         @Override
@@ -302,7 +302,7 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
         }
 
         @Override
-        public void channelInactive(ChannelHandlerContext channelHandlerContext) throws Exception {
+        public void channelInactive(ChannelHandlerContext channelHandlerContext) {
         }
 
         @Override
@@ -310,7 +310,7 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
         }
 
         @Override
-        protected void channelRead0(ChannelHandlerContext channelHandlerContext, IPacket<?> packet) throws Exception {
+        protected void channelRead0(ChannelHandlerContext channelHandlerContext, IPacket<?> packet) {
         }
 
         @Override
@@ -318,7 +318,7 @@ public class MekFakeNetHandler extends ServerPlayNetHandler {
         }
 
         @Override
-        public void sendPacket(IPacket<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> p_201058_2_) {
+        public void sendPacket(IPacket<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> listener) {
         }
 
         @Override

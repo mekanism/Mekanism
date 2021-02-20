@@ -111,7 +111,7 @@ class FloatingLongTest {
     }
 
     @Test
-    @DisplayName("Test divisiontolong tough case")
+    @DisplayName("Test divisionToLong tough case")
     void testDivisionTough1() {
         FloatingLong a = FloatingLong.create(-705_739_103_007_515L - 1);
         FloatingLong b = FloatingLong.create(185704605303L);

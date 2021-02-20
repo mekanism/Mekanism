@@ -49,7 +49,7 @@ public interface ICrTChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends
     }
 
     /**
-     * Wwhether or not this chemical represents the empty type.
+     * Whether or not this chemical represents the empty type.
      *
      * @return {@code true} if this chemical represents the empty type, {@code false} otherwise.
      */

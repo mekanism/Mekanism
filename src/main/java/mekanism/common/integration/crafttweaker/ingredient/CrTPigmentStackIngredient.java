@@ -19,7 +19,7 @@ public class CrTPigmentStackIngredient extends CrTChemicalStackIngredient<Pigmen
     /**
      * Creates a {@link CrTPigmentStackIngredient} that matches a given pigment and amount.
      *
-     * @param instance Pigmnt to match
+     * @param instance Pigment to match
      * @param amount   Amount needed
      *
      * @return A {@link CrTPigmentStackIngredient} that matches a given pigment and amount.

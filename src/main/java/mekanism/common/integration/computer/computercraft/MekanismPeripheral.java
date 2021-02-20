@@ -8,6 +8,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.integration.computer.ComputerMethod;
@@ -78,6 +79,6 @@ public class MekanismPeripheral implements IDynamicPeripheral {
     }
 
     private static LuaException error(String messageFormat, Object... args) {
-        return new LuaException(String.format(messageFormat, args));
+        return new LuaException(String.format(Locale.ROOT, messageFormat, args));
     }
 }

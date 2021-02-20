@@ -2,6 +2,7 @@ package mekanism.common;
 
 import com.mojang.authlib.GameProfile;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -168,7 +169,7 @@ public class Mekanism {
     /**
      * The GameProfile used by the dummy Mekanism player
      */
-    public static final GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("mekanism.common".getBytes()), Mekanism.LOG_TAG);
+    public static final GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("mekanism.common".getBytes(StandardCharsets.UTF_8)), Mekanism.LOG_TAG);
     public static final KeySync keyMap = new KeySync();
     public static final Set<Coord4D> activeVibrators = new ObjectOpenHashSet<>();
 

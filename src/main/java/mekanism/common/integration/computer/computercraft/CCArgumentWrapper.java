@@ -3,6 +3,7 @@ package mekanism.common.integration.computer.computercraft;
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
+import java.util.Locale;
 import javax.annotation.Nullable;
 import mekanism.common.integration.computer.IComputerArgumentHandler;
 
@@ -23,7 +24,7 @@ public class CCArgumentWrapper implements IComputerArgumentHandler<LuaException,
 
     @Override
     public LuaException error(String messageFormat, Object... args) {
-        return new LuaException(String.format(messageFormat, args));
+        return new LuaException(String.format(Locale.ROOT, messageFormat, args));
     }
 
     @Nullable

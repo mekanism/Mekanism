@@ -115,7 +115,7 @@ public class Color {
         double rR = sR * sA + dR * (1 - sA);
         double rG = sG * sA + dG * (1 - sA);
         double rB = sB * sA + dB * (1 - sA);
-        double rA = dA * 1D + sA * (1 - dA);
+        double rA = dA + sA * (1 - dA);//dA * 1D + sA * (1 - dA);
         return rgbad(rR, rG, rB, rA);
     }
 

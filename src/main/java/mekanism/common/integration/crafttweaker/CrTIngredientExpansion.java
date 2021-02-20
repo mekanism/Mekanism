@@ -67,7 +67,7 @@ public class CrTIngredientExpansion {
     public static class ItemTagExpansion {
 
         /**
-         * Allows for casting {@link MCTag< Item >}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link MCTag<Item>}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
         public static CrTItemStackIngredient asItemStackIngredient(MCTag<Item> _this) {

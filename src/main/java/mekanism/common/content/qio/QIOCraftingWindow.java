@@ -562,7 +562,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
         @Override
         public void clear() {
-            //TODO: Re-evalauate, should this instead just force a refresh or something?
+            //TODO: Re-evaluate, should this instead just force a refresh or something?
             for (CraftingWindowInventorySlot inputSlot : inputSlots) {
                 inputSlot.setEmpty();
             }

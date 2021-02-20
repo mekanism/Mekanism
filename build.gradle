@@ -753,12 +753,15 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             releaseType = "${curse_release_type}"
             mainArtifact(jar) {
                 relations {
-                    optionalDependency "jei"
-                    optionalDependency "ctm"
                     optionalDependency "biomes-o-plenty"
+                    optionalDependency "cc-tweaked"
+                    optionalDependency "crafttweaker"
+                    optionalDependency "ctm"
                     optionalDependency "flux-networks"
                     optionalDependency "hwyla"
                     optionalDependency "i-like-wood"
+                    optionalDependency "i-like-wood-biomes-o-plenty-plugin"
+                    optionalDependency "jei"
                     optionalDependency "projecte"
                     optionalDependency "the-one-probe"
                 }

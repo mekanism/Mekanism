@@ -38,7 +38,7 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
     /**
      * @return BlockState property for representing fluid loggable blocks
      *
-     * @apiNote Ovveride this if changing the number of fluids {@link #getSupportedFluids()} returns.
+     * @apiNote Override this if changing the number of fluids {@link #getSupportedFluids()} returns.
      */
     @Nonnull
     default IntegerProperty getFluidLoggedProperty() {

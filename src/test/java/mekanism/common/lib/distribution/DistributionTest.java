@@ -1,6 +1,7 @@
 package mekanism.common.lib.distribution;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.function.Supplier;
 import mekanism.common.lib.distribution.target.InfiniteIntegerTarget;
@@ -78,7 +79,7 @@ class DistributionTest {
         addTargets(availableAcceptors, () -> new SpecificAmountIntegerTarget(3), 2, side, 1);
         int sent = EmitUtils.sendToAcceptors(availableAcceptors, availableAcceptors.size(), toSend, toSend);
         if (sent > toSend) {
-            Assertions.fail(String.format("expected: <%s> to be greater or equal to: <%s>", toSend, sent));
+            Assertions.fail(String.format(Locale.ROOT, "expected: <%s> to be greater or equal to: <%s>", toSend, sent));
         }
     }
 }
