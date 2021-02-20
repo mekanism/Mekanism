@@ -48,7 +48,6 @@ import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.content.tank.TankValidator;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
-import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
@@ -84,7 +83,6 @@ import mekanism.common.tile.component.TileComponentChunkLoader.ChunkValidationCa
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -336,8 +334,6 @@ public class Mekanism {
             SyncMapper.collectScanData();
             //Add chunk loading callbacks
             ForgeChunkManager.setForcedChunkLoadingCallback(Mekanism.MODID, ChunkValidationCallback.INSTANCE);
-            //Entity attribute assignments
-            GlobalEntityTypeAttributes.put(MekanismEntityTypes.ROBIT.get(), EntityRobit.getDefaultAttributes().create());
             //Register dispenser behaviors
             MekanismFluids.FLUIDS.registerBucketDispenserBehavior();
             registerDispenseBehavior(FluidTankItemDispenseBehavior.INSTANCE, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK,

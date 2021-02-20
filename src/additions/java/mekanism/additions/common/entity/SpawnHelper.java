@@ -20,10 +20,6 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
-import net.minecraft.entity.monster.AbstractSkeletonEntity;
-import net.minecraft.entity.monster.CreeperEntity;
-import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.item.ItemStack;
@@ -49,12 +45,6 @@ public class SpawnHelper {
         //Slightly different restrictions for the baby stray, as strays have a slightly different spawn restriction
         EntitySpawnPlacementRegistry.register(AdditionsEntityTypes.BABY_STRAY.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND,
               Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EntityBabyStray::spawnRestrictions);
-        //Add the global entity type attributes for the entities
-        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_CREEPER.get(), CreeperEntity.registerAttributes().create());
-        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_ENDERMAN.get(), EndermanEntity.func_234287_m_().create());
-        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_SKELETON.get(), AbstractSkeletonEntity.registerAttributes().create());
-        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_STRAY.get(), AbstractSkeletonEntity.registerAttributes().create());
-        GlobalEntityTypeAttributes.put(AdditionsEntityTypes.BABY_WITHER_SKELETON.get(), AbstractSkeletonEntity.registerAttributes().create());
         //Add dispenser spawn egg behaviors
         registerDelayedDispenserBehavior(AdditionsItems.BABY_CREEPER_SPAWN_EGG, AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, AdditionsItems.BABY_SKELETON_SPAWN_EGG,
               AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
