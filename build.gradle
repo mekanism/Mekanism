@@ -405,6 +405,9 @@ dependencies {
     datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 
     datagenmainCompile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    datagengeneratorsCompile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    datagenadditionsCompile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    datagentoolsCompile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 processResources {

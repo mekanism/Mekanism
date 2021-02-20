@@ -1,24 +1,23 @@
-package mekanism.common.patchouli;
+package mekanism.patchouli
 
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import mekanism.patchouli.dsl.IGuideEntry
+import java.util.HashSet
+import java.util.Locale
 
-/**
- * Created by Thiakil on 19/05/2020.
- */
-public enum GuideEntry {
+private val UNIQUE_CACHE: MutableSet<String> = HashSet()
+
+enum class GuideEntry(folder: String?, name: String): IGuideEntry {
     PIPES_LOGISTICAL("pipes", "logistical"),
-    PIPES_MECHANICAL("pipes","mechanical"),
-    PIPES_GAS("pipes","gas"),
-    PIPES_HEAT("pipes","heat"),
-    PIPES_POWER("pipes","power"),
-    TANKS_LIQUID("tanks","liquid"),
+    PIPES_MECHANICAL("pipes", "mechanical"),
+    PIPES_GAS("pipes", "gas"),
+    PIPES_HEAT("pipes", "heat"),
+    PIPES_POWER("pipes", "power"),
+    TANKS_LIQUID("tanks", "liquid"),
     TANKS_GAS("tanks", "gas"),
     BINS("bins"),
     ENERGY_CUBES("energy_cubes"),
-    INDUCTION_CELL("induction","cell"),
-    INDUCTION_PROVIDER("induction","provider"),
+    INDUCTION_CELL("induction", "cell"),
+    INDUCTION_PROVIDER("induction", "provider"),
     ALLOYS("items", "alloys"),
     INSTALLERS("items", "installers"),
     CIRCUITS("items", "circuits"),
@@ -57,29 +56,13 @@ public enum GuideEntry {
     CHEMICAL_TRITIUM("chemicals", "tritium"),
     CHEMICAL_DT_FUEL("chemicals", "dt_fuel"),
     CHEMICAL_LITHIUM("chemicals", "lithium"),
-    CHEMICAL_SODIUM("chemicals", "sodium")
-    ;
+    CHEMICAL_SODIUM("chemicals", "sodium");
 
-    static {
-        Set<String> UNIQUE_CACHE = new HashSet<>();
-        for (GuideEntry guidePage : values()) {
-            if (!UNIQUE_CACHE.add(guidePage.entryId)) {
-                throw new IllegalArgumentException("Duplicate page id: "+guidePage.entryId);
-            }
-        }
+    override val entryId: String = IGuideEntry.generate(folder, name)
+
+    init {
+        require(UNIQUE_CACHE.add(entryId)) { "Duplicate page id: $entryId" }
     }
 
-    private final String entryId;
-
-    GuideEntry(String name) {
-        this(null, name);
-    }
-    GuideEntry(String folder, String name) {
-        this.entryId = (folder != null ? folder + "/" : "") + name.toLowerCase(Locale.ROOT);
-    }
-
-    public String getEntryId() {
-        return entryId;
-    }
-
+    constructor(name: String) : this(null, name)
 }

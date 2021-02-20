@@ -7,14 +7,13 @@ import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import mekanism.api.providers.IBlockProvider
 import mekanism.api.providers.IItemProvider
-import mekanism.common.patchouli.GuideCategory
-import mekanism.common.patchouli.GuideEntry
 import net.minecraft.client.settings.KeyBinding
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundNBT
 import net.minecraft.util.ResourceLocation
 import org.apache.logging.log4j.LogManager
+import java.util.*
 
 fun JsonObject.addProperty(name: String, res: ResourceLocation) {
     addProperty(name, res.toString())
@@ -41,8 +40,8 @@ fun link(item: IItemProvider, text: String): String {
     return "$(l:${item.bookId})${text}$(/l)"
 }
 
-fun link(guidentry: GuideEntry, text: String): String {
-    return "$(l:${guidentry.entryId})${text}$(/l)"
+fun link(guideEntry: IGuideEntry, text: String): String {
+    return "$(l:${guideEntry.entryId})${text}$(/l)"
 }
 
 operator fun KeyBinding.invoke(): String {
@@ -50,6 +49,20 @@ operator fun KeyBinding.invoke(): String {
 }
 
 val LOGGER = LogManager.getLogger("PatchouliDSL")!!
+
+interface IGuideCategory {
+    val id: String
+    val translationKeyName: String
+    val translationKeyDescription: String
+}
+
+interface IGuideEntry {
+    val entryId: String
+
+    companion object {
+        fun generate(folder: String?, name: String): String = (if (folder != null) "$folder/" else "") + name.toLowerCase(Locale.ROOT)
+    }
+}
 
 @DslMarker
 annotation class PatchouliDSL
@@ -262,6 +275,10 @@ class PatchouliBook(val id: ResourceLocation) {
      */
     var extend: ResourceLocation? = null
 
+    fun extend(modId: String, bookId: String) {
+        this.extend = ResourceLocation(modId, bookId)
+    }
+
     /**
      * Defaults to true. Set it to false if you want to not play nice and lock your book from being extended by other books.
      */
@@ -274,35 +291,38 @@ class PatchouliBook(val id: ResourceLocation) {
 
     fun toJson(): JsonObject {
         val json = JsonObject()
-        json.addProperty("name", name)
-        json.addProperty("landing_text", landingText)
-        bookTexture?.let {  json.addProperty("book_texture", it) }
-        fillerTexture?.let {  json.addProperty("filler_texture", it) }
-        craftingTexture?.let {  json.addProperty("crafting_texture", it) }
-        model?.let {  json.addProperty("model", it) }
-        textColor?.let {  json.addProperty("text_color", it) }
-        headerColor?.let {  json.addProperty("header_color", it) }
-        nameplateColor?.let {  json.addProperty("nameplate_color", it) }
-        linkColor?.let {  json.addProperty("link_color", it) }
-        linkHoverColor?.let {  json.addProperty("link_hover_color", it) }
-        progressBarColor?.let {  json.addProperty("progress_bar_color", it) }
-        progressBarBackground?.let {  json.addProperty("progress_bar_background", it) }
-        openSound?.let {  json.addProperty("open_sound", it) }
-        flipSound?.let {  json.addProperty("flip_sound", it) }
-        indexIcon?.let {  json.addProperty("index_icon", it) }
-        showProgress?.let {  json.addProperty("show_progress", it) }
-        version?.let {  json.addProperty("version", it) }
-        subtitle?.let {  json.addProperty("subtitle", it) }
-        creativeTab?.let {  json.addProperty("creative_tab", it.path) }
-        advancementsTab?.let {  json.addProperty("advancements_tab", it) }
-        dontGenerateBook?.let {  json.addProperty("dont_generate_book", it) }
-        customBookItem?.let {  json.addProperty("custom_book_item", it) }
-        showToasts?.let {  json.addProperty("show_toasts", it) }
-        useBlockyFont?.let {  json.addProperty("use_blocky_font", it) }
-        i18n?.let {  json.addProperty("i18n", it) }
-        pauseGame?.let { json.addProperty("pause_game", it) }
-        extend?.let { json.addProperty("extend", it) }
-        allowExtensions?.let { json.addProperty("allow_extensions", it) }
+        if (extend != null) {
+            json.addProperty("extend", extend!!)
+        } else {
+            json.addProperty("name", name)
+            json.addProperty("landing_text", landingText)
+            bookTexture?.let { json.addProperty("book_texture", it) }
+            fillerTexture?.let { json.addProperty("filler_texture", it) }
+            craftingTexture?.let { json.addProperty("crafting_texture", it) }
+            model?.let { json.addProperty("model", it) }
+            textColor?.let { json.addProperty("text_color", it) }
+            headerColor?.let { json.addProperty("header_color", it) }
+            nameplateColor?.let { json.addProperty("nameplate_color", it) }
+            linkColor?.let { json.addProperty("link_color", it) }
+            linkHoverColor?.let { json.addProperty("link_hover_color", it) }
+            progressBarColor?.let { json.addProperty("progress_bar_color", it) }
+            progressBarBackground?.let { json.addProperty("progress_bar_background", it) }
+            openSound?.let { json.addProperty("open_sound", it) }
+            flipSound?.let { json.addProperty("flip_sound", it) }
+            indexIcon?.let { json.addProperty("index_icon", it) }
+            showProgress?.let { json.addProperty("show_progress", it) }
+            version?.let { json.addProperty("version", it) }
+            subtitle?.let { json.addProperty("subtitle", it) }
+            creativeTab?.let { json.addProperty("creative_tab", it.path) }
+            advancementsTab?.let { json.addProperty("advancements_tab", it) }
+            dontGenerateBook?.let { json.addProperty("dont_generate_book", it) }
+            customBookItem?.let { json.addProperty("custom_book_item", it) }
+            showToasts?.let { json.addProperty("show_toasts", it) }
+            useBlockyFont?.let { json.addProperty("use_blocky_font", it) }
+            i18n?.let { json.addProperty("i18n", it) }
+            pauseGame?.let { json.addProperty("pause_game", it) }
+            allowExtensions?.let { json.addProperty("allow_extensions", it) }
+        }
         if (macros.isNotEmpty()) {
             json.add("macros", jsonObject {
                 macros.forEach { (key, value) -> addProperty(key, value) }
@@ -322,13 +342,20 @@ class PatchouliBook(val id: ResourceLocation) {
         }
     }
     @PatchouliDSL
-    fun category(guideCat: GuideCategory, init: Category.() -> Unit) {
+    fun category(guideCat: IGuideCategory, init: Category.() -> Unit) {
         category(guideCat.id, init)
     }
 
     @PatchouliDSL
-    operator fun GuideCategory.invoke(init: Category.() -> Unit) {
+    operator fun IGuideCategory.invoke(init: Category.() -> Unit) {
         category(this, init)
+    }
+
+    @PatchouliDSL
+    fun existingCategory(guideCat: IGuideCategory, init: DelegateCategory.() -> Unit): ICategory {
+        return DelegateCategory(this, guideCat.id).also {
+            it.init()
+        }
     }
 
     companion object {
@@ -347,44 +374,9 @@ fun patchouliBook(modId: String, bookId: String, init: PatchouliBook.() -> Unit)
     return PatchouliBook(ResourceLocation(modId, bookId)).also(init)
 }
 
-@PatchouliDSL
-class Category(private val book: PatchouliBook, val id: String) {
-
-    /** mandatory. The name of this category. */
-    lateinit var name: String
-
-    /** mandatory. The description for this category. This displays in the category's main page, and can be formatted. */
-    lateinit var description: String
-
-    /** mandatory. The icon for this category. This can either be an ItemStack String, if you want an item to be the icon, or a resource location pointing to a square texture. If you want to use a resource location, make sure to end it with .png */
-    @SerializedName("icon")
-    lateinit var iconStr: String
-
-    /**
-     * not directly written to json. Sets the iconStr from the item provider
-     */
-    var icon: IItemProvider
-        get() {
-            throw UnsupportedOperationException()
-        }
-        set(value) {
-            iconStr = ItemStackUtils.serializeStack(value.itemStack)
-        }
-
-    /** The parent category to this one. If this is a sub-category, simply put the name of the category this is a child to here. If not, don't define it. Use fully-qualified names including both a namespace and a path. */
-    var parent: Category? = null
-
-
-    /** A config flag expression that determines whether this category should exist or not. See Using Config Flags for more info on config flags. */
-    var flag: String? = null
-
-
-    /** The sorting number for this category. Defaults to 0. Categories are sorted in the main page from lowest sorting number to highest, so if you define this in every category you make, you can set what order they display in. */
-    var sortNum: Int? = null
-
-
-    /** Defaults to false. Set this to true to make this category a secret category. Secret categories don't display a locked icon when locked, and instead will not display at all until unlocked. */
-    var secret: Boolean? = null
+interface ICategory {
+    val id: String
+    val book: PatchouliBook
 
     @PatchouliDSL
     fun category(id: String, init: Category.() -> Unit): Category {
@@ -396,12 +388,12 @@ class Category(private val book: PatchouliBook, val id: String) {
     }
 
     @PatchouliDSL
-    fun category(guideCat: GuideCategory, init: Category.() -> Unit) {
+    fun category(guideCat: IGuideCategory, init: Category.() -> Unit) {
         category(guideCat.id, init)
     }
 
     @PatchouliDSL
-    operator fun GuideCategory.invoke(init: Category.() -> Unit) {
+    operator fun IGuideCategory.invoke(init: Category.() -> Unit) {
         category(this, init)
     }
 
@@ -425,11 +417,50 @@ class Category(private val book: PatchouliBook, val id: String) {
     }
 
     @PatchouliDSL
-    operator fun GuideEntry.invoke(init: Entry.() -> Unit) {
+    operator fun IGuideEntry.invoke(init: Entry.() -> Unit) {
         entry(this.entryId) {
             init()
         }
     }
+}
+
+@PatchouliDSL
+class Category(override val book: PatchouliBook, override val id: String): ICategory {
+
+    /** mandatory. The name of this category. */
+    lateinit var name: String
+
+    /** mandatory. The description for this category. This displays in the category's main page, and can be formatted. */
+    lateinit var description: String
+
+    /** mandatory. The icon for this category. This can either be an ItemStack String, if you want an item to be the icon, or a resource location pointing to a square texture. If you want to use a resource location, make sure to end it with .png */
+    @SerializedName("icon")
+    lateinit var iconStr: String
+
+    /**
+     * not directly written to json. Sets the iconStr from the item provider
+     */
+    var icon: IItemProvider
+        get() {
+            throw UnsupportedOperationException()
+        }
+        set(value) {
+            iconStr = ItemStackUtils.serializeStack(value.itemStack)
+        }
+
+    /** The parent category to this one. If this is a sub-category, simply put the name of the category this is a child to here. If not, don't define it. Use fully-qualified names including both a namespace and a path. */
+    var parent: ICategory? = null
+
+    /** A config flag expression that determines whether this category should exist or not. See Using Config Flags for more info on config flags. */
+    var flag: String? = null
+
+
+    /** The sorting number for this category. Defaults to 0. Categories are sorted in the main page from lowest sorting number to highest, so if you define this in every category you make, you can set what order they display in. */
+    var sortNum: Int? = null
+
+
+    /** Defaults to false. Set this to true to make this category a secret category. Secret categories don't display a locked icon when locked, and instead will not display at all until unlocked. */
+    var secret: Boolean? = null
 
     fun toJson(): JsonObject {
         val json = JsonObject()
@@ -444,11 +475,15 @@ class Category(private val book: PatchouliBook, val id: String) {
     }
 }
 
+/** Category that doesn't make its own JSON file */
+@PatchouliDSL
+class DelegateCategory(override val book: PatchouliBook, override val id: String): ICategory
+
 @PatchouliDSL
 class Entry(
         val id: String,
         /** mandatory. The category this entry belongs to. This must be set to one of your categories' ID. For best results, use a fully-qualified ID that includes your book namespace yourbooknamespace:categoryname. In the future this will be enforced. */
-        val category: Category
+        val category: ICategory
 ) {
     /** mandatory. The name of this entry. */
     lateinit var name: String
