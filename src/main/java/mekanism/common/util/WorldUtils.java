@@ -577,7 +577,7 @@ public class WorldUtils {
      *
      * @param world world the block is in
      * @param pos   Position of the block
-     * @param tile The tile entity at the position
+     * @param tile  The tile entity at the position
      */
     public static void updateBlock(@Nullable World world, BlockPos pos, TileEntity tile) {
         if (!isBlockLoaded(world, pos)) {

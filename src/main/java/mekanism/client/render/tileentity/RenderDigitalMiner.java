@@ -19,6 +19,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
 
     private static Model3D model;
     private static final int[] colors = new int[EnumUtils.DIRECTIONS.length];
+
     static {
         colors[Direction.DOWN.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.82F);
         colors[Direction.UP.ordinal()] = MekanismRenderer.getColorARGB(255, 255, 255, 0.82F);

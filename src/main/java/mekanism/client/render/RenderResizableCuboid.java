@@ -24,6 +24,7 @@ public class RenderResizableCuboid {
      */
     private static final int[] combinedARGB = new int[EnumUtils.DIRECTIONS.length];
     private static final Vector3f NORMAL = new Vector3f(1, 1, 1);
+
     static {
         NORMAL.normalize();
     }

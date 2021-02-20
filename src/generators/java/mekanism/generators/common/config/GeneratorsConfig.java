@@ -54,7 +54,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
     public final CachedLongValue hohlraumMaxGas;
     public final CachedLongValue hohlraumFillRate;
-        
+
     public final CachedDoubleValue fusionThermocoupleEfficiency;
     public final CachedDoubleValue fusionCasingThermalConductivity;
     public final CachedDoubleValue fusionWaterHeatingRatio;
@@ -113,13 +113,12 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
         builder.comment("Fusion Settings").push(FUSION_CATEGORY);
         fusionThermocoupleEfficiency = CachedDoubleValue.wrap(this, builder.comment("The fraction of the heat dissipated from the case that is converted to Joules.")
-               .defineInRange("thermocoupleEfficiency", 0.05D, 0D, 1D));
+              .defineInRange("thermocoupleEfficiency", 0.05D, 0D, 1D));
         fusionCasingThermalConductivity = CachedDoubleValue.wrap(this, builder.comment("The fraction fraction of heat from the casing that can be transfered to all sources that are not water. Will impact max heat, heat transfer to thermodynamic conductors, and power generation.")
-               .defineInRange("casingThermalConductivity", 0.1D, 0.001D, 1D));
+              .defineInRange("casingThermalConductivity", 0.1D, 0.001D, 1D));
         fusionWaterHeatingRatio = CachedDoubleValue.wrap(this, builder.comment("The fraction of the heat from the casing that is dissipated to water when water cooling is in use. Will impact max heat, and steam generation.")
-               .defineInRange("waterHeatingRatio", 0.3D, 0D, 1D));
+              .defineInRange("waterHeatingRatio", 0.3D, 0D, 1D));
         builder.pop();
-            
 
         builder.comment("Hohlraum Settings").push(HOHLRAUM_CATEGORY);
         hohlraumMaxGas = CachedLongValue.wrap(this, builder.comment("Hohlraum capacity in mB.")

@@ -60,7 +60,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     /**
      * @param uuid Should only be null if we have incomplete data that we are loading
      */
-    public InventoryFrequency(String n,  @Nullable UUID uuid) {
+    public InventoryFrequency(String n, @Nullable UUID uuid) {
         super(FrequencyType.INVENTORY, n, uuid);
         presetVariables();
     }

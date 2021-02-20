@@ -46,7 +46,7 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
         List<IInventorySlot> slots = new ArrayList<>();
         craftingWindows = new QIOCraftingWindow[MAX_CRAFTING_WINDOWS];
         for (byte tableIndex = 0; tableIndex < craftingWindows.length; tableIndex++) {
-            QIOCraftingWindow craftingWindow =  new QIOCraftingWindow(this, tableIndex);
+            QIOCraftingWindow craftingWindow = new QIOCraftingWindow(this, tableIndex);
             craftingWindows[tableIndex] = craftingWindow;
             for (int slot = 0; slot < 9; slot++) {
                 slots.add(craftingWindow.getInputSlot(slot));

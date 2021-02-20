@@ -109,6 +109,7 @@ class FloatingLongTest {
         FloatingLong b = FloatingLong.create(184948298500L);
         Assertions.assertEquals(99740004L, a.divideToUnsignedLong(b));
     }
+
     @Test
     @DisplayName("Test divisiontolong tough case")
     void testDivisionTough1() {
@@ -121,7 +122,7 @@ class FloatingLongTest {
     @DisplayName("Test divisionToUnsignedLong rounding case")
     void testDivisionUnsignedRound() {
         FloatingLong a = FloatingLong.create(-893067536972106880L);
-        FloatingLong b = FloatingLong.create(-892518212563104587L, (short)1);
+        FloatingLong b = FloatingLong.create(-892518212563104587L, (short) 1);
         Assertions.assertEquals(0L, a.divideToUnsignedLong(b));
     }
 

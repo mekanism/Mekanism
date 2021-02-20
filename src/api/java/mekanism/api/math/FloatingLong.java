@@ -438,8 +438,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to a signed long. This gets clamped at the upper bound of {@link
-     * Long#MAX_VALUE} rather than overflowing.
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to a signed long. This gets clamped at the upper bound of {@link Long#MAX_VALUE}
+     * rather than overflowing.
      *
      * @param toDivide The {@link FloatingLong} to divide by.
      *
