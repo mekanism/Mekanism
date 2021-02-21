@@ -459,7 +459,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public void updateSearch(String queryText) {
         // searches should only updated on client-side
-        if (inv == null || !inv.player.world.isRemote() || itemList == null) {
+        if (!inv.player.world.isRemote() || itemList == null) {
             return;
         }
 

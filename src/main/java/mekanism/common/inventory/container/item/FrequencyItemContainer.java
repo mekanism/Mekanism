@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.frequency.Frequency;
@@ -23,7 +22,7 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
     private List<FREQ> publicCache = new ArrayList<>();
     private List<FREQ> privateCache = new ArrayList<>();
 
-    protected FrequencyItemContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, Hand hand, ItemStack stack) {
+    protected FrequencyItemContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, Hand hand, ItemStack stack) {
         super(type, id, inv, hand, stack);
     }
 

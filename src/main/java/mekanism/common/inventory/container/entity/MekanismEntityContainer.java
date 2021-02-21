@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container.entity;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -17,7 +16,7 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
 
     protected final ENTITY entity;
 
-    protected MekanismEntityContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, ENTITY entity) {
+    protected MekanismEntityContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, ENTITY entity) {
         super(type, id, inv);
         this.entity = entity;
         addSlotsAndOpen();

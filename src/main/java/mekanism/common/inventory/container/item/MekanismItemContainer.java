@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container.item;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -19,7 +18,7 @@ public abstract class MekanismItemContainer extends MekanismContainer {
     protected final Hand hand;
     protected final ItemStack stack;
 
-    protected MekanismItemContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, Hand hand, ItemStack stack) {
+    protected MekanismItemContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, Hand hand, ItemStack stack) {
         super(type, id, inv);
         this.hand = hand;
         this.stack = stack;

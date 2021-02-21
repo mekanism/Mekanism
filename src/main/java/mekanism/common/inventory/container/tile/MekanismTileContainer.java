@@ -26,7 +26,7 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     @Nullable
     protected final TILE tile;
 
-    public MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, @Nullable TILE tile) {
+    public MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, @Nullable TILE tile) {
         super(type, id, inv);
         this.tile = tile;
         addContainerTrackers();

@@ -40,7 +40,7 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
     @Override
     public void handleCacheUpdate(List<TeleporterFrequency> publicCache, List<TeleporterFrequency> privateCache, TeleporterFrequency frequency) {
         super.handleCacheUpdate(publicCache, privateCache, frequency);
-        if (inv != null && inv.player.world.isRemote()) {
+        if (inv.player.world.isRemote()) {
             //Request a data update if the frequency changed
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.DATA_REQUEST, getHand(), getFrequency()));
         }

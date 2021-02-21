@@ -78,7 +78,11 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     @Override
     public void putStack(@Nonnull ItemStack stack) {
         //Note: We have to set the stack in an unchecked manor here, so that if we sync a stack from the server to the client that
-        // the client does not think is valid for the stack, it doesn't cause major issues
+        // the client does not think is valid for the stack, it doesn't cause major issues. Additionally, we do this directly in
+        // our putStack method rather than having a separate unchecked method, as if some modder is modifying inventories directly
+        // for some reason, and the machine has invalid items in it, it could cause various issues/crashes which are not entirely
+        // worth dealing with, as it is relatively reasonable to assume if an item is stored in a slot, more items of that type
+        // are valid in the same slot without having to check isItemValid.
         uncheckedSetter.accept(stack);
         onSlotChanged();
     }

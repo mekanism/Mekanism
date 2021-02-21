@@ -144,6 +144,18 @@ public class QIOCraftingWindow implements IContentsListener {
         }
     }
 
+    public boolean canViewRecipe(@Nonnull ServerPlayerEntity player) {
+        if (lastRecipe == null) {
+            //If there is no last recipe, they can't craft it
+            //Note: We don't check if it matches as if we don't have a match there won't
+            // be anything in our output slot so it doesn't matter
+            return false;
+        }
+        //If the recipe is dynamic, doLimitedCrafting is disabled, or the recipe is unlocked
+        // allow viewing the recipe
+        return lastRecipe.isDynamic() || !player.world.getGameRules().getBoolean(GameRules.DO_LIMITED_CRAFTING) || player.getRecipeBook().isUnlocked(lastRecipe);
+    }
+
     @Contract("null, _ -> false")
     private boolean validateAndUnlockRecipe(@Nullable World world, @Nonnull PlayerEntity player) {
         if (world == null || lastRecipe == null || !lastRecipe.matches(craftingInventory, world)) {
@@ -299,7 +311,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 // some of the contents ended up in their storage system instead
                 break;
             }
-            //TODO: Look into seeing if we can improve the performance of this further by doing something along the lines of
+            //TODO - 10.1: Look into seeing if we can improve the performance of this further by doing something along the lines of
             // keeping track of the last slot/index of what we successfully inserted into and starting with trying to insert
             // it into that slot. In theory should work, but may get a little messy around the order of us looking at empty
             // slots and us ignoring empty slots
@@ -346,10 +358,10 @@ public class QIOCraftingWindow implements IContentsListener {
                             // craft another iteration of it
                             recheckOutput = true;
                         } else {
-                            //TODO: Otherwise if we used up all of the input, see if we have another valid input
+                            //TODO - 10.1: Otherwise if we used up all of the input, see if we have another valid input
                             // stored in the frequency and replace it with it, AND stop crafting so that the player
                             // has a chance to notice that the item it is going to use changed
-                            //TODO: Debate potentially briefly highlighting the slot to make it more evident to the player
+                            //TODO - 10.1: Debate potentially briefly highlighting the slot to make it more evident to the player
                             // that something about the slot changed
                         }
                     }
@@ -379,9 +391,10 @@ public class QIOCraftingWindow implements IContentsListener {
 
     @Nonnull
     public ItemStack performCraft(@Nonnull PlayerEntity player, @Nonnull ItemStack result, int amountCrafted) {
-        //TODO: Given we don't fire a crafting event and even if we did things would likely not work properly,
+        //TODO - 10.1: Given we don't fire a crafting event and even if we did things would likely not work properly,
         // we may want to special case our bin filling and emptying recipes so that they can take directly from the frequency
         // and be a quick way to fill/empty an entire bin at once (also implement the same special handling for shift clicking)
+        // Maybe for now an IQIOIntegratedCraftingRecipe or something like that that we can call?
         if (amountCrafted == 0 || lastRecipe == null || result.isEmpty()) {
             //Nothing actually crafted or no recipe, return no result
             // Note: lastRecipe will always null on the client, so we can assume we are server side below
@@ -429,9 +442,9 @@ public class QIOCraftingWindow implements IContentsListener {
                             //If we were not able to remove any from the frequency, remove it from the crafting grid
                             useInput(inputSlot);
                         } else {
-                            //TODO: Otherwise if we used up all of the input, see if we have another valid input
+                            //TODO - 10.1: Otherwise if we used up all of the input, see if we have another valid input
                             // stored in the frequency and replace it with it.
-                            //TODO: Debate potentially briefly highlighting the slot to make it more evident to the player
+                            //TODO - 10.1: Debate potentially briefly highlighting the slot to make it more evident to the player
                             // that something about the slot changed.
                         }
                     }
@@ -500,7 +513,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
     private class QIOCraftingInventory extends CraftingInventory {
 
-        //TODO: Suppress warning and also add a note that we override all the places where it being
+        //TODO - 10.1: Suppress warning and also add a note that we override all the places where it being
         // null would cause issues, and we handle slots individually as well
         public QIOCraftingInventory() {
             super(null, 0, 0);
@@ -562,7 +575,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
         @Override
         public void clear() {
-            //TODO: Re-evaluate, should this instead just force a refresh or something?
+            //TODO - 10.1: Re-evaluate, should this instead just force a refresh or something?
             for (CraftingWindowInventorySlot inputSlot : inputSlots) {
                 inputSlot.setEmpty();
             }
@@ -598,7 +611,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
         public void updateInputs(IInventorySlot[] inputSlots) {
             for (int index = 0; index < inputSlots.length; index++) {
-                //TODO: Does this and isStackStillValid need to be copying the stack
+                //TODO - 10.1: Does this and isStackStillValid need to be copying the stack
                 dummy.setInventorySlotContents(index, inputSlots[index].getStack());
             }
         }

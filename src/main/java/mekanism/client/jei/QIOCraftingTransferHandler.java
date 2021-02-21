@@ -73,8 +73,9 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
         //TODO - 10.1: Do we need to validate the user has access?? Aka if they are looking at JEI does our kick out code on security level
         // change actually work properly?? Look at this when looking at https://github.com/mekanism/Mekanism-Feature-Requests/issues/153
         // We also should check users losing access when in JEI of other things we have a security system for
-        //TODO: See if we can implement some sort of caching for this, especially if it turns out JEI is calling this
-        // every render tick to see if it should change the transfer button rendering. We probably could add some sort of listeners to
+        //TODO: It may be nice to eventually implement some sort of caching for this, it isn't drastically needed because JEI is smart
+        // and only calls it once per recipe to decide if it should display the button rather than say calling it every render tick in
+        // case something changed and the render state should be different. We probably could add some sort of listeners to
         // inventory, QIO, and crafting window that if one changes it invalidates the cache of what ingredients are stored, though then
         // we wouldn't be able to directly modify the map as we find inputs, and also we still would have to do a lot of this comparison
         // logic, unless we can also somehow cache the recipe layout and how it interacts with the other information
@@ -90,8 +91,11 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                     // and convert them to HashedItems
                     // Note: We use raw hashed items as none of this stuff should or will be modified while doing these checks
                     // so we may as well remove some unneeded copies
-                    //TODO: Evaluate if we need to convert the hashed item for the stack to be "reduced" in what data it has
-                    // to be more in line with the data that we would have on the client from the network
+                    //TODO: If there are any issues that eventually come up due to things not matching, we should evaluate
+                    // converting the hashed item for the stack into the "reduced" form that the server would normally send
+                    // to the client, as the extended data for what is in the QIO and the player's inventory uses the normal
+                    // item stack networking method that allows less NBT to be transferred. This means that if the client's
+                    // stack gets extra data somehow it may not line up, though most likely it will
                     //Note: We decrement the index by one because JEI uses the first index for the output
                     hashedIngredients.put(entry.getKey() - 1, validIngredients.stream().map(HashedItem::raw).collect(Collectors.toSet()));
                 }
@@ -114,7 +118,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
         Int2ObjectMap<HashedItem> matchedItems = new Int2ObjectArrayMap<>(inputCount);
         IntSet missingSlots = new IntArraySet(inputCount);
         for (Int2ObjectMap.Entry<Set<HashedItem>> entry : hashedIngredients.int2ObjectEntrySet()) {
-            //TODO: Evaluate how we want to handle if an item is valid for more than one slot and one combination has it being valid
+            //TODO - 10.1: Evaluate how we want to handle if an item is valid for more than one slot and one combination has it being valid
             // and one combination it is not valid. For example if we have a single piece of stone and it is valid in either slot 1 or 2
             // but slot 2 only allows for stone, and slot 1 can accept granite instead and we have granite available. When coming up with
             // a solution to this, we also will need to handle the slower comparison method.
@@ -200,16 +204,12 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 return handlerHelper.createUserErrorForSlots(MekanismLang.JEI_MISSING_ITEMS.translate().getString(), missingSlots);
             }
         }
-        //TODO: Validate we have room to shuffle items around to their final locations, maybe make use of a similar system as we
+        //TODO - 10.1: Validate we have room to shuffle items around to their final locations, maybe make use of a similar system as we
         // use for simulating transporter stack transit in terms of the InventoryInfo for how much we are able to put in what slot
         // If we have room inside the QIO we can of course just use that instead?? Also maybe handle us putting items in the
         // crafting grid making it so we have more room in the inventory to put the other stuff
-        //TODO: Implement this, will it be easier to implement after we finish implementing transferring? There is a good chance of it
-        // as we probably will need the reverse lookup so we know where things actually are coming from. We might be able to do a bit
-        // of a short circuit though based on if we have enough room in the QIO to store the items
-
         if (doTransfer) {
-            //TODO: Do we want to do a recipe "matches" here? And if it already matches, leave it be?
+            //TODO - 10.1: Do we want to do a recipe "matches" here? And if it already matches, leave it be?
             // if we shift click then we want to do maxTransfer so may still need to fill in the slots
             // If we are doing so we should probably either do so higher up (before trying to match the various stacks)
             Byte2ObjectMap<SingularHashedItemSource> sources = new Byte2ObjectArrayMap<>(inputCount);
@@ -226,7 +226,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                     //If something went wrong and we don't actually have enough of the item for some reason, error
                     return invalidSource(hashedItem.getStack());
                 }
-                //TODO: This should always be within a byte, but we may want to validate it is just in case?
+                //Note: We cast directly to a byte as it should always fit within one
                 sources.put((byte) entry.getIntKey(), actualSource);
             }
             Mekanism.packetHandler.sendToServer(new PacketQIOFillCraftingWindow(recipeID, maxTransfer, sources));

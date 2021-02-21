@@ -17,6 +17,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.slot.ArmorSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
+import mekanism.common.inventory.container.slot.IHasExtraData;
 import mekanism.common.inventory.container.slot.IInsertableSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
@@ -62,7 +63,6 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
 
     public static final int BASE_Y_OFFSET = 84;
 
-    @Nullable
     protected final PlayerInventory inv;
     protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
     protected final List<ArmorSlot> armorSlots = new ArrayList<>();
@@ -72,7 +72,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     private final List<ISyncableData> trackedData = new ArrayList<>();
     private final Map<Object, List<ISyncableData>> specificTrackedData = new Object2ObjectOpenHashMap<>();
 
-    protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv) {
+    protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv) {
         super(type.getContainerType(), id);
         this.inv = inv;
     }
@@ -86,6 +86,10 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         slot.slotNumber = inventorySlots.size();
         inventorySlots.add(slot);
         track(SyncableItemStack.create(slot::getStack, slot::putStack));
+        if (slot instanceof IHasExtraData) {
+            //If the slot has any extra data, allow it to add any trackers it may have
+            ((IHasExtraData) slot).addTrackers(inv.player, this::track);
+        }
         if (slot instanceof InventoryContainerSlot) {
             inventoryContainerSlots.add((InventoryContainerSlot) slot);
         } else if (slot instanceof ArmorSlot) {
@@ -97,7 +101,6 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         } else if (slot instanceof OffhandSlot) {
             offhandSlots.add((OffhandSlot) slot);
         }
-        //TODO: Should we add a warning if it is not one of the above
         return slot;
     }
 
@@ -106,10 +109,8 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
      */
     protected void addSlotsAndOpen() {
         addSlots();
-        if (inv != null) {
-            addInventorySlots(inv);
-            openInventory(inv);
-        }
+        addInventorySlots(inv);
+        openInventory(inv);
     }
 
     public void startTracking(Object key, ISpecificContainerTracker tracker) {

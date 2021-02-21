@@ -2,7 +2,6 @@ package mekanism.common.inventory.container.entity.robit;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.entity.MekanismEntityContainer;
@@ -13,7 +12,7 @@ import net.minecraft.inventory.container.Slot;
 
 public abstract class RobitContainer extends MekanismEntityContainer<EntityRobit> {
 
-    protected RobitContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, EntityRobit robit) {
+    protected RobitContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, EntityRobit robit) {
         super(type, id, inv, robit);
         robit.addContainerTrackers(getType(), this);
     }

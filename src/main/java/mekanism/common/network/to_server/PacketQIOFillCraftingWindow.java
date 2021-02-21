@@ -203,11 +203,11 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
             Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipeID);
             return;
         }
-        //TODO: Figure out how we will validate if there is room to do all that before we actually do so?
+        //TODO - 10.1: Figure out how we will validate if there is room to do all that before we actually do so?
         // Realistically we will probably need to do it "twice", once by simulating, once by not
         // (maybe we can do a similar thing to how the TransportManager simulates insertion)
         // And if our simulation is screwed up and we are wrong, then we will have to dump whatever excess items we had on the ground?
-        //TODO: Support the maxTransfer flag, and make sure to validate the other slots we are grabbing from that we didn't validate when checking the recipe is valid
+        //TODO - 10.1: Support the maxTransfer flag, and make sure to validate the other slots we are grabbing from that we didn't validate when checking the recipe is valid
         // We will need to pass the proper data to transferItems, but I believe once we get simulation working, we can probably relatively easily extend it so that it
         // also calculates how much will come from each slot and how much we can even handle in the recipe.
         // One short circuit that probably will be worth doing is if one of the inputs to the recipe is not stackable, then we can just treat maxTransfer as false
@@ -283,7 +283,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                 if (!stack.isEmpty()) {
                     remainingCraftingGridContents.put(i, stack);
                 } else {
-                    //TODO: Catch the case when it can fail to extract in the simulation stage
+                    //TODO - 10.1: Catch the case when it can fail to extract in the simulation stage
                 }
             }
         }
@@ -292,7 +292,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
             CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(entry.getByteKey());
             ItemStack remainder = inputSlot.insertItem(entry.getValue(), Action.EXECUTE, AutomationType.MANUAL);
             if (!remainder.isEmpty()) {
-                //TODO: Catch this error during the simulation stage?
+                //TODO - 10.1: Catch this error during the simulation stage?
             }
         }
         //Put the items that were in the crafting window in the player's inventory
@@ -324,7 +324,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                         player.dropItem(stack, false);
                         Mekanism.logger.warn("Received transfer request from: {}, for: {}, and was unable to fit all contents that were in the crafting window "
                                              + "into the player's inventory/QIO system; dropping items by player.", player, recipeID);
-                        //TODO: Make sure we don't get to this point by having accurate simulation
+                        //TODO - 10.1: Make sure we don't get to this point by having accurate simulation
                     }
                 }
             }
