@@ -1,7 +1,6 @@
 package mekanism.common.network.to_client.container.property;
 
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import net.minecraft.network.PacketBuffer;
 
 public abstract class PropertyData {
@@ -20,10 +19,6 @@ public abstract class PropertyData {
 
     public short getProperty() {
         return property;
-    }
-
-    public PacketUpdateContainer getSinglePacket(short windowId) {
-        return new PacketUpdateContainer(windowId, property, this);
     }
 
     public abstract void handleWindowProperty(MekanismContainer container);

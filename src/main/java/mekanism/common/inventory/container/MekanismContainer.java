@@ -43,7 +43,7 @@ import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
 import mekanism.common.inventory.container.sync.list.SyncableList;
 import mekanism.common.lib.frequency.Frequency;
-import mekanism.common.network.to_client.container.PacketUpdateContainerBatch;
+import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.StackUtils;
@@ -477,13 +477,8 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
                     dirtyData.add(data.getPropertyData(i, dirtyType));
                 }
             }
-            int size = dirtyData.size();
-            if (size == 1) {
-                //If we only have a single element send a type specific packet to reduce overhead of
-                // having to include type and count
-                sendChange(dirtyData.get(0).getSinglePacket((short) windowId));
-            } else if (size > 1) {
-                sendChange(new PacketUpdateContainerBatch((short) windowId, dirtyData));
+            if (!dirtyData.isEmpty()) {
+                sendChange(new PacketUpdateContainer((short) windowId, dirtyData));
             }
         }
     }
@@ -506,13 +501,8 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
             for (short i = 0; i < trackedData.size(); i++) {
                 dirtyData.add(trackedData.get(i).getPropertyData(i, DirtyType.DIRTY));
             }
-            int size = dirtyData.size();
-            if (size == 1) {
-                //If we only have a single element send a type specific packet to reduce overhead of
-                // having to include type and count
-                Mekanism.packetHandler.sendTo(dirtyData.get(0).getSinglePacket((short) windowId), (ServerPlayerEntity) listener);
-            } else if (size > 1) {
-                Mekanism.packetHandler.sendTo(new PacketUpdateContainerBatch((short) windowId, dirtyData), (ServerPlayerEntity) listener);
+            if (!dirtyData.isEmpty()) {
+                Mekanism.packetHandler.sendTo(new PacketUpdateContainer((short) windowId, dirtyData), (ServerPlayerEntity) listener);
             }
         }
     }

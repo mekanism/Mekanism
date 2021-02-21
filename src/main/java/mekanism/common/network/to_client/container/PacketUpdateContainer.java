@@ -1,5 +1,7 @@
 package mekanism.common.network.to_client.container;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.to_client.container.property.PropertyData;
@@ -11,13 +13,11 @@ import net.minecraftforge.fml.network.NetworkEvent;
 public class PacketUpdateContainer implements IMekanismPacket {
 
     //Note: windowId gets transferred over the network as an unsigned byte
-    protected final short windowId;
-    protected final short property;
-    protected final PropertyData data;
+    private final short windowId;
+    private final List<PropertyData> data;
 
-    public PacketUpdateContainer(short windowId, short property, PropertyData data) {
+    public PacketUpdateContainer(short windowId, List<PropertyData> data) {
         this.windowId = windowId;
-        this.property = property;
         this.data = data;
     }
 
@@ -27,21 +27,29 @@ public class PacketUpdateContainer implements IMekanismPacket {
         //Ensure that the container is one of ours and that the window id is the same as we expect it to be
         if (player != null && player.openContainer instanceof MekanismContainer && player.openContainer.windowId == windowId) {
             //If so then handle the packet
-            data.handleWindowProperty((MekanismContainer) player.openContainer);
+            data.forEach(data -> data.handleWindowProperty((MekanismContainer) player.openContainer));
         }
     }
 
     @Override
     public void encode(PacketBuffer buffer) {
         buffer.writeByte(windowId);
-        buffer.writeShort(property);
-        data.writeToPacket(buffer);
+        buffer.writeVarInt(data.size());
+        for (PropertyData data : data) {
+            data.writeToPacket(buffer);
+        }
     }
 
     public static PacketUpdateContainer decode(PacketBuffer buffer) {
         short windowId = buffer.readUnsignedByte();
-        short property = buffer.readShort();
-        PropertyData data = PropertyData.fromBuffer(buffer);
-        return new PacketUpdateContainer(windowId, property, data);
+        int size = buffer.readVarInt();
+        List<PropertyData> data = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            PropertyData propertyData = PropertyData.fromBuffer(buffer);
+            if (propertyData != null) {
+                data.add(propertyData);
+            }
+        }
+        return new PacketUpdateContainer(windowId, data);
     }
 }

@@ -29,7 +29,6 @@ import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -48,7 +47,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         ServerPlayerEntity player = context.getSender();
-        if (player != null && player.openContainer instanceof QIOItemViewerContainer && player.world instanceof ServerWorld) {
+        if (player != null && player.openContainer instanceof QIOItemViewerContainer) {
             QIOItemViewerContainer container = (QIOItemViewerContainer) player.openContainer;
             byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUniqueID());
             if (selectedCraftingGrid == -1) {
@@ -58,7 +57,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                 if (optionalIRecipe.isPresent()) {
                     IRecipe<?> recipe = optionalIRecipe.get();
                     if (recipe instanceof ICraftingRecipe) {
-                        transferRecipe(container, (ICraftingRecipe) recipe, sources, maxTransfer, selectedCraftingGrid, player);
+                        transferRecipe(container, (ICraftingRecipe) recipe, selectedCraftingGrid, player);
                     } else {
                         Mekanism.logger.warn("Received transfer request from: {}, but the type ({}) of the specified recipe was not a crafting recipe.",
                               player, recipe.getClass());
@@ -115,14 +114,12 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
         return new PacketQIOFillCraftingWindow(recipeID, maxTransfer, sources);
     }
 
-    private static void transferRecipe(QIOItemViewerContainer container, ICraftingRecipe recipe, Byte2ObjectMap<SingularHashedItemSource> sources, boolean maxTransfer,
-          byte selectedCraftingGrid, PlayerEntity player) {
+    private void transferRecipe(QIOItemViewerContainer container, ICraftingRecipe recipe, byte selectedCraftingGrid, PlayerEntity player) {
         QIOFrequency frequency = container.getFrequency();
         CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
         QIOCraftingWindow craftingWindow = container.getCraftingWindow(selectedCraftingGrid);
         List<HotBarSlot> hotBarSlots = container.getHotBarSlots();
         List<MainInventorySlot> mainInventorySlots = container.getMainInventorySlots();
-        ResourceLocation recipeID = recipe.getId();
         for (Byte2ObjectMap.Entry<SingularHashedItemSource> entry : sources.byte2ObjectEntrySet()) {
             ItemStack stack;
             SingularHashedItemSource source = entry.getValue();
@@ -214,11 +211,11 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
         // We will need to pass the proper data to transferItems, but I believe once we get simulation working, we can probably relatively easily extend it so that it
         // also calculates how much will come from each slot and how much we can even handle in the recipe.
         // One short circuit that probably will be worth doing is if one of the inputs to the recipe is not stackable, then we can just treat maxTransfer as false
-        transferItems(frequency, craftingWindow, player, hotBarSlots, mainInventorySlots, sources, recipeID);
+        transferItems(frequency, craftingWindow, player, hotBarSlots, mainInventorySlots);
     }
 
-    private static void transferItems(@Nullable QIOFrequency frequency, QIOCraftingWindow craftingWindow, PlayerEntity player, List<HotBarSlot> hotBarSlots,
-          List<MainInventorySlot> mainInventorySlots, Byte2ObjectMap<SingularHashedItemSource> sources, ResourceLocation recipeID) {
+    private void transferItems(@Nullable QIOFrequency frequency, QIOCraftingWindow craftingWindow, PlayerEntity player, List<HotBarSlot> hotBarSlots,
+          List<MainInventorySlot> mainInventorySlots) {
         //Extract items that will be put into the crafting window
         Byte2ObjectMap<ItemStack> targetContents = new Byte2ObjectArrayMap<>(sources.size());
         for (Byte2ObjectMap.Entry<SingularHashedItemSource> entry : sources.byte2ObjectEntrySet()) {

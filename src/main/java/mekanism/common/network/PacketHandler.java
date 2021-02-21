@@ -18,7 +18,6 @@ import mekanism.common.network.to_client.PacketTransmitterUpdate;
 import mekanism.common.network.to_client.PacketTransporterUpdate;
 import mekanism.common.network.to_client.PacketUpdateTile;
 import mekanism.common.network.to_client.container.PacketUpdateContainer;
-import mekanism.common.network.to_client.container.PacketUpdateContainerBatch;
 import mekanism.common.network.to_server.PacketAddTrusted;
 import mekanism.common.network.to_server.PacketConfigurationUpdate;
 import mekanism.common.network.to_server.PacketDropperUse;
@@ -101,7 +100,6 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::decode);
         registerServerToClient(PacketTransporterUpdate.class, PacketTransporterUpdate::decode);
         registerServerToClient(PacketUpdateContainer.class, PacketUpdateContainer::decode);
-        registerServerToClient(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::decode);
         registerServerToClient(PacketUpdateTile.class, PacketUpdateTile::decode);
     }
 }
