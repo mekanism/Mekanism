@@ -2,15 +2,22 @@
 
 package mekanism.patchouli.dsl
 
+import com.google.common.collect.BiMap
+import com.google.common.collect.HashBiMap
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import mekanism.api.providers.IBlockProvider
 import mekanism.api.providers.IItemProvider
+import mekanism.common.registration.impl.BlockRegistryObject
+import net.minecraft.block.Block
+import net.minecraft.block.BlockState
 import net.minecraft.client.settings.KeyBinding
+import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundNBT
+import net.minecraft.tags.ITag
 import net.minecraft.util.ResourceLocation
 import org.apache.logging.log4j.LogManager
 import java.util.*
@@ -27,8 +34,20 @@ fun jsonObject(receiver: JsonObject.() -> Unit): JsonObject {
     return JsonObject().also(receiver)
 }
 
-fun jsonArray(receiver: (JsonArray) -> Unit): JsonArray {
-    return JsonArray().also(receiver)
+fun jsonArray(receiver: JsonArray.() -> Unit): JsonArray {
+    return JsonArray().apply(receiver)
+}
+
+fun Array<String>.toJsonArray():JsonArray = JsonArray().also { array->
+    this.forEach {
+        array.add(it)
+    }
+}
+
+fun Array<Number>.toJsonArray():JsonArray = JsonArray().also { array->
+    this.forEach {
+        array.add(it)
+    }
 }
 
 val IItemProvider.bookId: String get() {
@@ -791,13 +810,14 @@ class MultiblockPage: EntryPage("multiblock"){
     @SerializedName("multiblock_id")
     var multiblockId: ResourceLocation? = null
 
+    private var multiblock: MultiblockInfo? = null
+
     /**
      * The multiblock object to display. See Using Multiblocks for how to create this object.
      * Note: Either this or "multiblock_id" need to be set for this page type to work.
      */
-    var multiblock: MultiblockInfo? = null
-
-    fun multiblock(init: MultiblockInfo.() -> Unit) {
+    @PatchouliDSL
+    fun definition(init: MultiblockInfo.() -> Unit) {
         multiblock = MultiblockInfo().also(init)
     }
 
@@ -810,6 +830,9 @@ class MultiblockPage: EntryPage("multiblock"){
 
     override fun toJson(): JsonObject {
         return super.toJson().also { json ->
+            if ((multiblock == null && multiblockId == null) || (multiblock != null && multiblockId != null)) {
+                throw IllegalStateException("One of either multiblock or multiblockId needs to be supplied")
+            }
             json.addProperty("name", name)
             multiblockId?.let { json.addProperty("multiblock_id", it) }
             multiblock?.let { json.add("multiblock", it.toJson()) }
@@ -820,26 +843,111 @@ class MultiblockPage: EntryPage("multiblock"){
 }
 
 class MultiblockInfo {
-    lateinit var pattern: Array<Array<String>>
-    val mapping: MutableMap<String, String> = mutableMapOf()
+    private val pattern: MutableList<MultiblockLayer> = mutableListOf()
 
-    fun map(key: String, value: String) {
-        mapping[key] = value
+    private val patternToValue: BiMap<String, String> = HashBiMap.create()
+    private val valueToPattern = patternToValue.inverse()
+
+    //I pity the fool who needs more than 26 pattern keys...
+    private val availablePatternItem: Queue<String> = ArrayDeque("ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*123456789".map{it.toString()}.toList())
+    private fun getMapping(value: String): String {
+        if (valueToPattern.containsKey(value)) {
+            return valueToPattern[value]!!
+        }
+        val pattern = availablePatternItem.remove()!!
+        patternToValue[pattern] = value
+        return pattern
+    }
+
+    var symmetrical: Boolean? = null
+    private var offset: Array<Int>? = null
+    fun offset(x: Int, y: Int, z: Int) {
+        this.offset = arrayOf(x,y,z)
+    }
+
+    @PatchouliDSL
+    fun layer(block: MultiblockLayer.()->Unit) {
+        this.pattern.add(MultiblockLayer().apply(block))
     }
 
     fun toJson(): JsonObject {
         val json = JsonObject()
-        json.add("pattern", jsonArray { jArray1 ->
-            pattern.forEach { inner ->
-                jArray1.add(jsonArray { jArray2 ->
-                    inner.forEach(jArray2::add)
-                })
+        json.add("pattern", jsonArray {
+            pattern.forEach { layer ->
+                this@jsonArray.add(layer.toJson())
             }
         })
         json.add("mapping", jsonObject {
-            mapping.forEach { (key, value) -> addProperty(key, value) }
+            patternToValue.forEach { (key, value) -> addProperty(key, value) }
         })
+
+        symmetrical?.let { json.addProperty("symmetrical", it) }
+        offset?.let { json.add("offset", jsonArray {
+            add(it[0])
+            add(it[1])
+            add(it[2])
+        }) }
         return json
+    }
+
+    inner class MultiblockLayer {
+        private val layerRows: MutableList<MultiblockRow> = mutableListOf()
+
+        @PatchouliDSL
+        fun row(block: MultiblockRow.()->Unit) {
+            layerRows.add(MultiblockRow().apply(block))
+        }
+
+        fun toJson(): JsonArray {
+            val layerJson = JsonArray()
+            layerRows.forEach {
+                layerJson.add(it.toJson())
+            }
+            return layerJson
+        }
+    }
+
+    inner class MultiblockRow {
+        private val column: MutableList<String> = mutableListOf()
+
+        @PatchouliDSL
+        operator fun BlockState.unaryPlus() {
+            column.add(this.toString())
+        }
+
+        @PatchouliDSL
+        operator fun BlockRegistryObject<out Block, out Item>.unaryPlus() {
+            column.add(this.block.registryName!!.toString())
+        }
+
+        @PatchouliDSL
+        fun <BLOCK: Block> blockState(blockRegistryObject: BlockRegistryObject<BLOCK, Item>, stateProvider: BLOCK.()->BlockState) {
+            column.add(stateProvider(blockRegistryObject.block).toString())
+        }
+
+        @PatchouliDSL
+        operator fun ITag.INamedTag<Block>.unaryPlus() {
+            column.add("#$name")
+        }
+
+        @PatchouliDSL
+        fun space() {
+            column.add(" ")
+        }
+
+        @PatchouliDSL
+        fun center() {
+            column.add("0")
+        }
+
+        fun toJson(): String {
+            return column.joinToString(separator = "") { item ->
+                when (item) {
+                    " ", "0" -> item
+                    else -> getMapping(item)
+                }
+            }
+        }
     }
 }
 
@@ -967,8 +1075,8 @@ class RelationsPage: EntryPage("relations") {
 
     override fun toJson(): JsonObject {
         return super.toJson().also { json->
-            json.add("entries", jsonArray { entriesJson ->
-                entries.forEach(entriesJson::add)
+            json.add("entries", jsonArray {
+                entries.forEach(this@jsonArray::add)
             })
             title?.let {  json.addProperty("title", it) }
             text?.let {  json.addProperty("text", it) }
