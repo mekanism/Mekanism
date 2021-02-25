@@ -847,6 +847,7 @@ class MultiblockInfo {
 
     private val patternToValue: BiMap<String, String> = HashBiMap.create()
     private val valueToPattern = patternToValue.inverse()
+    private var zeroValue: String? = null
 
     //I pity the fool who needs more than 26 pattern keys...
     private val availablePatternItem: Queue<String> = ArrayDeque("ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*123456789".map{it.toString()}.toList())
@@ -879,6 +880,7 @@ class MultiblockInfo {
         })
         json.add("mapping", jsonObject {
             patternToValue.forEach { (key, value) -> addProperty(key, value) }
+            zeroValue?.let { addProperty("0", it) }
         })
 
         symmetrical?.let { json.addProperty("symmetrical", it) }
@@ -915,20 +917,34 @@ class MultiblockInfo {
             column.add(this.toString())
         }
 
-        @PatchouliDSL
-        operator fun BlockRegistryObject<out Block, out Item>.unaryPlus() {
-            column.add(this.block.registryName!!.toString())
+        private fun BlockRegistryObject<out Block, out Item>.toPattern(): String {
+            return block.block.registryName!!.toString()
         }
 
         @PatchouliDSL
-        fun <BLOCK: Block> blockState(blockRegistryObject: BlockRegistryObject<BLOCK, Item>, stateProvider: BLOCK.()->BlockState) {
-            column.add(stateProvider(blockRegistryObject.block).toString())
+        operator fun BlockRegistryObject<out Block, out Item>.unaryPlus() {
+            column.add(toPattern())
+        }
+
+        private fun BlockState.toPattern(): String {
+            return this.block.registryName!!.toString()+"["+(this.toString().substringAfter("["))
+        }
+
+        private fun <BLOCK: Block> blockStatePattern(registryObject: BlockRegistryObject<BLOCK, out Item>, stateProvider: BLOCK.(defaultState: BlockState)->BlockState): String {
+            return stateProvider(registryObject.block, registryObject.block.defaultState).toPattern()
+        }
+
+        @PatchouliDSL
+        operator fun <BLOCK: Block> BlockRegistryObject<BLOCK, out Item>.invoke(stateProvider: BLOCK.(defaultState: BlockState)->BlockState) {
+            column.add(blockStatePattern(this, stateProvider))
         }
 
         @PatchouliDSL
         operator fun ITag.INamedTag<Block>.unaryPlus() {
-            column.add("#$name")
+            column.add(toPattern())
         }
+
+        private fun ITag.INamedTag<Block>.toPattern() = "#$name"
 
         @PatchouliDSL
         fun space() {
@@ -938,6 +954,24 @@ class MultiblockInfo {
         @PatchouliDSL
         fun center() {
             column.add("0")
+        }
+
+        @PatchouliDSL
+        fun <BLOCK: Block> center(blockRegistryObject: BlockRegistryObject<BLOCK, Item>, stateProvider: BLOCK.(defaultState: BlockState)->BlockState) {
+            center()
+            zeroValue = blockStatePattern(blockRegistryObject, stateProvider)
+        }
+
+        @PatchouliDSL
+        fun center(block: BlockRegistryObject<out Block, out Item>) {
+            center()
+            zeroValue = block.toPattern()
+        }
+
+        @PatchouliDSL
+        fun center(tag: ITag.INamedTag<Block>) {
+            center()
+            zeroValue = tag.toPattern()
         }
 
         fun toJson(): String {
