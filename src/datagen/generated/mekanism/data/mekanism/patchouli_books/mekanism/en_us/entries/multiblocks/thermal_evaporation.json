@@ -14,19 +14,21 @@
         "pattern": [
           [
             "AAAA",
-            "A 0A",
             "A  A",
+            "A  B",
             "AAAA"
           ],
           [
             "AAAA",
             "AAAA",
-            "AAAA",
+            "AA0A",
             "AAAA"
           ]
         ],
         "mapping": {
-          "A": "mekanism:thermal_evaporation_block"
+          "A": "mekanism:thermal_evaporation_block",
+          "B": "mekanism:thermal_evaporation_controller[active=false,facing=south]",
+          "0": "mekanism:thermal_evaporation_block"
         }
       }
     }

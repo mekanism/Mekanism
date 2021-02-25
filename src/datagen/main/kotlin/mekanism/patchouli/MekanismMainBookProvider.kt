@@ -3,6 +3,8 @@ package mekanism.patchouli
 import mekanism.client.MekanismKeyHandler
 import mekanism.common.Mekanism
 import mekanism.common.MekanismLang
+import mekanism.common.block.attribute.Attribute
+import mekanism.common.block.attribute.AttributeStateFacing
 import mekanism.common.registries.MekanismBlocks.*
 import mekanism.common.registries.MekanismItems.*
 import mekanism.common.resource.OreType
@@ -12,6 +14,7 @@ import mekanism.patchouli.dsl.invoke
 import mekanism.patchouli.dsl.link
 import net.minecraft.data.DataGenerator
 import net.minecraft.data.DirectoryCache
+import net.minecraft.util.Direction
 
 /**
  * Created by Thiakil on 16/09/2020.
@@ -359,15 +362,23 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                         name = "TEP Test"
                         definition {
                             layer {
-                                row { +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK }
-                                row { +THERMAL_EVAPORATION_BLOCK; space();                    center();                   +THERMAL_EVAPORATION_BLOCK }
+                                row { space();  +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; space(); }
                                 row { +THERMAL_EVAPORATION_BLOCK; space();                    space();                    +THERMAL_EVAPORATION_BLOCK }
+                                row { +THERMAL_EVAPORATION_BLOCK; space();                    space();                    +THERMAL_EVAPORATION_BLOCK }
+                                row { space();  +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; space(); }
+                            }
+                            layer {
+                                row { +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK }
+                                row { +THERMAL_EVAPORATION_BLOCK; space();                    space();                    +THERMAL_EVAPORATION_BLOCK }
+                                row { +THERMAL_EVAPORATION_BLOCK; space();                    space();                    THERMAL_EVAPORATION_CONTROLLER {
+                                    Attribute.get(block, AttributeStateFacing::class.java).setDirection(it, Direction.EAST)
+                                } }
                                 row { +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK }
                             }
                             layer {
                                 row { +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK }
                                 row { +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK }
-                                row { +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK }
+                                row { +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; center(THERMAL_EVAPORATION_BLOCK); +THERMAL_EVAPORATION_BLOCK }
                                 row { +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK }
                             }
                         }
