@@ -277,6 +277,7 @@
   "command.mekanism.chunk.watch": "청크 (%s) 가 관찰 목록에 추가됨.",
   "command.mekanism.debug": "디버그 모드 변경됨: %s",
   "command.mekanism.error.build.miss": "유효한 목표물이 없습니다.",
+  "command.mekanism.error.retrogen.disabled": "Retrogen이 비활성화되어 있습니다. 컨픽에서 활성화해 주십시오.",
   "command.mekanism.radiation.add": "%s 만큼의 방사선을 좌표 (%s), %s 차원에 추가했습니다.",
   "command.mekanism.radiation.clear": "플레이어의 방사선을 제거했습니다.",
   "command.mekanism.radiation.clear.player": "플레이어의 방사선을 %s 만큼 제거했습니다.",
