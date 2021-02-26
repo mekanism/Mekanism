@@ -43,6 +43,7 @@ import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
+import mekanism.common.block.attribute.Attributes.AttributeComputerIntegration;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -64,6 +65,8 @@ import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.ComputerCapabilityHelper;
+import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -130,7 +133,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
-      ITrackableContainer, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile {
+      ITrackableContainer, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile,
+      IComputerTile {
 
     /**
      * The players currently using this block.
@@ -147,6 +151,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected final IBlockProvider blockProvider;
 
     private boolean supportsComparator;
+    private boolean supportsComputers;
     private boolean supportsUpgrades;
     private boolean supportsRedstone;
     private boolean canBeUpgraded;
@@ -236,7 +241,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public TileEntityMekanism(IBlockProvider blockProvider) {
         super(((IHasTileEntity<? extends TileEntity>) blockProvider.getBlock()).getTileType());
         this.blockProvider = blockProvider;
-        setSupportedTypes(this.blockProvider.getBlock());
+        Block block = this.blockProvider.getBlock();
+        setSupportedTypes(block);
         presetVariables();
         capabilityHandlerManagers.add(gasHandlerManager = getInitialGasManager());
         capabilityHandlerManagers.add(infusionHandlerManager = getInitialInfusionManager());
@@ -255,9 +261,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             securityComponent = new TileComponentSecurity(this);
         }
         if (hasSound()) {
-            soundEvent = Attribute.get(blockProvider.getBlock(), AttributeSound.class).getSoundEvent();
+            soundEvent = Attribute.get(block, AttributeSound.class).getSoundEvent();
         } else {
             soundEvent = null;
+        }
+        if (hasComputerSupport()) {
+            if (Mekanism.hooks.CCLoaded) {
+                //If ComputerCraft is loaded add the capability for it
+                addCapabilityResolver(ComputerCapabilityHelper.getComputerCraftCapability(this));
+            }
+            //If OpenComputers loaded, add capability for it
         }
     }
 
@@ -272,6 +285,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         hasSecurity = Attribute.has(block, AttributeSecurity.class);
         isActivatable = hasSound || Attribute.has(block, AttributeStateActive.class);
         supportsComparator = Attribute.has(block, AttributeComparator.class);
+        supportsComputers = Mekanism.hooks.computerCompatEnabled() && Attribute.has(block, AttributeComputerIntegration.class);
     }
 
     /**
@@ -343,6 +357,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public final boolean isActivatable() {
         return isActivatable;
+    }
+
+    @Override
+    public final boolean hasComputerSupport() {
+        return supportsComputers;
     }
 
     @Override
@@ -631,7 +650,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         // setup dynamic container syncing
-        SyncMapper.setup(container, getClass(), () -> this);
+        SyncMapper.INSTANCE.setup(container, getClass(), () -> this);
 
         for (ITileComponent component : components) {
             component.trackForMainContainer(container);

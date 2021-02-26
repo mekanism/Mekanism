@@ -7,6 +7,7 @@ import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -36,27 +36,24 @@ import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.lib.MekAnnotationScanner.BaseAnnotationScanner;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.network.to_client.container.property.PropertyType;
 import mekanism.common.util.LambdaMetaFactoryUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
 import org.objectweb.asm.Type;
 
-public class SyncMapper {
+public class SyncMapper extends BaseAnnotationScanner {
+
+    public static final SyncMapper INSTANCE = new SyncMapper();
+    public static final String DEFAULT_TAG = "default";
+    private final List<SpecialPropertyHandler<?>> specialProperties = new ArrayList<>();
+    private final Map<Class<?>, PropertyDataClassCache> syncablePropertyMap = new Object2ObjectOpenHashMap<>();
 
     private SyncMapper() {
-    }
-
-    public static final String DEFAULT_TAG = "default";
-    private static final List<SpecialPropertyHandler<?>> specialProperties = new ArrayList<>();
-    private static final Map<Class<?>, PropertyDataClassCache> syncablePropertyMap = new Object2ObjectOpenHashMap<>();
-
-    static {
         specialProperties.add(new SpecialPropertyHandler<>(IExtendedFluidTank.class,
               SpecialPropertyData.create(FluidStack.class, IFluidTank::getFluid, IExtendedFluidTank::setStack)
         ));
@@ -98,49 +95,33 @@ public class SyncMapper {
         ));
     }
 
-    public static void collectScanData() {
-        try {
-            collectScanDataUnsafe();
-        } catch (Throwable e) {
-            Mekanism.logger.error("Failed to collect scan data and create sync maps", e);
-        }
+    @Override
+    protected Map<ElementType, Type> getSupportedTypes() {
+        return Collections.singletonMap(ElementType.FIELD, Type.getType(ContainerSync.class));
     }
 
-    private static void collectScanDataUnsafe() throws Throwable {
-        ModList modList = ModList.get();
-        Map<Class<?>, List<AnnotationData>> knownClasses = new Object2ObjectOpenHashMap<>();
-        Type containerSyncType = Type.getType(ContainerSync.class);
-        for (ModFileScanData scanData : modList.getAllScanData()) {
-            for (AnnotationData data : scanData.getAnnotations()) {
-                //If the annotation is on a field, and is the sync type
-                if (data.getTargetType() == ElementType.FIELD && containerSyncType.equals(data.getAnnotationType())) {
-                    String className = data.getClassType().getClassName();
-                    try {
-                        Class<?> annotatedClass = Class.forName(className);
-                        knownClasses.computeIfAbsent(annotatedClass, clazz -> new ArrayList<>()).add(data);
-                    } catch (ClassNotFoundException e) {
-                        Mekanism.logger.error("Failed to find class '{}'", className);
-                    }
-                }
-            }
-        }
-        Map<Class<?>, List<PropertyFieldInfo>> flatPropertyMap = new Object2ObjectOpenHashMap<>();
+    @Override
+    protected void collectScanData(Map<Class<?>, List<AnnotationData>> knownClasses) {
+        Map<Class<?>, List<PropertyFieldInfo>> rawPropertyMap = new Object2ObjectOpenHashMap<>();
+        //Only create the list once for the default fallback
+        List<String> fallbackTagsList = Collections.singletonList(DEFAULT_TAG);
         for (Entry<Class<?>, List<AnnotationData>> entry : knownClasses.entrySet()) {
             Class<?> annotatedClass = entry.getKey();
             List<PropertyFieldInfo> propertyInfo = new ArrayList<>();
-            flatPropertyMap.put(annotatedClass, propertyInfo);
+            rawPropertyMap.put(annotatedClass, propertyInfo);
             for (AnnotationData data : entry.getValue()) {
                 String fieldName = data.getMemberName();
+                Field field = getField(annotatedClass, fieldName);
+                if (field == null) {
+                    continue;
+                }
+                String getterName = getAnnotationValue(data, "getter", "");
+                PropertyField newField;
+                SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
                 try {
-                    Field field = annotatedClass.getDeclaredField(fieldName);
-                    field.setAccessible(true);
-                    Map<String, Object> annotationData = data.getAnnotationData();
-                    String getterName = (String) annotationData.getOrDefault("getter", "");
-                    PropertyField newField;
-                    SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(field.getType())).findFirst().orElse(null);
                     if (handler == null) {
                         PropertyType type = PropertyType.getFromType(field.getType());
-                        String setterName = (String) annotationData.getOrDefault("setter", "");
+                        String setterName = getAnnotationValue(data, "setter", "");
                         if (type != null) {
                             newField = new PropertyField(new TrackedFieldData(LambdaMetaFactoryUtil.createGetter(field, annotatedClass, getterName),
                                   LambdaMetaFactoryUtil.createSetter(field, annotatedClass, setterName), type));
@@ -148,90 +129,45 @@ public class SyncMapper {
                             newField = new PropertyField(new EnumFieldData(LambdaMetaFactoryUtil.createGetter(field, annotatedClass, getterName),
                                   LambdaMetaFactoryUtil.createSetter(field, annotatedClass, setterName), field.getType()));
                         } else {
-                            Mekanism.logger.error("Attempted to sync an invalid field '{}'", fieldName);
-                            return;
+                            Mekanism.logger.error("Attempted to sync an invalid field '{}' in class '{}'.", fieldName, annotatedClass.getSimpleName());
+                            continue;
                         }
                     } else {
                         newField = createSpecialProperty(handler, field, annotatedClass, getterName);
                     }
-                    String fullPath = annotatedClass.getName() + "#" + fieldName;
-                    if (annotationData.containsKey("tags")) {
-                        //If the annotation data has tags add them
-                        List<String> tags = (List<String>) annotationData.get("tags");
-                        for (String tag : tags) {
-                            propertyInfo.add(new PropertyFieldInfo(fullPath, tag, newField));
-                        }
-                    } else {
-                        //Otherwise fallback to the default
-                        propertyInfo.add(new PropertyFieldInfo(fullPath, DEFAULT_TAG, newField));
-                    }
-                } catch (NoSuchFieldException e) {
-                    Mekanism.logger.error("Failed to find field '{}' for class '{}'", fieldName, data.getClassType());
+                } catch (Throwable throwable) {
+                    Mekanism.logger.error("Failed to create sync data for field '{}' in class '{}'.", fieldName, annotatedClass.getSimpleName(), throwable);
+                    continue;
+                }
+                String fullPath = annotatedClass.getName() + "#" + fieldName;
+                //If the annotation data has tags add them, and otherwise fallback to the default tag
+                for (String tag : getAnnotationValue(data, "tags", fallbackTagsList)) {
+                    propertyInfo.add(new PropertyFieldInfo(fullPath, tag, newField));
                 }
             }
         }
-        Map<Class<?>, List<PropertyFieldInfo>> propertyMap = new Object2ObjectOpenHashMap<>();
-        for (Entry<Class<?>, List<PropertyFieldInfo>> entry : flatPropertyMap.entrySet()) {
-            Class<?> clazz = entry.getKey();
-            List<PropertyFieldInfo> propertyInfo = entry.getValue();
-            Class<?> current = clazz;
-            while (current.getSuperclass() != null) {
-                current = current.getSuperclass();
-                List<PropertyFieldInfo> superInfo = propertyMap.get(current);
-                if (superInfo != null) {
-                    //If we already have an overall cache for the super class, add from it and break out of checking super classes
-                    propertyInfo.addAll(superInfo);
-                    break;
-                }
-                //Otherwise continue building up the cache, collecting all the class names up to the root superclass
-                superInfo = flatPropertyMap.get(current);
-                if (superInfo != null) {
-                    //If the property map has the super class, grab the fields that correspond to it
-                    //Note: We keep going here as it may have super classes higher up
-                    propertyInfo.addAll(superInfo);
-                }
-            }
-            propertyMap.put(clazz, propertyInfo);
-        }
-        List<ClassPropertyFieldInfo> flatPropertyMapInfo = propertyMap.entrySet().stream().map(entry -> new ClassPropertyFieldInfo(entry.getKey(), entry.getValue()))
-              .sorted(Comparator.comparing(info -> info.className)).collect(Collectors.toList());
-        for (ClassPropertyFieldInfo classPropertyInfo : flatPropertyMapInfo) {
+        List<ClassBasedInfo<PropertyFieldInfo>> propertyMap = combineWithParents(rawPropertyMap);
+        for (ClassBasedInfo<PropertyFieldInfo> classPropertyInfo : propertyMap) {
             PropertyDataClassCache cache = new PropertyDataClassCache();
-            classPropertyInfo.propertyFields.sort(Comparator.comparing(info -> info.fieldPath + "|" + info.tag));
-            for (PropertyFieldInfo field : classPropertyInfo.propertyFields) {
+            classPropertyInfo.infoList.sort(Comparator.comparing(info -> info.fieldPath + "|" + info.tag));
+            for (PropertyFieldInfo field : classPropertyInfo.infoList) {
                 cache.propertyFieldMap.put(field.tag, field.field);
             }
             syncablePropertyMap.put(classPropertyInfo.clazz, cache);
         }
     }
 
-    public static void setup(MekanismContainer container, Class<?> holderClass, Supplier<Object> holderSupplier) {
+    public void setup(MekanismContainer container, Class<?> holderClass, Supplier<Object> holderSupplier) {
         setup(container, holderClass, holderSupplier, DEFAULT_TAG);
     }
 
-    public static void setup(MekanismContainer container, Class<?> holderClass, Supplier<Object> holderSupplier, String tag) {
-        PropertyDataClassCache cache = syncablePropertyMap.computeIfAbsent(holderClass, SyncMapper::buildSyncMap);
+    public void setup(MekanismContainer container, Class<?> holderClass, Supplier<Object> holderSupplier, String tag) {
+        PropertyDataClassCache cache = syncablePropertyMap.computeIfAbsent(holderClass, clazz -> getData(syncablePropertyMap, clazz, PropertyDataClassCache.EMPTY));
         for (PropertyField field : cache.propertyFieldMap.get(tag)) {
             for (TrackedFieldData data : field.trackedData) {
                 container.track(data.createSyncableData(holderSupplier));
             }
         }
-    }
-
-    private static PropertyDataClassCache buildSyncMap(Class<?> clazz) {
-        PropertyDataClassCache cache = new PropertyDataClassCache();
-        Class<?> current = clazz;
-        while (current.getSuperclass() != null) {
-            current = current.getSuperclass();
-            PropertyDataClassCache superCache = syncablePropertyMap.get(current);
-            if (superCache != null) {
-                //If we already have an overall cache for the super class, add from it and break out of checking super classes
-                cache.propertyFieldMap.putAll(superCache.propertyFieldMap);
-                break;
-            }
-            //Otherwise continue going up to the root superclass
-        }
-        return cache;
     }
 
     private static <O> PropertyField createSpecialProperty(SpecialPropertyHandler<O> handler, Field field, Class<?> objType, String getterName) throws Throwable {
@@ -249,6 +185,8 @@ public class SyncMapper {
     }
 
     private static class PropertyDataClassCache {
+
+        private static final PropertyDataClassCache EMPTY = new PropertyDataClassCache();
 
         //Note: This needs to be a linked map to ensure that the order is preserved
         private final Multimap<String, PropertyField> propertyFieldMap = LinkedHashMultimap.create();
@@ -383,19 +321,6 @@ public class SyncMapper {
         @SuppressWarnings("unchecked")
         protected static <O, V> SpecialPropertyData<O> create(Class<V> propertyType, Function<O, V> getter, BiConsumer<O, V> setter) {
             return new SpecialPropertyData<>(propertyType, getter, (BiConsumer<O, Object>) setter);
-        }
-    }
-
-    private static class ClassPropertyFieldInfo {
-
-        private final Class<?> clazz;
-        private final String className;
-        private final List<PropertyFieldInfo> propertyFields;
-
-        private ClassPropertyFieldInfo(Class<?> clazz, List<PropertyFieldInfo> propertyFields) {
-            this.clazz = clazz;
-            this.className = clazz.getName();
-            this.propertyFields = propertyFields;
         }
     }
 

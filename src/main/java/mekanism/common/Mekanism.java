@@ -51,8 +51,8 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
-import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
+import mekanism.common.lib.MekAnnotationScanner;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -331,8 +331,8 @@ public class Mekanism {
         event.enqueueWork(() -> {
             //Register the mod's world generators
             GenHandler.setupWorldGenFeatures();
-            //Collect sync mapper scan data
-            SyncMapper.collectScanData();
+            //Collect annotation scan data
+            MekAnnotationScanner.collectScanData();
             //Add chunk loading callbacks
             ForgeChunkManager.setForcedChunkLoadingCallback(Mekanism.MODID, ChunkValidationCallback.INSTANCE);
             //Register dispenser behaviors

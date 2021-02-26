@@ -37,46 +37,46 @@ public class Capabilities {
     }
 
     @CapabilityInject(IGasHandler.class)
-    public static Capability<IGasHandler> GAS_HANDLER_CAPABILITY = null;
+    public static Capability<IGasHandler> GAS_HANDLER_CAPABILITY;
 
     @CapabilityInject(IInfusionHandler.class)
-    public static Capability<IInfusionHandler> INFUSION_HANDLER_CAPABILITY = null;
+    public static Capability<IInfusionHandler> INFUSION_HANDLER_CAPABILITY;
 
     @CapabilityInject(IPigmentHandler.class)
-    public static Capability<IPigmentHandler> PIGMENT_HANDLER_CAPABILITY = null;
+    public static Capability<IPigmentHandler> PIGMENT_HANDLER_CAPABILITY;
 
     @CapabilityInject(ISlurryHandler.class)
-    public static Capability<ISlurryHandler> SLURRY_HANDLER_CAPABILITY = null;
+    public static Capability<ISlurryHandler> SLURRY_HANDLER_CAPABILITY;
 
     @CapabilityInject(IHeatHandler.class)
-    public static Capability<IHeatHandler> HEAT_HANDLER_CAPABILITY = null;
+    public static Capability<IHeatHandler> HEAT_HANDLER_CAPABILITY;
 
     @CapabilityInject(IStrictEnergyHandler.class)
-    public static Capability<IStrictEnergyHandler> STRICT_ENERGY_CAPABILITY = null;
+    public static Capability<IStrictEnergyHandler> STRICT_ENERGY_CAPABILITY;
 
     @CapabilityInject(IConfigurable.class)
-    public static Capability<IConfigurable> CONFIGURABLE_CAPABILITY = null;
+    public static Capability<IConfigurable> CONFIGURABLE_CAPABILITY;
 
     @CapabilityInject(IAlloyInteraction.class)
-    public static Capability<IAlloyInteraction> ALLOY_INTERACTION_CAPABILITY = null;
+    public static Capability<IAlloyInteraction> ALLOY_INTERACTION_CAPABILITY;
 
     @CapabilityInject(IConfigCardAccess.class)
-    public static Capability<IConfigCardAccess> CONFIG_CARD_CAPABILITY = null;
+    public static Capability<IConfigCardAccess> CONFIG_CARD_CAPABILITY;
 
     @CapabilityInject(ISpecialConfigData.class)
-    public static Capability<ISpecialConfigData> SPECIAL_CONFIG_DATA_CAPABILITY = null;
+    public static Capability<ISpecialConfigData> SPECIAL_CONFIG_DATA_CAPABILITY;
 
     @CapabilityInject(IEvaporationSolar.class)
-    public static Capability<IEvaporationSolar> EVAPORATION_SOLAR_CAPABILITY = null;
+    public static Capability<IEvaporationSolar> EVAPORATION_SOLAR_CAPABILITY;
 
     @CapabilityInject(ILaserReceptor.class)
-    public static Capability<ILaserReceptor> LASER_RECEPTOR_CAPABILITY = null;
+    public static Capability<ILaserReceptor> LASER_RECEPTOR_CAPABILITY;
 
     @CapabilityInject(IRadiationShielding.class)
-    public static Capability<IRadiationShielding> RADIATION_SHIELDING_CAPABILITY = null;
+    public static Capability<IRadiationShielding> RADIATION_SHIELDING_CAPABILITY;
 
     @CapabilityInject(IRadiationEntity.class)
-    public static Capability<IRadiationEntity> RADIATION_ENTITY_CAPABILITY = null;
+    public static Capability<IRadiationEntity> RADIATION_ENTITY_CAPABILITY;
 
     public static void registerCapabilities() {
         DefaultGasHandler.register();

@@ -7,55 +7,56 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.integration.computer.ComputerMethod;
-import mekanism.common.integration.computer.ComputerMethodHandler;
+import mekanism.common.integration.computer.BoundComputerMethod;
+import mekanism.common.integration.computer.IComputerTile;
+import net.minecraft.tileentity.TileEntity;
 
-//TODO: Do we need to override getTarget, and if so what is it used for
-//TODO: Look through https://github.com/SquidDev-CC/CC-Tweaked/commit/d5f82fa458fd5ed50292629e554f38650df1d588 in a lot more detail
-public class MekanismPeripheral implements IDynamicPeripheral {
+public class MekanismPeripheral<TILE extends TileEntity & IComputerTile> implements IDynamicPeripheral {
 
-    @Nullable
-    public static MekanismPeripheral getPeripheral(ComputerMethodHandler handler) {
-        List<ComputerMethod> methods = handler.getMethods();
-        if (methods.isEmpty()) {
-            //TODO: Decide if we want this to be an exception instead?
-            return null;
-        }
-        //TODO: Should we also pass the method handler in general, such as the tile's name?
-        return new MekanismPeripheral(methods);
-    }
-
+    private final BoundComputerMethod[] methods;
     private final String[] methodNames;
-    private final ComputerMethod[] methods;
+    private final TILE tile;
 
-    private MekanismPeripheral(List<ComputerMethod> methods) {
-        this.methods = methods.toArray(new ComputerMethod[0]);
+    /**
+     * Only call this if the given tile actually has computer support as it won't be double checked.
+     */
+    public MekanismPeripheral(TILE tile) {
+        this.tile = tile;
+        //Linked map to ensure that the order is persisted
+        Map<String, BoundComputerMethod> boundMethods = new LinkedHashMap<>();
+        tile.getComputerMethods(boundMethods);
+        this.methods = new BoundComputerMethod[boundMethods.size()];
         this.methodNames = new String[this.methods.length];
-        for (int i = 0; i < this.methods.length; i++) {
-            this.methodNames[i] = this.methods[i].getMethodName();
+        int i = 0;
+        for (Map.Entry<String, BoundComputerMethod> entry : boundMethods.entrySet()) {
+            this.methodNames[i] = entry.getKey();
+            this.methods[i] = entry.getValue();
+            i++;
         }
     }
 
     @Nonnull
     @Override
     public String getType() {
-        //TODO: Implement, name of this peripheral/type. I believe an example would be: digitalMiner or energyCube
-        return "";
+        //TODO - 10.1: Test this and if it makes sense or if we need to have our tile implement a class and return something like
+        // digitalMiner or energyCube
+        return tile.getType().getRegistryName().toString();
     }
 
     @Override
-    public boolean equals(@Nullable IPeripheral peripheral) {
-        if (peripheral instanceof MekanismPeripheral) {
-            //TODO: Implement
-            //TODO: Do we want to keep track of the Coord4D our peripheral is at/for and
-            // then only have them be equal if it is an instance of ours and the same coord
-            return false;
-        }
-        return false;
+    public Object getTarget() {
+        return tile;
+    }
+
+    @Override
+    public boolean equals(@Nullable IPeripheral other) {
+        //Consider to peripherals equal if they are backed by the same tile
+        return other == this || other != null && getClass() == other.getClass() && tile == ((MekanismPeripheral<?>) other).tile;
     }
 
     @Nonnull
@@ -68,17 +69,13 @@ public class MekanismPeripheral implements IDynamicPeripheral {
     @Override
     public MethodResult callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int methodIndex, @Nonnull IArguments arguments) throws LuaException {
         if (methodIndex < 0 || methodIndex >= methods.length) {
-            //TODO: Improve this to better state the bounds
-            throw error("Method index '%d' out of bounds.", methodIndex);
+            throw new LuaException(String.format(Locale.ROOT, "Method index '%d' is out of bounds. This peripheral only has '%d' methods.", methodIndex,
+                  methods.length));
         }
-        ComputerMethod method = methods[methodIndex];
+        BoundComputerMethod method = methods[methodIndex];
         CCArgumentWrapper argumentWrapper = new CCArgumentWrapper(arguments);
         method.validateArguments(argumentWrapper);
-        //TODO: Figure out about the ILuaContext and if we need to do stuff to make sure we are running on the correct thread
+        //TODO - 10.1: Figure out about the ILuaContext and if we need to do stuff to make sure we are running on the correct thread
         return method.run(argumentWrapper);
-    }
-
-    private static LuaException error(String messageFormat, Object... args) {
-        return new LuaException(String.format(Locale.ROOT, messageFormat, args));
     }
 }

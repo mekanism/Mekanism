@@ -1,7 +1,9 @@
 package mekanism.common.tile.prefab;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
@@ -9,11 +11,15 @@ import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.BoundComputerMethod;
+import mekanism.common.integration.computer.ComputerCapabilityHelper;
+import mekanism.common.integration.computer.ComputerMethodMapper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
@@ -76,6 +82,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
+        if (hasComputerSupport()) {
+            BooleanSupplier requireFormed = () -> !getMultiblock().isFormed();
+            if (Mekanism.hooks.CCLoaded) {
+                //If ComputerCraft is loaded mark the capability as only "available" if the multiblock is formed
+                addSemiDisabledCapability(ComputerCapabilityHelper.COMPUTER_CRAFT_CAPABILITY, requireFormed);
+            }
+            //If OpenComputers is loaded, mark it's capability as well
+        }
     }
 
     @Override
@@ -327,9 +341,21 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
+    public boolean isComputerCapabilityPersistent() {
+        //We are not persistent regardless of if our tile has support
+        return false;
+    }
+
+    @Override
+    public void getComputerMethods(Map<String, BoundComputerMethod> methods) {
+        super.getComputerMethods(methods);
+        ComputerMethodMapper.INSTANCE.getAndBindToHandler(getMultiblock(), methods);
+    }
+
+    @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        SyncMapper.setup(container, getMultiblock().getClass(), this::getMultiblock);
+        SyncMapper.INSTANCE.setup(container, getMultiblock().getClass(), this::getMultiblock);
     }
 
     @Nonnull

@@ -35,6 +35,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
     }
 
     public void addStatsTabContainerTrackers(MekanismContainer container) {
-        SyncMapper.setup(container, getMultiblock().getClass(), this::getMultiblock, "stats");
+        SyncMapper.INSTANCE.setup(container, getMultiblock().getClass(), this::getMultiblock, "stats");
     }
 }

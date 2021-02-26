@@ -6,11 +6,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface ComputerMethod {
+@Target(ElementType.FIELD)
+public @interface SyntheticComputerMethod {
 
     /**
-     * Name to use for the method instead of the actual internal java name.
+     * Name to use for the synthetic getter.
      */
-    String nameOverride() default "";
+    String getter() default "";
+
+    /**
+     * Name to use for the synthetic setter.
+     */
+    String setter() default "";
 }
