@@ -1308,7 +1308,7 @@
   "transmitter.mekanism.insulation": "절연: %s",
   "transmitter.mekanism.items": "- 아이템 (%s)",
   "transmitter.mekanism.pump_rate": "전송 속도: %s/s",
-  "transmitter.mekanism.pump_rate.mb": "전송 속도: %s mB/t",
+  "transmitter.mekanism.pump_rate.mb": "펌프 속도: %s mB/t",
   "transmitter.mekanism.speed": "속도: %s m/s",
   "transmitter.mekanism.universal": "범용",
   "upgrade.mekanism.anchor": "정박",
