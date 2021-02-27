@@ -53,6 +53,11 @@ fun Array<Number>.toJsonArray():JsonArray = JsonArray().also { array->
         array.add(it)
     }
 }
+fun Array<Int>.toJsonArray():JsonArray = JsonArray().also { array->
+    this.forEach {
+        array.add(it)
+    }
+}
 
 val IItemProvider.bookId: String get() {
     val type = if (this is IBlockProvider) "block" else "item"
@@ -846,12 +851,29 @@ class MultiblockPage: EntryPage("multiblock"){
     }
 }
 
+class JsonObjectBiMap(private val biMap: HashBiMap<String, String> = HashBiMap.create()): BiMap<String, String> by biMap {
+    val json = JsonObject()
+
+    override fun put(key: String?, value: String?): String? {
+        val retVal = biMap.put(key!!, value!!)
+        json.addProperty(key, value)
+        return retVal
+    }
+}
+
 class MultiblockInfo {
     private val pattern: MutableList<MultiblockLayer> = mutableListOf()
 
-    private val patternToValue: BiMap<String, String> = HashBiMap.create()
+    private val patternToValue: JsonObjectBiMap = JsonObjectBiMap()
     private val valueToPattern = patternToValue.inverse()
     private var zeroValue: String? = null
+        set(value) {
+            if (field == null) {
+                field = value!!
+                patternToValue.json.addProperty("0", value)//nb: cant put in Map because of BiMap
+            } else
+                throw IllegalStateException("Zero value was already set")
+        }
 
     //I pity the fool who needs more than 26 pattern keys...
     private val availablePatternItem: Queue<String> = ArrayDeque("ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*123456789".map{it.toString()}.toList())
@@ -865,9 +887,13 @@ class MultiblockInfo {
     }
 
     var symmetrical: Boolean? = null
-    private var offset: Array<Int>? = null
+    private var offset: JsonArray? = null
     fun offset(x: Int, y: Int, z: Int) {
-        this.offset = arrayOf(x,y,z)
+        this.offset = jsonArray {
+            add(x)
+            add(y)
+            add(z)
+        }
     }
 
     @PatchouliDSL
@@ -882,17 +908,10 @@ class MultiblockInfo {
                 this@jsonArray.add(layer.toJson())
             }
         })
-        json.add("mapping", jsonObject {
-            patternToValue.forEach { (key, value) -> addProperty(key, value) }
-            zeroValue?.let { addProperty("0", it) }
-        })
+        json.add("mapping", patternToValue.json)
 
         symmetrical?.let { json.addProperty("symmetrical", it) }
-        offset?.let { json.add("offset", jsonArray {
-            add(it[0])
-            add(it[1])
-            add(it[2])
-        }) }
+        offset?.let { json.add("offset", it) }
         return json
     }
 
