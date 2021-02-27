@@ -9,6 +9,8 @@ import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import mekanism.api.providers.IBlockProvider
 import mekanism.api.providers.IItemProvider
+import mekanism.common.block.attribute.Attribute
+import mekanism.common.block.attribute.AttributeStateFacing
 import mekanism.common.registration.impl.BlockRegistryObject
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
@@ -19,6 +21,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundNBT
 import net.minecraft.state.StateHolder
 import net.minecraft.tags.ITag
+import net.minecraft.util.Direction
 import net.minecraft.util.ResourceLocation
 import org.apache.logging.log4j.LogManager
 import java.util.*
@@ -925,6 +928,13 @@ class MultiblockInfo {
         @PatchouliDSL
         operator fun BlockRegistryObject<out Block, out Item>.unaryPlus() {
             column.add(toPattern())
+        }
+
+        @PatchouliDSL
+        infix fun BlockRegistryObject<out Block, out Item>.facing(direction: Direction) {
+            column.add(blockStatePattern(this){
+                Attribute.get(block, AttributeStateFacing::class.java).setDirection(it, direction)
+            })
         }
 
         private fun BlockState.toPattern(): String {

@@ -3,8 +3,6 @@ package mekanism.patchouli
 import mekanism.client.MekanismKeyHandler
 import mekanism.common.Mekanism
 import mekanism.common.MekanismLang
-import mekanism.common.block.attribute.Attribute
-import mekanism.common.block.attribute.AttributeStateFacing
 import mekanism.common.registries.MekanismBlocks.*
 import mekanism.common.registries.MekanismItems.*
 import mekanism.common.resource.OreType
@@ -370,9 +368,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                             layer {
                                 row { +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK }
                                 row { +THERMAL_EVAPORATION_BLOCK; space();                    space();                    +THERMAL_EVAPORATION_BLOCK }
-                                row { +THERMAL_EVAPORATION_BLOCK; space();                    space();                    THERMAL_EVAPORATION_CONTROLLER {
-                                    Attribute.get(block, AttributeStateFacing::class.java).setDirection(it, Direction.EAST)
-                                } }
+                                row { +THERMAL_EVAPORATION_BLOCK; space();                    space();                    THERMAL_EVAPORATION_CONTROLLER facing Direction.EAST }
                                 row { +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK; +THERMAL_EVAPORATION_BLOCK }
                             }
                             layer {
